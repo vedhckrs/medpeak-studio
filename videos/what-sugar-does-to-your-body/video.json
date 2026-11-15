@@ -1,0 +1,1938 @@
+{
+  "slug": "what-sugar-does-to-your-body",
+  "topic": "What sugar does to your body: blood, liver, heart, teeth, the fruit vs juice twist, and how fast the body recovers",
+  "voice": {
+    "voiceId": "XrExE9yKIg1WjnnlVkGX",
+    "model": "eleven_multilingual_v2"
+  },
+  "music": {
+    "seconds": 120,
+    "prompt": "Calm, curious documentary underscore for a 3D medical explainer about sugar and the human body. Soft pulsing synth, warm felt piano, light organic percussion, 92 BPM. No lead melody, no vocals, the 1-4 kHz voice range kept clear. Hopeful, steady, loopable."
+  },
+  "research": {
+    "queries": [
+      "sugar-sweetened beverages type 2 diabetes meta-analysis Malik 2010",
+      "added sugar intake cardiovascular disease mortality Yang 2014 JAMA",
+      "dietary fructose restriction liver fat children de novo lipogenesis Schwarz 2017",
+      "ICMR-INDIAB diabetes prevalence India 2023 Lancet Diabetes Endocrinology",
+      "fruit consumption fruit juice type 2 diabetes prospective cohorts Muraki 2013 BMJ",
+      "fructose hepatic de novo lipogenesis review",
+      "sugars dental caries systematic review WHO Moynihan"
+    ]
+  },
+  "sources": [
+    {
+      "id": "who2015",
+      "label": "WHO sugars guideline, 2015",
+      "url": "https://www.who.int/news/item/04-03-2015-who-calls-on-countries-to-reduce-sugars-intake-among-adults-and-children",
+      "note": "Free sugars under 10% of energy; ideally under 5% (about 25 g, 6 teaspoons). A can of soda: up to 40 g (about 10 teaspoons). 1 tbsp ketchup: about 4 g. Whole-fruit sugar not counted; juice and honey are."
+    },
+    {
+      "id": "malik2010",
+      "label": "Malik et al., Diabetes Care 2010",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/20693348/",
+      "note": "Meta-analysis, 8 cohorts for type 2 diabetes, 310,819 people: 1-2 sugary drinks/day vs none, RR 1.26 (26% higher risk)."
+    },
+    {
+      "id": "icmr2023",
+      "label": "ICMR-INDIAB, Lancet Diabetes Endocrinol 2023",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/37301218/",
+      "note": "113,043 people in India: diabetes 11.4%, prediabetes 15.3%."
+    },
+    {
+      "id": "softic2016",
+      "label": "Softic et al., Dig Dis Sci 2016",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/26856717/",
+      "note": "Fructose goes via the portal vein to the liver; strongly drives de novo lipogenesis; sugary drinks a major risk factor for fatty liver disease."
+    },
+    {
+      "id": "yang2014",
+      "label": "Yang et al., JAMA Intern Med 2014",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/24493081/",
+      "note": "NHANES cohort 11,733 adults, median 14.6 years. 25%+ calories from added sugar vs under 10%: HR 2.75 for CVD death; 10-24.9%: HR 1.30. 71.4% of adults got 10%+ of calories from added sugar."
+    },
+    {
+      "id": "moynihan2014",
+      "label": "Moynihan & Kelly, J Dent Res 2014",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/24323509/",
+      "note": "Systematic review for the WHO guideline: lower sugar intake, fewer cavities."
+    },
+    {
+      "id": "muraki2013",
+      "label": "Muraki et al., BMJ 2013",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/23990623/",
+      "note": "187,382 people, 3 cohorts. Whole fruit (blueberries, grapes, apples) linked to lower type 2 diabetes risk; fruit juice HR 1.08 (higher)."
+    },
+    {
+      "id": "schwarz2017",
+      "label": "Schwarz et al., Gastroenterology 2017",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/28579536/",
+      "note": "41 children, 9 days, same calories, sugar swapped for starch: liver fat median 7.2% -> 3.8%; new-fat production (DNL) 68% -> 26%; insulin kinetics improved."
+    }
+  ],
+  "retention": {
+    "noIntro": {
+      "scene": "S01",
+      "line": "One can of soda can hold more sugar than the World Health Organization's ideal limit for an entire day."
+    },
+    "promise": {
+      "scene": "S03",
+      "line": "the last part of this video is the best news most people never hear"
+    },
+    "counting": {
+      "scene": "S05,S13,S17,S22",
+      "line": "Number one / Number two / Number three / Number four"
+    },
+    "change3s": {
+      "scene": "all",
+      "line": "a new picture at least every 5 s (long video)"
+    },
+    "twist": {
+      "scene": "S27",
+      "line": "But here's the twist: the sugar in a whole apple and the sugar in apple juice are almost the same"
+    },
+    "bestLast": {
+      "scene": "S31",
+      "line": "liver fat dropped from seven point two percent to three point eight percent in just nine days"
+    },
+    "loop": {
+      "scene": "S36",
+      "line": "one can of soda can hold more sugar than the ideal limit for an entire day"
+    }
+  },
+  "chapters": [
+    {
+      "id": "c0",
+      "title": "One can of soda"
+    },
+    {
+      "id": "c1",
+      "title": "Your blood and insulin"
+    },
+    {
+      "id": "c2",
+      "title": "Your liver turns sugar into fat"
+    },
+    {
+      "id": "c3",
+      "title": "Your heart and arteries"
+    },
+    {
+      "id": "c4",
+      "title": "Your teeth and the WHO limit"
+    },
+    {
+      "id": "c5",
+      "title": "The twist: fruit vs juice"
+    },
+    {
+      "id": "c6",
+      "title": "The best news: how fast your body recovers"
+    }
+  ],
+  "scenes": [
+    {
+      "id": "S01",
+      "chapter": "c0",
+      "sources": [
+        "who2015"
+      ],
+      "sfx": "impact",
+      "text": "One can of soda can hold more sugar than the World Health Organization's ideal limit for an entire day.",
+      "visual": {
+        "type": "title",
+        "text": "One can of soda",
+        "panels": [
+          {
+            "type": "title",
+            "text": "One can of soda",
+            "accent": "soda"
+          },
+          {
+            "type": "compare",
+            "items": [
+              {
+                "label": "One can of soda",
+                "value": 40,
+                "unit": " g",
+                "color": "#ff6b6b"
+              },
+              {
+                "label": "WHO ideal limit for a whole day",
+                "value": 25,
+                "unit": " g",
+                "color": "#19c3b1"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S02",
+      "chapter": "c0",
+      "text": "So what actually happens inside your body when all that sugar goes down?",
+      "visual": {
+        "type": "title",
+        "text": "Where does it go?",
+        "panels": [
+          {
+            "type": "title",
+            "text": "What happens inside?"
+          },
+          {
+            "type": "organ",
+            "organ": "body",
+            "highlight": "liver",
+            "label": "Follow the sugar"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S03",
+      "chapter": "c0",
+      "text": "I'll take you through four places sugar hits, one by one, and the last part of this video is the best news most people never hear.",
+      "visual": {
+        "type": "flow",
+        "steps": [
+          "Blood",
+          "Liver",
+          "Heart",
+          "Teeth"
+        ],
+        "panels": [
+          {
+            "type": "flow",
+            "steps": [
+              "Blood",
+              "Liver",
+              "Heart",
+              "Teeth"
+            ]
+          },
+          {
+            "type": "organ",
+            "organ": "body",
+            "highlight": "heart"
+          },
+          {
+            "type": "title",
+            "text": "Stay for the best news",
+            "accent": "news"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S04",
+      "chapter": "c0",
+      "text": "First, a quick truth: sugar itself isn't poison. Your body runs on glucose. The problem is how much, and how fast.",
+      "visual": {
+        "type": "title",
+        "text": "Sugar isn't poison",
+        "panels": [
+          {
+            "type": "title",
+            "text": "Sugar isn't poison"
+          },
+          {
+            "type": "organ",
+            "organ": "cell",
+            "level": 0.1,
+            "label": "Glucose = fuel"
+          },
+          {
+            "type": "title",
+            "text": "How much. How fast.",
+            "accent": "fast"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S05",
+      "chapter": "c1",
+      "sfx": "impact",
+      "text": "Number one: your blood.",
+      "visual": {
+        "type": "list",
+        "n": 1,
+        "title": "Your blood"
+      }
+    },
+    {
+      "id": "S06",
+      "chapter": "c1",
+      "text": "Table sugar is half glucose and half fructose. Minutes after a sweet drink, glucose floods into your bloodstream.",
+      "visual": {
+        "type": "flow",
+        "steps": [
+          "Table sugar",
+          "Glucose + fructose"
+        ],
+        "panels": [
+          {
+            "type": "flow",
+            "steps": [
+              "Table sugar",
+              "Glucose",
+              "Fructose"
+            ]
+          },
+          {
+            "type": "organ",
+            "organ": "vessel",
+            "level": 0.9,
+            "label": "Glucose floods in"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S07",
+      "chapter": "c1",
+      "text": "Liquid sugar is the fastest. There's no fibre to slow it down, so your blood sugar rises in a sharp spike.",
+      "visual": {
+        "type": "organ",
+        "organ": "vessel",
+        "panels": [
+          {
+            "type": "organ",
+            "organ": "vessel",
+            "level": 1,
+            "label": "No fibre, no brakes"
+          },
+          {
+            "type": "title",
+            "text": "A sharp spike",
+            "accent": "spike"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S08",
+      "chapter": "c1",
+      "text": "Your pancreas answers with insulin, the hormone that works like a key, unlocking your cells so glucose can get in and be used for energy.",
+      "visual": {
+        "type": "organ",
+        "organ": "pancreas",
+        "panels": [
+          {
+            "type": "organ",
+            "organ": "pancreas",
+            "level": 0.8,
+            "label": "Pancreas releases insulin"
+          },
+          {
+            "type": "organ",
+            "organ": "cell",
+            "level": 0.1,
+            "label": "Insulin unlocks the cell"
+          },
+          {
+            "type": "flow",
+            "steps": [
+              "Insulin",
+              "Cell opens",
+              "Energy"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S09",
+      "chapter": "c1",
+      "text": "Do this once, and your body handles it well. Do it every day, and your cells can slowly stop listening to insulin.",
+      "visual": {
+        "type": "organ",
+        "organ": "cell",
+        "panels": [
+          {
+            "type": "organ",
+            "organ": "cell",
+            "level": 0.1,
+            "label": "Once: handled"
+          },
+          {
+            "type": "organ",
+            "organ": "cell",
+            "level": 0.9,
+            "label": "Every day: cells stop listening"
+          },
+          {
+            "type": "title",
+            "text": "Cells stop listening",
+            "accent": "listening"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S10",
+      "chapter": "c1",
+      "text": "That's called insulin resistance, and it's the road that leads to type 2 diabetes.",
+      "visual": {
+        "type": "title",
+        "text": "Insulin resistance",
+        "panels": [
+          {
+            "type": "title",
+            "text": "Insulin resistance",
+            "accent": "resistance"
+          },
+          {
+            "type": "flow",
+            "steps": [
+              "Insulin resistance",
+              "Prediabetes",
+              "Type 2 diabetes"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S11",
+      "chapter": "c1",
+      "sources": [
+        "malik2010"
+      ],
+      "text": "In a review of eight studies and over three hundred thousand people, those who drank one to two sugary drinks a day had a twenty six percent higher risk of type 2 diabetes.",
+      "visual": {
+        "type": "stat",
+        "value": 26,
+        "unit": "%",
+        "label": "",
+        "panels": [
+          {
+            "type": "fact",
+            "text": "8 studies · 310,819 people",
+            "source": "Malik et al., Diabetes Care 2010"
+          },
+          {
+            "type": "spoons",
+            "count": 2,
+            "label": "1–2 sugary drinks a day"
+          },
+          {
+            "type": "stat",
+            "value": 26,
+            "unit": "%",
+            "label": "higher risk of type 2 diabetes"
+          },
+          {
+            "type": "title",
+            "text": "From drinks alone",
+            "accent": "drinks"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S12",
+      "chapter": "c1",
+      "sources": [
+        "icmr2023"
+      ],
+      "text": "And this matters close to home. A national study in India of over one hundred thousand people found eleven point four percent have diabetes, and another fifteen point three percent have prediabetes.",
+      "visual": {
+        "type": "stat",
+        "value": 11.4,
+        "unit": "%",
+        "label": "",
+        "panels": [
+          {
+            "type": "fact",
+            "text": "India · 113,043 people",
+            "source": "ICMR-INDIAB, Lancet Diabetes & Endocrinology 2023"
+          },
+          {
+            "type": "stat",
+            "value": 11.4,
+            "unit": "%",
+            "label": "have diabetes",
+            "color": "#ff6b6b"
+          },
+          {
+            "type": "stat",
+            "value": 15.3,
+            "unit": "%",
+            "label": "have prediabetes",
+            "color": "#ffb547"
+          },
+          {
+            "type": "title",
+            "text": "Over 1 in 4 adults",
+            "accent": "4",
+            "sub": "have diabetes or prediabetes"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S13",
+      "chapter": "c2",
+      "sfx": "impact",
+      "text": "Number two: your liver.",
+      "visual": {
+        "type": "list",
+        "n": 2,
+        "title": "Your liver"
+      }
+    },
+    {
+      "id": "S14",
+      "chapter": "c2",
+      "sources": [
+        "softic2016"
+      ],
+      "text": "Glucose can be used by almost every cell in your body. Fructose is different. Most of it travels straight to your liver.",
+      "visual": {
+        "type": "organ",
+        "organ": "body",
+        "panels": [
+          {
+            "type": "organ",
+            "organ": "cell",
+            "level": 0.1,
+            "label": "Glucose: any cell"
+          },
+          {
+            "type": "organ",
+            "organ": "body",
+            "highlight": "liver",
+            "label": "Fructose: the liver"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S15",
+      "chapter": "c2",
+      "sources": [
+        "softic2016"
+      ],
+      "text": "When your liver gets more fructose than it needs, it does something clever and dangerous: it turns the extra into fat. Doctors call it de novo lipogenesis, which means making new fat.",
+      "visual": {
+        "type": "flow",
+        "steps": [],
+        "panels": [
+          {
+            "type": "flow",
+            "steps": [
+              "Extra fructose",
+              "Liver",
+              "New fat"
+            ]
+          },
+          {
+            "type": "organ",
+            "organ": "liver",
+            "level": 0.5,
+            "label": "De novo lipogenesis"
+          },
+          {
+            "type": "title",
+            "text": "Making new fat",
+            "accent": "fat"
+          },
+          {
+            "type": "organ",
+            "organ": "fatcell",
+            "level": 0.6
+          }
+        ]
+      }
+    },
+    {
+      "id": "S16",
+      "chapter": "c2",
+      "sources": [
+        "softic2016"
+      ],
+      "text": "Some of that fat stays inside the liver. Over time, this is how fatty liver disease can start, even in people who never drink alcohol.",
+      "visual": {
+        "type": "organ",
+        "organ": "liver",
+        "panels": [
+          {
+            "type": "organ",
+            "organ": "liver",
+            "level": 1,
+            "label": "Fatty liver"
+          },
+          {
+            "type": "title",
+            "text": "Even without alcohol",
+            "accent": "alcohol"
+          },
+          {
+            "type": "fact",
+            "text": "Sugary drinks are a major risk factor for fatty liver disease.",
+            "source": "Softic et al., Digestive Diseases and Sciences 2016"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S17",
+      "chapter": "c3",
+      "sfx": "impact",
+      "text": "Number three: your heart.",
+      "visual": {
+        "type": "list",
+        "n": 3,
+        "title": "Your heart"
+      }
+    },
+    {
+      "id": "S18",
+      "chapter": "c3",
+      "text": "Extra sugar raises the fats in your blood, pushes up your weight, and over the years puts strain on your heart and arteries.",
+      "visual": {
+        "type": "organ",
+        "organ": "vessel",
+        "panels": [
+          {
+            "type": "organ",
+            "organ": "vessel",
+            "level": 0.7,
+            "label": "More fat in the blood"
+          },
+          {
+            "type": "organ",
+            "organ": "fatcell",
+            "level": 0.8,
+            "label": "More weight"
+          },
+          {
+            "type": "organ",
+            "organ": "heart",
+            "level": 0.8,
+            "label": "Strain on the heart"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S19",
+      "chapter": "c3",
+      "sources": [
+        "yang2014"
+      ],
+      "text": "A large American study followed more than eleven thousand adults for almost fifteen years.",
+      "visual": {
+        "type": "fact",
+        "text": "",
+        "panels": [
+          {
+            "type": "fact",
+            "text": "11,733 adults · 14.6 years",
+            "source": "Yang et al., JAMA Internal Medicine 2014"
+          },
+          {
+            "type": "organ",
+            "organ": "heart",
+            "level": 0.3
+          }
+        ]
+      }
+    },
+    {
+      "id": "S20",
+      "chapter": "c3",
+      "sources": [
+        "yang2014"
+      ],
+      "text": "People who got a quarter or more of their calories from added sugar had nearly three times the risk of dying from heart disease, compared with people under ten percent.",
+      "visual": {
+        "type": "compare",
+        "items": [],
+        "panels": [
+          {
+            "type": "title",
+            "text": "Added sugar and your heart",
+            "accent": "heart"
+          },
+          {
+            "type": "compare",
+            "items": [
+              {
+                "label": "Under 10% of calories",
+                "value": 1,
+                "unit": "×",
+                "color": "#19c3b1"
+              },
+              {
+                "label": "10–25% of calories",
+                "value": 1.3,
+                "unit": "×",
+                "color": "#ffb547"
+              },
+              {
+                "label": "25% or more",
+                "value": 2.75,
+                "unit": "×",
+                "color": "#ff6b6b"
+              }
+            ],
+            "caption": "Risk of dying from heart disease"
+          },
+          {
+            "type": "stat",
+            "value": 2.75,
+            "unit": "×",
+            "label": "the risk, at 25%+ of calories from added sugar",
+            "color": "#ff6b6b"
+          },
+          {
+            "type": "organ",
+            "organ": "heart",
+            "level": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "S21",
+      "chapter": "c3",
+      "sources": [
+        "yang2014"
+      ],
+      "text": "And seven in ten adults in that study were already above the ten percent line.",
+      "visual": {
+        "type": "stat",
+        "value": 71.4,
+        "unit": "%",
+        "label": "",
+        "panels": [
+          {
+            "type": "stat",
+            "value": 71.4,
+            "unit": "%",
+            "label": "of US adults got 10%+ of calories from added sugar"
+          },
+          {
+            "type": "title",
+            "text": "7 in 10",
+            "accent": "10"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S22",
+      "chapter": "c4",
+      "sfx": "impact",
+      "text": "Number four: your teeth.",
+      "visual": {
+        "type": "list",
+        "n": 4,
+        "title": "Your teeth"
+      }
+    },
+    {
+      "id": "S23",
+      "chapter": "c4",
+      "sources": [
+        "moynihan2014"
+      ],
+      "text": "Bacteria in your mouth feed on sugar and release acid. That acid slowly dissolves your enamel and causes cavities.",
+      "visual": {
+        "type": "organ",
+        "organ": "tooth",
+        "panels": [
+          {
+            "type": "organ",
+            "organ": "tooth",
+            "level": 0.3,
+            "label": "Bacteria feed on sugar"
+          },
+          {
+            "type": "organ",
+            "organ": "tooth",
+            "level": 1,
+            "label": "Acid makes cavities"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S24",
+      "chapter": "c4",
+      "sources": [
+        "who2015",
+        "moynihan2014"
+      ],
+      "text": "This is so well proven that it's one of the main reasons the WHO set its sugar limit: less than ten percent of your daily energy, and ideally under five percent, about six teaspoons.",
+      "visual": {
+        "type": "title",
+        "text": "",
+        "panels": [
+          {
+            "type": "title",
+            "text": "The WHO sugar limit",
+            "accent": "limit"
+          },
+          {
+            "type": "stat",
+            "value": 10,
+            "unit": "%",
+            "label": "of daily energy: the upper limit",
+            "color": "#19c3b1"
+          },
+          {
+            "type": "stat",
+            "value": 5,
+            "unit": "%",
+            "label": "the ideal: about 25 g",
+            "color": "#43d18a"
+          },
+          {
+            "type": "spoons",
+            "count": 6,
+            "label": "Ideal: about 6 teaspoons a day"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S25",
+      "chapter": "c4",
+      "sources": [
+        "who2015"
+      ],
+      "text": "Now compare that with one can of soda: up to ten teaspoons. One drink, and you're past the ideal limit for the whole day.",
+      "visual": {
+        "type": "spoons",
+        "count": 10,
+        "label": "",
+        "panels": [
+          {
+            "type": "spoons",
+            "count": 10,
+            "limit": 6,
+            "label": "One can of soda: up to 10 teaspoons"
+          },
+          {
+            "type": "title",
+            "text": "Past the limit in one drink",
+            "accent": "drink"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S26",
+      "chapter": "c4",
+      "sources": [
+        "who2015"
+      ],
+      "text": "And it isn't only soda. One tablespoon of ketchup has about a teaspoon of sugar hiding inside it.",
+      "visual": {
+        "type": "spoons",
+        "count": 1,
+        "label": "",
+        "panels": [
+          {
+            "type": "spoons",
+            "count": 1,
+            "label": "1 tablespoon of ketchup ≈ 1 teaspoon of sugar"
+          },
+          {
+            "type": "title",
+            "text": "Hidden sugar",
+            "accent": "hidden"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S27",
+      "chapter": "c5",
+      "sfx": "impact",
+      "text": "But here's the twist: the sugar in a whole apple and the sugar in apple juice are almost the same molecules, yet your body treats them very differently.",
+      "visual": {
+        "type": "twist",
+        "text": "",
+        "panels": [
+          {
+            "type": "twist",
+            "text": "Same sugar. Different result."
+          },
+          {
+            "type": "flow",
+            "steps": [
+              "Whole apple",
+              "Fibre",
+              "Slow sugar"
+            ],
+            "color": "#43d18a"
+          },
+          {
+            "type": "flow",
+            "steps": [
+              "Apple juice",
+              "No fibre",
+              "Fast spike"
+            ],
+            "color": "#ff6b6b"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S28",
+      "chapter": "c5",
+      "sources": [
+        "muraki2013"
+      ],
+      "text": "A study of more than one hundred eighty thousand people found that eating whole fruits like blueberries, grapes and apples was linked to a lower risk of type 2 diabetes.",
+      "visual": {
+        "type": "fact",
+        "text": "",
+        "panels": [
+          {
+            "type": "fact",
+            "text": "187,382 people · 3 long-term studies",
+            "source": "Muraki et al., BMJ 2013"
+          },
+          {
+            "type": "flow",
+            "steps": [
+              "Blueberries",
+              "Grapes",
+              "Apples"
+            ],
+            "color": "#43d18a"
+          },
+          {
+            "type": "title",
+            "text": "Whole fruit: lower risk",
+            "accent": "lower"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S29",
+      "chapter": "c5",
+      "sources": [
+        "muraki2013"
+      ],
+      "text": "But the same amount of fruit juice was linked to a higher risk. The difference is fibre: whole fruit makes your body work to get the sugar out, so it arrives slowly.",
+      "visual": {
+        "type": "title",
+        "text": "",
+        "panels": [
+          {
+            "type": "title",
+            "text": "Juice: higher risk",
+            "accent": "higher"
+          },
+          {
+            "type": "organ",
+            "organ": "vessel",
+            "level": 0.2,
+            "label": "Fibre means a slow release"
+          },
+          {
+            "type": "flow",
+            "steps": [
+              "Whole fruit",
+              "Slow sugar",
+              "Small rise"
+            ],
+            "color": "#43d18a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S30",
+      "chapter": "c5",
+      "sources": [
+        "who2015"
+      ],
+      "text": "That's why the WHO limit counts fruit juice and honey as free sugar, but not the sugar in fresh whole fruit.",
+      "visual": {
+        "type": "fact",
+        "text": "",
+        "panels": [
+          {
+            "type": "fact",
+            "text": "Juice and honey count as free sugar. Fresh whole fruit does not.",
+            "source": "WHO sugars guideline, 2015"
+          },
+          {
+            "type": "title",
+            "text": "Eat the fruit. Skip the juice.",
+            "accent": "fruit."
+          }
+        ]
+      }
+    },
+    {
+      "id": "S31",
+      "chapter": "c6",
+      "sources": [
+        "schwarz2017"
+      ],
+      "sfx": "chime",
+      "text": "And now, the best news I promised you. When researchers swapped sugar for starch in children's meals, keeping calories the same, liver fat dropped from seven point two percent to three point eight percent in just nine days.",
+      "visual": {
+        "type": "title",
+        "text": "",
+        "panels": [
+          {
+            "type": "title",
+            "text": "The best news",
+            "accent": "news"
+          },
+          {
+            "type": "flow",
+            "steps": [
+              "Same calories",
+              "Sugar → starch",
+              "9 days"
+            ]
+          },
+          {
+            "type": "organ",
+            "organ": "liver",
+            "level": 0.9,
+            "label": "Before"
+          },
+          {
+            "type": "compare",
+            "items": [
+              {
+                "label": "Liver fat before",
+                "value": 7.2,
+                "unit": "%",
+                "color": "#ffb547"
+              },
+              {
+                "label": "After 9 days",
+                "value": 3.8,
+                "unit": "%",
+                "color": "#43d18a"
+              }
+            ],
+            "caption": "Median liver fat, 41 children"
+          },
+          {
+            "type": "organ",
+            "organ": "liver",
+            "level": 0.35,
+            "label": "After 9 days"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S32",
+      "chapter": "c6",
+      "sources": [
+        "schwarz2017"
+      ],
+      "text": "Same calories. Just less sugar. Their livers also made far less new fat, and their insulin worked better.",
+      "visual": {
+        "type": "stat",
+        "value": 26,
+        "unit": "%",
+        "label": "",
+        "panels": [
+          {
+            "type": "compare",
+            "items": [
+              {
+                "label": "New fat made by the liver, before",
+                "value": 68,
+                "unit": "%",
+                "color": "#ffb547"
+              },
+              {
+                "label": "After 9 days",
+                "value": 26,
+                "unit": "%",
+                "color": "#43d18a"
+              }
+            ]
+          },
+          {
+            "type": "organ",
+            "organ": "cell",
+            "level": 0.1,
+            "label": "Insulin works better"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S33",
+      "chapter": "c6",
+      "text": "Your body is not stuck. Cut the added sugar, and it starts repairing itself faster than most people expect.",
+      "visual": {
+        "type": "title",
+        "text": "",
+        "panels": [
+          {
+            "type": "title",
+            "text": "Your body is not stuck",
+            "accent": "stuck"
+          },
+          {
+            "type": "organ",
+            "organ": "body",
+            "highlight": "liver",
+            "label": "Repair starts fast"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S34",
+      "chapter": "c6",
+      "text": "So start simple: swap soda for water or plain milk, eat your fruit instead of drinking it, and check labels for hidden sugar.",
+      "visual": {
+        "type": "title",
+        "text": "",
+        "panels": [
+          {
+            "type": "flow",
+            "steps": [
+              "Soda",
+              "Water or plain milk"
+            ],
+            "color": "#43d18a"
+          },
+          {
+            "type": "flow",
+            "steps": [
+              "Juice",
+              "Whole fruit"
+            ],
+            "color": "#43d18a"
+          },
+          {
+            "type": "title",
+            "text": "Read the label",
+            "accent": "label"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S35",
+      "chapter": "c6",
+      "text": "Tell me in the comments which of these surprised you most.",
+      "visual": {
+        "type": "title",
+        "text": "Which one surprised you?",
+        "accent": "surprised"
+      }
+    },
+    {
+      "id": "S36",
+      "chapter": "c6",
+      "sources": [
+        "who2015"
+      ],
+      "text": "Because now you know why one can of soda can hold more sugar than the ideal limit for an entire day, and exactly where all of it goes inside your body.",
+      "visual": {
+        "type": "spoons",
+        "count": 10,
+        "label": "",
+        "panels": [
+          {
+            "type": "spoons",
+            "count": 10,
+            "limit": 6,
+            "label": "One can of soda"
+          },
+          {
+            "type": "organ",
+            "organ": "body",
+            "highlight": "liver"
+          },
+          {
+            "type": "title",
+            "text": "Now you know where it goes",
+            "accent": "goes"
+          }
+        ]
+      }
+    }
+  ],
+  "shorts": [
+    {
+      "id": "soda",
+      "title": "One Can of Soda vs Your Daily Sugar Limit",
+      "package": {
+        "title": "One Can of Soda vs Your Daily Sugar Limit",
+        "thumbnail": {
+          "text": "10 TEASPOONS",
+          "organ": "liver"
+        },
+        "hashtags": "#sugar #soda #shorts"
+      },
+      "retention": {
+        "noIntro": {
+          "scene": "A1",
+          "line": "One can of soda can hold ten teaspoons of sugar."
+        },
+        "promise": {
+          "scene": "A2",
+          "line": "Here are three things it does inside you"
+        },
+        "counting": {
+          "scene": "A3,A4,A5",
+          "line": "Number one / Number two / Number three"
+        },
+        "change3s": {
+          "scene": "all",
+          "line": "a new picture at least every 3 s"
+        },
+        "twist": {
+          "scene": "A6",
+          "line": "But here's the twist"
+        },
+        "bestLast": {
+          "scene": "A7",
+          "line": "cutting added sugar lowered liver fat in children in just nine days"
+        },
+        "loop": {
+          "scene": "A8",
+          "line": "one can of soda: ten teaspoons of sugar"
+        }
+      },
+      "scenes": [
+        {
+          "id": "A1",
+          "sources": [
+            "who2015"
+          ],
+          "sfx": "impact",
+          "text": "One can of soda can hold ten teaspoons of sugar.",
+          "visual": {
+            "type": "spoons",
+            "count": 10,
+            "label": "",
+            "panels": [
+              {
+                "type": "title",
+                "text": "One can of soda",
+                "accent": "soda"
+              },
+              {
+                "type": "spoons",
+                "count": 10,
+                "limit": 6,
+                "label": "Up to 10 teaspoons"
+              }
+            ]
+          }
+        },
+        {
+          "id": "A2",
+          "text": "Here are three things it does inside you, and the last one surprises everyone.",
+          "visual": {
+            "type": "flow",
+            "steps": [],
+            "panels": [
+              {
+                "type": "flow",
+                "steps": [
+                  "Blood",
+                  "Pancreas",
+                  "Liver"
+                ]
+              },
+              {
+                "type": "title",
+                "text": "Wait for #3",
+                "accent": "#3"
+              }
+            ]
+          }
+        },
+        {
+          "id": "A3",
+          "text": "Number one: your blood sugar spikes, because liquid sugar has no fibre to slow it down.",
+          "visual": {
+            "type": "list",
+            "n": 1,
+            "title": "",
+            "panels": [
+              {
+                "type": "list",
+                "n": 1,
+                "title": "Blood sugar spikes"
+              },
+              {
+                "type": "organ",
+                "organ": "vessel",
+                "level": 1
+              },
+              {
+                "type": "title",
+                "text": "No fibre, no brakes",
+                "accent": "brakes"
+              }
+            ]
+          }
+        },
+        {
+          "id": "A4",
+          "text": "Number two: your pancreas floods your blood with insulin to push that sugar into your cells.",
+          "visual": {
+            "type": "list",
+            "n": 2,
+            "title": "",
+            "panels": [
+              {
+                "type": "list",
+                "n": 2,
+                "title": "Insulin floods in"
+              },
+              {
+                "type": "organ",
+                "organ": "pancreas",
+                "level": 1
+              },
+              {
+                "type": "organ",
+                "organ": "cell",
+                "level": 0.1
+              }
+            ]
+          }
+        },
+        {
+          "id": "A5",
+          "sources": [
+            "softic2016"
+          ],
+          "text": "Number three: most of the fructose goes straight to your liver.",
+          "visual": {
+            "type": "list",
+            "n": 3,
+            "title": "",
+            "panels": [
+              {
+                "type": "list",
+                "n": 3,
+                "title": "Straight to the liver"
+              },
+              {
+                "type": "organ",
+                "organ": "body",
+                "highlight": "liver"
+              }
+            ]
+          }
+        },
+        {
+          "id": "A6",
+          "sources": [
+            "softic2016"
+          ],
+          "sfx": "impact",
+          "text": "But here's the twist: your liver can turn that extra fructose into brand new fat.",
+          "visual": {
+            "type": "twist",
+            "text": "",
+            "panels": [
+              {
+                "type": "twist",
+                "text": "Sugar becomes fat"
+              },
+              {
+                "type": "organ",
+                "organ": "liver",
+                "level": 0.9
+              },
+              {
+                "type": "organ",
+                "organ": "fatcell",
+                "level": 0.8
+              }
+            ]
+          }
+        },
+        {
+          "id": "A7",
+          "sources": [
+            "schwarz2017"
+          ],
+          "sfx": "chime",
+          "text": "The surprise? Cutting added sugar lowered liver fat in children in just nine days.",
+          "visual": {
+            "type": "title",
+            "text": "",
+            "panels": [
+              {
+                "type": "title",
+                "text": "Just 9 days",
+                "accent": "9"
+              },
+              {
+                "type": "compare",
+                "items": [
+                  {
+                    "label": "Before",
+                    "value": 7.2,
+                    "unit": "%",
+                    "color": "#ffb547"
+                  },
+                  {
+                    "label": "After 9 days",
+                    "value": 3.8,
+                    "unit": "%",
+                    "color": "#43d18a"
+                  }
+                ],
+                "caption": "Liver fat"
+              },
+              {
+                "type": "organ",
+                "organ": "liver",
+                "level": 0.3
+              }
+            ]
+          }
+        },
+        {
+          "id": "A8",
+          "sources": [
+            "who2015"
+          ],
+          "text": "So, think twice about one can of soda: ten teaspoons of sugar.",
+          "visual": {
+            "type": "spoons",
+            "count": 10,
+            "label": "",
+            "panels": [
+              {
+                "type": "spoons",
+                "count": 10,
+                "limit": 6,
+                "label": "One can of soda"
+              },
+              {
+                "type": "title",
+                "text": "Think twice",
+                "accent": "twice"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "fruit-vs-juice",
+      "title": "Fruit vs Juice: Same Sugar, Different Result",
+      "package": {
+        "title": "Fruit vs Juice: Same Sugar, Different Result",
+        "thumbnail": {
+          "text": "FRUIT OR JUICE?",
+          "organ": "vessel"
+        },
+        "hashtags": "#fruit #juice #shorts"
+      },
+      "retention": {
+        "noIntro": {
+          "scene": "B1",
+          "line": "Is the sugar in an apple the same as the sugar in apple juice?"
+        },
+        "promise": {
+          "scene": "B2",
+          "line": "Three facts settle it"
+        },
+        "counting": {
+          "scene": "B3,B4,B6",
+          "line": "Number one / Number two / Number three"
+        },
+        "change3s": {
+          "scene": "all",
+          "line": "a new picture at least every 3 s"
+        },
+        "twist": {
+          "scene": "B5",
+          "line": "But here's the twist"
+        },
+        "bestLast": {
+          "scene": "B6",
+          "line": "the WHO counts juice as free sugar, but not whole fruit"
+        },
+        "loop": {
+          "scene": "B7",
+          "line": "apple or apple juice? Not the same sugar"
+        }
+      },
+      "scenes": [
+        {
+          "id": "B1",
+          "sfx": "impact",
+          "text": "Is the sugar in an apple the same as the sugar in apple juice?",
+          "visual": {
+            "type": "title",
+            "text": "",
+            "panels": [
+              {
+                "type": "title",
+                "text": "Apple or apple juice?",
+                "accent": "juice?"
+              },
+              {
+                "type": "flow",
+                "steps": [
+                  "Apple",
+                  "Juice"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "B2",
+          "text": "Three facts settle it, and the last one changes how you shop.",
+          "visual": {
+            "type": "title",
+            "text": "",
+            "panels": [
+              {
+                "type": "title",
+                "text": "3 facts",
+                "accent": "facts"
+              },
+              {
+                "type": "title",
+                "text": "Wait for #3",
+                "accent": "#3"
+              }
+            ]
+          }
+        },
+        {
+          "id": "B3",
+          "text": "Number one: both contain the same kinds of sugar, glucose and fructose.",
+          "visual": {
+            "type": "list",
+            "n": 1,
+            "title": "",
+            "panels": [
+              {
+                "type": "list",
+                "n": 1,
+                "title": "Same sugars"
+              },
+              {
+                "type": "flow",
+                "steps": [
+                  "Glucose",
+                  "Fructose"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "B4",
+          "text": "Number two: a whole apple comes with fibre, so your body has to work to release the sugar slowly.",
+          "visual": {
+            "type": "list",
+            "n": 2,
+            "title": "",
+            "panels": [
+              {
+                "type": "list",
+                "n": 2,
+                "title": "Fibre"
+              },
+              {
+                "type": "organ",
+                "organ": "vessel",
+                "level": 0.2
+              },
+              {
+                "type": "flow",
+                "steps": [
+                  "Fibre",
+                  "Slow sugar"
+                ],
+                "color": "#43d18a"
+              }
+            ]
+          }
+        },
+        {
+          "id": "B5",
+          "sources": [
+            "muraki2013"
+          ],
+          "sfx": "impact",
+          "text": "But here's the twist: in a study of over one hundred eighty thousand people, whole fruit was linked to lower diabetes risk, and juice to higher.",
+          "visual": {
+            "type": "twist",
+            "text": "",
+            "panels": [
+              {
+                "type": "twist",
+                "text": "Fruit: lower risk"
+              },
+              {
+                "type": "fact",
+                "text": "187,382 people",
+                "source": "Muraki et al., BMJ 2013"
+              },
+              {
+                "type": "title",
+                "text": "Juice: higher risk",
+                "accent": "higher"
+              },
+              {
+                "type": "organ",
+                "organ": "vessel",
+                "level": 1
+              }
+            ]
+          }
+        },
+        {
+          "id": "B6",
+          "sources": [
+            "who2015"
+          ],
+          "sfx": "chime",
+          "text": "Number three: the WHO counts juice as free sugar, but not whole fruit.",
+          "visual": {
+            "type": "list",
+            "n": 3,
+            "title": "",
+            "panels": [
+              {
+                "type": "list",
+                "n": 3,
+                "title": "The WHO rule"
+              },
+              {
+                "type": "fact",
+                "text": "Whole fruit: not counted. Juice: counted.",
+                "source": "WHO 2015"
+              },
+              {
+                "type": "title",
+                "text": "Eat it. Don't drink it.",
+                "accent": "drink"
+              }
+            ]
+          }
+        },
+        {
+          "id": "B7",
+          "text": "So, apple or apple juice? Not the same sugar.",
+          "visual": {
+            "type": "title",
+            "text": "",
+            "panels": [
+              {
+                "type": "flow",
+                "steps": [
+                  "Apple",
+                  "≠",
+                  "Juice"
+                ]
+              },
+              {
+                "type": "title",
+                "text": "Not the same",
+                "accent": "same"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "liver-nine-days",
+      "title": "Your Liver Can Lose Fat in 9 Days",
+      "package": {
+        "title": "Your Liver Can Lose Fat in 9 Days (Less Sugar Study)",
+        "thumbnail": {
+          "text": "LIVER FAT IN 9 DAYS",
+          "organ": "liver"
+        },
+        "hashtags": "#liver #fattyliver #shorts"
+      },
+      "retention": {
+        "noIntro": {
+          "scene": "C1",
+          "line": "Your liver can start losing fat in just nine days."
+        },
+        "promise": {
+          "scene": "C2",
+          "line": "Here's how, in three steps"
+        },
+        "counting": {
+          "scene": "C3,C4,C6",
+          "line": "Number one / Number two / Number three"
+        },
+        "change3s": {
+          "scene": "all",
+          "line": "a new picture at least every 3 s"
+        },
+        "twist": {
+          "scene": "C5",
+          "line": "But here's the twist"
+        },
+        "bestLast": {
+          "scene": "C6",
+          "line": "liver fat fell from seven point two to three point eight percent"
+        },
+        "loop": {
+          "scene": "C7",
+          "line": "your liver can start losing fat in just nine days"
+        }
+      },
+      "scenes": [
+        {
+          "id": "C1",
+          "sources": [
+            "schwarz2017"
+          ],
+          "sfx": "impact",
+          "text": "Your liver can start losing fat in just nine days.",
+          "visual": {
+            "type": "title",
+            "text": "",
+            "panels": [
+              {
+                "type": "title",
+                "text": "9 days",
+                "accent": "9"
+              },
+              {
+                "type": "organ",
+                "organ": "liver",
+                "level": 0.9
+              }
+            ]
+          }
+        },
+        {
+          "id": "C2",
+          "text": "Here's how, in three steps, and the last number is the one doctors love.",
+          "visual": {
+            "type": "title",
+            "text": "",
+            "panels": [
+              {
+                "type": "title",
+                "text": "3 steps",
+                "accent": "3"
+              },
+              {
+                "type": "title",
+                "text": "Wait for #3",
+                "accent": "#3"
+              }
+            ]
+          }
+        },
+        {
+          "id": "C3",
+          "text": "Number one: researchers kept children's calories exactly the same.",
+          "visual": {
+            "type": "list",
+            "n": 1,
+            "title": "",
+            "panels": [
+              {
+                "type": "list",
+                "n": 1,
+                "title": "Same calories"
+              },
+              {
+                "type": "title",
+                "text": "No dieting",
+                "accent": "dieting"
+              }
+            ]
+          }
+        },
+        {
+          "id": "C4",
+          "text": "Number two: they only swapped added sugar for starch.",
+          "visual": {
+            "type": "list",
+            "n": 2,
+            "title": "",
+            "panels": [
+              {
+                "type": "list",
+                "n": 2,
+                "title": "Sugar → starch"
+              },
+              {
+                "type": "flow",
+                "steps": [
+                  "Sugar",
+                  "Starch"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "C4b",
+          "sources": [
+            "schwarz2017"
+          ],
+          "text": "It was a real clinical study, with forty one children aged nine to eighteen, and every single meal was provided.",
+          "visual": {
+            "type": "fact",
+            "text": "",
+            "panels": [
+              {
+                "type": "fact",
+                "text": "41 children · ages 9 to 18",
+                "source": "Schwarz et al., Gastroenterology 2017"
+              },
+              {
+                "type": "title",
+                "text": "Every meal provided",
+                "accent": "meal"
+              },
+              {
+                "type": "organ",
+                "organ": "body",
+                "highlight": "liver"
+              }
+            ]
+          }
+        },
+        {
+          "id": "C5",
+          "sfx": "impact",
+          "text": "But here's the twist: they didn't eat less. Same calories, same amount of carbs. The only change was less sugar.",
+          "visual": {
+            "type": "twist",
+            "text": "",
+            "panels": [
+              {
+                "type": "twist",
+                "text": "They didn't eat less"
+              },
+              {
+                "type": "flow",
+                "steps": [
+                  "Same calories",
+                  "Same carbs"
+                ]
+              },
+              {
+                "type": "title",
+                "text": "Just less sugar",
+                "accent": "sugar"
+              }
+            ]
+          }
+        },
+        {
+          "id": "C6",
+          "sources": [
+            "schwarz2017"
+          ],
+          "sfx": "chime",
+          "text": "Number three: liver fat fell from seven point two to three point eight percent.",
+          "visual": {
+            "type": "list",
+            "n": 3,
+            "title": "",
+            "panels": [
+              {
+                "type": "list",
+                "n": 3,
+                "title": "The result"
+              },
+              {
+                "type": "compare",
+                "items": [
+                  {
+                    "label": "Before",
+                    "value": 7.2,
+                    "unit": "%",
+                    "color": "#ffb547"
+                  },
+                  {
+                    "label": "After 9 days",
+                    "value": 3.8,
+                    "unit": "%",
+                    "color": "#43d18a"
+                  }
+                ],
+                "caption": "Median liver fat"
+              },
+              {
+                "type": "organ",
+                "organ": "liver",
+                "level": 0.3
+              }
+            ]
+          }
+        },
+        {
+          "id": "C7",
+          "sources": [
+            "schwarz2017"
+          ],
+          "text": "So yes, your liver can start losing fat in just nine days.",
+          "visual": {
+            "type": "title",
+            "text": "",
+            "panels": [
+              {
+                "type": "organ",
+                "organ": "liver",
+                "level": 0.2
+              },
+              {
+                "type": "title",
+                "text": "Just 9 days",
+                "accent": "9"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "package": {
+    "title": "What Sugar Does to Your Body (3D Animation)",
+    "tags": [
+      "what sugar does to your body",
+      "how sugar affects your body",
+      "effects of sugar on the body",
+      "too much sugar",
+      "sugar and liver",
+      "fatty liver",
+      "insulin resistance",
+      "sugar and diabetes",
+      "fruit vs juice",
+      "WHO sugar limit",
+      "added sugar",
+      "3d medical animation",
+      "MedPeak Health"
+    ],
+    "hashtags": "#sugar #health #3danimation",
+    "thumbnail": {
+      "text": "WHERE SUGAR GOES",
+      "organ": "liver"
+    }
+  }
+}

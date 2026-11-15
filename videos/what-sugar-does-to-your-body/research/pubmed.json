@@ -1,0 +1,128 @@
+{
+  "fetched": "2026-11-15T17:15:21.494Z",
+  "results": [
+    {
+      "query": "sugar-sweetened beverages type 2 diabetes meta-analysis Malik 2010",
+      "papers": [
+        {
+          "pmid": "20693348",
+          "title": "Sugar-sweetened beverages and risk of metabolic syndrome and type 2 diabetes: a meta-analysis.",
+          "journal": "Diabetes care",
+          "year": "2010",
+          "authors": "Malik VS, Popkin BM, Bray GA",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/20693348/"
+        }
+      ]
+    },
+    {
+      "query": "added sugar intake cardiovascular disease mortality Yang 2014 JAMA",
+      "papers": [
+        {
+          "pmid": "24493081",
+          "title": "Added sugar intake and cardiovascular diseases mortality among US adults.",
+          "journal": "JAMA internal medicine",
+          "year": "2014",
+          "authors": "Yang Q, Zhang Z, Gregg EW",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/24493081/"
+        }
+      ]
+    },
+    {
+      "query": "dietary fructose restriction liver fat children de novo lipogenesis Schwarz 2017",
+      "papers": [
+        {
+          "pmid": "28579536",
+          "title": "Effects of Dietary Fructose Restriction on Liver Fat, De Novo Lipogenesis, and Insulin Kinetics in Children With Obesity.",
+          "journal": "Gastroenterology",
+          "year": "2017",
+          "authors": "Schwarz JM, Noworolski SM, Erkin-Cakmak A",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/28579536/"
+        }
+      ]
+    },
+    {
+      "query": "ICMR-INDIAB diabetes prevalence India 2023 Lancet Diabetes Endocrinology",
+      "papers": [
+        {
+          "pmid": "37301218",
+          "title": "Metabolic non-communicable disease health report of India: the ICMR-INDIAB national cross-sectional study (ICMR-INDIAB-17).",
+          "journal": "The lancet. Diabetes & endocrinology",
+          "year": "2023",
+          "authors": "Anjana RM, Unnikrishnan R, Deepa M",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/37301218/"
+        }
+      ]
+    },
+    {
+      "query": "fruit consumption fruit juice type 2 diabetes prospective cohorts Muraki 2013 BMJ",
+      "papers": [
+        {
+          "pmid": "23990623",
+          "title": "Fruit consumption and risk of type 2 diabetes: results from three prospective longitudinal cohort studies.",
+          "journal": "BMJ (Clinical research ed.)",
+          "year": "2013",
+          "authors": "Muraki I, Imamura F, Manson JE",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/23990623/"
+        }
+      ]
+    },
+    {
+      "query": "fructose hepatic de novo lipogenesis review",
+      "papers": [
+        {
+          "pmid": "26856717",
+          "title": "Role of Dietary Fructose and Hepatic De Novo Lipogenesis in Fatty Liver Disease.",
+          "journal": "Digestive diseases and sciences",
+          "year": "2016",
+          "authors": "Softic S, Cohen DE, Kahn CR",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/26856717/"
+        },
+        {
+          "pmid": "40032040",
+          "title": "Integrative metabolism in MASLD and MASH: Pathophysiology and emerging mechanisms.",
+          "journal": "Journal of hepatology",
+          "year": "2025",
+          "authors": "Steinberg GR, Valvano CM, De Nardo W",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/40032040/"
+        },
+        {
+          "pmid": "35256934",
+          "title": "Metabolic dysregulation and emerging therapeutical targets for hepatocellular carcinoma.",
+          "journal": "Acta pharmaceutica Sinica. B",
+          "year": "2022",
+          "authors": "Du D, Liu C, Qin M",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/35256934/"
+        }
+      ]
+    },
+    {
+      "query": "sugars dental caries systematic review WHO Moynihan",
+      "papers": [
+        {
+          "pmid": "24323509",
+          "title": "Effect on caries of restricting sugars intake: systematic review to inform WHO guidelines.",
+          "journal": "Journal of dental research",
+          "year": "2014",
+          "authors": "Moynihan PJ, Kelly SA",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/24323509/"
+        },
+        {
+          "pmid": "35302414",
+          "title": "Systematic Review of the Effect on Caries of Sugars Intake: Ten-Year Update.",
+          "journal": "Journal of dental research",
+          "year": "2022",
+          "authors": "Moores CJ, Kelly SAM, Moynihan PJ",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/35302414/"
+        },
+        {
+          "pmid": "26773022",
+          "title": "Sugars and Dental Caries: Evidence for Setting a Recommended Threshold for Intake.",
+          "journal": "Advances in nutrition (Bethesda, Md.)",
+          "year": "2016",
+          "authors": "Moynihan P",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/26773022/"
+        }
+      ]
+    }
+  ]
+}
