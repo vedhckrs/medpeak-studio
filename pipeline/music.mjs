@@ -12,7 +12,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {args, loadVideo, PUBLIC} from './lib/util.mjs';
-import {approved, balance, needApproval, post} from './lib/eleven.mjs';
+import {approved, balance, needApproval, post, printPool} from './lib/eleven.mjs';
 
 const DEFAULT_PROMPT = 'Calm, curious documentary underscore for a science and health explainer. Soft pulsing synth, warm piano motifs, light percussion, 95 BPM. No lead melody, no vocals, keep the 1-4 kHz voice range clear. Steady, hopeful, loopable.';
 
@@ -23,7 +23,8 @@ const main = async () => {
   const seconds = Number(video.music?.seconds || 120);
   const prompt = video.music?.prompt || DEFAULT_PROMPT;
   const bal = await balance();
-  console.log(`Music: ${seconds} s instrumental\nPrompt: ${prompt}\nBalance: ${bal.left} credits left (music is billed by length; check the dashboard for the exact rate)`);
+  console.log(`Music: ${seconds} s instrumental\nPrompt: ${prompt}\nElevenLabs keys (auto-switch when one runs out):`);
+  printPool(bal);
   if (a['dry-run']) return;
   if (!approved()) needApproval(`music (${seconds} s)`);
   if (!a['max-seconds'] || seconds > Number(a['max-seconds'])) {

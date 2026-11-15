@@ -15,7 +15,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {execFileSync} from 'node:child_process';
 import {allScenes, args, loadVideo, PUBLIC, readJson, videoDir, writeJson} from './lib/util.mjs';
-import {API, approved, balance, key, needApproval, post} from './lib/eleven.mjs';
+import {approved, balance, get, needApproval, post, printPool} from './lib/eleven.mjs';
 
 const CREDITS_PER_CHAR = {eleven_multilingual_v2: 1, eleven_v3: 1, eleven_turbo_v2_5: 0.5, eleven_flash_v2_5: 0.5};
 
@@ -37,8 +37,7 @@ export const toWords = (al) => {
 };
 
 const listVoices = async () => {
-  const r = await fetch(`${API}/voices`, {headers: {'xi-api-key': key()}});
-  const d = await r.json();
+  const d = await get('/voices');
   for (const v of d.voices || []) {
     const l = v.labels || {};
     console.log(`${v.voice_id}  ${v.name.padEnd(28)} ${[l.gender, l.accent, l.age, l.use_case || l['use case'], l.description].filter(Boolean).join(', ')}`);
@@ -51,6 +50,7 @@ const main = async () => {
   const slug = a._[0];
   const video = loadVideo(slug);
   const {voiceId, model = 'eleven_multilingual_v2', settings} = video.voice || {};
+  const voiceRef = video.voice;
   if (!voiceId) throw new Error('video.json needs voice.voiceId (run --voices to pick one)');
 
   const tPath = path.join(videoDir(slug), 'timings.json');
@@ -68,7 +68,9 @@ const main = async () => {
   const bal = await balance();
   console.log(`Scenes to voice: ${todo.length} of ${scenes.length}`);
   console.log(`Characters: ${chars}  ->  about ${credits} credits on ${model}`);
-  console.log(`Balance: ${bal.left} credits left (${bal.plan}, resets ${bal.resets}); after: about ${bal.left - credits}`);
+  console.log('ElevenLabs keys (used in this order, auto-switch when one runs out):');
+  printPool(bal);
+  console.log(`After this run: about ${bal.left - credits} credits left in total`);
   if (a['dry-run'] || !todo.length) return;
   if (!approved()) needApproval(`voice for ${todo.length} scenes (${chars} characters, ~${credits} credits)`);
   const cap = Number(a['max-characters'] || 0);
@@ -89,7 +91,7 @@ const main = async () => {
       previous_text: scenes[i - 1]?.text,
       next_text: scenes[i + 1]?.text,
     };
-    const r = await post(`/text-to-speech/${voiceId}/with-timestamps?output_format=mp3_44100_128`, body);
+    const r = await post(`/text-to-speech/${voiceId}/with-timestamps?output_format=mp3_44100_128`, body, {voice: voiceRef});
     const d = await r.json();
     const file = path.join(outDir, `${s.id}.mp3`);
     fs.writeFileSync(file, Buffer.from(d.audio_base64, 'base64'));
