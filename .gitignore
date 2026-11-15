@@ -1,0 +1,15 @@
+node_modules/
+.env
+.env.*
+# media is rebuilt from code + video.json; never committed
+public/
+out/
+videos/*/audio/
+videos/*/renders/
+videos/*/clips/
+assets/sfx/*.wav
+*.mp4
+*.mp3
+*.wav
+.DS_Store
+__pycache__/

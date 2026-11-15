@@ -1,0 +1,32 @@
+{
+  "name": "medpeak-studio",
+  "version": "0.1.0",
+  "private": true,
+  "description": "MedPeak Health video studio: researched, code-animated long videos and Shorts with a ready-to-upload YouTube package.",
+  "type": "module",
+  "scripts": {
+    "studio": "remotion studio src/index.ts",
+    "typecheck": "tsc --noEmit",
+    "research": "node pipeline/research.mjs",
+    "check": "node pipeline/check.mjs",
+    "voice": "node pipeline/voice.mjs",
+    "music": "node pipeline/music.mjs",
+    "sfx": "node pipeline/make-sfx.mjs",
+    "render": "node pipeline/render.mjs",
+    "qc": "node pipeline/qc.mjs",
+    "package": "node pipeline/package.mjs",
+    "test": "node --test pipeline/test/"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.543",
+    "@remotion/google-fonts": "4.0.543",
+    "@remotion/media-utils": "4.0.543",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "remotion": "4.0.543"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.2",
+    "typescript": "5.9.3"
+  }
+}
