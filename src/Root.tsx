@@ -4,6 +4,7 @@ import {FPS, LONG, SHORT} from './brand/theme';
 import {place} from './lib/timeline';
 import {MedVideo} from './MedVideo';
 import {Thumbnail} from './Thumbnail';
+import {CastBoard, EmotionBoard, SceneDemo} from './toons/Preview';
 import type {Video, VideoProps} from './types';
 import demo from '../videos/what-sugar-does-to-your-body/video.json';
 
@@ -20,5 +21,9 @@ export const Root: React.FC = () => (
       defaultProps={{...defaults, shortId: (demo as unknown as Video).shorts?.[0]?.id}} calculateMetadata={length} />
     <Still id="Thumbnail" component={Thumbnail} width={1280} height={720} defaultProps={defaults} />
     <Still id="ShortCover" component={Thumbnail} width={1080} height={1920} defaultProps={{...defaults, shortId: (demo as unknown as Video).shorts?.[0]?.id}} />
+    {/* MedPeak Toons (cartoon talking-organ Shorts): preview boards */}
+    <Still id="ToonCast" component={CastBoard} width={1080} height={1920} />
+    <Still id="ToonEmotions" component={EmotionBoard} width={1080} height={1920} defaultProps={{who: 'stomach' as const}} />
+    <Composition id="ToonScenes" component={SceneDemo} fps={30} width={1080} height={1920} durationInFrames={270} />
   </>
 );

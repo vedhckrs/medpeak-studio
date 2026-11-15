@@ -75,4 +75,5 @@ long-video watch time counts toward the 4,000 hours, so every Short links to a l
 - `references/channel.md` - analytics findings, title/description rules, goals, what worked.
 - `references/medical-accuracy.md` - sourcing rules, wording that is not allowed, how to cite.
 - `references/scene-types.md` - every visual type with its fields.
+- `references/toons.md` - MedPeak Toons: the cartoon talking-organ Shorts format, our own look, roadmap.
 - Repo `README.md` - setup, commands, folder map. `CONTRIBUTING.md` - branches, commits, PRs.
