@@ -6,8 +6,10 @@
  *   node pipeline/voice.mjs <slug> --dry-run               # free: characters, credits, balance
  *   node pipeline/voice.mjs <slug> --approve --max-characters N   # spends credits, capped at N
  *   node pipeline/voice.mjs <slug> --approve --only S07,S08       # re-voice some scenes
+ *   node pipeline/voice.mjs <slug> --pick-voice            # free: draw a new random narrator
  *
- * Voice and model come from video.json "voice" ({voiceId, model}). Scenes already voiced with
+ * Narrator: every video gets a random voice from skill/medpeak-health/voices.json (15 voices),
+ * never one of the last 7 videos' voices; the long video and its Shorts share it. Scenes already voiced with
  * the same text are skipped (no double spend). Writes public/videos/<slug>/voice/<id>.mp3 and
  * videos/<slug>/timings.json.
  */
@@ -16,6 +18,7 @@ import path from 'node:path';
 import {execFileSync} from 'node:child_process';
 import {allScenes, args, loadVideo, PUBLIC, readJson, videoDir, writeJson} from './lib/util.mjs';
 import {approved, balance, get, needApproval, post, printPool} from './lib/eleven.mjs';
+import {pickVoice, recentVoices, voicePool} from './lib/voices.mjs';
 
 const CREDITS_PER_CHAR = {eleven_multilingual_v2: 1, eleven_v3: 1, eleven_turbo_v2_5: 0.5, eleven_flash_v2_5: 0.5};
 
@@ -44,14 +47,32 @@ const listVoices = async () => {
   }
 };
 
+/** Give the video a random narrator from the pool (free). Kept once voiced, unless --pick-voice again. */
+const assignVoice = (slug, video, force) => {
+  const voiced = fs.existsSync(path.join(videoDir(slug), 'timings.json'));
+  if (video.voice?.voiceId && video.voice.pool && !force) return video.voice;
+  if (voiced && !force) return video.voice;
+  const v = pickVoice({pool: voicePool(), recent: recentVoices(slug)});
+  video.voice = {voiceId: v.voiceId, publicOwnerId: v.publicOwnerId, name: v.name, model: video.voice?.model || 'eleven_multilingual_v2', pool: true};
+  writeJson(path.join(videoDir(slug), 'video.json'), video);
+  console.log(`Narrator for this video (random, not used recently): ${v.name} - ${v.gender}, ${v.accent}, ${v.style}`);
+  return video.voice;
+};
+
 const main = async () => {
   const a = args();
   if (a.voices) return listVoices();
   const slug = a._[0];
   const video = loadVideo(slug);
-  const {voiceId, model = 'eleven_multilingual_v2', settings} = video.voice || {};
+  if (a['pick-voice'] && fs.existsSync(path.join(videoDir(slug), 'timings.json')) && !a.force) {
+    console.error('This video is already voiced; a new narrator means re-voicing everything. Add --force to do it anyway.');
+    process.exit(1);
+  }
+  assignVoice(slug, video, !!a['pick-voice']);
+  if (a['pick-voice']) return;
+  const {voiceId, model = 'eleven_multilingual_v2', settings} = video.voice;
   const voiceRef = video.voice;
-  if (!voiceId) throw new Error('video.json needs voice.voiceId (run --voices to pick one)');
+  console.log(`Narrator: ${video.voice.name || voiceId}`);
 
   const tPath = path.join(videoDir(slug), 'timings.json');
   const timings = readJson(tPath, {voiceId, model, scenes: {}});

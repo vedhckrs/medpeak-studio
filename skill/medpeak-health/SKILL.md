@@ -37,6 +37,7 @@ The owner is not technical: run everything yourself, explain in plain words, nev
 3  gate       node pipeline/check.mjs <slug>             ALL PASS or fix
 4  stills     node pipeline/render.mjs <slug> --stills  look at every panel (contact sheet with ffmpeg tile)
 5  quote      node pipeline/voice.mjs <slug> --dry-run   + node pipeline/music.mjs <slug> --dry-run  -> wait for yes
+              (the dry run also draws the video's narrator: random from voices.json, not used by the last 7 videos)
 6  voice      node pipeline/voice.mjs <slug> --approve --max-characters N
    music      node pipeline/music.mjs <slug> --approve --max-seconds N
 7  gate again node pipeline/check.mjs <slug>             (now on real timings)
@@ -48,8 +49,10 @@ The owner is not technical: run everything yourself, explain in plain words, nev
 13 learn      after 7 days: analytics for the new video -> notes in references/channel.md
 ```
 
-Env for keys: `MEDPEAK_ENV_FILES="$HOME/Documents/VED/Alphamed Youtube/.env"` (has ELEVENLABS_API_KEY)
-or a `.env` in the repo. Python for YouTube: `~/.config/youtube-analytics/venv/bin/python -I`.
+ElevenLabs keys: `medpeak-studio/.env` holds ELEVENLABS_API_KEY, _2, _3, _4 (never committed). They are
+used together: soonest-resetting first, pay-as-you-go last, automatic switch when one runs out.
+Narrators: `voices.json` (15 young, energetic English voices). Every video gets a random one not used by
+the last 7 videos; the long video and its Shorts share it. `voice.mjs <slug> --pick-voice` draws again. Python for YouTube: `~/.config/youtube-analytics/venv/bin/python -I`.
 
 ## video.json in one breath
 

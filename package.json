@@ -15,7 +15,7 @@
     "render": "node pipeline/render.mjs",
     "qc": "node pipeline/qc.mjs",
     "package": "node pipeline/package.mjs",
-    "test": "node --test pipeline/test/"
+    "test": "node --test \"pipeline/test/*.test.mjs\""
   },
   "dependencies": {
     "@remotion/cli": "4.0.543",

@@ -2,8 +2,11 @@
   "slug": "what-sugar-does-to-your-body",
   "topic": "What sugar does to your body: blood, liver, heart, teeth, the fruit vs juice twist, and how fast the body recovers",
   "voice": {
-    "voiceId": "XrExE9yKIg1WjnnlVkGX",
-    "model": "eleven_multilingual_v2"
+    "voiceId": "yl2ZDV1MzN4HbQJbMihG",
+    "publicOwnerId": "a231663267efedf44629d1210c43f7045270e9dc6cf04a23c533dd75a567d5ba",
+    "name": "Alex",
+    "model": "eleven_multilingual_v2",
+    "pool": true
   },
   "music": {
     "seconds": 120,

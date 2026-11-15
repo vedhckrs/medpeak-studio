@@ -23,6 +23,6 @@ year (characters generated). To use one, put it in video.json:
 | 14 | Axell - Energetic YouTube Personality | M | British | social media, excited | 367M | 2mltbVQP21Fq8XgIfRQJ | 70f5a5480e10b0bfc6be976e983454dd45959b0912e28c385f7b15fd46e2cdbb |
 | 15 | Harper - Confident, Clear and Cool | F | American | educational, confident | 185M | c1uwEpPUcC16tq1udqxk | f995f689648bc413c1b7fb9ec8524f634e4d32f5030ee172ef6d847ba9dc5ee9 |
 
-Already on the account (premade, no adding needed): Matilda (XrExE9yKIg1WjnnlVkGX, current default),
-Jessica (cgSgspJ2msm6clMCkdW9), Liam (TX3LPaxmHKxFdv7VOQHJ), Eve (AXON_Eve, BZgkqPqms7Kj9ulSkVzn).
+The machine-readable list the pipeline draws from is `../voices.json`: every new video gets one of
+these 15 at random, never one used by the last 7 videos (`node pipeline/voice.mjs <slug> --pick-voice`).
 Refresh this list: `node pipeline/voice.mjs --voices` (account) or the shared-voices search in git history.
