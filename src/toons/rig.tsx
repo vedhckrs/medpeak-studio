@@ -61,8 +61,13 @@ const Mouth: React.FC<{shape: string; talk: number}> = ({shape, talk}) => {
     const corner = shape === 'frown' || shape === 'wobble' || shape === 'growl' ? 3 : shape === 'grin' ? -3 : 0;
     return (
       <g>
-        <path d={`M-12 ${corner} Q0 ${-2 + corner * 0.3} 12 ${corner} Q0 ${h * 2} -12 ${corner} Z`} fill="#7a2337" stroke={INK} strokeWidth={LINE} strokeLinejoin="round" />
-        <path d={`M-6 ${h * 1.2} Q0 ${h * 0.7} 6 ${h * 1.2}`} fill="#ff7b93" />
+        <defs><clipPath id={`m${Math.round(h * 10)}${corner}`}><path d={`M-12 ${corner} Q0 ${-2 + corner * 0.3} 12 ${corner} Q0 ${h * 2} -12 ${corner} Z`} /></clipPath></defs>
+        <path d={`M-12 ${corner} Q0 ${-2 + corner * 0.3} 12 ${corner} Q0 ${h * 2} -12 ${corner} Z`} fill="#5e1a2c" />
+        <g clipPath={`url(#m${Math.round(h * 10)}${corner})`}>
+          <rect x={-12} y={-4 + corner * 0.4} width={24} height={4.5} fill="#fff" />
+          <ellipse cx={0} cy={h * 1.35} rx={8} ry={h * 0.55} fill="#ff7b93" />
+        </g>
+        <path d={`M-12 ${corner} Q0 ${-2 + corner * 0.3} 12 ${corner} Q0 ${h * 2} -12 ${corner} Z`} fill="none" stroke={INK} strokeWidth={LINE} strokeLinejoin="round" />
       </g>
     );
   }
@@ -108,11 +113,17 @@ export const Arm: React.FC<{x: number; y: number; angle: number; len?: number; b
   const ey = y + Math.sin(r) * len;
   const mx = (x + ex) / 2 - Math.sin(r) * bend;
   const my = (y + ey) / 2 + Math.cos(r) * bend;
+  const deg = angle;
   return (
     <g>
-      <path d={`M${x} ${y} Q${mx} ${my} ${ex} ${ey}`} fill="none" stroke={INK} strokeWidth={LINE * 2.4} strokeLinecap="round" />
-      <path d={`M${x} ${y} Q${mx} ${my} ${ex} ${ey}`} fill="none" stroke={color} strokeWidth={LINE * 1.1} strokeLinecap="round" />
-      <circle cx={ex} cy={ey} r={6} fill={color} stroke={INK} strokeWidth={LINE} />
+      <path d={`M${x} ${y} Q${mx} ${my} ${ex} ${ey}`} fill="none" stroke={INK} strokeWidth={LINE * 2.6} strokeLinecap="round" />
+      <path d={`M${x} ${y} Q${mx} ${my} ${ex} ${ey}`} fill="none" stroke={color} strokeWidth={LINE * 1.3} strokeLinecap="round" />
+      {/* mitten hand with a thumb, turned along the arm */}
+      <g transform={`translate(${ex} ${ey}) rotate(${deg})`}>
+        <ellipse cx={-2} cy={-7} rx={4.5} ry={3.5} fill="#fff" stroke={INK} strokeWidth={LINE * 0.8} transform="rotate(-30 -2 -7)" />
+        <ellipse cx={3} cy={0} rx={9} ry={7.5} fill="#fff" stroke={INK} strokeWidth={LINE} />
+        <path d="M6 -3 v6" stroke={INK} strokeWidth={1.4} strokeLinecap="round" opacity={0.5} />
+      </g>
     </g>
   );
 };

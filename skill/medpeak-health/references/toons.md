@@ -22,13 +22,15 @@ cartoon health channel (format only). We never copy anyone's characters, art, au
 ## Pieces
 | File | What |
 |---|---|
-| `src/toons/rig.tsx` | Face rig: 9 emotions (neutral, happy, angry, scared, smug, sick, sleepy, shocked, sad), eyelids, brows, talking mouth (`talk` 0-1), pupils (`look`), `blinkAt()`, noodle `Arm` |
-| `src/toons/characters.tsx` | Cast: pill, stomach, poop, tooth, lung, brain, bacteria, heart, doctor (Dr. Mira), patient. Same props for all: emotion, talk, blink, look, arms, squash |
-| `src/toons/scenes.tsx` | Sets: throat, gut, office; `Label`; `WordCaption` |
-| `src/toons/Preview.tsx` | Boards: `ToonCast`, `ToonEmotions`, `ToonScenes` (9 s demo) |
+| `src/toons/rig.tsx` | Face rig: 9 emotions (neutral, happy, angry, scared, smug, sick, sleepy, shocked, sad), eyelids, brows, talking mouth with teeth and tongue (`talk` 0-1), pupils (`look`), `blinkAt()`, noodle `Arm` with mitten hands |
+| `src/toons/paint.tsx` | Cel shading (`Shaded`: shadow crescent bottom-right, light top-left, navy outline), `Shine`, `GroundShadow`, `Legs` with shoes and walk cycle, `shade()` colour maths |
+| `src/toons/characters.tsx` | 18 body characters: pill, stomach, intestine, liver, kidney, bladder, poop, tooth, lung, brain, heart, red cell, white cell (security helmet), platelet, virus, bacteria, egg, sperm. Props: emotion, talk, blink, look, arms, squash, step, t, noLegs |
+| `src/toons/humans.tsx` | 6 people: Dr. Mira (white coat over teal scrubs), patient, mum, kid, grandpa, baby. `full` adds legs |
+| `src/toons/scenes.tsx` | 9 sets with depth, light pool, particles, vignette: throat, gut, stomach (acid pool), mouth, bloodstream, lungs, office, bathroom, bedroom; `Label`; `WordCaption` (pop-in) |
+| `src/toons/Preview.tsx` | Boards: `ToonCast` (24), `ToonEmotions`, `ToonSets` (9), `ToonScenes` (18 s demo) |
 
 ## Roadmap
-- Phase A (done): rig, 10 characters, 3 sets, caption style, preview boards.
+- Phase A (done 2026-11-16): rig, cel shading, 24 characters, 9 sets, caption style, preview boards.
 - Phase B: cast voices (fixed ElevenLabs voice per character), lip-sync from word timing, one-time
   cartoon sound-effect library (quoted first), comedy music beds.
 - Phase C: dialogue script format (speaker, line, emotion, action), Retention 7 adaptation, doctor
