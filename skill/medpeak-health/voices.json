@@ -1,0 +1,21 @@
+{
+  "note": "MedPeak narrator pool (owner 2026-11-15): every new video gets a random voice from this list, never one used by the last videos. Young, energetic, clear English voices from the ElevenLabs library, ranked by yearly use. publicOwnerId lets the key pool add the voice to any account.",
+  "avoidRecent": 7,
+  "voices": [
+    {"name": "Brittney", "gender": "female", "accent": "american", "style": "fun, youthful, upbeat", "voiceId": "kPzsL2i3teMYv0FxEYQ6", "publicOwnerId": "e70117aeedd1f2d59cffcc96e42961819238d6ce7ec83e34fad935c7db9e95ec"},
+    {"name": "Hope (upbeat)", "gender": "female", "accent": "american", "style": "upbeat and clear", "voiceId": "tnSpp4vdxKPjI9w0GnoV", "publicOwnerId": "7d272ea0221fbc9ce382a3eaf4d7f907179558360d93b351ec7d344d30023cf9"},
+    {"name": "Amelia", "gender": "female", "accent": "british", "style": "enthusiastic and expressive", "voiceId": "ZF6FPAbjXT4488VcRRnw", "publicOwnerId": "9265ac49c437181ced8d508db9b8248e1b839589ba453afca0db0f9d60ff389a"},
+    {"name": "Alex", "gender": "male", "accent": "american", "style": "upbeat, energetic and clear", "voiceId": "yl2ZDV1MzN4HbQJbMihG", "publicOwnerId": "a231663267efedf44629d1210c43f7045270e9dc6cf04a23c533dd75a567d5ba"},
+    {"name": "Jessica", "gender": "female", "accent": "american", "style": "playful, bright, warm", "voiceId": "r1KmysJdVYZjJCm4mL3b", "publicOwnerId": "d5a057fa67bd4518fbf13eb08503860c528f1b11bb306922220aa0c561744e90"},
+    {"name": "Hope (professional)", "gender": "female", "accent": "american", "style": "professional, clear, educational", "voiceId": "WZlYpi1yf6zJhNWXih74", "publicOwnerId": "7d272ea0221fbc9ce382a3eaf4d7f907179558360d93b351ec7d344d30023cf9"},
+    {"name": "Allison", "gender": "female", "accent": "american", "style": "energetic, clear and bubbly", "voiceId": "xctasy8XvGp2cVO9HL9k", "publicOwnerId": "938efb29fb9ae8e6b4ac49cebc66e30d58eda3e02ac1910d4f1c03e0a30132c5"},
+    {"name": "Eve", "gender": "female", "accent": "american", "style": "authentic, energetic, happy", "voiceId": "BZgkqPqms7Kj9ulSkVzn", "publicOwnerId": "cab0f4a4d83ff44919f93c5d01052405fa3c50c414d1ecab061b67b0bd8d536a"},
+    {"name": "Todd", "gender": "male", "accent": "american", "style": "clear, engaging, educational", "voiceId": "g14YnDYCsy3k7XLlcKlO", "publicOwnerId": "bc7e3d6babf4fdba703be995bbc8f635413337652399fda3b2d0bea6c908a3e8"},
+    {"name": "Brian", "gender": "male", "accent": "american", "style": "energetic, lively storyteller", "voiceId": "UGTtbzgh3HObxRjWaSpr", "publicOwnerId": "a62f8cb610e69962950841bdb32d3cb38ecad9276ac7056cc796ed73baf9610d"},
+    {"name": "Drew", "gender": "male", "accent": "american", "style": "casual, curious, fun", "voiceId": "q0IMILNRPxOgtBTS4taI", "publicOwnerId": "675db5c1a341e2f820aefb00825680aa042d958a4a3aef3200735c799210dcb4"},
+    {"name": "Liam", "gender": "male", "accent": "american", "style": "viral short-form storyteller", "voiceId": "VCgLBmBjldJmfphyB8sZ", "publicOwnerId": "e7a2b2ad2c8c0e84ff8898c27d67ced377371daf6f6b439cb0edc28c1fa8c3e6"},
+    {"name": "Viraj", "gender": "male", "accent": "indian", "style": "energetic and confident", "voiceId": "bajNon13EdhNMndG3z05", "publicOwnerId": "f87f057c2250691953ac2e6227859706764bd08c88a055a18c74261957885a51"},
+    {"name": "Axell", "gender": "male", "accent": "british", "style": "energetic YouTube personality", "voiceId": "2mltbVQP21Fq8XgIfRQJ", "publicOwnerId": "70f5a5480e10b0bfc6be976e983454dd45959b0912e28c385f7b15fd46e2cdbb"},
+    {"name": "Harper", "gender": "female", "accent": "american", "style": "confident, clear, cool", "voiceId": "c1uwEpPUcC16tq1udqxk", "publicOwnerId": "f995f689648bc413c1b7fb9ec8524f634e4d32f5030ee172ef6d847ba9dc5ee9"}
+  ]
+}
