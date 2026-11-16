@@ -275,9 +275,81 @@ const HeartMonitor: React.FC<{x: number; y: number; t: number}> = ({x, y, t}) =>
     </g>
   );
 };
+// ------------------------------------------------------------------ small things keep clear of people
+// Owner, 2026-11-17, on a heart monitor cut in half by Dr. Mira's coat: "this bug repeated again and
+// again". It is the same bug as the chart behind her hair and the bubble on her face: a thing drawn
+// at a fixed spot while nothing looks at where the people stand. So every SMALL thing of a room (a
+// monitor, a plant, a lamp, a bowl, jars) is listed here with the box it takes up; the room is told
+// where its people stand and puts each small thing in the nearest place that is clear of them, or
+// leaves it out. Long furniture (a bed, a counter, a sofa) stays: people stand in front of it.
+export type Box = {x0: number; y0: number; x1: number; y1: number};
+/** x, y, w, h in the arrangement's own "left" coordinates. `on` = it stands on that piece of furniture and may only move along it (x from, x to). `extra` = left out of a tidier room (ROOM_TIDY 2). */
+type Small = {id: string; x: number; y: number; w: number; h: number; on?: [number, number]; extra?: boolean};
+const FB = FLOOR_TOP;
+const PLANT = (cx: number): Small => ({id: 'plant', x: cx - 70, y: FB - 230, w: 140, h: 304, extra: true});
+const SMALLS: Record<string, Small[]> = {
+  'exam-bed': [{id: 'monitor', x: 4, y: FB - 380, w: 176, h: 410, extra: true}, PLANT(1000)],
+  cabinet: [PLANT(80), {id: 'jars', x: 394, y: FB - 282, w: 106, h: 76, on: [370, 710], extra: true}, {id: 'stand', x: 950, y: FB - 360, w: 150, h: 390, extra: true}],
+  shelves: [{id: 'stool', x: 470, y: FB - 128, w: 140, h: 182}, {id: 'dispenser', x: 496, y: FB - 560, w: 88, h: 150, extra: true}, PLANT(1000)],
+  desk: [PLANT(70), {id: 'screen', x: 520, y: FB - 270, w: 170, h: 134, on: [350, 730]}, {id: 'penpot', x: 390, y: FB - 234, w: 44, h: 96, on: [350, 730], extra: true}],
+  bed: [{id: 'lamp', x: 850, y: FB - 420, w: 170, h: 460}],
+  stove: [{id: 'pot', x: 80, y: FB - 332, w: 250, h: 124, on: [-300, 870]}, {id: 'bowl', x: 560, y: FB - 336, w: 150, h: 122, on: [-300, 870], extra: true}],
+  sink: [{id: 'soap', x: 150, y: FB - 378, w: 36, h: 70, on: [110, 410], extra: true}],
+  sofa: [{id: 'lamp', x: 890, y: FB - 620, w: 180, h: 634}, {id: 'table', x: 620, y: FB - 170, w: 190, h: 210}],
+};
+/** The long pieces of each arrangement (same coordinates): a small thing on the floor does not stand in them. */
+const LONGS: Record<string, {id: string; box: Box}[]> = {
+  'exam-bed': [{id: 'bed', box: {x0: 360, y0: FB - 190, x1: 720, y1: FB + 72}}],
+  cabinet: [{id: 'cupboard', box: {x0: 358, y0: FB - 230, x1: 722, y1: FB + 40}}],
+  shelves: [{id: 'bookcase', box: {x0: -30, y0: FB - 760, x1: 190, y1: FB + 40}}],
+  desk: [{id: 'desk', box: {x0: 350, y0: FB - 140, x1: 730, y1: FB + 54}}, {id: 'drawers', box: {x0: 940, y0: FB - 300, x1: 1110, y1: FB + 40}}],
+  bed: [{id: 'bed', box: {x0: -80, y0: FB - 340, x1: 514, y1: FB + 50}}],
+  stove: [{id: 'fridge', box: {x0: 870, y0: FB - 720, x1: 1130, y1: FB + 40}}],
+  sink: [{id: 'sink', box: {x0: 102, y0: FB - 400, x1: 418, y1: FB + 40}}, {id: 'bath', box: {x0: 546, y0: FB - 208, x1: 1136, y1: FB + 50}}],
+  sofa: [{id: 'sofa', box: {x0: -90, y0: FB - 300, x1: 470, y1: FB + 50}}],
+};
+/** How near a small thing may come to a person, and how much of it the picture's edge may cut off. */
+export const CLEAR = {gap: 12, edge: 0.15, long: 0.4};
+const hits = (a: Box, b: Box, m = 0) => a.x0 < b.x1 + m && a.x1 > b.x0 - m && a.y0 < b.y1 && a.y1 > b.y0;
+const flipBox = (b: Box): Box => ({x0: W - b.x1, y0: b.y0, x1: W - b.x0, y1: b.y1});
+export type Placed = {id: string; dx: number; drop: boolean; box: Box; was: Box};
+/**
+ * Where every small thing and long piece of a room ends up, in screen coordinates, for the people
+ * standing in it (`people`: the boxes of their heads and bodies; none = an empty room, nothing moves).
+ * A small thing moves sideways to the nearest place that is clear of every person, of the other
+ * small things and (on the floor) of the long furniture; with no such place it is dropped.
+ * The room draws from this, and the staging check measures the same list.
+ */
+export const roomThings = (look: RoomLook, role: RoomRole, people: Box[] = [], tidy: number = ROOM_TIDY): {smalls: Placed[]; longs: {id: string; box: Box}[]} => {
+  const base = look.layout.replace(/-(left|right)$/, '');
+  const mirrored = /-right$/.test(look.layout);
+  const P = mirrored ? people.map(flipBox) : people; // work in the arrangement's own coordinates
+  const longs = LONGS[base] ?? [];
+  const taken: Box[] = [];
+  const smalls = (SMALLS[base] ?? []).filter((sm) => tidy < 2 || !sm.extra).map((sm) => {
+    const at = (dx: number): Box => ({x0: sm.x + dx, y0: sm.y, x1: sm.x + dx + sm.w, y1: sm.y + sm.h});
+    // it stays in the picture (the edge may cut a little of it off) and, when it stands on something, on that thing
+    const lo = Math.max(sm.on ? sm.on[0] : -Infinity, Math.min(sm.x, -sm.w * CLEAR.edge));
+    const hi = Math.min(sm.on ? sm.on[1] - sm.w : Infinity, Math.max(sm.x, W - sm.w * (1 - CLEAR.edge)));
+    const free = (dx: number) => {
+      const b = at(dx);
+      return b.x0 >= lo - 0.01 && b.x0 <= hi + 0.01 && !P.some((q) => hits(b, q, CLEAR.gap)) && !taken.some((q) => hits(b, q, 8)) && (sm.on || dx === 0 || !longs.some((l) => hits(b, l.box)));
+    };
+    let dx: number | null = null;
+    for (let step = 0; step <= 700 && dx === null; step++) dx = free(step) ? step : free(-step) ? -step : null;
+    const box = at(dx ?? 0);
+    if (dx !== null) taken.push(box);
+    return {id: sm.id, dx: dx ?? 0, drop: dx === null, box: mirrored ? flipBox(box) : box, was: mirrored ? flipBox(at(0)) : at(0)};
+  });
+  return {smalls, longs: longs.map((l) => ({id: l.id, box: mirrored ? flipBox(l.box) : l.box}))};
+};
+
 /** The furniture of one arrangement, drawn for the "left" version (the "right" one is mirrored). */
-const Furniture: React.FC<{look: RoomLook; role: RoomRole; pal: Pal; t: number; tidy: number}> = ({look, role, pal, t, tidy}) => {
+const Furniture: React.FC<{look: RoomLook; role: RoomRole; pal: Pal; t: number; tidy: number; people?: Box[]}> = ({look, role, pal, t, tidy, people = []}) => {
   const extra = tidy < 2; // plants and small objects
+  const spot = Object.fromEntries(roomThings(look, role, people, tidy).smalls.map((p) => [p.id, p]));
+  /** A small thing: drawn where the room found a clear place for it, or not at all. */
+  const sm = (id: string, node: React.ReactNode) => (spot[id] && !spot[id].drop ? <g key={id} transform={spot[id].dx ? `translate(${spot[id].dx} 0)` : undefined}>{node}</g> : null);
   const kind = roomKind(role, look);
   const seed = `${kind}${look.palette}${look.layout}`;
   const base = look.layout.replace(/-(left|right)$/, '');
@@ -289,7 +361,7 @@ const Furniture: React.FC<{look: RoomLook; role: RoomRole; pal: Pal; t: number; 
       case 'exam-bed':
         return (
           <g>
-            {extra && <HeartMonitor x={4} y={B - 380} t={t} />}
+            {sm('monitor', <HeartMonitor x={4} y={B - 380} t={t} />)}
             <g transform={`translate(360 ${B - 190})`}>
               <rect x={20} y={70} width={320} height={150} rx={10} fill={pal.trim} {...O} />
               <path d="M40 220 V262 M320 220 V262" stroke={LINE} strokeWidth={12} strokeLinecap="round" />
@@ -299,13 +371,13 @@ const Furniture: React.FC<{look: RoomLook; role: RoomRole; pal: Pal; t: number; 
               <rect x={150} y={30} width={150} height={56} fill="#ffffff" opacity={0.9} stroke="#c8d6e5" strokeWidth={2} />
               <rect x={60} y={110} width={110} height={84} rx={8} fill={pal.soft} stroke={LINE} strokeWidth={2.4} /><rect x={190} y={110} width={110} height={84} rx={8} fill={pal.soft} stroke={LINE} strokeWidth={2.4} />
             </g>
-            {extra && <Plant x={1000} y={B - 190} t={t} kind={hash(seed)} pot={pot} />}
+            {sm('plant', <Plant x={1000} y={B - 190} t={t} kind={hash(seed)} pot={pot} />)}
           </g>
         );
       case 'cabinet':
         return (
           <g>
-            {extra && <Plant x={80} y={B - 190} t={t} kind={hash(seed) + 1} pot={pot} />}
+            {sm('plant', <Plant x={80} y={B - 190} t={t} kind={hash(seed) + 1} pot={pot} />)}
             <g transform={`translate(370 ${B - 230})`}>
               <rect x={0} y={40} width={340} height={230} rx={10} fill={pal.trim} {...O} />
               <rect x={-12} y={22} width={364} height={30} rx={10} fill="#dfe6ee" {...O} />
@@ -313,17 +385,17 @@ const Furniture: React.FC<{look: RoomLook; role: RoomRole; pal: Pal; t: number; 
               <circle cx={150} cy={160} r={7} fill={pal.accent} /><circle cx={190} cy={160} r={7} fill={pal.accent} />
               <path d="M210 24 V-20 Q210 -40 236 -40 H250 V-24" fill="none" stroke="#9fb3c8" strokeWidth={12} strokeLinecap="round" />
               <ellipse cx={236} cy={30} rx={70} ry={12} fill="#c8d6e5" stroke={LINE} strokeWidth={2.4} />
-              {extra && <g>
+              {sm('jars', <g>
               <rect x={24} y={-44} width={50} height={68} rx={12} fill="#ffffff" opacity={0.9} {...O} /><rect x={24} y={-52} width={50} height={16} rx={6} fill={pal.accent} {...O} />
               <rect x={86} y={-30} width={44} height={54} rx={10} fill="#ffffff" opacity={0.9} {...O} /><rect x={86} y={-38} width={44} height={14} rx={6} fill="#ffc93c" {...O} />
               <circle cx={49} cy={-6} r={12} fill="#f3f6fb" /><circle cx={108} cy={2} r={10} fill="#ffd9e0" />
-              </g>}
+              </g>)}
             </g>
-            {extra && <g transform={`translate(950 ${B - 60})`}>
+            {sm('stand', <g transform={`translate(950 ${B - 60})`}>
               <rect x={0} y={60} width={150} height={30} rx={10} fill="#dfe6ee" {...O} />
               <rect x={62} y={-250} width={26} height={316} fill="#c8d6e5" {...O} />
               <rect x={20} y={-300} width={110} height={64} rx={12} fill="#ffffff" {...O} /><path d="M40 -268 H110" stroke={pal.accent} strokeWidth={8} strokeLinecap="round" />
-            </g>}
+            </g>)}
           </g>
         );
       case 'shelves':
@@ -339,27 +411,29 @@ const Furniture: React.FC<{look: RoomLook; role: RoomRole; pal: Pal; t: number; 
               ))}
               <path d="M96 232 h28 M110 218 v28" stroke="#ea4a55" strokeWidth={9} strokeLinecap="round" />
             </g>
-            <g transform={`translate(540 ${B - 110})`}>
+            {sm('stool', <g transform={`translate(540 ${B - 110})`}>
               <ellipse cx={0} cy={0} rx={70} ry={18} fill={pal.accent} {...O} />
               <path d="M0 16 V120 M-50 164 L0 120 L50 164" fill="none" stroke="#8f9bb0" strokeWidth={12} strokeLinecap="round" strokeLinejoin="round" />
-            </g>
-            {extra && <g transform={`translate(540 ${B - 560})`}>
+            </g>)}
+            {sm('dispenser', <g transform={`translate(540 ${B - 560})`}>
               <rect x={-44} y={0} width={88} height={130} rx={14} fill="#ffffff" {...O} /><rect x={-28} y={18} width={56} height={56} rx={8} fill={pal.accent} opacity={0.8} /><rect x={-10} y={126} width={20} height={26} rx={6} fill="#c8d6e5" {...O} />
-            </g>}
-            {extra && <Plant x={1000} y={B - 190} t={t} kind={hash(seed) + 2} pot={pot} />}
+            </g>)}
+            {sm('plant', <Plant x={1000} y={B - 190} t={t} kind={hash(seed) + 2} pot={pot} />)}
           </g>
         );
       case 'desk':
         return (
           <g>
-            {extra && <Plant x={70} y={B - 190} t={t} kind={hash(seed) + 1} pot={pot} />}
+            {sm('plant', <Plant x={70} y={B - 190} t={t} kind={hash(seed) + 1} pot={pot} />)}
             <g transform={`translate(350 ${B - 200})`}>
               <rect x={0} y={60} width={380} height={24} rx={8} fill={wood} {...O} />
               <rect x={14} y={84} width={120} height={170} rx={8} fill="#c99466" {...O} /><path d="M36 124 H112 M36 170 H112 M36 216 H112" stroke="#8f623c" strokeWidth={5} strokeLinecap="round" />
               <path d="M350 84 V254" stroke={LINE} strokeWidth={12} strokeLinecap="round" />
+              {sm('screen', <g>
               <rect x={170} y={-70} width={170} height={112} rx={10} fill="#2b3350" {...O} /><rect x={182} y={-58} width={146} height={88} rx={4} fill="#9fd6ff" /><path d="M196 -20 l22 -18 l20 26 l24 -30 l28 22" fill="none" stroke="#ffffff" strokeWidth={5} strokeLinecap="round" strokeLinejoin="round" />
               <rect x={240} y={42} width={30} height={20} fill="#55608c" /><rect x={200} y={54} width={110} height={10} rx={5} fill="#55608c" />
-              {extra && <g><rect x={40} y={10} width={44} height={52} rx={8} fill={pal.accent} {...O} />{[0, 1, 2].map((i) => <path key={i} d={`M${52 + i * 10} 10 V${-16 - i * 6}`} stroke={['#ea4a55', '#ffc93c', '#3f8fd6'][i]} strokeWidth={6} strokeLinecap="round" />)}</g>}
+              </g>)}
+              {sm('penpot', <g><rect x={40} y={10} width={44} height={52} rx={8} fill={pal.accent} {...O} />{[0, 1, 2].map((i) => <path key={i} d={`M${52 + i * 10} 10 V${-16 - i * 6}`} stroke={['#ea4a55', '#ffc93c', '#3f8fd6'][i]} strokeWidth={6} strokeLinecap="round" />)}</g>)}
             </g>
             <g transform={`translate(940 ${B - 300})`}>
               <rect x={0} y={0} width={170} height={340} rx={10} fill="#c8d0da" {...O} />
@@ -379,12 +453,12 @@ const Furniture: React.FC<{look: RoomLook; role: RoomRole; pal: Pal; t: number; 
               <path d={taperedPath([[300, 270], [400, 286], [520, 272]], 7)} fill="#1d2b4f" opacity={0.18} />
               <rect x={560} y={300} width={34} height={90} rx={10} fill={wood} {...O} />
             </g>
-            <g transform={`translate(850 ${B - 230})`}>
+            {sm('lamp', <g transform={`translate(850 ${B - 230})`}>
               <rect x={0} y={60} width={170} height={210} rx={12} fill={wood} {...O} /><rect x={18} y={84} width={134} height={74} rx={8} fill="#c99466" stroke={LINE} strokeWidth={2.4} /><rect x={18} y={174} width={134} height={74} rx={8} fill="#c99466" stroke={LINE} strokeWidth={2.4} />
               <circle cx={85} cy={121} r={7} fill="#ffc93c" /><circle cx={85} cy={211} r={7} fill="#ffc93c" />
               <rect x={74} y={-80} width={22} height={140} fill="#b9892c" {...O} /><path d="M30 -80 L140 -80 L116 -190 L54 -190 Z" fill={look.time === 'night' ? '#ffe08a' : '#fff1bf'} {...O} />
               {look.time === 'night' && extra && <ellipse cx={85} cy={-110} rx={190 + Math.sin(t * 1.4) * 8} ry={170} fill="#ffe08a" opacity={0.2} />}
-            </g>
+            </g>)}
           </g>
         );
       case 'stove':
@@ -393,16 +467,16 @@ const Furniture: React.FC<{look: RoomLook; role: RoomRole; pal: Pal; t: number; 
             <rect x={-300} y={B - 190} width={W + 600} height={230} fill={pal.trim} {...O} />
             {Array.from({length: 8}).map((_, i) => <g key={i}><rect x={-120 + i * 170} y={B - 150} width={150} height={150} rx={8} fill={pal.soft} stroke={LINE} strokeWidth={2.4} /><rect x={-60 + i * 170} y={B - 132} width={30} height={10} rx={5} fill={pal.accent} /></g>)}
             <rect x={-300} y={B - 214} width={W + 600} height={32} rx={8} fill={wood} {...O} />
-            <g transform={`translate(80 ${B - 214})`}>
+            {sm('pot', <g transform={`translate(80 ${B - 214})`}>
               <rect x={0} y={-10} width={250} height={16} rx={6} fill="#3b4258" {...O} />
               <rect x={56} y={-96} width={140} height={90} rx={14} fill="#e24e42" {...O} /><rect x={44} y={-110} width={164} height={22} rx={10} fill="#c9382d" {...O} />
               <path d="M30 -78 H56 M196 -78 H222" stroke={LINE} strokeWidth={10} strokeLinecap="round" /><circle cx={126} cy={-118} r={9} fill="#3b4258" />
               {[0, 1, 2].map((i) => { const life = wrap(t * 0.4 + i * 0.33, 1); return <path key={i} d={`M${92 + i * 34} ${-130 - life * 120} q14 -18 0 -36 q-14 -18 0 -36`} fill="none" stroke="#ffffff" strokeWidth={8} strokeLinecap="round" opacity={0.6 * (1 - life)} />; })}
-            </g>
-            {extra && <g transform={`translate(560 ${B - 214})`}>
+            </g>)}
+            {sm('bowl', <g transform={`translate(560 ${B - 214})`}>
               <path d="M0 -6 H150 L134 -64 H16 Z" fill="#ffffff" {...O} />
               {[[40, -72, '#ea4a55'], [78, -82, '#ffc93c'], [112, -72, '#5fb56a'], [60, -98, '#ff9f43']].map(([x, y, c], i) => <circle key={i} cx={x as number} cy={y as number} r={24} fill={c as string} stroke={LINE} strokeWidth={2.4} />)}
-            </g>}
+            </g>)}
             <g transform={`translate(870 ${B - 720})`}>
               <rect x={0} y={0} width={260} height={760} rx={16} fill="#eef2f7" {...O} />
               <path d="M0 250 H260" stroke={LINE} strokeWidth={LW} /><rect x={24} y={80} width={14} height={120} rx={7} fill="#8f9bb0" /><rect x={24} y={300} width={14} height={160} rx={7} fill="#8f9bb0" />
@@ -418,7 +492,7 @@ const Furniture: React.FC<{look: RoomLook; role: RoomRole; pal: Pal; t: number; 
               <path d="M0 40 H300 Q300 130 150 130 Q0 130 0 40 Z" fill="#ffffff" {...O} /><rect x={-8} y={20} width={316} height={30} rx={12} fill="#f4f7fb" {...O} />
               <path d="M150 20 V-40 Q150 -70 190 -70 H206 V-46" fill="none" stroke="#9fb3c8" strokeWidth={14} strokeLinecap="round" />
               {(() => { const d = wrap(t / 2.2, 1); return <circle cx={206} cy={-40 + d * 70} r={7} fill="#62baf7" opacity={d < 0.85 ? 0.9 : 0} />; })()}
-              {extra && <g><rect x={40} y={-30} width={36} height={52} rx={10} fill={pal.accent} {...O} /><rect x={50} y={-48} width={16} height={22} rx={5} fill="#ffffff" {...O} /></g>}
+              {sm('soap', <g><rect x={40} y={-30} width={36} height={52} rx={10} fill={pal.accent} {...O} /><rect x={50} y={-48} width={16} height={22} rx={5} fill="#ffffff" {...O} /></g>)}
             </g>
             <g transform={`translate(560 ${B - 230})`}>
               <path d="M0 40 H560 V200 Q540 250 480 250 H80 Q20 250 0 200 Z" fill="#ffffff" {...O} /><rect x={-14} y={22} width={590} height={34} rx={14} fill="#f4f7fb" {...O} />
@@ -439,10 +513,10 @@ const Furniture: React.FC<{look: RoomLook; role: RoomRole; pal: Pal; t: number; 
               {extra && <rect x={90} y={70} width={110} height={100} rx={22} fill="#ffc93c" {...O} transform="rotate(-8 145 120)" />}
               <path d="M40 310 V350 M520 310 V350" stroke={LINE} strokeWidth={14} strokeLinecap="round" />
             </g>
-            <g transform={`translate(880 ${B - 620})`}>
+            {sm('lamp', <g transform={`translate(880 ${B - 620})`}>
               <path d="M40 0 L160 0 L190 130 L10 130 Z" fill="#fff1bf" {...O} /><rect x={92} y={130} width={16} height={480} fill="#8f9bb0" {...O} /><ellipse cx={100} cy={620} rx={80} ry={14} fill="#8f9bb0" {...O} />
-            </g>
-            <g transform={`translate(620 ${B - 150})`}><rect x={0} y={30} width={190} height={22} rx={8} fill={wood} {...O} /><path d="M20 52 V190 M170 52 V190" stroke={LINE} strokeWidth={10} strokeLinecap="round" /><rect x={50} y={-20} width={70} height={50} rx={10} fill={pal.rug} {...O} /></g>
+            </g>)}
+            {sm('table', <g><g transform={`translate(620 ${B - 150})`}><rect x={0} y={30} width={190} height={22} rx={8} fill={wood} {...O} /><path d="M20 52 V190 M170 52 V190" stroke={LINE} strokeWidth={10} strokeLinecap="round" /><rect x={50} y={-20} width={70} height={50} rx={10} fill={pal.rug} {...O} /></g></g>)}
           </g>
         );
     }
@@ -507,7 +581,7 @@ export const wallItems = (look: RoomLook, role: RoomRole, tidy: number = ROOM_TI
 
 // ------------------------------------------------------------------ the room
 /** One room, built from its recipe. `role` = clinic or home. */
-export const Room: React.FC<{look: RoomLook; role: RoomRole; t: number; tidy?: number}> = ({look, role, t, tidy = ROOM_TIDY}) => {
+export const Room: React.FC<{look: RoomLook; role: RoomRole; t: number; tidy?: number; people?: Box[]}> = ({look, role, t, tidy = ROOM_TIDY, people = []}) => {
   const uid = useId().replace(/:/g, '');
   const pal = ROOM_PALS[look.palette] ?? ROOM_PALS.mint;
   const win = windowOf(look);
@@ -592,7 +666,7 @@ export const Room: React.FC<{look: RoomLook; role: RoomRole; t: number; tidy?: n
           {look.floor === 'carpet' && <g>{Array.from({length: 90}).map((_, i) => <circle key={i} cx={random(`rk${i}`) * W} cy={FLOOR_TOP + 30 + random(`rky${i}`) * 560} r={3 + random(`rkr${i}`) * 3} fill={pal.floor2} opacity={0.5} />)}</g>}
           <rect x={-300} y={FLOOR_TOP - 16} width={W + 600} height={28} fill={pal.trim} {...O} />
           <path d={`M${win.cx - 380} ${FLOOR_TOP + 60} L${win.cx - 120} ${FLOOR_TOP} L${win.cx + 220} ${FLOOR_TOP} L${win.cx - 40} ${FLOOR_TOP + 60} Z`} fill="#fff4cc" opacity={time === 'night' ? 0 : 0.22} />
-          <Furniture look={look} role={role} pal={pal} t={t} tidy={tidy} />
+          <Furniture look={look} role={role} pal={pal} t={t} tidy={tidy} people={people} />
           {/* a rug under the characters */}
           {hash(seed) % 3 !== 2 ? (
             <g>

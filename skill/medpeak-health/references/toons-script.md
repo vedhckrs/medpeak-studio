@@ -157,7 +157,8 @@ the stage, and the viewer WATCHES the thing happen. A script switches to this st
   another graphic that is on screen at the same time, or reaches down onto the caption line
   (the caption starts at y 1460: keep a graphic's lower edge above it).
 - The same check measures the room: it fails when a wall chart, clock or picture is more than 15%
-  behind a head (toons-rooms.md). A graphic may cover what hangs on the wall.
+  behind a head, or when a person half hides a small thing of the room (toons-rooms.md); it lists
+  the small things the room left out because no clear place was free. A graphic may cover what hangs on the wall.
 
 ### Sound: a calm mix (owner, 2026-11-16: "too loud and poor sound, don't match my style")
 The channel's own best videos, measured: steady narration over a constant music bed, almost no

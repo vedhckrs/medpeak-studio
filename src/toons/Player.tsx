@@ -294,6 +294,18 @@ export const headSeen = (a: ToonActor, set: SetName) => {
   return {...hb, x0: hb.cx - half, x1: hb.cx + half, y0: hb.y0 + (hb.y1 - hb.y0) * ky};
 };
 /**
+ * The part of the picture each character standing in a shot takes up when at rest: for a person a
+ * box for the head and hair and one for the body. A room keeps its small things clear of these
+ * (rooms.tsx: roomThings), and the staging check measures against the same boxes.
+ */
+export const peopleBoxes = (shot: {set: SetName; cast?: ToonActor[]}) => (shot.cast ?? []).filter((a) => !a.stage).flatMap((a) => {
+  const sp = place(a, shot.set);
+  if (!isPerson(a.who)) return [{who: a.who, x0: sp.cx - a.size * 0.3, y0: sp.top, x1: sp.cx + a.size * 0.3, y1: sp.bottom}];
+  const h = headSeen(a, shot.set)!;
+  const half = a.size * 0.16; // the coat or the hoodie with the arms hanging
+  return [{who: a.who, x0: h.x0, y0: h.y0, x1: h.x1, y1: h.y1}, {who: a.who, x0: sp.cx - half, y0: h.y1 - a.size * 0.06, x1: sp.cx + half, y1: sp.bottom}];
+});
+/**
  * Where a prop is drawn. A thought bubble with `of` sits above its owner's head, toward the middle
  * of the picture, inside the frame, with its tail toward the owner (`flip` mirrors the cloud when the
  * owner stands on the right). A mark with `on: "bubble"` rides on the bubble before it. Everything
@@ -473,7 +485,7 @@ export const ToonPlayer: React.FC<ToonProps> = ({toon, timings, sfx, music, bare
     <AbsoluteFill style={{background: '#1d1430'}}>
       {shot.card ? <TimeCard text={shot.card} n={f - shotAt.from} frames={shotAt.frames} /> : (
         <Camera {...cam}>
-          <Set t={f / TOON_FPS} state={state} faces={faces} label={shot.label} look={look} />
+          <Set t={f / TOON_FPS} state={state} faces={faces} label={shot.label} look={look} people={look ? peopleBoxes(shot) : undefined} />
           {shot.cast.filter((a) => !a.stage).map((a) => <Actor key={a.who} a={a} shot={shot} shotFrom={shotAt.from} lines={shotLines} f={f} cur={cur} blur={blurOf(a.who)} tone={roomTone(look)} />)}
           {shot.desk && <OfficeDesk />}
           {(shot.props ?? []).map((p, i) => {

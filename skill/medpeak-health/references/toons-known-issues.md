@@ -58,9 +58,15 @@ measures it on every script (they all run in `npm test`).
 
 | 28 | "remove 3 point, make better hook script" (2026-11-17) | the first scripts opened on two organs talking to each other, showed the setup instead of the damage, and spent about 8 seconds on "three things happen: first, second, third" in every video | the second script shape (`"format": 2`): cold open on the damage, a hook of 8 words or fewer said to "you" with the title's words, one open question instead of the counting, three hook choices for the owner | `toon-check`: Hook (3 rules), Open question, No counting; test |
 
-**Decided, not bugs:** a bubble or a tag may cover what hangs on the wall (it is drawn over the room
-and gone in a few seconds; there is no free wall left for all of them), and people stand in front
-of furniture on purpose (a desk, a bed). Neither is checked.
+| 29 | a heart monitor cut in half by Dr. Mira's coat: "this bug repeated again and again" (2026-11-17) | the same cause a third time (after the bubble on her face, no. 1, and the chart behind her hair, no. 19): the room drew its small things at fixed spots and nothing looked at where the people stand. I had even written it down as "decided, not a bug: people stand in front of furniture". Also half hidden, unnoticed: the fruit bowl behind the patient in the pill kitchen, the plant behind the boy in the sugar clinic, the side table in the new living room | every small thing of a room is listed with its box (`SMALLS` in `rooms.tsx`); the room is told where its people stand and moves each small thing to the nearest clear place, or leaves it out (`roomThings`). Long furniture (bed, desk, sofa) stays behind people but must show at least 40% | staging check: "half hidden by a person" (fails above 2% of a small thing behind anyone); tests on every arrangement with the usual casts |
+
+**The lesson of no. 1, 19 and 29:** when one thing turns out to be badly placed against a person,
+every kind of thing that is placed (graphics, wall items, small furniture, long furniture, the
+caption) gets measured against every person, not only the kind that was reported.
+
+**Decided, not bugs:** in the first three scripts a bubble or a tag may cover what hangs on the wall
+(new scripts keep them on plain wall), and long furniture (a bed, a desk, a sofa) stands partly
+behind people as in any room.
 
 ## Open, and why
 | # | What | Why it is still open | Who can close it |

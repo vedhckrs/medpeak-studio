@@ -870,8 +870,8 @@ export const DEFAULT_ROOMS: {clinic: RoomLook; home: RoomLook} = {
   clinic: {palette: 'mint', wall: 'stripes', floor: 'wood', window: {style: 'tall', side: 'right', view: 'garden'}, layout: 'exam-bed', chart: 'body', time: 'day'},
   home: {kind: 'bedroom', palette: 'nightblue', wall: 'paint', floor: 'wood', window: {style: 'tall', side: 'left', view: 'night'}, layout: 'bed-left', time: 'night'},
 };
-const ClinicSet: React.FC<SetProps> = ({t, look}) => <Room look={look ?? DEFAULT_ROOMS.clinic} role="clinic" t={t} />;
-const HomeSet: React.FC<SetProps> = ({t, look}) => <Room look={look ?? DEFAULT_ROOMS.home} role="home" t={t} />;
+const ClinicSet: React.FC<SetProps> = ({t, look, people}) => <Room look={look ?? DEFAULT_ROOMS.clinic} role="clinic" t={t} people={people} />;
+const HomeSet: React.FC<SetProps> = ({t, look, people}) => <Room look={look ?? DEFAULT_ROOMS.home} role="home" t={t} people={people} />;
 const ClinicFore: React.FC<{t: number; look?: RoomLook}> = ({t, look}) => <RoomFore look={look ?? DEFAULT_ROOMS.clinic} role="clinic" t={t} />;
 const HomeFore: React.FC<{t: number; look?: RoomLook}> = ({t, look}) => <RoomFore look={look ?? DEFAULT_ROOMS.home} role="home" t={t} />;
 

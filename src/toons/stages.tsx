@@ -14,7 +14,8 @@ import {theme} from '../brand/theme';
 
 /** What the player hands a stage for each character the stage draws itself. */
 export type StageFace = {emotion: Emotion; talk: number; blink: number; look: {x: number; y: number}; arms: [ArmSpec, ArmSpec] | null; squash: number; lean: number; nod: number};
-export type SetProps = {t: number; state?: Record<string, number>; faces?: Record<string, StageFace>; label?: string; look?: RoomLook};
+/** `people` = where the people of the shot stand (boxes on screen), so a room can keep its small things clear of them. */
+export type SetProps = {t: number; state?: Record<string, number>; faces?: Record<string, StageFace>; label?: string; look?: RoomLook; people?: {x0: number; y0: number; x1: number; y1: number}[]};
 const REST: StageFace = {emotion: 'neutral', talk: 0, blink: 0, look: {x: 0, y: 0}, arms: [112, 68], squash: 0, lean: 0, nod: 0};
 
 const FLESH = STYLE.fleshLine;

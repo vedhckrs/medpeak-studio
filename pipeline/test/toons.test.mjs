@@ -408,6 +408,47 @@ test('people take the light of a night room, and keep their colours by day', asy
   for (const t of real) for (const s of t.shots) if (s.set === 'home' && t.rooms.home.time === 'night') assert.ok(roomTone(t.rooms.home), `${t.slug}: the night home dims its people`);
 });
 
+// ---------------------------------------------------------------- nothing half hidden behind a person (owner, 2026-11-17: "this bug repeated again and again")
+test('no small thing of a room is half hidden by a person; the room moves it clear or leaves it out', async () => {
+  for (const t of real) {
+    const now = await scanStaging(t, null);
+    assert.ok(now.things >= 2, `${t.slug}: furniture was measured`);
+    assert.deepEqual(now.halfHidden, [], `${t.slug}: something half hidden behind a person`);
+  }
+  // drawn where the room kit first put them, the same rooms fail: the monitor behind Dr. Mira's coat, the side table behind the patient
+  const fast = real.find((x) => x.slug === 'eating-too-fast');
+  const before = await scanStaging(fast, null, {asDrawn: true});
+  assert.ok(before.halfHidden.some((x) => x.includes('monitor') && x.includes('doctor')), `the monitor behind the doctor is reported (${JSON.stringify(before.halfHidden)})`);
+  assert.ok(before.halfHidden.some((x) => x.includes('table')), 'the side table behind the patient is reported');
+  const pill = real.find((x) => x.slug === 'pill-without-water');
+  assert.ok((await scanStaging(pill, null, {asDrawn: true})).halfHidden.some((x) => x.includes('bowl')), 'the fruit bowl behind the patient is reported');
+});
+
+test('in every arrangement, with people in the usual places, every small thing is clear of them or left out', async () => {
+  const {roomThings, CLEAR} = await import('../../src/toons/rooms.tsx');
+  const {peopleBoxes} = await import('../../src/toons/Player.tsx');
+  const {ROOM_LAYOUTS} = await import('../../src/toons/director.ts');
+  const hit = (a, b, m) => a.x0 < b.x1 + m && a.x1 > b.x0 - m && a.y0 < b.y1 && a.y1 > b.y0;
+  let placed = 0;
+  for (const [kind, layouts] of Object.entries(ROOM_LAYOUTS)) for (const layout of layouts) {
+    const role = kind === 'clinic' ? 'clinic' : 'home';
+    const look = {kind, palette: 'mint', wall: 'paint', floor: 'wood', window: {style: 'tall', side: 'left', view: 'garden'}, layout, chart: 'body'};
+    const casts = role === 'clinic'
+      ? [[{who: 'doctor', x: 285, size: 940}, {who: 'patient', x: 805, size: 900}], [{who: 'doctor', x: 285, size: 940}, {who: 'kid', x: 805, size: 980}], [{who: 'patient', x: 285, size: 900}, {who: 'doctor', x: 805, size: 940}]]
+      : [[{who: 'patient', x: 540, size: 1040}], [{who: 'kid', x: 540, size: 1040}], [{who: 'mom', x: 360, size: 1000}, {who: 'kid', x: 760, size: 980}]];
+    for (const cast of casts) {
+      const people = peopleBoxes({set: role, cast});
+      for (const sm of roomThings(look, role, people).smalls) {
+        if (sm.drop) continue;
+        placed++;
+        assert.ok(!people.some((q) => hit(sm.box, q, CLEAR.gap - 1)), `${layout}, ${cast.map((a) => a.who).join(' + ')}: the ${sm.id} at ${Math.round(sm.box.x0)}-${Math.round(sm.box.x1)} touches a person`);
+        assert.ok(sm.box.x1 - sm.box.x0 > 0 && sm.box.x0 >= -(sm.box.x1 - sm.box.x0) * 0.2 && sm.box.x1 <= 1080 + (sm.box.x1 - sm.box.x0) * 0.2, `${layout}: the ${sm.id} is mostly outside the picture`);
+      }
+    }
+  }
+  assert.ok(placed >= 20, `${placed} small things placed`);
+});
+
 // ---------------------------------------------------------------- the second script shape (owner, 2026-11-17: "remove 3 point, make better hook")
 test('a format-2 script opens on the consequence with a short hook to the viewer, asks one question early and answers it late, and never counts', () => {
   const v2 = real.filter((x) => x.format === 2);

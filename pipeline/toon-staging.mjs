@@ -7,7 +7,8 @@
  *   node --import tsx pipeline/toon-staging.mjs --all
  *
  * Exit code 1 when a graphic covers a head, leaves the picture, sits on another graphic or on the
- * caption line, or when a wall chart, clock or picture is behind a head.
+ * caption line, when a wall chart, clock or picture is behind a head, or when a person half hides a
+ * small thing of the room (a monitor, a plant, a lamp).
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -23,11 +24,12 @@ for (const slug of slugs) {
   const stored = readJson(path.join(videoDir(slug), 'toon-timings.json'), null);
   const voiced = stored && toon.shots.every((s) => (s.lines ?? []).every((l) => stored.lines[l.id]?.text === l.text));
   const r = await scanStaging(toon, voiced ? stored : null);
-  console.log(`\nSTAGING  ${toon.title}  (${r.graphics} graphics, ${r.wallItems} things on walls)`);
-  for (const [label, rows] of [['on a head', r.onHeads], ['out of the picture', r.outside], ['on each other', r.stacked], ['on the caption line', r.onCaption], ['wall behind a head', r.hidden], ['on the wall chart', r.onWall]]) {
+  console.log(`\nSTAGING  ${toon.title}  (${r.graphics} graphics, ${r.wallItems} things on walls, ${r.things} pieces of furniture)`);
+  for (const [label, rows] of [['on a head', r.onHeads], ['out of the picture', r.outside], ['on each other', r.stacked], ['on the caption line', r.onCaption], ['wall behind a head', r.hidden], ['on the wall chart', r.onWall], ['half hidden by a person', r.halfHidden]]) {
     console.log(`  ${rows.length ? 'FAIL' : 'PASS'}  ${label.padEnd(20)} ${rows.length}`);
     for (const row of rows.slice(0, 14)) console.log(`        ${row}`);
   }
+  if (r.leftOut.length) console.log(`  note  left out of the room         ${r.leftOut.join('; ')}`);
   ok &&= r.ok;
 }
 console.log(ok ? '\nALL PASS' : '\nFAILED: move the graphic (a thought bubble takes "of": "<who>" and places itself); a wall item behind a head is fixed in src/toons/rooms.tsx (wallItems).');

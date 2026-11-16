@@ -90,6 +90,19 @@ they are, with a few things removed (2026-11-17), and picked level 1 ("A"). One 
 A new small object goes behind `extra` in `Furniture`, a new wall item into `wallItems`, so the
 number keeps working. Do not redraw the rooms in perspective: that was offered and turned down.
 
+### Small things keep clear of people (`roomThings`)
+A monitor, a plant, a lamp, a bowl, jars: every small thing of every arrangement is in `SMALLS`
+(`rooms.tsx`) with the box it takes up, and every long piece in `LONGS`. The player tells the room
+where the shot's people stand (`peopleBoxes` in `Player.tsx`: a box for each head and each body),
+and the room puts each small thing in the nearest place that is clear of them by 12 px, clear of
+the other small things and not inside long furniture; at most 15% of it may be cut by the picture's
+edge. With no such place it is **left out**. `npm run toon:staging` lists what was left out and
+fails if anything small is behind a person.
+- A new small thing goes into `SMALLS` and is drawn through `sm('id', ...)` in `Furniture`, never
+  straight into the drawing. Something that stands on furniture gets `on: [from, to]`.
+- Never "fix" a half-hidden thing by nudging one number in one room: the next cast or the next
+  arrangement brings it back (owner: "this bug repeated again and again").
+
 ### The room's light on people
 A night or evening room tints its people too (`roomTone` in `director.ts`; the player and the
 rooms board pass it to the character's slot). Without it a person in a night room is as bright as

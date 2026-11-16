@@ -16,7 +16,7 @@ import {circlePath, Grain, lineOf, Part, tone} from './ink';
 import {clamp01, E, key, settle, speak} from './motion';
 import {POSES, type PoseName} from './poses';
 import {FoodPipeStage, ToothStage, TummyStage, type SetProps, type StageFace} from './stages';
-import {ShotStill, type ToonActor} from './Player';
+import {peopleBoxes, ShotStill, type ToonActor} from './Player';
 import {LENSES, type LensName, type MoveName, SHOTS, type ShotName} from './camera';
 import {type ArmSpec, blinkAt, EMOTIONS, type Emotion, Face, Hand, HAND_POSES, type HandPose} from './rig';
 import {BloodSet, DEFAULT_ROOMS, FORES, GutSet, MouthSet, OfficeSet, SETS, StomachSet, ThroatSet, WordCaption, type SetName} from './scenes';
@@ -304,13 +304,16 @@ export const RoomsBoard: React.FC<{title?: string; clinic?: RoomLook; home?: Roo
       <T x={x + 4} y={1048} w={900} size={17} weight={600} color="#b9b2d6">{sub}</T>
     </>
   );
+  const kidSize = (who: string) => (who === 'kid' ? 980 : 900);
+  const inClinic = peopleBoxes({set: 'clinic', cast: [{who: 'doctor', x: 285, size: 940} as ToonActor, {who: people[0], x: 805, size: kidSize(people[0])} as ToonActor]});
+  const atHome = peopleBoxes({set: 'home', cast: [{who: people[1], x: 540, size: 1040} as ToonActor]});
   const line = (l: RoomLook) => `${l.palette} · ${l.wall} wall · ${l.floor} floor · ${l.window.style} window, ${l.window.view} view · ${l.layout}${l.chart ? ` · ${l.chart} chart` : ''} · ${l.time ?? 'day'}`;
   return (
     <AbsoluteFill style={{background: '#1d1430'}}>
       <T x={40} y={30} w={1800} size={44} weight={900} color="#ffffff">{title}</T>
-      {cell(40, 'Clinic', line(clinic), <><Room look={clinic} role="clinic" t={2} /><Stand x={285} floor={ROOM_FLOOR} size={940} tone={roomTone(clinic)}><Doc emotion="happy" t={0.6} arms={POSES.explain.person} /></Stand><Stand x={805} floor={ROOM_FLOOR} size={people[0] === 'kid' ? 980 : 900} tone={roomTone(clinic)}><A emotion="neutral" t={0.6} /></Stand><RoomFore look={clinic} role="clinic" t={2} /></>)}
-      {cell(586, 'Clinic, empty', '', <><Room look={clinic} role="clinic" t={2} /><RoomFore look={clinic} role="clinic" t={2} /></>)}
-      {cell(1132, `Home: ${home.kind ?? 'bedroom'}`, line(home), <><Room look={home} role="home" t={2} /><Stand x={540} floor={ROOM_FLOOR} size={1040} tone={roomTone(home)}><B emotion="sick" t={0.6} arms={POSES.heart.person} /></Stand><RoomFore look={home} role="home" t={2} /></>)}
+      {cell(40, 'Clinic', line(clinic), <><Room look={clinic} role="clinic" t={2} people={inClinic} /><Stand x={285} floor={ROOM_FLOOR} size={940} tone={roomTone(clinic)}><Doc emotion="happy" t={0.6} arms={POSES.explain.person} /></Stand><Stand x={805} floor={ROOM_FLOOR} size={people[0] === 'kid' ? 980 : 900} tone={roomTone(clinic)}><A emotion="neutral" t={0.6} /></Stand><RoomFore look={clinic} role="clinic" t={2} /></>)}
+      {cell(586, 'Clinic, empty', '', <><Room look={clinic} role="clinic" t={2} people={inClinic} /><RoomFore look={clinic} role="clinic" t={2} /></>)}
+      {cell(1132, `Home: ${home.kind ?? 'bedroom'}`, line(home), <><Room look={home} role="home" t={2} people={atHome} /><Stand x={540} floor={ROOM_FLOOR} size={1040} tone={roomTone(home)}><B emotion="sick" t={0.6} arms={POSES.heart.person} /></Stand><RoomFore look={home} role="home" t={2} /></>)}
     </AbsoluteFill>
   );
 };

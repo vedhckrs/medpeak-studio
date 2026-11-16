@@ -5,15 +5,18 @@
 //   - a graphic that leaves the picture or sits under the app's own buttons at the top,
 //   - two graphics on screen at the same time that sit on top of each other,
 //   - a graphic on the line where the caption is written,
-//   - something on a room's wall (chart, clock, picture, mirror) that ends up behind a head.
-// Furniture is not checked: people stand in front of a desk or a bed on purpose. In the first three
+//   - something on a room's wall (chart, clock, picture, mirror) that ends up behind a head,
+//   - a small thing of a room (a monitor, a plant, a lamp, a bowl) that a person half hides, or a long
+//     piece of furniture that is mostly hidden (owner, 2026-11-17, on a monitor cut by Dr. Mira's coat:
+//     "this bug repeated again and again").
+// Long furniture may be partly behind people (a desk, a bed): that is how a room looks. In the first three
 // scripts a graphic may cover what hangs on the wall; from the second script format on ("format": 2)
 // a graphic must stay on plain wall (not more than 10% of the chart or mirror under it).
 // Needs the tsx loader (the player is a .tsx file):  node --import tsx pipeline/toon-staging.mjs <slug>
 import {captionBox, layoutToon, propFrames, propReach, stateAt, TOON_FPS} from '../../src/toons/director.ts';
 
 /** How much of a head a graphic may touch (its outline brushing the hair is fine; covering is not). */
-export const LIMITS = {head: 0.04, pair: 0.3, top: 110, sides: 8, caption: 0.02, wall: 0.15, onWall: 0.1};
+export const LIMITS = {head: 0.04, pair: 0.3, top: 110, sides: 8, caption: 0.02, wall: 0.15, onWall: 0.1, small: 0.02, longShown: 0.4};
 
 const boxOf = (p, spot) => { const u = p.size / 200; const [l, up, r, dn] = propReach(p).map((v) => v * u); return {x0: spot.x - l, x1: spot.x + r, y0: spot.y - up, y1: spot.y + dn}; };
 const overlap = (a, b) => Math.max(0, Math.min(a.x1, b.x1) - Math.max(a.x0, b.x0)) * Math.max(0, Math.min(a.y1, b.y1) - Math.max(a.y0, b.y0));
@@ -21,11 +24,11 @@ const area = (b) => (b.x1 - b.x0) * (b.y1 - b.y0);
 const name = (p) => `${p.bubble ? 'bubble with ' : ''}${p.kind}${p.text ? ` "${p.text}"` : ''}`;
 
 export const scanStaging = async (toon, timings, opts = {}) => {
-  const {headBox, headSeen, propSpot} = await import('../../src/toons/Player.tsx');
-  const {wallItems} = await import('../../src/toons/rooms.tsx');
+  const {headBox, headSeen, peopleBoxes, propSpot} = await import('../../src/toons/Player.tsx');
+  const {roomThings, wallItems} = await import('../../src/toons/rooms.tsx');
   const cap = captionBox(toon.camera === 'steady');
   const L = layoutToon(toon, timings);
-  const out = {graphics: 0, wallItems: 0, onHeads: [], outside: [], stacked: [], onCaption: [], hidden: [], onWall: []};
+  const out = {graphics: 0, wallItems: 0, things: 0, onHeads: [], outside: [], stacked: [], onCaption: [], hidden: [], onWall: [], halfHidden: [], leftOut: []};
   toon.shots.forEach((shot, si) => {
     if (shot.card !== undefined) return;
     const items = (shot.props ?? []).map((p) => { const [from, to] = propFrames(L, si, p); return {p, from, to, box: boxOf(p, propSpot(p, shot))}; });
@@ -58,6 +61,24 @@ export const scanStaging = async (toon, timings, opts = {}) => {
     const look = (shot.set === 'clinic' || shot.set === 'home') && toon.rooms?.[shot.set];
     if (!look) return;
     const heads = (shot.cast ?? []).filter((a) => !a.stage).map((a) => headSeen(a, shot.set)).filter(Boolean);
+    // the room's own things against the people standing in it: `opts.asDrawn` measures them where
+    // they were first drawn (no placing), to show what the room kit used to do
+    const people = peopleBoxes(shot);
+    const things = (opts.roomThings ?? roomThings)(look, shot.set, opts.asDrawn ? [] : people);
+    for (const sm of things.smalls) {
+      out.things++;
+      if (sm.drop) { out.leftOut.push(`scene ${shot.id}: the ${sm.id} (no place clear of the people)`); continue; }
+      for (const q of people) {
+        const part = overlap(sm.box, q) / area(sm.box);
+        if (part > LIMITS.small) out.halfHidden.push(`scene ${shot.id}: ${Math.round(part * 100)}% of the ${shot.set}'s ${sm.id} is behind ${q.who}`);
+      }
+    }
+    for (const l of things.longs) {
+      out.things++;
+      const seen = {x0: Math.max(0, l.box.x0), y0: l.box.y0, x1: Math.min(1080, l.box.x1), y1: l.box.y1};
+      const gone = Math.min(1, people.reduce((n, q) => n + overlap(seen, q), 0) / Math.max(1, area(seen)));
+      if (1 - gone < LIMITS.longShown) out.halfHidden.push(`scene ${shot.id}: only ${Math.round((1 - gone) * 100)}% of the ${shot.set}'s ${l.id} can be seen behind the people (pick another arrangement)`);
+    }
     const si = toon.shots.indexOf(shot);
     const graphics = (shot.props ?? []).filter((p) => !p.on).map((p) => { const [from] = propFrames(L, si, p); return {p, from, box: boxOf(p, propSpot(p, shot))}; });
     for (const w of (opts.wallItems ?? wallItems)(look, shot.set)) {
@@ -74,6 +95,6 @@ export const scanStaging = async (toon, timings, opts = {}) => {
       }
     }
   });
-  out.ok = !out.onHeads.length && !out.outside.length && !out.stacked.length && !out.onCaption.length && !out.hidden.length && !out.onWall.length;
+  out.ok = !out.onHeads.length && !out.outside.length && !out.stacked.length && !out.onCaption.length && !out.hidden.length && !out.onWall.length && !out.halfHidden.length;
   return out;
 };
