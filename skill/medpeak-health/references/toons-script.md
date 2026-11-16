@@ -4,7 +4,35 @@ A Toon is one file, `videos/<slug>/toon.json`. Before a single credit is spent i
 `node pipeline/toon-check.mjs <slug>` (free, instant). The gate uses the same director as the
 player (`src/toons/director.ts`), so what it measures is what gets rendered.
 
-## The shape of a Toons Short (about 45-55 seconds, 13 lines)
+## The shape of a Toons Short from video 4 on (`"format": 2`, about 45-50 seconds, 15 lines)
+Owner, 2026-11-17: "remove 3 point, make better hook script". The three live videos opened on two
+organs chatting ("Whoa! A pill? Where's the water?") and then counted "First, Second, Third". The
+new shape opens on the damage, speaks to the viewer, and tells one story.
+
+| Time | Part | Where | What happens |
+|---|---|---|---|
+| 0-3 s | **Hook, cold open** | body stage, already damaged | one line to the viewer: "you" + what happens to you. The first frame shows it |
+| 3-7 s | **The open question** | body stage | one question that only the end answers ("Same lunch, no balloon. Want to know how?") |
+| 7-22 s | **The story** | body stage | "Rewind!": the stage goes back to healthy, then one chain of cause and effect. No numbers |
+| 22-26 s | Time card, the person feels it | card, home | |
+| 26-40 s | Dr. Mira: why, then the twist | clinic | the twist starts between 50% and 75% |
+| 40-47 s | **Best last = the answer** | clinic | the fix, with its number; it answers the open question |
+| 47-50 s | Loop | body stage, done right | the last line repeats 3 or more key words of the hook |
+
+The hook, checked by `toon-check` on every format-2 script:
+- 8 words or fewer, and said within 2.5 seconds (7 words is safe before the voices exist);
+- says "you" or "your" and names a consequence;
+- says at least two of the title's words in the first line (a search viewer hears what they typed);
+- the first scene is a body stage whose `state` starts with the damage (a dial at 0.5 or more);
+- `"hooks"` lists **three choices** for the first line (`{"line", "why"}`), the script's own among
+  them: the owner picks one from the script sheet before anything is voiced.
+The open question (Retention 7 point 3 for Toons; it replaces the counting, with the owner's yes):
+`retention.question` names a line that asks it by 7 s, `retention.answer` a line in the last quarter
+that shares two or more key words with it. A format-2 script that says "first / second / third"
+fails. In a room, a format-2 script's graphics stay on plain wall (not on the chart): `toon:staging`.
+The first script in this shape is `videos/eating-too-fast`.
+
+## The first shape (videos 1 to 3, about 45-55 seconds, 13 lines)
 | Part | Where | Who | What happens |
 |---|---|---|---|
 | Hook | body set | a body character | the problem, shouted in-story. No greeting, no channel name |

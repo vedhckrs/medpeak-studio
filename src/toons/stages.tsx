@@ -657,6 +657,7 @@ export const TummyStage: React.FC<SetProps> = ({t, state = {}, faces = {}, label
   const valve = st('valve');
   const leak = st('leak');
   const burn = st('burn');
+  const air = st('air');
   const me = faces.stomach ?? REST;
   const pipe = faces.foodpipe ?? REST;
   const uid = useId().replace(/:/g, '');
@@ -674,7 +675,7 @@ export const TummyStage: React.FC<SetProps> = ({t, state = {}, faces = {}, label
   const organT = `translate(${shift[0].toFixed(1)} ${shift[1].toFixed(1)}) rotate(${deg.toFixed(2)} ${TUM.pivot[0]} ${TUM.pivot[1]})`;
   const inner = spline(ST_IN, true, 0.42);
   const outer = spline(ST_OUT, true, 0.42);
-  const swell = 1 + full * 0.035 + Math.sin(t * 1.6) * 0.004; // a full stomach is stretched; it also churns a little
+  const swell = 1 + full * 0.035 + air * 0.055 + Math.sin(t * 1.6) * 0.004; // a full stomach is stretched, swallowed air bloats it; it also churns a little
 
   // ---- the juice keeps its level whatever way the stomach lies
   const polyW = ST_IN.map(toWorld);
@@ -762,6 +763,23 @@ export const TummyStage: React.FC<SetProps> = ({t, state = {}, faces = {}, label
             const life = wrap(t * 0.5 + random(`tj${i}`), 1);
             const x = span[0] + random(`tjx${i}`) * (span[1] - span[0]);
             return <circle key={i} cx={x} cy={maxY - life * (maxY - level)} r={5 + random(`tjr${i}`) * 9} fill="none" stroke="#fbffc4" strokeWidth={2.6} opacity={0.75 * (1 - life)} />;
+          })}
+          {/* swallowed air: big bubbles in the space above the juice */}
+          {air > 0.02 && Array.from({length: 9}).map((_, i) => {
+            const top = Math.min(...polyW.map((p) => p[1]));
+            const y = lerp(top + 90, level - 50, random(`tay${i}`)) + Math.sin(t * 1.3 + i * 1.7) * 9;
+            const sp = spanAt(polyW, y);
+            if (!sp || sp[1] - sp[0] < 120) return null;
+            const r = (20 + random(`tar${i}`) * 30) * (0.55 + 0.45 * air) * clamp01((air - i * 0.07) / 0.3);
+            if (r <= 1) return null;
+            const x = lerp(sp[0] + r + 16, sp[1] - r - 16, random(`tax${i}`)) + Math.sin(t * 0.9 + i) * 7;
+            return (
+              <g key={`air${i}`}>
+                <circle cx={x} cy={y} r={r} fill="#ffffff" opacity={0.3} />
+                <circle cx={x} cy={y} r={r} fill="none" stroke="#ffffff" strokeWidth={3.2} opacity={0.85} />
+                <path d={`M${(x - r * 0.5).toFixed(1)} ${(y - r * 0.2).toFixed(1)} Q${(x - r * 0.4).toFixed(1)} ${(y - r * 0.62).toFixed(1)} ${x.toFixed(1)} ${(y - r * 0.66).toFixed(1)}`} fill="none" stroke="#ffffff" strokeWidth={3.6} strokeLinecap="round" opacity={0.9} />
+              </g>
+            );
           })}
           {bitsOf.map((b, i) => {
             const on = clamp01((food - i * 0.11) / 0.3);

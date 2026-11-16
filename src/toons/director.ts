@@ -38,8 +38,9 @@ export const STAGE_KEYS: Partial<Record<SetName, string[]>> = {
   tooth: ['sugar', 'feast', 'acid', 'hole', 'pain', 'saliva', 'mend', 'brush', 'shield'],
   // food: dinner drops in. full: how full the stomach is (the juice level). tilt: 0 = standing or
   // sitting up, 1 = lying flat (the whole stomach tips over). valve: the ring of muscle at the top opens.
-  // leak: acid climbs the food pipe. burn: the food pipe hurts.
-  tummy: ['food', 'full', 'tilt', 'valve', 'leak', 'burn'],
+  // leak: acid climbs the food pipe. burn: the food pipe hurts. air: swallowed air gathers above the
+  // juice and the stomach bloats (eating too fast).
+  tummy: ['food', 'full', 'tilt', 'valve', 'leak', 'burn', 'air'],
 };
 // ------------------------------------------------------------------ rooms (owner, 2026-11-16: "each video a
 // different clinic and a different home, unique"). The sets `clinic` and `home` are BUILT from a

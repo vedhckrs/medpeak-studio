@@ -17,6 +17,20 @@ const wordsOf = (t) => t.split(/\s+/).filter(Boolean);
 const bare = (w) => w.toLowerCase().replace(/[^a-z0-9']/g, '');
 /** Is `word` one of the words of `text`? (the player starts things on that exact word) */
 const saysWord = (text, word) => wordsOf(text ?? '').some((w) => bare(w) === bare(word));
+const SMALL = new Set('a an the of to in on and or is are be am was it its this that for with does do did what how why can could from at by as so not no too my me i he she his her we they'.split(' '));
+/** The words of a line that carry its meaning (small words out), for "does this line pick up that one?" */
+const keysOf = (t) => [...new Set(wordsOf(t ?? '').map(bare).filter((w) => w.length > 2 && !SMALL.has(w) && !/^(you|your|you'll|you're|yours)$/.test(w)))];
+/** What a format-2 hook must be (owner, 2026-11-17: "make better hook"): short, said to the viewer, about the title. */
+export const HOOK = {words: 8, seconds: 2.5, titleWords: 2, by: 3, questionBy: 7, answerFrom: 0.75};
+const hookFaults = (text, title) => {
+  const out = [];
+  const n = wordsOf(text).length;
+  if (n > HOOK.words) out.push(`${n} words (at most ${HOOK.words})`);
+  if (!wordsOf(text).some((w) => /^(you|your|you'll|you're|yours)$/.test(bare(w)))) out.push('does not say "you" or "your"');
+  const shared = keysOf(title).filter((w) => wordsOf(text).map(bare).includes(w));
+  if (shared.length < HOOK.titleWords) out.push(`says ${shared.length} of the title's words (at least ${HOOK.titleWords}: ${keysOf(title).join(', ')})`);
+  return out;
+};
 
 /**
  * Check one Toon. `known` = {cast: names with a voice, sfx: effect names, beds: music names,
@@ -109,8 +123,10 @@ export const checkToon = (toon, timings, known) => {
   const scenes = L.lines.map((p) => ({id: p.line.id, text: p.line.text, sources: p.line.src ?? [], visual: {panels: segsOf(p.line.id)}}));
   const t7 = {scenes: Object.fromEntries(L.lines.map((p) => [p.line.id, {duration: p.frames / TOON_FPS}]))};
   const cut = checkCut({scenes, retention: toon.retention, isShort: true, sources: toon.sources ?? [], timings: t7, label: toon.slug});
+  const v2 = toon.format === 2; // the second script shape: a cold open, a hook to the viewer, an open question instead of the counting
   for (const r of cut.results) {
     const group = /^\d|plan/.test(r.point) ? 'retention' : 'accuracy';
+    if (v2 && r.point === '3 Counting') continue; // replaced by the open question, below
     if (r.point === '4 3-sec change') {
       if (L.steady) { // steady camera: the change is what HAPPENS in the picture, not a cut
         const st = longestStill(L);
@@ -118,6 +134,36 @@ export const checkToon = (toon, timings, known) => {
       } else add('retention', r.point, hold <= 3.0, `the longest picture is ${hold.toFixed(1)} s (line ${longest.line.line.id}); ${L.segs.length} pictures in ${total.toFixed(0)} s`);
     }
     else add(group, r.point, r.pass, r.detail);
+  }
+
+  if (v2) {
+    // ---- the hook (owner, 2026-11-17: "remove 3 point, make better hook")
+    const first = L.lines[0];
+    const said = first.frames / TOON_FPS - 0.14; // the line itself, without the air after it
+    const faults = hookFaults(first.line.text, toon.title);
+    if (said > HOOK.seconds + 0.05) faults.push(`takes ${said.toFixed(1)} s to say (at most ${HOOK.seconds})`);
+    add('retention', '1 Hook: short, to the viewer, about the title', !faults.length, faults.length ? `"${first.line.text}": ${faults.join('; ')}` : `"${first.line.text}" (${wordsOf(first.line.text).length} words, ${said.toFixed(1)} s, says "you", says the title's words)`);
+    const opening = shots[0];
+    const shown = Object.entries(opening?.state ?? {}).filter(([, v]) => v >= 0.5).map(([k]) => k);
+    add('retention', '1 Hook: the first frame shows the consequence', !!STAGE_KEYS[opening?.set] && shown.length > 0, shown.length ? `the video opens on the ${opening.set} with ${shown.join(', ')} already there` : 'the first scene must be a body stage that starts with the damage (a "state" with a dial at 0.5 or more), then goes back to how it began');
+    const others = (toon.hooks ?? []).map((h) => (typeof h === 'string' ? h : h.line));
+    const badOthers = others.map((h) => [h, hookFaults(h, toon.title)]).filter(([, f]) => f.length);
+    add('retention', '1 Hook: three choices for the owner', others.length >= 3 && others.includes(first.line.text) && !badOthers.length, others.length < 3 ? `${others.length} hook choice(s) in "hooks" (3 needed, the script's own first line among them)` : !others.includes(first.line.text) ? 'the script\'s first line is not one of the "hooks"' : badOthers.length ? badOthers.map(([h, f]) => `"${h}": ${f.join('; ')}`).join(' | ') : `${others.length} choices, each short, to the viewer and about the title`);
+    // ---- the open question: asked early, answered late (it replaces the counting)
+    const at = (id) => L.lines.find((p) => p.line.id === id);
+    const q = at(String(toon.retention?.question?.scene ?? ''));
+    const a = at(String(toon.retention?.answer?.scene ?? ''));
+    const qAt = q ? q.from / TOON_FPS : null;
+    const aAt = a ? a.from / L.total : null;
+    const picked = q && a ? keysOf(q.line.text).filter((w) => keysOf(a.line.text).includes(w)) : [];
+    const qFaults = [];
+    if (!q) qFaults.push('"retention.question" must name the line that asks it');
+    else { if (!q.line.text.includes('?')) qFaults.push(`${q.line.id} is not a question`); if (qAt > HOOK.questionBy) qFaults.push(`it is asked at ${qAt.toFixed(1)} s (by ${HOOK.questionBy} s)`); }
+    if (!a) qFaults.push('"retention.answer" must name the line that answers it');
+    else { if (aAt < HOOK.answerFrom) qFaults.push(`it is answered at ${Math.round(aAt * 100)}% (hold it back to the last quarter)`); if (q && picked.length < 2) qFaults.push(`the answer shares ${picked.length} key word(s) with the question (at least 2, so it really answers it)`); }
+    add('retention', '3 Open question', !qFaults.length, qFaults.length ? qFaults.join('; ') : `asked at ${qAt.toFixed(1)} s ("${q.line.text}"), answered at ${Math.round(aAt * 100)}% ("${a.line.text}"; shared words: ${picked.join(', ')})`);
+    const counted = lines.filter((l) => /\b(first|firstly|second|secondly|third|thirdly|number (one|two|three))\b/i.test(l.text)).map((l) => l.id);
+    add('retention', '3 No counting', counted.length < 2, counted.length < 2 ? 'the story is told as one chain of cause and effect, not as a numbered list' : `numbered beats in ${counted.join(', ')}: tell it as one story`);
   }
 
   // ---------------------------------------------------------------- 3 the Toons format
@@ -181,9 +227,16 @@ export const checkToon = (toon, timings, known) => {
 export const scriptSheet = (toon, check) => {
   const L = check.layout;
   const out = [`# ${toon.title}`, '', `Toon script \`${toon.slug}\` · about ${check.total.toFixed(0)} seconds · ${L.segs.length} pictures`, ''];
+  if (toon.hooks?.length) {
+    out.push('## The hook: choices for the first line', '', '| | First line | Why |', '|---|---|---|');
+    toon.hooks.forEach((h, i) => { const line = typeof h === 'string' ? h : h.line; out.push(`| ${'ABCDEF'[i]}${line === L.lines[0].line.text ? ' (in the script)' : ''} | ${line} | ${typeof h === 'string' ? '' : h.why ?? ''} |`); });
+    out.push('');
+  }
   if (toon.retention) {
     out.push('## Retention 7', '', '| Point | Line | Words |', '|---|---|---|');
-    const names = {noIntro: '1 No intro', promise: '2 Promise', counting: '3 Counting', change3s: '4 3-sec change', twist: '5 Twist', bestLast: '6 Best last', loop: '7 Loop'};
+    const names = toon.format === 2
+      ? {noIntro: '1 Hook', question: '2 Open question (asked)', answer: '3 Its answer (held back)', change3s: '4 3-sec change', twist: '5 Twist', bestLast: '6 Best last', loop: '7 Loop'}
+      : {noIntro: '1 No intro', promise: '2 Promise', counting: '3 Counting', change3s: '4 3-sec change', twist: '5 Twist', bestLast: '6 Best last', loop: '7 Loop'};
     for (const [k, label] of Object.entries(names)) out.push(`| ${label} | ${toon.retention[k]?.scene ?? ''} | ${toon.retention[k]?.line ?? ''} |`);
     out.push('');
   }

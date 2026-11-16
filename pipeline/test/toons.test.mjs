@@ -233,9 +233,11 @@ test('every stage a script uses has its dials, and every steady script is a show
     const L = layoutToon(t, null);
     for (const sh of stages) {
       const si = t.shots.indexOf(sh);
-      const end = stateAt(L, si, L.shots[si].from + L.shots[si].frames - 1);
-      const start = stateAt(L, si, L.shots[si].from);
-      assert.notDeepEqual(end, start, `${t.slug} scene ${sh.id}: something happens on the stage`);
+      // the stage changes during the scene (a cold open starts on the damage, goes back and ends on it again: start and end alone would look the same)
+      const start = JSON.stringify(stateAt(L, si, L.shots[si].from));
+      let moved = false;
+      for (let f = L.shots[si].from; f < L.shots[si].from + L.shots[si].frames; f += 5) if (JSON.stringify(stateAt(L, si, f)) !== start) { moved = true; break; }
+      assert.ok(moved, `${t.slug} scene ${sh.id}: something happens on the stage`);
     }
     assert.equal(t.shots[0].set, t.shots[t.shots.length - 1].set, `${t.slug}: the last scene returns to the first stage`);
   }
@@ -404,6 +406,37 @@ test('people take the light of a night room, and keep their colours by day', asy
   assert.ok(night.every((v) => v < 1 && v >= 0.7), 'dimmed, still easy to read');
   assert.ok(night[2] > night[0], 'cooler: more of the blue is kept than of the red');
   for (const t of real) for (const s of t.shots) if (s.set === 'home' && t.rooms.home.time === 'night') assert.ok(roomTone(t.rooms.home), `${t.slug}: the night home dims its people`);
+});
+
+// ---------------------------------------------------------------- the second script shape (owner, 2026-11-17: "remove 3 point, make better hook")
+test('a format-2 script opens on the consequence with a short hook to the viewer, asks one question early and answers it late, and never counts', () => {
+  const v2 = real.filter((x) => x.format === 2);
+  assert.ok(v2.length >= 1, 'there is a script in the second format');
+  const known = (t) => ({cast: Object.keys(cast.cast), sfx: LIBRARY.map(([n]) => n), beds: ['bouncy', 'sneaky', 'panic', 'doctor'], others: real.filter((o) => o !== t).map((o) => ({slug: o.slug, episode: o.episode, rooms: o.rooms}))});
+  const failed = (t) => checkToon(t, null, known(t)).results.filter((r) => !r.pass).map((r) => r.point);
+  for (const t of v2) {
+    assert.deepEqual(failed(t), [], `${t.slug} passes`);
+    assert.ok(t.hooks.length >= 3, `${t.slug}: three hook choices`);
+    assert.ok(!t.shots.flatMap((s) => s.lines ?? []).some((l) => /\b(first|second|third)\b/i.test(l.text)), `${t.slug}: no counting`);
+  }
+  const base = v2[0];
+  // an organ chatting to another organ is not a hook
+  let t = clone(base); t.shots[0].lines[0].text = 'Whoa! This belly balloons so fast!'; t.retention.noIntro.line = t.shots[0].lines[0].text; t.hooks[0] = t.shots[0].lines[0].text;
+  assert.ok(failed(t).includes('1 Hook: short, to the viewer, about the title'), 'a hook that does not speak to the viewer fails');
+  // too long
+  t = clone(base); t.shots[0].lines[0].text = 'If you eat too fast then your poor belly balloons up badly today.'; t.retention.noIntro.line = t.shots[0].lines[0].text; t.hooks[0] = t.shots[0].lines[0].text;
+  assert.ok(failed(t).includes('1 Hook: short, to the viewer, about the title'), 'a long hook fails');
+  // the old opening: the stage starts healthy
+  t = clone(base); t.shots[0].state = {full: 0.15};
+  assert.ok(failed(t).includes('1 Hook: the first frame shows the consequence'), 'opening on the setup fails');
+  // the counting is back
+  t = clone(base); t.shots[0].lines[3].text = 'First, air came down too!'; t.shots[0].lines[4].text = 'Second, we are full down here!';
+  assert.ok(failed(t).includes('3 No counting'), 'numbered beats fail');
+  // the answer given away early
+  t = clone(base); t.retention.answer = {scene: t.shots[0].lines[2].id, line: ''};
+  assert.ok(failed(t).includes('3 Open question'), 'an answer in the first half fails');
+  // the three live scripts keep their own shape and still pass
+  for (const o of real.filter((x) => x.format !== 2)) assert.deepEqual(failed(o), [], `${o.slug} (first format) still passes`);
 });
 
 // ---------------------------------------------------------------- the music never leaves a hole (found by listening, 2026-11-16)
