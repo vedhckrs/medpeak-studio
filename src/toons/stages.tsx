@@ -649,6 +649,78 @@ const spanAt = (poly: P[], y: number): [number, number] | null => { // the wides
   return best;
 };
 
+/**
+ * The room a stage face needs around it, in screen pixels from its centre. Nothing of the stage's
+ * contents (the juice's surface, food, bubbles) may come inside it (owner, 2026-11-17, on the
+ * stomach with juice at its mouth, food beside its eyes and bubbles on its brow: "too much cluttered").
+ */
+export const FACE_ROOM = {side: 215, up: 205, down: 190, hands: 125};
+const BITS: {col: string; line: string; r: number}[] = [{col: '#d9a05b', line: '#8f6230', r: 30}, {col: '#7ac96b', line: '#3f8a3a', r: 24}, {col: '#e2574c', line: '#96302a', r: 23}, {col: '#ffd166', line: '#b98a1e', r: 21}, {col: '#7a4a32', line: '#4a2a1a', r: 26}];
+/** Where everything in the stomach is for a state: how the organ lies, the juice's level, each piece of food, each bubble of swallowed air, the faces. */
+export const tummyLayout = (state: Record<string, number> = {}, t = 0) => {
+  const st = (k: string) => clamp01(state[k] ?? 0);
+  const [food, full, air] = [st('food'), st('full'), st('air')];
+  const tilt = io(st('tilt'));
+  // the organ tips over about its middle and slides right, so the pipe stays in the picture
+  const deg = TUM.lie * tilt;
+  const th = (deg * Math.PI) / 180;
+  const shift: P = [220 * tilt, 50 * tilt];
+  const toWorld = ([x, y]: P): P => {
+    const dx = x - TUM.pivot[0];
+    const dy = y - TUM.pivot[1];
+    return [TUM.pivot[0] + shift[0] + dx * Math.cos(th) - dy * Math.sin(th), TUM.pivot[1] + shift[1] + dx * Math.sin(th) + dy * Math.cos(th)];
+  };
+  const meAt = toWorld(TUM.face);
+  const pipeAt = toWorld(TUM.pipeFace);
+  const polyW = ST_IN.map(toWorld);
+  const maxY = Math.max(...polyW.map((q) => q[1]));
+  // the juice keeps its level whatever way the stomach lies, and never rises into the face's room
+  const level = Math.min(maxY - 40, Math.max(levelFor(polyW, 0.08 + full * 0.52), meAt[1] + FACE_ROOM.down + 42));
+  const span = spanAt(polyW, level + 26) ?? [300, 800];
+  const wave = (x: number, k = 1) => level + Math.sin(x * 0.02 + t * 2.4) * 7 * k + Math.sin(x * 0.047 - t * 1.7) * 4 * k;
+  // the food floats on the surface, under the face's room, but not where the hands hang
+  const keep: [number, number] = [meAt[0] - FACE_ROOM.hands, meAt[0] + FACE_ROOM.hands];
+  const clearOf = ([a, b]: [number, number], pad: number): [number, number][] => ([[a + pad, Math.min(keep[0], b - pad)], [Math.max(keep[1], a + pad), b - pad]] as [number, number][]).filter(([x0, x1]) => x1 - x0 > 8);
+  const along = (segs: [number, number][], u: number) => { const total = segs.reduce((n, [x0, x1]) => n + x1 - x0, 0); let d = u * total; for (const [x0, x1] of segs) { if (d <= x1 - x0) return x0 + d; d -= x1 - x0; } return null; };
+  const cardia = toWorld([470, 716]);
+  const floats = clearOf(span, 30);
+  const bits = BITS.map((b, i) => {
+    const on = clamp01((food - i * 0.16) / 0.3);
+    const x = along(floats, (i + 0.5) / BITS.length);
+    if (on <= 0 || x === null) return null;
+    const rest: P = [x, wave(x) + b.r * 0.2 + Math.sin(t * 2 + i) * 5];
+    const from: P = [cardia[0], cardia[1] - 140];
+    const [x1, y1] = [lerp(from[0], rest[0], on), lerp(from[1], rest[1], on * on)];
+    // on its way down a piece may cross the face's room (the stomach lying on its side): it is not drawn there
+    const inRoom = Math.abs(x1 - meAt[0]) < FACE_ROOM.side + b.r && y1 > meAt[1] - FACE_ROOM.up - b.r && y1 < meAt[1] + FACE_ROOM.down + b.r * 0.74;
+    return inRoom ? null : {...b, i, on, x: x1, y: y1, settled: on >= 1};
+  }).filter((b): b is NonNullable<typeof b> => !!b);
+  // swallowed air: big bubbles rising through the juice (the hollow above it belongs to the face)
+  const bubbles = Array.from({length: 8}).map((_, i) => {
+    const size = clamp01((air - i * 0.06) / 0.3);
+    if (size <= 0) return null;
+    const r = (16 + random(`tar${i}`) * 20) * (0.6 + 0.4 * air) * size;
+    const life = wrap(t * (0.16 + random(`tas${i}`) * 0.1) + random(`tal${i}`), 1);
+    const y = lerp(maxY - r - 14, level + r + 10, life);
+    const sp = spanAt(polyW, y);
+    if (!sp || sp[1] - sp[0] < r * 2 + 40) return null;
+    const x = lerp(sp[0] + r + 16, sp[1] - r - 16, random(`tax${i}`)) + Math.sin(t * 0.9 + i) * 6;
+    return {i, x, y, r, fade: Math.min(1, life / 0.12, (1 - life) / 0.12)};
+  }).filter((b): b is NonNullable<typeof b> => !!b);
+  return {food, full, air, tilt, deg, shift, toWorld, meAt, pipeAt, polyW, maxY, level, span, wave, bits, bubbles, cardia};
+};
+/** For the staging check: the boxes of a stage's faces and of the loose things on it, for a state. null = this stage is not measured yet. */
+export const stageThings = (set: string, state: Record<string, number> = {}, t = 0): {faces: {who: string; x0: number; y0: number; x1: number; y1: number}[]; things: {id: string; x0: number; y0: number; x1: number; y1: number}[]; surface?: number} | null => {
+  if (set !== 'tummy') return null;
+  const T = tummyLayout(state, t);
+  const face = {who: 'stomach', x0: T.meAt[0] - FACE_ROOM.side, y0: T.meAt[1] - FACE_ROOM.up, x1: T.meAt[0] + FACE_ROOM.side, y1: T.meAt[1] + FACE_ROOM.down};
+  return {
+    faces: [face],
+    things: [...T.bits.map((b) => ({id: `food ${b.i + 1}`, x0: b.x - b.r, y0: b.y - b.r * 0.74, x1: b.x + b.r, y1: b.y + b.r * 0.74})), ...T.bubbles.map((b) => ({id: `air bubble ${b.i + 1}`, x0: b.x - b.r, y0: b.y - b.r, x1: b.x + b.r, y1: b.y + b.r}))],
+    surface: T.level,
+  };
+};
+
 /** The stomach: dinner drops in, it fills, the person lies down, the valve gives, acid climbs the food pipe. */
 export const TummyStage: React.FC<SetProps> = ({t, state = {}, faces = {}, label}) => {
   const st = (k: string) => clamp01(state[k] ?? 0);
@@ -664,37 +736,18 @@ export const TummyStage: React.FC<SetProps> = ({t, state = {}, faces = {}, label
   const uid = useId().replace(/:/g, '');
   const throb = burn * (0.6 + 0.4 * Math.sin(t * 9));
 
-  // ---- the organ tips over about its middle and slides right, so the pipe stays in the picture
-  const deg = TUM.lie * tilt;
-  const th = (deg * Math.PI) / 180;
-  const shift: P = [220 * tilt, 50 * tilt];
-  const toWorld = ([x, y]: P): P => {
-    const dx = x - TUM.pivot[0];
-    const dy = y - TUM.pivot[1];
-    return [TUM.pivot[0] + shift[0] + dx * Math.cos(th) - dy * Math.sin(th), TUM.pivot[1] + shift[1] + dx * Math.sin(th) + dy * Math.cos(th)];
-  };
+  const T = tummyLayout(state, t);
+  const {deg, shift, polyW, maxY, level, span, wave, meAt, pipeAt} = T;
   const organT = `translate(${shift[0].toFixed(1)} ${shift[1].toFixed(1)}) rotate(${deg.toFixed(2)} ${TUM.pivot[0]} ${TUM.pivot[1]})`;
   const inner = spline(ST_IN, true, 0.42);
   const outer = spline(ST_OUT, true, 0.42);
   const swell = 1 + full * 0.035 + air * (0.085 + Math.sin(t * 2.6) * 0.008) + Math.sin(t * 1.6) * 0.004; // a full stomach is stretched, swallowed air bloats it; it also churns a little
-
-  // ---- the juice keeps its level whatever way the stomach lies
-  const polyW = ST_IN.map(toWorld);
-  const frac = 0.08 + full * 0.52;
-  const level = levelFor(polyW, frac);
-  const maxY = Math.max(...polyW.map((p) => p[1]));
-  const span = spanAt(polyW, level + 26) ?? [300, 800];
-  const wave = (x: number, k = 1) => level + Math.sin(x * 0.02 + t * 2.4) * 7 * k + Math.sin(x * 0.047 - t * 1.7) * 4 * k;
   const surface = Array.from({length: 30}, (_, i) => { const x = -200 + i * 52; return `${i ? 'L' : 'M'}${x} ${wave(x).toFixed(1)}`; }).join(' ');
-  const cardia = toWorld([470, 716]);
-  const bitsOf: {col: string; line: string; r: number}[] = [{col: '#d9a05b', line: '#8f6230', r: 34}, {col: '#7ac96b', line: '#3f8a3a', r: 26}, {col: '#e2574c', line: '#96302a', r: 24}, {col: '#ffd166', line: '#b98a1e', r: 22}, {col: '#7a4a32', line: '#4a2b1c', r: 30}, {col: '#d9a05b', line: '#8f6230', r: 22}, {col: '#7ac96b', line: '#3f8a3a', r: 20}];
 
   // ---- the valve: two lips of muscle; `valve` opens them
   const gap = lerp(6, 104, valve);
   const lipW = (160 - gap) / 2;
   const front = 716 - leak * 600; // how far up the pipe the acid has come (organ coordinates)
-  const meAt = toWorld(TUM.face);
-  const pipeAt = toWorld(TUM.pipeFace);
 
   return (
     <AbsoluteFill style={{background: '#532038'}}>
@@ -765,37 +818,21 @@ export const TummyStage: React.FC<SetProps> = ({t, state = {}, faces = {}, label
             const x = span[0] + random(`tjx${i}`) * (span[1] - span[0]);
             return <circle key={i} cx={x} cy={maxY - life * (maxY - level)} r={5 + random(`tjr${i}`) * 9} fill="none" stroke="#fbffc4" strokeWidth={2.6} opacity={0.75 * (1 - life)} />;
           })}
-          {/* swallowed air: big bubbles in the space above the juice */}
-          {air > 0.02 && Array.from({length: 13}).map((_, i) => {
-            const top = Math.min(...polyW.map((p) => p[1]));
-            const y = lerp(top + 90, level - 50, random(`tay${i}`)) + Math.sin(t * 1.3 + i * 1.7) * 9;
-            const sp = spanAt(polyW, y);
-            if (!sp || sp[1] - sp[0] < 120) return null;
-            const r = (26 + random(`tar${i}`) * 40) * (0.55 + 0.45 * air) * clamp01((air - i * 0.05) / 0.3);
-            if (r <= 1) return null;
-            const x = lerp(sp[0] + r + 16, sp[1] - r - 16, random(`tax${i}`)) + Math.sin(t * 0.9 + i) * 7;
-            return (
-              <g key={`air${i}`}>
-                <circle cx={x} cy={y} r={r} fill="#ffffff" opacity={0.42} />
-                <circle cx={x} cy={y} r={r} fill="none" stroke="#ffffff" strokeWidth={4} opacity={0.95} />
-                <path d={`M${(x - r * 0.5).toFixed(1)} ${(y - r * 0.2).toFixed(1)} Q${(x - r * 0.4).toFixed(1)} ${(y - r * 0.62).toFixed(1)} ${x.toFixed(1)} ${(y - r * 0.66).toFixed(1)}`} fill="none" stroke="#ffffff" strokeWidth={3.6} strokeLinecap="round" opacity={0.9} />
-              </g>
-            );
-          })}
-          {bitsOf.map((b, i) => {
-            const on = clamp01((food - i * 0.11) / 0.3);
-            if (on <= 0) return null;
-            const x = span[0] + ((i + 0.6) / bitsOf.length) * (span[1] - span[0]);
-            const rest: P = [x, wave(x) + b.r * 0.2 + Math.sin(t * 2 + i) * 5];
-            const from: P = [cardia[0], cardia[1] - 140];
-            const k = on * on;
-            return (
-              <g key={i} transform={`translate(${lerp(from[0], rest[0], on).toFixed(1)} ${lerp(from[1], rest[1], k).toFixed(1)}) rotate(${(i * 51 + t * 14 * (i % 2 ? 1 : -1)).toFixed(0)})`}>
-                <path d={blob(b.r, b.r * 0.74, `tbit${i}`, 8, 0.16)} fill={b.col} stroke={b.line} strokeWidth={LW} />
-                <path d={`M${-b.r * 0.5} ${-b.r * 0.22} Q0 ${-b.r * 0.5} ${b.r * 0.4} ${-b.r * 0.2}`} fill="none" stroke="#ffffff" strokeWidth={4} strokeLinecap="round" opacity={0.55} />
-              </g>
-            );
-          })}
+          {/* swallowed air: big bubbles rising through the juice, below the face */}
+          {T.bubbles.map((b) => (
+            <g key={`air${b.i}`} opacity={b.fade}>
+              <circle cx={b.x} cy={b.y} r={b.r} fill="#ffffff" opacity={0.4} />
+              <circle cx={b.x} cy={b.y} r={b.r} fill="none" stroke="#ffffff" strokeWidth={3.6} opacity={0.95} />
+              <path d={`M${(b.x - b.r * 0.5).toFixed(1)} ${(b.y - b.r * 0.2).toFixed(1)} Q${(b.x - b.r * 0.4).toFixed(1)} ${(b.y - b.r * 0.62).toFixed(1)} ${b.x.toFixed(1)} ${(b.y - b.r * 0.66).toFixed(1)}`} fill="none" stroke="#ffffff" strokeWidth={3.4} strokeLinecap="round" opacity={0.9} />
+            </g>
+          ))}
+          {/* the food: it floats on the juice to the sides of the face, never in front of it */}
+          {T.bits.map((b) => (
+            <g key={b.i} transform={`translate(${b.x.toFixed(1)} ${b.y.toFixed(1)}) rotate(${(b.i * 51 + t * 14 * (b.i % 2 ? 1 : -1)).toFixed(0)})`}>
+              <path d={blob(b.r, b.r * 0.74, `tbit${b.i}`, 8, 0.16)} fill={b.col} stroke={b.line} strokeWidth={LW} />
+              <path d={`M${-b.r * 0.5} ${-b.r * 0.22} Q0 ${-b.r * 0.5} ${b.r * 0.4} ${-b.r * 0.2}`} fill="none" stroke="#ffffff" strokeWidth={4} strokeLinecap="round" opacity={0.55} />
+            </g>
+          ))}
         </g>
 
         {/* the burn where acid touches the food pipe */}
@@ -824,8 +861,15 @@ export const TummyStage: React.FC<SetProps> = ({t, state = {}, faces = {}, label
           <path key={i} transform={`translate(${pipeAt[0] + dx} ${pipeAt[1] + dy}) rotate(${r}) scale(${1.4 + throb * 0.7})`} d="M0 -34 L10 -8 L26 -12 L8 34 L4 6 L-14 10 Z" fill="#ffd23c" stroke="#b9772a" strokeWidth={3} strokeLinejoin="round" opacity={burn} />
         ))}
 
-        {/* what the person is doing: a small sign that tips over with the stomach */}
-        <g transform="translate(910 330)">
+        {/* bloated: the wall strains, like a balloon (drawn outside the stomach, away from the face) */}
+        {air > 0.25 && [[930, 1010, -62], [958, 1150, -84], [900, 1300, -118], [150, 1100, 196], [250, 1010, 214]].map(([x, y, r], i) => {
+          const [wx, wy] = T.toWorld([x, y]);
+          const k = clamp01((air - 0.25) / 0.4) * (0.8 + 0.2 * Math.sin(t * 5 + i));
+          return <path key={`st${i}`} transform={`translate(${wx.toFixed(1)} ${wy.toFixed(1)}) rotate(${r + deg})`} d="M-26 0 Q0 -14 26 0" fill="none" stroke="#ffd9de" strokeWidth={7} strokeLinecap="round" opacity={0.85 * k} />;
+        })}
+
+        {/* what the person is doing: a small sign that tips over with the stomach. Only in a story about lying down. */}
+        {state.tilt !== undefined && <g transform="translate(910 330)">
           <circle r={104} fill="#1d2b4f" opacity={0.3} transform="translate(5 8)" />
           <circle r={104} fill="#fff8ec" stroke="#2ec4b6" strokeWidth={7} />
           <path d="M-74 66 H74" stroke="#b9ae97" strokeWidth={7} strokeLinecap="round" />
@@ -833,7 +877,7 @@ export const TummyStage: React.FC<SetProps> = ({t, state = {}, faces = {}, label
             <circle cx={0} cy={-52} r={20} fill="#1d2b4f" />
             <path d="M0 -26 V22 M0 -12 L-20 10 M0 -12 L20 10 M0 22 L-14 60 M0 22 L14 60" fill="none" stroke="#1d2b4f" strokeWidth={13} strokeLinecap="round" strokeLinejoin="round" />
           </g>
-        </g>
+        </g>}
 
         <defs>
           <radialGradient id="tmLight" cx="0.5" cy="-0.05" r="0.7"><stop offset="0" stopColor="#fff3df" stopOpacity={0.32 + 0.05 * Math.sin(t * 0.9)} /><stop offset="1" stopColor="#fff3df" stopOpacity="0" /></radialGradient>

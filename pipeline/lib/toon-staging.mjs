@@ -13,7 +13,7 @@
 // scripts a graphic may cover what hangs on the wall; from the second script format on ("format": 2)
 // a graphic must stay on plain wall (not more than 10% of the chart or mirror under it).
 // Needs the tsx loader (the player is a .tsx file):  node --import tsx pipeline/toon-staging.mjs <slug>
-import {captionBox, layoutToon, propFrames, propReach, stateAt, TOON_FPS} from '../../src/toons/director.ts';
+import {captionBox, layoutToon, propFrames, propReach, STAGE_KEYS, stateAt, TOON_FPS} from '../../src/toons/director.ts';
 
 /** How much of a head a graphic may touch (its outline brushing the hair is fine; covering is not). */
 export const LIMITS = {head: 0.04, pair: 0.3, top: 110, sides: 8, caption: 0.02, wall: 0.15, onWall: 0.1, small: 0.02, longShown: 0.4};
@@ -26,9 +26,10 @@ const name = (p) => `${p.bubble ? 'bubble with ' : ''}${p.kind}${p.text ? ` "${p
 export const scanStaging = async (toon, timings, opts = {}) => {
   const {headBox, headSeen, peopleBoxes, propSpot} = await import('../../src/toons/Player.tsx');
   const {roomThings, wallItems} = await import('../../src/toons/rooms.tsx');
+  const {stageThings} = await import('../../src/toons/stages.tsx');
   const cap = captionBox(toon.camera === 'steady');
   const L = layoutToon(toon, timings);
-  const out = {graphics: 0, wallItems: 0, things: 0, onHeads: [], outside: [], stacked: [], onCaption: [], hidden: [], onWall: [], halfHidden: [], leftOut: []};
+  const out = {graphics: 0, wallItems: 0, things: 0, onHeads: [], outside: [], stacked: [], onCaption: [], hidden: [], onWall: [], halfHidden: [], leftOut: [], onStageFace: [], stagesNotMeasured: []};
   toon.shots.forEach((shot, si) => {
     if (shot.card !== undefined) return;
     const items = (shot.props ?? []).map((p) => { const [from, to] = propFrames(L, si, p); return {p, from, to, box: boxOf(p, propSpot(p, shot))}; });
@@ -54,6 +55,24 @@ export const scanStaging = async (toon, timings, opts = {}) => {
       if (a.p.on === 'bubble' || b.p.on === 'bubble') continue; // a mark on the picture inside a bubble
       const part = overlap(a.box, b.box) / Math.min(area(a.box), area(b.box));
       if (part > LIMITS.pair) out.stacked.push(`${(Math.max(a.from, b.from) / TOON_FPS).toFixed(1)} s, scene ${shot.id}: the ${name(a.p)} and the ${name(b.p)} overlap by ${Math.round(part * 100)}%`);
+    }
+  });
+  // a body stage: its loose contents (food, bubbles, the juice's surface) against the faces drawn on it,
+  // on every sixth frame of the scene (owner, 2026-11-17, on the stomach: "too much cluttered")
+  L.shots.forEach((sh, si) => {
+    const set = sh.shot.set;
+    if (sh.shot.card !== undefined || !STAGE_KEYS[set]) return;
+    const seen = new Set();
+    for (let f = sh.from; f < sh.from + sh.frames; f += 6) {
+      const T = stageThings(set, stateAt(L, si, f), f / TOON_FPS);
+      if (!T) { if (!out.stagesNotMeasured.includes(set)) out.stagesNotMeasured.push(set); return; }
+      for (const face of T.faces) {
+        if (T.surface !== undefined && T.surface < face.y1 - 1 && !seen.has('surface')) { seen.add('surface'); out.onStageFace.push(`${(f / TOON_FPS).toFixed(1)} s, scene ${sh.shot.id}: the liquid's surface crosses ${face.who}'s face`); }
+        for (const th of T.things) {
+          const key = `${th.id}|${face.who}`;
+          if (!seen.has(key) && overlap(th, face) > 0) { seen.add(key); out.onStageFace.push(`${(f / TOON_FPS).toFixed(1)} s, scene ${sh.shot.id}: ${th.id} is in front of ${face.who}'s face`); }
+        }
+      }
     }
   });
   // what hangs on a room's wall, against the heads of everyone who stands in that room
@@ -95,6 +114,6 @@ export const scanStaging = async (toon, timings, opts = {}) => {
       }
     }
   });
-  out.ok = !out.onHeads.length && !out.outside.length && !out.stacked.length && !out.onCaption.length && !out.hidden.length && !out.onWall.length && !out.halfHidden.length;
+  out.ok = !out.onHeads.length && !out.outside.length && !out.stacked.length && !out.onCaption.length && !out.hidden.length && !out.onWall.length && !out.halfHidden.length && !out.onStageFace.length;
   return out;
 };

@@ -449,6 +449,26 @@ test('in every arrangement, with people in the usual places, every small thing i
   assert.ok(placed >= 20, `${placed} small things placed`);
 });
 
+// ---------------------------------------------------------------- a stage face has room (owner, 2026-11-17, on the stomach: "too much cluttered")
+test('on the stomach stage nothing comes into the face\'s room: the juice stays under it, food and bubbles keep out', async () => {
+  const {stageThings, tummyLayout, FACE_ROOM} = await import('../../src/toons/stages.tsx');
+  const hit = (a, b) => a.x0 < b.x1 && a.x1 > b.x0 && a.y0 < b.y1 && a.y1 > b.y0;
+  let measured = 0;
+  for (const full of [0, 0.3, 0.7, 1]) for (const food of [0, 0.5, 1]) for (const tilt of [0, 0.25, 0.5, 0.75, 1]) for (const air of [0, 1]) for (const t of [0, 1.3, 2.9, 4.4]) {
+    const state = {full, food, tilt, air};
+    const T = stageThings('tummy', state, t);
+    const face = T.faces[0];
+    assert.ok(T.surface >= face.y1, `the juice's surface is under the face (${JSON.stringify(state)})`);
+    for (const th of T.things) { measured++; assert.ok(!hit(th, face), `${th.id} is in the face's room (${JSON.stringify(state)}, t ${t})`); }
+    // food does not float where the hands hang
+    const L = tummyLayout(state, t);
+    for (const b of L.bits.filter((x) => x.settled)) assert.ok(Math.abs(b.x - L.meAt[0]) >= FACE_ROOM.hands - 1, `food ${b.i + 1} floats between the hands (${JSON.stringify(state)})`);
+  }
+  assert.ok(measured > 400, `${measured} things measured`);
+  // and on every real script that uses the stomach, frame by frame
+  for (const t of real) assert.deepEqual((await scanStaging(t, null)).onStageFace, [], `${t.slug}: something on a stage face`);
+});
+
 // ---------------------------------------------------------------- the second script shape (owner, 2026-11-17: "remove 3 point, make better hook")
 test('a format-2 script opens on the consequence with a short hook to the viewer, asks one question early and answers it late, and never counts', () => {
   const v2 = real.filter((x) => x.format === 2);

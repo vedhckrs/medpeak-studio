@@ -156,6 +156,10 @@ the stage, and the viewer WATCHES the thing happen. A script switches to this st
   graphic covers more than 4% of any head, leaves the picture, reaches above y 110, sits on
   another graphic that is on screen at the same time, or reaches down onto the caption line
   (the caption starts at y 1460: keep a graphic's lower edge above it).
+- On a body stage a face has a room of its own: nothing of the stage's contents (liquid, food,
+  bubbles) comes inside it, and a sign or meter is drawn only when the story needs it. `toon:staging`
+  measures the stomach stage frame by frame ("on a body stage's face"); a new stage is built on a
+  layout function the check can read (`stageThings` in `stages.tsx`).
 - The same check measures the room: it fails when a wall chart, clock or picture is more than 15%
   behind a head, or when a person half hides a small thing of the room (toons-rooms.md); it lists
   the small things the room left out because no clear place was free. A graphic may cover what hangs on the wall.

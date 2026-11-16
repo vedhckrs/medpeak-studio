@@ -25,10 +25,11 @@ for (const slug of slugs) {
   const voiced = stored && toon.shots.every((s) => (s.lines ?? []).every((l) => stored.lines[l.id]?.text === l.text));
   const r = await scanStaging(toon, voiced ? stored : null);
   console.log(`\nSTAGING  ${toon.title}  (${r.graphics} graphics, ${r.wallItems} things on walls, ${r.things} pieces of furniture)`);
-  for (const [label, rows] of [['on a head', r.onHeads], ['out of the picture', r.outside], ['on each other', r.stacked], ['on the caption line', r.onCaption], ['wall behind a head', r.hidden], ['on the wall chart', r.onWall], ['half hidden by a person', r.halfHidden]]) {
+  for (const [label, rows] of [['on a head', r.onHeads], ['out of the picture', r.outside], ['on each other', r.stacked], ['on the caption line', r.onCaption], ['wall behind a head', r.hidden], ['on the wall chart', r.onWall], ['half hidden by a person', r.halfHidden], ['on a body stage\'s face', r.onStageFace]]) {
     console.log(`  ${rows.length ? 'FAIL' : 'PASS'}  ${label.padEnd(20)} ${rows.length}`);
     for (const row of rows.slice(0, 14)) console.log(`        ${row}`);
   }
+  if (r.stagesNotMeasured.length) console.log(`  note  stage contents not measured  ${r.stagesNotMeasured.join(', ')} (only the stomach stage reports where its contents are)`);
   if (r.leftOut.length) console.log(`  note  left out of the room         ${r.leftOut.join('; ')}`);
   ok &&= r.ok;
 }
