@@ -828,6 +828,13 @@ export const TummyStage: React.FC<SetProps> = ({t, state = {}, faces = {}, label
   );
 };
 
+/** How big each stage character's arms are on screen (pixels per arm unit, arm length in units): the motion check measures their hands with it. */
+export const STAGE_ARMS: Record<string, Record<string, {k: number; len: number}>> = {
+  foodpipe: {foodpipe: {k: 6.2, len: 22}, pill: {k: 3.25, len: 30}},
+  tooth: {tooth: {k: 4.5, len: 22}, bacteria: {k: 2.25, len: 24}},
+  tummy: {stomach: {k: 4.3, len: 22}, foodpipe: {k: 2.35, len: 20}},
+};
+
 // ------------------------------------------------------------------ where the stage's characters are, for a state
 /**
  * A stage's own characters move with its state (the pill falls and rides away, the stomach tips, the

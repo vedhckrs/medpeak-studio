@@ -66,8 +66,25 @@ Add the drawing in `rooms.tsx` (a palette in `ROOM_PALS`, a view in `View`, a wi
 `director.ts`. Furniture is drawn once for the "left" version and mirrored for "right". Anything
 with an id gets a `useId()` suffix (a board shows several rooms at once).
 
-Where things can go without hiding behind people: the doctor stands at x 285 and the patient at
-x 805, so the wall above y 470, the gap between them (x 430 to 660) and both edges stay in view.
+### What hangs on the wall (chart, clock, certificate, pictures, mirror, shelf)
+All of it comes from one list, `wallItems(look, role)` in `rooms.tsx`: the room draws from it and
+the staging check measures it. Rules the list keeps, and a test proves for every room a recipe can
+make:
+- everything hangs in the band above the heads, y 130 to 500 (`WALL_BAND`): Dr. Mira's curls start
+  near y 545 at size 940, and the app's own buttons end near y 110;
+- beside a side window the clinic's chart takes the **edge** of the wall and the clock and
+  certificate the place by the window (bubbles and tags come up in the middle of the picture);
+- nothing hangs on the window, on another item or out of the picture.
+A new wall item goes into `wallItems` with its box, never straight into the room's drawing.
+`npm run toon:staging` fails a script when more than 15% of a wall item is behind a head.
+
+### The room's light on people
+A night or evening room tints its people too (`roomTone` in `director.ts`; the player and the
+rooms board pass it to the character's slot). Without it a person in a night room is as bright as
+at noon and looks pasted on. The dimming is mild on purpose: the character stays the brightest
+thing in the picture.
+
+Floor furniture stands behind people on purpose and is not checked.
 
 ## The first three videos
 | Episode | Video | Clinic | Home |

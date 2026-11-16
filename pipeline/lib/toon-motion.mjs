@@ -1,4 +1,4 @@
-// Measures every person's joints on EVERY frame of a Toon, the way the player will draw them, and
+// Measures every person's joints, and every organ character's hands, on EVERY frame of a Toon, the way the player will draw them, and
 // reports anything a viewer would feel as a jump of the body (owner, 2026-11-16: "legs jump"):
 //   - a foot that slides while the character stands,
 //   - a hip or a knee that moves faster than a calm shift of weight can,
@@ -58,6 +58,23 @@ export const scanMotion = async (toon, timings) => {
             if (a1 > floor && a1 > LIMITS.pop * Math.max(a0, a2, 0.4)) out.pops.push(`${at(f - 1)}: ${b.who}'s ${name} pops (${a1.toFixed(1)} px, then ${a2.toFixed(1)} px)`);
           }
         }
+      }
+      for (const o of cur.organs ?? []) {
+        const p = (prev.organs ?? []).find((x) => x.who === o.who);
+        if (!p) continue;
+        out.people.add(o.who);
+        o.hands.forEach((h, i) => {
+          if (!p.hands[i]) return;
+          const v = dist(h, p.hands[i]);
+          out.worst.arm = Math.max(out.worst.arm, v);
+          const key = `${o.who} hand${i}`;
+          const hist = speeds.get(key) ?? [];
+          hist.push({f, v});
+          if (hist.length > 3) hist.shift();
+          speeds.set(key, hist);
+          if (v > LIMITS.arm) out.armJumps.push(`${at(f)}: ${o.who}'s ${i ? 'right' : 'left'} hand moves ${v.toFixed(1)} px in one frame`);
+          if (hist.length === 3 && hist[1].f === f - 1 && hist[0].f === f - 2 && hist[1].v > 14 && hist[1].v > LIMITS.pop * Math.max(hist[0].v, hist[2].v, 0.4)) out.pops.push(`${at(f - 1)}: ${o.who}'s ${i ? 'right' : 'left'} hand pops (${hist[1].v.toFixed(1)} px)`);
+        });
       }
     } else speeds.clear();
     prev = cur;

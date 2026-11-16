@@ -125,8 +125,11 @@ the stage, and the viewer WATCHES the thing happen. A script switches to this st
 - In a scene with a bubble the people stand a little smaller (doctor 940, patient 900, kid 980) so
   there is air above their heads; a bubble is size 300.
 - Everything else keeps its x, y, and `npm run toon:staging -- <slug>` fails the script if a
-  graphic covers more than 4% of any head, leaves the picture, reaches above y 110, or sits on
-  another graphic that is on screen at the same time.
+  graphic covers more than 4% of any head, leaves the picture, reaches above y 110, sits on
+  another graphic that is on screen at the same time, or reaches down onto the caption line
+  (the caption starts at y 1460: keep a graphic's lower edge above it).
+- The same check measures the room: it fails when a wall chart, clock or picture is more than 15%
+  behind a head (toons-rooms.md). A graphic may cover what hangs on the wall.
 
 ### Sound: a calm mix (owner, 2026-11-16: "too loud and poor sound, don't match my style")
 The channel's own best videos, measured: steady narration over a constant music bed, almost no
@@ -180,8 +183,9 @@ new in it is a line where the story is only being told.
    `videos/<slug>/SCRIPT.md`.
 5. The four measured checks, all required before anything is shown:
    `npm run toon:camera -- <slug>` (no wrong picture, jump cut or jolt),
-   `npm run toon:motion -- <slug>` (no foot slide, leg or arm jump, pop),
-   `npm run toon:staging -- <slug>` (no graphic on a face, out of the picture or on another) and
+   `npm run toon:motion -- <slug>` (no foot slide, leg or arm jump, pop; people and organ hands),
+   `npm run toon:staging -- <slug>` (no graphic on a face, out of the picture, on another or on
+   the caption line; nothing on a wall behind a head) and
    `npm run toon:sound -- <slug>` (few sounds, kept apart, under the voice).
 6. Render the rooms board (toons-rooms.md) and `node pipeline/toon-render.mjs <slug> --draft --silent`
    for a free picture-only preview. Look at frames from every scene yourself first.

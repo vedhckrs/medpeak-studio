@@ -74,6 +74,15 @@ export type RoomLook = {
 };
 export type RoomRole = 'clinic' | 'home';
 export const roomKind = (role: RoomRole, look: RoomLook): RoomKind => (role === 'clinic' ? 'clinic' : look.kind ?? 'bedroom');
+/**
+ * The light a room's time of day puts on the people standing in it: how much of the red, green and
+ * blue of their colours is left (null = daylight, nothing changes). The room itself is tinted in
+ * rooms.tsx; without this the people stay as bright as at noon and look pasted on.
+ */
+export const roomTone = (look?: RoomLook): [number, number, number] | null =>
+  look?.time === 'night' ? [0.78, 0.8, 0.93] : look?.time === 'evening' ? [1, 0.95, 0.9] : null;
+/** Where the one-word caption sits (steady videos: low and plain; the first style: a little higher), so graphics can keep off it. */
+export const captionBox = (steady: boolean) => { const y = steady ? 1470 : 1400; return {y, x0: 220, x1: 860, y0: y - 10, y1: y + 116}; };
 /** Everything that makes a room what it is, as one line (two rooms with the same line are the same room). */
 export const roomSignature = (role: RoomRole, look: RoomLook) =>
   [roomKind(role, look), look.palette, look.wall, look.floor, `${look.window.style}@${look.window.side}`, look.window.view, look.layout, look.chart ?? '-', look.time ?? 'day'].join('|');

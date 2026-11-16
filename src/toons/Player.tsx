@@ -12,7 +12,7 @@ import {AbsoluteFill, Audio, Sequence, interpolate, random, staticFile, useCurre
 import type {Act, CharProps} from './blueprint';
 import {BLUEPRINTS, CAST, type CastName} from './characters';
 import {Camera, type Cam, CAM0, clampCam, H, LENSES, W} from './camera';
-import {frameOf, GAP, layoutToon, type LensName, type MoveName, parseCam, type Placed, propFrames, type Seg, SEG, type SetName, type ShotName, stateAt, type Toon, type ToonActor, type ToonLine, type ToonShot, type ToonTimings, TOON_FPS, propReach, type ToonProp, bedAt, soundPlan} from './director';
+import {frameOf, GAP, layoutToon, type LensName, type MoveName, parseCam, type Placed, propFrames, type Seg, SEG, type SetName, type ShotName, stateAt, type Toon, type ToonActor, type ToonLine, type ToonShot, type ToonTimings, TOON_FPS, propReach, type ToonProp, bedAt, soundPlan, roomTone, captionBox} from './director';
 import {PEOPLE, skeleton, SPECS, jointsOf} from './humans';
 import {Grain} from './ink';
 import {clamp01, E, kick, lerp, lipsync, ramp, settle, type SpokenWord} from './motion';
@@ -20,7 +20,7 @@ import {blendPose, POSES, type PoseName} from './poses';
 import {Prop} from './props';
 import {armOf, blinkAt, type ArmSpec, type Emotion} from './rig';
 import {FLOORS, FORES, OfficeDesk, SETS, WordCaption} from './scenes';
-import {STAGE_SPOTS, type StageFace, stageSpotsAt} from './stages';
+import {STAGE_SPOTS, type StageFace, stageSpotsAt, STAGE_ARMS} from './stages';
 import {theme} from '../brand/theme';
 import {Hold, Slot} from './stage';
 
@@ -281,6 +281,19 @@ export const headBox = (a: ToonActor, set: SetName, state?: Record<string, numbe
   return {who: a.who, x0: sp.faceX - sp.faceW * k[0], x1: sp.faceX + sp.faceW * k[0], y0: sp.faceY - sp.headH * k[1], y1: sp.faceY + sp.headH * k[2], cx: sp.faceX, cy: sp.faceY};
 };
 /**
+ * The part of the picture a head and its hair really cover. `headBox` keeps a margin around the
+ * head so graphics stay clear of it; this one is the head as drawn (big curly or long hair is wide,
+ * a cap is tall, short hair is neither), for judging what a head hides on the wall behind it.
+ */
+export const headSeen = (a: ToonActor, set: SetName) => {
+  const hb = headBox(a, set);
+  if (!hb || !isPerson(a.who)) return hb;
+  const style = SPECS[a.who as keyof typeof SPECS].hair?.style ?? '';
+  const [kx, ky] = style === 'curly' || style === 'long' ? [0.92, 0.06] : /^cap/.test(style) ? [0.6, 0.08] : [0.6, 0.22];
+  const half = ((hb.x1 - hb.x0) / 2) * kx;
+  return {...hb, x0: hb.cx - half, x1: hb.cx + half, y0: hb.y0 + (hb.y1 - hb.y0) * ky};
+};
+/**
  * Where a prop is drawn. A thought bubble with `of` sits above its owner's head, toward the middle
  * of the picture, inside the frame, with its tail toward the owner (`flip` mirrors the cloud when the
  * owner stands on the right). A mark with `on: "bubble"` rides on the bubble before it. Everything
@@ -323,7 +336,7 @@ export const bodiesAt = (L: ReturnType<typeof layoutToon>, f: number) => {
   const shotAt = [...L.shots].reverse().find((s) => f >= s.from) ?? L.shots[0];
   const shot = shotAt.shot;
   const si = L.shots.indexOf(shotAt);
-  if (shot.card !== undefined) return {si, bodies: []};
+  if (shot.card !== undefined) return {si, bodies: [], organs: []};
   const lines = L.lines.filter((l) => l.si === si);
   const cur = lines.find((l) => f >= l.from && f < l.from + l.frames);
   const bodies = (shot.cast ?? []).filter((a) => !a.stage && isPerson(a.who)).map((a) => {
@@ -338,10 +351,17 @@ export const bodiesAt = (L: ReturnType<typeof layoutToon>, f: number) => {
     const arm = (i: 0 | 1) => (J.arms ? {shoulder: px(J.fromTorso(J.arms[i].S)), elbow: px(J.fromTorso(J.arms[i].E)), wrist: px(J.fromTorso(J.arms[i].W))} : null);
     return {who: a.who, walking: en.step !== 0 || en.dx !== 0 || en.dy !== 0, hip: px(J.hip), legs: J.legs.map((l) => ({hip: px(l.hp), knee: px(l.kn), ankle: px(l.an)})), arms: [arm(0), arm(1)]};
   });
-  return {si, bodies};
+  // the stage's own characters (an organ's face and hands): where each hand is, from its shoulder
+  const organs = (shot.cast ?? []).filter((a) => a.stage && STAGE_ARMS[shot.set]?.[a.who]).map((a) => {
+    const A = acting(a, shot, lines, f, cur);
+    const {k, len} = STAGE_ARMS[shot.set][a.who];
+    const hands = (A.arms ?? []).map((sp) => { const x = armOf(sp as ArmSpec); const r = ((x.a ?? 90) * Math.PI) / 180; const l = (x.len ?? len) * k; return [Math.cos(r) * l, Math.sin(r) * l] as [number, number]; });
+    return {who: a.who, hands};
+  });
+  return {si, bodies, organs};
 };
 
-const Actor: React.FC<{a: ToonActor; shot: ToonShot; shotFrom: number; lines: Placed[]; f: number; cur: Placed | undefined; blur: number}> = ({a, shot, shotFrom, lines, f, cur, blur}) => {
+const Actor: React.FC<{a: ToonActor; shot: ToonShot; shotFrom: number; lines: Placed[]; f: number; cur: Placed | undefined; blur: number; tone?: [number, number, number] | null}> = ({a, shot, shotFrom, lines, f, cur, blur, tone}) => {
   const C = (isPerson(a.who) ? PEOPLE[a.who as keyof typeof PEOPLE] : CAST[a.who as CastName]) as React.FC<CharProps>;
   const {cx, cy} = place(a, shot.set);
   const A = acting(a, shot, lines, f, cur);
@@ -349,7 +369,7 @@ const Actor: React.FC<{a: ToonActor; shot: ToonShot; shotFrom: number; lines: Pl
   const {dx, dy, step, scale} = entrance(a, f - shotFrom);
   const land = a.enter === 'drop' ? settle(f, shotFrom + 14, 0.5, 1.1, 0.3) : 0;
   return (
-    <Slot x={cx + dx} y={cy + dy} size={a.size} blur={blur}>
+    <Slot x={cx + dx} y={cy + dy} size={a.size} blur={blur} tone={tone}>
       <g transform={`${a.rot ? `rotate(${a.rot + kick(f, A.emotionFrom, 3, 0.8, 0.25)})` : ''} ${scale !== 1 ? `scale(${scale})` : ''}`}>
         <Hold frame={f} seed={a.x} ground={ground}>
           <C emotion={A.emotion} talk={A.talk} blink={A.blink} arms={A.arms} look={A.look} squash={A.squash + land} noLegs={a.noLegs} flip={a.flip} t={f / TOON_FPS} act={A.act} step={step} />
@@ -454,7 +474,7 @@ export const ToonPlayer: React.FC<ToonProps> = ({toon, timings, sfx, music, bare
       {shot.card ? <TimeCard text={shot.card} n={f - shotAt.from} frames={shotAt.frames} /> : (
         <Camera {...cam}>
           <Set t={f / TOON_FPS} state={state} faces={faces} label={shot.label} look={look} />
-          {shot.cast.filter((a) => !a.stage).map((a) => <Actor key={a.who} a={a} shot={shot} shotFrom={shotAt.from} lines={shotLines} f={f} cur={cur} blur={blurOf(a.who)} />)}
+          {shot.cast.filter((a) => !a.stage).map((a) => <Actor key={a.who} a={a} shot={shot} shotFrom={shotAt.from} lines={shotLines} f={f} cur={cur} blur={blurOf(a.who)} tone={roomTone(look)} />)}
           {shot.desk && <OfficeDesk />}
           {(shot.props ?? []).map((p, i) => {
             const [a, end] = propFrames(L, si, p);
@@ -471,7 +491,7 @@ export const ToonPlayer: React.FC<ToonProps> = ({toon, timings, sfx, music, bare
         </Camera>
       )}
       {flash > 0 && <AbsoluteFill style={{background: '#ffffff', opacity: flash * 0.3}} />}
-      {word && !bare && <WordCaption word={clean(word.w)} key_={clean(word.w).toLowerCase() === keyWord} pop={0.72 + 0.28 * E.back(clamp01((tl - word.start) * TOON_FPS / 4))} y={L.steady ? 1470 : 1400} plain={L.steady} />}
+      {word && !bare && <WordCaption word={clean(word.w)} key_={clean(word.w).toLowerCase() === keyWord} pop={0.72 + 0.28 * E.back(clamp01((tl - word.start) * TOON_FPS / 4))} y={captionBox(L.steady).y} plain={L.steady} />}
       <Grain />
       {L.lines.map((l) => l.file && <Sequence key={l.line.id} from={l.from} durationInFrames={l.frames + 12}><Audio src={staticFile(l.file)} /></Sequence>)}
       {events.filter((e) => has(e.name)).map((e, i) => <Sequence key={i} from={e.at} durationInFrames={90}><Audio src={staticFile(`toons/sfx/${e.name}.mp3`)} volume={e.vol} /></Sequence>)}

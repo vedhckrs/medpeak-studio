@@ -21,7 +21,7 @@ import {LENSES, type LensName, type MoveName, SHOTS, type ShotName} from './came
 import {type ArmSpec, blinkAt, EMOTIONS, type Emotion, Face, Hand, HAND_POSES, type HandPose} from './rig';
 import {BloodSet, DEFAULT_ROOMS, FORES, GutSet, MouthSet, OfficeSet, SETS, StomachSet, ThroatSet, WordCaption, type SetName} from './scenes';
 import {Room, RoomFore, ROOM_FLOOR} from './rooms';
-import type {RoomLook} from './director';
+import {roomTone, type RoomLook} from './director';
 import {Camera, Hold, Slot, Stand} from './stage';
 import {STYLE} from './style';
 
@@ -277,9 +277,9 @@ export const RoomsBoard: React.FC<{title?: string; clinic?: RoomLook; home?: Roo
   return (
     <AbsoluteFill style={{background: '#1d1430'}}>
       <T x={40} y={30} w={1800} size={44} weight={900} color="#ffffff">{title}</T>
-      {cell(40, 'Clinic', line(clinic), <><Room look={clinic} role="clinic" t={2} /><Stand x={285} floor={ROOM_FLOOR} size={1040}><Doc emotion="happy" t={0.6} arms={POSES.explain.person} /></Stand><Stand x={805} floor={ROOM_FLOOR} size={1000}><A emotion="neutral" t={0.6} /></Stand><RoomFore look={clinic} role="clinic" t={2} /></>)}
+      {cell(40, 'Clinic', line(clinic), <><Room look={clinic} role="clinic" t={2} /><Stand x={285} floor={ROOM_FLOOR} size={940} tone={roomTone(clinic)}><Doc emotion="happy" t={0.6} arms={POSES.explain.person} /></Stand><Stand x={805} floor={ROOM_FLOOR} size={people[0] === 'kid' ? 980 : 900} tone={roomTone(clinic)}><A emotion="neutral" t={0.6} /></Stand><RoomFore look={clinic} role="clinic" t={2} /></>)}
       {cell(586, 'Clinic, empty', '', <><Room look={clinic} role="clinic" t={2} /><RoomFore look={clinic} role="clinic" t={2} /></>)}
-      {cell(1132, `Home: ${home.kind ?? 'bedroom'}`, line(home), <><Room look={home} role="home" t={2} /><Stand x={540} floor={ROOM_FLOOR} size={1040}><B emotion="sick" t={0.6} arms={POSES.heart.person} /></Stand><RoomFore look={home} role="home" t={2} /></>)}
+      {cell(1132, `Home: ${home.kind ?? 'bedroom'}`, line(home), <><Room look={home} role="home" t={2} /><Stand x={540} floor={ROOM_FLOOR} size={1040} tone={roomTone(home)}><B emotion="sick" t={0.6} arms={POSES.heart.person} /></Stand><RoomFore look={home} role="home" t={2} /></>)}
     </AbsoluteFill>
   );
 };

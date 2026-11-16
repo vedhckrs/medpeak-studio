@@ -349,6 +349,55 @@ test('the staging check catches a bubble put on the doctor, and a thought bubble
   assert.ok(r.onHeads.some((x) => x.includes('doctor')), 'a bubble over the doctor is reported');
 });
 
+test('no graphic sits on the caption line, and the staging check catches one that does', async () => {
+  for (const t of real) assert.deepEqual((await scanStaging(t, null)).onCaption, [], `${t.slug}: a graphic on the caption line`);
+  const t = clone(real[0]);
+  const shot = t.shots.find((s) => (s.props ?? []).some((p) => p.kind === 'tag' && p.x));
+  Object.assign(shot.props.find((p) => p.kind === 'tag' && p.x), {x: 540, y: 1500});
+  assert.ok((await scanStaging(t, null)).onCaption.length >= 1, 'a tag typed onto the caption line is reported');
+});
+
+// ---------------------------------------------------------------- what hangs on the wall stays in view
+test('in every room a recipe can make, the wall items hang above head height, inside the picture, off the window and off each other', async () => {
+  const {wallItems, windowBox, WALL_BAND} = await import('../../src/toons/rooms.tsx');
+  const {ROOM_LAYOUTS, ROOM_WINDOWS, ROOM_SIDES} = await import('../../src/toons/director.ts');
+  const hit = (a, b) => Math.min(a[2], b[2]) - Math.max(a[0], b[0]) > 0 && Math.min(a[3], b[3]) - Math.max(a[1], b[1]) > 0;
+  let rooms = 0;
+  for (const [kind, layouts] of Object.entries(ROOM_LAYOUTS)) for (const layout of layouts) for (const style of ROOM_WINDOWS) for (const side of ROOM_SIDES) {
+    const look = {kind, palette: 'mint', wall: 'paint', floor: 'wood', window: {style, side, view: 'garden'}, layout, chart: 'body'};
+    const role = kind === 'clinic' ? 'clinic' : 'home';
+    const items = wallItems(look, role);
+    const where = `${kind}, ${layout}, ${style} window ${side}`;
+    assert.ok(items.length >= 2, `${where}: something hangs on the wall`);
+    rooms++;
+    items.forEach((it, i) => {
+      assert.ok(it.box[1] >= WALL_BAND.top && it.box[3] <= WALL_BAND.bottom, `${where}: the ${it.kind} hangs at ${it.box[1]} to ${Math.round(it.box[3])} px, outside the band above the heads`);
+      assert.ok(it.box[0] >= 8 && it.box[2] <= 1072, `${where}: the ${it.kind} leaves the picture (${Math.round(it.box[0])} to ${Math.round(it.box[2])} px)`);
+      assert.ok(!hit(it.box, windowBox(look)), `${where}: the ${it.kind} hangs on the window`);
+      for (const o of items.slice(i + 1)) assert.ok(!hit(it.box, o.box), `${where}: the ${it.kind} and the ${o.kind} overlap`);
+    });
+  }
+  assert.ok(rooms >= 100, `${rooms} rooms measured`);
+});
+
+test('nothing on a wall is behind a head on any real script, and the staging check catches the first rooms\' chart behind Dr. Mira', async () => {
+  for (const t of real) { const r = await scanStaging(t, null); assert.ok(r.wallItems >= 4, `${t.slug}: wall items were measured`); assert.deepEqual(r.hidden, [], `${t.slug}: a wall item behind a head`); }
+  const t = real.find((x) => x.slug === 'pill-without-water');
+  const first = () => [{kind: 'chart', x: 400, y: 250, s: 1, box: [250, 250, 550, 680]}]; // where the room kit first hung it
+  const r = await scanStaging(t, null, {wallItems: first});
+  assert.ok(r.hidden.some((x) => x.includes('chart') && x.includes('doctor')), 'the chart behind the doctor is reported');
+});
+
+test('people take the light of a night room, and keep their colours by day', async () => {
+  const {roomTone} = await import('../../src/toons/director.ts');
+  assert.equal(roomTone({time: 'day'}), null);
+  assert.equal(roomTone(undefined), null);
+  const night = roomTone({time: 'night'});
+  assert.ok(night.every((v) => v < 1 && v >= 0.7), 'dimmed, still easy to read');
+  assert.ok(night[2] > night[0], 'cooler: more of the blue is kept than of the red');
+  for (const t of real) for (const s of t.shots) if (s.set === 'home' && t.rooms.home.time === 'night') assert.ok(roomTone(t.rooms.home), `${t.slug}: the night home dims its people`);
+});
+
 // ---------------------------------------------------------------- a calm mix (owner: "too loud and poor sound")
 test('a Toon has few sound effects, kept apart, and no automatic sound on moods, key words or graphics', () => {
   for (const t of real) {

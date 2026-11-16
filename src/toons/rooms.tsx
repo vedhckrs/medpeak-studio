@@ -434,6 +434,59 @@ const Furniture: React.FC<{look: RoomLook; role: RoomRole; pal: Pal; t: number}>
   return /-right$/.test(look.layout) ? <g transform={`translate(${W} 0) scale(-1 1)`}>{body}</g> : body;
 };
 
+// ------------------------------------------------------------------ what hangs on the wall, and where
+/**
+ * The band of wall that stays in view: below the app's own buttons at the top, above the hair of
+ * the tallest character (Dr. Mira's curls start near y 545). Everything that hangs on a wall goes
+ * here, so no chart or picture ends up behind a head (the first rooms hung them by the window only).
+ */
+export const WALL_BAND = {top: 130, bottom: 500};
+export type WallItem = {kind: 'chart' | 'clock' | 'certificate' | 'picture' | 'shelf' | 'mirror' | 'towel'; x: number; y: number; s: number; r?: number; w?: number; h?: number; seed?: string; box: [number, number, number, number]};
+/** The window's box [x0, y0, x1, y1], frame included. */
+export const windowBox = (look: RoomLook): [number, number, number, number] => { const w = windowOf(look).box; return [w[0] - 17, w[1] - 17, w[0] + w[2] + 17, w[1] + w[3] + 17]; };
+/** Every wall item of a room with the box it takes up [x0, y0, x1, y1]. The room draws from this list and the staging check measures it. */
+export const wallItems = (look: RoomLook, role: RoomRole): WallItem[] => {
+  const win = windowOf(look);
+  const kind = roomKind(role, look);
+  const seed = `${kind}${look.palette}${look.layout}${look.window.style}`;
+  // where the wall is free beside the window: a wide place (a) for the chart or a picture, a narrow one (b) for the clock
+  const hw = win.box[2] / 2 + 38;
+  const side = look.window.side;
+  const [a, b] = side === 'left' ? [win.cx + hw + 160, Math.min(972, win.cx + hw + 430)] : side === 'right' ? [win.cx - hw - 160, Math.max(108, win.cx - hw - 430)] : hash(seed) % 2 ? [Math.max(150, (win.cx - hw) / 2), (win.cx + hw + W) / 2] : [Math.min(W - 150, (win.cx + hw + W) / 2), (win.cx - hw) / 2];
+  const fit = Math.min(1, side === 'centre' ? (win.cx - hw - 24) / 300 : 1); // a centre window leaves less wall on each side
+  const top = WALL_BAND.top + 10;
+  const out: WallItem[] = [];
+  if (kind === 'clinic') {
+    const s = Math.min(0.8, fit);
+    // beside a side window the chart takes the place at the edge of the wall and the small things the
+    // place by the window: thought bubbles and tags come up in the middle of the picture
+    const [cx, kx] = side === 'centre' ? [a, b] : [b, a];
+    out.push({kind: 'chart', x: cx, y: top, s, box: [cx - 150 * s, top, cx + 150 * s, top + 430 * s]});
+    out.push({kind: 'clock', x: kx, y: top + 74, s: 1, r: 74, box: [kx - 74, top, kx + 74, top + 148]});
+    out.push({kind: 'certificate', x: kx, y: top + 172, s: 0.85, box: [kx - 68, top + 172, kx + 68, top + 342]});
+  }
+  if (kind === 'kitchen') {
+    out.push({kind: 'shelf', x: a, y: 300, s: 1, seed, box: [a - 130, 308, a + 130, 466]});
+    out.push({kind: 'clock', x: b, y: 300, s: 1, r: 80, box: [b - 80, 220, b + 80, 380]});
+  }
+  if (kind === 'bedroom' || kind === 'living') {
+    const [w, h] = [Math.round(220 * fit), Math.round(264 * fit)];
+    out.push({kind: 'picture', x: a, y: top + 10, s: 1, w, h, seed, box: [a - w / 2, top + 10, a + w / 2, top + 10 + h]});
+    out.push({kind: 'picture', x: b, y: top + 50, s: 1, w: 170, h: 170, seed: `${seed}2`, box: [b - 85, top + 50, b + 85, top + 220]});
+  }
+  if (kind === 'bathroom') {
+    const mirrored = /-right$/.test(look.layout);
+    const sinkX = mirrored ? W - 260 : 260;
+    const free = Math.abs(sinkX - win.cx) > hw + 110; // the wall above the sink is free: the mirror hangs there
+    const near = Math.abs(a - sinkX) < Math.abs(b - sinkX) ? a : b;
+    const mx = free ? sinkX : near;
+    const tx = free ? (mirrored ? W - 84 : 84) : near === a ? b : a;
+    out.push({kind: 'mirror', x: mx, y: 320, s: 0.85, box: [mx - 107, 170, mx + 107, 470]});
+    out.push({kind: 'towel', x: tx, y: 330, s: 0.62, box: [tx - 68, 326, tx + 68, 432]});
+  }
+  return out;
+};
+
 // ------------------------------------------------------------------ the room
 /** One room, built from its recipe. `role` = clinic or home. */
 export const Room: React.FC<{look: RoomLook; role: RoomRole; t: number}> = ({look, role, t}) => {
@@ -444,13 +497,6 @@ export const Room: React.FC<{look: RoomLook; role: RoomRole; t: number}> = ({loo
   const time = look.time ?? 'day';
   const wallD = `M-300 -300 H${W + 300} V1420 H-300 Z ${win.d}`;
   const seed = `${kind}${look.palette}${look.layout}${look.window.style}`;
-  // where the wall is free beside the window: a wide place (a) for the chart or a picture, a narrow one (b) for the clock
-  const hw = win.box[2] / 2 + 38;
-  const side = look.window.side;
-  const [a, b] = side === 'left' ? [win.cx + hw + 160, Math.min(972, win.cx + hw + 430)] : side === 'right' ? [win.cx - hw - 160, Math.max(108, win.cx - hw - 430)] : hash(seed) % 2 ? [Math.max(150, (win.cx - hw) / 2), (win.cx + hw + W) / 2] : [Math.min(W - 150, (win.cx + hw + W) / 2), (win.cx - hw) / 2];
-  const aScale = Math.min(1, side === 'centre' ? (win.cx - hw - 24) / 300 : 1);
-  const mirrored = /-right$/.test(look.layout);
-  const sinkX = mirrored ? W - 260 : 260;
   return (
     <AbsoluteFill style={{background: pal.wall}}>
       <Layer p={0.35}><Canvas><View look={look} win={win} t={t} uid={uid} /></Canvas></Layer>
@@ -490,11 +536,16 @@ export const Room: React.FC<{look: RoomLook; role: RoomRole; t: number}> = ({loo
           <path d={`M${win.box[0] + 30} ${win.box[1] + 60} l70 70 M${win.box[0] + 70} ${win.box[1] + 40} l70 70`} stroke="#ffffff" strokeWidth={13} strokeLinecap="round" opacity={0.45} />
           {win.sill && <rect x={win.sill[0]} y={win.sill[1]} width={win.sill[2]} height={34} rx={10} fill={pal.trim} {...O} />}
           {/* on the wall */}
-          {kind === 'clinic' && <g transform={`translate(${a} 250) scale(${aScale.toFixed(3)}) translate(${-a} -250)`}><Chart kind={look.chart ?? 'body'} x={a} y={250} accent={pal.accent} /></g>}
-          {kind === 'clinic' && <><Clock x={b} y={300} r={84} t={t} rim={pal.accent} /><Certificate x={b} y={440} accent={pal.accent} /></>}
-          {kind === 'bathroom' && <><Mirror x={Math.abs(a - sinkX) < Math.abs(b - sinkX) ? a : b} y={250} t={t} pal={pal} /><TowelRail x={Math.abs(a - sinkX) < Math.abs(b - sinkX) ? b : a} y={790} pal={pal} /></>}
-          {kind === 'kitchen' && <><Shelf x={a} y={330} pal={pal} seed={seed} /><Clock x={b} y={320} r={84} t={t} rim={pal.accent} /></>}
-          {(kind === 'bedroom' || kind === 'living') && <><Picture x={a} y={260} pal={pal} seed={seed} w={Math.round(250 * aScale)} h={Math.round(300 * aScale)} /><Picture x={b} y={300} pal={pal} seed={`${seed}2`} w={190} h={190} /></>}
+          {wallItems(look, role).map((it, i) => {
+            const scaled = (kids: React.ReactNode) => <g key={i} transform={`translate(${it.x} ${it.y}) scale(${it.s}) translate(${-it.x} ${-it.y})`}>{kids}</g>;
+            if (it.kind === 'chart') return scaled(<Chart kind={look.chart ?? 'body'} x={it.x} y={it.y} accent={pal.accent} />);
+            if (it.kind === 'clock') return <Clock key={i} x={it.x} y={it.y} r={it.r ?? 80} t={t} rim={pal.accent} />;
+            if (it.kind === 'certificate') return scaled(<Certificate x={it.x} y={it.y} accent={pal.accent} />);
+            if (it.kind === 'picture') return <Picture key={i} x={it.x} y={it.y} pal={pal} seed={it.seed ?? seed} w={it.w} h={it.h} />;
+            if (it.kind === 'shelf') return <Shelf key={i} x={it.x} y={it.y} pal={pal} seed={it.seed ?? seed} />;
+            if (it.kind === 'mirror') return scaled(<Mirror x={it.x} y={it.y - 190} t={t} pal={pal} />);
+            return scaled(<TowelRail x={it.x} y={it.y} pal={pal} />);
+          })}
           {/* light through the window, dust in it */}
           {time !== 'night' && (
             <g opacity={time === 'evening' ? 0.9 : 0.7}>

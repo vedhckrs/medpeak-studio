@@ -14,8 +14,8 @@ measures it on every script (they all run in `npm test`).
 |---|---|---|
 | script gate | script, Retention 7, format, own and unique rooms, sources | `node pipeline/toon-check.mjs <slug>` |
 | camera | every frame: wrong picture, jump cut, jolt | `npm run toon:camera -- <slug>` |
-| motion | every joint of every person, every frame | `npm run toon:motion -- <slug>` |
-| staging | every graphic against every head, the frame, the other graphics | `npm run toon:staging -- <slug>` |
+| motion | every joint of every person and every organ character's hands, every frame | `npm run toon:motion -- <slug>` |
+| staging | every graphic against every head, the frame, the other graphics and the caption line; everything on a room's wall against the heads in front of it | `npm run toon:staging -- <slug>` |
 | sound | how many effects, how far apart, effects and music against the voice | `npm run toon:sound -- <slug>` |
 | upload read-back | what YouTube really stored (privacy, AI-use answer, cover) | printed by `publish/upload.py` |
 
@@ -39,19 +39,24 @@ measures it on every script (they all run in `npm test`).
 | 15 | a line in descriptions said how the videos are made | I added it unasked | removed; rule in SKILL.md | - |
 | 16 | "camera jump" (first director) | default whips, punch-ins, mid-word cuts | steady camera | camera check |
 
+| 17 | (found by me, not yet seen by the owner) an organ's arm could jump and nothing would notice | the motion check measured people only | the hands of every organ character on a stage are measured too (fastest hand or elbow in the three scripts: 58 px a frame, limit 85) | motion check |
+| 18 | at night the room was dark and the person in it as bright as at noon | the night tint was on the room layer only | people take the room's light (`roomTone`: night keeps 78% red, 80% green, 93% blue; measured on the kitchen scene, the face went from 174 to 137 in red while the wall stayed the same) | test: night dims, day does not |
+| 19 | wall items sat behind heads (measured on the first rooms: the certificate 34% and the chart 23% behind Dr. Mira in the pill video, the towel rail 48% behind the boy's cap in the sugar video) | the room kit hung wall items by the window, not by where people stand | everything on a wall hangs in a band above the heads (y 130 to 500, `WALL_BAND`); the chart takes the edge of the wall, away from the middle where bubbles and tags come up | staging check: fails when more than 15% of a wall item is behind a head; a test hangs the items in all 144 rooms a recipe can make |
+| 20 | the staging check did not know the caption line or the walls | it compared graphics with heads, the frame and each other only | it also fails a graphic on the caption line and a wall item behind a head | staging check |
+
+**Decided, not bugs:** a bubble or a tag may cover what hangs on the wall (it is drawn over the room
+and gone in a few seconds; there is no free wall left for all of them), and people stand in front
+of furniture on purpose (a desk, a bed). Neither is checked.
+
 ## Open, and why
-| # | What | Why it is still open |
-|---|---|---|
-| a | The AI-use answer is not set on the three live videos | changing a live video needs the owner's yes each time |
-| b | The three live videos show YouTube's automatic frame, not our cover | see 4; pick the frame in the YouTube app |
-| c | The question comments are not pinned | YouTube's interface for programs has no "pin" |
-| d | The three live videos keep the old bubbles and the old sound | the owner said not to redo uploaded videos |
-| e | No long video to link the Shorts to | none is made yet (its voices were never approved) |
-| f | Organ characters (stage faces, organ arms) are not in the motion check | it measures people only; a jump in an organ's arm would not be caught |
-| g | At night the room is dimmed but the people are not | the tint is on the room layer only |
-| h | A wall chart can end up behind Dr. Mira's hair | the room kit places wall items by the window, not by where people stand |
-| i | The staging check does not know the wall items, the furniture or the caption line | it compares graphics with heads, the frame and each other only |
-| j | The character voices are brighter than the channel's narration (about 22% of the sound above 4 kHz against 19%) | pitch-shifted voices; not changed without the owner's ear |
-| k | Sound and motion are judged by measurement only | I cannot hear or watch; the owner's eyes and ears decide |
-| l | 18 of the 26 character voices have never been heard by the owner | they are not in a video yet |
-| m | The YouTube login expires about every 7 days | the Google app is in testing mode |
+| # | What | Why it is still open | Who can close it |
+|---|---|---|---|
+| a | The AI-use answer is not set on the three live videos | changing a live video needs the owner's yes each time | the owner says yes, then `publish/after_upload.py <slug> toon --label --approve` |
+| b | The three live videos show YouTube's automatic frame, not our cover | see 4 | the owner picks the frame in the YouTube app |
+| c | The question comments are not pinned | YouTube's interface for programs has no "pin" | the owner pins them in the app |
+| d | The three live videos keep the old bubbles, the old sound, the old walls and no night light on people | the owner said not to redo uploaded videos | nobody, unless the owner asks for a re-upload |
+| e | No long video to link the Shorts to | none is made yet (its voices were never approved) | the owner approves a long video |
+| f | The character voices are brighter than the channel's narration (about 22% of the sound above 4 kHz against 19%) | pitch-shifted voices; not changed without the owner's ear | the owner listens to the sample |
+| g | Sound and motion are judged by measurement only | I cannot hear or watch; the owner's eyes and ears decide | the owner |
+| h | 18 of the 26 character voices have never been heard by the owner | they are not in a video yet | closes as videos are made |
+| i | The YouTube login expires about every 7 days | the Google app is in testing mode | the owner publishes the Google app, or signs in again each week |
