@@ -13,3 +13,7 @@ assets/sfx/*.wav
 *.wav
 .DS_Store
 __pycache__/
+
+# Toons: the sound-effect library and music beds are paid for once, so they ARE committed
+!assets/toons-sfx/*.mp3
+!assets/toons-music/*.mp3

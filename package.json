@@ -16,7 +16,11 @@
     "qc": "node pipeline/qc.mjs",
     "package": "node pipeline/package.mjs",
     "test": "node --test \"pipeline/test/*.test.mjs\"",
-    "toons:sheets": "node pipeline/toon-sheets.mjs"
+    "toons:sheets": "node pipeline/toon-sheets.mjs",
+    "toon:voice": "node pipeline/toon-voice.mjs",
+    "toon:sfx": "node pipeline/toon-sfx.mjs",
+    "toon:music": "node pipeline/toon-music.mjs",
+    "toon:render": "node pipeline/toon-render.mjs"
   },
   "dependencies": {
     "@remotion/cli": "4.0.543",

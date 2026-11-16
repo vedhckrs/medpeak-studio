@@ -310,5 +310,10 @@ export const SPECS: Record<string, HumanSpec> = {
   grandpa: {name: 'grandpa', role: 'Grandpa: old habits, old remedies, a good heart.', skin: '#e8b28c', height: 0.95, hair: {style: 'balding', color: '#f1f2f6'}, top: {kind: 'cardigan', color: '#8d7bd1', under: '#f4f1e8'}, bottom: {kind: 'trousers', color: '#7b6a5a'}, shoes: '#5a4a3f', moustache: '#f1f2f6'},
   baby: {name: 'baby', role: 'The toddler: cannot explain what hurts, so the body does it for him.', skin: '#ffd9c2', height: 0.62, head: 1.45, legs: 0.45, hair: {style: 'baby', color: '#b9825a'}, top: {kind: 'onesie', color: '#bfe3ff'}, bottom: {kind: 'trousers', color: '#bfe3ff'}, shoes: '#ffffff'},
 };
+/** Where a person's head centre sits in the 200-unit box (people differ in height, head size and leg length). */
+export const headY = (sp: {height?: number; head?: number; legs?: number}) => {
+  const h = sp.height ?? 1;
+  return 96 - (149 - (1 - (sp.legs ?? 1)) * 70) * h - 21 * (sp.head ?? 1) * h;
+};
 export type PersonName = 'doctor' | 'patient' | 'mom' | 'kid' | 'grandpa' | 'baby';
 export const PEOPLE = Object.fromEntries(Object.entries(SPECS).map(([k, sp]) => [k, makeHuman(sp)])) as Record<PersonName, Person>;

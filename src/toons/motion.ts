@@ -34,3 +34,38 @@ export const speak = (f: number, from: number, to: number, seed = 0) => {
   const vary = 0.72 + 0.28 * Math.sin((f - from) * 0.37 + seed * 3);
   return edge * syl ** 0.7 * vary;
 };
+
+// ------------------------------------------------------------------ lip-sync
+export type SpokenWord = {w: string; start: number; end: number};
+const VOWEL_OPEN: Record<string, number> = {a: 1, o: 0.9, e: 0.7, u: 0.62, i: 0.56, y: 0.5};
+/**
+ * Mouth opening (0-1) at time `t` (seconds into the line) from ElevenLabs word timings.
+ * Each word opens once per syllable; the opening size follows the vowel (a/o wide, e/i narrow);
+ * the lips close on m, b, p and between words.
+ */
+export const lipsync = (words: SpokenWord[], t: number) => {
+  const w = words.find((x) => t >= x.start && t <= x.end + 0.03);
+  if (!w) return 0;
+  const letters = w.w.toLowerCase().replace(/[^a-z]/g, '');
+  if (!letters) return 0;
+  const groups = letters.match(/[aeiouy]+/g) ?? ['e'];
+  const u = clamp01((t - w.start) / Math.max(0.06, w.end - w.start));
+  const idx = Math.min(groups.length - 1, Math.floor(u * groups.length));
+  const local = u * groups.length - idx;
+  const size = VOWEL_OPEN[groups[idx][0]] ?? 0.7;
+  const lipsClosed = /^[mbp]/.test(letters) && u < 0.14;
+  if (lipsClosed) return 0;
+  return clamp01(Math.sin(Math.PI * local) ** 0.6 * size * 0.95 + 0.05);
+};
+/** Fake word timings (evenly spread) so a scene can be previewed before its voice exists. */
+export const guessWords = (text: string, seconds: number): SpokenWord[] => {
+  const ws = text.split(/\s+/).filter(Boolean);
+  const total = ws.reduce((n, x) => n + x.length + 2, 0);
+  let at = 0.05;
+  return ws.map((x) => {
+    const d = ((x.length + 2) / total) * (seconds - 0.3);
+    const word = {w: x, start: at, end: at + d * 0.86};
+    at += d;
+    return word;
+  });
+};

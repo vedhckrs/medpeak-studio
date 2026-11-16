@@ -1,0 +1,57 @@
+#!/usr/bin/env node
+/**
+ * Toon music beds: a few short, loopable comedy underscores made ONCE with ElevenLabs Music, kept in
+ * assets/toons-music/ (committed) and reused. A Toon picks one by name ("music": "bouncy").
+ *
+ *   node pipeline/toon-music.mjs --dry-run
+ *   node pipeline/toon-music.mjs --approve --max-credits N [--only bouncy] [--model music_v2_5]
+ *
+ * The API gives no price estimate, so the script measures the first bed and stops if the set would
+ * go over the cap.
+ */
+import fs from 'node:fs';
+import path from 'node:path';
+import {args, ROOT} from './lib/util.mjs';
+import {approved, balance, needApproval, post, printPool} from './lib/eleven.mjs';
+import {bedFx, MUSIC_DIR} from './lib/toon-audio.mjs';
+
+const TAIL = 'Instrumental only, no vocals, no lead melody that fights a voice, keep the 1-4 kHz voice range clear, steady and loopable, clean ending.';
+export const BEDS = [
+  ['bouncy', 40, `Playful cartoon comedy underscore: pizzicato strings, ukulele, light woodblock percussion, bouncy tuba bass, 112 BPM, sneaky and funny. ${TAIL}`],
+  ['sneaky', 40, `Tiptoe sneaking cartoon underscore: pizzicato bass, clarinet and soft xylophone, mysterious but funny, 96 BPM. ${TAIL}`],
+  ['panic', 30, `Fast comedic chase underscore: quick xylophone runs, staccato strings and snare, cartoon panic, 150 BPM. ${TAIL}`],
+  ['doctor', 40, `Warm reassuring underscore for a kind doctor explaining: soft marimba, felt piano and light shaker, calm and hopeful, 92 BPM. ${TAIL}`],
+];
+
+const main = async () => {
+  const a = args();
+  const only = a.only ? new Set(String(a.only).split(',')) : null;
+  const todo = BEDS.filter(([n]) => (only ? only.has(n) : !fs.existsSync(path.join(MUSIC_DIR, `${n}.mp3`))));
+  const total = todo.reduce((s, [, d]) => s + d, 0);
+  const bal = await balance();
+  console.log(`Music beds to make: ${todo.map(([n, d]) => `${n} (${d} s)`).join(', ') || 'none'}  ->  ${total} s in total`);
+  console.log('Cost: ElevenLabs gives no estimate for music; one published figure is about 900 credits a minute. The script measures the first bed.');
+  printPool(bal);
+  if (a['dry-run'] || !todo.length) return;
+  if (!approved()) needApproval(`music beds (${total} s)`);
+  const cap = Number(a['max-credits'] || 0);
+  if (!cap) { console.error('Stopped: give the approved cap with --max-credits N.'); process.exit(5); }
+  let doneSeconds = 0;
+  for (const [name, dur, prompt] of todo) {
+    const body = {prompt, music_length_ms: dur * 1000, force_instrumental: true, ...(a.model ? {model_id: a.model} : {})};
+    const r = await post('/music?output_format=mp3_44100_128', body);
+    const raw = path.join(ROOT, 'out', 'toons', 'raw', 'music', `${name}.mp3`);
+    fs.mkdirSync(path.dirname(raw), {recursive: true});
+    fs.writeFileSync(raw, Buffer.from(await r.arrayBuffer()));
+    bedFx(raw, path.join(MUSIC_DIR, `${name}.mp3`));
+    doneSeconds += dur;
+    const spent = bal.left - (await balance()).left;
+    const projected = Math.round((spent / doneSeconds) * total);
+    console.log(`made ${name}: ${spent} credits spent so far; the set projects to ${projected}`);
+    if (projected > cap && doneSeconds < total) { console.error(`Stopped: the projected total ${projected} is over the approved cap ${cap}.`); process.exit(5); }
+  }
+  const after = await balance();
+  console.log(`Done. Beds in assets/toons-music/. Spent ${bal.left - after.left} credits; ${after.left} left.`);
+};
+
+if (import.meta.url === `file://${process.argv[1]}`) main().catch((e) => { console.error(e.message); process.exit(1); });

@@ -389,3 +389,5 @@ export const WordCaption: React.FC<{word: string; key_?: boolean; y?: number; po
 
 export const SETS = {throat: ThroatSet, gut: GutSet, stomach: StomachSet, mouth: MouthSet, blood: BloodSet, lungs: LungsSet, office: OfficeSet, bathroom: BathroomSet, bedroom: BedroomSet};
 export type SetName = keyof typeof SETS;
+/** Where characters stand in each set (screen y of the floor). null = no floor: characters float. */
+export const FLOORS: Record<SetName, number | null> = {throat: null, gut: 1330, stomach: 1440, mouth: 1300, blood: 1350, lungs: null, office: 1500, bathroom: 1580, bedroom: 1580};

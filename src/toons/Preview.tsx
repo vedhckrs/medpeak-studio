@@ -10,7 +10,7 @@ import {AbsoluteFill, useCurrentFrame, useVideoConfig} from 'remotion';
 import {theme} from '../brand/theme';
 import type {Blueprint, CharProps} from './blueprint';
 import {BLUEPRINTS, CAST, type CastName} from './characters';
-import {PEOPLE, SPECS, type PersonName} from './humans';
+import {headY, PEOPLE, SPECS, type PersonName} from './humans';
 import {circlePath, Grain, lineOf, Part, tone} from './ink';
 import {clamp01, E, key, settle, speak} from './motion';
 import {type ArmSpec, blinkAt, EMOTIONS, type Emotion, Face, Hand, HAND_POSES, type HandPose} from './rig';
@@ -23,8 +23,6 @@ const INK = STYLE.ink;
 const PAPER = 'linear-gradient(#fbf7f0, #f6efe4)';
 export const ORDER: string[] = ['stomach', 'intestine', 'liver', 'kidney', 'bladder', 'lungs', 'heart', 'brain', 'tooth', 'bone', 'pill', 'poop', 'redcell', 'whitecell', 'platelet', 'egg', 'sperm', 'virus', 'bacteria', 'doctor', 'patient', 'mom', 'kid', 'grandpa', 'baby'];
 const groundOf = (n: string) => (n in BLUEPRINTS ? BLUEPRINTS[n as CastName].ground.y : 96);
-/** Where a person's head centre sits in the 200-unit box (people differ in height and head size). */
-const headY = (sp: {height?: number; head?: number; legs?: number}) => { const h = sp.height ?? 1; return 96 - (149 - (1 - (sp.legs ?? 1)) * 70) * h - 21 * (sp.head ?? 1) * h; };
 const T: React.FC<{x: number; y: number; w?: number; size?: number; weight?: number; color?: string; align?: 'left' | 'center' | 'right'; spacing?: number; children: React.ReactNode}> = ({x, y, w = 400, size = 24, weight = 700, color = INK, align = 'left', spacing = 0, children}) => (
   <div style={{position: 'absolute', left: align === 'center' ? x - w / 2 : align === 'right' ? x - w : x, top: y, width: w, textAlign: align, fontFamily: theme.font, fontSize: size, fontWeight: weight, color, letterSpacing: spacing, lineHeight: 1.25}}>{children}</div>
 );

@@ -36,11 +36,48 @@ cartoon health channel (format only). We never copy anyone's characters, art, au
 
 See `toons-style.md` (look and research) and `toons-blueprint.md` (how to add a character).
 
+
+## Phase B: voices, lip-sync, sound and music (built 2026-11-16)
+A Toon is one file, `videos/<slug>/toon.json`. The player (`src/toons/Player.tsx`, composition `Toon`)
+turns it into the whole Short: staging, acting, lip-sync, camera cuts, captions, sound effects, music.
+
+```json
+{"slug": "pill-without-water", "title": "...", "music": "bouncy",
+ "shots": [{"id": "A", "set": "throat",
+   "cast": [{"who": "whitecell", "x": 350, "y": 700, "size": 720, "noLegs": true, "pose": "hips"}],
+   "lines": [{"id": "A1", "who": "whitecell", "text": "Hey! You can't park here.",
+              "emotion": "angry", "pose": "point", "key": "here", "sfx": "bonk", "react": {"pill": "scared"}}]}]}
+```
+- `set`: throat, gut, stomach, mouth, blood, lungs, office, bathroom, bedroom. People stand on the set's
+  floor automatically; floating body characters need `y`.
+- `emotion`: one of the 9 faces. `pose`: rest, wave, point, pointLeft, panic, fists, thumb, shrug, hips,
+  belly, explain, think (`src/toons/poses.ts`). `key`: the caption word shown in amber. `react`: faces of
+  the listeners. `sfx`: an effect from the library; without it the emotion picks one.
+- The player does the rest: a shot opens wide, then cuts to whoever speaks, and long lines alternate
+  wide and close so no picture stays longer than 2.6 s (Retention 7).
+
+| File | What |
+|---|---|
+| `skill/medpeak-health/toons-cast.json` | The fixed voice of each of the 25 characters (ElevenLabs default voices, so every key has them), pitch in semitones, speed, and the acting settings per emotion |
+| `pipeline/toon-voice.mjs` | One clip per line with word timing; ffmpeg shifts the pitch per character (speed unchanged, so timing stays valid). `--audition` makes one sample per character |
+| `pipeline/toon-sfx.mjs` | The cartoon sound-effect library (38 effects), made once, kept in `assets/toons-sfx/` and committed |
+| `pipeline/toon-music.mjs` | 4 comedy beds (bouncy, sneaky, panic, doctor), made once, kept in `assets/toons-music/` and committed |
+| `pipeline/toon-render.mjs` | Renders the Short (`--draft`, `--stills`); works silent before the voice exists; masters to -14 LUFS |
+| `src/toons/motion.ts` | `lipsync(words, t)`: the mouth opens on each spoken word and closes between words |
+
+Order of work for a Toon: write `toon.json` -> `toon-render --stills` (free, silent check) ->
+`toon-voice --dry-run` -> owner approves -> `toon-voice --approve --max-characters N` -> `toon-render`.
+
+**Money rules.** Voices cost 1 credit a character. Sound effects and music have no firm published API
+price, so those two scripts measure the real cost on the first item and stop if the projection passes
+the approved cap (`--max-credits`). All three print the plan for free with `--dry-run` and refuse to
+spend without `--approve`. The library and the beds are paid for once and never again.
+
 ## Roadmap
 - Phase A (done 2026-11-16, v5): engine, rig, blueprint system, 19 body characters, 6 full-body people,
   9 sets, model sheets, acting toolkit.
-- Phase B: cast voices (fixed ElevenLabs voice per character), lip-sync from word timing, one-time
-  cartoon sound-effect library (quoted first), comedy music beds.
-- Phase C: dialogue script format (speaker, line, emotion, action), Retention 7 adaptation, doctor
-  lines fact-checked against sources, auto shot list (a new picture every 3 s).
+- Phase B (code done 2026-11-16; voices, the effect library and the music beds wait for the owner's
+  approval of the quoted credits): voice cast, lip-sync, script player, sound effects, music.
+- Phase C: script rules for Toons (Retention 7 adapted to dialogue), doctor lines fact-checked against
+  sources, a `toon-check` gate, more poses and props.
 - Phase D: 3 test Shorts, private upload, review. Phase E: daily rhythm.
