@@ -26,7 +26,8 @@ import {layoutToon, GAP, TOON_FPS} from '../src/toons/director.ts';
 
 const SUBSCRIBE = '🔔 Subscribe to MedPeak Health for cartoons and 3D animations that show what really happens inside your body: @MedPeakHealth';
 const DISCLAIMER = '⚠️ For education only. This video is not medical advice, diagnosis or treatment. Always talk to a qualified doctor about your health.';
-const MADE = 'Made by MedPeak Health: drawn and animated in code; the character voices are AI-generated.';
+// No 'made with AI' line in the description (owner 2026-11-16: "i dont want in descption this line i dont want to give this reveal").
+// The altered-content answer stays a YouTube Studio setting (see the upload checklist), never description text.
 
 const titleProblems = (t) => [
   !t && 'no title',
@@ -97,7 +98,6 @@ const one = (slug, a) => {
     SUBSCRIBE,
     pkg.question ? `💬 ${pkg.question}` : '',
     DISCLAIMER,
-    MADE,
     hashtags,
   ].filter(Boolean).join('\n\n');
 
@@ -127,6 +127,9 @@ const one = (slug, a) => {
   if (!fs.existsSync(cover)) issues.push('the cover picture is missing');
 
   fs.writeFileSync(path.join(out, 'captions.srt'), captionsOf(L));
+  // keep what has already happened to this video on YouTube (a second run must never look "not uploaded")
+  const before = readJson(path.join(out, 'toon.json'), {}) ?? {};
+  const done = Object.fromEntries(['uploaded', 'captionsUploaded', 'commentId', 'madePublic'].filter((k) => before[k] !== undefined).map((k) => [k, before[k]]));
   writeJson(path.join(out, 'toon.json'), {
     cut: 'toon',
     file: video,
@@ -136,6 +139,7 @@ const one = (slug, a) => {
     status: {privacyStatus: 'private', selfDeclaredMadeForKids: false, containsSyntheticMedia: true},
     relatedVideo: pkg.related ?? null,
     issues,
+    ...done,
   });
   const tick = (ok) => (ok ? 'x' : ' ');
   fs.writeFileSync(path.join(out, 'upload.md'), [

@@ -28,8 +28,6 @@ Sources:
 
 ⚠️ For education only. This video is not medical advice, diagnosis or treatment. Always talk to a qualified doctor about your health.
 
-Made by MedPeak Health: drawn and animated in code; the character voices are AI-generated.
-
 #pills #health #shorts
 ```
 
