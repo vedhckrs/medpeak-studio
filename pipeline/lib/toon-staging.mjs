@@ -67,7 +67,7 @@ export const scanStaging = async (toon, timings, opts = {}) => {
       const T = stageThings(set, stateAt(L, si, f), f / TOON_FPS);
       if (!T) { if (!out.stagesNotMeasured.includes(set)) out.stagesNotMeasured.push(set); return; }
       for (const face of T.faces) {
-        if (T.surface !== undefined && T.surface < face.y1 - 1 && !seen.has('surface')) { seen.add('surface'); out.onStageFace.push(`${(f / TOON_FPS).toFixed(1)} s, scene ${sh.shot.id}: the liquid's surface crosses ${face.who}'s face`); }
+        if (T.surface !== undefined && !face.dry && T.surface < face.y1 - 1 && !seen.has('surface')) { seen.add('surface'); out.onStageFace.push(`${(f / TOON_FPS).toFixed(1)} s, scene ${sh.shot.id}: the liquid's surface crosses ${face.who}'s face`); }
         for (const th of T.things) {
           const key = `${th.id}|${face.who}`;
           if (!seen.has(key) && overlap(th, face) > 0) { seen.add(key); out.onStageFace.push(`${(f / TOON_FPS).toFixed(1)} s, scene ${sh.shot.id}: ${th.id} is in front of ${face.who}'s face`); }

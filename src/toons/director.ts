@@ -19,7 +19,7 @@ export const LENS_NAMES = ['18', '24', '35', '50', '85', '135', 'macro'] as cons
 export type LensName = (typeof LENS_NAMES)[number];
 export const MOVE_NAMES = ['lock', 'static', 'push', 'pull', 'truck', 'tilt', 'crash', 'whip', 'dutch', 'shake', 'rack'] as const;
 export type MoveName = (typeof MOVE_NAMES)[number];
-export const PROP_NAMES = ['glass', 'pillbottle', 'soda', 'candy', 'toothbrush', 'burger', 'pillow', 'clock', 'pain', 'pipe', 'chip', 'tag', 'drop', 'valve', 'bed'] as const;
+export const PROP_NAMES = ['glass', 'pillbottle', 'soda', 'candy', 'toothbrush', 'burger', 'gum', 'pillow', 'clock', 'pain', 'pipe', 'chip', 'tag', 'drop', 'valve', 'bed'] as const;
 export type PropName = (typeof PROP_NAMES)[number];
 export const ENTRANCES = ['walk', 'drop', 'pop'] as const;
 /**
@@ -35,12 +35,16 @@ export const STAGE_KEYS: Partial<Record<SetName, string[]>> = {
   // hole: 0.1 = a white spot, more = a hole through the enamel. pain: the tooth aches. saliva: spit
   // washes over (it thins the acid). mend: minerals go back in while the hole is small.
   // brush: a toothbrush sweeps the germs off. shield: a fluoride coat on the enamel.
-  tooth: ['sugar', 'feast', 'acid', 'hole', 'pain', 'saliva', 'mend', 'brush', 'shield'],
+  // night: bedtime (the mouth goes dark, a moon and stars).
+  tooth: ['sugar', 'feast', 'acid', 'hole', 'pain', 'saliva', 'mend', 'brush', 'shield', 'night'],
   // food: dinner drops in. full: how full the stomach is (the juice level). tilt: 0 = standing or
   // sitting up, 1 = lying flat (the whole stomach tips over). valve: the ring of muscle at the top opens.
   // leak: acid climbs the food pipe. burn: the food pipe hurts. air: swallowed air gathers above the
   // juice and the stomach bloats (eating too fast).
-  tummy: ['food', 'full', 'tilt', 'valve', 'leak', 'burn', 'air'],
+  // gum: a swallowed piece of gum comes down and floats with the food. pass: what is in the stomach
+  // moves on through the exit at the lower left. squeeze: an empty stomach's hunger squeeze, a ring of
+  // muscle travelling to the exit, with sound rings (the growl). burp: air leaves up the food pipe.
+  tummy: ['food', 'full', 'tilt', 'valve', 'leak', 'burn', 'air', 'gum', 'pass', 'squeeze', 'burp'],
 };
 // ------------------------------------------------------------------ rooms (owner, 2026-11-16: "each video a
 // different clinic and a different home, unique"). The sets `clinic` and `home` are BUILT from a

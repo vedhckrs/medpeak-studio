@@ -205,6 +205,22 @@ const STAGE_BOARDS: Record<string, {title: string; C: React.FC<SetProps>; cells:
     {label: '6 three hours later', state: {food: 0.3, full: 0.2, tilt: 1}, faces: {stomach: sf('sleepy', 0.2, POSES.rest.body), foodpipe: sf('happy', 0.6, POSES.thumb.body)}},
   ]},
 };
+STAGE_BOARDS.day1 = {title: 'new moments (gum, growl, burp)', C: TummyStage, cells: [
+  {label: '1 the gum lands', state: {gum: 0.55, food: 0.3, full: 0.3}, faces: {stomach: sf('shocked', 0.6, POSES.panic.body), foodpipe: sf('scared', 0.4, POSES.panic.body)}},
+  {label: '2 it floats, whole', state: {gum: 1, food: 0.3, full: 0.3}, faces: {stomach: sf('sick', 0.4, POSES.belly.body), foodpipe: sf('neutral', 0, POSES.rest.body)}},
+  {label: '3 it moves on', state: {gum: 1, food: 0.3, full: 0.25, pass: 0.62}, faces: {stomach: sf('happy', 0.5, POSES.thumb.body), foodpipe: sf('happy', 0.2, POSES.rest.body)}},
+  {label: '4 empty: a squeeze', state: {food: 0.2, full: 0.1, squeeze: 1}, faces: {stomach: sf('scared', 0.5, POSES.panic.body), foodpipe: sf('shocked', 0.4, POSES.panic.body)}},
+  {label: '5 air gathers', state: {food: 0.6, full: 0.55, air: 1}, faces: {stomach: sf('sick', 0.4, POSES.belly.body), foodpipe: sf('scared', 0.5, POSES.panic.body)}},
+  {label: '6 the burp', state: {food: 0.6, full: 0.55, air: 0.3, valve: 1, burp: 0.5}, faces: {stomach: sf('happy', 0.6, POSES.cheer.body), foodpipe: sf('shocked', 0.9, POSES.panic.body)}},
+]};
+STAGE_BOARDS.night = {title: 'the tooth at night', C: ToothStage, cells: [
+  {label: '1 evening: spit on guard', state: {saliva: 1}, faces: {tooth: sf('happy', 0.5, POSES.thumb.body), bacteria: sf('angry', 0.3, POSES.fists.body)}},
+  {label: '2 lights out', state: {night: 1, saliva: 0.2}, faces: {tooth: sf('sleepy', 0.1, POSES.rest.body), bacteria: sf('smug', 0.5, POSES.think.body)}},
+  {label: '3 the germs feast', state: {night: 1, sugar: 1, feast: 0.8}, faces: {tooth: sf('scared', 0.4, POSES.panic.body), bacteria: sf('happy', 0.8, POSES.cheer.body)}},
+  {label: '4 acid all night', state: {night: 1, feast: 1, acid: 1, hole: 0.1}, faces: {tooth: sf('shocked', 0.7, POSES.panic.body), bacteria: sf('smug', 0.5, POSES.point.body)}},
+  {label: '5 brush before bed', state: {night: 0.4, feast: 1, brush: 0.56}, faces: {tooth: sf('happy', 0.7, POSES.cheer.body), bacteria: sf('scared', 0.8, POSES.panic.body)}},
+  {label: '6 a clean night', state: {night: 1, shield: 1, brush: 1}, faces: {tooth: sf('sleepy', 0.2, POSES.rest.body), bacteria: sf('sad', 0.2, POSES.shrug.body)}},
+]};
 export const StageBoard: React.FC<{stage?: string; cell?: number}> = ({stage = 'foodpipe', cell}) => {
   const B = STAGE_BOARDS[stage];
   if (cell !== undefined) return <AbsoluteFill><B.C t={1.3 + cell} state={B.cells[cell].state} faces={B.cells[cell].faces} /></AbsoluteFill>; // one moment, full size

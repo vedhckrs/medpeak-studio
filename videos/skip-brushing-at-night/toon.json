@@ -1,0 +1,786 @@
+{
+ "slug": "skip-brushing-at-night",
+ "title": "What Happens If You Skip Brushing at Night",
+ "format": 2,
+ "music": "panic",
+ "camera": "steady",
+ "episode": 6,
+ "hooks": [
+  {
+   "line": "Skip brushing at night, your teeth pay.",
+   "why": "says the cost in six words; the first picture is the tooth at night, germs all over it"
+  },
+  {
+   "line": "You skip brushing at night. Germs feast.",
+   "why": "names the villain; a little funnier"
+  },
+  {
+   "line": "Skip brushing at night? Your spit is asleep.",
+   "why": "gives the surprising reason at once (less left for the twist)"
+  }
+ ],
+ "rooms": {
+  "clinic": {
+   "palette": "blush",
+   "wall": "stripes",
+   "floor": "checker",
+   "window": {
+    "style": "round",
+    "side": "right",
+    "view": "garden"
+   },
+   "layout": "cabinet",
+   "chart": "tooth",
+   "time": "day"
+  },
+  "home": {
+   "kind": "bathroom",
+   "palette": "slate",
+   "wall": "tiles",
+   "floor": "wood",
+   "window": {
+    "style": "tall",
+    "side": "left",
+    "view": "hills"
+   },
+   "layout": "sink-right",
+   "time": "day"
+  }
+ },
+ "package": {
+  "title": "What Happens If You Skip Brushing at Night",
+  "phrase": "what happens if you skip brushing at night",
+  "opener": "What happens if you skip brushing at night? Mouth germs turn leftover food into acid, and while you sleep your spit, which fights that acid by day, almost stops flowing. This cartoon shows the night from the tooth's side, and Dr. Mira shares the NHS advice: brush last thing before bed for two minutes with fluoride toothpaste, then spit and do not rinse.",
+  "question": "Be honest: how often do you fall asleep without brushing?",
+  "tags": [
+   "what happens if you skip brushing at night",
+   "skip brushing teeth at night",
+   "not brushing teeth before bed",
+   "brushing teeth at night",
+   "why brush before bed",
+   "tooth decay",
+   "cavities",
+   "saliva",
+   "teeth",
+   "health cartoon"
+  ],
+  "hashtags": "#teeth #brushing #shorts",
+  "cover": {
+   "at": 1.2,
+   "text": "Skip brushing tonight?",
+   "accent": "tonight"
+  }
+ },
+ "retention": {
+  "noIntro": {
+   "scene": "A1",
+   "line": "Skip brushing at night, your teeth pay."
+  },
+  "promise": {
+   "scene": "A2",
+   "line": "Why is night worse than day? Watch."
+  },
+  "question": {
+   "scene": "A2",
+   "line": "Why is night worse than day? Watch."
+  },
+  "answer": {
+   "scene": "D6",
+   "line": "Night is worse because your spit sleeps. Brush last thing, two minutes, then spit, don't rinse."
+  },
+  "change3s": {
+   "scene": "all",
+   "line": "steady camera: something new happens in the picture at least every 3 s"
+  },
+  "twist": {
+   "scene": "D3",
+   "line": "But here's the twist: by day, your spit fights the acid. In sleep, it almost stops."
+  },
+  "bestLast": {
+   "scene": "D6",
+   "line": "Night is worse because your spit sleeps. Brush last thing, two minutes, then spit, don't rinse."
+  },
+  "loop": {
+   "scene": "E2",
+   "line": "Skip brushing at night? Not these teeth!"
+  }
+ },
+ "sources": [
+  {
+   "id": "nhs-teeth",
+   "label": "NHS. How to keep your teeth clean (page last reviewed 30 June 2025)",
+   "url": "https://www.nhs.uk/live-well/healthy-teeth-and-gums/how-to-keep-your-teeth-clean/",
+   "note": "'Brush your teeth twice a day for about 2 minutes each time. Brush them last thing before you go to bed, as night-time brushing is important, and on 1 other occasion.' 'After brushing, spit out any excess toothpaste. Don't rinse your mouth immediately after brushing, as it'll wash away the concentrated fluoride in the remaining toothpaste.'"
+  },
+  {
+   "id": "dawes-2008",
+   "label": "Dawes C. Salivary flow patterns and the health of hard and soft oral tissues. J Am Dent Assoc. 2008 (PMID 18460676)",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/18460676/",
+   "note": "'Saliva protects against dental caries'. 'The most important time for toothbrushing is just before bedtime, because salivary flow is negligible during sleep and the protective effects of saliva are lost.' A review by one author, not a systematic review."
+  },
+  {
+   "id": "nidcr",
+   "label": "NIH National Institute of Dental and Craniofacial Research. The Tooth Decay Process: How to Reverse It and Avoid a Cavity (reviewed January 2025)",
+   "url": "https://www.nidcr.nih.gov/health-info/tooth-decay/more-info/tooth-decay-process",
+   "note": "'Whenever we eat or drink something that contains sugar or starch, the bacteria use them to produce acids. These acids begin to eat away at the tooth's hard outer surface, or enamel.' 'Our saliva can help fight off this acid attack.' 'A white spot may appear where minerals have been lost. This is a sign of early decay.'"
+  },
+  {
+   "id": "nidcr-decay",
+   "label": "NIH National Institute of Dental and Craniofacial Research. Tooth Decay (reviewed September 2025)",
+   "url": "https://www.nidcr.nih.gov/health-info/tooth-decay",
+   "note": "'In early tooth decay, there are not usually any symptoms. As tooth decay advances, it can cause a toothache (tooth pain) or tooth sensitivity to sweets, hot, or cold.'"
+  }
+ ],
+ "shots": [
+  {
+   "id": "A",
+   "set": "tooth",
+   "label": "TOOTH",
+   "cast": [
+    {
+     "who": "tooth",
+     "x": 540,
+     "size": 600,
+     "stage": true,
+     "emotion": "scared",
+     "pose": "rest"
+    },
+    {
+     "who": "bacteria",
+     "x": 540,
+     "size": 600,
+     "stage": true,
+     "emotion": "smug",
+     "pose": "hips"
+    }
+   ],
+   "state": {
+    "night": 1,
+    "feast": 1,
+    "acid": 1,
+    "hole": 0.1
+   },
+   "events": [
+    {
+     "at": "A3",
+     "set": {
+      "night": 0,
+      "feast": 0,
+      "acid": 0,
+      "hole": 0,
+      "sugar": 0.8,
+      "saliva": 1
+     },
+     "over": 8,
+     "fx": "flash"
+    },
+    {
+     "at": "A4",
+     "word": "bodyguard",
+     "set": {
+      "night": 1
+     },
+     "over": 40
+    },
+    {
+     "at": "A5",
+     "set": {
+      "saliva": 0
+     },
+     "over": 46
+    },
+    {
+     "at": "A5",
+     "word": "sleeps!",
+     "set": {
+      "feast": 0.5
+     },
+     "over": 24
+    },
+    {
+     "at": "A6",
+     "set": {
+      "feast": 1
+     },
+     "over": 24
+    },
+    {
+     "at": "A6",
+     "word": "acid",
+     "set": {
+      "acid": 1
+     },
+     "over": 30,
+     "sfx": "sizzle-acid"
+    },
+    {
+     "at": "A6",
+     "word": "want!",
+     "set": {
+      "hole": 0.1
+     },
+     "over": 20
+    }
+   ],
+   "props": [
+    {
+     "kind": "toothbrush",
+     "x": 230,
+     "y": 470,
+     "size": 220,
+     "from": "A1",
+     "to": "A1",
+     "halo": true,
+     "word": "brushing",
+     "no": true
+    },
+    {
+     "kind": "tag",
+     "text": "why night?",
+     "x": 310,
+     "y": 250,
+     "size": 320,
+     "rot": 3,
+     "from": "A2",
+     "to": "A2"
+    },
+    {
+     "kind": "tag",
+     "text": "bedtime",
+     "x": 310,
+     "y": 250,
+     "size": 320,
+     "rot": -4,
+     "from": "A3",
+     "to": "A3"
+    },
+    {
+     "kind": "pillow",
+     "x": 230,
+     "y": 470,
+     "size": 220,
+     "from": "A3",
+     "to": "A3",
+     "halo": true,
+     "word": "tired"
+    },
+    {
+     "kind": "burger",
+     "x": 230,
+     "y": 470,
+     "size": 220,
+     "from": "A4",
+     "to": "A4",
+     "halo": true
+    },
+    {
+     "kind": "tag",
+     "text": "spit = bodyguard",
+     "x": 310,
+     "y": 250,
+     "size": 320,
+     "rot": -3,
+     "from": "A4",
+     "to": "A4",
+     "word": "bodyguard"
+    },
+    {
+     "kind": "drop",
+     "x": 230,
+     "y": 470,
+     "size": 220,
+     "from": "A5",
+     "to": "A5",
+     "halo": true,
+     "word": "spit!",
+     "no": true
+    },
+    {
+     "kind": "tag",
+     "text": "all night",
+     "x": 310,
+     "y": 250,
+     "size": 320,
+     "rot": 4,
+     "from": "A6"
+    }
+   ],
+   "lines": [
+    {
+     "id": "A1",
+     "who": "tooth",
+     "text": "Skip brushing at night, your teeth pay.",
+     "emotion": "scared",
+     "pose": "panic",
+     "key": "night",
+     "react": {
+      "bacteria": "smug"
+     },
+     "src": [
+      "nidcr",
+      "dawes-2008"
+     ]
+    },
+    {
+     "id": "A2",
+     "who": "bacteria",
+     "text": "Why is night worse than day? Watch.",
+     "emotion": "smug",
+     "pose": "hips",
+     "key": "worse"
+    },
+    {
+     "id": "A3",
+     "who": "tooth",
+     "text": "Rewind! Bedtime. He was too tired to brush.",
+     "emotion": "neutral",
+     "pose": "explain",
+     "key": "tired",
+     "react": {
+      "bacteria": "happy"
+     }
+    },
+    {
+     "id": "A4",
+     "who": "bacteria",
+     "text": "Dinner is still on you. And your bodyguard is leaving!",
+     "emotion": "happy",
+     "pose": "point",
+     "key": "bodyguard",
+     "react": {
+      "tooth": "scared"
+     },
+     "src": [
+      "nidcr",
+      "dawes-2008"
+     ]
+    },
+    {
+     "id": "A5",
+     "who": "tooth",
+     "text": "My spit! It almost stops while he sleeps!",
+     "emotion": "shocked",
+     "pose": "panic",
+     "key": "spit",
+     "src": [
+      "dawes-2008"
+     ]
+    },
+    {
+     "id": "A6",
+     "who": "bacteria",
+     "text": "All night, no spit, all the acid we want!",
+     "emotion": "smug",
+     "pose": "cheer",
+     "key": "acid",
+     "react": {
+      "tooth": "sad"
+     },
+     "src": [
+      "nidcr",
+      "dawes-2008"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "T1",
+   "set": "tooth",
+   "card": "Many nights later...",
+   "seconds": 1.4,
+   "cast": [],
+   "lines": []
+  },
+  {
+   "id": "C",
+   "set": "home",
+   "cast": [
+    {
+     "who": "patient",
+     "x": 540,
+     "size": 1040,
+     "emotion": "sad",
+     "pose": "facepalm"
+    }
+   ],
+   "props": [
+    {
+     "kind": "pain",
+     "x": 612,
+     "y": 790,
+     "size": 130,
+     "from": "C1",
+     "word": "tooth",
+     "on": "patient"
+    },
+    {
+     "kind": "tag",
+     "text": "ouch!",
+     "x": 540,
+     "y": 390,
+     "size": 300,
+     "rot": -4,
+     "from": "C1",
+     "word": "ache?"
+    }
+   ],
+   "lines": [
+    {
+     "id": "C1",
+     "who": "patient",
+     "text": "Ow! Why does this tooth ache?",
+     "emotion": "sad",
+     "pose": "facepalm",
+     "key": "ache",
+     "src": [
+      "nidcr-decay"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "D",
+   "set": "clinic",
+   "cast": [
+    {
+     "who": "doctor",
+     "x": 285,
+     "size": 940
+    },
+    {
+     "who": "patient",
+     "x": 805,
+     "size": 900,
+     "emotion": "sad",
+     "pose": "think"
+    }
+   ],
+   "props": [
+    {
+     "kind": "tag",
+     "text": "every morning",
+     "x": 610,
+     "y": 300,
+     "size": 300,
+     "rot": 5,
+     "from": "D1",
+     "to": "D1"
+    },
+    {
+     "kind": "toothbrush",
+     "x": 550,
+     "y": 1170,
+     "size": 210,
+     "from": "D1",
+     "word": "brush",
+     "to": "D1",
+     "halo": true
+    },
+    {
+     "kind": "tag",
+     "text": "germs + food",
+     "x": 610,
+     "y": 300,
+     "size": 300,
+     "rot": -4,
+     "from": "D2",
+     "to": "D2"
+    },
+    {
+     "kind": "tag",
+     "text": "= acid",
+     "x": 550,
+     "y": 1180,
+     "size": 290,
+     "rot": 0,
+     "from": "D2",
+     "to": "D2",
+     "word": "acid."
+    },
+    {
+     "kind": "pain",
+     "x": 868,
+     "y": 880,
+     "size": 120,
+     "from": "D2",
+     "word": "attacks",
+     "to": "D2",
+     "on": "patient"
+    },
+    {
+     "kind": "tag",
+     "text": "the twist",
+     "x": 610,
+     "y": 300,
+     "size": 300,
+     "rot": -4,
+     "from": "D3",
+     "to": "D3"
+    },
+    {
+     "kind": "drop",
+     "x": 550,
+     "y": 1170,
+     "size": 230,
+     "from": "D3",
+     "word": "spit",
+     "to": "D3",
+     "halo": true
+    },
+    {
+     "kind": "tag",
+     "text": "asleep: almost none",
+     "x": 550,
+     "y": 1340,
+     "size": 280,
+     "rot": 0,
+     "from": "D3",
+     "to": "D3",
+     "word": "sleep,"
+    },
+    {
+     "kind": "tag",
+     "text": "worst time?!",
+     "x": 610,
+     "y": 300,
+     "size": 300,
+     "rot": 5,
+     "from": "D4",
+     "to": "D4"
+    },
+    {
+     "kind": "pillow",
+     "x": 550,
+     "y": 1170,
+     "size": 210,
+     "from": "D4",
+     "word": "night",
+     "to": "D4",
+     "halo": true
+    },
+    {
+     "kind": "pillow",
+     "size": 300,
+     "from": "D5",
+     "to": "D5",
+     "bubble": true,
+     "of": "doctor"
+    },
+    {
+     "kind": "toothbrush",
+     "x": 550,
+     "y": 1170,
+     "size": 210,
+     "from": "D5",
+     "word": "brushing",
+     "to": "D5",
+     "halo": true
+    },
+    {
+     "kind": "tag",
+     "text": "just before bed",
+     "x": 550,
+     "y": 1340,
+     "size": 280,
+     "rot": 0,
+     "from": "D5",
+     "to": "D5",
+     "word": "before"
+    },
+    {
+     "kind": "tag",
+     "text": "why night is worse",
+     "x": 610,
+     "y": 300,
+     "size": 300,
+     "rot": -4,
+     "from": "D6"
+    },
+    {
+     "kind": "toothbrush",
+     "x": 455,
+     "y": 1190,
+     "size": 190,
+     "from": "D6",
+     "word": "Brush",
+     "halo": true
+    },
+    {
+     "kind": "clock",
+     "x": 648,
+     "y": 1190,
+     "size": 190,
+     "from": "D6",
+     "word": "two",
+     "halo": true
+    },
+    {
+     "kind": "tag",
+     "text": "spit, don't rinse",
+     "x": 550,
+     "y": 1340,
+     "size": 280,
+     "rot": 0,
+     "from": "D6",
+     "word": "spit,"
+    }
+   ],
+   "lines": [
+    {
+     "id": "D1",
+     "who": "patient",
+     "text": "Doctor, I brush every morning. Why the ache?",
+     "emotion": "sad",
+     "pose": "shrug",
+     "key": "morning"
+    },
+    {
+     "id": "D2",
+     "who": "doctor",
+     "text": "Mouth germs turn leftover food into acid. That acid attacks your enamel.",
+     "emotion": "neutral",
+     "pose": "explain",
+     "key": "acid",
+     "react": {
+      "patient": "shocked"
+     },
+     "src": [
+      "nidcr"
+     ]
+    },
+    {
+     "id": "D3",
+     "who": "doctor",
+     "text": "But here's the twist: by day, your spit fights the acid. In sleep, it almost stops.",
+     "emotion": "happy",
+     "pose": "present",
+     "key": "twist",
+     "src": [
+      "nidcr",
+      "dawes-2008"
+     ]
+    },
+    {
+     "id": "D4",
+     "who": "patient",
+     "text": "So night is the worst time to skip?",
+     "emotion": "shocked",
+     "pose": "think",
+     "key": "worst"
+    },
+    {
+     "id": "D5",
+     "who": "doctor",
+     "text": "Yes. The most important brushing is the one just before bed.",
+     "emotion": "neutral",
+     "pose": "point",
+     "key": "bed",
+     "src": [
+      "dawes-2008",
+      "nhs-teeth"
+     ]
+    },
+    {
+     "id": "D6",
+     "who": "doctor",
+     "text": "Night is worse because your spit sleeps. Brush last thing, two minutes, then spit, don't rinse.",
+     "emotion": "happy",
+     "pose": "thumb",
+     "key": "last",
+     "react": {
+      "patient": "happy"
+     },
+     "src": [
+      "nhs-teeth",
+      "dawes-2008"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "E",
+   "set": "tooth",
+   "label": "NEXT NIGHT",
+   "cast": [
+    {
+     "who": "tooth",
+     "x": 540,
+     "size": 600,
+     "stage": true,
+     "emotion": "happy",
+     "pose": "rest"
+    },
+    {
+     "who": "bacteria",
+     "x": 540,
+     "size": 600,
+     "stage": true,
+     "emotion": "smug",
+     "pose": "hips"
+    }
+   ],
+   "state": {
+    "night": 1,
+    "feast": 0.5,
+    "saliva": 0.15
+   },
+   "events": [
+    {
+     "at": "E1",
+     "word": "brush?",
+     "set": {
+      "brush": 1
+     },
+     "over": 52,
+     "sfx": "swish"
+    },
+    {
+     "at": "E2",
+     "set": {
+      "shield": 1
+     },
+     "over": 18
+    }
+   ],
+   "props": [
+    {
+     "kind": "tag",
+     "text": "before bed",
+     "x": 310,
+     "y": 250,
+     "size": 320,
+     "rot": -4,
+     "from": "E1",
+     "to": "E1"
+    },
+    {
+     "kind": "tag",
+     "text": "clean all night",
+     "x": 310,
+     "y": 250,
+     "size": 320,
+     "rot": -5,
+     "from": "E2"
+    }
+   ],
+   "lines": [
+    {
+     "id": "E1",
+     "who": "bacteria",
+     "text": "A brush? At bedtime? Not fair!",
+     "emotion": "scared",
+     "pose": "panic",
+     "key": "brush"
+    },
+    {
+     "id": "E2",
+     "who": "tooth",
+     "text": "Skip brushing at night? Not these teeth!",
+     "emotion": "happy",
+     "pose": "cheer",
+     "key": "teeth"
+    }
+   ]
+  }
+ ]
+}

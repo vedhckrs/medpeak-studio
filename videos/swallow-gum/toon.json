@@ -1,0 +1,755 @@
+{
+ "slug": "swallow-gum",
+ "title": "What Happens If You Swallow Gum",
+ "format": 2,
+ "music": "panic",
+ "camera": "steady",
+ "episode": 5,
+ "hooks": [
+  {
+   "line": "You swallow gum. Seven years inside you?",
+   "why": "the story everyone was told as a child, asked straight to the viewer; the first picture is the gum sitting in the stomach"
+  },
+  {
+   "line": "Swallow gum? Your stomach has a plan.",
+   "why": "calmer and curious: it promises the stomach knows what to do"
+  },
+  {
+   "line": "You swallow gum. Now what happens?",
+   "why": "the plain search question, almost word for word"
+  }
+ ],
+ "rooms": {
+  "clinic": {
+   "palette": "lavender",
+   "wall": "wainscot",
+   "floor": "wood",
+   "window": {
+    "style": "arch",
+    "side": "left",
+    "view": "city"
+   },
+   "layout": "shelves",
+   "chart": "stomach",
+   "time": "day"
+  },
+  "home": {
+   "kind": "kitchen",
+   "palette": "sunny",
+   "wall": "dots",
+   "floor": "checker",
+   "window": {
+    "style": "wide",
+    "side": "left",
+    "view": "hills"
+   },
+   "layout": "stove-right",
+   "time": "day"
+  }
+ },
+ "package": {
+  "title": "What Happens If You Swallow Gum",
+  "phrase": "what happens if you swallow gum",
+  "opener": "What happens if you swallow gum? Many of us were told it stays inside for seven years. The US National Library of Medicine says a swallowed object that reaches the stomach will probably pass through the whole gut, often within a week. This cartoon shows it from inside the stomach, and Dr. Mira explains why gum is still for chewing: doctors have reported children with a blockage after swallowing gum.",
+  "question": "Were you told that swallowed gum stays for seven years?",
+  "tags": [
+   "what happens if you swallow gum",
+   "swallowed gum",
+   "does gum stay in your stomach for 7 years",
+   "swallowing gum myth",
+   "is it bad to swallow gum",
+   "chewing gum",
+   "stomach",
+   "digestion",
+   "health myths",
+   "health cartoon"
+  ],
+  "hashtags": "#gum #stomach #shorts",
+  "cover": {
+   "at": 1.2,
+   "text": "Swallowed your gum?",
+   "accent": "gum"
+  }
+ },
+ "retention": {
+  "noIntro": {
+   "scene": "A1",
+   "line": "You swallow gum. Seven years inside you?"
+  },
+  "promise": {
+   "scene": "A2",
+   "line": "Seven years? Does gum ever come out?"
+  },
+  "question": {
+   "scene": "A2",
+   "line": "Seven years? Does gum ever come out?"
+  },
+  "answer": {
+   "scene": "D6",
+   "line": "So yes, gum does come out, often within a week."
+  },
+  "change3s": {
+   "scene": "all",
+   "line": "steady camera: something new happens in the picture at least every 3 s"
+  },
+  "twist": {
+   "scene": "D3",
+   "line": "But here's the twist: gum can still cause trouble. Doctors reported three children with a blockage from swallowed gum."
+  },
+  "bestLast": {
+   "scene": "D6",
+   "line": "So yes, gum does come out, often within a week."
+  },
+  "loop": {
+   "scene": "E2",
+   "line": "Swallow gum? Not seven years inside you!"
+  }
+ },
+ "sources": [
+  {
+   "id": "medline-swallowed",
+   "label": "MedlinePlus (US National Library of Medicine). Foreign object - swallowed (review date 8 January 2025)",
+   "url": "https://medlineplus.gov/ency/article/000036.htm",
+   "note": "'If the object passes through the food pipe and into the stomach without getting stuck, it will probably pass through the entire GI tract. Objects will often pass through the GI tract within a week. In most cases, the object passes through without harming the person.' The page is about swallowed objects in general (coins, beads, buttons); it does not name gum."
+  },
+  {
+   "id": "milov-1998",
+   "label": "Milov DE, Andres JM, Erhart NA, Bailey DJ. Chewing gum bezoars of the gastrointestinal tract. Pediatrics. 1998 (PMID 9685468)",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/9685468/",
+   "note": "'we briefly review gum-chewing complications and describe three children who developed intestinal tract and esophageal obstruction as a consequence of swallowing gum.' 'the medical literature contains very little information about the adverse effects of chewing gum.' Read from the abstract; the full text is not open."
+  },
+  {
+   "id": "niddk-digestive",
+   "label": "NIH National Institute of Diabetes and Digestive and Kidney Diseases. Your Digestive System & How it Works (last reviewed December 2017)",
+   "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/digestive-system-how-it-works",
+   "note": "'After food enters your stomach, the stomach muscles mix the food and liquid with digestive juices. The stomach slowly empties its contents, called chyme, into your small intestine.' 'Waste products of digestion, including parts of food that are still too large, become stool.'"
+  },
+  {
+   "id": "goyal-2019",
+   "label": "Goyal RK, Guo Y, Mashimo H. Advances in the physiology of gastric emptying. Neurogastroenterol Motil. 2019 (PMID 30740834)",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/30740834/",
+   "note": "'In the inter-digestive (fasting) period, gastric motility designed to clear the stomach of undigestible residues.' 'During the migrating front, the pylorus and duodenum remain relaxed and open to allow phase III activity to sweep food residues out of the stomach.' Read in the full text (PMC6850045)."
+  }
+ ],
+ "shots": [
+  {
+   "id": "A",
+   "set": "tummy",
+   "label": "STOMACH",
+   "cast": [
+    {
+     "who": "stomach",
+     "x": 540,
+     "size": 600,
+     "stage": true,
+     "emotion": "shocked",
+     "pose": "belly"
+    },
+    {
+     "who": "foodpipe",
+     "x": 540,
+     "size": 600,
+     "stage": true,
+     "emotion": "scared",
+     "pose": "think"
+    }
+   ],
+   "state": {
+    "gum": 1,
+    "food": 0.3,
+    "full": 0.35
+   },
+   "events": [
+    {
+     "at": "A3",
+     "set": {
+      "gum": 0
+     },
+     "over": 8,
+     "fx": "flash"
+    },
+    {
+     "at": "A4",
+     "set": {
+      "gum": 1
+     },
+     "over": 40
+    },
+    {
+     "at": "A4",
+     "delay": 1.25,
+     "sfx": "plop"
+    },
+    {
+     "at": "A5",
+     "word": "juices,",
+     "set": {
+      "full": 0.44
+     },
+     "over": 24
+    },
+    {
+     "at": "A6",
+     "set": {
+      "full": 0.36
+     },
+     "over": 30
+    }
+   ],
+   "props": [
+    {
+     "kind": "gum",
+     "x": 190,
+     "y": 540,
+     "size": 230,
+     "from": "A1",
+     "to": "A2",
+     "halo": true,
+     "word": "gum."
+    },
+    {
+     "kind": "tag",
+     "text": "7 years?",
+     "x": 330,
+     "y": 330,
+     "size": 320,
+     "rot": -4,
+     "from": "A1",
+     "to": "A1",
+     "word": "Seven"
+    },
+    {
+     "kind": "tag",
+     "text": "does it come out?",
+     "x": 330,
+     "y": 330,
+     "size": 300,
+     "rot": 3,
+     "from": "A2",
+     "to": "A2"
+    },
+    {
+     "kind": "tag",
+     "text": "a minute earlier",
+     "x": 330,
+     "y": 330,
+     "size": 290,
+     "rot": -3,
+     "from": "A3",
+     "to": "A3"
+    },
+    {
+     "kind": "clock",
+     "x": 190,
+     "y": 540,
+     "size": 230,
+     "from": "A3",
+     "to": "A3",
+     "halo": true,
+     "word": "minute"
+    },
+    {
+     "kind": "tag",
+     "text": "gulp!",
+     "x": 330,
+     "y": 330,
+     "size": 320,
+     "rot": 4,
+     "from": "A4",
+     "to": "A4",
+     "word": "comes!"
+    },
+    {
+     "kind": "tag",
+     "text": "mixing...",
+     "x": 330,
+     "y": 330,
+     "size": 320,
+     "rot": -3,
+     "from": "A5",
+     "to": "A5",
+     "word": "mix"
+    },
+    {
+     "kind": "burger",
+     "x": 190,
+     "y": 540,
+     "size": 230,
+     "from": "A5",
+     "to": "A5",
+     "halo": true,
+     "word": "food."
+    },
+    {
+     "kind": "clock",
+     "x": 190,
+     "y": 540,
+     "size": 230,
+     "from": "A6",
+     "halo": true
+    },
+    {
+     "kind": "tag",
+     "text": "still here",
+     "x": 330,
+     "y": 330,
+     "size": 320,
+     "rot": 4,
+     "from": "A6",
+     "word": "here."
+    }
+   ],
+   "lines": [
+    {
+     "id": "A1",
+     "who": "stomach",
+     "text": "You swallow gum. Seven years inside you?",
+     "emotion": "shocked",
+     "pose": "belly",
+     "key": "gum",
+     "react": {
+      "foodpipe": "scared"
+     }
+    },
+    {
+     "id": "A2",
+     "who": "foodpipe",
+     "text": "Seven years? Does gum ever come out?",
+     "emotion": "scared",
+     "pose": "think",
+     "key": "out"
+    },
+    {
+     "id": "A3",
+     "who": "stomach",
+     "text": "Rewind! A minute ago, he swallowed his gum.",
+     "emotion": "neutral",
+     "pose": "belly",
+     "key": "swallowed",
+     "react": {
+      "foodpipe": "shocked"
+     }
+    },
+    {
+     "id": "A4",
+     "who": "foodpipe",
+     "text": "Here it comes! One sticky pink lump.",
+     "emotion": "shocked",
+     "pose": "panic",
+     "key": "sticky",
+     "react": {
+      "stomach": "shocked"
+     }
+    },
+    {
+     "id": "A5",
+     "who": "stomach",
+     "text": "I mix it with my juices, like all his food.",
+     "emotion": "neutral",
+     "pose": "belly",
+     "key": "mix",
+     "src": [
+      "niddk-digestive"
+     ]
+    },
+    {
+     "id": "A6",
+     "who": "foodpipe",
+     "text": "And it's still here. Now what?",
+     "emotion": "scared",
+     "pose": "shrug",
+     "key": "here",
+     "react": {
+      "stomach": "sick"
+     }
+    }
+   ]
+  },
+  {
+   "id": "T1",
+   "set": "tummy",
+   "card": "That evening...",
+   "seconds": 1.4,
+   "cast": [],
+   "lines": []
+  },
+  {
+   "id": "C",
+   "set": "home",
+   "cast": [
+    {
+     "who": "kid",
+     "x": 540,
+     "size": 1040,
+     "emotion": "scared",
+     "pose": "belly"
+    }
+   ],
+   "props": [
+    {
+     "kind": "gum",
+     "x": 820,
+     "y": 430,
+     "size": 220,
+     "from": "C1",
+     "word": "gum",
+     "halo": true
+    },
+    {
+     "kind": "tag",
+     "text": "7 years?!",
+     "x": 270,
+     "y": 430,
+     "size": 300,
+     "rot": -5,
+     "from": "C1",
+     "word": "seven"
+    }
+   ],
+   "lines": [
+    {
+     "id": "C1",
+     "who": "kid",
+     "text": "Mom says gum stays in my tummy for seven years!",
+     "emotion": "scared",
+     "pose": "belly",
+     "key": "seven"
+    }
+   ]
+  },
+  {
+   "id": "D",
+   "set": "clinic",
+   "cast": [
+    {
+     "who": "doctor",
+     "x": 285,
+     "size": 940
+    },
+    {
+     "who": "kid",
+     "x": 805,
+     "size": 980,
+     "emotion": "scared",
+     "pose": "belly"
+    }
+   ],
+   "props": [
+    {
+     "kind": "tag",
+     "text": "stuck?",
+     "x": 610,
+     "y": 300,
+     "size": 300,
+     "rot": 5,
+     "from": "D1",
+     "to": "D1"
+    },
+    {
+     "kind": "gum",
+     "x": 550,
+     "y": 1170,
+     "size": 210,
+     "from": "D1",
+     "word": "gum",
+     "to": "D1",
+     "halo": true
+    },
+    {
+     "kind": "tag",
+     "text": "not stuck",
+     "x": 610,
+     "y": 300,
+     "size": 300,
+     "rot": -4,
+     "from": "D2",
+     "to": "D2"
+    },
+    {
+     "kind": "tag",
+     "text": "into the stomach",
+     "x": 550,
+     "y": 1180,
+     "size": 290,
+     "rot": 0,
+     "from": "D2",
+     "to": "D2",
+     "word": "reaches"
+    },
+    {
+     "kind": "tag",
+     "text": "all the way through",
+     "x": 550,
+     "y": 1340,
+     "size": 280,
+     "rot": 0,
+     "from": "D2",
+     "to": "D2",
+     "word": "travel"
+    },
+    {
+     "kind": "tag",
+     "text": "the twist",
+     "x": 610,
+     "y": 300,
+     "size": 300,
+     "rot": -4,
+     "from": "D3",
+     "to": "D3"
+    },
+    {
+     "kind": "pain",
+     "x": 805,
+     "y": 1250,
+     "size": 150,
+     "from": "D3",
+     "word": "trouble.",
+     "to": "D3",
+     "on": "kid"
+    },
+    {
+     "kind": "tag",
+     "text": "3 children",
+     "x": 550,
+     "y": 1180,
+     "size": 290,
+     "rot": 0,
+     "from": "D3",
+     "to": "D3",
+     "word": "three"
+    },
+    {
+     "kind": "tag",
+     "text": "a blockage",
+     "x": 550,
+     "y": 1340,
+     "size": 280,
+     "rot": 0,
+     "from": "D3",
+     "to": "D3",
+     "word": "blockage"
+    },
+    {
+     "kind": "tag",
+     "text": "spit it out?",
+     "x": 610,
+     "y": 300,
+     "size": 300,
+     "rot": 5,
+     "from": "D4",
+     "to": "D4"
+    },
+    {
+     "kind": "gum",
+     "size": 300,
+     "from": "D5",
+     "to": "D5",
+     "bubble": true,
+     "of": "doctor"
+    },
+    {
+     "kind": "tag",
+     "text": "spit it out",
+     "x": 550,
+     "y": 1180,
+     "size": 290,
+     "rot": 0,
+     "from": "D5",
+     "to": "D5",
+     "word": "spit"
+    },
+    {
+     "kind": "clock",
+     "x": 455,
+     "y": 1190,
+     "size": 190,
+     "from": "D6",
+     "halo": true
+    },
+    {
+     "kind": "tag",
+     "text": "it comes out",
+     "x": 610,
+     "y": 300,
+     "size": 300,
+     "rot": -4,
+     "from": "D6",
+     "word": "out,"
+    },
+    {
+     "kind": "tag",
+     "text": "often within a week",
+     "x": 550,
+     "y": 1340,
+     "size": 280,
+     "rot": 0,
+     "from": "D6",
+     "word": "week."
+    }
+   ],
+   "lines": [
+    {
+     "id": "D1",
+     "who": "kid",
+     "text": "Doctor, is the gum stuck inside me?",
+     "emotion": "scared",
+     "pose": "belly",
+     "key": "stuck"
+    },
+    {
+     "id": "D2",
+     "who": "doctor",
+     "text": "No. A swallowed thing that reaches your stomach will most likely travel all the way through.",
+     "emotion": "happy",
+     "pose": "explain",
+     "key": "through",
+     "react": {
+      "kid": "shocked"
+     },
+     "src": [
+      "medline-swallowed"
+     ]
+    },
+    {
+     "id": "D3",
+     "who": "doctor",
+     "text": "But here's the twist: gum can still cause trouble. Doctors reported three children with a blockage from swallowed gum.",
+     "emotion": "neutral",
+     "pose": "present",
+     "key": "twist",
+     "src": [
+      "milov-1998"
+     ]
+    },
+    {
+     "id": "D4",
+     "who": "kid",
+     "text": "So I should spit it out?",
+     "emotion": "shocked",
+     "pose": "think",
+     "key": "spit"
+    },
+    {
+     "id": "D5",
+     "who": "doctor",
+     "text": "Yes. Gum is for chewing. When you're done, spit it out.",
+     "emotion": "neutral",
+     "pose": "point",
+     "key": "chewing",
+     "src": [
+      "milov-1998"
+     ]
+    },
+    {
+     "id": "D6",
+     "who": "doctor",
+     "text": "So yes, gum does come out, often within a week.",
+     "emotion": "happy",
+     "pose": "thumb",
+     "key": "week",
+     "react": {
+      "kid": "happy"
+     },
+     "src": [
+      "medline-swallowed"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "E",
+   "set": "tummy",
+   "label": "LATER",
+   "cast": [
+    {
+     "who": "stomach",
+     "x": 540,
+     "size": 600,
+     "stage": true,
+     "emotion": "happy",
+     "pose": "rest"
+    },
+    {
+     "who": "foodpipe",
+     "x": 540,
+     "size": 600,
+     "stage": true,
+     "emotion": "happy",
+     "pose": "rest"
+    }
+   ],
+   "state": {
+    "gum": 1,
+    "food": 0.3,
+    "full": 0.3
+   },
+   "events": [
+    {
+     "at": "E1",
+     "word": "sweep",
+     "set": {
+      "pass": 1
+     },
+     "over": 80,
+     "sfx": "swish"
+    },
+    {
+     "at": "E2",
+     "word": "seven",
+     "set": {
+      "full": 0.22
+     },
+     "over": 20
+    }
+   ],
+   "props": [
+    {
+     "kind": "tag",
+     "text": "between meals",
+     "x": 330,
+     "y": 330,
+     "size": 320,
+     "rot": -4,
+     "from": "E1",
+     "to": "E1"
+    },
+    {
+     "kind": "tag",
+     "text": "bye, gum!",
+     "x": 330,
+     "y": 330,
+     "size": 320,
+     "rot": 4,
+     "from": "E2"
+    }
+   ],
+   "lines": [
+    {
+     "id": "E1",
+     "who": "stomach",
+     "text": "Between meals, I sweep out what's left. Bye, gum!",
+     "emotion": "happy",
+     "pose": "wave",
+     "key": "sweep",
+     "react": {
+      "foodpipe": "happy"
+     },
+     "src": [
+      "goyal-2019"
+     ]
+    },
+    {
+     "id": "E2",
+     "who": "foodpipe",
+     "text": "Swallow gum? Not seven years inside you!",
+     "emotion": "happy",
+     "pose": "cheer",
+     "key": "seven",
+     "src": [
+      "medline-swallowed"
+     ]
+    }
+   ]
+  }
+ ]
+}

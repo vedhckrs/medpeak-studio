@@ -83,6 +83,18 @@ const Burger: React.FC = () => (
     </Part>
   </g>
 );
+const Gum: React.FC = () => (
+  <g>
+    <ellipse cx={0} cy={62} rx={66} ry={8} fill="#2a2440" opacity={0.16} />
+    <g transform="rotate(-18)">
+      <Part d={roundRect(-74, -4, 104, 40, 6)} fill="#dfe4ee" mat="hard" depth={2} />
+      <path d="M-74 -4 L-62 6 L-50 -4 L-38 6 L-26 -4 L-14 6 L-2 -4 L10 6 L22 -4 L30 2" fill="none" stroke="#aab3c5" strokeWidth={1.4} />
+    </g>
+    <Part d={spline([[-34, -50], [6, -62], [44, -40], [58, 0], [40, 40], [-4, 52], [-44, 34], [-56, -8]], true, 0.6)} fill="#ff8fc4" mat="flesh" shine={[-18, -30, 0.9]} depth={5}>
+      <path d="M-22 6 q10 10 20 0 M14 22 q9 9 18 0 M4 -16 q9 8 18 0" fill="none" stroke="#c2578e" strokeWidth={2.4} strokeLinecap="round" opacity={0.75} />
+    </Part>
+  </g>
+);
 const Pillow: React.FC = () => (
   <g>
     <ellipse cx={0} cy={56} rx={76} ry={8} fill="#2a2440" opacity={0.14} />
@@ -193,7 +205,7 @@ const TagProp: React.FC<{t: number; text?: string}> = ({text = ''}) => {
   );
 };
 
-export const PROPS: Record<PropName, React.FC<{t: number; text?: string}>> = {tag: TagProp, drop: Drop, valve: ValveDiagram, bed: Bed, glass: Glass, pillbottle: PillBottle, soda: Soda, candy: Candy, toothbrush: Toothbrush, burger: Burger, pillow: Pillow, clock: ClockProp, pain: Pain, pipe: PipeDiagram, chip: Chip};
+export const PROPS: Record<PropName, React.FC<{t: number; text?: string}>> = {tag: TagProp, drop: Drop, valve: ValveDiagram, bed: Bed, glass: Glass, pillbottle: PillBottle, soda: Soda, candy: Candy, toothbrush: Toothbrush, burger: Burger, gum: Gum, pillow: Pillow, clock: ClockProp, pain: Pain, pipe: PipeDiagram, chip: Chip};
 
 /**
  * A prop on screen. `halo` = a soft glowing disc behind it; `bubble` = inside a thought bubble
