@@ -57,9 +57,9 @@ MedPeak Toons (the cartoon Shorts) have their own steps; the order of work is in
 `toon:camera`, `toon:motion`, `toon:staging` and `toon:sound` (measured, all required) -> silent preview and rooms board ->
 owner's yes -> `toon-voice` -> the same checks on the real timings -> `toon-render` ->
 `toon:listen` (earshot reads the finished sound: loudness, which planned sounds are heard, what each sounds like) ->
-`toon-package` (title, description, tags, cover, captions) -> `publish/upload.py <slug> toon`
+`toon-package` (title, description, tags, cover; no caption track: the words are on screen) -> `publish/upload.py <slug> toon`
 only after the owner's yes. After the upload, each with its own yes from the owner:
-`publish/after_upload.py <slug> toon --captions` (adds the caption file), `--comment` (posts the
+`publish/after_upload.py <slug> toon --comment` (posts the
 package's question from the channel; pinning is done by hand, the API cannot pin), `--public`.
 `publish/recent.py` reads the newest uploads' views and, 1 to 3 days later, watch share and traffic
 source (read-only).

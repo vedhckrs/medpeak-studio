@@ -263,7 +263,7 @@ new in it is a line where the story is only being told.
   words; `accent` = the word shown in amber.
 
 It writes `videos/<slug>/package/toon.json` (what `publish/upload.py <slug> toon` reads),
-`captions.srt` (the real spoken words and times, for YouTube Studio > Subtitles), `upload.md` (the
+`upload.md` (the
 same for a person, with a checklist) and `renders/toon-cover.jpg`. The description lists the
 sources, the subscribe line, the question and the disclaimer. It says nothing about how the video
 is made: the owner does not want a line about code or AI voices in a description (2026-11-16:

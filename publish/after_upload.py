@@ -1,8 +1,10 @@
-"""What follows an upload: captions, the question comment, and going public. Each step only with
-its own flag and --approve, and only after the owner's yes for that step.
+"""What follows an upload: the question comment and going public (and captions, which MedPeak
+Toons do NOT get: their words are on screen, the owner does not want a caption track). Each step
+only with its own flag and --approve, and only after the owner's yes for that step.
 
     python publish/after_upload.py <slug> <cut> --captions --dry-run
     python publish/after_upload.py <slug> <cut> --captions --approve      # add package/captions.srt
+    python publish/after_upload.py <slug> <cut> --no-captions --approve   # take that caption track off again
     python publish/after_upload.py <slug> <cut> --comment --approve       # post the package's question
     python publish/after_upload.py <slug> <cut> --public --approve        # private -> public
     python publish/after_upload.py <slug> <cut> --label --approve         # answer YouTube's AI-use question with Yes
@@ -53,6 +55,20 @@ def main():
                                      media_body=MediaFileUpload(srt, mimetype="application/octet-stream")).execute()
             pkg["captionsUploaded"] = r["id"]
             print(f"  captions: added ({r['snippet'].get('status')})")
+
+    if "--no-captions" in a:  # take the caption track this tool added off the video again (owner: the words are already on screen)
+        cid = pkg.get("captionsUploaded")
+        if not cid:
+            print("  no-captions: this tool added no caption track to this video, skipped")
+        elif not go:
+            print(f"  no-captions: dry run, would remove the caption track this tool added ({cid}); the .srt file stays in the package")
+        else:
+            yt.captions().delete(id=cid).execute()
+            still = [c["id"] for c in yt.captions().list(part="snippet", videoId=vid).execute().get("items", []) if c["id"] == cid]
+            if not still:
+                pkg["captionsRemoved"] = cid
+                pkg.pop("captionsUploaded", None)
+            print(f"  no-captions: {'removed' if not still else 'CHECK THIS: the track is still listed'}")
 
     if "--public" in a:
         if status["privacyStatus"] == "public":

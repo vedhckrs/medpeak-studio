@@ -9,7 +9,9 @@
  * Reads the `package` block of videos/<slug>/toon.json (title, opener, question, tags, hashtags,
  * cover) and the voice timings. Writes into videos/<slug>/package/:
  *   toon.json       what publish/upload.py reads (title, description, tags, private, AI label)
- *   captions.srt    the spoken words with their real times (upload in YouTube Studio > Subtitles)
+ *   captions.srt    only with --captions: the spoken words with their real times. By default a Toon gets
+ *                   NO caption track: its words are already on screen (owner, 2026-11-17: "i dont want
+ *                   caption because text on screen already")
  *   upload.md       the same for a person to read and paste, with a pre-upload checklist
  * and renders videos/<slug>/renders/toon-cover.jpg (one frame of the video with a short hook).
  *
@@ -77,6 +79,7 @@ const captionsOf = (L) => {
 };
 
 const one = (slug, a) => {
+  const wantCaptions = !!a.captions; // a caption track only when the owner asks for one (--captions)
   const dir = videoDir(slug);
   const toon = readJson(path.join(dir, 'toon.json'));
   const stored = readJson(path.join(dir, 'toon-timings.json'), null);
@@ -128,15 +131,17 @@ const one = (slug, a) => {
   }
   if (!fs.existsSync(cover)) issues.push('the cover picture is missing');
 
-  fs.writeFileSync(path.join(out, 'captions.srt'), captionsOf(L));
+  const srt = path.join(out, 'captions.srt');
+  if (wantCaptions) fs.writeFileSync(srt, captionsOf(L));
+  else if (fs.existsSync(srt)) fs.rmSync(srt); // no caption track unless the owner asks for one
   // keep what has already happened to this video on YouTube (a second run must never look "not uploaded")
   const before = readJson(path.join(out, 'toon.json'), {}) ?? {};
-  const done = Object.fromEntries(['uploaded', 'captionsUploaded', 'commentId', 'madePublic'].filter((k) => before[k] !== undefined).map((k) => [k, before[k]]));
+  const done = Object.fromEntries(['uploaded', 'stored', 'coverSet', 'labelSet', 'captionsUploaded', 'captionsRemoved', 'commentId', 'madePublic'].filter((k) => before[k] !== undefined).map((k) => [k, before[k]]));
   writeJson(path.join(out, 'toon.json'), {
     cut: 'toon',
     file: video,
     thumbnail: cover,
-    captions: path.join(out, 'captions.srt'),
+    captions: wantCaptions ? srt : null,
     snippet: {title: pkg.title, description, tags, categoryId: '27', defaultLanguage: 'en', defaultAudioLanguage: 'en'},
     status: {privacyStatus: 'private', selfDeclaredMadeForKids: false, containsSyntheticMedia: true},
     relatedVideo: pkg.related ?? null,
@@ -151,7 +156,7 @@ const one = (slug, a) => {
     '',
     `**Video:** \`videos/${slug}/renders/toon.mp4\` (${seconds.toFixed(1)} s, 1080 x 1920, a Short)`,
     `**Cover:** \`videos/${slug}/renders/toon-cover.jpg\` (the frame at ${(pkg.cover?.at ?? 1).toFixed(1)} s; in the YouTube app a Short's cover is picked from the video's own frames, so choose that moment there if the picture is not accepted)`,
-    `**Captions:** \`videos/${slug}/package/captions.srt\` (YouTube Studio > Subtitles > Upload file > With timing)`,
+    wantCaptions ? `**Captions:** \`videos/${slug}/package/captions.srt\` (YouTube Studio > Subtitles > Upload file > With timing)` : '**Captions:** none. The words are already on screen; the owner does not want a caption track.',
     '',
     '## Title',
     '',

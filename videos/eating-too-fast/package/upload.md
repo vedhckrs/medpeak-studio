@@ -4,7 +4,7 @@
 
 **Video:** `videos/eating-too-fast/renders/toon.mp4` (51.9 s, 1080 x 1920, a Short)
 **Cover:** `videos/eating-too-fast/renders/toon-cover.jpg` (the frame at 1.2 s; in the YouTube app a Short's cover is picked from the video's own frames, so choose that moment there if the picture is not accepted)
-**Captions:** `videos/eating-too-fast/package/captions.srt` (YouTube Studio > Subtitles > Upload file > With timing)
+**Captions:** none. The words are already on screen; the owner does not want a caption track.
 
 ## Title
 
