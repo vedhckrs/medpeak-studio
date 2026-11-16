@@ -5,7 +5,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {spawnSync} from 'node:child_process';
-import {BED, bedAt, bedStart, layoutToon, SOUND, soundPlan, TOON_FPS} from '../../src/toons/director.ts';
+import {BED, bedAt, bedRests, bedStart, layoutToon, SOUND, soundPlan, TOON_FPS} from '../../src/toons/director.ts';
 import {ROOT} from './util.mjs';
 
 /** What the mix must keep to (loudness in LU = dB as the ear hears it). */
@@ -48,6 +48,13 @@ export const checkSound = (toon, timings, {sfxDir = path.join(ROOT, 'assets', 't
   const shapeFile = toon.music ? path.join(musicDir, `${toon.music}.shape.json`) : null;
   const shape = shapeFile && fs.existsSync(shapeFile) ? JSON.parse(fs.readFileSync(shapeFile, 'utf8')) : null;
   const bed = shape ? bedStart(L, shape) : null;
+  if (shape) {
+    // the channel's sound is a voice over a CONSTANT bed: a track that stops and starts leaves holes that no placing can hide
+    // (tried 2026-11-17: the rest was moved under a word, and earshot still heard 0.7 s of near-silence)
+    const r = bedRests(shape);
+    const stops = r.spans.filter(([a, b]) => a < r.end - 0.05 && b - a >= BED.hole - 1e-9);
+    add('A steady bed', !stops.length, stops.length ? `"${toon.music}" stops for ${stops.map(([a, b]) => `${(b - a).toFixed(1)} s at ${a.toFixed(1)} s`).join(', ')}: use a bed that never goes quiet (toon:music:scan lists them)` : `"${toon.music}" never goes quiet for ${BED.hole} s inside its loop`);
+  }
   if (bed) add('No hole in a pause', !bed.holes.length, bed.holes.length ? `the music rests with no voice over it at ${bed.holes.map(([a, b]) => `${a.toFixed(1)}-${b.toFixed(1)} s`).join(', ')} (${BED.hole} s or more is heard as the sound cutting out): use another bed` : `the bed starts ${bed.start.toFixed(2)} s into its track: every rest falls under a voice`);
 
   // ---- measured layers (only when the voices are on this machine)

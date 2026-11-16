@@ -415,16 +415,18 @@ test('a bed is laid so that its rests fall under voices, and its faded end is cu
   // the track the pill video uses fades out: its loop ends before the fade
   const bouncy = shapeOf('bouncy');
   assert.ok(bedRests(bouncy).end < bouncy.seconds - 0.5, 'the faded end is left out of the loop');
-  // the hole earshot heard at the pill video's time card (16.3 s, 0.8 s) is found from the bed's shape and the word times...
+  // the hole earshot heard at the pill video's time card (16.3 s, 0.8 s) shows in the first bed's shape and the word times
   const pill = real.find((x) => x.slug === 'pill-without-water');
   const timings = JSON.parse(fs.readFileSync(path.join(ROOT, 'videos', pill.slug, 'toon-timings.json'), 'utf8'));
   const L = layoutToon(pill, timings);
   const before = bedHoles(L, bouncy, 0);
-  assert.ok(before.some(([a, b]) => a > 15.5 && a < 17 && b - a >= BED.hole), `a hole near 16.3 s when the bed starts at 0 (found: ${JSON.stringify(before)})`);
-  // ...and the bed is started where no rest is left without a voice over it
-  const laid = bedStart(L, bouncy);
-  assert.ok(laid.start > 0, 'the bed starts later in its track');
-  assert.deepEqual(laid.holes, [], 'no hole is left');
+  assert.ok(before.some(([a, b]) => a > 15.5 && a < 17 && b - a >= BED.hole), `a hole near 16.3 s when "bouncy" starts at 0 (found: ${JSON.stringify(before)})`);
+  // a track that stops and starts is not a bed for this channel; two of the four never go quiet inside their loop
+  const stops = (name) => { const r = bedRests(shapeOf(name)); return r.spans.filter(([a, b]) => a < r.end - 0.05 && b - a >= BED.hole - 1e-9).length; };
+  assert.ok(stops('bouncy') >= 1 && stops('sneaky') >= 1, 'the stop-start beds are found');
+  assert.equal(stops('doctor') + stops('panic'), 0, 'the steady beds');
+  for (const t of real) assert.equal(stops(t.music), 0, `${t.slug}: its bed "${t.music}" is steady`);
+  assert.deepEqual(bedStart(L, shapeOf(pill.music)).holes, [], 'no hole is left');
   // a made-up bed with one long rest and a script with no voice at all: the hole cannot be hidden, and the check must say so
   const flat = {step: 0.1, seconds: 10, db: Array.from({length: 100}, (_, i) => (i >= 40 && i < 52 ? -60 : -20))};
   const silent = {...L, lines: []};
@@ -433,6 +435,9 @@ test('a bed is laid so that its rests fall under voices, and its faded end is cu
 
 test('the sound check fails a video whose music rests in a pause', () => {
   for (const t of real) assert.ok(checkSound(t, null).results.some((x) => x.point === 'No hole in a pause' && x.pass), `${t.slug}: bed checked`);
+  const t = clone(real[0]);
+  t.music = 'bouncy'; // the first bed: it stops for 0.7 s and 0.9 s
+  assert.ok(checkSound(t, null).results.some((x) => x.point === 'A steady bed' && !x.pass), 'a stop-start bed fails the sound check');
 });
 
 // ---------------------------------------------------------------- a calm mix (owner: "too loud and poor sound")

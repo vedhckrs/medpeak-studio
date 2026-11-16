@@ -6,6 +6,7 @@
  *   node pipeline/toon-render.mjs <slug> --draft    # half size, fast
  *   node pipeline/toon-render.mjs <slug> --stills   # one still per line -> renders/toon-stills/
  *   node pipeline/toon-render.mjs <slug> --draft --silent   # picture only, estimated timing (script preview)
+ *   node pipeline/toon-render.mjs <slug> --music doctor     # the same video over another bed (for the owner's ear)
  *
  * Works before the voice exists (silent, estimated timing). With voices it mixes voice, the
  * sound effects in assets/toons-sfx/ and the music bed, then masters to -14 LUFS.
@@ -38,7 +39,8 @@ const main = () => {
   const timings = Object.keys(fresh).length ? {lines: fresh} : null;
   const sfx = a.silent ? [] : copyDir(SFX_DIR, path.join(PUBLIC, 'toons', 'sfx'));
   const beds = a.silent ? [] : copyDir(MUSIC_DIR, path.join(PUBLIC, 'toons', 'music'));
-  let music = toon.music && beds.includes(toon.music) ? toon.music : null;
+  const wanted = a.music ?? toon.music; // --music <name>: try another bed without touching the script
+  let music = wanted && beds.includes(wanted) ? wanted : null;
   // start the bed where its rests fall under voices (director.ts: bedStart): the same track, turned so that it begins later
   const shape = music ? readJson(path.join(MUSIC_DIR, `${music}.shape.json`), null) : null;
   if (shape) {
