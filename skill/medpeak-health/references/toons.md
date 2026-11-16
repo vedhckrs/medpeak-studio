@@ -18,7 +18,9 @@ cartoon health channel (format only). We never copy anyone's characters, art, au
 - Organs drawn from real anatomy with their real parts (vessels, ducts, lobes, folds).
 - Captions: one word, white on a navy rounded tag, key word in amber, slight tilt.
 - Labels: teal pill tags ("THROAT", "GUT").
-- Our doctor: **Dr. Mira** (white coat over teal scrubs, curly dark hair, round glasses), full-body.
+- Our doctor: **Dr. Mira** (white coat over teal scrubs, light skin, curly dark hair, round glasses), full-body.
+  Her look is the owner's pick of 2026-11-17 for a worldwide audience (`toons-boards/doctor-options.jpg`, look A);
+  the first three videos show her earlier look. Do not change it again without the owner.
 - Sets are layers that live; the camera has shot sizes, lenses and moves (`toons-camera.md`).
 - Retention 7 still applies: unlike the reference channel, we change the picture at least every
   2.6 s (the director does it on its own).

@@ -49,15 +49,12 @@ measures it on every script (they all run in `npm test`).
 
 | 22 | "remove thing from wall, keep clean minimal wall ... no wall element disturb" (2026-11-16); then, shown a bare box-shaped room: "make both now only, just remove few thing" (2026-11-17); pick: "A" | the rooms carried a clock, a certificate, pictures and a blurred leaf in front, in the very area where bubbles and tags come up | `ROOM_TIDY = 1` in `rooms.tsx`: the wall keeps its window and the clinic's chart at the edge; nothing blurred in front. The rooms' look is otherwise unchanged | test: the tidy wall; staging check |
 
+| 23 | "dr skin make white and like global not indian, i want to target global audience" (2026-11-16); pick: look A | a design choice of mine, not a bug: Dr. Mira was drawn with brown skin | `SPECS.doctor`: light skin, her dark curls kept (sheet `toons-boards/doctor-options.jpg`). The three live videos keep her first look | the owner's pick |
+| 24 | the boy's head: pick A (cap forward, on his hair) | see 21 | A is the engine's `SPECS.kid` | the owner's pick |
+
 **Decided, not bugs:** a bubble or a tag may cover what hangs on the wall (it is drawn over the room
 and gone in a few seconds; there is no free wall left for all of them), and people stand in front
 of furniture on purpose (a desk, a bed). Neither is checked.
-
-## Waiting for the owner's pick (asked 2026-11-16)
-| What | Sheet | What happens after the pick |
-|---|---|---|
-| The boy's head: A, B or C | `toons-boards/caps.jpg` | A is in the engine now; B or C is a one-line change in `SPECS.kid` |
-| Dr. Mira's global look: A, B or C | `toons-boards/doctor-options.jpg` | `SPECS.doctor` gets the chosen skin, eyes and hair; sheets and boards are rendered again |
 
 ## Open, and why
 | # | What | Why it is still open | Who can close it |

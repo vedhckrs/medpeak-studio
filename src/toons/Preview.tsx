@@ -262,8 +262,8 @@ export const CapBoard: React.FC = () => (
 
 /** DOCTOR BOARD: Dr. Mira as she is now and three lighter, global looks, for the owner to choose from (1920x1080). */
 const DOC_LOOKS: {key: string; label: string; note: string; C: React.FC<CharProps>}[] = [
-  {key: 'now', label: 'Now', note: 'as in the three live videos', C: makeHuman(SPECS.doctor)},
-  {key: 'A', label: 'A  Same curls', note: 'light skin, her curly dark hair kept', C: makeHuman({...SPECS.doctor, skin: '#f8d3b8', eye: '#6b4a2e', hair: {style: 'curly', color: '#4a2f22'}})},
+  {key: 'now', label: 'Before', note: 'as in the three live videos', C: makeHuman({...SPECS.doctor, skin: '#c58a63', eye: '#5a3a22', hair: {style: 'curly', color: '#33221e'}})},
+  {key: 'A', label: 'A  Same curls (chosen)', note: 'light skin, her curly dark hair kept', C: makeHuman(SPECS.doctor)},
   {key: 'B', label: 'B  Wavy brown hair', note: 'light skin, shoulder-length chestnut hair, green eyes', C: makeHuman({...SPECS.doctor, skin: '#f8d3b8', eye: '#4f7f55', hair: {style: 'long', color: '#8a5230'}})},
   {key: 'C', label: 'C  Tidy bun', note: 'light skin, honey-blond hair in a bun, blue eyes', C: makeHuman({...SPECS.doctor, skin: '#f8d3b8', eye: '#3f78b0', hair: {style: 'bun', color: '#c08a4a'}})},
 ];

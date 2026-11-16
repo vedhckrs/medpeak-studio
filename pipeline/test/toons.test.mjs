@@ -406,6 +406,35 @@ test('people take the light of a night room, and keep their colours by day', asy
   for (const t of real) for (const s of t.shots) if (s.set === 'home' && t.rooms.home.time === 'night') assert.ok(roomTone(t.rooms.home), `${t.slug}: the night home dims its people`);
 });
 
+// ---------------------------------------------------------------- the music never leaves a hole (found by listening, 2026-11-16)
+test('a bed is laid so that its rests fall under voices, and its faded end is cut out of the loop', async () => {
+  const {BED, bedHoles, bedRests, bedStart} = await import('../../src/toons/director.ts');
+  const shapeOf = (name) => JSON.parse(fs.readFileSync(path.join(ROOT, 'assets', 'toons-music', `${name}.shape.json`), 'utf8'));
+  // every bed in the library has its shape on file
+  for (const f of fs.readdirSync(path.join(ROOT, 'assets', 'toons-music')).filter((x) => x.endsWith('.mp3'))) assert.ok(fs.existsSync(path.join(ROOT, 'assets', 'toons-music', f.replace(/\.mp3$/, '.shape.json'))), `${f}: run npm run toon:music:scan`);
+  // the track the pill video uses fades out: its loop ends before the fade
+  const bouncy = shapeOf('bouncy');
+  assert.ok(bedRests(bouncy).end < bouncy.seconds - 0.5, 'the faded end is left out of the loop');
+  // the hole earshot heard at the pill video's time card (16.3 s, 0.8 s) is found from the bed's shape and the word times...
+  const pill = real.find((x) => x.slug === 'pill-without-water');
+  const timings = JSON.parse(fs.readFileSync(path.join(ROOT, 'videos', pill.slug, 'toon-timings.json'), 'utf8'));
+  const L = layoutToon(pill, timings);
+  const before = bedHoles(L, bouncy, 0);
+  assert.ok(before.some(([a, b]) => a > 15.5 && a < 17 && b - a >= BED.hole), `a hole near 16.3 s when the bed starts at 0 (found: ${JSON.stringify(before)})`);
+  // ...and the bed is started where no rest is left without a voice over it
+  const laid = bedStart(L, bouncy);
+  assert.ok(laid.start > 0, 'the bed starts later in its track');
+  assert.deepEqual(laid.holes, [], 'no hole is left');
+  // a made-up bed with one long rest and a script with no voice at all: the hole cannot be hidden, and the check must say so
+  const flat = {step: 0.1, seconds: 10, db: Array.from({length: 100}, (_, i) => (i >= 40 && i < 52 ? -60 : -20))};
+  const silent = {...L, lines: []};
+  assert.ok(bedStart(silent, flat).holes.length >= 1, 'a rest with nothing over it stays a hole');
+});
+
+test('the sound check fails a video whose music rests in a pause', () => {
+  for (const t of real) assert.ok(checkSound(t, null).results.some((x) => x.point === 'No hole in a pause' && x.pass), `${t.slug}: bed checked`);
+});
+
 // ---------------------------------------------------------------- a calm mix (owner: "too loud and poor sound")
 test('a Toon has few sound effects, kept apart, and no automatic sound on moods, key words or graphics', () => {
   for (const t of real) {

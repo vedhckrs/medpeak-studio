@@ -65,7 +65,7 @@ What happens in the picture:
 - at A5 ("melt"): melt to 0.62 [sizzle-acid]
 - at A6 ("burns"): sore to 0.7, pain to 1 [sizzle-acid]
 - at A6 ("Ow"): melt to 0.92, sore to 0.8 [gasp]
-- at A7 ("swallow"): sore to 1 [gulp]
+- at A7 ("swallow"): sore to 1
 - at A1 ("water"): glass with a "not this" sign
 - at A2 ("stuck"): tag "stuck!"
 - at A3 ("three"): tag "3 things"

@@ -706,8 +706,11 @@ export const makeHuman = (s: HumanSpec): Person => {
 };
 
 // ------------------------------------------------------------------ the cast of people
+// Dr. Mira's look is the owner's pick of 2026-11-17 ("dr skin make white and like global"; sheet
+// toons-boards/doctor-options.jpg, look A): light skin, her dark curls kept. The three videos already
+// live show her first look (skin #c58a63, hair #33221e).
 export const SPECS: Record<string, HumanSpec> = {
-  doctor: {name: 'doctor', role: 'Dr. Mira: explains what happened in plain words. Warm, exact, never scary.', skin: '#c58a63', eye: '#5a3a22', lashes: true, hair: {style: 'curly', color: '#33221e'}, top: {kind: 'coat', color: '#ffffff', under: '#22b8a8'}, bottom: {kind: 'trousers', color: '#1fa596'}, shoes: '#f1f3f9', glasses: 'round', stethoscope: true},
+  doctor: {name: 'doctor', role: 'Dr. Mira: explains what happened in plain words. Warm, exact, never scary.', skin: '#f8d3b8', eye: '#6b4a2e', lashes: true, hair: {style: 'curly', color: '#4a2f22'}, top: {kind: 'coat', color: '#ffffff', under: '#22b8a8'}, bottom: {kind: 'trousers', color: '#1fa596'}, shoes: '#f1f3f9', glasses: 'round', stethoscope: true},
   patient: {name: 'patient', role: 'The patient: an ordinary young man with an everyday habit that went wrong.', skin: '#eec39a', eye: '#5b7a3e', hair: {style: 'short', color: '#3b2c25'}, top: {kind: 'hoodie', color: '#ffc857'}, bottom: {kind: 'trousers', color: '#4a6fa5'}, shoes: '#f1f3f9'},
   mom: {name: 'mom', role: 'The worried parent: asks the question the viewer is thinking.', skin: '#e2a67f', eye: '#6b4423', lashes: true, hair: {style: 'long', color: '#5a3024'}, top: {kind: 'blouse', color: '#ff8a7a'}, bottom: {kind: 'skirt', color: '#5b6bbf'}, shoes: '#8a4b3a', earrings: '#ffd36e'},
   kid: {name: 'kid', role: 'The kid: curious, eats and does things he should not.', skin: '#eec39a', eye: '#3d6fa8', height: 0.76, head: 1.3, legs: 0.8, hair: {style: 'cap', color: '#22b8a8', under: '#3b2c25'}, top: {kind: 'tee', color: '#43c08a'}, bottom: {kind: 'shorts', color: '#3d5a80'}, shoes: '#ff6f7d'},
