@@ -5,6 +5,7 @@ its own flag and --approve, and only after the owner's yes for that step.
     python publish/after_upload.py <slug> <cut> --captions --approve      # add package/captions.srt
     python publish/after_upload.py <slug> <cut> --comment --approve       # post the package's question
     python publish/after_upload.py <slug> <cut> --public --approve        # private -> public
+    python publish/after_upload.py <slug> <cut> --remove-line "some exact line" --approve   # take one line out of the live description
 
 Uses the saved login in ~/.config/youtube-analytics/token.json (needs youtube.force-ssl). Writes
 what it did back into videos/<slug>/package/<cut>.json. A comment can be posted here but only
@@ -63,6 +64,26 @@ def main():
             pkg["madePublic"] = True
             status = r["status"]
             print(f"  public: now {status['privacyStatus']}")
+
+    if "--remove-line" in a:  # take one exact line out of the LIVE description; everything else stays as it is on YouTube
+        line = a[a.index("--remove-line") + 1]
+        sn = live["snippet"]
+        old = sn.get("description", "")
+        if line not in old:
+            print("  remove-line: that line is not in the live description, skipped")
+        else:
+            new = "\n".join(x for x in old.split("\n") if x.strip() != line.strip())
+            while "\n\n\n" in new:
+                new = new.replace("\n\n\n", "\n\n")
+            if not go:
+                print(f"  remove-line: dry run, would shorten the description from {len(old)} to {len(new)} characters")
+            else:
+                backup = os.path.join(os.path.dirname(pkg_path), f"{cut}.description-before.txt")
+                open(backup, "w").write(old)
+                body = {k: sn[k] for k in ("title", "categoryId", "tags", "defaultLanguage", "defaultAudioLanguage") if k in sn}
+                r = yt.videos().update(part="snippet", body={"id": vid, "snippet": {**body, "description": new}}).execute()
+                ok = line not in r["snippet"]["description"] and r["snippet"]["title"] == sn["title"]
+                print(f"  remove-line: {'removed' if ok else 'CHECK THIS'} ({len(old)} -> {len(r['snippet']['description'])} characters; title and {len(r['snippet'].get('tags', []))} tags kept; old text saved in {os.path.basename(backup)})")
 
     if "--comment" in a:
         toon = json.load(open(os.path.join(ROOT, "videos", slug, "toon.json"))) if cut == "toon" else {}
