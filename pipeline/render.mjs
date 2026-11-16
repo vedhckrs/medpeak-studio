@@ -12,7 +12,7 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
-import {execFileSync} from 'node:child_process';
+import {execFileSync, spawnSync} from 'node:child_process';
 import {args, loadTimings, loadVideo, PUBLIC, ROOT, videoDir, writeJson} from './lib/util.mjs';
 import {makeSfx} from './make-sfx.mjs';
 
@@ -36,7 +36,8 @@ export const buildProps = (slug, shortId) => {
 
 /** Two-pass loudnorm to -14 LUFS integrated, -1 dBTP; video stream copied untouched. */
 export const master = (input, output) => {
-  const pass1 = execFileSync('ffmpeg', ['-hide_banner', '-i', input, '-af', 'loudnorm=I=-14:TP=-1:LRA=11:print_format=json', '-f', 'null', '-'], {stdio: ['ignore', 'ignore', 'pipe']}).toString();
+  // ffmpeg prints the loudness measurement on stderr, which execFileSync does not return
+  const pass1 = spawnSync('ffmpeg', ['-hide_banner', '-i', input, '-af', 'loudnorm=I=-14:TP=-1:LRA=11:print_format=json', '-f', 'null', '-'], {encoding: 'utf8'}).stderr;
   const m = JSON.parse(pass1.slice(pass1.lastIndexOf('{'), pass1.lastIndexOf('}') + 1));
   const af = `loudnorm=I=-14:TP=-1:LRA=11:measured_I=${m.input_i}:measured_TP=${m.input_tp}:measured_LRA=${m.input_lra}:measured_thresh=${m.input_thresh}:offset=${m.target_offset}:linear=true`;
   execFileSync('ffmpeg', ['-y', '-hide_banner', '-loglevel', 'error', '-i', input, '-c:v', 'copy', '-af', af, '-c:a', 'aac', '-b:a', '256k', '-ar', '48000', output]);

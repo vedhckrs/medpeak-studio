@@ -6,6 +6,7 @@
  *   node pipeline/toon-voice.mjs <slug> --dry-run                       # free: characters, credits, balance
  *   node pipeline/toon-voice.mjs <slug> --approve --max-characters N    # spends credits, capped at N
  *   node pipeline/toon-voice.mjs <slug> --approve --max-characters N --only A1,B2
+ *   node pipeline/toon-voice.mjs <slug> --remix                         # free: pitch and level again from the raw downloads
  *   node pipeline/toon-voice.mjs --audition --dry-run                   # one short line per character
  *   node pipeline/toon-voice.mjs --audition --approve --max-characters N   # -> out/toons/auditions/<who>.mp3
  *
@@ -15,12 +16,13 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {args, PUBLIC, ROOT, readJson, videoDir, writeJson} from './lib/util.mjs';
-import {approved, balance, needApproval, post, printPool} from './lib/eleven.mjs';
+import {approved, balance, costOf, needApproval, post, printPool} from './lib/eleven.mjs';
 import {loadCast, seconds, voiceFx} from './lib/toon-audio.mjs';
 import {toWords} from './voice.mjs';
 
 const AUDITION = 'Hello! This is my voice. Wait, what was that? Oh no, not again!';
 
+let billed = 0;
 const speakLine = async (cast, who, text, emotion, rawFile) => {
   const c = cast.cast[who];
   const act = cast.acting[emotion ?? 'neutral'] ?? cast.acting.neutral;
@@ -29,6 +31,7 @@ const speakLine = async (cast, who, text, emotion, rawFile) => {
     model_id: cast.model,
     voice_settings: {stability: act.stability, similarity_boost: 0.8, style: act.style, use_speaker_boost: true, speed: c.speed ?? 1},
   });
+  billed += costOf(r) ?? text.length;
   const d = await r.json();
   fs.mkdirSync(path.dirname(rawFile), {recursive: true});
   fs.writeFileSync(rawFile, Buffer.from(d.audio_base64, 'base64'));
@@ -56,8 +59,7 @@ const main = async () => {
       voiceFx(raw, path.join(out, `${who}.mp3`), cast.cast[who].pitch);
       console.log(`audition: ${who} (${cast.cast[who].voice}, pitch ${cast.cast[who].pitch})`);
     }
-    const after = await balance();
-    console.log(`Done. Spent ${bal.left - after.left} credits. Files in out/toons/auditions/`);
+    console.log(`Done. Spent ${billed} credits. Files in out/toons/auditions/`);
     return;
   }
 
@@ -75,6 +77,18 @@ const main = async () => {
     const c = cast.cast[l.who];
     return !(t && t.text === l.text && t.voiceId === c.voiceId && t.pitch === c.pitch && fs.existsSync(path.join(outDir, `${l.id}.mp3`)));
   });
+  if (a.remix) { // free: pitch and level every line again from the raw downloads
+    for (const l of lines) {
+      const raw = path.join(ROOT, 'out', 'toons', 'raw', slug, `${l.id}.mp3`);
+      if (!fs.existsSync(raw) || !timings.lines[l.id]) { console.log(`no raw file for ${l.id}`); continue; }
+      const file = path.join(outDir, `${l.id}.mp3`);
+      voiceFx(raw, file, cast.cast[l.who].pitch);
+      Object.assign(timings.lines[l.id], {pitch: cast.cast[l.who].pitch, duration: +(seconds(file) + 0.05).toFixed(3)});
+    }
+    writeJson(tPath, timings);
+    console.log('Lines mixed again (free).');
+    return;
+  }
   const chars = todo.reduce((n, l) => n + l.text.length, 0);
   const bal = await balance();
   console.log(`Lines to voice: ${todo.length} of ${lines.length}`);
@@ -97,8 +111,7 @@ const main = async () => {
     writeJson(tPath, timings);
     console.log(`voiced ${l.id}  ${l.who}  ${timings.lines[l.id].duration}s`);
   }
-  const after = await balance();
-  console.log(`Done. Spent ${bal.left - after.left} credits; ${after.left} left.`);
+  console.log(`Done. Spent ${billed} credits.`);
 };
 
 main().catch((e) => { console.error(e.message); process.exit(1); });

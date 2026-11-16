@@ -160,7 +160,10 @@ export const ToonPlayer: React.FC<ToonProps> = ({toon, timings, sfx, music}) => 
   }
   for (const c of L.cuts) if (c.from !== c.line.from) events.push({at: c.from, name: 'swish', vol: 0.22});
   const talking = (fr: number) => L.lines.some((l) => fr >= l.from && fr < l.from + l.frames - Math.round(GAP * TOON_FPS));
-  const bed = (fr: number) => (talking(fr) ? 0.1 : 0.2) * interpolate(fr, [0, 12], [0, 1], {extrapolateRight: 'clamp'}) * interpolate(fr, [L.total - 24, L.total], [1, 0], {extrapolateLeft: 'clamp'});
+  // music sits about 9 dB under the voice (the level measured on the reference Shorts) and comes up a little in the gaps;
+  // the move is smoothed over half a second so it never pumps
+  const duck = (fr: number) => { let n = 0; for (let i = -7; i <= 7; i++) n += talking(fr + i) ? 1 : 0; return n / 15; };
+  const bed = (fr: number) => (0.6 - 0.16 * duck(fr)) * interpolate(fr, [0, 12], [0, 1], {extrapolateRight: 'clamp'}) * interpolate(fr, [L.total - 24, L.total], [1, 0], {extrapolateLeft: 'clamp'});
 
   return (
     <AbsoluteFill style={{background: '#f0a8a0'}}>

@@ -1,0 +1,349 @@
+{
+  "lines": {
+    "A1": {
+      "who": "whitecell",
+      "text": "Hey! You can't park here. This is the food pipe!",
+      "voiceId": "pNInz6obpgDQGcFmaJgB",
+      "pitch": 0,
+      "file": "toons/pill-without-water/voice/A1.mp3",
+      "duration": 2.883,
+      "words": [
+        {
+          "w": "Hey!",
+          "start": 0,
+          "end": 0.255
+        },
+        {
+          "w": "You",
+          "start": 0.29,
+          "end": 0.372
+        },
+        {
+          "w": "can't",
+          "start": 0.418,
+          "end": 0.627
+        },
+        {
+          "w": "park",
+          "start": 0.685,
+          "end": 0.952
+        },
+        {
+          "w": "here.",
+          "start": 1.01,
+          "end": 1.324
+        },
+        {
+          "w": "This",
+          "start": 1.486,
+          "end": 1.66
+        },
+        {
+          "w": "is",
+          "start": 1.695,
+          "end": 1.765
+        },
+        {
+          "w": "the",
+          "start": 1.811,
+          "end": 1.881
+        },
+        {
+          "w": "food",
+          "start": 1.927,
+          "end": 2.206
+        },
+        {
+          "w": "pipe!",
+          "start": 2.264,
+          "end": 2.833
+        }
+      ]
+    },
+    "A2": {
+      "who": "pill",
+      "text": "I'm stuck! He swallowed me without water!",
+      "voiceId": "bIHbv24MWmeRgasZH58o",
+      "pitch": 3,
+      "file": "toons/pill-without-water/voice/A2.mp3",
+      "duration": 2.5,
+      "words": [
+        {
+          "w": "I'm",
+          "start": 0,
+          "end": 0.163
+        },
+        {
+          "w": "stuck!",
+          "start": 0.244,
+          "end": 0.743
+        },
+        {
+          "w": "He",
+          "start": 0.929,
+          "end": 1.01
+        },
+        {
+          "w": "swallowed",
+          "start": 1.057,
+          "end": 1.416
+        },
+        {
+          "w": "me",
+          "start": 1.44,
+          "end": 1.498
+        },
+        {
+          "w": "without",
+          "start": 1.521,
+          "end": 1.765
+        },
+        {
+          "w": "water!",
+          "start": 1.823,
+          "end": 2.461
+        }
+      ]
+    },
+    "A3": {
+      "who": "whitecell",
+      "text": "Dry? Oh no. You're starting to melt!",
+      "voiceId": "pNInz6obpgDQGcFmaJgB",
+      "pitch": 0,
+      "file": "toons/pill-without-water/voice/A3.mp3",
+      "duration": 3.022,
+      "words": [
+        {
+          "w": "Dry?",
+          "start": 0,
+          "end": 0.441
+        },
+        {
+          "w": "Oh",
+          "start": 0.511,
+          "end": 0.708
+        },
+        {
+          "w": "no.",
+          "start": 0.801,
+          "end": 1.3
+        },
+        {
+          "w": "You're",
+          "start": 1.602,
+          "end": 1.8
+        },
+        {
+          "w": "starting",
+          "start": 1.823,
+          "end": 2.159
+        },
+        {
+          "w": "to",
+          "start": 2.194,
+          "end": 2.241
+        },
+        {
+          "w": "melt!",
+          "start": 2.322,
+          "end": 2.972
+        }
+      ]
+    },
+    "A4": {
+      "who": "pill",
+      "text": "It burns! I'm so sorry!",
+      "voiceId": "bIHbv24MWmeRgasZH58o",
+      "pitch": 3,
+      "file": "toons/pill-without-water/voice/A4.mp3",
+      "duration": 1.667,
+      "words": [
+        {
+          "w": "It",
+          "start": 0,
+          "end": 0.151
+        },
+        {
+          "w": "burns!",
+          "start": 0.209,
+          "end": 0.662
+        },
+        {
+          "w": "I'm",
+          "start": 0.697,
+          "end": 0.836
+        },
+        {
+          "w": "so",
+          "start": 0.882,
+          "end": 1.033
+        },
+        {
+          "w": "sorry!",
+          "start": 1.138,
+          "end": 1.625
+        }
+      ]
+    },
+    "B1": {
+      "who": "patient",
+      "text": "Doc, why does my chest burn when I swallow?",
+      "voiceId": "TX3LPaxmHKxFdv7VOQHJ",
+      "pitch": 0,
+      "file": "toons/pill-without-water/voice/B1.mp3",
+      "duration": 2.465,
+      "words": [
+        {
+          "w": "Doc,",
+          "start": 0,
+          "end": 0.325
+        },
+        {
+          "w": "why",
+          "start": 0.348,
+          "end": 0.511
+        },
+        {
+          "w": "does",
+          "start": 0.557,
+          "end": 0.685
+        },
+        {
+          "w": "my",
+          "start": 0.731,
+          "end": 0.824
+        },
+        {
+          "w": "chest",
+          "start": 0.894,
+          "end": 1.138
+        },
+        {
+          "w": "burn",
+          "start": 1.184,
+          "end": 1.37
+        },
+        {
+          "w": "when",
+          "start": 1.405,
+          "end": 1.509
+        },
+        {
+          "w": "I",
+          "start": 1.544,
+          "end": 1.567
+        },
+        {
+          "w": "swallow?",
+          "start": 1.637,
+          "end": 2.415
+        }
+      ]
+    },
+    "B2": {
+      "who": "doctor",
+      "text": "A pill stuck in your food pipe can irritate it. Always take pills with a full glass of water.",
+      "voiceId": "XrExE9yKIg1WjnnlVkGX",
+      "pitch": 0,
+      "file": "toons/pill-without-water/voice/B2.mp3",
+      "duration": 5.344,
+      "words": [
+        {
+          "w": "A",
+          "start": 0,
+          "end": 0.093
+        },
+        {
+          "w": "pill",
+          "start": 0.163,
+          "end": 0.372
+        },
+        {
+          "w": "stuck",
+          "start": 0.453,
+          "end": 0.673
+        },
+        {
+          "w": "in",
+          "start": 0.72,
+          "end": 0.778
+        },
+        {
+          "w": "your",
+          "start": 0.813,
+          "end": 0.917
+        },
+        {
+          "w": "food",
+          "start": 0.952,
+          "end": 1.149
+        },
+        {
+          "w": "pipe",
+          "start": 1.184,
+          "end": 1.463
+        },
+        {
+          "w": "can",
+          "start": 1.498,
+          "end": 1.649
+        },
+        {
+          "w": "irritate",
+          "start": 1.707,
+          "end": 2.113
+        },
+        {
+          "w": "it.",
+          "start": 2.148,
+          "end": 2.392
+        },
+        {
+          "w": "Always",
+          "start": 2.844,
+          "end": 3.17
+        },
+        {
+          "w": "take",
+          "start": 3.216,
+          "end": 3.413
+        },
+        {
+          "w": "pills",
+          "start": 3.448,
+          "end": 3.692
+        },
+        {
+          "w": "with",
+          "start": 3.715,
+          "end": 3.831
+        },
+        {
+          "w": "a",
+          "start": 3.878,
+          "end": 3.901
+        },
+        {
+          "w": "full",
+          "start": 3.959,
+          "end": 4.145
+        },
+        {
+          "w": "glass",
+          "start": 4.203,
+          "end": 4.47
+        },
+        {
+          "w": "of",
+          "start": 4.505,
+          "end": 4.563
+        },
+        {
+          "w": "water.",
+          "start": 4.621,
+          "end": 5.294
+        }
+      ]
+    }
+  }
+}

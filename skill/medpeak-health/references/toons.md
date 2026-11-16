@@ -68,16 +68,33 @@ turns it into the whole Short: staging, acting, lip-sync, camera cuts, captions,
 Order of work for a Toon: write `toon.json` -> `toon-render --stills` (free, silent check) ->
 `toon-voice --dry-run` -> owner approves -> `toon-voice --approve --max-characters N` -> `toon-render`.
 
-**Money rules.** Voices cost 1 credit a character. Sound effects and music have no firm published API
-price, so those two scripts measure the real cost on the first item and stop if the projection passes
-the approved cap (`--max-credits`). All three print the plan for free with `--dry-run` and refuse to
-spend without `--approve`. The library and the beds are paid for once and never again.
+**Money rules.** Every paid script prints its plan for free with `--dry-run` and refuses to spend
+without `--approve` and a cap. Prices measured on 2026-11-16 (the owner approved 4,900, the real total
+was 2,314):
+
+| What | Price | Paid once? |
+|---|---|---|
+| Voices | 6 lines, 284 characters: about 112 credits by the balance (budget 1 credit a character) | per video |
+| Sound effects | 10 credits a second: the 38-effect library was 327 | yes, done |
+| Music beds | 12.5 credits a second: 4 beds (150 s) were 1,875 | yes, done |
+
+- The balance counter lags by a few minutes. Sound-effect responses report their own cost
+  (`character-cost` header); music responses do not, so the music script waits for the balance.
+- Now and then a very short effect comes back silent; the script hears that and asks again.
+- A new effect or bed: add it to `LIBRARY` / `BEDS`, quote it, run the script (only missing items are made).
+
+**Mix (set in the player and `pipeline/lib/toon-audio.mjs`).** Every voice line is levelled to -17 LUFS
+(by loudness, not by peak: peak levelling left lines 8 dB apart). Effects peak at -3 dB but never
+average above -21 dB, so a click and a trombone feel equal. Music beds are stored at -20 LUFS and
+play about 9 dB under the voice, a little higher in the gaps. The render is mastered to -14 LUFS.
+`--remix` on `toon-voice` and `toon-sfx` applies level changes again for free from the raw downloads.
 
 ## Roadmap
 - Phase A (done 2026-11-16, v5): engine, rig, blueprint system, 19 body characters, 6 full-body people,
   9 sets, model sheets, acting toolkit.
-- Phase B (code done 2026-11-16; voices, the effect library and the music beds wait for the owner's
-  approval of the quoted credits): voice cast, lip-sync, script player, sound effects, music.
+- Phase B (done 2026-11-16): voice cast, lip-sync, script player, the 38-effect library, 4 music beds,
+  and a fully voiced and mixed test scene (`videos/pill-without-water`). Open: the owner's review of the
+  voices by ear; 21 of the 25 voices have not been heard yet (`toon-voice --audition`, about 1,550 credits).
 - Phase C: script rules for Toons (Retention 7 adapted to dialogue), doctor lines fact-checked against
   sources, a `toon-check` gate, more poses and props.
 - Phase D: 3 test Shorts, private upload, review. Phase E: daily rhythm.
