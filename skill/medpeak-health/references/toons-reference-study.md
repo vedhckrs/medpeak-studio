@@ -114,6 +114,12 @@ line, a script gate, and a camera that CAN do lenses and depth when a moment nee
 | Places | 2 to 5 | 2 | 3 and a time card |
 | Camera scan (wrong picture / jump cut / jolt) | - | 0 / 0 / 0 after the fix | 0 / 0 / 0 |
 
+With the real voices (same day) the pilot runs 45.8 s, because the voices speak faster than the
+estimate: 4 scripted cuts (one every 9.2 s; the detector also counts one white flash), typical
+shot 4.1 s, longest 20.5 s, still seconds 36%, big-change seconds 9%, sound at -14.0 LUFS with a
+true peak of -0.9 dB. A quiet stretch of 3.5 s appeared on the NHS line once the real word times
+were in; a source label on the word "NHS" filled it. Check the gate again after every voicing.
+
 What closed: the cutting and the big changes are at their level. What did not: "still seconds" is
 33%, not 85%, because our sets keep moving on purpose (the owner asked for living backgrounds),
 our stage face is large, and a caption word changes several times a second. If the picture still

@@ -1,187 +1,187 @@
 {
   "lines": {
     "A1": {
-      "who": "whitecell",
-      "text": "Hey! You can't park here. This is the food pipe!",
-      "voiceId": "pNInz6obpgDQGcFmaJgB",
-      "pitch": 0,
+      "who": "foodpipe",
+      "text": "Whoa! A pill? Where's the water?",
+      "voiceId": "CwhRBWXzGAHq8TQ4Fs17",
+      "pitch": 1,
       "file": "toons/pill-without-water/voice/A1.mp3",
-      "duration": 2.883,
+      "duration": 1.848,
       "words": [
         {
-          "w": "Hey!",
+          "w": "Whoa!",
           "start": 0,
-          "end": 0.255
-        },
-        {
-          "w": "You",
-          "start": 0.29,
           "end": 0.372
         },
         {
-          "w": "can't",
+          "w": "A",
           "start": 0.418,
-          "end": 0.627
+          "end": 0.453
         },
         {
-          "w": "park",
-          "start": 0.685,
-          "end": 0.952
+          "w": "pill?",
+          "start": 0.511,
+          "end": 0.731
         },
         {
-          "w": "here.",
-          "start": 1.01,
-          "end": 1.324
-        },
-        {
-          "w": "This",
-          "start": 1.486,
-          "end": 1.66
-        },
-        {
-          "w": "is",
-          "start": 1.695,
-          "end": 1.765
+          "w": "Where's",
+          "start": 0.755,
+          "end": 1.01
         },
         {
           "w": "the",
-          "start": 1.811,
-          "end": 1.881
+          "start": 1.057,
+          "end": 1.138
         },
         {
-          "w": "food",
-          "start": 1.927,
-          "end": 2.206
-        },
-        {
-          "w": "pipe!",
-          "start": 2.264,
-          "end": 2.833
+          "w": "water?",
+          "start": 1.207,
+          "end": 1.811
         }
       ]
     },
     "A2": {
       "who": "pill",
-      "text": "I'm stuck! He swallowed me without water!",
+      "text": "He swallowed me dry! I'm stuck on your wall!",
       "voiceId": "bIHbv24MWmeRgasZH58o",
       "pitch": 3,
       "file": "toons/pill-without-water/voice/A2.mp3",
-      "duration": 2.5,
+      "duration": 2.499,
       "words": [
         {
-          "w": "I'm",
-          "start": 0,
-          "end": 0.163
-        },
-        {
-          "w": "stuck!",
-          "start": 0.244,
-          "end": 0.743
-        },
-        {
           "w": "He",
-          "start": 0.929,
-          "end": 1.01
+          "start": 0,
+          "end": 0.139
         },
         {
           "w": "swallowed",
-          "start": 1.057,
-          "end": 1.416
+          "start": 0.197,
+          "end": 0.546
         },
         {
           "w": "me",
-          "start": 1.44,
-          "end": 1.498
+          "start": 0.569,
+          "end": 0.65
         },
         {
-          "w": "without",
-          "start": 1.521,
-          "end": 1.765
+          "w": "dry!",
+          "start": 0.697,
+          "end": 1.068
         },
         {
-          "w": "water!",
-          "start": 1.823,
+          "w": "I'm",
+          "start": 1.115,
+          "end": 1.242
+        },
+        {
+          "w": "stuck",
+          "start": 1.312,
+          "end": 1.556
+        },
+        {
+          "w": "on",
+          "start": 1.591,
+          "end": 1.649
+        },
+        {
+          "w": "your",
+          "start": 1.695,
+          "end": 1.811
+        },
+        {
+          "w": "wall!",
+          "start": 1.858,
           "end": 2.461
         }
       ]
     },
     "A3": {
-      "who": "whitecell",
-      "text": "Dry? Oh no. You're starting to melt!",
-      "voiceId": "pNInz6obpgDQGcFmaJgB",
-      "pitch": 0,
+      "who": "foodpipe",
+      "text": "Then three things happen. And I hate the third.",
+      "voiceId": "CwhRBWXzGAHq8TQ4Fs17",
+      "pitch": 1,
       "file": "toons/pill-without-water/voice/A3.mp3",
-      "duration": 3.022,
+      "duration": 2.688,
       "words": [
         {
-          "w": "Dry?",
+          "w": "Then",
           "start": 0,
-          "end": 0.441
+          "end": 0.221
         },
         {
-          "w": "Oh",
-          "start": 0.511,
-          "end": 0.708
+          "w": "three",
+          "start": 0.279,
+          "end": 0.511
         },
         {
-          "w": "no.",
-          "start": 0.801,
-          "end": 1.3
+          "w": "things",
+          "start": 0.546,
+          "end": 0.778
         },
         {
-          "w": "You're",
-          "start": 1.602,
-          "end": 1.8
+          "w": "happen.",
+          "start": 0.836,
+          "end": 1.219
         },
         {
-          "w": "starting",
-          "start": 1.823,
-          "end": 2.159
+          "w": "And",
+          "start": 1.416,
+          "end": 1.556
         },
         {
-          "w": "to",
-          "start": 2.194,
-          "end": 2.241
+          "w": "I",
+          "start": 1.614,
+          "end": 1.649
         },
         {
-          "w": "melt!",
-          "start": 2.322,
-          "end": 2.972
+          "w": "hate",
+          "start": 1.718,
+          "end": 1.904
+        },
+        {
+          "w": "the",
+          "start": 1.939,
+          "end": 2.009
+        },
+        {
+          "w": "third.",
+          "start": 2.055,
+          "end": 2.647
         }
       ]
     },
     "A4": {
-      "who": "pill",
-      "text": "It burns! I'm so sorry!",
-      "voiceId": "bIHbv24MWmeRgasZH58o",
-      "pitch": 3,
+      "who": "foodpipe",
+      "text": "First, you stick to me.",
+      "voiceId": "CwhRBWXzGAHq8TQ4Fs17",
+      "pitch": 1,
       "file": "toons/pill-without-water/voice/A4.mp3",
-      "duration": 1.667,
+      "duration": 1.388,
       "words": [
         {
-          "w": "It",
+          "w": "First,",
           "start": 0,
-          "end": 0.151
+          "end": 0.337
         },
         {
-          "w": "burns!",
-          "start": 0.209,
-          "end": 0.662
+          "w": "you",
+          "start": 0.36,
+          "end": 0.453
         },
         {
-          "w": "I'm",
-          "start": 0.697,
-          "end": 0.836
+          "w": "stick",
+          "start": 0.522,
+          "end": 0.743
         },
         {
-          "w": "so",
-          "start": 0.882,
-          "end": 1.033
+          "w": "to",
+          "start": 0.789,
+          "end": 0.859
         },
         {
-          "w": "sorry!",
-          "start": 1.138,
-          "end": 1.625
+          "w": "me.",
+          "start": 0.917,
+          "end": 1.347
         }
       ]
     },
@@ -342,6 +342,591 @@
           "w": "water.",
           "start": 4.621,
           "end": 5.294
+        }
+      ]
+    },
+    "A5": {
+      "who": "pill",
+      "text": "Second... I start to melt!",
+      "voiceId": "bIHbv24MWmeRgasZH58o",
+      "pitch": 3,
+      "file": "toons/pill-without-water/voice/A5.mp3",
+      "duration": 1.667,
+      "words": [
+        {
+          "w": "Second...",
+          "start": 0,
+          "end": 0.418
+        },
+        {
+          "w": "I",
+          "start": 0.569,
+          "end": 0.615
+        },
+        {
+          "w": "start",
+          "start": 0.72,
+          "end": 0.94
+        },
+        {
+          "w": "to",
+          "start": 0.975,
+          "end": 1.033
+        },
+        {
+          "w": "melt!",
+          "start": 1.08,
+          "end": 1.625
+        }
+      ]
+    },
+    "A6": {
+      "who": "foodpipe",
+      "text": "Third, your medicine burns my lining. Ow!",
+      "voiceId": "CwhRBWXzGAHq8TQ4Fs17",
+      "pitch": 1,
+      "file": "toons/pill-without-water/voice/A6.mp3",
+      "duration": 2.498,
+      "words": [
+        {
+          "w": "Third,",
+          "start": 0,
+          "end": 0.348
+        },
+        {
+          "w": "your",
+          "start": 0.372,
+          "end": 0.511
+        },
+        {
+          "w": "medicine",
+          "start": 0.557,
+          "end": 0.929
+        },
+        {
+          "w": "burns",
+          "start": 0.975,
+          "end": 1.254
+        },
+        {
+          "w": "my",
+          "start": 1.312,
+          "end": 1.416
+        },
+        {
+          "w": "lining.",
+          "start": 1.486,
+          "end": 1.892
+        },
+        {
+          "w": "Ow!",
+          "start": 1.939,
+          "end": 2.461
+        }
+      ]
+    },
+    "A7": {
+      "who": "foodpipe",
+      "text": "Soon, every swallow will sting.",
+      "voiceId": "CwhRBWXzGAHq8TQ4Fs17",
+      "pitch": 1,
+      "file": "toons/pill-without-water/voice/A7.mp3",
+      "duration": 1.804,
+      "words": [
+        {
+          "w": "Soon,",
+          "start": 0,
+          "end": 0.302
+        },
+        {
+          "w": "every",
+          "start": 0.337,
+          "end": 0.522
+        },
+        {
+          "w": "swallow",
+          "start": 0.592,
+          "end": 0.952
+        },
+        {
+          "w": "will",
+          "start": 0.987,
+          "end": 1.126
+        },
+        {
+          "w": "sting.",
+          "start": 1.173,
+          "end": 1.765
+        }
+      ]
+    },
+    "C1": {
+      "who": "patient",
+      "text": "Ow! Why does my chest burn when I swallow?",
+      "voiceId": "TX3LPaxmHKxFdv7VOQHJ",
+      "pitch": 0,
+      "file": "toons/pill-without-water/voice/C1.mp3",
+      "duration": 2.976,
+      "words": [
+        {
+          "w": "Ow!",
+          "start": 0,
+          "end": 0.441
+        },
+        {
+          "w": "Why",
+          "start": 0.708,
+          "end": 0.894
+        },
+        {
+          "w": "does",
+          "start": 0.94,
+          "end": 1.068
+        },
+        {
+          "w": "my",
+          "start": 1.115,
+          "end": 1.207
+        },
+        {
+          "w": "chest",
+          "start": 1.277,
+          "end": 1.556
+        },
+        {
+          "w": "burn",
+          "start": 1.614,
+          "end": 1.811
+        },
+        {
+          "w": "when",
+          "start": 1.846,
+          "end": 1.95
+        },
+        {
+          "w": "I",
+          "start": 1.997,
+          "end": 2.02
+        },
+        {
+          "w": "swallow?",
+          "start": 2.113,
+          "end": 2.926
+        }
+      ]
+    },
+    "D1": {
+      "who": "doctor",
+      "text": "A pill got stuck in your food pipe. It dissolved there and irritated it.",
+      "voiceId": "XrExE9yKIg1WjnnlVkGX",
+      "pitch": 0,
+      "file": "toons/pill-without-water/voice/D1.mp3",
+      "duration": 4.369,
+      "words": [
+        {
+          "w": "A",
+          "start": 0,
+          "end": 0.093
+        },
+        {
+          "w": "pill",
+          "start": 0.174,
+          "end": 0.383
+        },
+        {
+          "w": "got",
+          "start": 0.453,
+          "end": 0.615
+        },
+        {
+          "w": "stuck",
+          "start": 0.673,
+          "end": 0.929
+        },
+        {
+          "w": "in",
+          "start": 0.975,
+          "end": 1.033
+        },
+        {
+          "w": "your",
+          "start": 1.08,
+          "end": 1.184
+        },
+        {
+          "w": "food",
+          "start": 1.231,
+          "end": 1.44
+        },
+        {
+          "w": "pipe.",
+          "start": 1.498,
+          "end": 1.916
+        },
+        {
+          "w": "It",
+          "start": 2.252,
+          "end": 2.392
+        },
+        {
+          "w": "dissolved",
+          "start": 2.438,
+          "end": 2.879
+        },
+        {
+          "w": "there",
+          "start": 2.914,
+          "end": 3.111
+        },
+        {
+          "w": "and",
+          "start": 3.146,
+          "end": 3.239
+        },
+        {
+          "w": "irritated",
+          "start": 3.297,
+          "end": 3.808
+        },
+        {
+          "w": "it.",
+          "start": 3.855,
+          "end": 4.319
+        }
+      ]
+    },
+    "D2": {
+      "who": "doctor",
+      "text": "But here's the twist: don't blame the medicine. It just needed a ride down.",
+      "voiceId": "XrExE9yKIg1WjnnlVkGX",
+      "pitch": 0,
+      "file": "toons/pill-without-water/voice/D2.mp3",
+      "duration": 4.926,
+      "words": [
+        {
+          "w": "But",
+          "start": 0,
+          "end": 0.174
+        },
+        {
+          "w": "here's",
+          "start": 0.221,
+          "end": 0.453
+        },
+        {
+          "w": "the",
+          "start": 0.476,
+          "end": 0.546
+        },
+        {
+          "w": "twist:",
+          "start": 0.58,
+          "end": 1.138
+        },
+        {
+          "w": "don't",
+          "start": 1.591,
+          "end": 1.834
+        },
+        {
+          "w": "blame",
+          "start": 1.881,
+          "end": 2.125
+        },
+        {
+          "w": "the",
+          "start": 2.148,
+          "end": 2.218
+        },
+        {
+          "w": "medicine.",
+          "start": 2.252,
+          "end": 2.833
+        },
+        {
+          "w": "It",
+          "start": 3.042,
+          "end": 3.17
+        },
+        {
+          "w": "just",
+          "start": 3.228,
+          "end": 3.39
+        },
+        {
+          "w": "needed",
+          "start": 3.448,
+          "end": 3.727
+        },
+        {
+          "w": "a",
+          "start": 3.762,
+          "end": 3.796
+        },
+        {
+          "w": "ride",
+          "start": 3.866,
+          "end": 4.098
+        },
+        {
+          "w": "down.",
+          "start": 4.145,
+          "end": 4.876
+        }
+      ]
+    },
+    "D3": {
+      "who": "patient",
+      "text": "So water is the ride?",
+      "voiceId": "TX3LPaxmHKxFdv7VOQHJ",
+      "pitch": 0,
+      "file": "toons/pill-without-water/voice/D3.mp3",
+      "duration": 1.49,
+      "words": [
+        {
+          "w": "So",
+          "start": 0,
+          "end": 0.186
+        },
+        {
+          "w": "water",
+          "start": 0.267,
+          "end": 0.534
+        },
+        {
+          "w": "is",
+          "start": 0.58,
+          "end": 0.65
+        },
+        {
+          "w": "the",
+          "start": 0.697,
+          "end": 0.766
+        },
+        {
+          "w": "ride?",
+          "start": 0.824,
+          "end": 1.44
+        }
+      ]
+    },
+    "D4": {
+      "who": "doctor",
+      "text": "Exactly. A glass of water, sitting or standing up.",
+      "voiceId": "XrExE9yKIg1WjnnlVkGX",
+      "pitch": 0,
+      "file": "toons/pill-without-water/voice/D4.mp3",
+      "duration": 3.394,
+      "words": [
+        {
+          "w": "Exactly.",
+          "start": 0,
+          "end": 0.813
+        },
+        {
+          "w": "A",
+          "start": 1.022,
+          "end": 1.091
+        },
+        {
+          "w": "glass",
+          "start": 1.149,
+          "end": 1.428
+        },
+        {
+          "w": "of",
+          "start": 1.463,
+          "end": 1.521
+        },
+        {
+          "w": "water,",
+          "start": 1.591,
+          "end": 1.95
+        },
+        {
+          "w": "sitting",
+          "start": 2.02,
+          "end": 2.299
+        },
+        {
+          "w": "or",
+          "start": 2.334,
+          "end": 2.392
+        },
+        {
+          "w": "standing",
+          "start": 2.45,
+          "end": 2.775
+        },
+        {
+          "w": "up.",
+          "start": 2.833,
+          "end": 3.344
+        }
+      ]
+    },
+    "D5": {
+      "who": "doctor",
+      "text": "And with some antibiotics, the NHS says: no lying down for thirty minutes.",
+      "voiceId": "XrExE9yKIg1WjnnlVkGX",
+      "pitch": 0,
+      "file": "toons/pill-without-water/voice/D5.mp3",
+      "duration": 5.391,
+      "words": [
+        {
+          "w": "And",
+          "start": 0,
+          "end": 0.151
+        },
+        {
+          "w": "with",
+          "start": 0.197,
+          "end": 0.325
+        },
+        {
+          "w": "some",
+          "start": 0.36,
+          "end": 0.522
+        },
+        {
+          "w": "antibiotics,",
+          "start": 0.569,
+          "end": 1.44
+        },
+        {
+          "w": "the",
+          "start": 1.591,
+          "end": 1.683
+        },
+        {
+          "w": "NHS",
+          "start": 1.753,
+          "end": 2.229
+        },
+        {
+          "w": "says:",
+          "start": 2.276,
+          "end": 2.775
+        },
+        {
+          "w": "no",
+          "start": 3.297,
+          "end": 3.448
+        },
+        {
+          "w": "lying",
+          "start": 3.541,
+          "end": 3.82
+        },
+        {
+          "w": "down",
+          "start": 3.878,
+          "end": 4.098
+        },
+        {
+          "w": "for",
+          "start": 4.156,
+          "end": 4.261
+        },
+        {
+          "w": "thirty",
+          "start": 4.319,
+          "end": 4.551
+        },
+        {
+          "w": "minutes.",
+          "start": 4.598,
+          "end": 5.341
+        }
+      ]
+    },
+    "E1": {
+      "who": "pill",
+      "text": "Wheee! This time I got my water!",
+      "voiceId": "bIHbv24MWmeRgasZH58o",
+      "pitch": 3,
+      "file": "toons/pill-without-water/voice/E1.mp3",
+      "duration": 1.896,
+      "words": [
+        {
+          "w": "Wheee!",
+          "start": 0,
+          "end": 0.406
+        },
+        {
+          "w": "This",
+          "start": 0.441,
+          "end": 0.615
+        },
+        {
+          "w": "time",
+          "start": 0.662,
+          "end": 0.824
+        },
+        {
+          "w": "I",
+          "start": 0.848,
+          "end": 0.871
+        },
+        {
+          "w": "got",
+          "start": 0.917,
+          "end": 1.045
+        },
+        {
+          "w": "my",
+          "start": 1.091,
+          "end": 1.161
+        },
+        {
+          "w": "water!",
+          "start": 1.219,
+          "end": 1.858
+        }
+      ]
+    },
+    "E2": {
+      "who": "foodpipe",
+      "text": "Whoa... a pill with water. Thank you!",
+      "voiceId": "CwhRBWXzGAHq8TQ4Fs17",
+      "pitch": 1,
+      "file": "toons/pill-without-water/voice/E2.mp3",
+      "duration": 2.408,
+      "words": [
+        {
+          "w": "Whoa...",
+          "start": 0,
+          "end": 0.464
+        },
+        {
+          "w": "a",
+          "start": 0.662,
+          "end": 0.731
+        },
+        {
+          "w": "pill",
+          "start": 0.789,
+          "end": 0.952
+        },
+        {
+          "w": "with",
+          "start": 0.987,
+          "end": 1.115
+        },
+        {
+          "w": "water.",
+          "start": 1.184,
+          "end": 1.533
+        },
+        {
+          "w": "Thank",
+          "start": 1.649,
+          "end": 1.904
+        },
+        {
+          "w": "you!",
+          "start": 1.962,
+          "end": 2.368
         }
       ]
     }
