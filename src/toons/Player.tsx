@@ -289,7 +289,7 @@ export const headSeen = (a: ToonActor, set: SetName) => {
   const hb = headBox(a, set);
   if (!hb || !isPerson(a.who)) return hb;
   const style = SPECS[a.who as keyof typeof SPECS].hair?.style ?? '';
-  const [kx, ky] = style === 'curly' || style === 'long' ? [0.92, 0.06] : /^cap/.test(style) ? [0.6, 0.08] : [0.6, 0.22];
+  const [kx, ky] = style === 'curly' || style === 'long' ? [0.92, 0.06] : style === 'messy' || style === 'bun' ? [0.6, 0.08] : /^cap/.test(style) ? [0.6, 0.15] : [0.6, 0.22];
   const half = ((hb.x1 - hb.x0) / 2) * kx;
   return {...hb, x0: hb.cx - half, x1: hb.cx + half, y0: hb.y0 + (hb.y1 - hb.y0) * ky};
 };

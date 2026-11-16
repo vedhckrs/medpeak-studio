@@ -44,9 +44,18 @@ measures it on every script (they all run in `npm test`).
 | 19 | wall items sat behind heads (measured on the first rooms: the certificate 34% and the chart 23% behind Dr. Mira in the pill video, the towel rail 48% behind the boy's cap in the sugar video) | the room kit hung wall items by the window, not by where people stand | everything on a wall hangs in a band above the heads (y 130 to 500, `WALL_BAND`); the chart takes the edge of the wall, away from the middle where bubbles and tags come up | staging check: fails when more than 15% of a wall item is behind a head; a test hangs the items in all 144 rooms a recipe can make |
 | 20 | the staging check did not know the caption line or the walls | it compared graphics with heads, the frame and each other only | it also fails a graphic on the caption line and a wall item behind a head | staging check |
 
+| 21 | "head not proper, hair and cap" (the boy, close-up, 2026-11-16) | the cap was drawn as a dome 20 units above the skull and wider than the head, with the peak down on the eyebrows; the only hair in view was two dark triangles by the ears, which read as straps | the head has hair first (a fringe, a lock by each ear), and a small cap sits on it, pushed back; the crown follows the skull. New choice sheet `toons-boards/caps.jpg` (A forward, B backward, C no cap) | choice sheet; the owner picks |
+
 **Decided, not bugs:** a bubble or a tag may cover what hangs on the wall (it is drawn over the room
 and gone in a few seconds; there is no free wall left for all of them), and people stand in front
 of furniture on purpose (a desk, a bed). Neither is checked.
+
+## Waiting for the owner's pick (asked 2026-11-16)
+| What | Sheet | What happens after the pick |
+|---|---|---|
+| The boy's head: A, B or C | `toons-boards/caps.jpg` | A is in the engine now; B or C is a one-line change in `SPECS.kid` |
+| Dr. Mira's global look: A, B or C | `toons-boards/doctor-options.jpg` | `SPECS.doctor` gets the chosen skin, eyes and hair; sheets and boards are rendered again |
+| The room style: clean wall, room as a box; clinic empty (A) or with one low cupboard (B) | `toons-boards/room-style-clinic.jpg`, `room-style-home.jpg` | `src/toons/room3d.tsx` replaces the first rooms in the player; the staging check gets "nothing of the room inside the pop-up area" and "nobody stands in furniture"; the three scripts' graphics are moved onto the back wall |
 
 ## Open, and why
 | # | What | Why it is still open | Who can close it |

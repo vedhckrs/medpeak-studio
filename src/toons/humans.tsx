@@ -11,7 +11,7 @@ import {type ArmSpec, armOf, Face, Hand, Shoe} from './rig';
 import {POSES} from './poses';
 import type {Act, CharProps} from './blueprint';
 
-export type HairStyle = 'curly' | 'short' | 'long' | 'cap' | 'capback' | 'messy' | 'balding' | 'baby';
+export type HairStyle = 'curly' | 'short' | 'long' | 'bun' | 'cap' | 'capback' | 'messy' | 'balding' | 'baby';
 export type TopKind = 'coat' | 'hoodie' | 'tee' | 'blouse' | 'cardigan' | 'onesie';
 export type BottomKind = 'trousers' | 'skirt' | 'shorts';
 export type HumanSpec = {
@@ -157,6 +157,14 @@ const curl = (x: number, y: number, r: number, color: string, i: number) => (
 );
 const CURLS_BACK: [number, number, number][] = [[-27, 11, 10.5], [-30.5, -1, 11], [-28, -14, 11.5], [-21, -25, 11.5], [-10, -32, 11.5], [2, -34.5, 12], [14, -31.5, 11.5], [23.5, -23, 11.5], [29.5, -11, 11], [30.5, 1, 11], [27, 12, 10.5], [-24.5, 21, 9], [24.5, 21, 9]];
 const CURLS_FRONT: [number, number, number][] = [[-15.5, -15, 6.8], [-5.5, -18.6, 7.2], [5, -18.6, 7.2], [15, -15.4, 6.8]];
+/** A soft lock of hair in front of each ear, from `top` down to the ear (the first ones were dark triangles that read as straps). */
+const SideLocks: React.FC<{color: string; top: number}> = ({color, top}) => (
+  <>
+    {[-1, 1].map((k) => (
+      <Part key={k} d={`M${k * 25.2} ${top} C${k * 26.2} ${f1(top + 6)} ${k * 25.2} ${f1(top + 12)} ${k * 22.8} 3.4 C${k * 22.2} ${f1(top + 11)} ${k * 21.8} ${f1(top + 6)} ${k * 20.6} ${f1(top + 0.8)} C${k * 21.2} ${f1(top - 0.6)} ${k * 23.4} ${f1(top - 0.8)} ${k * 25.2} ${top} Z`} fill={color} mat="hair" depth={1.2} />
+    ))}
+  </>
+);
 const HairBack: React.FC<{s: HumanSpec}> = ({s}) => {
   const {style, color} = s.hair;
   if (style === 'curly') {
@@ -181,6 +189,17 @@ const HairBack: React.FC<{s: HumanSpec}> = ({s}) => {
     );
   }
   if (style === 'short') return <Part d={ellipsePath(0, -7, 24.6, 22)} fill={shade(color, 0.12)} mat="hair" depth={3} />;
+  if (style === 'bun') {
+    return (
+      <>
+        <Part d={circlePath(0, -33.6, 9.4)} fill={color} mat="hair" depth={3}>
+          <Groove pts={[[-5, -38], [0, -34], [-1, -28]]} w={1.2} color={color} k={0.3} />
+          <Mark pts={[[-5.6, -37.6], [-1, -40.6], [4.6, -38.6]]} w={1.6} color={lift(color, 0.32)} opacity={0.75} />
+        </Part>
+        <Part d={ellipsePath(0, -6, 24.8, 21.6)} fill={shade(color, 0.12)} mat="hair" depth={3} />
+      </>
+    );
+  }
   if (style === 'cap' || style === 'capback' || style === 'messy') {
     const u = style === 'messy' ? color : s.hair.under ?? '#3b2c25';
     return <Part d={ellipsePath(0, -4.6, 24.9, 20.6)} fill={shade(u, 0.1)} mat="hair" depth={3} />;
@@ -219,6 +238,18 @@ const HairFront: React.FC<{s: HumanSpec}> = ({s}) => {
           <Part d="M23.8 -4 L22.4 6.5 L20.4 -4 Z" fill={color} depth={1} />
         </>
       );
+    case 'bun':
+      // drawn back into a bun from a side parting: tidy, the forehead and the face stay open
+      return (
+        <>
+          <Part d="M-23.8 -1.6 C-29 -35 28 -37 23.8 -2.2 C22.2 -9.6 18 -15.6 10 -19 C4.6 -15.4 -4 -13.6 -12.6 -14.4 C-17.6 -12.2 -21.8 -7.6 -23.8 -1.6 Z" fill={color} mat="hair" depth={3.2}>
+            <Groove pts={[[10, -19.4], [8.6, -25], [9.6, -30.6]]} w={1.3} color={color} k={0.34} />
+            <Groove pts={[[-4, -15], [-9, -23], [-8, -30]]} w={1.2} color={color} k={0.26} />
+            <Mark pts={[[-18, -22], [-9, -29.6], [3, -31]]} w={2.3} color={hi} opacity={0.75} />
+            <Mark pts={[[13, -28], [18.6, -23], [21.4, -15]]} w={1.6} color={hi} opacity={0.6} />
+          </Part>
+        </>
+      );
     case 'long':
       return (
         <>
@@ -234,57 +265,60 @@ const HairFront: React.FC<{s: HumanSpec}> = ({s}) => {
       );
     case 'cap':
     case 'capback': {
-      // A baseball cap: the crown hugs the head down to just above the ears, the panels meet at a
-      // button, and the visor is a curved peak in FRONT of the forehead (the old one stuck out
-      // sideways like a plank). Worn backwards, the strap and its opening face front instead.
+      // v3 (owner, 2026-11-16: "head not proper, hair and cap"). The head has HAIR first: a fringe
+      // on the forehead and a lock in front of each ear. A small cap then sits on the hair, pushed
+      // back a little. The crown follows the skull (the one before rose 20 units above it and was
+      // wider than the head, like a helmet, with the peak down on the eyebrows and no hair in view).
       const u = s.hair.under ?? '#3b2c25';
-      const crown = 'M-25.4 -11 C-28.4 -32 -15.6 -43 0 -43 C15.6 -43 28.4 -32 25.4 -11 C17.4 -16.4 8.6 -19 0 -19 C-8.6 -19 -17.4 -16.4 -25.4 -11 Z';
-      const visor = 'M-20.6 -17.4 C-10 -21.6 10 -21.6 20.6 -17.4 C25 -13.6 15 -11.6 0 -11.4 C-15 -11.6 -25 -13.6 -20.6 -17.4 Z';
+      const uh = lift(u, 0.32);
+      const crown = 'M-24.9 -12.4 C-27.8 -27 -18 -35.6 0 -35.6 C18 -35.6 27.8 -27 24.9 -12.4 C17.4 -18.4 8.8 -21.2 0 -21.2 C-8.8 -21.2 -17.4 -18.4 -24.9 -12.4 Z';
+      const visor = 'M-21.6 -18 C-10.8 -22.8 10.8 -22.8 21.6 -18 C26 -14.4 13.6 -15.4 0 -15.6 C-13.6 -15.4 -26 -14.4 -21.6 -18 Z';
+      const fringe = 'M-21 -16.4 C-10 -24.6 10 -24.6 21 -16.4 C21.2 -14.6 20.6 -13 19.4 -11.6 C18.2 -13 16.6 -13.9 14.6 -14.2 C14 -12.8 12.4 -11.9 10.2 -11.7 C10 -13 8.9 -14.1 7.2 -14.7 C5.8 -13.3 3.6 -12.4 0.8 -12.3 C1.1 -13.5 0.4 -14.6 -1.1 -15.2 C-3 -13.7 -5.8 -12.7 -8.8 -12.6 C-8.2 -13.8 -8.7 -14.9 -10.1 -15.5 C-12.6 -13.9 -15.6 -12.7 -18.8 -12 C-20.4 -13.2 -21.2 -14.7 -21 -16.4 Z';
       const back = style === 'capback';
       return (
         <>
-          <Part d="M-24.3 -9 L-22.5 6.4 L-20.2 -7 Z" fill={u} depth={1} />
-          <Part d="M24.3 -9 L22.5 6.4 L20.2 -7 Z" fill={u} depth={1} />
-          <g transform="translate(0 -2.6)">
-          {back && <Part d="M-16.4 -16.8 L-13.6 -12.4 L-10 -16 L-6 -11.8 L-2 -15.8 L2.4 -11.6 L6 -15.8 L10 -12.2 L13.4 -16.4 C6 -19.4 -8 -19.6 -16.4 -16.8 Z" fill={u} mat="hair" depth={1.4} />}
-          {!back && <Cast d={visor} on={HEAD} color={s.skin} dx={0} dy={2.4} k={0.2} />}
-          <Part d={crown} fill={color} mat="cloth" shine={[-10, -33, 0.6]} depth={3.4}>
-            <Line d="M0 -42.6 V-19 M-13 -39.4 Q-17.6 -28 -16.6 -15.4 M13 -39.4 Q17.6 -28 16.6 -15.4" color={shade(color, 0.3)} k={0.5} opacity={0.8} />
-            <path d="M-26 -11 C-17.4 -16.4 -8.6 -19 0 -19 C8.6 -19 17.4 -16.4 26 -11 V-14.8 C17.4 -20 8.6 -22.4 0 -22.4 C-8.6 -22.4 -17.4 -20 -26 -14.8 Z" fill={shade(color, 0.16)} opacity={0.75} />
+          <SideLocks color={u} top={-13.4} />
+          <Part d={fringe} fill={u} mat="hair" depth={1.6}>
+            <Mark pts={[[-14, -15.2], [-6, -16.6], [3, -16.4]]} w={1.1} color={uh} opacity={0.7} />
+          </Part>
+          {!back && <Cast d={visor} on={fringe} color={u} dx={0} dy={1.6} k={0.3} />}
+          <Part d={crown} fill={color} mat="cloth" shine={[-10, -29, 0.5]} depth={3.2}>
+            <Line d="M0 -35.2 V-21.2 M-12 -33.4 Q-17 -27 -16 -18.8 M12 -33.4 Q17 -27 16 -18.8" color={shade(color, 0.3)} k={0.5} opacity={0.8} />
+            <path d="M-25.4 -12.4 C-17.4 -18.4 -8.8 -21.2 0 -21.2 C8.8 -21.2 17.4 -18.4 25.4 -12.4 V-15.4 C17.4 -21.2 8.8 -23.8 0 -23.8 C-8.8 -23.8 -17.4 -21.2 -25.4 -15.4 Z" fill={shade(color, 0.16)} opacity={0.75} />
           </Part>
           {back ? (
             <>
-              <path d="M-8.6 -19.2 C-8.6 -28.6 8.6 -28.6 8.6 -19.2 Z" fill={u} stroke={lineOf(color)} strokeWidth={0.7} />
-              <path d="M-6 -21.6 Q0 -25.6 6 -21.6" fill="none" stroke={lift(u, 0.3)} strokeWidth={0.8} strokeLinecap="round" opacity={0.7} />
-              <path d="M-9.4 -19.6 H9.4" stroke={shade(color, 0.36)} strokeWidth={2.4} strokeLinecap="round" />
-              {[-5, -2, 1, 4].map((x) => <circle key={x} cx={x} cy={-19.6} r={0.55} fill={lift(color, 0.5)} />)}
+              {/* worn backwards: the strap and its opening face front, a tuft of hair comes through */}
+              <path d="M-7.6 -21.4 C-7.6 -29 7.6 -29 7.6 -21.4 Z" fill={u} stroke={lineOf(color)} strokeWidth={0.7} />
+              <path d="M-5 -23.4 Q0 -26.8 5 -23.4" fill="none" stroke={uh} strokeWidth={0.8} strokeLinecap="round" opacity={0.7} />
+              <path d="M-8.6 -21.5 H8.6" stroke={shade(color, 0.36)} strokeWidth={2.2} strokeLinecap="round" />
+              {[-4.5, -1.5, 1.5, 4.5].map((x) => <circle key={x} cx={x} cy={-21.5} r={0.5} fill={lift(color, 0.5)} />)}
             </>
           ) : (
             <>
-              <Part d={visor} fill={shade(color, 0.24)} mat="cloth" depth={2}>
-                <Line d="M-16.6 -15.6 C-8 -18.8 8 -18.8 16.6 -15.6" color={lift(color, 0.3)} k={0.45} dash="2 2" opacity={0.8} />
+              <Part d={visor} fill={shade(color, 0.22)} mat="cloth" depth={1.6}>
+                <Line d="M-17.6 -17.2 C-8 -20 8 -20 17.6 -17.2" color={lift(color, 0.3)} k={0.45} dash="2 2" opacity={0.8} />
               </Part>
-              <Part d={circlePath(0, -30, 5)} fill="#ffffff" depth={1} />
-              <path d="M1.2 -34 L-3 -29.4 H-0.3 L-1.3 -26 L3.1 -30.8 H0.3 Z" fill="#ffb300" />
+              <Part d={circlePath(0, -28.4, 4.2)} fill="#ffffff" depth={1} />
+              <path d="M1 -31.8 L-2.6 -27.9 H-0.3 L-1.1 -25 L2.7 -29.1 H0.3 Z" fill="#ffb300" />
             </>
           )}
-          <Part d={circlePath(0, -43, 2)} fill={shade(color, 0.24)} flat />
-          </g>
+          <Part d={circlePath(0, -35.6, 1.7)} fill={shade(color, 0.24)} flat />
         </>
       );
     }
     case 'messy':
+      // no cap: short hair with volume on top, the fringe swept in three locks, a lock by each ear
       return (
         <>
-          <Part d="M-23.7 -1.5 C-29.4 -35 -8 -43 0 -36.6 C2 -44.6 11 -45 9.6 -37.4 C23 -40.6 29.4 -21 23.7 -2.5 C22.4 -9.6 20.2 -14 17 -17.4 L14 -13.6 L10 -18.4 L6 -13.4 L0.8 -18.8 L-4.2 -13.4 L-9.2 -18.4 L-13.6 -13.8 L-17.2 -17.2 C-20.6 -12.4 -22.8 -7 -23.7 -1.5 Z" fill={color} mat="hair" depth={3.4}>
-            <Mark pts={[[-17, -26], [-7, -33], [5, -33], [17, -26]]} w={2.6} color={hi} opacity={0.8} />
-            <Mark pts={[[3, -38], [6.4, -41.6], [8.6, -39]]} w={1.4} color={hi} opacity={0.7} />
-            <Groove pts={[[-3, -34], [0, -27], [-1, -20]]} w={1.3} color={color} k={0.4} />
-            <Groove pts={[[10, -34], [13, -27], [12, -20.5]]} w={1.3} color={color} k={0.4} />
-            <Groove pts={[[-14, -32], [-13.4, -26], [-16, -20]]} w={1.3} color={color} k={0.4} />
+          <Part d="M-24.6 -2 C-30.4 -30 -14 -41.6 2 -38.8 C5.6 -43.8 13.8 -42.6 12.6 -37.2 C24.4 -35 30 -20 24.6 -2.6 C23.6 -8.6 21.6 -13.6 18.4 -17 C17 -14.6 14.2 -13 11 -13 C11.6 -14.8 11 -16.4 9.6 -17.6 C7 -14.6 3 -12.6 -1.4 -12.6 C-0.6 -14.2 -1 -16 -2.4 -17.2 C-5.4 -14.2 -9.6 -12.6 -14 -13 C-13 -14.6 -13.2 -16.2 -14.4 -17.4 C-18.6 -14 -22.6 -8.6 -24.6 -2 Z" fill={color} mat="hair" depth={3.4}>
+            <Mark pts={[[-17, -27], [-7, -34], [5, -34.4], [17, -27]]} w={2.6} color={hi} opacity={0.8} />
+            <Mark pts={[[5, -39.4], [8.6, -41.8], [10.6, -39.4]]} w={1.3} color={hi} opacity={0.7} />
+            <Groove pts={[[-3, -36], [0, -28], [-2, -19]]} w={1.3} color={color} k={0.4} />
+            <Groove pts={[[10, -36], [13, -28], [10.6, -19.6]]} w={1.3} color={color} k={0.4} />
+            <Groove pts={[[-14.4, -33], [-13.6, -26], [-14.6, -19.4]]} w={1.3} color={color} k={0.4} />
           </Part>
-          <Part d="M-23.8 -4 L-22.4 6.5 L-20.4 -4 Z" fill={color} depth={1} />
-          <Part d="M23.8 -4 L22.4 6.5 L20.4 -4 Z" fill={color} depth={1} />
+          <SideLocks color={color} top={-6} />
         </>
       );
     case 'balding':

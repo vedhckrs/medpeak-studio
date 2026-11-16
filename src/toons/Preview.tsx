@@ -21,6 +21,8 @@ import {LENSES, type LensName, type MoveName, SHOTS, type ShotName} from './came
 import {type ArmSpec, blinkAt, EMOTIONS, type Emotion, Face, Hand, HAND_POSES, type HandPose} from './rig';
 import {BloodSet, DEFAULT_ROOMS, FORES, GutSet, MouthSet, OfficeSet, SETS, StomachSet, ThroatSet, WordCaption, type SetName} from './scenes';
 import {Room, RoomFore, ROOM_FLOOR} from './rooms';
+import {Room3D} from './room3d';
+import {Prop} from './props';
 import {roomTone, type RoomLook} from './director';
 import {Camera, Hold, Slot, Stand} from './stage';
 import {STYLE} from './style';
@@ -231,9 +233,9 @@ export const StageBoard: React.FC<{stage?: string; cell?: number}> = ({stage = '
 
 /** CAP BOARD: the boy with three kinds of headwear, for the owner to choose from (1920x1080). */
 const KID_LOOKS: {key: string; label: string; note: string; C: React.FC<CharProps>}[] = [
-  {key: 'A', label: 'A  Cap facing forward', note: 'a real baseball cap: the peak is in front', C: makeHuman({...SPECS.kid, hair: {style: 'cap', color: '#22b8a8', under: '#3b2c25'}})},
-  {key: 'B', label: 'B  Cap worn backward', note: 'strap in front, a tuft of hair under it', C: makeHuman({...SPECS.kid, hair: {style: 'capback', color: '#22b8a8', under: '#3b2c25'}})},
-  {key: 'C', label: 'C  No cap', note: 'short messy hair with a cowlick', C: makeHuman({...SPECS.kid, hair: {style: 'messy', color: '#3b2c25'}})},
+  {key: 'A', label: 'A  Cap facing forward', note: 'a small cap on his hair, pushed back; the fringe shows', C: makeHuman({...SPECS.kid, hair: {style: 'cap', color: '#22b8a8', under: '#3b2c25'}})},
+  {key: 'B', label: 'B  Cap worn backward', note: 'strap in front, fringe and side hair in view', C: makeHuman({...SPECS.kid, hair: {style: 'capback', color: '#22b8a8', under: '#3b2c25'}})},
+  {key: 'C', label: 'C  No cap', note: 'short hair, fringe swept in three locks', C: makeHuman({...SPECS.kid, hair: {style: 'messy', color: '#3b2c25'}})},
 ];
 export const CapBoard: React.FC = () => (
   <AbsoluteFill style={{background: PAPER}}>
@@ -253,6 +255,36 @@ export const CapBoard: React.FC = () => (
           </div>
           <T x={x + 6} y={962} w={580} size={32} weight={900}>{k.label}</T>
           <T x={x + 6} y={1008} w={580} size={22} weight={600} color="#8a8498">{k.note}</T>
+        </React.Fragment>
+      );
+    })}
+  </AbsoluteFill>
+);
+
+/** DOCTOR BOARD: Dr. Mira as she is now and three lighter, global looks, for the owner to choose from (1920x1080). */
+const DOC_LOOKS: {key: string; label: string; note: string; C: React.FC<CharProps>}[] = [
+  {key: 'now', label: 'Now', note: 'as in the three live videos', C: makeHuman(SPECS.doctor)},
+  {key: 'A', label: 'A  Same curls', note: 'light skin, her curly dark hair kept', C: makeHuman({...SPECS.doctor, skin: '#f8d3b8', eye: '#6b4a2e', hair: {style: 'curly', color: '#4a2f22'}})},
+  {key: 'B', label: 'B  Wavy brown hair', note: 'light skin, shoulder-length chestnut hair, green eyes', C: makeHuman({...SPECS.doctor, skin: '#f8d3b8', eye: '#4f7f55', hair: {style: 'long', color: '#8a5230'}})},
+  {key: 'C', label: 'C  Tidy bun', note: 'light skin, honey-blond hair in a bun, blue eyes', C: makeHuman({...SPECS.doctor, skin: '#f8d3b8', eye: '#3f78b0', hair: {style: 'bun', color: '#c08a4a'}})},
+];
+export const DoctorBoard: React.FC = () => (
+  <AbsoluteFill style={{background: PAPER}}>
+    <T x={50} y={30} w={1700} size={44} weight={900}>Dr. Mira: a global look, three choices</T>
+    {DOC_LOOKS.map((k, i) => {
+      const x = 50 + i * 462;
+      return (
+        <React.Fragment key={k.key}>
+          <div style={{position: 'absolute', left: x, top: 110, width: 436, height: 840, borderRadius: 22, background: '#ffffff', border: i ? '2px solid #e6dfd2' : '2px dashed #cfc6b4', overflow: 'hidden'}}>
+            <div style={{position: 'absolute', left: 0, top: 0, width: 436, height: 440, overflow: 'hidden'}}>
+              <Slot x={218} y={452} size={840}><k.C emotion="happy" t={0.6} /></Slot>
+            </div>
+            <div style={{position: 'absolute', left: 0, top: 440, width: 436, height: 2, background: '#efe7d8'}} />
+            <Stand x={112} floor={822} size={360} ground={96}><k.C emotion="neutral" t={0.6} /></Stand>
+            <Stand x={286} floor={822} size={360} ground={96}><k.C emotion="happy" t={0.6} arms={POSES.explain.person} /></Stand>
+          </div>
+          <T x={x + 6} y={962} w={436} size={30} weight={900}>{k.label}</T>
+          <T x={x + 6} y={1006} w={440} size={19} weight={600} color="#8a8498">{k.note}</T>
         </React.Fragment>
       );
     })}
@@ -280,6 +312,65 @@ export const RoomsBoard: React.FC<{title?: string; clinic?: RoomLook; home?: Roo
       {cell(40, 'Clinic', line(clinic), <><Room look={clinic} role="clinic" t={2} /><Stand x={285} floor={ROOM_FLOOR} size={940} tone={roomTone(clinic)}><Doc emotion="happy" t={0.6} arms={POSES.explain.person} /></Stand><Stand x={805} floor={ROOM_FLOOR} size={people[0] === 'kid' ? 980 : 900} tone={roomTone(clinic)}><A emotion="neutral" t={0.6} /></Stand><RoomFore look={clinic} role="clinic" t={2} /></>)}
       {cell(586, 'Clinic, empty', '', <><Room look={clinic} role="clinic" t={2} /><RoomFore look={clinic} role="clinic" t={2} /></>)}
       {cell(1132, `Home: ${home.kind ?? 'bedroom'}`, line(home), <><Room look={home} role="home" t={2} /><Stand x={540} floor={ROOM_FLOOR} size={1040} tone={roomTone(home)}><B emotion="sick" t={0.6} arms={POSES.heart.person} /></Stand><RoomFore look={home} role="home" t={2} /></>)}
+    </AbsoluteFill>
+  );
+};
+
+/**
+ * ROOM STYLE BOARD: the same clinic and home in the first style and in the second (clean wall, the
+ * room as a box), with people, a thought bubble, a tag and a caption where a video puts them (1920x1080).
+ */
+export const RoomStyleBoard: React.FC<{title?: string; which?: 'clinic' | 'home'; clinic?: RoomLook; home?: RoomLook; home2?: RoomLook; people?: [string, string]}> = ({title = 'Rooms: now and new', which = 'clinic', clinic = DEFAULT_ROOMS.clinic, home = DEFAULT_ROOMS.home, home2, people = ['patient', 'patient']}) => {
+  const Doc = ALL.doctor;
+  const A = ALL[people[0]];
+  const B = ALL[people[1]];
+  const k = 0.44;
+  const cell = (i: number, label: string, sub: string, kids: React.ReactNode) => {
+    const x = 60 + i * 620;
+    return (
+      <>
+        <div style={{position: 'absolute', left: x, top: 96, width: 1080 * k, height: 1920 * k, overflow: 'hidden', borderRadius: 20, border: '3px solid #3a2f5c'}}>
+          <div style={{width: 1080, height: 1920, transform: `scale(${k})`, transformOrigin: 'top left', position: 'relative', overflow: 'hidden'}}>{kids}</div>
+        </div>
+        <T x={x + 4} y={954} w={560} size={28} weight={900} color="#ffc93c">{label}</T>
+        <T x={x + 4} y={992} w={560} size={18} weight={600} color="#b9b2d6">{sub}</T>
+      </>
+    );
+  };
+  const clinicCast = (
+    <>
+      <Stand x={285} floor={ROOM_FLOOR} size={940} tone={roomTone(clinic)}><Doc emotion="happy" t={0.6} arms={POSES.explain.person} /></Stand>
+      <Stand x={805} floor={ROOM_FLOOR} size={people[0] === 'kid' ? 980 : 900} tone={roomTone(clinic)}><A emotion="shocked" t={0.6} /></Stand>
+      <Slot x={456} y={353} size={300}><Prop kind="pipe" t={0.6} bubble /></Slot>
+      <Slot x={716} y={300} size={300}><Prop kind="tag" t={0.6} text="the twist" /></Slot>
+      <Slot x={455} y={1190} size={190}><Prop kind="pillbottle" t={0.6} halo /></Slot>
+      <Slot x={648} y={1190} size={190}><Prop kind="glass" t={0.6} halo /></Slot>
+      <WordCaption word="stuck" key_ y={1470} plain />
+    </>
+  );
+  const homeCast = (look: RoomLook) => (
+    <>
+      <Stand x={540} floor={ROOM_FLOOR} size={1040} tone={roomTone(look)}><B emotion="sick" t={0.6} arms={POSES.heart.person} /></Stand>
+      <Slot x={540} y={300} size={300}><Prop kind="tag" t={0.6} text="2 hours later" /></Slot>
+      <WordCaption word="burn" key_ y={1470} plain />
+    </>
+  );
+  return (
+    <AbsoluteFill style={{background: '#1d1430'}}>
+      <T x={60} y={24} w={1800} size={40} weight={900} color="#ffffff">{title}</T>
+      {which === 'clinic' ? (
+        <>
+          {cell(0, 'Now', 'chart, clock, certificate, plants; a flat room', <><Room look={clinic} role="clinic" t={2} />{clinicCast}<RoomFore look={clinic} role="clinic" t={2} /></>)}
+          {cell(1, 'New A: empty', 'plain wall behind every pop-up; window and chart on the side walls', <><Room3D look={clinic} role="clinic" t={2} bare />{clinicCast}</>)}
+          {cell(2, 'New B: one low cupboard', 'the same, with one plain cupboard between them', <><Room3D look={clinic} role="clinic" t={2} />{clinicCast}</>)}
+        </>
+      ) : (
+        <>
+          {cell(0, `Now (${home.kind ?? 'bedroom'})`, 'pictures on the wall; a flat room', <><Room look={home} role="home" t={2} />{homeCast(home)}<RoomFore look={home} role="home" t={2} /></>)}
+          {cell(1, `New (${home.kind ?? 'bedroom'})`, 'plain wall, one piece of furniture, the room has depth', <><Room3D look={home} role="home" t={2} />{homeCast(home)}</>)}
+          {home2 && cell(2, `New (${home2.kind ?? 'bedroom'})`, 'a second home in the new style', <><Room3D look={home2} role="home" t={2} />{homeCast(home2)}</>)}
+        </>
+      )}
     </AbsoluteFill>
   );
 };

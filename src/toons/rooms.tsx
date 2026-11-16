@@ -128,14 +128,9 @@ const Clock: React.FC<{x: number; y: number; r: number; t: number; rim: string}>
     <circle r={5} fill="#ea4a55" />
   </g>
 );
-/** The clinic's wall chart: one organ, big and simple, matched to the video's topic. */
-const Chart: React.FC<{kind: NonNullable<RoomLook['chart']>; x: number; y: number; accent: string}> = ({kind, x, y, accent}) => (
-  <g transform={`translate(${x - 150} ${y})`}>
-    <rect x={12} y={14} width={300} height={430} rx={16} fill="#1d2b4f" opacity={0.16} />
-    <rect width={300} height={430} rx={16} fill="#ffffff" {...O} />
-    <rect x={18} y={18} width={264} height={46} rx={10} fill={accent} />
-    <rect x={34} y={34} width={150} height={14} rx={7} fill="#ffffff" opacity={0.85} />
-    <g transform="translate(150 214)">
+/** The organ on a clinic chart, drawn around (0, 0) in a box of about 220 x 250 units. */
+export const ChartIcon: React.FC<{kind: NonNullable<RoomLook['chart']>}> = ({kind}) => (
+  <g>
       {kind === 'tooth' && (
         <g>
           <path d="M-70 -92 C-40 -112 -14 -98 0 -86 C14 -98 40 -112 70 -92 C96 -70 86 -14 70 26 C62 60 58 104 44 112 C26 118 20 60 0 60 C-20 60 -26 118 -44 112 C-58 104 -62 60 -70 26 C-86 -14 -96 -70 -70 -92 Z" fill="#fffdf6" stroke="#8f97b3" strokeWidth={4} strokeLinejoin="round" />
@@ -181,7 +176,16 @@ const Chart: React.FC<{kind: NonNullable<RoomLook['chart']>; x: number; y: numbe
           <path d="M-22 -10 C-38 -10 -40 20 -26 28 C-18 32 -12 26 0 12 C12 26 18 32 26 28 C40 20 38 -10 22 -10 C12 -10 6 -2 0 2 C-6 -2 -12 -10 -22 -10 Z" fill="#ff6f7d" stroke="#8c3848" strokeWidth={2} />
         </g>
       )}
-    </g>
+  </g>
+);
+/** The clinic's wall chart: one organ, big and simple, matched to the video's topic. */
+const Chart: React.FC<{kind: NonNullable<RoomLook['chart']>; x: number; y: number; accent: string}> = ({kind, x, y, accent}) => (
+  <g transform={`translate(${x - 150} ${y})`}>
+    <rect x={12} y={14} width={300} height={430} rx={16} fill="#1d2b4f" opacity={0.16} />
+    <rect width={300} height={430} rx={16} fill="#ffffff" {...O} />
+    <rect x={18} y={18} width={264} height={46} rx={10} fill={accent} />
+    <rect x={34} y={34} width={150} height={14} rx={7} fill="#ffffff" opacity={0.85} />
+    <g transform="translate(150 214)"><ChartIcon kind={kind} /></g>
     {[376, 396].map((yy, i) => <rect key={yy} x={40} y={yy} width={i ? 150 : 220} height={11} rx={5.5} fill="#c8d6e5" />)}
   </g>
 );
