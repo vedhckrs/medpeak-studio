@@ -2,9 +2,9 @@
 /**
  * MedPeak Toons: render the character boards (free, local).
  *
- *   node pipeline/toon-sheets.mjs                 # cast board + blueprint page + every model sheet
+ *   node pipeline/toon-sheets.mjs                 # all boards + every model sheet
  *   node pipeline/toon-sheets.mjs stomach doctor  # only these model sheets
- *   node pipeline/toon-sheets.mjs --boards        # only the cast board and the blueprint page
+ *   node pipeline/toon-sheets.mjs --boards        # only the boards: cast, blueprint, camera and lenses, sets
  *
  * Output: out/toons/sheets/. After adding a character (a Blueprint in src/toons/characters.tsx or a
  * HumanSpec in src/toons/humans.tsx), add its name to ORDER in src/toons/Preview.tsx, render its
@@ -27,6 +27,8 @@ const still = (comp, file, props) => execFileSync('npx', ['remotion', 'still', '
 if (!names.length) {
   still('ToonCast', 'cast.jpg');
   still('ToonBlueprint', 'blueprint.jpg');
+  still('ToonCamera', 'camera.jpg');
+  still('ToonSets', 'sets.jpg');
   console.log('boards done');
 }
 if (!boardsOnly) {

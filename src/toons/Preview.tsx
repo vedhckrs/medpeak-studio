@@ -4,17 +4,21 @@
 //   ToonBlueprint  the house rules every new character follows
 //   ToonEmotions   one character in all 9 emotions
 //   ToonSets       all sets
+//   ToonCamera     the shot sizes and lenses, on one page
 //   ToonScenes     18 s of staged shots        ToonActing   12 s acted scene with cuts
 import React from 'react';
 import {AbsoluteFill, useCurrentFrame, useVideoConfig} from 'remotion';
 import {theme} from '../brand/theme';
-import type {Blueprint, CharProps} from './blueprint';
+import type {Act, Blueprint, CharProps} from './blueprint';
 import {BLUEPRINTS, CAST, type CastName} from './characters';
 import {headY, PEOPLE, SPECS, type PersonName} from './humans';
 import {circlePath, Grain, lineOf, Part, tone} from './ink';
 import {clamp01, E, key, settle, speak} from './motion';
+import {POSES, type PoseName} from './poses';
+import {ShotStill, type ToonActor} from './Player';
+import {LENSES, type LensName, type MoveName, SHOTS, type ShotName} from './camera';
 import {type ArmSpec, blinkAt, EMOTIONS, type Emotion, Face, Hand, HAND_POSES, type HandPose} from './rig';
-import {BloodSet, GutSet, MouthSet, OfficeSet, SETS, StomachSet, ThroatSet, WordCaption, type SetName} from './scenes';
+import {BloodSet, FORES, GutSet, MouthSet, OfficeSet, SETS, StomachSet, ThroatSet, WordCaption, type SetName} from './scenes';
 import {Camera, Hold, Slot, Stand} from './stage';
 import {STYLE} from './style';
 
@@ -36,7 +40,7 @@ const Chip: React.FC<{x: number; y: number; color: string; label: string; w?: nu
 
 /** Every character, 5 across. */
 export const CastBoard: React.FC = () => {
-  const poses: [ArmSpec, ArmSpec][] = [[112, 68], [{a: 200, hand: 'open'}, 68], [112, {a: -30, hand: 'open'}], [{a: 150, hand: 'fist'}, {a: 30, hand: 'fist'}], [112, {a: -50, hand: 'thumb'}], [112, {a: 0, hand: 'point'}]];
+  const poses: PoseName[] = ['rest', 'wave', 'explain', 'fists', 'thumb', 'point', 'hips', 'present'];
   return (
     <AbsoluteFill style={{background: PAPER}}>
       <T x={540} y={46} w={1000} size={56} weight={900} align="center">MedPeak Toons · cast of {ORDER.length}</T>
@@ -48,7 +52,7 @@ export const CastBoard: React.FC = () => {
         const e = EMOTIONS[(i * 2) % EMOTIONS.length];
         return (
           <React.Fragment key={n}>
-            <Slot x={x} y={n in SPECS ? y - 6 : y} size={n in SPECS ? 232 : 196}><C emotion={e} arms={poses[i % poses.length]} t={0.6} look={{x: i % 2 ? -0.5 : 0.5, y: 0}} talk={e === 'happy' ? 0.6 : 0} /></Slot>
+            <Slot x={x} y={n in SPECS ? y - 6 : y} size={n in SPECS ? 232 : 196}><C emotion={e} arms={POSES[poses[i % poses.length]][n in SPECS ? 'person' : 'body']} t={0.6} look={{x: i % 2 ? -0.5 : 0.5, y: 0}} talk={e === 'happy' ? 0.6 : 0} act={n in SPECS ? {shift: i % 2 ? 0.7 : -0.7, tilt: i % 2 ? 3 : -3} : undefined} /></Slot>
             <T x={x} y={y + 112} w={210} size={23} weight={800} align="center">{n}</T>
           </React.Fragment>
         );
@@ -78,13 +82,15 @@ export const EmotionBoard: React.FC<{who?: string}> = ({who = 'stomach'}) => {
 };
 
 /** All sets in a grid. */
-export const SetBoard: React.FC = () => (
+export const SetBoard: React.FC<{t?: number}> = ({t = 1.2}) => (
   <AbsoluteFill style={{background: '#fff'}}>
     {(Object.keys(SETS) as SetName[]).map((n, i) => {
       const S = SETS[n];
+      const F = FORES[n];
       return (
         <div key={n} style={{position: 'absolute', left: (i % 3) * 360, top: Math.floor(i / 3) * 640, width: 1080, height: 1920, transform: 'scale(0.3333)', transformOrigin: 'top left', overflow: 'hidden', outline: '12px solid #fff'}}>
-          <S t={1.2} />
+          <S t={t} />
+          {F && <F t={t} />}
         </div>
       );
     })}
@@ -104,19 +110,20 @@ export const ModelSheet: React.FC<{who?: string}> = ({who = 'stomach'}) => {
   const bp: Blueprint | undefined = who in BLUEPRINTS ? BLUEPRINTS[who as CastName] : undefined;
   const sp = who in SPECS ? SPECS[who] : undefined;
   const main = bp ? bp.color : sp!.skin;
-  const fit = sp ? Math.max(0.6, (sp.height ?? 1) * (1 - (1 - (sp.legs ?? 1)) * 0.36)) : 1; // small people are drawn bigger so they fill the sheet
+  const fit = sp ? Math.max(0.6, (96 - headY(sp) + 30 * (sp.head ?? 1) * (sp.height ?? 1)) / 190) : 1; // small people are drawn bigger so they fill the sheet
   const chips: {label: string; color: string}[] = bp
     ? [{label: 'body', color: bp.color}, {label: 'outline', color: lineOf(bp.color)}, {label: 'shadow', color: tone(bp.color, STYLE.shadow)}, ...(bp.accents ?? [])]
     : [{label: 'skin', color: sp!.skin}, {label: 'hair', color: sp!.hair.color}, {label: 'top', color: sp!.top.color}, ...(sp!.top.under ? [{label: 'under', color: sp!.top.under}] : []), {label: 'bottom', color: sp!.bottom.color}, {label: 'shoes', color: sp!.shoes}];
-  const poses: {label: string; emotion: Emotion; arms: [ArmSpec, ArmSpec]; talk?: number}[] = [
-    {label: 'wave', emotion: 'happy', arms: [112, {a: -55, hand: 'open'}], talk: 0.6},
-    {label: 'point', emotion: 'angry', arms: [{a: 150, hand: 'fist'}, {a: -8, hand: 'point'}], talk: 0.5},
-    {label: 'thumbs up', emotion: 'smug', arms: [112, {a: -48, hand: 'thumb'}]},
-    {label: 'panic', emotion: 'scared', arms: [{a: 215, hand: 'open'}, {a: -35, hand: 'open'}], talk: 0.8},
+  const kind = sp ? 'person' : 'body';
+  const poses: {label: string; emotion: Emotion; arms: [ArmSpec, ArmSpec]; talk?: number; act?: Act}[] = [
+    {label: 'wave', emotion: 'happy', arms: POSES.wave[kind], talk: 0.6, act: {tilt: 5, shift: 0.6}},
+    {label: 'point', emotion: 'angry', arms: POSES.point[kind], talk: 0.5, act: {lean: 5, turn: 0.5}},
+    {label: sp ? 'hands on hips' : 'thumbs up', emotion: 'smug', arms: sp ? POSES.hips[kind] : POSES.thumb[kind], act: {shift: -0.8, tilt: -4}},
+    {label: 'panic', emotion: 'scared', arms: POSES.panic[kind], talk: 0.8, act: {lean: -4, bob: 3}},
   ];
   const rules = bp
     ? [`Family: ${bp.family}`, `Face: size ${bp.face.size} at (${bp.face.x}, ${bp.face.y})`, bp.legs ? 'Legs: yes (a traveller)' : 'Legs: none (stays in place)', bp.arms ? 'Arms: thin, in the body colour, mitten hands' : 'Arms: none', `Stands on y = ${bp.ground.y}`]
-    : ['Family: person', `Height: ${sp!.height === undefined || sp!.height >= 0.9 ? '4 heads (adult)' : (sp!.legs ?? 1) > 0.6 ? '3 heads (kid)' : '2.5 heads (toddler)'}`, `Hair: ${sp!.hair.style}`, `Top: ${sp!.top.kind} · Bottom: ${sp!.bottom.kind}`, 'Hands: mitten hands in the skin colour'];
+    : ['Family: person', `Height: ${sp!.height === undefined || sp!.height >= 0.9 ? '3.6 heads (adult)' : (sp!.legs ?? 1) > 0.6 ? '2.9 heads (kid)' : '2.2 heads (toddler)'}`, `Hair: ${sp!.hair.style}`, `Top: ${sp!.top.kind} · Bottom: ${sp!.bottom.kind}`, 'Hands: mitten hands in the skin colour'];
   return (
     <AbsoluteFill style={{background: PAPER}}>
       <div style={{position: 'absolute', left: 0, top: 0, width: 1920, height: 12, background: STYLE.label}} />
@@ -153,14 +160,52 @@ export const ModelSheet: React.FC<{who?: string}> = ({who = 'stomach'}) => {
         const y = 420 + Math.floor(i / 2) * 270;
         return (
           <React.Fragment key={p.label}>
-            <Stand x={x} floor={y + 104} size={220 / fit} ground={groundOf(who)}><C emotion={p.emotion} arms={p.arms} talk={p.talk ?? 0} t={0.6} look={{x: 0.4, y: 0}} /></Stand>
+            <Stand x={x} floor={y + 104} size={220 / fit} ground={groundOf(who)}><C emotion={p.emotion} arms={p.arms} talk={p.talk ?? 0} t={0.6} look={{x: 0.4, y: 0}} act={p.act} /></Stand>
             <T x={x} y={y + 118} w={240} size={19} weight={800} align="center">{p.label}</T>
           </React.Fragment>
         );
       })}
       <T x={1370} y={860} size={22} weight={800} color={STYLE.label} spacing={4}>HANDS</T>
       {HAND_POSES.map((h, i) => <HandChip key={h} x={1420 + i * 104} y={960} pose={h} color={bp ? bp.arms?.color ?? bp.color : sp!.skin} size={104} />)}
-      <T x={1850} y={50} w={900} size={16} weight={600} color="#a79fb3" align="right">outline = darker shade of each fill · max {STYLE.maxLinePx} px on screen · light from the top-left · main colour {main.toUpperCase()}</T>
+      <T x={1850} y={50} w={900} size={16} weight={600} color="#a79fb3" align="right">volume paint: soft form, two-step shadow, bounce light, material texture · outline = darker shade of each fill, max {STYLE.maxLinePx} px · light from the top-left · main colour {main.toUpperCase()}</T>
+    </AbsoluteFill>
+  );
+};
+
+/** CAMERA BOARD: the same scene through nine shot sizes and lenses (1080x1920). */
+export const CameraBoard: React.FC = () => {
+  const office: ToonActor[] = [{who: 'doctor', x: 310, size: 1040, emotion: 'happy', pose: 'explain'}, {who: 'patient', x: 780, size: 1000, emotion: 'sick', pose: 'belly'}];
+  const throat: ToonActor[] = [{who: 'whitecell', x: 350, y: 700, size: 720, noLegs: true, emotion: 'angry', pose: 'point'}, {who: 'pill', x: 740, y: 1090, size: 600, rot: -68, noLegs: true, emotion: 'scared', pose: 'panic'}];
+  const cells: {set: 'office' | 'throat'; who: string; shot: ShotName; lens: LensName; move?: MoveName}[] = [
+    {set: 'office', who: 'doctor', shot: 'wide', lens: '24'},
+    {set: 'office', who: 'doctor', shot: 'two', lens: '35'},
+    {set: 'office', who: 'doctor', shot: 'ms', lens: '35'},
+    {set: 'office', who: 'doctor', shot: 'mcu', lens: '50'},
+    {set: 'office', who: 'patient', shot: 'cu', lens: '85'},
+    {set: 'office', who: 'doctor', shot: 'ecu', lens: '135'},
+    {set: 'office', who: 'doctor', shot: 'ots', lens: '50'},
+    {set: 'throat', who: 'whitecell', shot: 'low', lens: '35'},
+    {set: 'throat', who: 'pill', shot: 'cu', lens: '85', move: 'dutch'},
+  ];
+  return (
+    <AbsoluteFill style={{background: '#1d1430'}}>
+      <T x={540} y={34} w={1040} size={50} weight={900} color="#ffffff" align="center">MedPeak Toons · camera and lenses</T>
+      <T x={540} y={98} w={1040} size={22} weight={600} color="#b9b2d6" align="center">one scene, nine pictures: shot size · lens · what it is for</T>
+      {cells.map((c, i) => {
+        const x = 30 + (i % 3) * 346;
+        const y = 160 + Math.floor(i / 3) * 584;
+        return (
+          <React.Fragment key={i}>
+            <div style={{position: 'absolute', left: x, top: y, width: 328, height: 492, overflow: 'hidden', borderRadius: 18, border: '3px solid #3a2f5c'}}>
+              <div style={{width: 1080, height: 1920, transform: 'scale(0.3037)', transformOrigin: 'top left', position: 'relative', overflow: 'hidden'}}>
+                <ShotStill set={c.set} cast={c.set === 'office' ? office : throat} who={c.who} shot={c.shot} lens={c.lens} move={c.move} />
+              </div>
+            </div>
+            <T x={x + 4} y={y + 500} w={330} size={22} weight={900} color="#ffc93c">{c.shot.toUpperCase()} · {LENSES[c.lens].label}{c.move ? ` · ${c.move}` : ''}</T>
+            <T x={x + 4} y={y + 530} w={324} size={15} weight={600} color="#cfc8e8">{SHOTS[c.shot].split(':')[1]?.trim() ?? SHOTS[c.shot]}</T>
+          </React.Fragment>
+        );
+      })}
     </AbsoluteFill>
   );
 };
@@ -182,7 +227,7 @@ const Partial: React.FC<{bp: Blueprint; grey?: boolean; face?: boolean}> = ({bp,
 export const BlueprintBoard: React.FC = () => {
   const bp = BLUEPRINTS.stomach;
   const Stomach = CAST.stomach;
-  const steps = ['1 Real shape, simplified', '2 Paint: flat + shadow + gloss', '3 Face zone', '4 Arms + mitten hands', '5 Pose + emotion'];
+  const steps = ['1 Real anatomy, simplified', '2 Volume paint + structure', '3 Face zone', '4 Arms + mitten hands', '5 Pose + emotion'];
   const people: PersonName[] = ['doctor', 'patient', 'mom', 'grandpa', 'kid', 'baby'];
   const families: {label: string; colors: string[]}[] = [
     {label: 'organs: warm pinks and reds', colors: ['#ff8f9c', '#ffb3aa', '#c9584b', '#f25f70', '#ffb3c7']},
@@ -191,11 +236,11 @@ export const BlueprintBoard: React.FC = () => {
     {label: 'medicine: white + teal', colors: ['#fffdf6', '#19b8a6']},
   ];
   const rules = [
-    'Start from real anatomy; keep 2-3 clear features.',
+    'Start from real anatomy; show its real parts.',
     'Organs have no legs. Only travellers do.',
     'One accessory shows the job. Never two.',
     'Eyes span 40-55% of the body width.',
-    'Outline: darker shade of the fill, thin.',
+    'Name the material: flesh, cell, hard, cloth.',
     'Hold a pose, then move with easing.',
   ];
   return (
@@ -229,10 +274,10 @@ export const BlueprintBoard: React.FC = () => {
       })}
 
       <T x={1420} y={214} size={22} weight={800} color={STYLE.label} spacing={4}>LINE + LIGHT</T>
-      <Slot x={1520} y={390} size={230}><Part d={circlePath(0, 0, 70)} fill="#ff8f9c" shine={[-34, -38, 1.4]} /></Slot>
-      {['outline: darker fill shade', `max ${STYLE.maxLinePx} px on screen`, 'crisp shadow, lower right', 'one gloss, upper left', 'tone-on-tone details'].map((r, i) => <T key={r} x={1660} y={296 + i * 40} w={250} size={18} weight={700} color="#6f6880">• {r}</T>)}
+      <Slot x={1520} y={390} size={230}><Part d={circlePath(0, 0, 70)} fill="#ff8f9c" mat="flesh" shine={[-34, -38, 1.4]} /></Slot>
+      {['outline: darker fill shade', `max ${STYLE.maxLinePx} px on screen`, 'soft form + crisp shadow', 'bounce light on the dark edge', 'texture by material + gloss'].map((r, i) => <T key={r} x={1660} y={296 + i * 40} w={250} size={18} weight={700} color="#6f6880">• {r}</T>)}
 
-      <T x={70} y={600} w={900} size={22} weight={800} color={STYLE.label} spacing={4}>PEOPLE: 4 · 3 · 2.5 HEADS TALL</T>
+      <T x={70} y={600} w={900} size={22} weight={800} color={STYLE.label} spacing={4}>PEOPLE: 3.6 · 2.9 · 2.2 HEADS TALL</T>
       {[0, 1, 2, 3, 4].map((k) => <div key={k} style={{position: 'absolute', left: 70, top: 660 + k * 87.5, width: 860, borderTop: `2px dashed ${k === 0 || k === 4 ? '#d9cfbd' : '#ece4d6'}`}} />)}
       {[1, 2, 3, 4].map((k) => <T key={k} x={936} y={676 + (k - 1) * 87.5} w={60} size={15} weight={700} color="#a79fb3">head {k}</T>)}
       {people.map((n, i) => {

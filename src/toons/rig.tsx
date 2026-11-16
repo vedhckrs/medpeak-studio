@@ -1,9 +1,10 @@
-// MedPeak Toons rig v5: the face, hands, arms and legs every character shares.
-// Face: big clean eyes (white, dark pupil, two highlights, a stronger upper lash line), brush
-// brows, shaped mouths with teeth and tongue, soft blush. Features are drawn in a deep shade of
-// the character's own colour, never navy. Hands are mitten hands in the character's own colour.
+// MedPeak Toons rig v6: the face, hands, arms and legs every character shares.
+// Face: big eyes with a coloured, shaded iris, a dark pupil and two highlights, a stronger upper
+// lash line, brush brows, shaped mouths with shaded teeth and tongue, soft gradient blush.
+// Features are drawn in a deep shade of the character's own colour, never navy. Hands are mitten
+// hands in the character's own colour.
 import React, {useId} from 'react';
-import {circlePath, ellipsePath, lineOf, Merge, Part, roundRect, Scaled, taperedPath, tone, Tube, useLine} from './ink';
+import {circlePath, deepOf, ellipsePath, lift, lineOf, Merge, Part, roundRect, Scaled, shade, taperedPath, tone, Tube, useLine} from './ink';
 import {STYLE} from './style';
 
 export type Emotion = 'neutral' | 'happy' | 'angry' | 'scared' | 'smug' | 'sick' | 'sleepy' | 'shocked' | 'sad';
@@ -24,6 +25,9 @@ export type FaceProps = {
   size?: number;
   skin?: string; // the colour the face sits on (eyelids use it)
   human?: boolean; // adds a small nose
+  iris?: string; // eye colour; default = a deep shade of the skin colour
+  lashes?: boolean; // outer eyelashes
+  turn?: number; // -1..1: the head turns a little, so the features slide and the far eye narrows
 };
 
 type Pose = {lid: number; lidL?: number; lower?: number; brow: [number, number]; browY: number; pupil: number; mouth: string; blush?: number; tint?: string; extra?: 'sweat' | 'tear' | 'zz' | 'vein'};
@@ -40,39 +44,60 @@ const POSES: Record<Emotion, Pose> = {
   sad: {lid: 0.18, brow: [-22, -22], browY: -1, pupil: 1.08, mouth: 'frown', extra: 'tear'},
 };
 
-const Eye: React.FC<{x: number; lid: number; lower: number; pupil: number; look: {x: number; y: number}; skin: string; fc: string; k: number; lw: number}> = ({x, lid, lower, pupil, look, skin, fc, k, lw}) => {
+const Eye: React.FC<{x: number; lid: number; lower: number; pupil: number; look: {x: number; y: number}; skin: string; fc: string; k: number; lw: number; iris: string; lashes: boolean; outer: number; soft?: boolean}> = ({x, lid, lower, pupil, look, skin, fc, k, lw, iris, lashes, outer, soft = false}) => {
   const id = useId().replace(/:/g, '');
   const rx = 12.5 * k;
   const ry = 15 * k;
   const d = ellipsePath(0, 0, rx, ry);
+  const lash = lashes ? <path d={`M${outer * rx * 0.74} ${-ry * 0.5} l${outer * 3.4} -3.2 M${outer * rx * 0.92} ${-ry * 0.2} l${outer * 3.8} -1.6`} fill="none" stroke={fc} strokeWidth={lw * 1.3} strokeLinecap="round" /> : null;
   if (lid > 0.88) {
     // closed: one soft curved lash line
-    return <path d={`M${x - rx * 0.86} 1.5 Q${x} 7.5 ${x + rx * 0.86} 1.5`} fill="none" stroke={fc} strokeWidth={lw * 1.5} strokeLinecap="round" />;
+    return (
+      <g transform={`translate(${x} 0)`}>
+        <path d={`M${-rx * 0.86} 1.5 Q0 7.5 ${rx * 0.86} 1.5`} fill="none" stroke={fc} strokeWidth={lw * 1.5} strokeLinecap="round" />
+        {lashes && <path d={`M${outer * rx * 0.8} 2.4 l${outer * 3.2} 2 M${outer * rx * 0.5} 4.6 l${outer * 2} 3`} fill="none" stroke={fc} strokeWidth={lw * 1.2} strokeLinecap="round" />}
+      </g>
+    );
   }
   const lidY = -ry + ry * 2 * Math.min(1, lid);
-  const pr = 6.6 * pupil * STYLE.pupilScale;
-  const px = look.x * 4.4;
-  const py = look.y * 4.8 + 1.2;
+  const R = 8.3 * (0.6 + 0.4 * pupil) * STYLE.pupilScale; // the iris shrinks with fear and surprise
+  const pr = 4.5 * pupil ** 1.15 * STYLE.pupilScale;
+  const px = look.x * (rx - R) * 0.92;
+  const py = look.y * 4.2 + 1.3;
   return (
     <g transform={`translate(${x} 0)`}>
-      <defs><clipPath id={`e${id}`}><path d={d} /></clipPath></defs>
+      <defs>
+        <clipPath id={`e${id}`}><path d={d} /></clipPath>
+        <radialGradient id={`i${id}`} cx="0.5" cy="0.74" r="0.66">
+          <stop offset="0" stopColor={lift(iris, 0.5)} />
+          <stop offset="0.55" stopColor={iris} />
+          <stop offset="1" stopColor={shade(iris, 0.45)} />
+        </radialGradient>
+        <linearGradient id={`s${id}`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#c3cbe6" stopOpacity="0.75" />
+          <stop offset="0.42" stopColor="#c3cbe6" stopOpacity="0" />
+        </linearGradient>
+      </defs>
       <path d={d} fill="#ffffff" />
       <g clipPath={`url(#e${id})`}>
-        <ellipse cx={0} cy={-ry * 1.1} rx={rx * 1.3} ry={ry * 0.56} fill="#d5dcef" opacity={0.55} />
+        <path d={d} fill={`url(#s${id})`} />
+        <circle cx={px} cy={py} r={R} fill={`url(#i${id})`} stroke={shade(iris, 0.55)} strokeWidth={0.9} />
         <circle cx={px} cy={py} r={pr} fill={PUPIL} />
-        <circle cx={px + pr * 0.36} cy={py - pr * 0.4} r={pr * 0.33} fill="#ffffff" />
-        <circle cx={px - pr * 0.38} cy={py + pr * 0.42} r={pr * 0.15} fill="#ffffff" opacity={0.85} />
+        <ellipse cx={px} cy={py - R * 0.62} rx={R * 0.98} ry={R * 0.46} fill={shade(iris, 0.6)} opacity={0.34} />
+        <circle cx={px + R * 0.36} cy={py - R * 0.4} r={R * 0.3} fill="#ffffff" />
+        <circle cx={px - R * 0.42} cy={py + R * 0.42} r={R * 0.13} fill="#ffffff" opacity={0.9} />
         {lid > 0.02 && (
           <>
             <rect x={-rx - 1} y={-ry - 1} width={rx * 2 + 2} height={lidY + ry + 1} fill={skin} />
-            <rect x={-rx - 1} y={-ry - 1} width={rx * 2 + 2} height={lidY + ry + 1} fill={tone(skin, 0.12)} opacity={0.5} />
+            <rect x={-rx - 1} y={-ry - 1} width={rx * 2 + 2} height={lidY + ry + 1} fill={shade(skin, 0.16)} opacity={0.55} />
             <path d={`M${-rx} ${lidY} Q0 ${lidY + 1.4} ${rx} ${lidY}`} fill="none" stroke={fc} strokeWidth={lw * 1.7} />
           </>
         )}
         {lower > 0.02 && <ellipse cx={0} cy={2 * ry * (1 - lower)} rx={rx * 1.5} ry={ry} fill={skin} stroke={fc} strokeWidth={lw} />}
       </g>
-      <path d={d} fill="none" stroke={fc} strokeWidth={lw} />
-      {lid <= 0.02 && <path d={`M${-0.94 * rx} ${-0.34 * ry} A${rx} ${ry} 0 0 1 ${0.94 * rx} ${-0.34 * ry}`} fill="none" stroke={fc} strokeWidth={lw * 1.7} strokeLinecap="round" />}
+      <path d={d} fill="none" stroke={soft ? shade(skin, 0.4) : fc} strokeWidth={soft ? lw * 0.6 : lw} opacity={soft ? 0.3 : 1} />
+      {(soft || lid <= 0.02) && lid < 0.5 && <path d={`M${-0.94 * rx} ${-0.34 * ry} A${rx} ${ry} 0 0 1 ${0.94 * rx} ${-0.34 * ry}`} fill="none" stroke={fc} strokeWidth={lw * (soft ? 2.1 : 1.7)} strokeLinecap="round" />}
+      {lash}
     </g>
   );
 };
@@ -86,8 +111,15 @@ const Mouth: React.FC<{shape: string; talk: number; fc: string; lw: number}> = (
       <defs><clipPath id={`m${id}`}><path d={d} /></clipPath></defs>
       <path d={d} fill={MOUTH_IN} />
       <g clipPath={`url(#m${id})`}>
-        {teeth && <rect x={-14} y={teethY} width={28} height={4.6} rx={1.5} fill="#ffffff" />}
+        <rect x={-16} y={teethY - 4} width={32} height={7} fill="#2c0914" opacity={0.5} />
         <ellipse cx={0} cy={tongueY} rx={tongueR[0]} ry={tongueR[1]} fill={TONGUE} />
+        <ellipse cx={-tongueR[0] * 0.25} cy={tongueY - tongueR[1] * 0.45} rx={tongueR[0] * 0.42} ry={tongueR[1] * 0.26} fill="#ffb6c1" opacity={0.75} />
+        {teeth && (
+          <>
+            <rect x={-14} y={teethY} width={28} height={4.8} rx={1.6} fill="#ffffff" />
+            <rect x={-14} y={teethY + 3.5} width={28} height={1.3} fill="#c9cfe6" opacity={0.75} />
+          </>
+        )}
       </g>
       <path d={d} {...st} />
     </g>
@@ -125,32 +157,48 @@ const Drop: React.FC<{x: number; y: number; s?: number}> = ({x, y, s = 1}) => (
   </g>
 );
 
-export const Face: React.FC<FaceProps> = ({emotion = 'neutral', talk = 0, blink = 0, look = {x: 0, y: 0}, size = 1, skin = '#ff9aa2', human = false}) => {
+export const Face: React.FC<FaceProps> = ({emotion = 'neutral', talk = 0, blink = 0, look = {x: 0, y: 0}, size = 1, skin = '#ff9aa2', human = false, iris, lashes = false, turn = 0}) => {
+  const id = useId().replace(/:/g, '');
   const p = POSES[emotion];
   const es = STYLE.eyeScale;
   const gap = STYLE.eyeGap;
   const fc = featureOf(skin);
+  const eyeColor = iris ?? deepOf(skin, 0.33);
   const lw = (useLine() / size) * (human ? 0.62 : 1); // outline width inside scale(size); people's small faces get finer lines
   const lwe = lw / es; // ...and inside the eye group
   const lidR = Math.max(p.lid, blink);
   const lidL = Math.max(p.lidL ?? p.lid, blink);
   const lower = blink > 0.5 ? 0 : p.lower ?? 0;
   const mouthY = 15 * es + (human ? 12.5 : 9);
-  const blushA = (0.16 + (p.blush ?? 0) * 0.22) * STYLE.blush;
+  const blushA = (0.34 + (p.blush ?? 0) * 0.4) * STYLE.blush;
+  const tx = turn * 5.5; // a small head turn slides the features and narrows the far eye
+  const kL = 1 - Math.max(0, -turn) * 0.14;
+  const kR = 1.04 - Math.max(0, turn) * 0.14;
   return (
-    <g transform={`scale(${size})`}>
-      {blushA > 0 && [-1, 1].map((s) => <ellipse key={s} cx={s * (gap + 14) * es} cy={13.5 * es} rx={7.6} ry={4.4} fill={p.tint ?? '#ff4d73'} opacity={blushA} />)}
+    <g transform={`translate(${tx} 0) scale(${size})`}>
+      <defs>
+        <radialGradient id={`b${id}`}>
+          <stop offset="0" stopColor={p.tint ?? '#ff3d6e'} stopOpacity={blushA} />
+          <stop offset="1" stopColor={p.tint ?? '#ff3d6e'} stopOpacity="0" />
+        </radialGradient>
+      </defs>
+      {blushA > 0 && [-1, 1].map((s) => <ellipse key={s} cx={s * (gap + 14) * es} cy={13.5 * es} rx={10.5} ry={6.4} fill={`url(#b${id})`} />)}
       <g transform={`scale(${es})`}>
-        <Eye x={-gap} lid={lidL} lower={lower} pupil={p.pupil} look={look} skin={skin} fc={fc} k={1} lw={lwe} />
-        <Eye x={gap} lid={lidR} lower={lower} pupil={p.pupil} look={look} skin={skin} fc={fc} k={1.04} lw={lwe} />
+        <Eye x={-gap} lid={lidL} lower={lower} pupil={p.pupil} look={look} skin={skin} fc={fc} k={kL} lw={lwe} iris={eyeColor} lashes={lashes} outer={-1} soft={human} />
+        <Eye x={gap} lid={lidR} lower={lower} pupil={p.pupil} look={look} skin={skin} fc={fc} k={kR} lw={lwe} iris={eyeColor} lashes={lashes} outer={1} soft={human} />
         {[[-1, p.brow[0]], [1, -p.brow[1]]].map(([side, rot]) => (
           <g key={side} transform={`translate(${side * gap} ${-23 + p.browY}) rotate(${rot})`}>
             <path d={taperedPath(side < 0 ? [[-9, 1.5], [-1, -1.6], [9, 0]] : [[-9, 0], [1, -1.6], [9, 1.5]], 4.4, side < 0 ? 0.45 : 0.15, side < 0 ? 0.15 : 0.45)} fill={fc} />
           </g>
         ))}
       </g>
-      {human && <path d={`M-1.2 ${15 * es * 0.5} Q3.2 ${15 * es * 0.78} -0.6 ${15 * es * 0.92}`} fill="none" stroke={tone(skin, 0.34)} strokeWidth={lw} strokeLinecap="round" />}
-      <g transform={`translate(0 ${mouthY})`}><Mouth shape={p.mouth} talk={talk} fc={fc} lw={lw} /></g>
+      {human && (
+        <g transform={`translate(${turn * 2.6} 0)`}>
+          <path d={`M-1.4 ${15 * es * 0.42} Q${3.6 + turn * 2} ${15 * es * 0.78} -0.8 ${15 * es * 0.94} Q-3.4 ${15 * es * 0.98} -4.4 ${15 * es * 0.82}`} fill="none" stroke={shade(skin, 0.36)} strokeWidth={lw * 1.05} strokeLinecap="round" strokeLinejoin="round" />
+          <ellipse cx={0.4} cy={15 * es * 0.66} rx={1.5} ry={2.4} fill="#ffffff" opacity={0.42} />
+        </g>
+      )}
+      <g transform={`translate(${turn * 1.6} ${mouthY})`}><Mouth shape={p.mouth} talk={talk} fc={fc} lw={lw} /></g>
       {p.extra === 'sweat' && <Drop x={(gap + 12.5) * es + 7} y={-13 * es} s={1.15} />}
       {p.extra === 'tear' && <Drop x={-(gap + 4) * es} y={17 * es + 5} />}
       {p.extra === 'zz' && <text x={(gap + 13) * es} y={-20 * es} fontSize={15} fontWeight={900} fill={fc} fontFamily="sans-serif">z<tspan fontSize={11} dy={-8}>z</tspan></text>}
@@ -170,7 +218,7 @@ export const HAND_POSES: HandPose[] = ['relaxed', 'open', 'fist', 'point', 'thum
 // f = three finger tubes [x1, y1, x2, y2]; th = the thumb; palm = palm radius.
 const HANDS: Record<HandPose, {palm: number; f: [number, number, number, number][]; th: [number, number, number, number]}> = {
   relaxed: {palm: 6, f: [[8, -3.4, 13.4, -4.2], [9, 0, 14.8, 0], [8, 3.4, 13.2, 4.2]], th: [3.6, -4.2, 7.4, -9.2]},
-  open: {palm: 6, f: [[8, -3.8, 14.4, -7.8], [9.4, 0, 16.8, 0], [8, 3.8, 14.4, 7.8]], th: [3, -4.2, 4.8, -11]},
+  open: {palm: 6.2, f: [[8, -3.7, 13.8, -6.4], [9.4, 0, 15.8, 0], [8, 3.7, 13.8, 6.4]], th: [3.2, -4.2, 5.4, -10.2]},
   fist: {palm: 6.6, f: [[9.4, -3.6, 11.2, -3.8], [10, 0, 12, 0], [9.4, 3.6, 11.2, 3.8]], th: [5.6, -6, 10, -5.2]},
   point: {palm: 6.2, f: [[8.5, -3, 18.2, -3.6], [9.8, 1, 11.6, 1.2], [8.8, 4.6, 10.4, 4.8]], th: [4, -4.4, 8.2, -8]},
   thumb: {palm: 6.6, f: [[9.4, -3.6, 11.2, -3.8], [10, 0, 12, 0], [9.4, 3.6, 11.2, 3.8]], th: [4.6, -5, 5.4, -13.6]},
@@ -191,12 +239,13 @@ const HandShapes: React.FC<{h: (typeof HANDS)[HandPose]; fill: string; lc: strin
     <g>
       <Merge>
         <Tube d={`M${h.th[0]} ${h.th[1]} L${h.th[2]} ${h.th[3]}`} r={2.6} fill={fill} line={lc} flat />
-        {h.f.map((f, i) => <Tube key={i} d={`M${f[0]} ${f[1]} L${f[2]} ${f[3]}`} r={2.5} fill={fill} line={lc} flat />)}
+        {h.f.map((f, i) => <Tube key={i} d={`M${f[0]} ${f[1]} L${f[2]} ${f[3]}`} r={2.75} fill={fill} line={lc} flat />)}
         <Part d={circlePath(6, 0, h.palm)} fill={fill} line={lc} flat />
       </Merge>
       {pose === 'relaxed' && <path d="M10.6 -1.8 L13.6 -2.2 M10.6 1.8 L13.6 2.2" fill="none" stroke={lc} strokeWidth={lw * 0.55} strokeLinecap="round" />}
       {(pose === 'fist' || pose === 'thumb') && <path d="M10.4 -1.9 L12.4 -2 M10.4 1.9 L12.4 2" fill="none" stroke={lc} strokeWidth={lw * 0.55} strokeLinecap="round" />}
-      <path d="M2.4 3.6 Q5 5.6 8.4 4.6" fill="none" stroke={tone(fill, 0.16)} strokeWidth={lw * 0.8} strokeLinecap="round" />
+      <path d="M1.6 3.4 Q5.6 7.4 10.6 4.4 Q6 5.4 1.6 3.4 Z" fill={shade(fill, 0.22)} opacity={0.75} />
+      <path d="M3 -3.4 Q5.6 -5 8 -4" fill="none" stroke={lift(fill, 0.55)} strokeWidth={lw * 0.7} strokeLinecap="round" opacity={0.8} />
     </g>
   );
 };
@@ -246,10 +295,15 @@ export const Arm: React.FC<{
   );
 };
 
-/** A small rounded shoe, toe toward +x, sole on y = 3.2. */
+/** A small sneaker, toe toward +x, sole on y = 3.2: upper, toe cap, laces, heel tab, white sole. */
+const SHOE = 'M-5.4 0.4 C-6 -5.4 -2 -7 1.6 -6.4 C5 -5.8 6.4 -3.8 8.8 -3 C12 -2 13 0.6 12.4 3.2 L-4.8 3.2 C-5.8 2.6 -5.5 1.4 -5.4 0.4 Z';
 export const Shoe: React.FC<{color: string}> = ({color}) => (
-  <Part d="M-5.4 0.4 C-6 -5.4 -2 -7 1.6 -6.4 C5 -5.8 6.4 -3.8 8.8 -3 C12 -2 13 0.6 12.4 3.2 L-4.8 3.2 C-5.8 2.6 -5.5 1.4 -5.4 0.4 Z" fill={color} depth={2}>
-    <rect x={-7} y={1.4} width={21} height={3} fill={tone(color, -0.55)} />
+  <Part d={SHOE} fill={color} mat="hard" tex={0} depth={2}>
+    <path d="M6.6 -4.4 C10.6 -3.4 13.6 -1 13 3.4 H5.4 C5.2 0.4 5.6 -2.4 6.6 -4.4 Z" fill={lift(color, 0.4)} opacity={0.8} />
+    <rect x={-7} y={1.2} width={21} height={3.2} fill={lift(color, 0.75)} />
+    <path d="M-7 1.2 H14" stroke={shade(color, 0.4)} strokeWidth={0.5} />
+    <path d="M1.4 -5 L3.4 -2.6 M3.6 -4.6 L5.4 -2.2" stroke={lift(color, 0.8)} strokeWidth={0.8} strokeLinecap="round" />
+    <path d="M-5.6 -1.6 H-3.6 V-5.4" fill="none" stroke={shade(color, 0.34)} strokeWidth={0.7} />
   </Part>
 );
 

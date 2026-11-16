@@ -8,21 +8,25 @@ Owner rules (2026-11-16): 100% code-drawn, no AI art. Thin lines, never heavy bl
 hands. Nothing wobbles. People are full-body. Every new character goes through this blueprint.
 
 ## The six rules
-1. **Start from real anatomy.** Look up the real shape, then keep the 2-3 features that make it
-   recognisable (stomach: J-shape + food pipe on top; kidney: bean + notch + red and blue vessels;
-   heart: aorta arch + blue pulmonary artery). Draw them, drop the rest.
+1. **Start from real anatomy and show its real parts.** Look up the real shape and what attaches to
+   it (stomach: J-shape, food pipe with muscle rings, duodenum, rugae, the vessels of the greater
+   curve; kidney: bean, hilum, artery, vein, ureter, adrenal gland; heart: aorta with three
+   branches, vena cava, pulmonary trunk, coronary arteries). Every part goes in `accents` so the
+   model sheet names it. Nothing invented.
 2. **Organs stay in place: no legs.** Only travellers get legs (pill, white cell, platelet, people).
    Germs and loose cells float.
 3. **One accessory shows the job, never two.** White cell = guard cap with a badge. Platelet = medic
    helmet. Egg = bow. Organs need none: their anatomy is the costume.
 4. **The face sits on the widest part and the eyes span 40-55% of the body width** (`face.size`
    0.7-1.25). Features are a deep shade of the body colour, not navy.
-5. **Line and light.** Outline = a darker shade of each fill (`lineOf`), at most 4.2 px on screen
-   however big the character is. Flat colour + one crisp shadow edge lower-right + soft light and one
-   gloss mark upper-left. Details are tone-on-tone brush marks, never hard lines.
+5. **Line, light and material.** Outline = a darker shade of each fill (`lineOf`), at most 4.2 px
+   on screen. Every `Part` names its material (`mat`: flesh, cell, hard, cloth, skin, hair) and the
+   engine paints volume: form gradient, two-step shadow, bounce light, texture, gloss (see
+   `toons-style.md`). Details are tone-on-tone: `Groove` for folds, `Vein` for vessels.
 6. **Hold, then move.** A character holds a pose (breathing only). A move has anticipation, an eased
    travel, a small overshoot and a settle (`motion.ts`: `key`, `E.back`, `settle`). No wobble filters,
-   no constant sway.
+   no constant sway. Body acting (lean, nod, turn, hop, weight shift) comes from the `act` prop and is
+   driven by the mood and the speech, never by a clock.
 
 ## Add a body character (organ, cell, germ, medicine)
 1. Research the real anatomy and the character's job in the body. Write one line for `role`.
@@ -33,12 +37,17 @@ const gallbladder: Blueprint = {
   name: 'gallbladder', family: 'organ',
   role: 'The bile pouch: squeezes bile onto fatty food. Small, proud of its one job.',
   color: '#7dbb5c',                      // 6-digit hex, from the family palette below
-  face: {x: 0, y: 4, size: 1},           // on the widest part
   arms: {l: [-34, 8], r: [34, 8]},       // shoulder points on the body edge; null = no arms
   legs: null,                            // organs: always null
   ground: {y: 70, w: 34},                // the lowest point: shadow, squash pivot, where it stands
-  back: ({color}) => <Tube d="M0 -40 C4 -60 -6 -74 2 -90" r={5} fill={tone(color, 0.06)} />,
-  body: ({color}) => <Part d={blob(36, 52, 'gb', 10, 0.05)} fill={color} shine={[-14, -30, 0.9]} />,
+  accents: [{label: 'bile duct', color: '#8fc96c'}],
+  face: {x: 0, y: 4, size: 1},           // on the widest part; add eye: '#...' for a set eye colour
+  back: ({color}) => <Tube d="M0 -40 C4 -60 -6 -74 2 -90" r={5} fill={lift(color, 0.1)} />,
+  body: ({color}) => (
+    <Part d={blob(36, 52, 'gb', 10, 0.05)} fill={color} mat="flesh" shine={[-14, -30, 0.9]}>
+      <Groove pts={[[-20, 30], [0, 38], [20, 30]]} color={color} />
+    </Part>
+  ),
 };
 ```
 
@@ -46,23 +55,28 @@ const gallbladder: Blueprint = {
 4. Render and check: `node pipeline/toon-sheets.mjs gallbladder` -> `out/toons/sheets/sheet-gallbladder.jpg`.
    `makeCharacter` runs `checkBlueprint` and fails with a clear message if a rule is broken.
 
-Drawing tools (`src/toons/ink.tsx`): `Part` (a painted shape), `Tube` (arms, vessels, airways),
-`Merge` (several shapes, one outline), `Mark` (tone-on-tone brush mark), `spline` / `blob` /
-`scallopPts` / `roundRect` / `circlePath` (shapes), `tone` (lighter/darker), `lineOf` (outline colour).
+Drawing tools (`src/toons/ink.tsx`): `Part` (a painted shape with volume; `mat` = its material),
+`Tube` (arms, vessels, airways; `soft` for cloth and skin), `Merge` (several shapes, one outline),
+`Groove` (a fold), `Vein` (a tapered vessel), `Mark` (a brush mark), `Cast` (a shadow thrown on
+another shape), `spline` / `blob` / `lobePts` / `roundRect` / `circlePath` (shapes), `shade` and
+`lift` (painter's darker and lighter), `lineOf` (outline colour).
 
 ## Add a person
 People are a `HumanSpec` in `src/toons/humans.tsx` (`SPECS`), drawn full-body by `makeHuman`:
 
 ```ts
-nurse: {name: 'nurse', role: 'The nurse: practical, quick, kind.', skin: '#d9a47c',
+nurse: {name: 'nurse', role: 'The nurse: practical, quick, kind.', skin: '#d9a47c', eye: '#4a3324',
   hair: {style: 'short', color: '#2b1d1a'}, top: {kind: 'tee', color: '#7fd3c7'},
   bottom: {kind: 'trousers', color: '#5fbfb2'}, shoes: '#ffffff'},
 ```
 
-- Height: adult 4 heads (`height` 1), kid 3 heads (`height` 0.76, `head` 1.3, `legs` 0.8), toddler
-  2.5 heads (`height` 0.62, `head` 1.45, `legs` 0.45: short legs, long body).
+- The recipe builds a skeleton (hips, knees, shoulders, elbows, neck), so every person can bend,
+  lean, nod, turn the head and shift weight without extra work.
+- Height: adult about 3.6 heads (`height` 1), kid 2.9 (`height` 0.76, `head` 1.3, `legs` 0.8),
+  toddler 2.2 (`height` 0.64, `head` 1.45, `legs` 0.45, `torso` 0.8). Arms shorten with the legs.
 - Hair styles: curly, short, long, cap, balding, baby. Tops: coat, hoodie, tee, blouse, cardigan,
-  onesie. Bottoms: trousers, skirt, shorts. Extras: glasses, moustache, earrings, stethoscope.
+  onesie. Bottoms: trousers, skirt, shorts. Extras: `glasses` ('round' or 'square'), `lashes`,
+  moustache, earrings, stethoscope.
 - A new hair style or garment is added once in `HairBack` / `HairFront` / `Top` / `Bottom`, then every
   person can use it.
 - Never draw a real, identifiable person.
@@ -80,10 +94,14 @@ nurse: {name: 'nurse', role: 'The nurse: practical, quick, kind.', skin: '#d9a47
 One mitten shape: bundled fingers + a thumb wedge, one outline, in the character's own colour
 (skin for people). Five poses: relaxed, open, fist, point, thumb. Set per arm:
 `arms={[112, {a: -30, hand: 'point'}]}` (angles: 0 = right, 90 = down, 180 = left, -90 = up).
+People bend a real elbow: `len` is how far the hand is from the shoulder (49 = straight, shorter =
+bent). Scripts use the named poses in `src/toons/poses.ts` (rest, wave, point, pointLeft, panic,
+fists, thumb, shrug, hips, belly, explain, think, present, cheer, heart, facepalm, crossed).
 
 ## Checklist before a new character is used in a video
 - [ ] The model sheet reads at thumbnail size: you can name the organ without the label.
-- [ ] 2-3 real anatomical features, nothing invented.
+- [ ] Its real anatomical parts are drawn and named in `accents`; nothing invented.
+- [ ] Every surface has a material (`mat`); the shadow side shows texture and a bounce light.
 - [ ] No legs unless it travels. At most one accessory.
 - [ ] All 9 emotions read clearly on the sheet (eyes are not cut by an edge or a hat).
 - [ ] Arms come out of the body edge, hands do not hide behind the body in the rest pose.
@@ -91,4 +109,5 @@ One mitten shape: bundled fingers + a thumb wedge, one outline, in the character
 - [ ] `checkBlueprint` passes and `npx tsc --noEmit` is clean.
 
 ## Reference boards
-Rendered examples live in `toons-boards/` (blueprint page, cast, two model sheets). Re-render with `node pipeline/toon-sheets.mjs` and copy over when the cast changes.
+Rendered examples live in `toons-boards/` (blueprint page, cast, camera and lenses, sets, model sheets).
+Re-render with `node pipeline/toon-sheets.mjs` and copy over when the cast changes.

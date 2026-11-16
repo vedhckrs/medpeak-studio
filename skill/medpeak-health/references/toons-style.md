@@ -1,43 +1,88 @@
-# MedPeak Toons style guide (v5, 2026-11-16)
+# MedPeak Toons style guide (v6, 2026-11-16)
 
 The look of the cartoon "talking organs" Shorts. Everything here is enforced by `src/toons/style.ts`
 (one settings file) and the drawing engine `src/toons/ink.tsx`. New characters follow
-`toons-blueprint.md`.
+`toons-blueprint.md`; the camera follows `toons-camera.md`.
 
 ## What earlier versions got wrong (owner feedback + research)
-| Problem | Cause | v5 rule |
+| Problem (owner's words) | Cause | Rule now |
 |---|---|---|
-| "Too much thick black lines" | one heavy navy outline, thickened again on one side, scaling up with the character | outline = a darker shade of each fill (`lineOf`), `STYLE.line` 1.9 units and never more than `maxLinePx` 4.2 px on screen (Slot, Camera and Scaled share the scale) |
-| "Hand is not proper" | white gloves built from separate outlined blocks | one mitten silhouette (bundled fingers + thumb wedge) in the character's own colour, 5 poses |
-| "Animation like a burning screen, very wavy" | a turbulence displacement filter (line boil) on every character + constant sway | `STYLE.boil = 0`. Characters hold a pose (breathing 0.7%) and move with anticipation, easing, a small overshoot and a settle |
-| "Cheap, not professional" | mascot bodies with boots; soft airbrush shading; generic shapes | organs drawn from real anatomy with vessels, airways and lobes, no legs; flat colour + one crisp shadow edge + one gloss; tone-on-tone detail marks |
-| People cut off at the waist | half-body rigs | full-body people from one recipe: adults 4 heads, kids 3, toddlers 2.5 |
-| No way to stay on-style | every character hand-made | the character blueprint (`makeCharacter`, `makeHuman`, `checkBlueprint`) + a model sheet per character |
+| "Too much thick black lines" | one heavy navy outline that scaled up with the character | outline = a darker shade of each fill (`lineOf`), `STYLE.line` 1.8 units, never more than 4.2 px on screen |
+| "Hand is not proper" | white gloves built from separate outlined blocks | one mitten silhouette in the character's own colour, 5 poses |
+| "Animation like a burning screen, very wavy" | a displacement filter (line boil) on every character + constant sway | `STYLE.boil = 0`. No filters on characters. Poses are held; every move has a reason |
+| "Cheap, not professional" (v5) | flat stickers: one fill, a faint shadow, black-dot eyes | **volume paint** (below), coloured shaded irises, real anatomy on every organ |
+| "More high-end texture and detailed structure" | no surface texture; 2-3 features per organ | every surface names a **material**; organs show vessels, ducts, lobes, folds; cells show their insides |
+| "Human characters need more motion" | people were a stiff stack of shapes | people are built on a **skeleton** (hips, knees, elbows, neck) and act with the whole body |
+| "Background animation needed" | sets were one flat picture | every set is **layers that live** (`scenes.tsx`, `SET_LIFE`) |
+| "More cinematic camera and lenses" | one zoom, hard cuts | shot sizes, lenses with depth of field, parallax and moves (`toons-camera.md`) |
 
-## What the reference frames show (studied at full size, format only, nothing copied)
-- Lines about 4 px at 1080 wide, uniform and thin.
-- Organs drawn large and anatomically, in place, with tiny arms in the body colour.
-- Flat colour with a few hard-edged shadow shapes and small highlights. Simple, muted backgrounds.
-- People about 4 heads tall with full outfits; costume gives a character its job.
+## Volume paint (`Part` in `ink.tsx`)
+Light comes from the top-left. Every painted shape gets, in this order:
+1. the fill colour;
+2. a **two-step crisp shadow** on the lower right: a core shadow and a thinner, darker edge inside it;
+3. a **soft form gradient**: lighter on the upper left, deeper on the lower right, so the shape is round;
+4. the **material texture** (next section);
+5. a **bounce light**: a thin lighter line hugging the shadow-side edge;
+6. an **edge light**: a thin bright line hugging the light-side edge;
+7. tone-on-tone details: `Groove` (a fold with a lit lip), `Vein` (a tapered vessel), `Mark`;
+8. a **gloss**: soft halo, one streak, one dot;
+9. the thin outline in a darker shade of the fill.
 
-## Line
-- Colour: `lineOf(fill)`: same hue, darker and calmer (pink -> maroon, yellow -> brown, white -> slate).
-  Face features use a deeper shade of the skin colour. Only pupils are near-black.
-- Sets: maroon lines inside the body (`fleshLine`), slate in rooms (`roomLine`), 3.2 px.
+Shadows are painted like a painter would: `shade()` makes a colour darker, a little richer and
+slides its hue toward violet (pink -> rose, yellow -> orange, green -> teal, white -> lavender).
+`lift()` makes it lighter and a touch warmer. Never grey, never black. `Cast` paints the shadow one
+shape throws on another (a cap on a head). All strengths are in `style.ts`
+(`shadow`, `shadowDeep`, `form`, `rim`, `edge`, `gloss`, `texture`).
 
-## Light
-Top-left. Crisp shadow edge lower-right (`shadow`, `shadowDepth`), soft top light (`topLight`), one
-gloss streak and dot upper-left (`gloss`). A flat contact shadow on the floor.
+## Materials (`mat` on a `Part`)
+| Material | Used for | Texture and highlight |
+|---|---|---|
+| `flesh` | organs | soft mottling + a stippled shadow + a few light specks: wet and alive |
+| `cell` | cells, germs | a translucent double wall + granules |
+| `hard` | teeth, bone, capsule, metal, shoes | clean, with a long window reflection and a sharp gloss |
+| `cloth` | clothes, caps, bows | a fine weave in the shadow; matte limbs (`Tube soft`) |
+| `skin` | people | clean, warm bounce light |
+| `hair` | hair, moustache | clean; curls, strands and shine bands are drawn by hand |
+| `matte` | everything else | clean |
 
-## Face
-Big clean eyes (white, dark pupil, two highlights, a stronger upper lash line, soft lid shadow),
-brush-stroke brows, shaped mouths with teeth and tongue, soft blush. 9 emotions. Closed eyes are one
-curved lash line. People add a small nose.
+Textures are plain vector marks (one path of dots or strokes per shape), seeded so they are the
+same on every frame. Nothing shimmers.
 
-## Motion (`src/toons/motion.ts`)
-`key(frame, [[frame, value, ease]])` for posed moves, `E.back` for overshoot, `settle` for landings,
-`speak` for mouth movement, `Hold` (stage.tsx) for the breathing hold. Guideline numbers: overshoot
-1-3% scale or 2-8 px, settle within 4-8 frames; anticipation before every big move.
+## Face (`rig.tsx`)
+Big eyes with a **coloured iris** (shaded: darker on top, lit from below), a dark pupil, two
+highlights, a lid shadow on the white, a stronger upper lash line. The iris shrinks with fear and
+surprise. Brush-stroke brows, shaped mouths with shaded teeth and tongue, gradient blush. 9 emotions.
+Eye colour: `face.eye` on a blueprint, `eye` on a person (default: a deep shade of the body colour).
+People's eyes have no hard ring (it read as glasses), a small shaped nose, optional `lashes`.
+`turn` slides the features and narrows the far eye, so a head can turn.
+
+## Structure
+Organs are drawn from anatomy, with their real parts in their real places, each listed on the model
+sheet: the stomach has its food pipe with muscle rings, the duodenum, rugae and the vessels of the
+greater curve; the heart has the aorta with three branches, the vena cava, the pulmonary trunk,
+coronary arteries and fat; the kidney has its artery, vein, ureter, renal pelvis and adrenal gland;
+the lungs show the windpipe rings, the bronchial tree and the fissures; cells show nucleus,
+granules and membranes; germs show their genes, spikes, pili and flagellum.
+
+## People
+Built on a skeleton by `makeHuman` (`humans.tsx`): adults about 3.6 heads tall, kids 2.9, toddlers
+2.2 (bigger heads than life, because the face is what the viewer reads). Clothes carry real detail:
+lapels, pockets, pens, an ID badge, drawstrings, ribbing, pleats, seams, laces.
+
+## Motion (`motion.ts`, `Player.tsx`)
+Nothing wobbles. A character holds a pose (breathing 0.7%), then moves with anticipation, easing, a
+small overshoot and a settle. On top of the arm pose every character acts with its body (`act`):
+- the **mood** sets the stance: angry leans in, scared leans away with raised shoulders, sad and
+  sick drop the head, smug tilts it;
+- **speech** drives the rest: the arms beat and the head nods on stressed words, the speaker leans
+  toward the listener and glances at the viewer;
+- **listeners** shift their weight every few seconds, tilt the head and nod;
+- people bend real knees and elbows; organs lean and hop.
+
+## Sets and camera
+Sets are layers at different depths that live (drips, bubbles, cells streaming, clouds, a ticking
+clock, a scrolling heart monitor); see `SET_LIFE` in `scenes.tsx`. The camera has shot sizes,
+lenses and moves; see `toons-camera.md`.
 
 ## Sources
 - Mitten hands, thumb wedge, four-finger convention: Toons Mag "How to draw cartoon hands"; Preston
@@ -49,3 +94,6 @@ curved lash line. People add a small nose.
 - Model sheets and head-height proportions: Wikipedia "Model sheet"; Toon Boom Learn "Character
   proportions"; Clip Studio "Model sheets for character designers".
 - Cel shading steps and rim light: garagefarm "Types of shading in 3D and 2D art".
+- Multiplane camera (layers at depths, parallax): Wikipedia "Multiplane camera".
+- Shot sizes, focal length and depth of field: standard film grammar (wide / medium / close-up;
+  longer lens = shallower focus and flatter depth).

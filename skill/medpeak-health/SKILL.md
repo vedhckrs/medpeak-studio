@@ -76,7 +76,8 @@ long-video watch time counts toward the 4,000 hours, so every Short links to a l
 - `references/medical-accuracy.md` - sourcing rules, wording that is not allowed, how to cite.
 - `references/scene-types.md` - every visual type with its fields.
 - `references/toons.md` - MedPeak Toons: the cartoon talking-organ Shorts format, our own look, roadmap.
-- `references/toons-style.md` - the Toons look (v5) and the research behind it: thin coloured lines, mitten hands, no wobble.
+- `references/toons-style.md` - the Toons look (v6): volume paint, materials, coloured eyes, real anatomy, body acting; thin coloured lines, mitten hands, no wobble.
 - `references/toons-blueprint.md` - the character blueprint: how to add an organ, cell, germ or person so it matches the cast. Read before designing any new Toons character.
+- `references/toons-camera.md` - shot sizes, lenses, camera moves and what the director does on its own. Read before writing a Toon script.
 - `toons-cast.json` - the fixed voice of every Toons character. A character never changes voice between videos; a new character gets a new entry here (and a line in `references/toons.md`).
 - Repo `README.md` - setup, commands, folder map. `CONTRIBUTING.md` - branches, commits, PRs.

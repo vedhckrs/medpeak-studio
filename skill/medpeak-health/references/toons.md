@@ -12,30 +12,36 @@ cartoon health channel (format only). We never copy anyone's characters, art, au
 - One word on screen at a time; 2-3 sets per video; motion from faces and arms, not cuts.
 
 ## MedPeak's own look (src/toons)
-- Outlines are a darker shade of each fill, thin (never navy, never black); big clean eyes; soft blush.
+- **Volume paint**: every shape has a form gradient, a two-step shadow, a bounce light, a material
+  texture and a gloss, inside a thin outline that is a darker shade of the fill (never navy or black).
+- Big eyes with coloured, shaded irises; soft gradient blush.
+- Organs drawn from real anatomy with their real parts (vessels, ducts, lobes, folds).
 - Captions: one word, white on a navy rounded tag, key word in amber, slight tilt.
-- Labels: teal pill tags with navy outline ("THROAT", "GUT").
+- Labels: teal pill tags ("THROAT", "GUT").
 - Our doctor: **Dr. Mira** (white coat over teal scrubs, curly dark hair, round glasses), full-body.
+- Sets are layers that live; the camera has shot sizes, lenses and moves (`toons-camera.md`).
 - Retention 7 still applies: unlike the reference channel, we change the picture at least every
-  3 s (close-ups, reaction shots, thought bubbles).
+  2.6 s (the director does it on its own).
 
-## Pieces (v5)
+## Pieces (v6)
 | File | What |
 |---|---|
-| `src/toons/style.ts` | The one settings file: line, eyes, light, motion, colours |
-| `src/toons/ink.tsx` | Drawing engine: `Part`, `Tube`, `Merge`, `Mark`, shapes, `lineOf`, thin-line scale context |
-| `src/toons/rig.tsx` | Face (9 emotions), mitten `Hand` (5 poses), `Arm`, `Leg`, `Shoe`, `blinkAt` |
-| `src/toons/blueprint.tsx` | `Blueprint`, `makeCharacter`, `checkBlueprint` (house rules checked in code) |
-| `src/toons/characters.tsx` | 19 body characters as blueprints: stomach, intestine, liver, kidney, bladder, lungs, heart, brain, tooth, bone, pill, poop, red cell, white cell (guard cap), platelet (medic helmet), egg, sperm, virus, bacteria |
-| `src/toons/humans.tsx` | Full-body people from `HumanSpec`: Dr. Mira, patient, mum, kid, grandpa, toddler |
-| `src/toons/motion.ts` | `key`, `E`, `settle`, `speak` |
-| `src/toons/stage.tsx` | `Slot`, `Stand`, `Hold`, `Camera` |
-| `src/toons/scenes.tsx` | 9 sets: throat, gut, stomach, mouth, bloodstream, lungs, office (+ desk), bathroom, bedroom; `Label`, `WordCaption` |
-| `src/toons/Preview.tsx` | `ToonCast`, `ToonSheet` (model sheet), `ToonBlueprint`, `ToonEmotions`, `ToonSets`, `ToonScenes`, `ToonActing` |
-| `pipeline/toon-sheets.mjs` | Renders the cast board, the blueprint page and every model sheet into `out/toons/sheets/` |
+| `src/toons/style.ts` | The one settings file: line, eyes, light, texture, motion, colours |
+| `src/toons/ink.tsx` | Paint engine: `Part` (volume paint + materials), `Tube`, `Merge`, `Groove`, `Vein`, `Cast`, `shade`, `lift`, shapes |
+| `src/toons/rig.tsx` | Face (9 emotions, coloured iris, head turn), mitten `Hand` (5 poses), `Arm`, `Leg`, `Shoe`, `blinkAt` |
+| `src/toons/blueprint.tsx` | `Blueprint`, `makeCharacter`, `checkBlueprint`, `Act` (body acting) |
+| `src/toons/characters.tsx` | 19 body characters as blueprints, each with its anatomy |
+| `src/toons/humans.tsx` | Full-body people on a skeleton from `HumanSpec`: Dr. Mira, patient, mum, kid, grandpa, toddler |
+| `src/toons/poses.ts` | 17 named arm poses for scripts |
+| `src/toons/motion.ts` | `key`, `E`, `settle`, `lipsync` |
+| `src/toons/camera.tsx` | `Camera`, `Layer` (parallax + depth of field), `LENSES`, `SHOTS`, `MOVES` |
+| `src/toons/scenes.tsx` | 9 living, layered sets + foregrounds (`SETS`, `FORES`, `SET_LIFE`), `WordCaption` |
+| `src/toons/Player.tsx` | Plays a `toon.json`: the director, the acting, captions, sound |
+| `src/toons/Preview.tsx` | Boards: `ToonCast`, `ToonSheet`, `ToonBlueprint`, `ToonCamera`, `ToonSets`, `ToonEmotions` |
+| `pipeline/toon-sheets.mjs` | Renders every board and model sheet into `out/toons/sheets/` |
 
-See `toons-style.md` (look and research) and `toons-blueprint.md` (how to add a character).
-
+See `toons-style.md` (look and research), `toons-blueprint.md` (how to add a character) and
+`toons-camera.md` (shots, lenses, moves).
 
 ## Phase B: voices, lip-sync, sound and music (built 2026-11-16)
 A Toon is one file, `videos/<slug>/toon.json`. The player (`src/toons/Player.tsx`, composition `Toon`)
@@ -50,11 +56,12 @@ turns it into the whole Short: staging, acting, lip-sync, camera cuts, captions,
 ```
 - `set`: throat, gut, stomach, mouth, blood, lungs, office, bathroom, bedroom. People stand on the set's
   floor automatically; floating body characters need `y`.
-- `emotion`: one of the 9 faces. `pose`: rest, wave, point, pointLeft, panic, fists, thumb, shrug, hips,
-  belly, explain, think (`src/toons/poses.ts`). `key`: the caption word shown in amber. `react`: faces of
-  the listeners. `sfx`: an effect from the library; without it the emotion picks one.
-- The player does the rest: a shot opens wide, then cuts to whoever speaks, and long lines alternate
-  wide and close so no picture stays longer than 2.6 s (Retention 7).
+- `emotion`: one of the 9 faces. `pose`: one of the 17 in `src/toons/poses.ts`. `key`: the caption word
+  shown in amber. `react`: faces of the listeners. `sfx`: an effect from the library; without it the
+  emotion picks one. `cam`: optional camera for the line, e.g. `"cu 85 push"` (`toons-camera.md`).
+  On an actor, `enter`: walk, drop or pop.
+- The player does the rest: the director picks shot, lens and move for every stretch of every line
+  (never one picture longer than 2.6 s), and the actors gesture, nod, lean and react on their own.
 
 | File | What |
 |---|---|
@@ -90,8 +97,9 @@ play about 9 dB under the voice, a little higher in the gaps. The render is mast
 `--remix` on `toon-voice` and `toon-sfx` applies level changes again for free from the raw downloads.
 
 ## Roadmap
-- Phase A (done 2026-11-16, v5): engine, rig, blueprint system, 19 body characters, 6 full-body people,
-  9 sets, model sheets, acting toolkit.
+- Phase A (v6, 2026-11-16, after the owner's review of the first voiced scene): volume paint and
+  materials, all 25 characters redrawn with real structure, people on a skeleton with body acting,
+  9 living layered sets, camera with lenses, new model sheets.
 - Phase B (done 2026-11-16): voice cast, lip-sync, script player, the 38-effect library, 4 music beds,
   and a fully voiced and mixed test scene (`videos/pill-without-water`). Open: the owner's review of the
   voices by ear; 21 of the 25 voices have not been heard yet (`toon-voice --audition`, about 1,550 credits).

@@ -9,6 +9,17 @@ import {Arm, type ArmSpec, armOf, type Emotion, Face, Leg} from './rig';
 
 export type Family = 'organ' | 'cell' | 'germ' | 'medicine' | 'waste' | 'skeleton' | 'person';
 
+/** Body acting, on top of the arm pose: all optional, all zero at rest. */
+export type Act = {
+  lean?: number; // degrees: the body leans (positive = toward screen right)
+  tilt?: number; // degrees: the head tilts (people); bodies add it to the lean
+  nod?: number; // -1..1: chin down (positive) or up
+  turn?: number; // -1..1: the face turns left or right
+  bob?: number; // units: the body drops (people bend their knees)
+  shift?: number; // -1..1: weight on one leg (people)
+  shrug?: number; // 0..1: shoulders up (people)
+};
+
 export type CharProps = {
   emotion?: Emotion;
   talk?: number;
@@ -20,6 +31,7 @@ export type CharProps = {
   t?: number; // seconds, for small idle details (sloshing, tails)
   noLegs?: boolean;
   flip?: boolean; // face the other way
+  act?: Act; // body acting: lean, nod, turn, bob, weight shift
 };
 
 /** What a blueprint's drawing functions receive. */
@@ -31,7 +43,7 @@ export type Blueprint = {
   role: string; // one line: who this character is in a story
   color: string; // the main body colour (6-digit hex)
   accents?: {label: string; color: string}[]; // other colours, listed on the model sheet
-  face: {x: number; y: number; size: number; skin?: string}; // where the face sits and how big
+  face: {x: number; y: number; size: number; skin?: string; eye?: string; lashes?: boolean}; // where the face sits, how big, eye colour
   arms: {l: [number, number]; r: [number, number]; len?: number; color?: string} | null; // shoulder points
   legs: {x?: number; y: number; gap: number; len?: number; color?: string; shoe?: string} | null; // only for travellers
   ground: {y: number; w: number}; // the lowest point (contact shadow, squash pivot, where it stands)
@@ -62,6 +74,7 @@ export const makeCharacter = (bp: Blueprint): Character => {
   const C = ((p: CharProps) => {
     const c: Ctx = {p, t: p.t ?? 0, color: bp.color, line: lineOf(bp.color)};
     const sq = p.squash ?? 0;
+    const act = p.act ?? {};
     const arms = p.arms === null ? null : p.arms ?? bp.rest ?? [112, 68];
     const arm = (i: 0 | 1, front: boolean) => {
       if (!bp.arms || !arms) return null;
@@ -73,7 +86,7 @@ export const makeCharacter = (bp: Blueprint): Character => {
     const legs = !p.noLegs && bp.legs ? bp.legs : null;
     const g = bp.ground.y;
     return (
-      <g transform={`translate(0 ${g}) scale(${(p.flip ? -1 : 1) * (1 + sq * 0.12)} ${1 - sq * 0.12}) translate(0 ${-g})`}>
+      <g transform={`translate(0 ${g + (act.bob ?? 0)}) rotate(${((act.lean ?? 0) + (act.tilt ?? 0) * 0.5).toFixed(2)}) scale(${(p.flip ? -1 : 1) * (1 + sq * 0.12)} ${1 - sq * 0.12}) translate(0 ${-g})`}>
         <Contact y={g} w={bp.ground.w} />
         {bp.back?.(c)}
         {legs && ([-1, 1] as const).map((side) => (
@@ -82,8 +95,8 @@ export const makeCharacter = (bp: Blueprint): Character => {
         {arm(0, false)}
         {arm(1, false)}
         {bp.body(c)}
-        <g transform={`translate(${bp.face.x} ${bp.face.y})`}>
-          <Face emotion={p.emotion} talk={p.talk} blink={p.blink} look={p.look} size={bp.face.size} skin={bp.face.skin ?? bp.color} />
+        <g transform={`translate(${bp.face.x} ${bp.face.y + (act.nod ?? 0) * 3})`}>
+          <Face emotion={p.emotion} talk={p.talk} blink={p.blink} look={p.look} size={bp.face.size} skin={bp.face.skin ?? bp.color} iris={bp.face.eye} lashes={bp.face.lashes} turn={(act.turn ?? 0) * 0.8} />
         </g>
         {bp.front?.(c)}
         {arm(0, true)}

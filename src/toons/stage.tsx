@@ -1,14 +1,15 @@
 // Staging helpers: put characters on screen, keep their outlines thin at any size, hold a pose.
 import React, {useContext} from 'react';
-import {AbsoluteFill} from 'remotion';
 import {ScaleCtx} from './ink';
 import {STYLE} from './style';
 
-/** A character slot: a `size` px box centred on (x, y). The character draws in a 200-unit box. */
-export const Slot: React.FC<{x: number; y: number; size: number; children: React.ReactNode}> = ({x, y, size, children}) => {
+export {Camera} from './camera';
+
+/** A character slot: a `size` px box centred on (x, y). The character draws in a 200-unit box. `blur` = out of focus (px). */
+export const Slot: React.FC<{x: number; y: number; size: number; blur?: number; children: React.ReactNode}> = ({x, y, size, blur = 0, children}) => {
   const parent = useContext(ScaleCtx);
   return (
-    <svg style={{position: 'absolute', left: x - size / 2, top: y - size / 2, overflow: 'visible'}} width={size} height={size} viewBox="-100 -100 200 200">
+    <svg style={{position: 'absolute', left: x - size / 2, top: y - size / 2, overflow: 'visible', filter: blur > 0.3 ? `blur(${(blur / parent).toFixed(2)}px)` : undefined}} width={size} height={size} viewBox="-100 -100 200 200">
       <ScaleCtx.Provider value={(parent * size) / 200}>{children}</ScaleCtx.Provider>
     </svg>
   );
@@ -24,10 +25,3 @@ export const Hold: React.FC<{frame: number; seed?: number; ground?: number; chil
   const b = 1 + Math.sin((frame / 30) * 2.2 + seed) * STYLE.breathe;
   return <g transform={`translate(0 ${ground}) scale(${2 - b} ${b}) translate(0 ${-ground})`}>{children}</g>;
 };
-
-/** The camera: zoom on a point. Outlines stay thin in close-ups because the zoom is shared. */
-export const Camera: React.FC<{zoom: number; cx: number; cy: number; children: React.ReactNode}> = ({zoom, cx, cy, children}) => (
-  <ScaleCtx.Provider value={zoom}>
-    <AbsoluteFill style={{transform: `translate(${540 - cx}px, ${960 - cy}px) scale(${zoom})`, transformOrigin: `${cx}px ${cy}px`}}>{children}</AbsoluteFill>
-  </ScaleCtx.Provider>
-);
