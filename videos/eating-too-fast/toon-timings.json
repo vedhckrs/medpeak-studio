@@ -1,0 +1,824 @@
+{
+  "lines": {
+    "A1": {
+      "who": "stomach",
+      "text": "Eat too fast and your belly balloons.",
+      "voiceId": "N2lVS1w4EtoT3dr4eOWO",
+      "pitch": -1,
+      "file": "toons/eating-too-fast/voice/A1.mp3",
+      "duration": 2.476,
+      "words": [
+        {
+          "w": "Eat",
+          "start": 0,
+          "end": 0.232
+        },
+        {
+          "w": "too",
+          "start": 0.267,
+          "end": 0.418
+        },
+        {
+          "w": "fast",
+          "start": 0.499,
+          "end": 0.882
+        },
+        {
+          "w": "and",
+          "start": 0.929,
+          "end": 1.01
+        },
+        {
+          "w": "your",
+          "start": 1.068,
+          "end": 1.219
+        },
+        {
+          "w": "belly",
+          "start": 1.277,
+          "end": 1.556
+        },
+        {
+          "w": "balloons.",
+          "start": 1.614,
+          "end": 2.415
+        }
+      ]
+    },
+    "A2": {
+      "who": "foodpipe",
+      "text": "Same lunch, no balloon. Want to know how?",
+      "voiceId": "CwhRBWXzGAHq8TQ4Fs17",
+      "pitch": 1,
+      "file": "toons/eating-too-fast/voice/A2.mp3",
+      "duration": 2.269,
+      "words": [
+        {
+          "w": "Same",
+          "start": 0,
+          "end": 0.244
+        },
+        {
+          "w": "lunch,",
+          "start": 0.279,
+          "end": 0.522
+        },
+        {
+          "w": "no",
+          "start": 0.546,
+          "end": 0.639
+        },
+        {
+          "w": "balloon.",
+          "start": 0.697,
+          "end": 1.149
+        },
+        {
+          "w": "Want",
+          "start": 1.289,
+          "end": 1.463
+        },
+        {
+          "w": "to",
+          "start": 1.486,
+          "end": 1.533
+        },
+        {
+          "w": "know",
+          "start": 1.567,
+          "end": 1.683
+        },
+        {
+          "w": "how?",
+          "start": 1.741,
+          "end": 2.229
+        }
+      ]
+    },
+    "A3": {
+      "who": "stomach",
+      "text": "Rewind! Five minutes ago, lunch came down in huge gulps.",
+      "voiceId": "N2lVS1w4EtoT3dr4eOWO",
+      "pitch": -1,
+      "file": "toons/eating-too-fast/voice/A3.mp3",
+      "duration": 4.046,
+      "words": [
+        {
+          "w": "Rewind!",
+          "start": 0,
+          "end": 0.731
+        },
+        {
+          "w": "Five",
+          "start": 1.022,
+          "end": 1.289
+        },
+        {
+          "w": "minutes",
+          "start": 1.324,
+          "end": 1.579
+        },
+        {
+          "w": "ago,",
+          "start": 1.614,
+          "end": 1.858
+        },
+        {
+          "w": "lunch",
+          "start": 1.916,
+          "end": 2.148
+        },
+        {
+          "w": "came",
+          "start": 2.206,
+          "end": 2.415
+        },
+        {
+          "w": "down",
+          "start": 2.461,
+          "end": 2.74
+        },
+        {
+          "w": "in",
+          "start": 2.798,
+          "end": 2.879
+        },
+        {
+          "w": "huge",
+          "start": 2.961,
+          "end": 3.262
+        },
+        {
+          "w": "gulps.",
+          "start": 3.32,
+          "end": 3.994
+        }
+      ]
+    },
+    "A4": {
+      "who": "foodpipe",
+      "text": "He swallowed so fast, air came down too!",
+      "voiceId": "CwhRBWXzGAHq8TQ4Fs17",
+      "pitch": 1,
+      "file": "toons/eating-too-fast/voice/A4.mp3",
+      "duration": 2.59,
+      "words": [
+        {
+          "w": "He",
+          "start": 0,
+          "end": 0.174
+        },
+        {
+          "w": "swallowed",
+          "start": 0.244,
+          "end": 0.65
+        },
+        {
+          "w": "so",
+          "start": 0.697,
+          "end": 0.801
+        },
+        {
+          "w": "fast,",
+          "start": 0.871,
+          "end": 1.207
+        },
+        {
+          "w": "air",
+          "start": 1.254,
+          "end": 1.44
+        },
+        {
+          "w": "came",
+          "start": 1.498,
+          "end": 1.683
+        },
+        {
+          "w": "down",
+          "start": 1.718,
+          "end": 1.904
+        },
+        {
+          "w": "too!",
+          "start": 1.962,
+          "end": 2.554
+        }
+      ]
+    },
+    "A5": {
+      "who": "stomach",
+      "text": "I'm stretched tight! Brain, we're full down here!",
+      "voiceId": "N2lVS1w4EtoT3dr4eOWO",
+      "pitch": -1,
+      "file": "toons/eating-too-fast/voice/A5.mp3",
+      "duration": 3.449,
+      "words": [
+        {
+          "w": "I'm",
+          "start": 0,
+          "end": 0.186
+        },
+        {
+          "w": "stretched",
+          "start": 0.244,
+          "end": 0.65
+        },
+        {
+          "w": "tight!",
+          "start": 0.685,
+          "end": 1.149
+        },
+        {
+          "w": "Brain,",
+          "start": 1.498,
+          "end": 1.904
+        },
+        {
+          "w": "we're",
+          "start": 1.939,
+          "end": 2.159
+        },
+        {
+          "w": "full",
+          "start": 2.206,
+          "end": 2.473
+        },
+        {
+          "w": "down",
+          "start": 2.531,
+          "end": 2.763
+        },
+        {
+          "w": "here!",
+          "start": 2.821,
+          "end": 3.39
+        }
+      ]
+    },
+    "A6": {
+      "who": "foodpipe",
+      "text": "The brain hasn't heard yet. He's reaching for more!",
+      "voiceId": "CwhRBWXzGAHq8TQ4Fs17",
+      "pitch": 1,
+      "file": "toons/eating-too-fast/voice/A6.mp3",
+      "duration": 2.828,
+      "words": [
+        {
+          "w": "The",
+          "start": 0,
+          "end": 0.151
+        },
+        {
+          "w": "brain",
+          "start": 0.197,
+          "end": 0.43
+        },
+        {
+          "w": "hasn't",
+          "start": 0.488,
+          "end": 0.755
+        },
+        {
+          "w": "heard",
+          "start": 0.789,
+          "end": 0.952
+        },
+        {
+          "w": "yet.",
+          "start": 1.01,
+          "end": 1.277
+        },
+        {
+          "w": "He's",
+          "start": 1.416,
+          "end": 1.614
+        },
+        {
+          "w": "reaching",
+          "start": 1.683,
+          "end": 1.974
+        },
+        {
+          "w": "for",
+          "start": 2.032,
+          "end": 2.136
+        },
+        {
+          "w": "more!",
+          "start": 2.194,
+          "end": 2.786
+        }
+      ]
+    },
+    "C1": {
+      "who": "patient",
+      "text": "Ugh. I'm bloated... and still hungry?!",
+      "voiceId": "TX3LPaxmHKxFdv7VOQHJ",
+      "pitch": 0,
+      "file": "toons/eating-too-fast/voice/C1.mp3",
+      "duration": 2.883,
+      "words": [
+        {
+          "w": "Ugh.",
+          "start": 0,
+          "end": 0.302
+        },
+        {
+          "w": "I'm",
+          "start": 0.395,
+          "end": 0.569
+        },
+        {
+          "w": "bloated...",
+          "start": 0.639,
+          "end": 1.219
+        },
+        {
+          "w": "and",
+          "start": 1.637,
+          "end": 1.776
+        },
+        {
+          "w": "still",
+          "start": 1.846,
+          "end": 2.078
+        },
+        {
+          "w": "hungry?!",
+          "start": 2.125,
+          "end": 2.833
+        }
+      ]
+    },
+    "D1": {
+      "who": "patient",
+      "text": "Doctor, why am I bloated and still hungry?",
+      "voiceId": "TX3LPaxmHKxFdv7VOQHJ",
+      "pitch": 0,
+      "file": "toons/eating-too-fast/voice/D1.mp3",
+      "duration": 2.651,
+      "words": [
+        {
+          "w": "Doctor,",
+          "start": 0,
+          "end": 0.383
+        },
+        {
+          "w": "why",
+          "start": 0.418,
+          "end": 0.627
+        },
+        {
+          "w": "am",
+          "start": 0.685,
+          "end": 0.766
+        },
+        {
+          "w": "I",
+          "start": 0.824,
+          "end": 0.848
+        },
+        {
+          "w": "bloated",
+          "start": 0.94,
+          "end": 1.324
+        },
+        {
+          "w": "and",
+          "start": 1.358,
+          "end": 1.44
+        },
+        {
+          "w": "still",
+          "start": 1.509,
+          "end": 1.776
+        },
+        {
+          "w": "hungry?",
+          "start": 1.846,
+          "end": 2.601
+        }
+      ]
+    },
+    "D2": {
+      "who": "doctor",
+      "text": "Eat too fast and you swallow air. That means burps and bloating.",
+      "voiceId": "XrExE9yKIg1WjnnlVkGX",
+      "pitch": 0,
+      "file": "toons/eating-too-fast/voice/D2.mp3",
+      "duration": 3.951,
+      "words": [
+        {
+          "w": "Eat",
+          "start": 0,
+          "end": 0.232
+        },
+        {
+          "w": "too",
+          "start": 0.279,
+          "end": 0.441
+        },
+        {
+          "w": "fast",
+          "start": 0.511,
+          "end": 0.882
+        },
+        {
+          "w": "and",
+          "start": 0.952,
+          "end": 1.057
+        },
+        {
+          "w": "you",
+          "start": 1.103,
+          "end": 1.184
+        },
+        {
+          "w": "swallow",
+          "start": 1.242,
+          "end": 1.567
+        },
+        {
+          "w": "air.",
+          "start": 1.637,
+          "end": 1.974
+        },
+        {
+          "w": "That",
+          "start": 2.183,
+          "end": 2.368
+        },
+        {
+          "w": "means",
+          "start": 2.415,
+          "end": 2.612
+        },
+        {
+          "w": "burps",
+          "start": 2.682,
+          "end": 2.972
+        },
+        {
+          "w": "and",
+          "start": 3.007,
+          "end": 3.077
+        },
+        {
+          "w": "bloating.",
+          "start": 3.123,
+          "end": 3.901
+        }
+      ]
+    },
+    "D3": {
+      "who": "doctor",
+      "text": "But here's the twist: your stomach was full. Your brain just didn't know yet.",
+      "voiceId": "XrExE9yKIg1WjnnlVkGX",
+      "pitch": 0,
+      "file": "toons/eating-too-fast/voice/D3.mp3",
+      "duration": 4.601,
+      "words": [
+        {
+          "w": "But",
+          "start": 0,
+          "end": 0.174
+        },
+        {
+          "w": "here's",
+          "start": 0.221,
+          "end": 0.43
+        },
+        {
+          "w": "the",
+          "start": 0.464,
+          "end": 0.534
+        },
+        {
+          "w": "twist:",
+          "start": 0.569,
+          "end": 1.08
+        },
+        {
+          "w": "your",
+          "start": 1.231,
+          "end": 1.37
+        },
+        {
+          "w": "stomach",
+          "start": 1.428,
+          "end": 1.788
+        },
+        {
+          "w": "was",
+          "start": 1.823,
+          "end": 1.927
+        },
+        {
+          "w": "full.",
+          "start": 1.997,
+          "end": 2.392
+        },
+        {
+          "w": "Your",
+          "start": 2.728,
+          "end": 2.902
+        },
+        {
+          "w": "brain",
+          "start": 2.949,
+          "end": 3.204
+        },
+        {
+          "w": "just",
+          "start": 3.262,
+          "end": 3.425
+        },
+        {
+          "w": "didn't",
+          "start": 3.46,
+          "end": 3.692
+        },
+        {
+          "w": "know",
+          "start": 3.727,
+          "end": 3.878
+        },
+        {
+          "w": "yet.",
+          "start": 3.936,
+          "end": 4.551
+        }
+      ]
+    },
+    "D4": {
+      "who": "patient",
+      "text": "My brain was late?",
+      "voiceId": "TX3LPaxmHKxFdv7VOQHJ",
+      "pitch": 0,
+      "file": "toons/eating-too-fast/voice/D4.mp3",
+      "duration": 1.257,
+      "words": [
+        {
+          "w": "My",
+          "start": 0,
+          "end": 0.163
+        },
+        {
+          "w": "brain",
+          "start": 0.209,
+          "end": 0.406
+        },
+        {
+          "w": "was",
+          "start": 0.453,
+          "end": 0.557
+        },
+        {
+          "w": "late?",
+          "start": 0.627,
+          "end": 1.207
+        }
+      ]
+    },
+    "D5": {
+      "who": "doctor",
+      "text": "It can take fifteen minutes or more to notice you're full.",
+      "voiceId": "XrExE9yKIg1WjnnlVkGX",
+      "pitch": 0,
+      "file": "toons/eating-too-fast/voice/D5.mp3",
+      "duration": 2.976,
+      "words": [
+        {
+          "w": "It",
+          "start": 0,
+          "end": 0.139
+        },
+        {
+          "w": "can",
+          "start": 0.174,
+          "end": 0.267
+        },
+        {
+          "w": "take",
+          "start": 0.313,
+          "end": 0.499
+        },
+        {
+          "w": "fifteen",
+          "start": 0.546,
+          "end": 0.94
+        },
+        {
+          "w": "minutes",
+          "start": 0.987,
+          "end": 1.231
+        },
+        {
+          "w": "or",
+          "start": 1.265,
+          "end": 1.335
+        },
+        {
+          "w": "more",
+          "start": 1.393,
+          "end": 1.567
+        },
+        {
+          "w": "to",
+          "start": 1.625,
+          "end": 1.695
+        },
+        {
+          "w": "notice",
+          "start": 1.776,
+          "end": 2.043
+        },
+        {
+          "w": "you're",
+          "start": 2.078,
+          "end": 2.229
+        },
+        {
+          "w": "full.",
+          "start": 2.264,
+          "end": 2.926
+        }
+      ]
+    },
+    "D6": {
+      "who": "doctor",
+      "text": "So: same lunch, fifteen minutes, no balloon. Chew well, fork down.",
+      "voiceId": "XrExE9yKIg1WjnnlVkGX",
+      "pitch": 0,
+      "file": "toons/eating-too-fast/voice/D6.mp3",
+      "duration": 4.694,
+      "words": [
+        {
+          "w": "So:",
+          "start": 0,
+          "end": 0.488
+        },
+        {
+          "w": "same",
+          "start": 0.662,
+          "end": 0.917
+        },
+        {
+          "w": "lunch,",
+          "start": 0.952,
+          "end": 1.254
+        },
+        {
+          "w": "fifteen",
+          "start": 1.3,
+          "end": 1.625
+        },
+        {
+          "w": "minutes,",
+          "start": 1.66,
+          "end": 1.95
+        },
+        {
+          "w": "no",
+          "start": 2.009,
+          "end": 2.125
+        },
+        {
+          "w": "balloon.",
+          "start": 2.171,
+          "end": 2.694
+        },
+        {
+          "w": "Chew",
+          "start": 3.088,
+          "end": 3.32
+        },
+        {
+          "w": "well,",
+          "start": 3.355,
+          "end": 3.622
+        },
+        {
+          "w": "fork",
+          "start": 3.669,
+          "end": 3.913
+        },
+        {
+          "w": "down.",
+          "start": 3.982,
+          "end": 4.644
+        }
+      ]
+    },
+    "E1": {
+      "who": "stomach",
+      "text": "Small bites, slowly. No air, and full right on time!",
+      "voiceId": "N2lVS1w4EtoT3dr4eOWO",
+      "pitch": -1,
+      "file": "toons/eating-too-fast/voice/E1.mp3",
+      "duration": 3.954,
+      "words": [
+        {
+          "w": "Small",
+          "start": 0,
+          "end": 0.325
+        },
+        {
+          "w": "bites,",
+          "start": 0.383,
+          "end": 0.801
+        },
+        {
+          "w": "slowly.",
+          "start": 0.859,
+          "end": 1.451
+        },
+        {
+          "w": "No",
+          "start": 1.614,
+          "end": 1.753
+        },
+        {
+          "w": "air,",
+          "start": 1.823,
+          "end": 2.229
+        },
+        {
+          "w": "and",
+          "start": 2.334,
+          "end": 2.485
+        },
+        {
+          "w": "full",
+          "start": 2.543,
+          "end": 2.74
+        },
+        {
+          "w": "right",
+          "start": 2.798,
+          "end": 3.007
+        },
+        {
+          "w": "on",
+          "start": 3.065,
+          "end": 3.158
+        },
+        {
+          "w": "time!",
+          "start": 3.216,
+          "end": 3.901
+        }
+      ]
+    },
+    "E2": {
+      "who": "foodpipe",
+      "text": "Eat too fast? Not this belly. Never again!",
+      "voiceId": "CwhRBWXzGAHq8TQ4Fs17",
+      "pitch": 1,
+      "file": "toons/eating-too-fast/voice/E2.mp3",
+      "duration": 2.687,
+      "words": [
+        {
+          "w": "Eat",
+          "start": 0,
+          "end": 0.186
+        },
+        {
+          "w": "too",
+          "start": 0.221,
+          "end": 0.348
+        },
+        {
+          "w": "fast?",
+          "start": 0.406,
+          "end": 0.848
+        },
+        {
+          "w": "Not",
+          "start": 0.952,
+          "end": 1.126
+        },
+        {
+          "w": "this",
+          "start": 1.161,
+          "end": 1.3
+        },
+        {
+          "w": "belly.",
+          "start": 1.37,
+          "end": 1.683
+        },
+        {
+          "w": "Never",
+          "start": 1.753,
+          "end": 1.985
+        },
+        {
+          "w": "again!",
+          "start": 2.043,
+          "end": 2.647
+        }
+      ]
+    }
+  }
+}

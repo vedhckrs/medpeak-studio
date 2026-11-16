@@ -626,6 +626,14 @@
       "full": 0.6
      },
      "over": 110
+    },
+    {
+     "at": "E2",
+     "word": "belly",
+     "set": {
+      "full": 0.66
+     },
+     "over": 20
     }
    ],
    "props": [
@@ -645,7 +653,7 @@
      "y": 540,
      "size": 230,
      "from": "E1",
-     "word": "time",
+     "word": "air",
      "to": "E1",
      "halo": true
     },
@@ -656,8 +664,7 @@
      "y": 330,
      "size": 320,
      "rot": -4,
-     "from": "E2",
-     "word": "belly"
+     "from": "E2"
     }
    ],
    "lines": [

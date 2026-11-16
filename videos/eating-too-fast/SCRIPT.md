@@ -1,6 +1,6 @@
 # What Happens When You Eat Too Fast
 
-Toon script `eating-too-fast` · about 50 seconds · 5 pictures
+Toon script `eating-too-fast` · about 52 seconds · 5 pictures
 
 ## The hook: choices for the first line
 
@@ -28,26 +28,26 @@ Toon script `eating-too-fast` · about 50 seconds · 5 pictures
 |---|---|---|
 | PASS | Script is valid | 4 scenes, 15 lines, 4 voices |
 | PASS | 1 No intro | hook: "Eat too fast and your belly balloons." |
-| PASS | 2 Promise | starts at 2.5 s (limit 8 s) |
-| PASS | 4 3-sec change | something new appears 32 times in 50 s (a place, a cut, a prop, a change of the stage); the longest wait is 2.9 s (from 29.1 s) |
-| PASS | 5 Twist | twist starts at 57% |
-| PASS | 6 Best last | best point starts at 78% |
+| PASS | 2 Promise | starts at 2.6 s (limit 8 s) |
+| PASS | 4 3-sec change | something new appears 33 times in 52 s (a place, a cut, a prop, a change of the stage); the longest wait is 2.9 s (from 30.4 s) |
+| PASS | 5 Twist | twist starts at 58% |
+| PASS | 6 Best last | best point starts at 76% |
 | PASS | 7 Loop | last line shares 4 key word(s) with the first: eat, too, fast, belly |
 | PASS | Sources on numbers | every number has a source |
 | PASS | Source ids exist | all source ids known |
 | PASS | No banned claims | no cure/miracle/detox claims |
-| PASS | 1 Hook: short, to the viewer, about the title | "Eat too fast and your belly balloons." (7 words, 2.4 s, says "you", says the title's words) |
+| PASS | 1 Hook: short, to the viewer, about the title | "Eat too fast and your belly balloons." (7 words, 2.5 s, says "you", says the title's words) |
 | PASS | 1 Hook: the first frame shows the consequence | the video opens on the tummy with food, full, air already there |
 | PASS | 1 Hook: three choices for the owner | 3 choices, each short, to the viewer and about the title |
-| PASS | 3 Open question | asked at 2.5 s ("Same lunch, no balloon. Want to know how?"), answered at 78% ("So: same lunch, fifteen minutes, no balloon. Chew well, fork down."; shared words: same, lunch, balloon) |
+| PASS | 3 Open question | asked at 2.6 s ("Same lunch, no balloon. Want to know how?"), answered at 76% ("So: same lunch, fifteen minutes, no balloon. Chew well, fork down."; shared words: same, lunch, balloon) |
 | PASS | 3 No counting | the story is told as one chain of cause and effect, not as a numbered list |
-| PASS | Length | 50.1 s (a Short must stay under 60 s; aim for 40-58) |
+| PASS | Length | 51.9 s (a Short must stay under 60 s; aim for 40-58) |
 | PASS | Places | 3 set(s): tummy, home, clinic (at least a body scene and the doctor's office) |
 | PASS | Own rooms | clinic: clinic|mint|tiles|checker|tall@left|garden|exam-bed|stomach|day; home: living|sage|paint|wood|wide@right|city|sofa-left|-|day |
 | PASS | Rooms are unique | no other video has this clinic or this home (compared with 3 other video(s)) |
 | PASS | Voices | 4 speaking characters (3 or more keep it a conversation) |
-| PASS | Doctor explains | Dr. Mira speaks for 34% of the video (15-50%) |
-| PASS | Body scene | body characters speak for 48% of the video (30% or more: they are the show) |
+| PASS | Doctor explains | Dr. Mira speaks for 32% of the video (15-50%) |
+| PASS | Body scene | body characters speak for 49% of the video (30% or more: they are the show) |
 | PASS | Short lines | the longest line is 14 words |
 | PASS | Banter | at most 2 lines in a row by one speaker (3 or fewer) |
 | PASS | Sources are complete | 4 source(s), each with its finding written out |
@@ -63,11 +63,11 @@ Characters: stomach, foodpipe · props: pain, tag, tag, burger, tag, tag, clock,
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
 | 0.0 s | A1 | stomach | sick | Eat too fast and your belly balloons. | ews 24 lock | niddk-gas |
-| 2.5 s | A2 | foodpipe | smug | Same lunch, no balloon. Want to know how? | the scene, locked |  |
-| 5.4 s | A3 | stomach | neutral | Rewind! Five minutes ago, lunch came down in huge gulps. | the scene, locked |  |
-| 8.9 s | A4 | foodpipe | scared | He swallowed so fast, air came down too! | the scene, locked | niddk-gas |
-| 11.8 s | A5 | stomach | scared | I'm stretched tight! Brain, we're full down here! | the scene, locked |  |
-| 14.7 s | A6 | foodpipe | sad | The brain hasn't heard yet. He's reaching for more! | the scene, locked | niddk-portions |
+| 2.6 s | A2 | foodpipe | smug | Same lunch, no balloon. Want to know how? | the scene, locked |  |
+| 5.0 s | A3 | stomach | neutral | Rewind! Five minutes ago, lunch came down in huge gulps. | the scene, locked |  |
+| 9.2 s | A4 | foodpipe | scared | He swallowed so fast, air came down too! | the scene, locked | niddk-gas |
+| 11.9 s | A5 | stomach | scared | I'm stretched tight! Brain, we're full down here! | the scene, locked |  |
+| 15.5 s | A6 | foodpipe | sad | The brain hasn't heard yet. He's reaching for more! | the scene, locked | niddk-portions |
 
 What happens in the picture:
 
@@ -92,7 +92,7 @@ Characters: patient · props: pain
 
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
-| 19.5 s | C1 | patient | sick | Ugh. I'm bloated... and still hungry?! | ews 24 lock |  |
+| 20.2 s | C1 | patient | sick | Ugh. I'm bloated... and still hungry?! | ews 24 lock |  |
 
 What happens in the picture:
 
@@ -105,12 +105,12 @@ Characters: doctor, patient · props: burger, tag, pain, tag, tag, tag, clock, t
 
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
-| 22.0 s | D1 | patient | sick | Doctor, why am I bloated and still hungry? | ews 24 lock |  |
-| 24.8 s | D2 | doctor | neutral | Eat too fast and you swallow air. That means burps and bloating. | the scene, locked | niddk-gas |
-| 29.1 s | D3 | doctor | happy | But here's the twist: your stomach was full. Your brain just didn't know yet. | the scene, locked | niddk-portions |
-| 34.0 s | D4 | patient | shocked | My brain was late? | the scene, locked |  |
-| 35.5 s | D5 | doctor | neutral | It can take fifteen minutes or more to notice you're full. | the scene, locked | niddk-portions |
-| 39.3 s | D6 | doctor | happy | So: same lunch, fifteen minutes, no balloon. Chew well, fork down. | the scene, locked | niddk-portions |
+| 23.5 s | D1 | patient | sick | Doctor, why am I bloated and still hungry? | ews 24 lock |  |
+| 26.3 s | D2 | doctor | neutral | Eat too fast and you swallow air. That means burps and bloating. | the scene, locked | niddk-gas |
+| 30.4 s | D3 | doctor | happy | But here's the twist: your stomach was full. Your brain just didn't know yet. | the scene, locked | niddk-portions |
+| 35.1 s | D4 | patient | shocked | My brain was late? | the scene, locked |  |
+| 36.5 s | D5 | doctor | neutral | It can take fifteen minutes or more to notice you're full. | the scene, locked | niddk-portions |
+| 39.6 s | D6 | doctor | happy | So: same lunch, fifteen minutes, no balloon. Chew well, fork down. | the scene, locked | niddk-portions |
 
 What happens in the picture:
 
@@ -132,15 +132,16 @@ Characters: stomach, foodpipe · props: tag, clock, tag
 
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
-| 43.5 s | E1 | stomach | happy | Small bites, slowly. No air, and full right on time! | ews 24 lock | niddk-portions |
-| 47.0 s | E2 | foodpipe | happy | Eat too fast? Not this belly. Never again! | the scene, locked |  |
+| 44.7 s | E1 | stomach | happy | Small bites, slowly. No air, and full right on time! | ews 24 lock | niddk-portions |
+| 48.8 s | E2 | foodpipe | happy | Eat too fast? Not this belly. Never again! | the scene, locked |  |
 
 What happens in the picture:
 
 - at start: food to 0.7, full to 0.6
+- at E2 ("belly"): full to 0.66
 - at E1: tag "small bites"
-- at E1 ("time"): clock
-- at E2 ("belly"): tag "15 minutes"
+- at E1 ("air"): clock
+- at E2: tag "15 minutes"
 
 ## Sources
 
