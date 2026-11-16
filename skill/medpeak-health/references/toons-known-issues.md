@@ -17,6 +17,7 @@ measures it on every script (they all run in `npm test`).
 | motion | every joint of every person and every organ character's hands, every frame | `npm run toon:motion -- <slug>` |
 | staging | every graphic against every head, the frame, the other graphics and the caption line; everything on a room's wall against the heads in front of it | `npm run toon:staging -- <slug>` |
 | sound | how many effects, how far apart, effects and music against the voice | `npm run toon:sound -- <slug>` |
+| listening | the finished file as a listener gets it: loudness, each planned sound (heard or lost), holes, clipping; each library effect against its description | `npm run toon:listen -- <slug>` / `-- --library` (needs earshot on the machine, toons-listening.md) |
 | upload read-back | what YouTube really stored (privacy, AI-use answer, cover) | printed by `publish/upload.py` |
 
 ## Fixed, with the cause
@@ -69,3 +70,6 @@ of furniture on purpose (a desk, a bed). Neither is checked.
 | g | Sound and motion are judged by measurement only | I cannot hear or watch; the owner's eyes and ears decide | the owner |
 | h | 18 of the 26 character voices have never been heard by the owner | they are not in a video yet | closes as videos are made |
 | i | The YouTube login expires about every 7 days | the Google app is in testing mode | the owner publishes the Google app, or signs in again each week |
+| j | The scene-change sound `whoosh-soft` reads as a kick or a thump, not a whoosh, and is 19 to 25 dB over the bed at every change of place (found by the first listen, 2026-11-16) | the library's effects were never checked against their own descriptions, and nobody read the finished file | a new soft whoosh chosen by measurement, lower in the mix, then an A/B sample for the owner's ear |
+| k | The sound nearly stops between lines (pill 1 long hole, sugar 3, dinner 2; the `bouncy` track itself drops 15 dB for 0.9 s) | the sound check levels the layers on average; nothing looked for holes in the bed or in the finished file | a steadier bed (no rests, a little higher in pauses) and a "no hole of 0.5 s" rule, then an A/B sample for the owner's ear |
+| l | The `gulp` in the pill script sits under a word and is lost (+0.5 dB) | sounds are placed on words by the script; nothing checked they can be made out | move it off the word; `toon:listen` now shows it |

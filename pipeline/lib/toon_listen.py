@@ -25,7 +25,10 @@ def film(job):
     out = {'measure': api.measure(job['file'], light=True)}
     cues = job.get('cues')  # the script's planned sounds: earshot checks a sound really lands on each
     tl = api.timeline(job['file'], cues=cues, detail=job.get('detail', 'normal'))
-    out['timeline'] = {k: tl.get(k) for k in ('duration', 'loudness', 'events', 'sections', 'sync', 'cuts', 'summary') if k in tl}
+    loud = tl.get('loudness') or {}
+    out['timeline'] = {k: tl.get(k) for k in ('duration', 'events', 'sections', 'sync', 'cuts', 'summary') if k in tl}
+    # the loudness curves are long: keep the findings (holes, clipping, the loudest moment)
+    out['timeline']['loudness'] = {k: loud.get(k) for k in ('integrated_lufs', 'true_peak_dbtp', 'lra_lu', 'silences', 'clipping', 'max_momentary', 'max_short_term', 'digital_silence')}
     if job.get('sheet'):
         api.sheet(job['file'], job['sheet'], cues=cues, tl=tl)
         out['sheet'] = job['sheet']

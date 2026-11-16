@@ -33,8 +33,10 @@ import {layoutToon, soundPlan, TOON_FPS} from '../src/toons/director.ts';
 
 /** earshot's own Python (uv keeps each tool in its own environment). */
 const PY = [process.env.EARSHOT_PYTHON, path.join(os.homedir(), '.local', 'share', 'uv', 'tools', 'earshot', 'bin', 'python')].filter(Boolean).find((p) => fs.existsSync(p));
-/** How near a heard sound must be to a planned one to count as that sound, in seconds. */
-export const NEAR = 0.2;
+/** A rough reading of how far a sound stands out over what is already sounding (dB). Ours, not earshot's: a guide for where to look. */
+export const HEARD = {clear: 6, soft: 3};
+/** A near-silent stretch this long (s) is heard as the sound cutting out. */
+export const HOLE = 0.5;
 
 const run = (job) => {
   if (!PY) { console.error('earshot is not installed on this machine. See the install lines at the top of pipeline/toon-listen.mjs.'); process.exit(2); }
@@ -46,7 +48,8 @@ const run = (job) => {
   return readJson(out);
 };
 const s1 = (n) => (n === null || n === undefined ? '?' : Number(n).toFixed(1));
-const tagOf = (e) => e?.tag ?? e?.label ?? e?.tags?.[0]?.term ?? e?.tags?.[0] ?? '';
+/** earshot's nearest plain descriptions of a sound, from its own summary line. */
+const likeOf = (it) => ((it.describe?.summary ?? '').match(/Sounds most like: (.*?)(?: \[|\. )/)?.[1] ?? '').split(', ').slice(0, 2).join('; ').replace(/ \(z [^)]*\)/g, '');
 
 const a = args();
 if (a.library) {
@@ -62,7 +65,7 @@ if (a.library) {
     const v = it.match?.verdict ?? '?';
     const ok = /strong|plausible/.test(v);
     if (!ok) weak.push(it.name);
-    console.log(`  ${ok ? 'ok   ' : 'WEAK '} ${it.name.padEnd(20)} ${String(v).padEnd(10)} z ${s1(it.match?.z).padStart(5)}   hears: ${(it.describe?.tags ?? []).slice(0, 2).map((t) => t.term ?? t).join('; ')}`);
+    console.log(`  ${ok ? 'ok   ' : 'WEAK '} ${it.name.padEnd(20)} ${String(v).padEnd(10)} z ${s1(it.match?.z).padStart(5)}   hears: ${likeOf(it)}`);
   }
   console.log(weak.length ? `\n${weak.length} effect(s) do not sound like their description: ${weak.join(', ')}. Do not use them until they are re-made or the owner has heard them.` : '\nEvery effect sounds like its description.');
   process.exit(0);
@@ -81,18 +84,29 @@ fs.mkdirSync(outDir, {recursive: true});
 console.log(`Listening to ${path.relative(ROOT, file)} (the models take about half a minute to load)...`);
 const r = run({mode: 'film', file, sheet: path.join(outDir, 'sheet.png'), cues: {events: plan.map((p) => ({t: Number(p.t.toFixed(3)), kind: 'sfx', id: p.name}))}});
 const events = r.timeline?.events ?? [];
-const timeOf = (e) => e.t ?? e.time ?? e.start ?? 0;
-const heard = plan.map((p) => { const near = events.map((e) => ({e, d: timeOf(e) - p.t})).filter((x) => Math.abs(x.d) <= NEAR).sort((x, y) => Math.abs(x.d) - Math.abs(y.d))[0]; return {...p, heardAt: near ? timeOf(near.e) : null, offsetMs: near ? Math.round(near.d * 1000) : null, sounds: near ? tagOf(near.e) : null, level: near?.e.level ?? near?.e.lufs ?? near?.e.db ?? null}; });
-const planned = (t) => plan.some((p) => Math.abs(p.t - t) <= NEAR);
-const report = {slug, file: path.relative(ROOT, file), seconds: L.total / TOON_FPS, measure: r.measure, planned: heard, unplanned: events.filter((e) => !planned(timeOf(e))).map((e) => ({t: timeOf(e), sounds: tagOf(e), level: e.level ?? null})), sync: r.timeline?.sync ?? null, cuts: r.timeline?.cuts ?? [], summary: r.timeline?.summary ?? null, sheet: path.relative(ROOT, r.sheet ?? '')};
+const loud = r.timeline?.loudness ?? {};
+// earshot was given the planned sounds as cues: for each one, is there a new sound right there, and how far does it stand out?
+const cues = r.timeline?.sync?.cues?.items ?? [];
+const planned = plan.map((p, i) => {
+  const c = cues[i] ?? {};
+  const over = c.event_prominence_db ?? null; // dB over what is already sounding at that moment
+  const found = c.status === 'OK' || c.status === 'near' || c.status === 'peak';
+  return {...p, status: c.status ?? 'none', offsetMs: c.offset_ms ?? null, overDb: over, reading: !found ? 'no new sound there' : over === null ? 'a level rise only' : over >= HEARD.clear ? 'stands out' : over >= HEARD.soft ? 'soft' : 'lost under the voice or the music'};
+});
+const holes = (loud.silences ?? []).map((h) => ({start: h.start, seconds: h.dur, lufs: h.level_lufs}));
+const sections = (r.timeline?.sections ?? []).map((x) => ({from: x.start, to: x.end, music: [x.music_genre?.[0]?.tag, x.music_mood?.[0]?.tag].filter(Boolean).join('; ')}));
+const report = {slug, file: path.relative(ROOT, file), seconds: L.total / TOON_FPS, measure: r.measure, planned, holes, clipping: loud.clipping ?? null, loudest: loud.max_momentary ?? null, sections, cutsSync: r.timeline?.sync?.cuts ?? null, summary: r.timeline?.summary ?? null, sheet: path.relative(ROOT, r.sheet ?? '')};
 writeJson(path.join(outDir, 'report.json'), {...report, events});
 
 const m = r.measure ?? {};
 console.log(`\nLISTEN  ${toon.title}  (${report.seconds.toFixed(1)} s)`);
 console.log(`  loudness ${s1(m.lufs)} LUFS, true peak ${s1(m.true_peak_dbtp)} dBTP${m.lra_lu !== undefined ? `, range ${s1(m.lra_lu)} LU` : ''}`);
-const got = heard.filter((h) => h.heardAt !== null);
-console.log(`  planned sounds that can be heard: ${got.length} of ${heard.length}`);
-for (const h of heard) console.log(`     ${h.t.toFixed(1).padStart(5)} s  ${h.name.padEnd(18)} ${h.heardAt === null ? 'NOT HEARD (too quiet, or covered by a voice)' : `heard ${h.offsetMs >= 0 ? '+' : ''}${h.offsetMs} ms${h.sounds ? `, sounds like: ${h.sounds}` : ''}`}`);
-console.log(`  other sound events (voices and music count here): ${report.unplanned.length}`);
-if (typeof report.summary === 'string') console.log(`\n${report.summary}`);
+const lost = planned.filter((p) => p.reading !== 'stands out' && p.reading !== 'soft');
+console.log(`  planned sounds: ${planned.length - lost.length} of ${planned.length} can be made out (a rough reading: ${HEARD.clear} dB over what is already sounding = stands out, ${HEARD.soft} dB = soft)`);
+for (const p of planned) console.log(`     ${p.t.toFixed(1).padStart(5)} s  ${p.name.padEnd(18)} ${p.reading.padEnd(34)} ${p.overDb === null ? '' : `${p.overDb >= 0 ? '+' : ''}${s1(p.overDb)} dB`}${p.offsetMs === null ? '' : `, ${p.offsetMs >= 0 ? '+' : ''}${p.offsetMs} ms`}`);
+const long = holes.filter((h) => h.seconds >= HOLE);
+console.log(`  holes (the sound nearly stops): ${holes.length ? holes.map((h) => `${h.start.toFixed(1)} s for ${h.seconds.toFixed(1)} s`).join(', ') : 'none'}${long.length ? `   <- ${long.length} long enough to hear as the sound cutting out: check the music bed there` : ''}`);
+if (report.clipping?.samples) console.log(`  CLIPPING: ${report.clipping.samples} samples`);
+for (const x of sections) if (x.music) console.log(`  the music from ${x.from.toFixed(0)} to ${x.to.toFixed(0)} s reads as: ${x.music} (a hint, not a fact)`);
+if (typeof report.summary === 'string') console.log(`\n  earshot's own words:\n  ${report.summary}`);
 console.log(`\n  sheet: ${report.sheet}\n  report: ${path.relative(ROOT, path.join(outDir, 'report.json'))}`);
