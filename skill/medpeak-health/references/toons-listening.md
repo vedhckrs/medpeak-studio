@@ -67,6 +67,20 @@ used in a script until it has been made again or the owner has heard it and said
 None of this was visible to the sound check, which counts and levels the layers but never read
 the finished file. Fixes are open in `toons-known-issues.md`.
 
+## What was changed, and the second listen (2026-11-17, pill video)
+| | First listen | After the fixes, playful bed (`panic`) | After, calm bed (`doctor`) |
+|---|---|---|---|
+| Loudness | -14.0 LUFS, peak -0.9 | -14.0 LUFS, peak -0.8 | -14.0 LUFS, peak -0.9 |
+| Holes of 0.5 s or more | 1 (0.8 s at the time card) | none | none |
+| Planned sounds made out | 6 of 7 (the gulp lost) | 6 of 6 | 6 of 6 |
+| Scene-change sound | a thump ("a kick drum") | a soft whoosh, +9 and +17 dB over the bed | a soft whoosh, +9 and +21 dB |
+- A middle try (the stop-start bed `bouncy`, started 1.5 s in so its rests fell under words) still
+  had a 0.7 s hole: a spoken word does not fill a rest in the music. Hence the rule "only steady beds".
+- The whoosh still stands 17 to 21 dB over the bed at a new place. It is a soft sound now and its
+  level is `SOUND.whoosh` in director.ts; whether it is quiet enough is for the owner's ear.
+- Both samples went to the owner (`renders/after-playful-bed.mp4`, `after-calm-bed.mp4`; the old
+  mix is `before-sound-fix.mp4`). The scripts use `panic` until the owner says which they prefer.
+
 ## What it does not do
 - It does not watch motion. Motion is still measured frame by frame (`toon:camera`, `toon:motion`).
 - It does not judge the voices' acting or whether a voice suits a character.
