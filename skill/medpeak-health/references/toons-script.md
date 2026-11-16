@@ -191,8 +191,8 @@ It writes `videos/<slug>/package/toon.json` (what `publish/upload.py <slug> toon
 same for a person, with a checklist) and `renders/toon-cover.jpg`. The description lists the
 sources, the subscribe line, the question and the disclaimer. It says nothing about how the video
 is made: the owner does not want a line about code or AI voices in a description (2026-11-16:
-"i dont want to give this reveal"). Uploads stay private, labelled as synthetic media, not made for
-kids, and only happen after the owner's yes.
+"i dont want to give this reveal"). Uploads stay private, not made for kids, with YouTube's "AI use"
+question left unanswered (SKILL.md rule 4), and only happen after the owner's yes.
 
 ## The first three scripts (all in the steady style since 2026-11-16)
 | Script | Stage | Story |

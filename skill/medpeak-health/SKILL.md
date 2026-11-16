@@ -23,7 +23,13 @@ The owner is not technical: run everything yourself, explain in plain words, nev
    source's `note`. Never round a number into a different claim (2.75x is "nearly three times", not
    "three times"); prediabetes is not diabetes. See `references/medical-accuracy.md`.
 4. **Nothing goes public on its own.** Uploads are private or scheduled (`--publish-at`); public only
-   when the owner says so. Every upload is labelled as AI/synthetic media and not made for kids.
+   when the owner says so. Every upload is marked not made for kids.
+   **Say nothing about how the videos are made** (owner, 2026-11-16): no line about code or AI
+   voices in a title, description, comment or cover, and YouTube's "AI use" question is left
+   unanswered. That is in line with YouTube's own four cases only while a video has none of them:
+   a real person made to say or do something, altered footage of a real event or place, a
+   realistic-looking scene that did not happen, AI music as the main focus. If a video ever has one,
+   stop and tell the owner before uploading: YouTube requires "Yes" there.
 5. **Git hygiene.** New work on a branch (`feat/...`, `video/<slug>`, `fix/...`), small commits, push,
    open a PR, merge after the owner's OK. Renders, audio and clips never go in git (see `.gitignore`).
 
