@@ -142,8 +142,7 @@
      "set": {
       "tilt": 1
      },
-     "over": 34,
-     "sfx": "slide-whistle-down"
+     "over": 34
     },
     {
      "at": "A4",
@@ -160,8 +159,7 @@
      "set": {
       "valve": 1
      },
-     "over": 18,
-     "sfx": "spring-bounce"
+     "over": 18
     },
     {
      "at": "A6",
@@ -178,8 +176,7 @@
       "burn": 1
      },
      "over": 10,
-     "fx": "flash",
-     "sfx": "gasp"
+     "fx": "flash"
     }
    ],
    "props": [
@@ -367,7 +364,8 @@
      "y": 930,
      "size": 170,
      "from": "C1",
-     "word": "chest"
+     "word": "chest",
+     "on": "patient"
     }
    ],
    "lines": [
@@ -388,12 +386,12 @@
     {
      "who": "doctor",
      "x": 285,
-     "size": 1040
+     "size": 940
     },
     {
      "who": "patient",
      "x": 805,
-     "size": 1000,
+     "size": 900,
      "emotion": "sick",
      "pose": "heart"
     }
@@ -422,17 +420,18 @@
     {
      "kind": "pain",
      "x": 790,
-     "y": 900,
+     "y": 960,
      "size": 150,
      "from": "D2",
      "word": "acid",
-     "to": "D2"
+     "to": "D2",
+     "on": "patient"
     },
     {
      "kind": "tag",
      "text": "the twist",
-     "x": 250,
-     "y": 240,
+     "x": 800,
+     "y": 330,
      "size": 320,
      "rot": -4,
      "from": "D3",
@@ -440,13 +439,12 @@
     },
     {
      "kind": "valve",
-     "x": 600,
-     "y": 470,
-     "size": 340,
+     "size": 300,
      "from": "D3",
      "word": "door",
      "to": "D3",
-     "bubble": true
+     "bubble": true,
+     "of": "doctor"
     },
     {
      "kind": "tag",
@@ -619,8 +617,7 @@
      "set": {
       "tilt": 1
      },
-     "over": 34,
-     "sfx": "slide-whistle-down"
+     "over": 34
     }
    ],
    "props": [

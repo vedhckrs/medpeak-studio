@@ -12,7 +12,7 @@ import {AbsoluteFill, Audio, Sequence, interpolate, random, staticFile, useCurre
 import type {Act, CharProps} from './blueprint';
 import {BLUEPRINTS, CAST, type CastName} from './characters';
 import {Camera, type Cam, CAM0, clampCam, H, LENSES, W} from './camera';
-import {AUTO_SFX, EMO_SFX, frameOf, GAP, layoutToon, type LensName, type MoveName, parseCam, type Placed, propFrames, type Seg, SEG, type SetName, type ShotName, stateAt, type Toon, type ToonActor, type ToonLine, type ToonShot, type ToonTimings, TOON_FPS} from './director';
+import {frameOf, GAP, layoutToon, type LensName, type MoveName, parseCam, type Placed, propFrames, type Seg, SEG, type SetName, type ShotName, stateAt, type Toon, type ToonActor, type ToonLine, type ToonShot, type ToonTimings, TOON_FPS, propReach, type ToonProp, bedAt, soundPlan} from './director';
 import {PEOPLE, skeleton, SPECS, jointsOf} from './humans';
 import {Grain} from './ink';
 import {clamp01, E, kick, lerp, lipsync, ramp, settle, type SpokenWord} from './motion';
@@ -20,7 +20,7 @@ import {blendPose, POSES, type PoseName} from './poses';
 import {Prop} from './props';
 import {armOf, blinkAt, type ArmSpec, type Emotion} from './rig';
 import {FLOORS, FORES, OfficeDesk, SETS, WordCaption} from './scenes';
-import {STAGE_SPOTS, type StageFace} from './stages';
+import {STAGE_SPOTS, type StageFace, stageSpotsAt} from './stages';
 import {theme} from '../brand/theme';
 import {Hold, Slot} from './stage';
 
@@ -269,6 +269,40 @@ const acting = (a: ToonActor, shot: ToonShot, lines: Placed[], f: number, cur: P
   return {emotion, emotionFrom, talk, blink, arms, act, squash, look: {x: lookX, y: (a.stage ? up * 0.7 : mood('nod') * 0.3) * (1 - glance)}};
 };
 
+/** The part of the picture a character's head takes up (hair included for people), in screen pixels. `state` = the stage's state (its own characters move with it); null = not in the picture. */
+export const headBox = (a: ToonActor, set: SetName, state?: Record<string, number>) => {
+  let sp = place(a, set);
+  if (a.stage && state) {
+    const live = stageSpotsAt(set, state)[a.who];
+    if (live === null) return null;
+    if (live) sp = {...sp, faceX: live.x, faceY: live.y, faceW: live.faceW, headH: live.headH};
+  }
+  const k = sp.person ? [0.82, 0.86, 0.62] : [0.62, 0.6, 0.6]; // half-width, up, down, in face widths / head heights
+  return {who: a.who, x0: sp.faceX - sp.faceW * k[0], x1: sp.faceX + sp.faceW * k[0], y0: sp.faceY - sp.headH * k[1], y1: sp.faceY + sp.headH * k[2], cx: sp.faceX, cy: sp.faceY};
+};
+/**
+ * Where a prop is drawn. A thought bubble with `of` sits above its owner's head, toward the middle
+ * of the picture, inside the frame, with its tail toward the owner (`flip` mirrors the cloud when the
+ * owner stands on the right). A mark with `on: "bubble"` rides on the bubble before it. Everything
+ * else stays where the script put it.
+ */
+export const propSpot = (p: ToonProp, shot: ToonShot): {x: number; y: number; flip: boolean} => {
+  if (p.on === 'bubble') {
+    const all = shot.props ?? [];
+    const host = all.slice(0, all.indexOf(p)).reverse().find((q) => q.bubble);
+    if (host) { const h = propSpot(host, shot); return {x: h.x + (p.dx ?? 0), y: h.y + (p.dy ?? 0), flip: false}; }
+  }
+  const owner = p.of ? shot.cast.find((a) => a.who === p.of) : undefined;
+  const hb = owner ? headBox(owner, shot.set) : null;
+  if (!hb) return {x: p.x ?? W / 2, y: p.y ?? H / 2, flip: false};
+  const u = p.size / 200;
+  const [l, up, r, down] = propReach(p).map((v) => v * u);
+  const right = hb.cx > W / 2; // the owner stands on the right: the cloud goes up-left of them
+  const x = Math.max(l + 24, Math.min(W - r - 24, right ? hb.x0 + l * 0.2 : hb.x1 - l * 0.2));
+  const y = Math.max(up + 130, hb.y0 - down - 12); // above the head, below the top edge that the app's own buttons use
+  return {x, y, flip: right};
+};
+
 /** How a character comes into its scene on frame `n` of the scene: an offset, a step phase, a scale. */
 const entrance = (a: ToonActor, n: number) => {
   let dx = 0;
@@ -412,25 +446,8 @@ export const ToonPlayer: React.FC<ToonProps> = ({toon, timings, sfx, music, bare
 
   // ---- sound
   const has = (n: string | undefined): n is string => !!n && sfx.includes(n);
-  const events: {at: number; name: string; vol: number}[] = [];
-  for (const s of L.shots) if (s.from > 0) events.push({at: s.from, name: s.shot.card ? 'record-scratch' : 'whoosh-soft', vol: s.shot.card ? 0.38 : 0.45});
-  L.shots.forEach((s, i) => { for (const e of s.shot.events ?? []) if (e.sfx) events.push({at: frameOf(L, i, e.at, e.word, e.delay), name: e.sfx, vol: 0.55}); });
-  for (const l of L.lines) {
-    const n = l.line.sfx ?? EMO_SFX[l.line.emotion ?? 'neutral'];
-    if (n) events.push({at: l.from, name: n, vol: 0.5});
-    const kf = keyFrame(l);
-    if (kf !== null) events.push({at: kf, name: 'caption-pop', vol: 0.3});
-  }
-  L.shots.forEach((s, i) => { for (const p of s.shot.props ?? []) { const [at] = propFrames(L, i, p); if (at > s.from) events.push({at, name: 'pop', vol: 0.45}); } });
-  for (const s of L.segs) {
-    if (s.whip) events.push({at: s.from, name: 'whoosh-fast', vol: 0.4});
-    else if (s.from !== s.line.from) events.push({at: s.from, name: 'swish', vol: 0.22});
-  }
-  const talking = (fr: number) => L.lines.some((l) => fr >= l.from && fr < l.from + l.frames - Math.round(GAP * TOON_FPS));
-  // music sits about 9 dB under the voice (the level measured on the reference Shorts) and comes up a little in the gaps;
-  // the move is smoothed over half a second so it never pumps
-  const duck = (fr: number) => { let n = 0; for (let i = -7; i <= 7; i++) n += talking(fr + i) ? 1 : 0; return n / 15; };
-  const bed = (fr: number) => (0.6 - 0.16 * duck(fr)) * interpolate(fr, [0, 12], [0, 1], {extrapolateRight: 'clamp'}) * interpolate(fr, [L.total - 24, L.total], [1, 0], {extrapolateLeft: 'clamp'});
+  const events = soundPlan(L); // a few story sounds, kept apart and well under the voice (director.ts, "a calm mix")
+  const bed = (fr: number) => bedAt(L, fr);
 
   return (
     <AbsoluteFill style={{background: '#1d1430'}}>
@@ -443,9 +460,10 @@ export const ToonPlayer: React.FC<ToonProps> = ({toon, timings, sfx, music, bare
             const [a, end] = propFrames(L, si, p);
             if (f < a || f >= end) return null;
             const k = Math.min(E.back(clamp01((f - a) / 9)), clamp01((end - f) / 5));
+            const spot = propSpot(p, shot);
             return (
-              <Slot key={i} x={p.x} y={p.y} size={p.size}>
-                <g transform={`rotate(${(p.rot ?? 0) + kick(f, a, 4, 0.9, 0.3)}) scale(${k.toFixed(3)})`}><Prop kind={p.kind} t={f / TOON_FPS} halo={p.halo} bubble={p.bubble} no={p.no} text={p.text} /></g>
+              <Slot key={i} x={spot.x} y={spot.y} size={p.size}>
+                <g transform={`rotate(${(p.rot ?? 0) + kick(f, a, 4, 0.9, 0.3)}) scale(${k.toFixed(3)})`}><Prop kind={p.kind} t={f / TOON_FPS} halo={p.halo} bubble={p.bubble} no={p.no} text={p.text} flip={spot.flip} /></g>
               </Slot>
             );
           })}

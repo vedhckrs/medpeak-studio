@@ -11,7 +11,9 @@ import {scanCamera} from '../lib/toon-camera.mjs';
 import {LIMITS, scanMotion} from '../lib/toon-motion.mjs';
 import {blendPose, POSES} from '../../src/toons/poses.ts';
 import {checkRoom, roomsClash, roomSignature} from '../../src/toons/director.ts';
-import {AUTO_SFX, changesOf, EMO_SFX, frameOf, layoutToon, longestStill, parseCam, stateAt, TOON_FPS} from '../../src/toons/director.ts';
+import {AUTO_SFX, changesOf, frameOf, layoutToon, longestStill, parseCam, SOUND, soundPlan, stateAt, TOON_FPS} from '../../src/toons/director.ts';
+import {scanStaging} from '../lib/toon-staging.mjs';
+import {checkSound} from '../lib/toon-sound.mjs';
 
 const EMOTIONS = ['neutral', 'happy', 'angry', 'scared', 'smug', 'sick', 'sleepy', 'shocked', 'sad'];
 const cast = loadCast();
@@ -36,7 +38,7 @@ test('every Toons character has one fixed voice', () => {
 test('the sound-effect library has every sound the player can ask for', () => {
   const names = new Set(LIBRARY.map(([n]) => n));
   assert.equal(names.size, LIBRARY.length, 'duplicate effect name');
-  for (const n of [...Object.values(EMO_SFX), ...AUTO_SFX]) assert.ok(names.has(n), `missing effect ${n}`);
+  for (const n of AUTO_SFX) assert.ok(names.has(n), `missing effect ${n}`);
   for (const [n, d, prompt] of LIBRARY) {
     assert.ok(d >= 0.3 && d <= 2, `${n} length`);
     assert.ok(prompt.length > 12, `${n} prompt`);
@@ -323,4 +325,47 @@ test('every real script carries an upload package that follows the channel rules
     const L = layoutToon(t, null);
     assert.ok(p.cover.at * TOON_FPS < L.total, `${t.slug}: the cover moment is inside the video`);
   }
+});
+
+// ---------------------------------------------------------------- no graphic on a face (owner: "this bubble comes [over the] doctor face")
+test('no bubble, tag or object covers a head, leaves the picture or sits on another, on any real script', async () => {
+  for (const t of real) {
+    const r = await scanStaging(t, null);
+    assert.ok(r.graphics >= 10, `${t.slug}: graphics were measured`);
+    assert.deepEqual(r.onHeads, [], `${t.slug}: a graphic on a head`);
+    assert.deepEqual(r.outside, [], `${t.slug}: a graphic out of the picture`);
+    assert.deepEqual(r.stacked, [], `${t.slug}: graphics on each other`);
+  }
+});
+
+test('the staging check catches a bubble put on the doctor, and a thought bubble with "of" clears every head', async () => {
+  const t = clone(real.find((x) => x.shots.some((s) => (s.props ?? []).some((p) => p.bubble))));
+  const shot = t.shots.find((s) => (s.props ?? []).some((p) => p.bubble));
+  const b = shot.props.find((p) => p.bubble);
+  assert.equal(b.of, 'doctor', 'the real scripts let the bubble place itself');
+  delete b.of;
+  Object.assign(b, {x: 560, y: 400, size: 360}); // where the first videos had it
+  const r = await scanStaging(t, null);
+  assert.ok(r.onHeads.some((x) => x.includes('doctor')), 'a bubble over the doctor is reported');
+});
+
+// ---------------------------------------------------------------- a calm mix (owner: "too loud and poor sound")
+test('a Toon has few sound effects, kept apart, and no automatic sound on moods, key words or graphics', () => {
+  for (const t of real) {
+    const L = layoutToon(t, null);
+    const plan = soundPlan(L);
+    const story = t.shots.flatMap((s) => (s.events ?? []).filter((e) => e.sfx)).length + t.shots.flatMap((s) => s.lines ?? []).filter((l) => l.sfx).length;
+    const places = t.shots.length - 1;
+    assert.ok(plan.length <= story + places, `${t.slug}: ${plan.length} sounds, only the script's ${story} story sounds and the changes of place`);
+    assert.ok((plan.length / (L.total / TOON_FPS)) * 60 <= SOUND.perMinute, `${t.slug}: ${plan.length} sounds`);
+    plan.slice(1).forEach((e, i) => assert.ok((e.at - plan[i].at) / TOON_FPS >= SOUND.minGap - 0.01, `${t.slug}: two sounds too close at ${(e.at / TOON_FPS).toFixed(1)} s`));
+    assert.ok(plan.every((e) => e.vol <= 0.25), `${t.slug}: every effect well under the voice`);
+    const r = checkSound(t, null);
+    assert.deepEqual(r.results.filter((x) => !x.pass).map((x) => x.point), [], `${t.slug}: sound check`);
+  }
+  // a script that asks for a sound on every line does not get them all: they are kept apart
+  const t = clone(real[0]);
+  for (const l of t.shots.flatMap((s) => s.lines ?? [])) l.sfx = 'pop';
+  const crowded = checkSound(t, null);
+  assert.ok(!crowded.ok, 'a sound on every line fails the check');
 });

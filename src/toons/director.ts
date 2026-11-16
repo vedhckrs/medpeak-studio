@@ -9,7 +9,7 @@ export const GAP = 0.14; // seconds of air between lines (fast banter)
 export const SHOT_GAP = 0.25;
 export const SEG = 78; // frames: the usual longest stretch of one picture (2.6 s)
 export const SEG_MAX = SEG + 10; // a line that ends within 2.9 s keeps its one picture
-export const WPS = 2.8; // words a second, the pace measured on the reference Shorts
+export const WPS = 2.94; // words a second, pauses included: measured on our own 47 voiced lines (386 words in 131.4 s)
 
 export const SET_NAMES = ['throat', 'gut', 'stomach', 'mouth', 'blood', 'lungs', 'office', 'bathroom', 'bedroom', 'foodpipe', 'tooth', 'tummy', 'clinic', 'home'] as const;
 export type SetName = (typeof SET_NAMES)[number];
@@ -143,8 +143,13 @@ export type ToonActor = {who: string; x: number; size: number; y?: number; rot?:
  * An object or graphic shown in the scene. `from` / `to` = the line ids it appears on and leaves
  * after; `word` = appear on that word of the `from` line. `halo` = a glowing disc behind it;
  * `bubble` = inside a thought bubble; `no` = a red "not this" sign over it; `text` = the words on a chip or a tag.
+ * `of` = whose thought it is: the player then puts the bubble above that character's head, clear of
+ * every face, with its tail toward them (x and y are then not needed). A graphic never covers a face.
+ * `on` = it is drawn ON something on purpose: a character's name (a pain mark on a cheek or a chest), or
+ * "bubble" (a mark on the picture inside the thought bubble before it; then `dx`, `dy` place it from the
+ * bubble's centre and it follows wherever the bubble goes).
  */
-export type ToonProp = {kind: PropName; x: number; y: number; size: number; rot?: number; from?: string; to?: string; word?: string; halo?: boolean; bubble?: boolean; no?: boolean; text?: string};
+export type ToonProp = {kind: PropName; x?: number; y?: number; size: number; rot?: number; from?: string; to?: string; word?: string; halo?: boolean; bubble?: boolean; no?: boolean; text?: string; of?: string; on?: string; dx?: number; dy?: number};
 /**
  * Something that happens in the picture: at line `at` (optionally on a `word` of it, plus `delay`
  * seconds) the stage's state moves to `set` over `over` frames, a sound plays, an effect flashes.
@@ -167,10 +172,19 @@ export type ToonSource = {id: string; label: string; url: string; note: string};
 export type Toon = {slug: string; title: string; test?: boolean; music?: string; camera?: 'steady' | 'cinematic'; episode?: number; rooms?: Partial<Record<RoomRole, RoomLook>>; retention?: ToonRetention; shots: ToonShot[]; sources?: ToonSource[]};
 export type ToonTimings = {lines: Record<string, {file: string; duration: number; words: SpokenWord[]}>};
 
-/** The sound that marks a line's mood when the script names none. */
-export const EMO_SFX: Partial<Record<Emotion, string>> = {shocked: 'boing', scared: 'wobble', angry: 'thud-soft', happy: 'ding', smug: 'slide-whistle-up', sick: 'gurgle-stomach', sad: 'sad-trombone'};
-/** Sounds the player places on its own (scene change, cut, whip pan, key word). */
-export const AUTO_SFX = ['whoosh-soft', 'swish', 'whoosh-fast', 'caption-pop', 'pop', 'record-scratch'];
+/** How far a graphic reaches from its centre, in prop units (200 units = its `size`): [left, up, right, down]. A bubble's tail is not counted. */
+export const propReach = (p: ToonProp): [number, number, number, number] => {
+  if (p.bubble) return [124, 118, 132, 104];
+  if (p.halo) return [104, 104, 104, 104];
+  if (p.no) return [92, 92, 92, 92];
+  if (p.kind === 'tag') { const w = Math.max(70, (p.text ?? '').length * 19 + 34) / 2; return [w, 28, w, 24]; }
+  if (p.kind === 'chip') return [77, 77, 77, 80];
+  if (p.kind === 'pain') return [80, 80, 84, 82];
+  return [62, 84, 62, 84];
+};
+
+/** Sounds the player places on its own: a soft whoosh for a new place or a time card, a swish for a cut inside a scene. */
+export const AUTO_SFX = ['whoosh-soft', 'swish', 'whoosh-fast'];
 /** The director's default picture for each mood: shot size, lens, move. */
 export const EMO_CAM: Record<Emotion, [ShotName, LensName, MoveName]> = {
   neutral: ['mcu', '50', 'push'], happy: ['ms', '35', 'static'], angry: ['low', '35', 'push'], scared: ['cu', '85', 'dutch'],
@@ -226,7 +240,7 @@ export const parseCam = (s: string | undefined): {shot?: ShotName; lens?: LensNa
 
 /** How long a line lasts in seconds: the real voice when it exists, else an estimate from the word count. */
 export const lineSeconds = (line: ToonLine, timings: ToonTimings | null) =>
-  timings?.lines[line.id]?.duration ?? Math.max(1, line.text.split(/\s+/).filter(Boolean).length / WPS + 0.35);
+  timings?.lines[line.id]?.duration ?? Math.max(0.9, line.text.split(/\s+/).filter(Boolean).length / WPS);
 
 /** Lay a script out in time and let the director choose every picture. */
 export const layoutToon = (toon: Toon, timings: ToonTimings | null) => {
@@ -419,4 +433,55 @@ export const longestStill = (L: Layout) => {
     if (g > worst.seconds) worst = {seconds: g, from: times[i - 1] / TOON_FPS, to: times[i] / TOON_FPS};
   }
   return {...worst, changes: c.length};
+};
+
+// ------------------------------------------------------------------ sound: a calm mix
+// Owner, 2026-11-16, on the first three videos: "sound design not proper, too loud and poor sound,
+// don't match my style". The first mix put a sound on every mood, every key word and every graphic:
+// about 60 effects in 46 seconds, several at the same instant. The channel's own best videos,
+// measured, are the opposite: steady narration over a constant music bed and almost no effects.
+// So: a few STORY sounds that the script asks for, well under the voice, never on top of each other,
+// and the music steady underneath.
+export const SOUND = {
+  effect: 0.2, // a story sound (a plop, a sizzle): about 14 dB under a voice peak
+  whoosh: 0.12, // a new place or a time card
+  cut: 0.09, // a cut inside a scene
+  bed: 0.56, // the music between lines: present and steady, as on the channel's own videos
+  bedUnderVoice: 0.48, // ...and under a voice: a small, slow dip, never a pump
+  minGap: 0.7, // seconds: two sounds never start closer than this
+  perMinute: 12, // the most sounds a minute of video may have
+};
+export type SoundEvent = {at: number; name: string; vol: number; why: string; rank: number};
+/** Every sound effect of a Toon, in time order. A sound that would start within `minGap` of another loses to the more important one (story sound > new place > cut). */
+export const soundPlan = (L: Layout): SoundEvent[] => {
+  const all: SoundEvent[] = [];
+  L.shots.forEach((s, i) => {
+    const afterCard = i > 0 && L.shots[i - 1].shot.card !== undefined; // the card's own whoosh carries the jump in time
+    if (s.from > 0 && !afterCard) all.push({at: s.from, name: 'whoosh-soft', vol: SOUND.whoosh, why: s.shot.card !== undefined ? 'time card' : `new place (${s.shot.id})`, rank: 1});
+    for (const e of s.shot.events ?? []) if (e.sfx) all.push({at: frameOf(L, i, e.at, e.word, e.delay), name: e.sfx, vol: SOUND.effect, why: `scene ${s.shot.id}: ${e.set ? Object.keys(e.set).join('+') : 'event'}`, rank: 2});
+  });
+  for (const l of L.lines) if (l.line.sfx) all.push({at: l.from, name: l.line.sfx, vol: SOUND.effect, why: `line ${l.line.id}`, rank: 2});
+  for (const g of L.segs) {
+    if (L.shots.some((sh) => sh.from === g.from)) continue;
+    if (g.whip) all.push({at: g.from, name: 'whoosh-fast', vol: SOUND.whoosh, why: 'whip pan', rank: 1});
+    else if (g.from !== g.line.from || L.steady) all.push({at: g.from, name: 'swish', vol: SOUND.cut, why: 'cut', rank: 0});
+  }
+  all.sort((a, b) => a.at - b.at || b.rank - a.rank);
+  const gap = Math.round(SOUND.minGap * TOON_FPS);
+  const kept: SoundEvent[] = [];
+  for (const e of all) {
+    const last = kept[kept.length - 1];
+    if (!last || e.at - last.at >= gap) kept.push(e);
+    else if (e.rank > last.rank) kept[kept.length - 1] = e;
+  }
+  return kept;
+};
+/** How loud the music is on frame `f`: steady, a little lower under a voice, the change spread over a second. */
+export const bedAt = (L: Layout, f: number) => {
+  const talking = (fr: number) => L.lines.some((l) => fr >= l.from && fr < l.from + l.frames - Math.round(GAP * TOON_FPS));
+  let n = 0;
+  for (let i = -15; i <= 15; i += 3) n += talking(f + i) ? 1 : 0;
+  const duck = n / 11;
+  const fade = Math.min(1, f / 12, (L.total - f) / 24);
+  return (SOUND.bed + (SOUND.bedUnderVoice - SOUND.bed) * duck) * Math.max(0, fade);
 };

@@ -24,6 +24,8 @@
     "toon:check": "node pipeline/toon-check.mjs",
     "toon:camera": "node --import tsx pipeline/toon-camera.mjs",
     "toon:motion": "node --import tsx pipeline/toon-motion.mjs",
+    "toon:staging": "node --import tsx pipeline/toon-staging.mjs",
+    "toon:sound": "node pipeline/toon-sound.mjs",
     "toon:package": "node pipeline/toon-package.mjs"
   },
   "dependencies": {

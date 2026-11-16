@@ -145,8 +145,7 @@
      "set": {
       "feast": 0.3
      },
-     "over": 16,
-     "sfx": "pop"
+     "over": 16
     },
     {
      "at": "A3",
@@ -154,8 +153,7 @@
      "set": {
       "feast": 0.5
      },
-     "over": 14,
-     "sfx": "pop"
+     "over": 14
     },
     {
      "at": "A4",
@@ -163,8 +161,7 @@
      "set": {
       "feast": 1
      },
-     "over": 40,
-     "sfx": "gulp"
+     "over": 40
     },
     {
      "at": "A5",
@@ -181,8 +178,7 @@
      "set": {
       "hole": 0.12
      },
-     "over": 20,
-     "sfx": "squelch"
+     "over": 20
     },
     {
      "at": "A6",
@@ -191,8 +187,7 @@
       "hole": 0.34
      },
      "over": 24,
-     "fx": "flash",
-     "sfx": "sizzle-acid"
+     "fx": "flash"
     }
    ],
    "props": [
@@ -209,8 +204,8 @@
     {
      "kind": "tag",
      "text": "not again!",
-     "x": 300,
-     "y": 330,
+     "x": 330,
+     "y": 250,
      "size": 340,
      "rot": -5,
      "from": "A2",
@@ -380,8 +375,7 @@
       "pain": 1
      },
      "over": 8,
-     "fx": "flash",
-     "sfx": "gasp"
+     "fx": "flash"
     }
    ],
    "props": [
@@ -430,7 +424,8 @@
      "y": 1010,
      "size": 130,
      "from": "C1",
-     "word": "tooth"
+     "word": "tooth",
+     "on": "kid"
     }
    ],
    "lines": [
@@ -451,12 +446,12 @@
     {
      "who": "doctor",
      "x": 285,
-     "size": 1040
+     "size": 940
     },
     {
      "who": "kid",
      "x": 805,
-     "size": 1040,
+     "size": 980,
      "emotion": "sad",
      "pose": "rest"
     }
@@ -474,12 +469,11 @@
     },
     {
      "kind": "candy",
-     "x": 560,
-     "y": 400,
-     "size": 360,
+     "size": 300,
      "from": "D2",
      "to": "D2",
-     "bubble": true
+     "bubble": true,
+     "of": "doctor"
     },
     {
      "kind": "tag",
@@ -493,12 +487,13 @@
     },
     {
      "kind": "pain",
-     "x": 660,
-     "y": 330,
-     "size": 110,
+     "size": 84,
      "from": "D2",
      "word": "attacks",
-     "to": "D2"
+     "to": "D2",
+     "on": "bubble",
+     "dx": 44,
+     "dy": -34
     },
     {
      "kind": "tag",
@@ -562,9 +557,9 @@
     },
     {
      "kind": "toothbrush",
-     "x": 550,
-     "y": 1170,
-     "size": 250,
+     "x": 490,
+     "y": 1250,
+     "size": 220,
      "from": "D6",
      "halo": true
     },
@@ -580,8 +575,8 @@
     {
      "kind": "tag",
      "text": "fluoride",
-     "x": 550,
-     "y": 1350,
+     "x": 490,
+     "y": 1060,
      "size": 300,
      "from": "D6",
      "word": "fluoride"
@@ -590,7 +585,7 @@
      "kind": "tag",
      "text": "enamel rebuilds",
      "x": 550,
-     "y": 460,
+     "y": 190,
      "size": 280,
      "from": "D6",
      "word": "rebuild"
@@ -711,8 +706,7 @@
      "set": {
       "mend": 1
      },
-     "over": 36,
-     "sfx": "sparkle"
+     "over": 36
     },
     {
      "at": "E1",
@@ -728,8 +722,7 @@
      "set": {
       "shield": 1
      },
-     "over": 18,
-     "sfx": "success-chime"
+     "over": 18
     }
    ],
    "props": [

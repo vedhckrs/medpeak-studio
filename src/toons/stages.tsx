@@ -827,5 +827,35 @@ export const TummyStage: React.FC<SetProps> = ({t, state = {}, faces = {}, label
     </AbsoluteFill>
   );
 };
+
+// ------------------------------------------------------------------ where the stage's characters are, for a state
+/**
+ * A stage's own characters move with its state (the pill falls and rides away, the stomach tips, the
+ * germ is brushed off). This gives each one's spot for a state, or null when it is not in the picture.
+ * The staging check uses it so that no graphic is put over a face.
+ */
+export const stageSpotsAt = (set: string, state: Record<string, number> = {}): Record<string, {x: number; y: number; faceW: number; headH: number; size: number} | null> => {
+  const st = (k: string) => clamp01(state[k] ?? 0);
+  const base = STAGE_SPOTS[set] ?? {};
+  if (set === 'foodpipe') {
+    const drop = st('drop');
+    const fall = drop < 1 ? 1 - (1 - drop) ** 2 : 1;
+    const ride = io(st('slide'));
+    const px = lerp(lerp(650, PIPE.pill[0], fall), 560, ride);
+    const py = lerp(lerp(-420, PIPE.pill[1], fall), 2380, ride);
+    const gone = (st('melt') > 0.97 && st('slide') === 0) || py > H + 40 || py < -60;
+    return {foodpipe: base.foodpipe, pill: gone ? null : {...base.pill, x: px + 58 * (1 - ride), y: py + 70}};
+  }
+  if (set === 'tooth') return {tooth: base.tooth, bacteria: st('brush') > 0.55 ? null : base.bacteria};
+  if (set === 'tummy') {
+    const k = io(st('tilt'));
+    const th = (TUM.lie * k * Math.PI) / 180;
+    const at = ([x, y]: P): P => [TUM.pivot[0] + 220 * k + (x - TUM.pivot[0]) * Math.cos(th) - (y - TUM.pivot[1]) * Math.sin(th), TUM.pivot[1] + 50 * k + (x - TUM.pivot[0]) * Math.sin(th) + (y - TUM.pivot[1]) * Math.cos(th)];
+    const [sx, sy] = at(TUM.face);
+    const [fx, fy] = at(TUM.pipeFace);
+    return {stomach: {...base.stomach, x: sx, y: sy}, foodpipe: {...base.foodpipe, x: fx, y: fy}};
+  }
+  return base;
+};
 void shade;
 void lift;

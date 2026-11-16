@@ -23,13 +23,10 @@ The owner is not technical: run everything yourself, explain in plain words, nev
    source's `note`. Never round a number into a different claim (2.75x is "nearly three times", not
    "three times"); prediabetes is not diabetes. See `references/medical-accuracy.md`.
 4. **Nothing goes public on its own.** Uploads are private or scheduled (`--publish-at`); public only
-   when the owner says so. Every upload is marked not made for kids.
-   **Say nothing about how the videos are made** (owner, 2026-11-16): no line about code or AI
-   voices in a title, description, comment or cover, and YouTube's "AI use" question is left
-   unanswered. That is in line with YouTube's own four cases only while a video has none of them:
-   a real person made to say or do something, altered footage of a real event or place, a
-   realistic-looking scene that did not happen, AI music as the main focus. If a video ever has one,
-   stop and tell the owner before uploading: YouTube requires "Yes" there.
+   when the owner says so. Every upload is marked not made for kids, and
+   YouTube's "AI use" question is answered **Yes** (the uploader sets it and reads it back).
+   **But say nothing about how the videos are made** (owner, 2026-11-16): no line about code or
+   AI voices in a title, description, comment or cover.
 5. **Git hygiene.** New work on a branch (`feat/...`, `video/<slug>`, `fix/...`), small commits, push,
    open a PR, merge after the owner's OK. Renders, audio and clips never go in git (see `.gitignore`).
 
@@ -57,7 +54,7 @@ The owner is not technical: run everything yourself, explain in plain words, nev
 
 MedPeak Toons (the cartoon Shorts) have their own steps; the order of work is in
 `references/toons-script.md`: `toon-check` (script, Retention 7, own and unique rooms, accuracy) ->
-`toon:camera` and `toon:motion` (measured, both required) -> silent preview and rooms board ->
+`toon:camera`, `toon:motion`, `toon:staging` and `toon:sound` (measured, all required) -> silent preview and rooms board ->
 owner's yes -> `toon-voice` -> the same checks on the real timings -> `toon-render` ->
 `toon-package` (title, description, tags, cover, captions) -> `publish/upload.py <slug> toon`
 only after the owner's yes. After the upload, each with its own yes from the owner:
@@ -99,6 +96,7 @@ long-video watch time counts toward the 4,000 hours, so every Short links to a l
 - `references/toons-camera.md` - shot sizes, lenses, camera moves and what the director does on its own. Read before writing a Toon script.
 - `references/toons-script.md` - how to write a Toon script: the steady style (a body stage, events, time card, the person at home, Dr. Mira), Retention 7 in dialogue, sources on every doctor line, the order of work and its required checks (`toon-check`, `toon:camera`, `toon:motion`). Read before writing any Toon.
 - `references/toons-rooms.md` - every video gets a clinic and a home of its own, built from a recipe; what "unique" means and how the gate checks it. Read before choosing a video's rooms.
+- `references/toons-known-issues.md` - every bug found so far, its root cause and the check that now stops it; what is still open. Read before starting a new Toon and add to it the day a bug is found.
 - `references/toons-reference-study.md` - what the top cartoon health Shorts do (measured on 20), and how our videos compare.
 - `toons-cast.json` - the fixed voice of every Toons character. A character never changes voice between videos; a new character gets a new entry here (and a line in `references/toons.md`).
 - Repo `README.md` - setup, commands, folder map. `CONTRIBUTING.md` - branches, commits, PRs.

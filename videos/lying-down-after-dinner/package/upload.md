@@ -38,7 +38,7 @@ what happens if you lie down after eating, lying down after eating, lying down a
 
 - Visibility: **Private** (or scheduled). Public only when the owner says so.
 - Audience: **No, it is not made for kids.**
-- AI use: **leave it unanswered** (owner's rule). If YouTube insists on an answer, it is **No**: no real person, no altered real footage, no realistic-looking generated scene, no AI music as the main focus.
+- AI use: **Yes** (the owner's rule; the uploader sets it and reads it back). Nothing about it goes in the title, description, comments or cover.
 - Category: Education. Language: English.
 - Related video: none yet. When a long video on this topic exists, link it here in YouTube Studio (only long-video watch time counts toward the 4,000 hours).
 

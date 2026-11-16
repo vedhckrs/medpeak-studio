@@ -8,8 +8,8 @@
  *  - title starts with the search phrase; no ALL CAPS words, no emojis, no hashtags in titles
  *  - description: keyword-first opener, chapters (long), sources, @MedPeakHealth, comment question,
  *    disclaimer, 3 hashtags
- *  - not made for kids, category 27 Education; YouTube's "AI use" question is left unanswered
- *    (owner, 2026-11-16): none of its four cases applies to these code-made videos
+ *  - not made for kids, category 27 Education; YouTube's "AI use" question is answered Yes
+ *    (containsSyntheticMedia), but the description never says how the video is made (owner, 2026-11-16)
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -76,7 +76,7 @@ const main = () => {
       file: path.join(renders, file),
       thumbnail: path.join(renders, c.id === 'long' ? 'thumb.jpg' : `cover-${c.id}.jpg`),
       snippet: {title: c.pkg.title, description, tags, categoryId: '27', defaultLanguage: 'en', defaultAudioLanguage: 'en'},
-      status: {privacyStatus: 'private', selfDeclaredMadeForKids: false},
+      status: {privacyStatus: 'private', selfDeclaredMadeForKids: false, containsSyntheticMedia: true},
       relatedVideo: c.short ? 'long' : null,
       issues,
     };

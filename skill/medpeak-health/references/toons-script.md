@@ -115,6 +115,31 @@ the stage, and the viewer WATCHES the thing happen. A script switches to this st
   scene again, this time done right. The last scene mirrors the first (that is the loop).
 - **Captions** are smaller, white with a dark outline, no box, key word in amber.
 
+### Graphics never cover a face (owner, 2026-11-16)
+- A **thought bubble** names its owner and places itself: `{"kind": "pipe", "bubble": true,
+  "of": "doctor", "size": 300, "from": "D1", "word": "stuck", "to": "D1"}` (no x, y). It goes above
+  the owner's head, toward the middle, tail toward them.
+- A mark that is **meant** to sit on something says so: `"on": "patient"` (a pain star on a chest
+  or a cheek), `"on": "bubble"` with `dx`, `dy` (a mark on the picture inside the bubble before it;
+  it follows the bubble).
+- In a scene with a bubble the people stand a little smaller (doctor 940, patient 900, kid 980) so
+  there is air above their heads; a bubble is size 300.
+- Everything else keeps its x, y, and `npm run toon:staging -- <slug>` fails the script if a
+  graphic covers more than 4% of any head, leaves the picture, reaches above y 110, or sits on
+  another graphic that is on screen at the same time.
+
+### Sound: a calm mix (owner, 2026-11-16: "too loud and poor sound, don't match my style")
+The channel's own best videos, measured: steady narration over a constant music bed, almost no
+sound effects. So a Toon has **only the story sounds the script asks for**: `"sfx"` on a stage
+event (a plop when the pill lands, a sizzle when the acid burns, a splash for the water), six to
+eight a video. The player adds nothing on its own except a soft whoosh for a new place.
+- No sound for a mood, a key word, a graphic popping in, or a joke (no boing, no slide whistle).
+- Never two sounds within 0.7 s; at most 12 a minute; the same story sound at most 3 times.
+- Levels are set in one place (`SOUND` in director.ts): an effect sits about 13 LU under the voice,
+  the music about 8.5 LU under and steady.
+- `npm run toon:sound -- <slug>` counts and, once the voices exist, builds the three layers and
+  measures them. `--list` prints every sound with its time and reason.
+
 ### Rooms of its own
 Every steady script has a scene in its own clinic and a scene in its own home: `"set": "clinic"`,
 `"set": "home"`, an `"episode"` number and a `"rooms"` recipe (toons-rooms.md). The gate checks
@@ -153,9 +178,11 @@ new in it is a line where the story is only being told.
 4. `node pipeline/toon-check.mjs <slug> --sheet --check-urls` until everything passes (script,
    Retention 7, format, own and unique rooms, medical accuracy). `--sheet` writes
    `videos/<slug>/SCRIPT.md`.
-5. The two measured checks, both required before anything is shown:
-   `npm run toon:camera -- <slug>` (no wrong picture, jump cut or jolt) and
-   `npm run toon:motion -- <slug>` (no foot slide, leg or arm jump, pop).
+5. The four measured checks, all required before anything is shown:
+   `npm run toon:camera -- <slug>` (no wrong picture, jump cut or jolt),
+   `npm run toon:motion -- <slug>` (no foot slide, leg or arm jump, pop),
+   `npm run toon:staging -- <slug>` (no graphic on a face, out of the picture or on another) and
+   `npm run toon:sound -- <slug>` (few sounds, kept apart, under the voice).
 6. Render the rooms board (toons-rooms.md) and `node pipeline/toon-render.mjs <slug> --draft --silent`
    for a free picture-only preview. Look at frames from every scene yourself first.
 7. Show the owner the rooms board, the script sheet and the preview, quote the voice cost
@@ -192,7 +219,7 @@ same for a person, with a checklist) and `renders/toon-cover.jpg`. The descripti
 sources, the subscribe line, the question and the disclaimer. It says nothing about how the video
 is made: the owner does not want a line about code or AI voices in a description (2026-11-16:
 "i dont want to give this reveal"). Uploads stay private, not made for kids, with YouTube's "AI use"
-question left unanswered (SKILL.md rule 4), and only happen after the owner's yes.
+question answered Yes (SKILL.md rule 4), and only happen after the owner's yes.
 
 ## The first three scripts (all in the steady style since 2026-11-16)
 | Script | Stage | Story |

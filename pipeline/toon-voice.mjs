@@ -67,6 +67,9 @@ const main = async () => {
   const toon = readJson(path.join(videoDir(slug), 'toon.json'));
   const tPath = path.join(videoDir(slug), 'toon-timings.json');
   const timings = readJson(tPath, {lines: {}});
+  // forget lines the script no longer has (a removed scene used to stay in the file for good)
+  const scripted = new Set(toon.shots.flatMap((s) => s.lines ?? []).map((l) => l.id));
+  for (const id of Object.keys(timings.lines)) if (!scripted.has(id)) delete timings.lines[id];
   const outDir = path.join(PUBLIC, 'toons', slug, 'voice');
   const only = a.only ? new Set(String(a.only).split(',')) : null;
   const lines = toon.shots.flatMap((s) => s.lines);

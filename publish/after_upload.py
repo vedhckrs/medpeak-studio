@@ -5,6 +5,7 @@ its own flag and --approve, and only after the owner's yes for that step.
     python publish/after_upload.py <slug> <cut> --captions --approve      # add package/captions.srt
     python publish/after_upload.py <slug> <cut> --comment --approve       # post the package's question
     python publish/after_upload.py <slug> <cut> --public --approve        # private -> public
+    python publish/after_upload.py <slug> <cut> --label --approve         # answer YouTube's AI-use question with Yes
     python publish/after_upload.py <slug> <cut> --remove-line "some exact line" --approve   # take one line out of the live description
 
 Uses the saved login in ~/.config/youtube-analytics/token.json (needs youtube.force-ssl). Writes
@@ -64,6 +65,18 @@ def main():
             pkg["madePublic"] = True
             status = r["status"]
             print(f"  public: now {status['privacyStatus']}")
+
+    if "--label" in a:  # the AI-use answer, when the upload did not store it
+        if status.get("containsSyntheticMedia"):
+            print("  label: already Yes, skipped")
+        elif not go:
+            print("  label: dry run, would answer the AI-use question with Yes")
+        else:
+            keep = {k: status[k] for k in ("privacyStatus", "embeddable", "license", "publicStatsViewable", "selfDeclaredMadeForKids") if k in status}
+            r = yt.videos().update(part="status", body={"id": vid, "status": {**keep, "containsSyntheticMedia": True}}).execute()
+            status = r["status"]
+            pkg["labelSet"] = bool(status.get("containsSyntheticMedia"))
+            print(f"  label: AI-use answer is now {status.get('containsSyntheticMedia')} (video still {status['privacyStatus']})")
 
     if "--remove-line" in a:  # take one exact line out of the LIVE description; everything else stays as it is on YouTube
         line = a[a.index("--remove-line") + 1]

@@ -199,12 +199,12 @@ export const PROPS: Record<PropName, React.FC<{t: number; text?: string}>> = {ta
  * A prop on screen. `halo` = a soft glowing disc behind it; `bubble` = inside a thought bubble
  * (the doctor's picture of what she means); `no` = a red "not this" sign over it.
  */
-export const Prop: React.FC<{kind: PropName; t: number; halo?: boolean; bubble?: boolean; no?: boolean; text?: string}> = ({kind, t, halo = false, bubble = false, no = false, text}) => {
+export const Prop: React.FC<{kind: PropName; t: number; halo?: boolean; bubble?: boolean; no?: boolean; text?: string; flip?: boolean}> = ({kind, t, halo = false, bubble = false, no = false, text, flip = false}) => {
   const P = PROPS[kind];
   return (
     <g>
       {bubble && (
-        <g>
+        <g transform={flip ? 'scale(-1 1)' : undefined}>
           <path d="M-96 -6 C-112 -58 -62 -100 -18 -90 C6 -118 70 -112 82 -76 C122 -70 132 -18 104 6 C122 46 82 88 40 76 C22 104 -40 104 -56 76 C-100 84 -124 34 -96 -6 Z" fill="#1d2b4f" opacity={0.22} transform="translate(5 8)" />
           <path d="M-96 -6 C-112 -58 -62 -100 -18 -90 C6 -118 70 -112 82 -76 C122 -70 132 -18 104 6 C122 46 82 88 40 76 C22 104 -40 104 -56 76 C-100 84 -124 34 -96 -6 Z" fill="#ffffff" stroke="#55608c" strokeWidth={2.4} />
           <circle cx={-84} cy={104} r={13} fill="#ffffff" stroke="#55608c" strokeWidth={2.4} />

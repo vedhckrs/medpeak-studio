@@ -25,7 +25,8 @@
   },
   "status": {
     "privacyStatus": "private",
-    "selfDeclaredMadeForKids": false
+    "selfDeclaredMadeForKids": false,
+    "containsSyntheticMedia": true
   },
   "relatedVideo": null,
   "issues": [],
