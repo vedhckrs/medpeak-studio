@@ -6,7 +6,7 @@ Toon script `eating-too-fast` · about 50 seconds · 5 pictures
 
 | | First line | Why |
 |---|---|---|
-| A (in the script) | Eat too fast and your belly balloons. | names what you will feel (the bloating); the first picture is the stretched stomach full of air |
+| A (the owner's pick) | Eat too fast and your belly balloons. | names what you will feel (the bloating); the first picture is the stretched stomach full of air |
 | B | Eat too fast? You'll still feel hungry. | the surprise: a full plate and still hungry; leads into the brain being late |
 | C | Eat too fast, your brain runs late. | the cause in one line; the most curious, the least physical |
 

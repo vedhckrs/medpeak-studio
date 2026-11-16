@@ -229,7 +229,7 @@ export const scriptSheet = (toon, check) => {
   const out = [`# ${toon.title}`, '', `Toon script \`${toon.slug}\` · about ${check.total.toFixed(0)} seconds · ${L.segs.length} pictures`, ''];
   if (toon.hooks?.length) {
     out.push('## The hook: choices for the first line', '', '| | First line | Why |', '|---|---|---|');
-    toon.hooks.forEach((h, i) => { const line = typeof h === 'string' ? h : h.line; out.push(`| ${'ABCDEF'[i]}${line === L.lines[0].line.text ? ' (in the script)' : ''} | ${line} | ${typeof h === 'string' ? '' : h.why ?? ''} |`); });
+    toon.hooks.forEach((h, i) => { const line = typeof h === 'string' ? h : h.line; out.push(`| ${'ABCDEF'[i]}${h.picked ? " (the owner's pick)" : line === L.lines[0].line.text ? ' (in the script)' : ''} | ${line} | ${typeof h === 'string' ? '' : h.why ?? ''} |`); });
     out.push('');
   }
   if (toon.retention) {
