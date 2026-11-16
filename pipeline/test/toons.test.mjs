@@ -6,6 +6,8 @@ import {ROOT} from '../lib/util.mjs';
 import {loadCast} from '../lib/toon-audio.mjs';
 import {LIBRARY} from '../toon-sfx.mjs';
 import {BEDS} from '../toon-music.mjs';
+import {checkToon} from '../lib/toon-rules.mjs';
+import {AUTO_SFX, EMO_SFX, layoutToon, parseCam} from '../../src/toons/director.ts';
 
 const EMOTIONS = ['neutral', 'happy', 'angry', 'scared', 'smug', 'sick', 'sleepy', 'shocked', 'sad'];
 const cast = loadCast();
@@ -30,9 +32,7 @@ test('every Toons character has one fixed voice', () => {
 test('the sound-effect library has every sound the player can ask for', () => {
   const names = new Set(LIBRARY.map(([n]) => n));
   assert.equal(names.size, LIBRARY.length, 'duplicate effect name');
-  const player = fs.readFileSync(path.join(ROOT, 'src', 'toons', 'Player.tsx'), 'utf8');
-  const auto = player.match(/EMO_SFX[^=]*=\s*\{([\s\S]*?)\}/)[1].match(/'([a-z-]+)'/g).map((s) => s.slice(1, -1));
-  for (const n of [...auto, 'whoosh-soft', 'swish', 'caption-pop']) assert.ok(names.has(n), `missing effect ${n}`);
+  for (const n of [...Object.values(EMO_SFX), ...AUTO_SFX]) assert.ok(names.has(n), `missing effect ${n}`);
   for (const [n, d, prompt] of LIBRARY) {
     assert.ok(d >= 0.3 && d <= 2, `${n} length`);
     assert.ok(prompt.length > 12, `${n} prompt`);
@@ -58,4 +58,55 @@ test('toon scripts only use the cast, the library and the music beds', () => {
       }
     }
   }
+});
+
+// ---------------------------------------------------------------- the script gate
+const known = {cast: Object.keys(cast.cast), sfx: LIBRARY.map(([n]) => n), beds: BEDS.map(([n]) => n)};
+const real = toons.filter((t) => !t.test);
+const clone = (t) => JSON.parse(JSON.stringify(t));
+const failed = (t) => checkToon(t, null, known).results.filter((r) => !r.pass).map((r) => r.point);
+
+test('every real toon script passes the gate', () => {
+  assert.ok(real.length >= 3, 'three scripts are in the repo');
+  for (const t of real) assert.deepEqual(failed(t), [], `${t.slug} fails`);
+});
+
+test('the director never holds a picture over 3 seconds and never repeats a size on one speaker', () => {
+  for (const t of real) {
+    const L = layoutToon(t, null);
+    for (const s of L.segs) assert.ok(s.to - s.from <= 90, `${t.slug} ${s.line.line.id}: ${s.to - s.from} frames`);
+    L.segs.forEach((s, i) => {
+      const p = L.segs[i - 1];
+      if (p && p.line === s.line && p.who === s.who) assert.notEqual(p.shot, s.shot, `${t.slug} ${s.line.line.id}: jump cut`);
+    });
+  }
+});
+
+test('the gate catches a broken script', () => {
+  const base = real[0];
+  const doc = base.shots.flatMap((s) => s.lines).find((l) => l.who === 'doctor' && l.src);
+  let t = clone(base);
+  delete t.shots.flatMap((s) => s.lines).find((l) => l.id === doc.id).src;
+  assert.ok(failed(t).includes('Doctor lines are sourced'));
+  t = clone(base);
+  t.shots[0].lines[0].text = `Hello friends, welcome! ${t.shots[0].lines[0].text}`;
+  assert.ok(failed(t).includes('1 No intro'));
+  t = clone(base);
+  t.shots[0].lines[1].cam = 'cu 85 wobblecam';
+  assert.deepEqual(failed(t), ['Script is valid']);
+  t = clone(base);
+  t.sources[0].url = 'https://some-health-blog.example.com/post';
+  assert.ok(failed(t).includes('Sources are allowed'));
+  t = clone(base);
+  t.shots[1].lines[1].text += ' Take 500 mg twice a day.';
+  assert.ok(failed(t).includes('No dosing advice'));
+  t = clone(base);
+  delete t.retention;
+  assert.ok(failed(t).some((p) => p.includes('plan')));
+});
+
+test('camera words are read in any order', () => {
+  assert.deepEqual(parseCam('push 85mm cu'), {shot: 'cu', lens: '85', move: 'push', unknown: []});
+  assert.deepEqual(parseCam('two truck'), {shot: 'two', move: 'truck', unknown: []});
+  assert.deepEqual(parseCam(undefined), {unknown: []});
 });

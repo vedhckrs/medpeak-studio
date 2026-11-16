@@ -1,35 +1,254 @@
 {
-  "slug": "pill-without-water",
-  "title": "TEST SCENE: a pill swallowed without water",
-  "test": true,
-  "music": "bouncy",
-  "sources": [],
-  "shots": [
+ "slug": "pill-without-water",
+ "title": "What happens when you swallow a pill without water",
+ "music": "bouncy",
+ "retention": {
+  "change3s": {
+   "scene": "all",
+   "line": "a new picture at least every 3 s (the director does it)"
+  },
+  "noIntro": {
+   "scene": "A1",
+   "line": "Hey! You can't park here. This is the food pipe!"
+  },
+  "promise": {
+   "scene": "A3",
+   "line": "Three things happen next. Wait for the third!"
+  },
+  "counting": {
+   "scene": "A4,A5,A6",
+   "line": "Number one / Number two / Number three"
+  },
+  "twist": {
+   "scene": "B3",
+   "line": "But here's the twist: don't blame the medicine. It just needed a ride down."
+  },
+  "bestLast": {
+   "scene": "B6",
+   "line": "And with some antibiotics, the NHS says: no lying down for thirty minutes."
+  },
+  "loop": {
+   "scene": "B7",
+   "line": "So nothing can park in my food pipe!"
+  }
+ },
+ "sources": [
+  {
+   "id": "statpearls",
+   "label": "Sharma M, Sharma A, Goosenberg E. Pill-Induced Esophagitis. StatPearls (NIH Bookshelf), updated 19 August 2026",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/31747225/",
+   "note": "The injury 'usually results from a direct toxic effect of the culprit medication on the esophageal mucosa when the medication becomes lodged or dissolves slowly within the esophagus'. Symptoms (chest pain, painful or difficult swallowing) start 'within hours or days of ingestion'."
+  },
+  {
+   "id": "zografos2009",
+   "label": "Zografos GN et al. Drug-induced esophagitis. Dis Esophagus 2009;22(8):633-7 (review)",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/19392845/",
+   "note": "'Since 1970 more than 650 cases have been reported worldwide caused by 30 or more medications.' 'Most cases of medication-induced esophageal injury heal without intervention within a few days.'"
+  },
+  {
+   "id": "nhs-doxycycline",
+   "label": "NHS. How and when to take doxycycline (page last reviewed 5 September 2025)",
+   "url": "https://www.nhs.uk/medicines/doxycycline/how-and-when-to-take-doxycycline/",
+   "note": "For the antibiotic doxycycline the NHS says: 'swallow tablets or capsules whole with a glass of water while sitting or standing up' and 'avoid lying down for at least 30 minutes after taking it (this helps stop the medicine irritating your throat)'."
+  }
+ ],
+ "shots": [
+  {
+   "id": "A",
+   "set": "throat",
+   "cast": [
     {
-      "id": "A",
-      "set": "throat",
-      "cast": [
-        {"who": "whitecell", "x": 350, "y": 700, "size": 720, "noLegs": true, "pose": "hips"},
-        {"who": "pill", "x": 740, "y": 1090, "size": 600, "rot": -68, "noLegs": true, "emotion": "scared", "pose": "panic"}
-      ],
-      "lines": [
-        {"id": "A1", "who": "whitecell", "text": "Hey! You can't park here. This is the food pipe!", "emotion": "angry", "pose": "point", "key": "here"},
-        {"id": "A2", "who": "pill", "text": "I'm stuck! He swallowed me without water!", "emotion": "scared", "pose": "panic", "key": "water"},
-        {"id": "A3", "who": "whitecell", "text": "Dry? Oh no. You're starting to melt!", "emotion": "shocked", "pose": "panic", "key": "melt", "react": {"pill": "sick"}},
-        {"id": "A4", "who": "pill", "text": "It burns! I'm so sorry!", "emotion": "sick", "pose": "shrug", "key": "burns"}
-      ]
+     "who": "whitecell",
+     "x": 350,
+     "y": 700,
+     "size": 720,
+     "noLegs": true,
+     "pose": "hips"
     },
     {
-      "id": "B",
-      "set": "office",
-      "cast": [
-        {"who": "doctor", "x": 310, "size": 1040},
-        {"who": "patient", "x": 780, "size": 1000, "emotion": "sick", "pose": "belly"}
-      ],
-      "lines": [
-        {"id": "B1", "who": "patient", "text": "Doc, why does my chest burn when I swallow?", "emotion": "sick", "pose": "belly", "key": "burn"},
-        {"id": "B2", "who": "doctor", "text": "A pill stuck in your food pipe can irritate it. Always take pills with a full glass of water.", "emotion": "happy", "pose": "explain", "key": "water", "react": {"patient": "shocked"}}
-      ]
+     "who": "pill",
+     "x": 740,
+     "y": 1090,
+     "size": 600,
+     "rot": -68,
+     "noLegs": true,
+     "emotion": "scared",
+     "pose": "panic"
     }
-  ]
+   ],
+   "lines": [
+    {
+     "id": "A1",
+     "who": "whitecell",
+     "text": "Hey! You can't park here. This is the food pipe!",
+     "emotion": "angry",
+     "pose": "point",
+     "key": "here"
+    },
+    {
+     "id": "A2",
+     "who": "pill",
+     "text": "I'm stuck! He swallowed me without water!",
+     "emotion": "scared",
+     "pose": "panic",
+     "key": "water"
+    },
+    {
+     "id": "A3",
+     "who": "whitecell",
+     "text": "Three things happen next. Wait for the third!",
+     "emotion": "neutral",
+     "pose": "present",
+     "key": "third",
+     "react": {
+      "pill": "scared"
+     }
+    },
+    {
+     "id": "A4",
+     "who": "pill",
+     "text": "Number one: I stick to the wall.",
+     "emotion": "sick",
+     "pose": "shrug",
+     "key": "stick",
+     "src": [
+      "statpearls"
+     ]
+    },
+    {
+     "id": "A5",
+     "who": "whitecell",
+     "text": "Number two: you start to melt right here!",
+     "emotion": "shocked",
+     "pose": "panic",
+     "key": "melt",
+     "react": {
+      "pill": "sick"
+     },
+     "src": [
+      "statpearls"
+     ]
+    },
+    {
+     "id": "A6",
+     "who": "pill",
+     "text": "Number three: my medicine burns the lining. Sorry!",
+     "emotion": "sad",
+     "pose": "shrug",
+     "key": "burns",
+     "react": {
+      "whitecell": "shocked"
+     },
+     "src": [
+      "statpearls"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "B",
+   "set": "office",
+   "cast": [
+    {
+     "who": "doctor",
+     "x": 285,
+     "size": 1040
+    },
+    {
+     "who": "patient",
+     "x": 805,
+     "size": 1000,
+     "emotion": "sick",
+     "pose": "heart"
+    }
+   ],
+   "props": [
+    {
+     "kind": "glass",
+     "x": 550,
+     "y": 1010,
+     "size": 250,
+     "from": "B5",
+     "halo": true
+    }
+   ],
+   "lines": [
+    {
+     "id": "B1",
+     "who": "patient",
+     "text": "Doc, why does my chest burn when I swallow?",
+     "emotion": "sick",
+     "pose": "heart",
+     "key": "burn"
+    },
+    {
+     "id": "B2",
+     "who": "doctor",
+     "text": "A pill got stuck in your food pipe. It dissolved there and irritated it.",
+     "emotion": "neutral",
+     "pose": "explain",
+     "key": "stuck",
+     "react": {
+      "patient": "shocked"
+     },
+     "src": [
+      "statpearls",
+      "zografos2009"
+     ]
+    },
+    {
+     "id": "B3",
+     "who": "doctor",
+     "text": "But here's the twist: don't blame the medicine. It just needed a ride down.",
+     "emotion": "happy",
+     "pose": "present",
+     "key": "twist",
+     "src": [
+      "statpearls",
+      "nhs-doxycycline"
+     ]
+    },
+    {
+     "id": "B4",
+     "who": "patient",
+     "text": "So water is the ride?",
+     "emotion": "neutral",
+     "pose": "think",
+     "key": "water"
+    },
+    {
+     "id": "B5",
+     "who": "doctor",
+     "text": "Exactly. A glass of water, sitting or standing up.",
+     "emotion": "happy",
+     "pose": "thumb",
+     "key": "water",
+     "src": [
+      "nhs-doxycycline"
+     ]
+    },
+    {
+     "id": "B6",
+     "who": "doctor",
+     "text": "And with some antibiotics, the NHS says: no lying down for thirty minutes.",
+     "emotion": "neutral",
+     "pose": "point",
+     "key": "thirty",
+     "cam": "cu 85 push",
+     "src": [
+      "nhs-doxycycline"
+     ]
+    },
+    {
+     "id": "B7",
+     "who": "patient",
+     "text": "So nothing can park in my food pipe!",
+     "emotion": "happy",
+     "pose": "thumb",
+     "key": "park",
+     "cam": "two 35 pull"
+    }
+   ]
+  }
+ ]
 }

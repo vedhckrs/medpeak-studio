@@ -8,6 +8,7 @@ import {AbsoluteFill, random} from 'remotion';
 import {blob, lineOf, Part, shade, lift, spline, taperedPath, tone, type P} from './ink';
 import {theme} from '../brand/theme';
 import {CamCtx, Canvas, H, Layer, W} from './camera';
+import type {SetName} from './director';
 import {STYLE} from './style';
 
 // Set outlines are thin and coloured: maroon inside the body, slate in rooms. Never heavy black.
@@ -848,8 +849,8 @@ export const WordCaption: React.FC<{word: string; key_?: boolean; y?: number; po
   </div>
 );
 
-export const SETS = {throat: ThroatSet, gut: GutSet, stomach: StomachSet, mouth: MouthSet, blood: BloodSet, lungs: LungsSet, office: OfficeSet, bathroom: BathroomSet, bedroom: BedroomSet};
-export type SetName = keyof typeof SETS;
+export const SETS: Record<SetName, React.FC<{t: number}>> = {throat: ThroatSet, gut: GutSet, stomach: StomachSet, mouth: MouthSet, blood: BloodSet, lungs: LungsSet, office: OfficeSet, bathroom: BathroomSet, bedroom: BedroomSet};
+export type {SetName};
 /** The blurred foreground of each set: drawn OVER the characters, it moves faster than they do. */
 export const FORES: Partial<Record<SetName, React.FC<{t: number}>>> = {throat: ThroatFore, gut: GutFore, stomach: StomachFore, blood: BloodFore, office: OfficeFore, bathroom: BathroomFore};
 /** Where characters stand in each set (screen y of the floor). null = no floor: characters float. */

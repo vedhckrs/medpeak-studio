@@ -1,0 +1,260 @@
+{
+ "slug": "lying-down-after-dinner",
+ "title": "What happens when you lie down after a big dinner",
+ "music": "bouncy",
+ "retention": {
+  "change3s": {
+   "scene": "all",
+   "line": "a new picture at least every 3 s (the director does it)"
+  },
+  "noIntro": {
+   "scene": "A1",
+   "line": "He ate a huge dinner. Now he's lying down!"
+  },
+  "promise": {
+   "scene": "A3",
+   "line": "Three things happen now. Stay for the third!"
+  },
+  "counting": {
+   "scene": "A4,A5,A6",
+   "line": "Number one / Number two / Number three"
+  },
+  "twist": {
+   "scene": "B3",
+   "line": "But here's the twist: the problem is a door. The valve above your stomach relaxes when it shouldn't."
+  },
+  "bestLast": {
+   "scene": "B6",
+   "line": "And raise the head of your bed ten to twenty centimetres."
+  },
+  "loop": {
+   "scene": "B7",
+   "line": "So no more lying down after a huge dinner!"
+  }
+ },
+ "sources": [
+  {
+   "id": "nhs-heartburn",
+   "label": "NHS. Heartburn and acid reflux (page last reviewed 20 November 2023)",
+   "url": "https://www.nhs.uk/conditions/heartburn-and-acid-reflux/",
+   "note": "'Heartburn is a burning feeling in the chest caused by stomach acid travelling up towards the throat (acid reflux).' 'Symptoms are often worse after eating, when lying down and when bending over.' Advice: 'eat smaller, more frequent meals', 'do not eat within 3 or 4 hours before bed', 'raise the head of your bed by around 10 to 20cm'."
+  },
+  {
+   "id": "niddk-gerd",
+   "label": "NIH National Institute of Diabetes and Digestive and Kidney Diseases. Symptoms and Causes of GER and GERD (reviewed July 2020)",
+   "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/acid-reflux-ger-gerd-adults/symptoms-causes",
+   "note": "'GERD may develop if your lower esophageal sphincter becomes weak or relaxes when it shouldn't.' The lower esophageal sphincter is the ring of muscle between the food pipe and the stomach."
+  }
+ ],
+ "shots": [
+  {
+   "id": "A",
+   "set": "stomach",
+   "cast": [
+    {
+     "who": "stomach",
+     "x": 330,
+     "size": 780,
+     "emotion": "angry",
+     "pose": "fists"
+    },
+    {
+     "who": "heart",
+     "x": 800,
+     "y": 800,
+     "size": 520,
+     "emotion": "scared"
+    }
+   ],
+   "props": [
+    {
+     "kind": "burger",
+     "x": 880,
+     "y": 1590,
+     "size": 230,
+     "rot": -12
+    }
+   ],
+   "lines": [
+    {
+     "id": "A1",
+     "who": "stomach",
+     "text": "He ate a huge dinner. Now he's lying down!",
+     "emotion": "angry",
+     "pose": "fists",
+     "key": "lying",
+     "react": {
+      "heart": "scared"
+     }
+    },
+    {
+     "id": "A2",
+     "who": "heart",
+     "text": "Lying down? Your acid will come up to me!",
+     "emotion": "scared",
+     "pose": "panic",
+     "key": "acid",
+     "src": [
+      "nhs-heartburn"
+     ]
+    },
+    {
+     "id": "A3",
+     "who": "stomach",
+     "text": "Three things happen now. Stay for the third!",
+     "emotion": "neutral",
+     "pose": "present",
+     "key": "third"
+    },
+    {
+     "id": "A4",
+     "who": "stomach",
+     "text": "Number one: I'm too full.",
+     "emotion": "sick",
+     "pose": "belly",
+     "key": "full",
+     "src": [
+      "nhs-heartburn"
+     ]
+    },
+    {
+     "id": "A5",
+     "who": "heart",
+     "text": "Number two: your top valve relaxes!",
+     "emotion": "shocked",
+     "pose": "pointLeft",
+     "key": "valve",
+     "src": [
+      "niddk-gerd"
+     ]
+    },
+    {
+     "id": "A6",
+     "who": "stomach",
+     "text": "Number three: my acid flows up the food pipe!",
+     "emotion": "sad",
+     "pose": "shrug",
+     "key": "acid",
+     "react": {
+      "heart": "sick"
+     },
+     "src": [
+      "nhs-heartburn"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "B",
+   "set": "office",
+   "cast": [
+    {
+     "who": "doctor",
+     "x": 285,
+     "size": 1040
+    },
+    {
+     "who": "patient",
+     "x": 805,
+     "size": 1000,
+     "emotion": "sick",
+     "pose": "heart"
+    }
+   ],
+   "props": [
+    {
+     "kind": "clock",
+     "x": 550,
+     "y": 1010,
+     "size": 250,
+     "from": "B5",
+     "to": "B5",
+     "halo": true
+    },
+    {
+     "kind": "pillow",
+     "x": 550,
+     "y": 1020,
+     "size": 270,
+     "from": "B6",
+     "halo": true
+    }
+   ],
+   "lines": [
+    {
+     "id": "B1",
+     "who": "patient",
+     "text": "Doctor, why does my chest burn after dinner?",
+     "emotion": "sick",
+     "pose": "heart",
+     "key": "burn"
+    },
+    {
+     "id": "B2",
+     "who": "doctor",
+     "text": "That's heartburn: stomach acid travelling up toward your throat.",
+     "emotion": "neutral",
+     "pose": "explain",
+     "key": "heartburn",
+     "src": [
+      "nhs-heartburn"
+     ]
+    },
+    {
+     "id": "B3",
+     "who": "doctor",
+     "text": "But here's the twist: the problem is a door. The valve above your stomach relaxes when it shouldn't.",
+     "emotion": "happy",
+     "pose": "present",
+     "key": "door",
+     "react": {
+      "patient": "shocked"
+     },
+     "src": [
+      "niddk-gerd"
+     ]
+    },
+    {
+     "id": "B4",
+     "who": "patient",
+     "text": "And lying down makes it worse?",
+     "emotion": "shocked",
+     "pose": "think",
+     "key": "worse"
+    },
+    {
+     "id": "B5",
+     "who": "doctor",
+     "text": "Yes. So no food for three or four hours before bed.",
+     "emotion": "neutral",
+     "pose": "explain",
+     "key": "hours",
+     "src": [
+      "nhs-heartburn"
+     ]
+    },
+    {
+     "id": "B6",
+     "who": "doctor",
+     "text": "And raise the head of your bed ten to twenty centimetres.",
+     "emotion": "happy",
+     "pose": "thumb",
+     "key": "twenty",
+     "cam": "cu 85 push",
+     "src": [
+      "nhs-heartburn"
+     ]
+    },
+    {
+     "id": "B7",
+     "who": "patient",
+     "text": "So no more lying down after a huge dinner!",
+     "emotion": "happy",
+     "pose": "thumb",
+     "key": "dinner",
+     "cam": "two 35 pull"
+    }
+   ]
+  }
+ ]
+}

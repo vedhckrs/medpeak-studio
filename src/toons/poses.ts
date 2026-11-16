@@ -10,11 +10,11 @@ type Pair = [ArmSpec, ArmSpec];
 export const POSES: Record<PoseName, {body: Pair; person: Pair}> = {
   rest: {body: [112, 68], person: [95, 85]},
   wave: {body: [112, {a: -55, hand: 'open'}], person: [95, {a: -62, len: 42, hand: 'open'}]},
-  point: {body: [{a: 150, hand: 'fist'}, {a: -8, hand: 'point'}], person: [95, {a: -18, len: 47, hand: 'point'}]},
+  point: {body: [{a: 150, hand: 'fist'}, {a: -8, hand: 'point'}], person: [95, {a: -30, len: 38, hand: 'point'}]},
   pointLeft: {body: [{a: 188, hand: 'point'}, {a: 30, hand: 'fist'}], person: [{a: 198, len: 47, hand: 'point'}, 85]},
   panic: {body: [{a: 215, hand: 'open'}, {a: -35, hand: 'open'}], person: [{a: 236, len: 44, hand: 'open'}, {a: -56, len: 44, hand: 'open'}]},
   fists: {body: [{a: 150, hand: 'fist'}, {a: 30, hand: 'fist'}], person: [{a: 116, len: 43, hand: 'fist'}, {a: 64, len: 43, hand: 'fist'}]},
-  thumb: {body: [112, {a: -48, hand: 'thumb'}], person: [95, {a: -40, len: 38, hand: 'thumb'}]},
+  thumb: {body: [112, {a: -48, hand: 'thumb'}], person: [95, {a: -60, len: 33, hand: 'thumb'}]},
   shrug: {body: [{a: 190, hand: 'open'}, {a: -10, hand: 'open'}], person: [{a: 152, len: 36, hand: 'open'}, {a: 28, len: 36, hand: 'open'}]},
   hips: {body: [{a: 140, len: 22, bend: 9, hand: 'fist'}, {a: 40, len: 22, bend: 9, hand: 'fist'}], person: [{a: 87, len: 37, hand: 'fist'}, {a: 93, len: 37, hand: 'fist'}]},
   belly: {body: [{a: 60, len: 28, front: true}, {a: 120, len: 28, front: true}], person: [{a: 69, len: 40, front: true}, {a: 111, len: 40, front: true}]},

@@ -1,0 +1,254 @@
+{
+ "slug": "sugar-attack-on-teeth",
+ "title": "What sugar really does to your teeth",
+ "music": "sneaky",
+ "retention": {
+  "change3s": {
+   "scene": "all",
+   "line": "a new picture at least every 3 s (the director does it)"
+  },
+  "noIntro": {
+   "scene": "A1",
+   "line": "Sugar! He's eating candy again. Party on this tooth!"
+  },
+  "promise": {
+   "scene": "A3",
+   "line": "Relax. I do three things. The third one leaves a hole!"
+  },
+  "counting": {
+   "scene": "A4,A5,A6",
+   "line": "Number one / Number two / Number three"
+  },
+  "twist": {
+   "scene": "B3",
+   "line": "But here's the twist: your spit fights back. Its minerals help repair enamel."
+  },
+  "bestLast": {
+   "scene": "B6",
+   "line": "And brush twice a day with fluoride toothpaste. Fluoride helps enamel rebuild."
+  },
+  "loop": {
+   "scene": "B7",
+   "line": "So no more candy party on this tooth, sugar bugs!"
+  }
+ },
+ "sources": [
+  {
+   "id": "nidcr",
+   "label": "NIH National Institute of Dental and Craniofacial Research. The Tooth Decay Process: How to Reverse It and Avoid a Cavity (reviewed January 2025)",
+   "url": "https://www.nidcr.nih.gov/health-info/tooth-decay/more-info/tooth-decay-process",
+   "note": "'Whenever we eat or drink something that contains sugar or starch, the bacteria use them to produce acids. These acids begin to eat away at the tooth's hard outer surface, or enamel.' 'Our saliva can help fight off this acid attack.' 'Enamel can repair itself by using minerals from saliva, and fluoride from toothpaste or other sources.' 'Limit between-meal snacks. This reduces the number of acid attacks on teeth and gives teeth a chance to repair themselves.' 'Brushing with fluoride toothpaste two times each day is important for preventing cavities.'"
+  },
+  {
+   "id": "who-sugars",
+   "label": "World Health Organization. Sugars and dental caries, fact sheet (14 August 2025)",
+   "url": "https://www.who.int/news-room/fact-sheets/detail/sugars-and-dental-caries",
+   "note": "'Dental caries results when plaque forms on the surface of a tooth and converts the free sugars ... into acids that destroy the tooth over time.' WHO advises limiting free sugars 'to less than 10% of total energy intake - and ideally to less than 5%'."
+  }
+ ],
+ "shots": [
+  {
+   "id": "A",
+   "set": "mouth",
+   "cast": [
+    {
+     "who": "tooth",
+     "x": 330,
+     "size": 700,
+     "emotion": "scared"
+    },
+    {
+     "who": "bacteria",
+     "x": 770,
+     "size": 520,
+     "emotion": "happy",
+     "pose": "cheer"
+    }
+   ],
+   "props": [
+    {
+     "kind": "candy",
+     "x": 560,
+     "y": 640,
+     "size": 250,
+     "rot": 16
+    }
+   ],
+   "lines": [
+    {
+     "id": "A1",
+     "who": "bacteria",
+     "text": "Sugar! He's eating candy again. Party on this tooth!",
+     "emotion": "happy",
+     "pose": "cheer",
+     "key": "party",
+     "react": {
+      "tooth": "scared"
+     }
+    },
+    {
+     "id": "A2",
+     "who": "tooth",
+     "text": "Oh no! You'll spit acid on me again!",
+     "emotion": "scared",
+     "pose": "panic",
+     "key": "acid",
+     "src": [
+      "nidcr"
+     ]
+    },
+    {
+     "id": "A3",
+     "who": "bacteria",
+     "text": "Relax. I do three things. The third one leaves a hole!",
+     "emotion": "smug",
+     "pose": "hips",
+     "key": "hole",
+     "src": [
+      "who-sugars"
+     ]
+    },
+    {
+     "id": "A4",
+     "who": "bacteria",
+     "text": "Number one: I eat his sugar.",
+     "emotion": "happy",
+     "pose": "thumb",
+     "key": "sugar",
+     "src": [
+      "nidcr"
+     ]
+    },
+    {
+     "id": "A5",
+     "who": "tooth",
+     "text": "Number two: you turn it into acid!",
+     "emotion": "angry",
+     "pose": "point",
+     "key": "acid",
+     "src": [
+      "nidcr"
+     ]
+    },
+    {
+     "id": "A6",
+     "who": "bacteria",
+     "text": "Number three: the acid eats your enamel. Delicious!",
+     "emotion": "smug",
+     "pose": "present",
+     "key": "enamel",
+     "react": {
+      "tooth": "sick"
+     },
+     "src": [
+      "nidcr"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "B",
+   "set": "office",
+   "cast": [
+    {
+     "who": "doctor",
+     "x": 285,
+     "size": 1040
+    },
+    {
+     "who": "kid",
+     "x": 805,
+     "size": 1040,
+     "emotion": "sad",
+     "pose": "think"
+    }
+   ],
+   "props": [
+    {
+     "kind": "toothbrush",
+     "x": 550,
+     "y": 700,
+     "size": 240,
+     "from": "B6",
+     "halo": true
+    }
+   ],
+   "lines": [
+    {
+     "id": "B1",
+     "who": "kid",
+     "text": "Doctor, my tooth hurts. Is sugar really that bad?",
+     "emotion": "sad",
+     "pose": "think",
+     "key": "sugar"
+    },
+    {
+     "id": "B2",
+     "who": "doctor",
+     "text": "Mouth bacteria turn sugar into acid. And that acid attacks your enamel.",
+     "emotion": "neutral",
+     "pose": "explain",
+     "key": "acid",
+     "src": [
+      "nidcr",
+      "who-sugars"
+     ]
+    },
+    {
+     "id": "B3",
+     "who": "doctor",
+     "text": "But here's the twist: your spit fights back. Its minerals help repair enamel.",
+     "emotion": "happy",
+     "pose": "present",
+     "key": "spit",
+     "react": {
+      "kid": "shocked"
+     },
+     "src": [
+      "nidcr"
+     ]
+    },
+    {
+     "id": "B4",
+     "who": "kid",
+     "text": "My spit fixes my teeth?!",
+     "emotion": "shocked",
+     "pose": "panic",
+     "key": "spit"
+    },
+    {
+     "id": "B5",
+     "who": "doctor",
+     "text": "Yes, if you give it time. So snack less often between meals.",
+     "emotion": "neutral",
+     "pose": "explain",
+     "key": "less",
+     "src": [
+      "nidcr"
+     ]
+    },
+    {
+     "id": "B6",
+     "who": "doctor",
+     "text": "And brush twice a day with fluoride toothpaste. Fluoride helps enamel rebuild.",
+     "emotion": "happy",
+     "pose": "thumb",
+     "key": "fluoride",
+     "cam": "cu 85 push",
+     "src": [
+      "nidcr"
+     ]
+    },
+    {
+     "id": "B7",
+     "who": "kid",
+     "text": "So no more candy party on this tooth, sugar bugs!",
+     "emotion": "happy",
+     "pose": "cheer",
+     "key": "party",
+     "cam": "two 35 pull"
+    }
+   ]
+  }
+ ]
+}

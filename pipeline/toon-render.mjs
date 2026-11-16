@@ -5,6 +5,7 @@
  *   node pipeline/toon-render.mjs <slug>            # full render -> videos/<slug>/renders/toon.mp4
  *   node pipeline/toon-render.mjs <slug> --draft    # half size, fast
  *   node pipeline/toon-render.mjs <slug> --stills   # one still per line -> renders/toon-stills/
+ *   node pipeline/toon-render.mjs <slug> --draft --silent   # picture only, estimated timing (script preview)
  *
  * Works before the voice exists (silent, estimated timing). With voices it mixes voice, the
  * sound effects in assets/toons-sfx/ and the music bed, then masters to -14 LUFS.
@@ -29,9 +30,13 @@ const main = () => {
   const a = args();
   const slug = a._[0];
   const toon = readJson(path.join(videoDir(slug), 'toon.json'));
-  const timings = readJson(path.join(videoDir(slug), 'toon-timings.json'), null);
-  const sfx = copyDir(SFX_DIR, path.join(PUBLIC, 'toons', 'sfx'));
-  const beds = copyDir(MUSIC_DIR, path.join(PUBLIC, 'toons', 'music'));
+  const stored = a.silent ? null : readJson(path.join(videoDir(slug), 'toon-timings.json'), null);
+  // a voice clip is only used while its words still match the script
+  const text = Object.fromEntries(toon.shots.flatMap((s) => s.lines.map((l) => [l.id, l.text])));
+  const fresh = stored ? Object.fromEntries(Object.entries(stored.lines).filter(([id, t]) => t.text === undefined || t.text === text[id])) : {};
+  const timings = Object.keys(fresh).length ? {lines: fresh} : null;
+  const sfx = a.silent ? [] : copyDir(SFX_DIR, path.join(PUBLIC, 'toons', 'sfx'));
+  const beds = a.silent ? [] : copyDir(MUSIC_DIR, path.join(PUBLIC, 'toons', 'music'));
   const music = toon.music && beds.includes(toon.music) ? toon.music : null;
   const voiced = timings ? Object.keys(timings.lines).length : 0;
   const props = path.join(ROOT, 'out', `toon-props-${slug}.json`);

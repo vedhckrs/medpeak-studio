@@ -11,123 +11,20 @@ import React, {useMemo} from 'react';
 import {AbsoluteFill, Audio, Sequence, interpolate, random, staticFile, useCurrentFrame} from 'remotion';
 import type {Act, CharProps} from './blueprint';
 import {BLUEPRINTS, CAST, type CastName} from './characters';
-import {Camera, type Cam, CAM0, clampCam, H, type LensName, LENSES, type MoveName, MOVES, type ShotName, SHOTS, W} from './camera';
+import {Camera, type Cam, CAM0, clampCam, H, LENSES, W} from './camera';
+import {AUTO_SFX, EMO_SFX, GAP, layoutToon, type LensName, type MoveName, parseCam, type Placed, type Seg, SEG, type SetName, type ShotName, type Toon, type ToonActor, type ToonLine, type ToonShot, type ToonTimings, TOON_FPS} from './director';
 import {PEOPLE, skeleton, SPECS} from './humans';
 import {Grain} from './ink';
-import {clamp01, E, guessWords, lerp, lipsync, settle, type SpokenWord} from './motion';
+import {clamp01, E, lerp, lipsync, settle, type SpokenWord} from './motion';
 import {blendPose, POSES, type PoseName} from './poses';
+import {Prop} from './props';
 import {armOf, blinkAt, type ArmSpec, type Emotion} from './rig';
-import {FLOORS, FORES, OfficeDesk, SETS, WordCaption, type SetName} from './scenes';
+import {FLOORS, FORES, OfficeDesk, SETS, WordCaption} from './scenes';
 import {Hold, Slot} from './stage';
 
-export const TOON_FPS = 30;
-const GAP = 0.14; // seconds of air between lines (fast banter)
-const SHOT_GAP = 0.25;
-const SEG = 78; // frames: the longest a picture may stay before the camera cuts (2.6 s)
-
-export type ToonLine = {id: string; who: string; text: string; emotion?: Emotion; pose?: PoseName; sfx?: string; key?: string; react?: Record<string, Emotion>; cam?: string};
-export type ToonActor = {who: string; x: number; size: number; y?: number; rot?: number; noLegs?: boolean; flip?: boolean; emotion?: Emotion; pose?: PoseName; enter?: 'walk' | 'drop' | 'pop'};
-export type ToonShot = {id: string; set: SetName; cast: ToonActor[]; lines: ToonLine[]; desk?: boolean};
-export type Toon = {slug: string; title: string; test?: boolean; music?: string; shots: ToonShot[]; sources?: {id: string; label: string; url: string; note?: string}[]};
-export type ToonTimings = {lines: Record<string, {file: string; duration: number; words: SpokenWord[]}>};
+export {layoutToon, parseCam, TOON_FPS};
+export type {Seg, Toon, ToonActor, ToonLine, ToonShot, ToonTimings};
 export type ToonProps = {toon: Toon; timings: ToonTimings | null; sfx: string[]; music: string | null};
-
-/** The sound that marks a line's mood when the script names none. */
-const EMO_SFX: Partial<Record<Emotion, string>> = {shocked: 'boing', scared: 'wobble', angry: 'thud-soft', happy: 'ding', smug: 'slide-whistle-up', sick: 'gurgle-stomach', sad: 'sad-trombone'};
-/** The director's default picture for each mood: shot size, lens, move. */
-const EMO_CAM: Record<Emotion, [ShotName, LensName, MoveName]> = {
-  neutral: ['mcu', '50', 'push'], happy: ['ms', '35', 'static'], angry: ['low', '35', 'push'], scared: ['cu', '85', 'dutch'],
-  smug: ['mcu', '50', 'push'], sick: ['cu', '85', 'push'], sleepy: ['mcu', '50', 'static'], shocked: ['cu', '85', 'crash'], sad: ['cu', '85', 'push'],
-};
-/** When a line is long, the camera keeps changing the picture in this order. */
-const RELIEF: [ShotName, LensName, MoveName][] = [['two', '35', 'truck'], ['cu', '85', 'push'], ['ms', '50', 'static'], ['ots', '50', 'push']];
-
-type Placed = {line: ToonLine; si: number; li: number; from: number; frames: number; words: SpokenWord[]; file?: string};
-export type Seg = {from: number; to: number; si: number; line: Placed; who: string; shot: ShotName; lens: LensName; move: MoveName; whip: boolean};
-
-/** Read "cu 85 push" into a shot size, a lens and a move (any order, any subset). */
-export const parseCam = (s: string | undefined): {shot?: ShotName; lens?: LensName; move?: MoveName} => {
-  const out: {shot?: ShotName; lens?: LensName; move?: MoveName} = {};
-  for (const w of (s ?? '').toLowerCase().split(/[\s,]+/).filter(Boolean)) {
-    const lens = w.replace(/mm$/, '');
-    if (w in SHOTS) out.shot = w as ShotName;
-    else if (lens in LENSES) out.lens = lens as LensName;
-    else if (w in MOVES) out.move = w as MoveName;
-  }
-  return out;
-};
-const CLOSE: ShotName[] = ['mcu', 'cu', 'ecu', 'ots', 'low'];
-
-export const layoutToon = (toon: Toon, timings: ToonTimings | null) => {
-  const lines: Placed[] = [];
-  const shots: {shot: ToonShot; from: number; frames: number}[] = [];
-  let at = 0;
-  toon.shots.forEach((shot, si) => {
-    const from = at;
-    shot.lines.forEach((line, li) => {
-      const tm = timings?.lines[line.id];
-      const sec = tm ? tm.duration : Math.max(1, line.text.split(/\s+/).length / 2.8 + 0.35);
-      const frames = Math.round((sec + GAP) * TOON_FPS);
-      lines.push({line, si, li, from: at, frames, words: tm?.words ?? guessWords(line.text, sec), file: tm?.file});
-      at += frames;
-    });
-    at += Math.round(SHOT_GAP * TOON_FPS);
-    shots.push({shot, from, frames: at - from});
-  });
-
-  // ---- the director: camera segments
-  const segs: Seg[] = [];
-  let speakerChanges = 0;
-  lines.forEach((l, idx) => {
-    const shot = toon.shots[l.si];
-    const end = l.from + l.frames;
-    const own = parseCam(l.line.cam);
-    const [es, el, em] = EMO_CAM[l.line.emotion ?? 'neutral'];
-    const main: [ShotName, LensName, MoveName] = [own.shot ?? es, own.lens ?? el, own.move ?? em];
-    const prev = lines[idx - 1];
-    const changed = !!prev && prev.si === l.si && prev.line.who !== l.line.who;
-    if (changed) speakerChanges++;
-    const plan: {len: number; who: string; cam: [ShotName, LensName, MoveName]}[] = [];
-    let left = l.frames;
-    if (l.li === 0 && !own.shot) {
-      const open = Math.min(54, Math.round(l.frames * 0.42));
-      plan.push({len: open, who: l.line.who, cam: ['wide', '24', 'truck']});
-      left -= open;
-    }
-    const reactor = l.line.react ? Object.keys(l.line.react).find((w) => shot.cast.some((a) => a.who === w)) : undefined;
-    let k = 0;
-    let first = true;
-    let last: ShotName | null = plan.length ? plan[plan.length - 1].cam[0] : null;
-    while (left > 0) {
-      let len = left <= SEG + 10 ? left : Math.min(left, SEG); // a line may run up to 2.9 s in one picture
-      if (left - len > 0 && left - len < 24) len = Math.ceil(left / 2); // never leave a sliver
-      if (first) {
-        // a long first stretch with a reaction: cut away to the listener's face for a moment
-        if (reactor && len >= 62) {
-          const a = Math.round(len * 0.56);
-          plan.push({len: a, who: l.line.who, cam: main}, {len: len - a, who: reactor, cam: ['cu', '85', 'static']});
-        } else plan.push({len, who: l.line.who, cam: main});
-        last = main[0];
-      } else {
-        // the next picture must differ in size from the one before (no jump cuts)
-        let pick = RELIEF[(k + l.li) % RELIEF.length];
-        if (pick[0] === last || (pick[0] === 'two' && shot.cast.length < 2)) { k++; pick = RELIEF[(k + l.li) % RELIEF.length]; }
-        plan.push({len, who: l.line.who, cam: pick});
-        last = pick[0];
-        k++;
-      }
-      first = false;
-      left -= len;
-    }
-    let f = l.from;
-    plan.forEach((p, i) => {
-      const whip = i === 0 && changed && l.li > 0 && CLOSE.includes(p.cam[0]) && (own.move === 'whip' || speakerChanges % 3 === 2);
-      segs.push({from: f, to: Math.min(end, f + p.len), si: l.si, line: l, who: p.who, shot: p.cam[0], lens: p.cam[1], move: p.cam[2] === 'whip' ? 'push' : p.cam[2], whip});
-      f += p.len;
-    });
-  });
-  return {lines, shots, segs, cuts: segs, total: Math.max(TOON_FPS, at)};
-};
 
 // ------------------------------------------------------------------ where everybody is
 const isPerson = (who: string) => who in SPECS;
@@ -402,6 +299,10 @@ export const ToonPlayer: React.FC<ToonProps> = ({toon, timings, sfx, music}) => 
     const kf = keyFrame(l);
     if (kf !== null) events.push({at: kf, name: 'caption-pop', vol: 0.3});
   }
+  for (const s of L.shots) for (const p of s.shot.props ?? []) {
+    const at = p.from ? L.lines.find((l) => l.line.id === p.from)?.from : s.from;
+    if (at !== undefined && at > 0) events.push({at, name: 'pop', vol: 0.45});
+  }
   for (const s of L.segs) {
     if (s.whip) events.push({at: s.from, name: 'whoosh-fast', vol: 0.4});
     else if (s.from !== s.line.from) events.push({at: s.from, name: 'swish', vol: 0.22});
@@ -418,6 +319,18 @@ export const ToonPlayer: React.FC<ToonProps> = ({toon, timings, sfx, music}) => 
         <Set t={f / TOON_FPS} />
         {shot.cast.map((a) => <Actor key={a.who} a={a} shot={shot} shotFrom={shotAt.from} lines={shotLines} f={f} cur={cur} blur={blurOf(a.who)} />)}
         {shot.desk && <OfficeDesk />}
+        {(shot.props ?? []).map((p, i) => {
+          const a = p.from ? shotLines.find((l) => l.line.id === p.from)?.from ?? shotAt.from : shotAt.from;
+          const z = p.to ? shotLines.find((l) => l.line.id === p.to) : undefined;
+          const end = z ? z.from + z.frames : Infinity;
+          if (f < a || f >= end) return null;
+          const k = Math.min(E.back(clamp01((f - a) / 9)), clamp01((end - f) / 5));
+          return (
+            <Slot key={i} x={p.x} y={p.y} size={p.size}>
+              <g transform={`rotate(${(p.rot ?? 0) + settle(f, a, 7, 0.9, 0.3)}) scale(${k.toFixed(3)})`}><Prop kind={p.kind} t={f / TOON_FPS} halo={p.halo} /></g>
+            </Slot>
+          );
+        })}
         {Fore && <Fore t={f / TOON_FPS} />}
       </Camera>
       {word && <WordCaption word={clean(word.w)} key_={clean(word.w).toLowerCase() === keyWord} pop={0.72 + 0.28 * E.back(clamp01((tl - word.start) * TOON_FPS / 4))} y={1400} />}

@@ -6,7 +6,10 @@
 // See skill/medpeak-health/references/toons-camera.md.
 import React, {createContext, useContext} from 'react';
 import {AbsoluteFill} from 'remotion';
+import type {LensName, MoveName, ShotName} from './director';
 import {ScaleCtx} from './ink';
+
+export type {LensName, MoveName, ShotName};
 
 export const W = 1080;
 export const H = 1920;
@@ -25,8 +28,7 @@ export const LENSES = {
   '85': {label: '85 mm portrait', bg: 8, fg: 13, depth: 0.72, vig: 0.22, use: 'close-ups: the face sharp, the background soft; emotion'},
   '135': {label: '135 mm tele', bg: 12, fg: 18, depth: 0.58, vig: 0.28, use: 'extreme close-ups: eyes, a single detail; background melted'},
   macro: {label: 'macro', bg: 15, fg: 20, depth: 0.5, vig: 0.32, use: 'tiny things made huge: a germ, a drop, a crack in a tooth'},
-} as const;
-export type LensName = keyof typeof LENSES;
+} as const satisfies Record<LensName, {label: string; bg: number; fg: number; depth: number; vig: number; use: string}>;
 
 // ------------------------------------------------------------------ shot sizes and moves
 export const SHOTS = {
@@ -40,8 +42,7 @@ export const SHOTS = {
   ecu: 'extreme close-up: the eyes or mouth (shock, a secret)',
   ots: 'dirty single: the speaker, with the blurred listener at the edge of the frame',
   low: 'hero shot: the speaker high in the frame, a little tilted (power, anger)',
-} as const;
-export type ShotName = keyof typeof SHOTS;
+} as const satisfies Record<ShotName, string>;
 export const MOVES = {
   static: 'locked off, with a barely visible creep (calm, deadpan)',
   push: 'slow push-in (growing importance, tension)',
@@ -53,8 +54,7 @@ export const MOVES = {
   dutch: 'tilted horizon that settles (panic, dizziness)',
   shake: 'a short impact shake that dies out (a hit, a shout)',
   rack: 'focus pull: the picture starts soft on the speaker and snaps sharp',
-} as const;
-export type MoveName = keyof typeof MOVES;
+} as const satisfies Record<MoveName, string>;
 
 /** Everything the camera is doing on one frame. */
 export type Cam = {zoom: number; cx: number; cy: number; rot: number; lens: LensName; sx: number; sy: number; whip: number; soft: number};

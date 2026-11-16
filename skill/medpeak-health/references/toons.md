@@ -36,12 +36,15 @@ cartoon health channel (format only). We never copy anyone's characters, art, au
 | `src/toons/motion.ts` | `key`, `E`, `settle`, `lipsync` |
 | `src/toons/camera.tsx` | `Camera`, `Layer` (parallax + depth of field), `LENSES`, `SHOTS`, `MOVES` |
 | `src/toons/scenes.tsx` | 9 living, layered sets + foregrounds (`SETS`, `FORES`, `SET_LIFE`), `WordCaption` |
-| `src/toons/Player.tsx` | Plays a `toon.json`: the director, the acting, captions, sound |
+| `src/toons/director.ts` | The script format and the shot list, with no React: the player and the gate share it |
+| `src/toons/props.tsx` | 8 props a script can show (glass, pill bottle, soda, lollipop, toothbrush, burger, pillow, clock) |
+| `src/toons/Player.tsx` | Plays a `toon.json`: camera, acting, props, captions, sound |
+| `pipeline/toon-check.mjs` | The script gate: valid script, Retention 7, format, sources (`--sheet`, `--check-urls`) |
 | `src/toons/Preview.tsx` | Boards: `ToonCast`, `ToonSheet`, `ToonBlueprint`, `ToonCamera`, `ToonSets`, `ToonEmotions` |
 | `pipeline/toon-sheets.mjs` | Renders every board and model sheet into `out/toons/sheets/` |
 
-See `toons-style.md` (look and research), `toons-blueprint.md` (how to add a character) and
-`toons-camera.md` (shots, lenses, moves).
+See `toons-style.md` (look and research), `toons-blueprint.md` (how to add a character),
+`toons-camera.md` (shots, lenses, moves) and `toons-script.md` (how to write and check a script).
 
 ## Phase B: voices, lip-sync, sound and music (built 2026-11-16)
 A Toon is one file, `videos/<slug>/toon.json`. The player (`src/toons/Player.tsx`, composition `Toon`)
@@ -72,8 +75,9 @@ turns it into the whole Short: staging, acting, lip-sync, camera cuts, captions,
 | `pipeline/toon-render.mjs` | Renders the Short (`--draft`, `--stills`); works silent before the voice exists; masters to -14 LUFS |
 | `src/toons/motion.ts` | `lipsync(words, t)`: the mouth opens on each spoken word and closes between words |
 
-Order of work for a Toon: write `toon.json` -> `toon-render --stills` (free, silent check) ->
-`toon-voice --dry-run` -> owner approves -> `toon-voice --approve --max-characters N` -> `toon-render`.
+Order of work for a Toon: research -> write `toon.json` -> `toon-check --sheet --check-urls` ->
+`toon-render --draft --silent` (free preview) -> `toon-voice --dry-run` -> owner approves ->
+`toon-voice --approve --max-characters N` -> `toon-check` again (real timing) -> `toon-render`.
 
 **Money rules.** Every paid script prints its plan for free with `--dry-run` and refuses to spend
 without `--approve` and a cap. Prices measured on 2026-11-16 (the owner approved 4,900, the real total
@@ -103,6 +107,7 @@ play about 9 dB under the voice, a little higher in the gaps. The render is mast
 - Phase B (done 2026-11-16): voice cast, lip-sync, script player, the 38-effect library, 4 music beds,
   and a fully voiced and mixed test scene (`videos/pill-without-water`). Open: the owner's review of the
   voices by ear; 21 of the 25 voices have not been heard yet (`toon-voice --audition`, about 1,550 credits).
-- Phase C: script rules for Toons (Retention 7 adapted to dialogue), doctor lines fact-checked against
-  sources, a `toon-check` gate, more poses and props.
+- Phase C (done 2026-11-16): script rules (`toons-script.md`), the `toon-check` gate (Retention 7 in
+  dialogue, format, sources), props, 17 poses, and the first three researched scripts with silent
+  previews. Voices for the three wait for the owner's approval.
 - Phase D: 3 test Shorts, private upload, review. Phase E: daily rhythm.
