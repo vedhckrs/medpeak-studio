@@ -3,6 +3,10 @@
 // starting that script (it talks to the paid sound service).
 // name, seconds, prompt. Short, dry, close-up cartoon sounds with no music and no voice.
 export const LIBRARY = [
+  // the scene-change sound. Not bought: rendered from earshot's code-made bank (`earshot sfx render
+  // swipe/glide --dur 0.7`), the best match of 12 candidates for "a soft airy whoosh" (strong, z +3.2,
+  // a slow 95 ms attack). It replaced whoosh-soft, which measures as a low thump (centre 78 Hz, 11 ms attack).
+  ['whoosh-air', 0.7, 'Soft airy whoosh, a gentle quick scene transition'],
   ['whoosh-soft', 0.6, 'Soft airy whoosh, quick scene transition, cartoon, dry, no music'],
   ['whoosh-fast', 0.7, 'Loud fast whoosh swoosh, something swings past the microphone, cartoon swipe'],
   ['swish', 0.5, 'Tiny quick swish, light camera cut accent, subtle, dry'],

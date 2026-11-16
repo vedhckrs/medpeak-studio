@@ -5,7 +5,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {spawnSync} from 'node:child_process';
-import {bedAt, layoutToon, SOUND, soundPlan, TOON_FPS} from '../../src/toons/director.ts';
+import {BED, bedAt, bedStart, layoutToon, SOUND, soundPlan, TOON_FPS} from '../../src/toons/director.ts';
 import {ROOT} from './util.mjs';
 
 /** What the mix must keep to (loudness in LU = dB as the ear hears it). */
@@ -44,6 +44,12 @@ export const checkSound = (toon, timings, {sfxDir = path.join(ROOT, 'assets', 't
   const missing = [...new Set(plan.map((e) => e.name))].filter((n) => !fs.existsSync(path.join(sfxDir, `${n}.mp3`)));
   add('Sounds exist', !missing.length, missing.length ? `not in the library: ${missing.join(', ')}` : 'every sound is in the library');
 
+  // ---- the bed's rests: none may fall in a pause between lines (the bed's shape is on file next to it)
+  const shapeFile = toon.music ? path.join(musicDir, `${toon.music}.shape.json`) : null;
+  const shape = shapeFile && fs.existsSync(shapeFile) ? JSON.parse(fs.readFileSync(shapeFile, 'utf8')) : null;
+  const bed = shape ? bedStart(L, shape) : null;
+  if (bed) add('No hole in a pause', !bed.holes.length, bed.holes.length ? `the music rests with no voice over it at ${bed.holes.map(([a, b]) => `${a.toFixed(1)}-${b.toFixed(1)} s`).join(', ')} (${BED.hole} s or more is heard as the sound cutting out): use another bed` : `the bed starts ${bed.start.toFixed(2)} s into its track: every rest falls under a voice`);
+
   // ---- measured layers (only when the voices are on this machine)
   const voices = L.lines.filter((l) => l.file && fs.existsSync(path.join(publicDir, l.file))).map((l) => ({file: path.join(publicDir, l.file), at: l.from / TOON_FPS, vol: 1}));
   const measured = voices.length === L.lines.length && !missing.length;
@@ -65,5 +71,5 @@ export const checkSound = (toon, timings, {sfxDir = path.join(ROOT, 'assets', 't
       add('Music under the voice', under >= RULES.musicUnderVoice[0] && under <= RULES.musicUnderVoice[1], `music ${b.I.toFixed(1)} LUFS: ${under.toFixed(1)} under the voice (between ${RULES.musicUnderVoice[0]} and ${RULES.musicUnderVoice[1]}: heard, never in the way)`);
     }
   }
-  return {ok: res.every((r) => r.pass), seconds, plan, results: res, measured, levels};
+  return {ok: res.every((r) => r.pass), seconds, plan, results: res, measured, levels, bedStart: bed?.start ?? 0};
 };

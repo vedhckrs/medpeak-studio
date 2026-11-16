@@ -193,7 +193,7 @@ export const propReach = (p: ToonProp): [number, number, number, number] => {
 };
 
 /** Sounds the player places on its own: a soft whoosh for a new place or a time card, a swish for a cut inside a scene. */
-export const AUTO_SFX = ['whoosh-soft', 'swish', 'whoosh-fast'];
+export const AUTO_SFX = ['whoosh-air', 'swish', 'whoosh-fast'];
 /** The director's default picture for each mood: shot size, lens, move. */
 export const EMO_CAM: Record<Emotion, [ShotName, LensName, MoveName]> = {
   neutral: ['mcu', '50', 'push'], happy: ['ms', '35', 'static'], angry: ['low', '35', 'push'], scared: ['cu', '85', 'dutch'],
@@ -466,7 +466,7 @@ export const soundPlan = (L: Layout): SoundEvent[] => {
   const all: SoundEvent[] = [];
   L.shots.forEach((s, i) => {
     const afterCard = i > 0 && L.shots[i - 1].shot.card !== undefined; // the card's own whoosh carries the jump in time
-    if (s.from > 0 && !afterCard) all.push({at: s.from, name: 'whoosh-soft', vol: SOUND.whoosh, why: s.shot.card !== undefined ? 'time card' : `new place (${s.shot.id})`, rank: 1});
+    if (s.from > 0 && !afterCard) all.push({at: s.from, name: 'whoosh-air', vol: SOUND.whoosh, why: s.shot.card !== undefined ? 'time card' : `new place (${s.shot.id})`, rank: 1});
     for (const e of s.shot.events ?? []) if (e.sfx) all.push({at: frameOf(L, i, e.at, e.word, e.delay), name: e.sfx, vol: SOUND.effect, why: `scene ${s.shot.id}: ${e.set ? Object.keys(e.set).join('+') : 'event'}`, rank: 2});
   });
   for (const l of L.lines) if (l.line.sfx) all.push({at: l.from, name: l.line.sfx, vol: SOUND.effect, why: `line ${l.line.id}`, rank: 2});
@@ -493,4 +493,73 @@ export const bedAt = (L: Layout, f: number) => {
   const duck = n / 11;
   const fade = Math.min(1, f / 12, (L.total - f) / 24);
   return (SOUND.bed + (SOUND.bedUnderVoice - SOUND.bed) * duck) * Math.max(0, fade);
+};
+
+// ------------------------------------------------------------------ the bed's rests
+/** A music bed's own loudness, measured every `step` seconds (pipeline/toon-music-scan.mjs writes it next to the bed). */
+export type BedShape = {step: number; seconds: number; db: number[]};
+/**
+ * A REST is the bed `drop` dB under its usual level for `rest` seconds or more (a bar where the band
+ * stops). A HOLE is a rest with no voice over it for `hole` seconds or more: the whole sound nearly
+ * stops, and the ear hears it as the sound cutting out. The first listen with earshot found holes
+ * in all three videos (2026-11-16); nothing had looked for them.
+ */
+export const BED = {drop: 10, rest: 0.3, hole: 0.5, tryEvery: 0.25};
+export const bedRests = (shape: BedShape) => {
+  const sorted = [...shape.db].sort((a, b) => a - b);
+  const usual = sorted[Math.floor(sorted.length / 2)];
+  const quiet = shape.db.map((v) => v < usual - BED.drop);
+  // one soft note inside a rest does not end it: a gap of up to 0.2 s that stays well under the usual level is still rest
+  for (let i = 1; i < quiet.length - 1; i++) {
+    if (quiet[i] || !quiet[i - 1]) continue;
+    let j = i;
+    while (j < quiet.length && !quiet[j] && shape.db[j] < usual - BED.drop / 2 && (j - i) * shape.step < 0.2 - 1e-9) j++;
+    if (j < quiet.length && quiet[j]) for (let k = i; k < j; k++) quiet[k] = true;
+  }
+  const spans: [number, number][] = [];
+  let from = -1;
+  for (let i = 0; i <= quiet.length; i++) {
+    const q = i < quiet.length && quiet[i];
+    if (q && from < 0) from = i;
+    if (!q && from >= 0) { if ((i - from) * shape.step >= BED.rest - 1e-9) spans.push([from * shape.step, i * shape.step]); from = -1; }
+  }
+  // a track that fades out leaves a rest at its very end: the loop is cut there, so the seam has no gap
+  const last = spans[spans.length - 1];
+  const end = last && last[1] >= shape.db.length * shape.step - shape.step / 2 ? last[0] : shape.db.length * shape.step;
+  return {usual, quiet, spans, end};
+};
+/** The holes of a video, in seconds [from, to], for a bed that starts `start` seconds into its track and loops (without its faded end). */
+export const bedHoles = (L: Layout, shape: BedShape, start = 0): [number, number][] => {
+  const {quiet, end} = bedRests(shape);
+  const loop = Math.max(1, Math.round(end / shape.step));
+  // a voice is sounding while a word is spoken (the real word times, once the voices are made); before that, during the whole line
+  const said = L.lines.flatMap((l) => (l.words.length ? l.words.map((w) => [l.from / TOON_FPS + w.start - 0.04, l.from / TOON_FPS + w.end + 0.08]) : [[l.from / TOON_FPS, (l.from + l.frames) / TOON_FPS - GAP]]));
+  const talking = (fr: number) => { const t = fr / TOON_FPS; return said.some(([a, b]) => t >= a && t < b); };
+  const steps = Math.ceil(L.total / TOON_FPS / shape.step);
+  const holes: [number, number][] = [];
+  let from = -1;
+  for (let i = 0; i <= steps; i++) {
+    const t = i * shape.step;
+    const q = i < steps && quiet[Math.floor((start + t) / shape.step + 1e-6) % loop] && !talking(Math.round(t * TOON_FPS));
+    if (q && from < 0) from = i;
+    if (!q && from >= 0) { if ((i - from) * shape.step >= BED.hole - 1e-9) holes.push([from * shape.step, i * shape.step]); from = -1; }
+  }
+  return holes;
+};
+/**
+ * How the bed is laid under a video: where it starts in its track so that its rests fall under
+ * voices (0 when that already leaves no hole, else the earliest start with none, or with the
+ * least), and where its loop ends (before a faded end). `holes` = what is still left.
+ * The voice is taken from the word times, which run a little long: `toon:listen` on the finished
+ * file is the final word on holes.
+ */
+export const bedStart = (L: Layout, shape: BedShape) => {
+  const cost = (h: [number, number][]) => h.reduce((n, [a, b]) => n + (b - a), 0);
+  const {end} = bedRests(shape);
+  let best = {start: 0, end, holes: bedHoles(L, shape, 0)};
+  for (let st = BED.tryEvery; st < end - 1 && best.holes.length; st += BED.tryEvery) {
+    const holes = bedHoles(L, shape, st);
+    if (cost(holes) < cost(best.holes) - 1e-9) best = {start: Number(st.toFixed(2)), end, holes};
+  }
+  return best;
 };

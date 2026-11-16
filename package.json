@@ -27,6 +27,7 @@
     "toon:staging": "node --import tsx pipeline/toon-staging.mjs",
     "toon:sound": "node pipeline/toon-sound.mjs",
     "toon:listen": "node pipeline/toon-listen.mjs",
+    "toon:music:scan": "node pipeline/toon-music-scan.mjs",
     "toon:package": "node pipeline/toon-package.mjs"
   },
   "dependencies": {

@@ -15,6 +15,7 @@ import path from 'node:path';
 import {execFileSync} from 'node:child_process';
 import {args, PUBLIC, ROOT, readJson, videoDir, writeJson} from './lib/util.mjs';
 import {MUSIC_DIR, SFX_DIR} from './lib/toon-audio.mjs';
+import {bedStart, layoutToon} from '../src/toons/director.ts';
 import {master} from './render.mjs';
 
 const FPS = 30;
@@ -37,7 +38,20 @@ const main = () => {
   const timings = Object.keys(fresh).length ? {lines: fresh} : null;
   const sfx = a.silent ? [] : copyDir(SFX_DIR, path.join(PUBLIC, 'toons', 'sfx'));
   const beds = a.silent ? [] : copyDir(MUSIC_DIR, path.join(PUBLIC, 'toons', 'music'));
-  const music = toon.music && beds.includes(toon.music) ? toon.music : null;
+  let music = toon.music && beds.includes(toon.music) ? toon.music : null;
+  // start the bed where its rests fall under voices (director.ts: bedStart): the same track, turned so that it begins later
+  const shape = music ? readJson(path.join(MUSIC_DIR, `${music}.shape.json`), null) : null;
+  if (shape) {
+    const {start, end} = bedStart(layoutToon(toon, timings), shape);
+    if (start > 0 || end < shape.seconds - 0.05) {
+      const turned = `${music}-from-${Math.round(start * 100)}`;
+      const cut = `atrim=start=${start}:end=${end.toFixed(2)},asetpts=N/SR/TB`;
+      const graph = start > 0 ? `[0:a]${cut}[a];[0:a]atrim=end=${start},asetpts=N/SR/TB[b];[a][b]acrossfade=d=0.12:c1=tri:c2=tri` : `[0:a]${cut},afade=t=out:st=${(end - 0.06).toFixed(2)}:d=0.06`;
+      execFileSync('ffmpeg', ['-y', '-hide_banner', '-loglevel', 'error', '-i', path.join(MUSIC_DIR, `${music}.mp3`), '-filter_complex', graph, '-ar', '44100', '-b:a', '160k', path.join(PUBLIC, 'toons', 'music', `${turned}.mp3`)]);
+      console.log(`Music bed "${music}": starts ${start.toFixed(2)} s into the track${end < shape.seconds - 0.05 ? `, loops at ${end.toFixed(1)} s (its faded end is left out)` : ''}, so that its rests fall under voices.`);
+      music = turned;
+    }
+  }
   const voiced = timings ? Object.keys(timings.lines).length : 0;
   const props = path.join(ROOT, 'out', `toon-props-${slug}.json`);
   writeJson(props, {toon, timings, sfx, music});
