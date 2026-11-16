@@ -80,7 +80,8 @@ A new wall item goes into `wallItems` with its box, never straight into the room
 
 ### How tidy a room is (`ROOM_TIDY`)
 The owner looked at a box-shaped room with a bare wall (2026-11-16) and chose to keep the rooms as
-they are, with a few things removed (2026-11-17). One number in `rooms.tsx` sets it for every room:
+they are, with a few things removed (2026-11-17), and picked level 1 ("A"). One number in
+`rooms.tsx` sets it for every room; it is **1** and stays 1 unless the owner says otherwise:
 - 0: everything, as in the first three videos;
 - 1: the wall keeps its window and, in a clinic, the chart at the wall's edge (a bathroom keeps its
   mirror); no clock, certificate, pictures or shelf, and nothing blurred in front of the picture;

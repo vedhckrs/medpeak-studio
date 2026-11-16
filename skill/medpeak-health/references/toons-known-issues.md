@@ -47,6 +47,8 @@ measures it on every script (they all run in `npm test`).
 
 | 21 | "head not proper, hair and cap" (the boy, close-up, 2026-11-16) | the cap was drawn as a dome 20 units above the skull and wider than the head, with the peak down on the eyebrows; the only hair in view was two dark triangles by the ears, which read as straps | the head has hair first (a fringe, a lock by each ear), and a small cap sits on it, pushed back; the crown follows the skull. New choice sheet `toons-boards/caps.jpg` (A forward, B backward, C no cap) | choice sheet; the owner picks |
 
+| 22 | "remove thing from wall, keep clean minimal wall ... no wall element disturb" (2026-11-16); then, shown a bare box-shaped room: "make both now only, just remove few thing" (2026-11-17); pick: "A" | the rooms carried a clock, a certificate, pictures and a blurred leaf in front, in the very area where bubbles and tags come up | `ROOM_TIDY = 1` in `rooms.tsx`: the wall keeps its window and the clinic's chart at the edge; nothing blurred in front. The rooms' look is otherwise unchanged | test: the tidy wall; staging check |
+
 **Decided, not bugs:** a bubble or a tag may cover what hangs on the wall (it is drawn over the room
 and gone in a few seconds; there is no free wall left for all of them), and people stand in front
 of furniture on purpose (a desk, a bed). Neither is checked.
@@ -56,7 +58,6 @@ of furniture on purpose (a desk, a bed). Neither is checked.
 |---|---|---|
 | The boy's head: A, B or C | `toons-boards/caps.jpg` | A is in the engine now; B or C is a one-line change in `SPECS.kid` |
 | Dr. Mira's global look: A, B or C | `toons-boards/doctor-options.jpg` | `SPECS.doctor` gets the chosen skin, eyes and hair; sheets and boards are rendered again |
-| The rooms: A (a few things removed) or B (a little more removed) | `toons-boards/room-style-clinic.jpg`, `room-style-home.jpg` | `ROOM_TIDY` in `src/toons/rooms.tsx` is set to 1 or 2 (it is 0 = as before until the owner picks); the rooms boards are rendered again. The box-shaped room of 2026-11-16 was dropped on the owner's word ("make both now only, just remove few thing") |
 
 ## Open, and why
 | # | What | Why it is still open | Who can close it |

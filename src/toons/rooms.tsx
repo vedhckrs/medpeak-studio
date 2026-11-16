@@ -25,7 +25,7 @@ const FLOOR_TOP = 1340; // where the wall meets the floor
  *       certificate, pictures or shelf), and nothing blurred stands in front of the picture;
  *   2 = also no plants and none of the small objects on and beside the furniture.
  */
-export const ROOM_TIDY: number = 0;
+export const ROOM_TIDY: number = 1; // the owner's pick, 2026-11-17: "A" (a few things removed)
 /** The floor line the characters stand on, in every built room. */
 export const ROOM_FLOOR = 1500;
 

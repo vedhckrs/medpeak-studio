@@ -366,9 +366,12 @@ test('in every room a recipe can make, the wall items hang above head height, in
   for (const [kind, layouts] of Object.entries(ROOM_LAYOUTS)) for (const layout of layouts) for (const style of ROOM_WINDOWS) for (const side of ROOM_SIDES) {
     const look = {kind, palette: 'mint', wall: 'paint', floor: 'wood', window: {style, side, view: 'garden'}, layout, chart: 'body'};
     const role = kind === 'clinic' ? 'clinic' : 'home';
-    const items = wallItems(look, role);
+    const items = wallItems(look, role, 0); // everything a wall can carry (ROOM_TIDY 0)
     const where = `${kind}, ${layout}, ${style} window ${side}`;
     assert.ok(items.length >= 2, `${where}: something hangs on the wall`);
+    // the tidy wall the owner chose keeps the chart (clinic) or the mirror (bathroom) and nothing else
+    const tidy = wallItems(look, role, 1);
+    assert.deepEqual(tidy.map((it) => it.kind), kind === 'clinic' ? ['chart'] : kind === 'bathroom' ? ['mirror'] : [], `${where}: the tidy wall`);
     rooms++;
     items.forEach((it, i) => {
       assert.ok(it.box[1] >= WALL_BAND.top && it.box[3] <= WALL_BAND.bottom, `${where}: the ${it.kind} hangs at ${it.box[1]} to ${Math.round(it.box[3])} px, outside the band above the heads`);
@@ -381,11 +384,16 @@ test('in every room a recipe can make, the wall items hang above head height, in
 });
 
 test('nothing on a wall is behind a head on any real script, and the staging check catches the first rooms\' chart behind Dr. Mira', async () => {
-  for (const t of real) { const r = await scanStaging(t, null); assert.ok(r.wallItems >= 4, `${t.slug}: wall items were measured`); assert.deepEqual(r.hidden, [], `${t.slug}: a wall item behind a head`); }
+  for (const t of real) { const r = await scanStaging(t, null); assert.ok(r.wallItems >= 1, `${t.slug}: wall items were measured`); assert.deepEqual(r.hidden, [], `${t.slug}: a wall item behind a head`); }
   const t = real.find((x) => x.slug === 'pill-without-water');
   const first = () => [{kind: 'chart', x: 400, y: 250, s: 1, box: [250, 250, 550, 680]}]; // where the room kit first hung it
   const r = await scanStaging(t, null, {wallItems: first});
   assert.ok(r.hidden.some((x) => x.includes('chart') && x.includes('doctor')), 'the chart behind the doctor is reported');
+});
+
+test('the rooms are tidy: the owner picked "A" (a few things removed)', async () => {
+  const {ROOM_TIDY} = await import('../../src/toons/rooms.tsx');
+  assert.equal(ROOM_TIDY, 1, 'the wall keeps its window and the chart; no clock, certificate, pictures or blurred foreground');
 });
 
 test('people take the light of a night room, and keep their colours by day', async () => {
