@@ -32,6 +32,30 @@
    "time": "night"
   }
  },
+ "package": {
+  "title": "What Happens If You Lie Down After Eating a Big Dinner",
+  "phrase": "what happens if you lie down after eating",
+  "opener": "What happens if you lie down after eating a big dinner? Your stomach is full, the valve at its top can relax, and acid flows up your food pipe: that burning in your chest is heartburn. This cartoon shows it from inside the stomach, and Dr. Mira shares the NHS advice: no food for three or four hours before bed.",
+  "question": "How long do you wait after dinner before you lie down?",
+  "tags": [
+   "what happens if you lie down after eating",
+   "lying down after eating",
+   "lying down after eating effects",
+   "heartburn",
+   "acid reflux",
+   "heartburn at night",
+   "acid reflux at night",
+   "how to stop heartburn",
+   "stomach acid",
+   "health cartoon"
+  ],
+  "hashtags": "#heartburn #acidreflux #shorts",
+  "cover": {
+   "at": 17.2,
+   "text": "Lying down after dinner?",
+   "accent": "dinner"
+  }
+ },
  "retention": {
   "noIntro": {
    "scene": "A1",

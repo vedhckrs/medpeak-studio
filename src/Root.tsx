@@ -5,7 +5,7 @@ import {place} from './lib/timeline';
 import {MedVideo} from './MedVideo';
 import {Thumbnail} from './Thumbnail';
 import {ActingDemo, BlueprintBoard, CastBoard, EmotionBoard, ModelSheet, SceneDemo, SetBoard, CameraBoard, CapBoard, PoseBoard, RoomsBoard, StageBoard} from './toons/Preview';
-import {layoutToon, TOON_FPS, ToonPlayer, type Toon, type ToonProps} from './toons/Player';
+import {layoutToon, TOON_FPS, ToonCover, ToonPlayer, type Toon, type ToonProps} from './toons/Player';
 import type {Video, VideoProps} from './types';
 import toonDemo from '../videos/pill-without-water/toon.json';
 import demo from '../videos/what-sugar-does-to-your-body/video.json';
@@ -38,6 +38,7 @@ export const Root: React.FC = () => (
     <Still id="ToonCaps" component={CapBoard} width={1920} height={1080} />
     <Still id="ToonPoses" component={PoseBoard} width={1920} height={1600} defaultProps={{who: 'doctor'}} />
     <Composition id="ToonScenes" component={SceneDemo} fps={30} width={1080} height={1920} durationInFrames={540} />
+    <Composition id="ToonCover" component={ToonCover} fps={TOON_FPS} width={1080} height={1920} durationInFrames={TOON_FPS * 10} defaultProps={{...toonDefaults, text: 'Cover'}} calculateMetadata={({props}) => ({durationInFrames: layoutToon(props.toon, props.timings).total})} />
     <Composition id="Toon" component={ToonPlayer} fps={TOON_FPS} width={1080} height={1920} durationInFrames={TOON_FPS * 10} defaultProps={toonDefaults} calculateMetadata={toonLength} />
     <Composition id="ToonActing" component={ActingDemo} fps={30} width={1080} height={1920} durationInFrames={360} />
   </>

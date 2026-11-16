@@ -26,7 +26,8 @@ import {Hold, Slot} from './stage';
 
 export {layoutToon, parseCam, TOON_FPS};
 export type {Seg, Toon, ToonActor, ToonLine, ToonShot, ToonTimings};
-export type ToonProps = {toon: Toon; timings: ToonTimings | null; sfx: string[]; music: string | null};
+/** `bare`: the picture only, no caption word (for a cover). */
+export type ToonProps = {toon: Toon; timings: ToonTimings | null; sfx: string[]; music: string | null; bare?: boolean};
 
 // ------------------------------------------------------------------ where everybody is
 const isPerson = (who: string) => who in SPECS;
@@ -374,7 +375,7 @@ export const ShotStill: React.FC<{set: SetName; cast: ToonActor[]; who: string; 
   );
 };
 
-export const ToonPlayer: React.FC<ToonProps> = ({toon, timings, sfx, music}) => {
+export const ToonPlayer: React.FC<ToonProps> = ({toon, timings, sfx, music, bare = false}) => {
   const f = useCurrentFrame();
   const L = useMemo(() => layoutToon(toon, timings), [toon, timings]);
   const shotAt = [...L.shots].reverse().find((s) => f >= s.from) ?? L.shots[0];
@@ -452,11 +453,30 @@ export const ToonPlayer: React.FC<ToonProps> = ({toon, timings, sfx, music}) => 
         </Camera>
       )}
       {flash > 0 && <AbsoluteFill style={{background: '#ffffff', opacity: flash * 0.3}} />}
-      {word && <WordCaption word={clean(word.w)} key_={clean(word.w).toLowerCase() === keyWord} pop={0.72 + 0.28 * E.back(clamp01((tl - word.start) * TOON_FPS / 4))} y={L.steady ? 1470 : 1400} plain={L.steady} />}
+      {word && !bare && <WordCaption word={clean(word.w)} key_={clean(word.w).toLowerCase() === keyWord} pop={0.72 + 0.28 * E.back(clamp01((tl - word.start) * TOON_FPS / 4))} y={L.steady ? 1470 : 1400} plain={L.steady} />}
       <Grain />
       {L.lines.map((l) => l.file && <Sequence key={l.line.id} from={l.from} durationInFrames={l.frames + 12}><Audio src={staticFile(l.file)} /></Sequence>)}
       {events.filter((e) => has(e.name)).map((e, i) => <Sequence key={i} from={e.at} durationInFrames={90}><Audio src={staticFile(`toons/sfx/${e.name}.mp3`)} volume={e.vol} /></Sequence>)}
       {music && <Audio src={staticFile(`toons/music/${music}.mp3`)} loop volume={bed} />}
+    </AbsoluteFill>
+  );
+};
+
+/**
+ * The cover for a Toon's upload: the video itself with a short hook over the quiet lower part.
+ * Render ONE frame of it (`remotion still ToonCover --frame=N`); `accent` = the word of the hook
+ * shown in amber.
+ */
+export const ToonCover: React.FC<ToonProps & {text: string; accent?: string}> = ({toon, timings, text, accent}) => {
+  const ring = Array.from({length: 16}, (_, i) => `${(Math.cos((i / 16) * Math.PI * 2) * 9).toFixed(1)}px ${(Math.sin((i / 16) * Math.PI * 2) * 9).toFixed(1)}px 0 #1d2b4f`).join(', ');
+  const words = text.split(' ');
+  return (
+    <AbsoluteFill style={{background: '#1d1430'}}>
+      <ToonPlayer toon={toon} timings={timings} sfx={[]} music={null} bare />
+      <AbsoluteFill style={{background: 'linear-gradient(rgba(20,16,48,0) 56%, rgba(20,16,48,0.86) 84%)'}} />
+      <div style={{position: 'absolute', left: 60, right: 60, top: 1300, height: 420, display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', fontFamily: theme.font, fontWeight: 900, fontSize: text.length > 22 ? 118 : 134, lineHeight: 1.06, letterSpacing: 0.5, textShadow: `${ring}, 0 14px 0 rgba(29,43,79,0.55)`}}>
+        <span>{words.map((w, i) => <span key={i} style={{color: accent && w.replace(/[^\p{L}\p{N}]/gu, '').toLowerCase() === accent.toLowerCase() ? '#ffc93c' : '#ffffff'}}>{w}{i < words.length - 1 ? ' ' : ''}</span>)}</span>
+      </div>
     </AbsoluteFill>
   );
 };

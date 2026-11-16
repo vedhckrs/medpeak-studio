@@ -1,0 +1,199 @@
+#!/usr/bin/env node
+/**
+ * Upload package for a Toon: everything YouTube needs. Free; uploads nothing.
+ *
+ *   node pipeline/toon-package.mjs <slug>          # one video
+ *   node pipeline/toon-package.mjs --all
+ *   node pipeline/toon-package.mjs <slug> --no-cover   # skip rendering the cover picture
+ *
+ * Reads the `package` block of videos/<slug>/toon.json (title, opener, question, tags, hashtags,
+ * cover) and the voice timings. Writes into videos/<slug>/package/:
+ *   toon.json       what publish/upload.py reads (title, description, tags, private, AI label)
+ *   captions.srt    the spoken words with their real times (upload in YouTube Studio > Subtitles)
+ *   upload.md       the same for a person to read and paste, with a pre-upload checklist
+ * and renders videos/<slug>/renders/toon-cover.jpg (one frame of the video with a short hook).
+ *
+ * Channel rules (skill references/channel.md): the title starts with the search phrase; no ALL
+ * CAPS words, emojis or hashtags in titles; the description opens keyword-first, lists sources,
+ * ends with the subscribe line, a comment question, the disclaimer and 3 hashtags. Every upload is
+ * private, labelled as synthetic media and not made for kids.
+ */
+import fs from 'node:fs';
+import path from 'node:path';
+import {execFileSync} from 'node:child_process';
+import {args, readJson, ROOT, VIDEOS, videoDir, writeJson} from './lib/util.mjs';
+import {layoutToon, GAP, TOON_FPS} from '../src/toons/director.ts';
+
+const SUBSCRIBE = '🔔 Subscribe to MedPeak Health for cartoons and 3D animations that show what really happens inside your body: @MedPeakHealth';
+const DISCLAIMER = '⚠️ For education only. This video is not medical advice, diagnosis or treatment. Always talk to a qualified doctor about your health.';
+const MADE = 'Made by MedPeak Health: drawn and animated in code; the character voices are AI-generated.';
+
+const titleProblems = (t) => [
+  !t && 'no title',
+  t && t.length > 100 && 'title over 100 characters',
+  t && t.length > 70 && 'title over 70 characters (a Short cuts it off)',
+  t && /\b[A-Z]{4,}\b/.test(t.replace(/\b(WHO|CDC|DNA|ICMR|BMJ|USA)\b/g, '')) && 'ALL CAPS word in the title',
+  t && /[\u{1F300}-\u{1FAFF}]/u.test(t) && 'emoji in the title',
+  t && /#/.test(t) && 'hashtag in the title',
+].filter(Boolean);
+
+const stamp = (sec) => {
+  const ms = Math.max(0, Math.round(sec * 1000));
+  const p = (n, w = 2) => String(n).padStart(w, '0');
+  return `${p(Math.floor(ms / 3600000))}:${p(Math.floor(ms / 60000) % 60)}:${p(Math.floor(ms / 1000) % 60)},${p(ms % 1000, 3)}`;
+};
+/** Break a caption into two rows of about equal length (YouTube shows at most two). */
+const twoRows = (text) => {
+  if (text.length <= 42) return text;
+  const words = text.split(' ');
+  let best = 1;
+  let score = Infinity;
+  for (let i = 1; i < words.length; i++) {
+    const a = words.slice(0, i).join(' ').length;
+    const sc = Math.abs(a - (text.length - a - 1)) - (/[,.:;!?]$/.test(words[i - 1]) ? 6 : 0);
+    if (sc < score) { score = sc; best = i; }
+  }
+  return `${words.slice(0, best).join(' ')}\n${words.slice(best).join(' ')}`;
+};
+/** One caption per sentence of every line, timed from the real word times. */
+const captionsOf = (L) => {
+  const cues = [];
+  for (const l of L.lines) {
+    const t0 = l.from / TOON_FPS;
+    const end = (l.from + l.frames) / TOON_FPS - GAP;
+    let from = 0;
+    l.words.forEach((w, i) => {
+      const last = i === l.words.length - 1;
+      if (!last && !(/[.!?]$/.test(w.w) && i - from >= 1)) return;
+      const next = last ? end : t0 + l.words[i + 1].start;
+      cues.push({a: t0 + l.words[from].start, b: Math.max(t0 + w.end, next - 0.04), text: l.words.slice(from, i + 1).map((x) => x.w).join(' ')});
+      from = i + 1;
+    });
+  }
+  return cues.map((c, i) => `${i + 1}\n${stamp(c.a)} --> ${stamp(c.b)}\n${twoRows(c.text)}\n`).join('\n');
+};
+
+const one = (slug, a) => {
+  const dir = videoDir(slug);
+  const toon = readJson(path.join(dir, 'toon.json'));
+  const stored = readJson(path.join(dir, 'toon-timings.json'), null);
+  const lines = toon.shots.flatMap((s) => s.lines ?? []);
+  const voiced = !!stored && lines.every((l) => stored.lines[l.id]?.text === l.text);
+  const L = layoutToon(toon, voiced ? stored : null);
+  const seconds = L.total / TOON_FPS;
+  const pkg = toon.package ?? {};
+  const out = path.join(dir, 'package');
+  fs.mkdirSync(out, {recursive: true});
+  const video = path.join(dir, 'renders', 'toon.mp4');
+  const cover = path.join(dir, 'renders', 'toon-cover.jpg');
+
+  const used = new Set(lines.flatMap((l) => l.src ?? []));
+  const sources = (toon.sources ?? []).filter((s) => used.has(s.id));
+  const tags = [...new Set([...(pkg.tags ?? []), 'MedPeak Health'])];
+  const hashtags = pkg.hashtags ?? '';
+  const description = [
+    pkg.opener,
+    sources.length ? `Sources:\n${sources.map((s) => `• ${s.label}: ${s.url}`).join('\n')}` : '',
+    SUBSCRIBE,
+    pkg.question ? `💬 ${pkg.question}` : '',
+    DISCLAIMER,
+    MADE,
+    hashtags,
+  ].filter(Boolean).join('\n\n');
+
+  const issues = [
+    ...titleProblems(pkg.title),
+    pkg.title && pkg.phrase && !pkg.title.toLowerCase().startsWith(pkg.phrase.toLowerCase()) && `the title does not start with the search phrase "${pkg.phrase}"`,
+    !pkg.opener && 'no opener for the description',
+    pkg.opener && pkg.phrase && !pkg.opener.toLowerCase().slice(0, 120).includes(pkg.phrase.toLowerCase()) && 'the description does not open with the search phrase',
+    !pkg.question && 'no comment question',
+    description.length > 5000 && 'description over 5000 characters',
+    tags.join(',').length > 500 && 'tags over 500 characters',
+    hashtags.split(/\s+/).filter((h) => h.startsWith('#')).length !== 3 && 'exactly 3 hashtags are needed',
+    !/#shorts\b/i.test(hashtags) && 'one hashtag must be #shorts',
+    !sources.length && 'no sources',
+    !voiced && 'the voices are not made yet (or the script changed after voicing)',
+    seconds >= 60 && `the video is ${seconds.toFixed(1)} s: a Short must be under 60 s`,
+    !fs.existsSync(video) && 'the final render is missing (node pipeline/toon-render.mjs <slug>)',
+    !pkg.cover?.text && 'no cover text',
+  ].filter(Boolean);
+
+  if (!a['no-cover'] && pkg.cover?.text) {
+    const props = path.join(ROOT, 'out', `toon-cover-${slug}.json`);
+    writeJson(props, {toon, timings: voiced ? stored : null, sfx: [], music: null, text: pkg.cover.text, accent: pkg.cover.accent});
+    const frame = Math.min(L.total - 1, Math.round((pkg.cover.at ?? 1) * TOON_FPS));
+    execFileSync('npx', ['remotion', 'still', 'src/index.ts', 'ToonCover', cover, `--props=${props}`, `--frame=${frame}`, '--log=error', '--timeout=90000', '--jpeg-quality=92'], {cwd: ROOT, stdio: 'inherit'});
+  }
+  if (!fs.existsSync(cover)) issues.push('the cover picture is missing');
+
+  fs.writeFileSync(path.join(out, 'captions.srt'), captionsOf(L));
+  writeJson(path.join(out, 'toon.json'), {
+    cut: 'toon',
+    file: video,
+    thumbnail: cover,
+    captions: path.join(out, 'captions.srt'),
+    snippet: {title: pkg.title, description, tags, categoryId: '27', defaultLanguage: 'en', defaultAudioLanguage: 'en'},
+    status: {privacyStatus: 'private', selfDeclaredMadeForKids: false, containsSyntheticMedia: true},
+    relatedVideo: pkg.related ?? null,
+    issues,
+  });
+  const tick = (ok) => (ok ? 'x' : ' ');
+  fs.writeFileSync(path.join(out, 'upload.md'), [
+    `# Upload package: ${toon.title}`,
+    '',
+    issues.length ? `> **Not ready:** ${issues.join('; ')}` : '> Ready. Nothing is uploaded until the owner says so; an upload is always private first.',
+    '',
+    `**Video:** \`videos/${slug}/renders/toon.mp4\` (${seconds.toFixed(1)} s, 1080 x 1920, a Short)`,
+    `**Cover:** \`videos/${slug}/renders/toon-cover.jpg\` (the frame at ${(pkg.cover?.at ?? 1).toFixed(1)} s; in the YouTube app a Short's cover is picked from the video's own frames, so choose that moment there if the picture is not accepted)`,
+    `**Captions:** \`videos/${slug}/package/captions.srt\` (YouTube Studio > Subtitles > Upload file > With timing)`,
+    '',
+    '## Title',
+    '',
+    pkg.title ?? '',
+    '',
+    `(${(pkg.title ?? '').length} characters; search phrase: "${pkg.phrase ?? ''}")`,
+    '',
+    '## Description',
+    '',
+    '```',
+    description,
+    '```',
+    '',
+    '## Tags',
+    '',
+    tags.join(', '),
+    '',
+    '## Settings',
+    '',
+    '- Visibility: **Private** (or scheduled). Public only when the owner says so.',
+    '- Audience: **No, it is not made for kids.**',
+    '- Altered or synthetic content: **Yes** (AI-generated voices; the pictures are drawn in code).',
+    '- Category: Education. Language: English.',
+    `- Related video: ${pkg.related ? pkg.related : 'none yet. When a long video on this topic exists, link it here in YouTube Studio (only long-video watch time counts toward the 4,000 hours).'}`,
+    '',
+    '## Pinned comment',
+    '',
+    pkg.question ?? '',
+    '',
+    '## Before uploading',
+    '',
+    `- [${tick(voiced)}] voices made and unchanged since`,
+    `- [${tick(fs.existsSync(video))}] final render exists`,
+    `- [${tick(seconds < 60)}] under 60 seconds (${seconds.toFixed(1)} s)`,
+    `- [${tick(!titleProblems(pkg.title).length)}] title follows the channel rules`,
+    `- [${tick(sources.length > 0)}] ${sources.length} source(s) listed`,
+    '- [ ] owner has watched the final video with sound',
+    '- [ ] owner has said yes to the upload',
+    '',
+  ].join('\n'));
+  console.log(`${issues.length ? 'NOT READY' : 'READY    '}  ${slug}  "${pkg.title ?? ''}"${issues.length ? `\n           ${issues.join('\n           ')}` : ''}`);
+  return !issues.length;
+};
+
+const a = args();
+const slugs = a.all ? fs.readdirSync(VIDEOS).filter((d) => fs.existsSync(path.join(VIDEOS, d, 'toon.json'))) : a._;
+if (!slugs.length) { console.error('Give a slug or --all.'); process.exit(2); }
+let ok = true;
+for (const slug of slugs) ok = one(slug, a) && ok;
+console.log(ok ? '\nPackages written. Nothing was uploaded.' : '\nFix the items above, then run this again.');
+process.exit(ok ? 0 : 1);

@@ -161,6 +161,37 @@ new in it is a line where the story is only being told.
 7. Show the owner the rooms board, the script sheet and the preview, quote the voice cost
    (`toon-voice.mjs <slug> --dry-run`), wait for approval.
 8. After voicing, run steps 4 and 5 again on the real timings before the final render.
+9. `node pipeline/toon-package.mjs <slug>` writes the upload package (free, uploads nothing).
+
+## The upload package (`package` in toon.json)
+```json
+"package": {
+  "title": "What Sugar Does to Your Teeth (and How Spit Fights Back)",
+  "phrase": "what sugar does to your teeth",
+  "opener": "What sugar does to your teeth: mouth bacteria turn it into acid, ...",
+  "question": "How many times a day do you snack on something sweet?",
+  "tags": ["what sugar does to your teeth", "how cavities form", "..."],
+  "hashtags": "#teeth #sugar #shorts",
+  "cover": {"at": 16.4, "text": "Sugar on your teeth", "accent": "sugar"}
+}
+```
+- **Title:** starts with the search phrase people really type. Check it against YouTube's own
+  suggestions before settling (the three first titles were chosen that way); 70 characters at
+  most, no ALL CAPS words, no emojis, no hashtags.
+- **Opener:** two or three sentences that begin with the search phrase and say what the cartoon
+  shows and what Dr. Mira advises. Only what the script's sources support.
+- **Question:** one specific question about the viewer's own habit (also the pinned comment).
+- **Hashtags:** exactly three, one of them `#shorts`.
+- **Cover:** `at` = the second of the video that shows the problem at its clearest (the pill stuck
+  with the "no water" sign, acid on the tooth, acid in the food pipe); `text` = three or four
+  words; `accent` = the word shown in amber.
+
+It writes `videos/<slug>/package/toon.json` (what `publish/upload.py <slug> toon` reads),
+`captions.srt` (the real spoken words and times, for YouTube Studio > Subtitles), `upload.md` (the
+same for a person, with a checklist) and `renders/toon-cover.jpg`. The description lists the
+sources, the subscribe line, the question, the disclaimer and one honest line on how the video is
+made (drawn in code, AI voices). Uploads stay private, labelled as synthetic media, not made for
+kids, and only happen after the owner's yes.
 
 ## The first three scripts (all in the steady style since 2026-11-16)
 | Script | Stage | Story |

@@ -23,7 +23,8 @@
     "toon:render": "node pipeline/toon-render.mjs",
     "toon:check": "node pipeline/toon-check.mjs",
     "toon:camera": "node --import tsx pipeline/toon-camera.mjs",
-    "toon:motion": "node --import tsx pipeline/toon-motion.mjs"
+    "toon:motion": "node --import tsx pipeline/toon-motion.mjs",
+    "toon:package": "node pipeline/toon-package.mjs"
   },
   "dependencies": {
     "@remotion/cli": "4.0.543",

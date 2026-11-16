@@ -32,6 +32,31 @@
    "time": "evening"
   }
  },
+ "package": {
+  "title": "What Sugar Does to Your Teeth (and How Spit Fights Back)",
+  "phrase": "what sugar does to your teeth",
+  "opener": "What sugar does to your teeth: mouth bacteria turn it into acid, and the acid attacks your enamel until a cavity forms. This cartoon shows it on a tooth cut open. Then Dr. Mira explains the twist: your own spit helps repair enamel, if you snack less often and brush twice a day with fluoride toothpaste.",
+  "question": "How many times a day do you snack on something sweet?",
+  "tags": [
+   "what sugar does to your teeth",
+   "what does sugar do to your teeth",
+   "how cavities form",
+   "tooth decay",
+   "sugar and teeth",
+   "cavity",
+   "acid attack on teeth",
+   "fluoride toothpaste",
+   "enamel",
+   "health cartoon",
+   "dental health for kids"
+  ],
+  "hashtags": "#teeth #sugar #shorts",
+  "cover": {
+   "at": 16.4,
+   "text": "Sugar on your teeth",
+   "accent": "sugar"
+  }
+ },
  "retention": {
   "noIntro": {
    "scene": "A1",

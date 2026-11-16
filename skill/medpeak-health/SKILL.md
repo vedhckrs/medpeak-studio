@@ -49,6 +49,14 @@ The owner is not technical: run everything yourself, explain in plain words, nev
 13 learn      after 7 days: analytics for the new video -> notes in references/channel.md
 ```
 
+MedPeak Toons (the cartoon Shorts) have their own steps; the order of work is in
+`references/toons-script.md`: `toon-check` (script, Retention 7, own and unique rooms, accuracy) ->
+`toon:camera` and `toon:motion` (measured, both required) -> silent preview and rooms board ->
+owner's yes -> `toon-voice` -> the same checks on the real timings -> `toon-render` ->
+`toon-package` (title, description, tags, cover, captions) -> `publish/upload.py <slug> toon`
+only after the owner's yes.
+
+
 ElevenLabs keys: `medpeak-studio/.env` holds ELEVENLABS_API_KEY, _2, _3, _4 (never committed). They are
 used together: soonest-resetting first, pay-as-you-go last, automatic switch when one runs out.
 Narrators: `voices.json` (15 young, energetic English voices). Every video gets a random one not used by

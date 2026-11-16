@@ -307,3 +307,20 @@ test('the gate refuses a copied room, a shared room and a bad recipe', () => {
   assert.equal(roomsClash('clinic', a.rooms.clinic, clone(a.rooms.clinic), false), 'the same room');
   assert.notEqual(roomSignature('clinic', a.rooms.clinic), roomSignature('clinic', b.rooms.clinic));
 });
+
+// ---------------------------------------------------------------- the upload package
+test('every real script carries an upload package that follows the channel rules', () => {
+  for (const t of real) {
+    const p = t.package;
+    assert.ok(p, `${t.slug}: a package block`);
+    assert.ok(p.title.length <= 70, `${t.slug}: the title fits a Short (${p.title.length})`);
+    assert.ok(p.title.toLowerCase().startsWith(p.phrase.toLowerCase()), `${t.slug}: the title starts with the search phrase`);
+    assert.ok(!/#|[\u{1F300}-\u{1FAFF}]/u.test(p.title) && !/\b[A-Z]{4,}\b/.test(p.title), `${t.slug}: no hashtag, emoji or ALL CAPS word in the title`);
+    assert.ok(p.opener.toLowerCase().slice(0, 120).includes(p.phrase.toLowerCase()), `${t.slug}: the description opens with the search phrase`);
+    const tags = p.hashtags.split(/\s+/);
+    assert.ok(tags.length === 3 && tags.includes('#shorts'), `${t.slug}: three hashtags, one of them #shorts`);
+    assert.ok(p.tags.join(',').length <= 500 && p.question.endsWith('?') && p.cover.text.split(' ').length <= 5, `${t.slug}: tags, question, cover text`);
+    const L = layoutToon(t, null);
+    assert.ok(p.cover.at * TOON_FPS < L.total, `${t.slug}: the cover moment is inside the video`);
+  }
+});
