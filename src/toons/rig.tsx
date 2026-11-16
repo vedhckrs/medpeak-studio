@@ -3,12 +3,13 @@
 // face centre is (0,0) and the eyes sit about 20 units apart; `size` scales it.
 import React from 'react';
 import {taperedPath, tone} from './ink';
+import {STYLE} from './style';
 
 export type Emotion = 'neutral' | 'happy' | 'angry' | 'scared' | 'smug' | 'sick' | 'sleepy' | 'shocked' | 'sad';
 export const EMOTIONS: Emotion[] = ['neutral', 'happy', 'angry', 'scared', 'smug', 'sick', 'sleepy', 'shocked', 'sad'];
 
-export const INK = '#1d2b4f'; // our outline colour (navy, not black)
-export const LINE = 2.8;
+export const INK = STYLE.ink; // our outline colour (navy, not black)
+export const LINE = STYLE.line;
 
 export type FaceProps = {
   emotion?: Emotion;
@@ -105,19 +106,22 @@ export const Face: React.FC<FaceProps> = ({emotion = 'neutral', talk = 0, blink 
   const p = POSES[emotion];
   const lidR = Math.max(p.lid, blink);
   const lidL = Math.max(p.lidL ?? p.lid, blink);
-  const gap = 15;
+  const gap = STYLE.eyeGap;
+  const es = STYLE.eyeScale;
   return (
     <g transform={`scale(${size})`}>
-      {p.cheeks && <><ellipse cx={-26} cy={14} rx={7} ry={4} fill={p.cheeks} opacity={0.7} /><ellipse cx={26} cy={14} rx={7} ry={4} fill={p.cheeks} opacity={0.7} /></>}
-      <Eye x={-gap} lid={lidL} pupil={p.pupil} look={look} skin={skin} k={1} />
-      <Eye x={gap} lid={lidR} pupil={p.pupil} look={look} skin={skin} k={1.05} />
+      {p.cheeks && <><ellipse cx={-26 * es} cy={16 * es} rx={7} ry={4} fill={p.cheeks} opacity={0.7} /><ellipse cx={26 * es} cy={16 * es} rx={7} ry={4} fill={p.cheeks} opacity={0.7} /></>}
+      <g transform={`scale(${es})`}>
+      <Eye x={-gap} lid={lidL} pupil={p.pupil * STYLE.pupilScale} look={look} skin={skin} k={1} />
+      <Eye x={gap} lid={lidR} pupil={p.pupil * STYLE.pupilScale} look={look} skin={skin} k={1.05} />
       {/* brows: brush strokes, thicker at the inner end */}
       {[[-1, p.brow[0]], [1, -p.brow[1]]].map(([side, rot]) => (
         <g key={side} transform={`translate(${side * gap} ${-25 + p.browY}) rotate(${rot})`}>
-          <path d={taperedPath(side < 0 ? [[-10, 2], [-2, -1.5], [9, 0]] : [[-9, 0], [2, -1.5], [10, 2]], 6.5, side < 0 ? 0.5 : 0.15, side < 0 ? 0.15 : 0.5)} fill={INK} />
+          <path d={taperedPath(side < 0 ? [[-10, 2], [-2, -1.5], [9, 0]] : [[-9, 0], [2, -1.5], [10, 2]], STYLE.browWeight, side < 0 ? 0.5 : 0.15, side < 0 ? 0.15 : 0.5)} fill={INK} />
         </g>
       ))}
-      <g transform="translate(0 25)"><Mouth shape={p.mouth} talk={talk} /></g>
+      </g>
+      <g transform={`translate(0 ${25 + (es - 1) * 20}) scale(${1 + (es - 1) * 0.5})`}><Mouth shape={p.mouth} talk={talk} /></g>
       {p.extra === 'sweat' && <path d="M34 -18 q6 9 0 13 q-6 -4 0 -13 Z" fill="#8fd8ff" stroke={INK} strokeWidth={2} />}
       {p.extra === 'tear' && <path d="M-18 16 q5 8 0 12 q-5 -4 0 -12 Z" fill="#8fd8ff" stroke={INK} strokeWidth={2} />}
       {p.extra === 'zz' && <text x={30} y={-26} fontSize={16} fontWeight={900} fill={INK}>z<tspan fontSize={12} dy={-8}>z</tspan></text>}

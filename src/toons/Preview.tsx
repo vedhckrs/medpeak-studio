@@ -7,6 +7,7 @@ import {blinkAt, EMOTIONS, INK} from './rig';
 import {SETS, BloodSet, MouthSet, OfficeDesk, OfficeSet, StomachSet, ThroatSet, GutSet, WordCaption, type SetName} from './scenes';
 import {theme} from '../brand/theme';
 import {Boil, Grain} from './ink';
+import {STYLE} from './style';
 
 const ALL = {...CAST, ...PEOPLE} as Record<string, React.FC<Record<string, unknown>>>;
 
@@ -72,8 +73,8 @@ export const SetBoard: React.FC = () => (
 /** Idle acting: a gentle sway and breathing around the feet, so nobody stands frozen. */
 const Act: React.FC<{frame: number; seed: number; pivot?: number; children: React.ReactNode}> = ({frame, seed, pivot = 96, children}) => {
   const t = frame / 30;
-  const sway = Math.sin(t * 2.1 + seed) * 2.4;
-  const breathe = 1 + Math.sin(t * 3.2 + seed) * 0.014;
+  const sway = Math.sin(t * 2.1 + seed) * STYLE.sway;
+  const breathe = 1 + Math.sin(t * 3.2 + seed) * STYLE.breathe;
   return <g transform={`translate(0 ${pivot}) rotate(${sway}) scale(${2 - breathe} ${breathe}) translate(0 ${-pivot})`}>{children}</g>;
 };
 
@@ -120,4 +121,59 @@ export const SceneDemo: React.FC = () => {
       <OfficeDesk /></>)}
       <WordCaption word="WATER" key_ pop={pop} y={1600} /><Grain opacity={0.06} /></AbsoluteFill>);
   }
+};
+
+/**
+ * 12 s acted scene (no voice yet): a pill drops into the gut, the stomach reacts.
+ * Shows the acting toolkit: drop with squash on landing, reaction take, close-up cuts,
+ * a jump with stretch and squash, a run-off, and one-word captions on the beat.
+ */
+export const ActingDemo: React.FC = () => {
+  const f = useCurrentFrame();
+  const {fps} = useVideoConfig();
+  const t = f / fps;
+  const cl = (v: number, a: number, b: number) => Math.max(0, Math.min(1, (v - a) / (b - a)));
+  const talk = (seed: number, on: boolean) => (on ? Math.max(0, Math.sin(t * 15 + seed)) * (Math.sin(t * 2.7 + seed) > -0.3 ? 1 : 0) : 0);
+  const FLOOR = 1330;
+
+  // --- pill: falls in (f20-40), lands with a squash, later runs off to the right (f285+)
+  const fall = cl(f, 20, 40) ** 2;
+  const land = f >= 40 ? Math.max(0, 1 - (f - 40) / 10) : 0;
+  const run = cl(f, 285, 345);
+  const pillX = 760 + run * 520;
+  const pillFloor = -300 + fall * (FLOOR + 300);
+  // --- stomach: take (jump back) when the pill lands, big jump at f258-285
+  const take = f >= 42 ? Math.max(0, 1 - (f - 42) / 14) : 0;
+  const jumpU = cl(f, 258, 272) - cl(f, 272, 285);
+  const jumpSquash = f >= 285 ? Math.max(0, 1 - (f - 285) / 9) * 0.5 : -jumpU * 0.35;
+
+  const shot = f < 90 ? 'wide' : f < 168 ? 'stomach' : f < 255 ? 'pill' : 'wide2';
+  const local = shot === 'wide' ? f / 90 : shot === 'stomach' ? (f - 90) / 78 : shot === 'pill' ? (f - 168) / 87 : (f - 255) / 105;
+  const cams: Record<string, [number, number, number]> = {wide: [1.03 + local * 0.04, 540, 960], stomach: [1.85 + local * 0.08, 300, 980], pill: [2.1 + local * 0.08, 770, 1150], wide2: [1.06 - local * 0.02, 540, 960]};
+  const [zoom, cx, cy] = cams[shot];
+  const stomachEmotion = f < 44 ? 'happy' : f < 90 ? 'shocked' : f < 255 ? 'angry' : 'angry';
+  const pillEmotion = f < 168 ? 'neutral' : f < 255 ? 'smug' : f < 280 ? 'shocked' : 'scared';
+  const words: [number, number, string, boolean][] = [[44, 88, 'HUH?', false], [96, 120, 'WHO', false], [120, 142, 'ARE', false], [142, 166, 'YOU?', true], [176, 210, 'RELAX', false], [212, 252, 'PILL', true], [262, 300, 'GET', false], [300, 356, 'OUT!', true]];
+  const word = words.find(([a, b]) => f >= a && f < b);
+  return (
+    <AbsoluteFill style={{background: '#000'}}>
+      <AbsoluteFill style={{transform: `translate(${540 - cx}px, ${960 - cy}px) scale(${zoom})`, transformOrigin: `${cx}px ${cy}px`}}>
+        <GutSet t={t} />
+        <Stand x={300 - take * 40} floor={FLOOR - jumpU * 240 - take * 30} size={640} frame={f}>
+          <Stomach emotion={stomachEmotion} talk={talk(1, (f > 96 && f < 166) || f > 262)} blink={blinkAt(f, fps, 3)} arms={f > 258 ? [200 + Math.sin(t * 18) * 20, -30 + Math.sin(t * 18 + 1) * 20] : stomachEmotion === 'shocked' ? [215, -35] : [150, 40]} look={{x: 0.9, y: f < 44 ? -0.6 : 0.1}} squash={jumpSquash + take * 0.25} />
+        </Stand>
+        <Stand x={pillX} floor={pillFloor} size={430} feetY={70} frame={f}>
+          <g transform={`rotate(${(1 - fall) * -50 + run * 8})`}>
+            <Pill emotion={pillEmotion} talk={talk(2, f > 176 && f < 252)} blink={blinkAt(f, fps, 7)} arms={run > 0 ? [200 + Math.sin(t * 22) * 30, -20 + Math.sin(t * 22 + 2) * 30] : pillEmotion === 'smug' ? [120, 60] : [160, 20]} look={{x: run > 0 ? 0.9 : -0.9, y: 0}} squash={land * 0.9} step={run > 0 ? Math.sin(t * 24) : 0} />
+          </g>
+        </Stand>
+        {/* landing dust puff */}
+        {f >= 40 && f < 58 && [-1, 1].map((s) => (
+          <div key={s} style={{position: 'absolute', left: 760 + s * (40 + (f - 40) * 7) - 30, top: FLOOR - 40 - (f - 40) * 2, width: 60, height: 44, borderRadius: 30, background: '#ffe9dc', border: `5px solid ${INK}`, opacity: 1 - (f - 40) / 18, transform: `scale(${1 + (f - 40) / 14})`}} />
+        ))}
+      </AbsoluteFill>
+      {word && <WordCaption word={word[2]} key_={word[3]} pop={1 + Math.max(0, 0.3 - (f - word[0]) * 0.06)} y={1560} />}
+      <Grain opacity={0.05} />
+    </AbsoluteFill>
+  );
 };

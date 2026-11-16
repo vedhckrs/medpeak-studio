@@ -4,7 +4,7 @@ import {FPS, LONG, SHORT} from './brand/theme';
 import {place} from './lib/timeline';
 import {MedVideo} from './MedVideo';
 import {Thumbnail} from './Thumbnail';
-import {CastBoard, EmotionBoard, SceneDemo, SetBoard} from './toons/Preview';
+import {ActingDemo, CastBoard, EmotionBoard, SceneDemo, SetBoard} from './toons/Preview';
 import type {Video, VideoProps} from './types';
 import demo from '../videos/what-sugar-does-to-your-body/video.json';
 
@@ -26,5 +26,6 @@ export const Root: React.FC = () => (
     <Still id="ToonEmotions" component={EmotionBoard} width={1080} height={1920} defaultProps={{who: 'stomach' as const}} />
     <Still id="ToonSets" component={SetBoard} width={1080} height={1920} />
     <Composition id="ToonScenes" component={SceneDemo} fps={30} width={1080} height={1920} durationInFrames={540} />
+    <Composition id="ToonActing" component={ActingDemo} fps={30} width={1080} height={1920} durationInFrames={360} />
   </>
 );

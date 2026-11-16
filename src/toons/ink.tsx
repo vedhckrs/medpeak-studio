@@ -3,8 +3,9 @@
 // rim light and gloss, hand-drawn line boil and paper grain. Light always comes from the top-left.
 import React, {useId} from 'react';
 import {random} from 'remotion';
+import {STYLE} from './style';
 
-export const INK = '#1d2b4f';
+export const INK = STYLE.ink;
 
 // ------------------------------------------------------------------ colour
 const clamp = (n: number) => Math.max(0, Math.min(255, Math.round(n)));
@@ -86,7 +87,7 @@ export const Mark: React.FC<{pts: P[]; w?: number; color?: string; opacity?: num
  */
 export const InkBody: React.FC<{
   d: string; color: string; line?: number; shadow?: number; gloss?: [number, number, number?] | null; rim?: boolean; children?: React.ReactNode;
-}> = ({d, color, line = 2.8, shadow = 0.22, gloss = null, rim = true, children}) => {
+}> = ({d, color, line = STYLE.line, shadow = STYLE.shadow, gloss = null, rim = true, children}) => {
   const id = useId().replace(/:/g, '');
   return (
     <g>
@@ -96,7 +97,7 @@ export const InkBody: React.FC<{
         <filter id={`g${id}`} x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="10" /></filter>
       </defs>
       {/* outline weight follows the light: an offset copy thickens the bottom-right edge smoothly */}
-      <path d={d} fill={INK} stroke={INK} strokeWidth={line} strokeLinejoin="round" transform={`translate(${line * 0.5} ${line * 0.7})`} />
+      <path d={d} fill={INK} stroke={INK} strokeWidth={line} strokeLinejoin="round" transform={`translate(${line * STYLE.shadowSideWeight * 0.8} ${line * STYLE.shadowSideWeight * 1.15})`} />
       <path d={d} fill={tone(color, shadow)} />
       <g clipPath={`url(#b${id})`}>
         <path d={d} fill={color} transform="translate(-13 -15)" filter={`url(#f${id})`} />
@@ -112,7 +113,7 @@ export const InkBody: React.FC<{
 
 /** Glossy highlight: a tapered streak and two dots, like wet tissue or a shiny capsule. */
 export const Gloss: React.FC<{x: number; y: number; s?: number}> = ({x, y, s = 1}) => (
-  <g transform={`translate(${x} ${y}) scale(${s}) rotate(-28)`} opacity={0.85}>
+  <g transform={`translate(${x} ${y}) scale(${s}) rotate(-28)`} opacity={STYLE.gloss}>
     <path d={taperedPath([[-16, 2], [-4, -3], [12, -2]], 8, 0.3, 0.3)} fill="#fff" />
     <circle cx={20} cy={0} r={2.6} fill="#fff" />
     <circle cx={26} cy={1} r={1.6} fill="#fff" />
@@ -135,7 +136,7 @@ export const Contact: React.FC<{y: number; w: number}> = ({y, w}) => {
  * Line boil: wrap a character's <g> in this; the turbulence seed changes every 3 frames so outlines
  * shimmer like hand-drawn animation. `frame` is the composition frame.
  */
-export const Boil: React.FC<{frame: number; amount?: number; children: React.ReactNode}> = ({frame, amount = 1.6, children}) => {
+export const Boil: React.FC<{frame: number; amount?: number; children: React.ReactNode}> = ({frame, amount = STYLE.boil, children}) => {
   const id = useId().replace(/:/g, '');
   const seed = Math.floor(frame / 3) % 4;
   return (
@@ -152,7 +153,7 @@ export const Boil: React.FC<{frame: number; amount?: number; children: React.Rea
 };
 
 /** Paper grain over the whole frame (very light, multiplies). */
-export const Grain: React.FC<{opacity?: number}> = ({opacity = 0.08}) => (
+export const Grain: React.FC<{opacity?: number}> = ({opacity = STYLE.grain}) => (
   <svg width="100%" height="100%" style={{position: 'absolute', inset: 0, mixBlendMode: 'multiply', opacity, pointerEvents: 'none'}}>
     <filter id="paper"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves={3} seed={7} /><feColorMatrix type="saturate" values="0" /></filter>
     <rect width="100%" height="100%" filter="url(#paper)" />

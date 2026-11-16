@@ -13,6 +13,16 @@ and the rules the v2 engine (`src/toons/ink.tsx`) enforces.
 | Glow particles, vignette, rings | Sets are painted: soft light/dark blotches, tapered wrinkle marks, a floor plane with blotches; a light paper grain over everything |
 | Personality only in the face | Props and costume: caps, glasses, tools, phones; poses that act |
 
+## Full control: one settings file (owner 2026-11-16: 100% code-drawn only, no AI art)
+`src/toons/style.ts` holds every look decision: outline colour and thickness, shadow-side weight, eye
+size and spacing, pupil size, brow weight, shadow and gloss strength, line wobble, paper grain, idle
+sway and breathing, caption and label colours. Change a number, re-render `ToonCast`, `ToonSets` and
+`ToonActing` to see the whole cast follow. Never add AI-generated art to Toons.
+
+## Acting toolkit (see `ActingDemo` in `src/toons/Preview.tsx`)
+Drop-in with squash on landing and a dust puff, reaction take, cuts to close-ups (camera zoom 1.8-2.2
+on the speaker), jump with stretch then squash, run-off with a leg cycle, one-word captions on the beat.
+
 ## Line weights (at 1080x1920)
 - Character outline: 5-8 px (thicker on the shadow side).
 - Inner detail marks: 2-6 px, tapered, colour = fill darkened 30-40%.

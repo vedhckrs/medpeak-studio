@@ -7,13 +7,14 @@ import {INK, LINE} from './rig';
 import {blob, Grain, InkBody, spline, taperedPath, tone} from './ink';
 import {shade} from './paint';
 import {theme} from '../brand/theme';
+import {STYLE} from './style';
 
 const W = 1080;
 const H = 1920;
 const O = {stroke: INK, strokeWidth: LINE * 2.4, strokeLinejoin: 'round' as const};
 
 export const Label: React.FC<{text: string; x?: number; y?: number}> = ({text, x = 740, y = 170}) => (
-  <div style={{position: 'absolute', left: x, top: y, background: '#2ec4b6', color: '#fff', fontFamily: theme.font, fontWeight: 900, fontSize: 40, padding: '10px 28px', borderRadius: 40, border: `5px solid ${INK}`, letterSpacing: 1, boxShadow: '0 8px 0 rgba(29,43,79,0.25)'}}>{text}</div>
+  <div style={{position: 'absolute', left: x, top: y, background: STYLE.label, color: '#fff', fontFamily: theme.font, fontWeight: 900, fontSize: 40, padding: '10px 28px', borderRadius: 40, border: `5px solid ${INK}`, letterSpacing: 1, boxShadow: '0 8px 0 rgba(29,43,79,0.25)'}}>{text}</div>
 );
 
 /** Finishing: a soft light from the top-left, a gentle darkening at the very bottom, paper grain. */
@@ -380,7 +381,7 @@ export const BedroomSet: React.FC<{t: number}> = ({t}) => (
 /** One word at a time: white on a navy rounded tag, the key word in amber, a small pop-in tilt. */
 export const WordCaption: React.FC<{word: string; key_?: boolean; y?: number; pop?: number}> = ({word, key_, y = 1360, pop = 1}) => (
   <div style={{position: 'absolute', top: y, left: 0, right: 0, display: 'flex', justifyContent: 'center'}}>
-    <div style={{background: INK, color: key_ ? '#ffc93c' : '#fff', fontFamily: theme.font, fontWeight: 900, fontSize: 96, padding: '6px 40px 14px', borderRadius: 32, letterSpacing: 1, transform: `rotate(-2deg) scale(${pop})`, boxShadow: '0 12px 0 rgba(0,0,0,0.2)', border: '5px solid #fff'}}>{word.toUpperCase()}</div>
+    <div style={{background: STYLE.captionBg, color: key_ ? STYLE.captionKey : STYLE.captionText, fontFamily: theme.font, fontWeight: 900, fontSize: 96, padding: '6px 40px 14px', borderRadius: 32, letterSpacing: 1, transform: `rotate(-2deg) scale(${pop})`, boxShadow: '0 12px 0 rgba(0,0,0,0.2)', border: '5px solid #fff'}}>{word.toUpperCase()}</div>
   </div>
 );
 
