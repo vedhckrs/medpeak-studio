@@ -40,6 +40,7 @@ cartoon health channel (format only). We never copy anyone's characters, art, au
 | `src/toons/props.tsx` | 8 props a script can show (glass, pill bottle, soda, lollipop, toothbrush, burger, pillow, clock) |
 | `src/toons/Player.tsx` | Plays a `toon.json`: camera, acting, props, captions, sound |
 | `pipeline/toon-check.mjs` | The script gate: valid script, Retention 7, format, sources (`--sheet`, `--check-urls`) |
+| `pipeline/toon-camera.mjs` | The camera check: every frame measured for jolts, jump cuts and wrong pictures (`npm run toon:camera`) |
 | `src/toons/Preview.tsx` | Boards: `ToonCast`, `ToonSheet`, `ToonBlueprint`, `ToonCamera`, `ToonSets`, `ToonEmotions` |
 | `pipeline/toon-sheets.mjs` | Renders every board and model sheet into `out/toons/sheets/` |
 

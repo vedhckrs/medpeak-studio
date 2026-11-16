@@ -80,7 +80,8 @@ after voicing. Leave a second of margin on the promise (aim for 7 s) and stay cl
 2. Fill the Retention 7 table, then write the 13 lines to it.
 3. `node pipeline/toon-check.mjs <slug> --sheet --check-urls` until everything passes. `--sheet`
    writes `videos/<slug>/SCRIPT.md`: the seven-point table, every line with its camera, the sources.
-4. `node pipeline/toon-render.mjs <slug> --draft --silent` for a free picture-only preview.
+4. `npm run toon:camera -- <slug>` (no jolts, no jump cuts), then
+   `node pipeline/toon-render.mjs <slug> --draft --silent` for a free picture-only preview.
 5. Show the owner the script sheet and the preview, quote the voice cost
    (`toon-voice.mjs <slug> --dry-run`), wait for approval.
 

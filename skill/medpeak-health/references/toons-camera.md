@@ -49,15 +49,32 @@ close-up = 85, extreme close-up = 135.
 | `pull` | slow pull-back | a reveal, relief, the last line |
 | `truck` | the camera slides sideways and the layers part | openings: it shows the depth |
 | `tilt` | travels up the character to the face | introducing someone |
-| `crash` | a fast punch-in with an overshoot | shock, a punchline |
-| `whip` | whip pan from the previous picture, with motion blur | fast banter between two speakers |
-| `dutch` | a tilted horizon that settles, with a tiny shake | panic, dizziness |
-| `shake` | a short impact shake that dies out | a hit, a shout |
-| `rack` | the picture starts soft and snaps sharp | a realisation |
+| `dutch` | a tilted horizon, held still | panic, dizziness |
+| `rack` | the picture starts soft and comes sharp | a realisation |
+| `crash` | a fast, eased zoom-in over a third of a second | shock, a punchline. **Only when the script asks** |
+| `whip` | whip pan from the previous picture, with motion blur | fast banter. **Only when the script asks** |
+| `shake` | a short impact shake that dies out | a hit, a shout. **Only when the script asks** |
+
+## No jumps (owner rule, 2026-11-16: "check camera why jump")
+A cut is a decision. A jump is a mistake. The first version jumped; these rules stop it, and
+`npm run toon:camera -- <slug>` measures the camera on every frame to prove it (it runs in the tests).
+1. **Nothing moves in one frame.** Every move is eased. The key word gets a soft 2% swell over a
+   quarter of a second, never an instant punch.
+2. **No jump cuts.** A cut that keeps the same character on screen must change its size about 1.5
+   times (`cutWorks` in `director.ts`). People step wide -> medium close-up -> extreme close-up, or
+   medium -> close-up; body characters step wide -> whole body -> face. Two neighbouring sizes of one
+   character in a row (medium close-up then close-up) are never cut together.
+3. **Cuts land on words.** Every cut falls on the start of a word, best on the start of a phrase,
+   never in the middle of a word.
+4. **Long lines are covered like a conversation**: the speaker, a look at the listener, the speaker
+   again. The camera does not keep punching in on one face.
+5. **Fast effects are opt-in.** Whip pans, crash zooms and shakes only happen when a line asks for
+   them in `cam`.
+6. **In a pause the picture holds.** Between lines and before a scene change the last picture stays.
 
 ## What the director does on its own
 A script does not have to name any camera. For each line the director picks a picture from the
-speaker's emotion, and it never holds one picture longer than 2.6 seconds (Retention 7).
+speaker's emotion, and it never holds one picture longer than 2.9 seconds (Retention 7).
 
 | Emotion | Shot | Lens | Move |
 |---|---|---|---|
@@ -65,20 +82,20 @@ speaker's emotion, and it never holds one picture longer than 2.6 seconds (Reten
 | happy | ms | 35 | static |
 | angry | low | 35 | push |
 | scared | cu | 85 | dutch |
-| shocked | cu | 85 | crash |
-| sick, sad | cu | 85 | push |
+| shocked, sick, sad | cu | 85 | push |
 | sleepy | mcu | 50 | static |
 
 - The first line of every scene opens on a `wide 24 truck`, then cuts to the speaker.
-- A long line keeps changing: two-shot -> close-up -> medium -> dirty single, never the same size
-  twice in a row (no jump cuts).
-- A line with a `react` entry cuts away to the listener's face for a moment.
-- Every third change of speaker is a whip pan instead of a cut.
-- The key word of each line gets a small punch-in.
+- When the default would be a jump cut (the same character at a neighbouring size), the director
+  takes the next size that is clearly different: close-up, medium, medium close-up, two-shot, wide.
+- A line longer than 2.9 seconds becomes speaker -> listener (a close-up for about 1.2 seconds) ->
+  speaker.
+- The key word of each line gets a small, soft push.
 
 ## Overriding it in a script
 Add `cam` to a line, in any order, any subset: `"cam": "cu 85 push"`, `"cam": "ecu 135"`,
-`"cam": "two truck"`, `"cam": "low shake"`. What you leave out, the director fills in.
+`"cam": "two truck"`, `"cam": "low shake"`, `"cam": "cu crash"`, `"cam": "whip"`. What you leave out,
+the director fills in. A size you set is kept even if it makes a jump cut, so run the camera check.
 
 ```json
 {"id": "A3", "who": "whitecell", "text": "Dry? Oh no. You're starting to melt!",
@@ -91,6 +108,8 @@ lands with a squash) or `"pop"` on the actor in `cast`.
 ## Rules
 1. Open every scene wide, so the viewer knows where they are. Then go in.
 2. Go closer as the feeling gets stronger; the doctor's key sentence ends on a close-up.
-3. One strong move per line at most. Crash zooms and shakes are punctuation, not the default.
+3. One strong move per line at most. Crash zooms, whip pans and shakes are punctuation: at most one
+   or two in a whole Short.
 4. Captions sit at y = 1400: frame faces in the upper half so the caption never covers a mouth.
 5. Never tilt, shake or blur for no reason. If the picture moves, the story moved.
+6. After writing or changing a script: `npm run toon:camera -- <slug>` must say ALL PASS.

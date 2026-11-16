@@ -7,6 +7,7 @@ import {loadCast} from '../lib/toon-audio.mjs';
 import {LIBRARY} from '../toon-sfx.mjs';
 import {BEDS} from '../toon-music.mjs';
 import {checkToon} from '../lib/toon-rules.mjs';
+import {scanCamera} from '../lib/toon-camera.mjs';
 import {AUTO_SFX, EMO_SFX, layoutToon, parseCam} from '../../src/toons/director.ts';
 
 const EMOTIONS = ['neutral', 'happy', 'angry', 'scared', 'smug', 'sick', 'sleepy', 'shocked', 'sad'];
@@ -109,4 +110,37 @@ test('camera words are read in any order', () => {
   assert.deepEqual(parseCam('push 85mm cu'), {shot: 'cu', lens: '85', move: 'push', unknown: []});
   assert.deepEqual(parseCam('two truck'), {shot: 'two', move: 'truck', unknown: []});
   assert.deepEqual(parseCam(undefined), {unknown: []});
+});
+
+// ---------------------------------------------------------------- the camera never jumps
+test('the camera has no jolts, jump cuts or wrong pictures on any real script', async () => {
+  for (const t of real) {
+    const r = await scanCamera(t, null);
+    assert.deepEqual(r.wrong, [], `${t.slug}: wrong picture`);
+    assert.deepEqual(r.jumpCuts, [], `${t.slug}: jump cut`);
+    assert.deepEqual(r.jolts, [], `${t.slug}: jolt`);
+    assert.ok(r.pictures >= 20, `${t.slug}: only ${r.pictures} pictures`);
+  }
+});
+
+test('the camera check catches a jump cut and a jolt that a script forces', async () => {
+  const office = (lines) => ({slug: 'x', title: 'x', shots: [{id: 'A', set: 'office', cast: [{who: 'doctor', x: 285, size: 1040}, {who: 'patient', x: 805, size: 1000}], lines}]});
+  // two pictures of the doctor in a row at the same size: a jump cut
+  let r = await scanCamera(office([
+    {id: 'L1', who: 'doctor', text: 'Good morning to you.', cam: 'mcu'},
+    {id: 'L2', who: 'doctor', text: 'Please sit down here.', cam: 'mcu'},
+  ]), null);
+  assert.equal(r.jumpCuts.length, 1, 'the same character at the same size twice in a row is reported');
+  // the same two lines at clearly different sizes: a clean cut
+  r = await scanCamera(office([
+    {id: 'L1', who: 'doctor', text: 'Good morning to you.', cam: 'mcu'},
+    {id: 'L2', who: 'doctor', text: 'Please sit down here.', cam: 'ecu'},
+  ]), null);
+  assert.deepEqual(r.jumpCuts, []);
+  // fast moves only count as planned when the script asked for them
+  r = await scanCamera(office([
+    {id: 'L1', who: 'doctor', text: 'Good morning to you.', cam: 'mcu'},
+    {id: 'L2', who: 'patient', text: 'What was that noise?', cam: 'cu crash'},
+  ]), null);
+  assert.deepEqual(r.jolts, [], 'a crash zoom the script asked for is a planned fast move');
 });
