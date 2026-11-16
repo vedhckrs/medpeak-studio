@@ -1,6 +1,6 @@
 # What happens when you lie down after a big dinner
 
-Toon script `lying-down-after-dinner` · about 57 seconds · 5 pictures
+Toon script `lying-down-after-dinner` · about 50 seconds · 5 pictures
 
 ## Retention 7
 
@@ -20,16 +20,16 @@ Toon script `lying-down-after-dinner` · about 57 seconds · 5 pictures
 |---|---|---|
 | PASS | Script is valid | 4 scenes, 16 lines, 4 voices |
 | PASS | 1 No intro | hook: "He ate a huge dinner. Now he's lying down!" |
-| PASS | 2 Promise | starts at 7.4 s (limit 8 s) |
+| PASS | 2 Promise | starts at 6.0 s (limit 8 s) |
 | PASS | 3 Counting | 3 numbered beats said in order |
-| PASS | 4 3-sec change | something new appears 37 times in 57 s (a place, a cut, a prop, a change of the stage); the longest wait is 2.9 s (from 17.9 s) |
+| PASS | 4 3-sec change | something new appears 37 times in 50 s (a place, a cut, a prop, a change of the stage); the longest wait is 2.5 s (from 6.0 s) |
 | PASS | 5 Twist | twist starts at 55% |
-| PASS | 6 Best last | best point starts at 79% |
+| PASS | 6 Best last | best point starts at 80% |
 | PASS | 7 Loop | last line shares 4 key word(s) with the first: huge, dinner, now, down |
 | PASS | Sources on numbers | every number has a source |
 | PASS | Source ids exist | all source ids known |
 | PASS | No banned claims | no cure/miracle/detox claims |
-| PASS | Length | 57.5 s (a Short must stay under 60 s; aim for 40-58) |
+| PASS | Length | 49.7 s (a Short must stay under 60 s; aim for 40-58) |
 | PASS | Places | 3 set(s): tummy, home, clinic (at least a body scene and the doctor's office) |
 | PASS | Own rooms | clinic: clinic|peach|stripes|wood|arch@centre|garden|desk|stomach|day; home: bedroom|nightblue|paint|carpet|arch@right|night|bed-left|-|night |
 | PASS | Rooms are unique | no other video has this clinic or this home (compared with 2 other video(s)) |
@@ -50,12 +50,12 @@ Characters: stomach, foodpipe · props: burger, pillow, tag, tag, pain, chip, ch
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
 | 0.0 s | A1 | stomach | happy | He ate a huge dinner. Now he's lying down! | ews 24 lock |  |
-| 3.7 s | A2 | foodpipe | scared | Lying down? Your acid will come up to me! | the scene, locked | nhs-heartburn |
-| 7.4 s | A3 | stomach | sick | Then three things happen. The third one burns! | the scene, locked |  |
-| 10.7 s | A4 | stomach | sick | First, I'm too full. | the scene, locked | nhs-heartburn |
-| 12.7 s | A5 | foodpipe | shocked | Second, my valve relaxes! | the scene, locked | niddk-gerd |
-| 14.6 s | A6 | stomach | scared | Third, my acid flows up the food pipe! | the scene, locked | nhs-heartburn |
-| 17.9 s | A7 | foodpipe | sad | Ow! It burns! Make it stop! | the scene, locked | nhs-heartburn |
+| 3.2 s | A2 | foodpipe | scared | Lying down? Your acid will come up to me! | the scene, locked | nhs-heartburn |
+| 6.0 s | A3 | stomach | sick | Then three things happen. The third one burns! | the scene, locked |  |
+| 9.5 s | A4 | stomach | sick | First, I'm too full. | the scene, locked | nhs-heartburn |
+| 11.1 s | A5 | foodpipe | shocked | Second, my valve relaxes! | the scene, locked | niddk-gerd |
+| 13.1 s | A6 | stomach | scared | Third, my acid flows up the food pipe! | the scene, locked | nhs-heartburn |
+| 15.5 s | A7 | foodpipe | sad | Ow! It burns! Make it stop! | the scene, locked | nhs-heartburn |
 
 What happens in the picture:
 
@@ -82,7 +82,7 @@ Characters: patient · props: pain
 
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
-| 22.2 s | C1 | patient | sick | Ow! My chest is on fire! | ews 24 lock |  |
+| 19.4 s | C1 | patient | sick | Ow! My chest is on fire! | ews 24 lock |  |
 
 What happens in the picture:
 
@@ -94,12 +94,12 @@ Characters: doctor, patient · props: burger, tag, pain, tag, valve, tag, pillow
 
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
-| 25.1 s | D1 | patient | sick | Doctor, why does my chest burn after dinner? | ews 24 lock |  |
-| 28.5 s | D2 | doctor | neutral | That's heartburn: stomach acid travelling up toward your throat. | the scene, locked | nhs-heartburn |
-| 32.2 s | D3 | doctor | happy | But here's the twist: the problem is a door. Your stomach's valve relaxes when it shouldn't. | the scene, locked | niddk-gerd |
-| 38.4 s | D4 | patient | neutral | And lying down makes it worse? | the scene, locked |  |
-| 41.0 s | D5 | doctor | happy | Yes. So no food for three or four hours before bed. | the scene, locked | nhs-heartburn |
-| 45.4 s | D6 | doctor | neutral | And raise the head of your bed ten to twenty centimetres. | the scene, locked | nhs-heartburn |
+| 21.5 s | D1 | patient | sick | Doctor, why does my chest burn after dinner? | ews 24 lock |  |
+| 24.2 s | D2 | doctor | neutral | That's heartburn: stomach acid travelling up toward your throat. | the scene, locked | nhs-heartburn |
+| 28.1 s | D3 | doctor | happy | But here's the twist: the problem is a door. Your stomach's valve relaxes when it shouldn't. | the scene, locked | niddk-gerd |
+| 34.2 s | D4 | patient | neutral | And lying down makes it worse? | the scene, locked |  |
+| 36.2 s | D5 | doctor | happy | Yes. So no food for three or four hours before bed. | the scene, locked | nhs-heartburn |
+| 39.5 s | D6 | doctor | neutral | And raise the head of your bed ten to twenty centimetres. | the scene, locked | nhs-heartburn |
 
 What happens in the picture:
 
@@ -122,8 +122,8 @@ Characters: stomach, foodpipe · props: tag, clock, pillow, tag
 
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
-| 50.1 s | E1 | foodpipe | happy | Ahh. Nothing is coming up tonight! | ews 24 lock |  |
-| 52.8 s | E2 | stomach | happy | A huge dinner, four hours ago. Now he can lie down! | the scene, locked | nhs-heartburn |
+| 43.1 s | E1 | foodpipe | happy | Ahh. Nothing is coming up tonight! | ews 24 lock |  |
+| 45.3 s | E2 | stomach | happy | A huge dinner, four hours ago. Now he can lie down! | the scene, locked | nhs-heartburn |
 
 What happens in the picture:
 
