@@ -4,7 +4,7 @@ import {AbsoluteFill, useCurrentFrame, useVideoConfig} from 'remotion';
 import {CAST, Pill, Poop, Stomach, Virus, WhiteCell, RedCell, Tooth, Bacteria, type CastName} from './characters';
 import {PEOPLE, Doctor, Patient, Mom, type PersonName} from './humans';
 import {blinkAt, EMOTIONS, INK} from './rig';
-import {SETS, BloodSet, MouthSet, OfficeSet, StomachSet, ThroatSet, GutSet, WordCaption, type SetName} from './scenes';
+import {SETS, BloodSet, MouthSet, OfficeDesk, OfficeSet, StomachSet, ThroatSet, GutSet, WordCaption, type SetName} from './scenes';
 import {theme} from '../brand/theme';
 import {Boil, Grain} from './ink';
 
@@ -69,9 +69,17 @@ export const SetBoard: React.FC = () => (
   </AbsoluteFill>
 );
 
+/** Idle acting: a gentle sway and breathing around the feet, so nobody stands frozen. */
+const Act: React.FC<{frame: number; seed: number; pivot?: number; children: React.ReactNode}> = ({frame, seed, pivot = 96, children}) => {
+  const t = frame / 30;
+  const sway = Math.sin(t * 2.1 + seed) * 2.4;
+  const breathe = 1 + Math.sin(t * 3.2 + seed) * 0.014;
+  return <g transform={`translate(0 ${pivot}) rotate(${sway}) scale(${2 - breathe} ${breathe}) translate(0 ${-pivot})`}>{children}</g>;
+};
+
 /** Place a character so its feet (local y = feetY) stand on screen y `floor`, `size` px tall box, with line boil. */
 const Stand: React.FC<{x: number; floor: number; size: number; feetY?: number; frame: number; children: React.ReactNode}> = ({x, floor, size, feetY = 96, frame, children}) => (
-  <Slot x={x} y={floor - (feetY / 200) * size} size={size}><Boil frame={frame}>{children}</Boil></Slot>
+  <Slot x={x} y={floor - (feetY / 200) * size} size={size}><Boil frame={frame}><Act frame={frame} seed={x} pivot={feetY}>{children}</Act></Boil></Slot>
 );
 
 /** 18 s motion demo: six shots of 3 s, characters framed big on the floor. */
@@ -107,8 +115,9 @@ export const SceneDemo: React.FC = () => {
       <Stand x={820} floor={1350} size={330} feetY={70} frame={f}><RedCell emotion="shocked" blink={blinkAt(f, fps, 9)} arms={[200, -20]} look={{x: -0.6, y: -0.4}} /></Stand></>)}
       <WordCaption word="ATTACK" key_ pop={pop} y={1580} /><Grain opacity={0.06} /></AbsoluteFill>);
     default: return (<AbsoluteFill>{cam(<><OfficeSet t={t} />
-      <Slot x={310} y={1010} size={1060}><Boil frame={f}><Doctor emotion="happy" talk={talk(5)} blink={blinkAt(f, fps, 10)} arms={[118, -40 + Math.sin(t * 4) * 15]} look={{x: 0.8, y: 0}} /></Boil></Slot>
-      <Slot x={800} y={1080} size={900}><Boil frame={f}><Patient emotion="sick" blink={blinkAt(f, fps, 12)} arms={[110, 70]} look={{x: -0.8, y: 0}} /></Boil></Slot></>)}
+      <Slot x={310} y={1010} size={1060}><Boil frame={f}><Act frame={f} seed={1} pivot={100}><Doctor emotion="happy" talk={talk(5)} blink={blinkAt(f, fps, 10)} arms={[118, -40 + Math.sin(t * 4) * 15]} look={{x: 0.8, y: 0}} /></Act></Boil></Slot>
+      <Slot x={800} y={1080} size={900}><Boil frame={f}><Act frame={f} seed={2} pivot={100}><Patient emotion="sick" blink={blinkAt(f, fps, 12)} arms={[70, 110]} look={{x: -0.8, y: 0}} /></Act></Boil></Slot>
+      <OfficeDesk /></>)}
       <WordCaption word="WATER" key_ pop={pop} y={1600} /><Grain opacity={0.06} /></AbsoluteFill>);
   }
 };

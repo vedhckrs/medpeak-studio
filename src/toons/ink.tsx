@@ -86,7 +86,7 @@ export const Mark: React.FC<{pts: P[]; w?: number; color?: string; opacity?: num
  */
 export const InkBody: React.FC<{
   d: string; color: string; line?: number; shadow?: number; gloss?: [number, number, number?] | null; rim?: boolean; children?: React.ReactNode;
-}> = ({d, color, line = 3.4, shadow = 0.24, gloss = null, rim = true, children}) => {
+}> = ({d, color, line = 2.8, shadow = 0.22, gloss = null, rim = true, children}) => {
   const id = useId().replace(/:/g, '');
   return (
     <g>
@@ -94,8 +94,9 @@ export const InkBody: React.FC<{
         <clipPath id={`b${id}`}><path d={d} /></clipPath>
         <filter id={`f${id}`} x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="5" /></filter>
         <filter id={`g${id}`} x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="10" /></filter>
-        <clipPath id={`h${id}`}><rect x={-400} y={0} width={800} height={800} transform="rotate(-38)" /></clipPath>
       </defs>
+      {/* outline weight follows the light: an offset copy thickens the bottom-right edge smoothly */}
+      <path d={d} fill={INK} stroke={INK} strokeWidth={line} strokeLinejoin="round" transform={`translate(${line * 0.5} ${line * 0.7})`} />
       <path d={d} fill={tone(color, shadow)} />
       <g clipPath={`url(#b${id})`}>
         <path d={d} fill={color} transform="translate(-13 -15)" filter={`url(#f${id})`} />
@@ -105,7 +106,6 @@ export const InkBody: React.FC<{
       </g>
       {gloss && <Gloss x={gloss[0]} y={gloss[1]} s={gloss[2] ?? 1} />}
       <path d={d} fill="none" stroke={INK} strokeWidth={line} strokeLinejoin="round" />
-      <g clipPath={`url(#h${id})`}><path d={d} fill="none" stroke={INK} strokeWidth={line * 2} strokeLinejoin="round" /></g>
     </g>
   );
 };

@@ -8,7 +8,7 @@ export type Emotion = 'neutral' | 'happy' | 'angry' | 'scared' | 'smug' | 'sick'
 export const EMOTIONS: Emotion[] = ['neutral', 'happy', 'angry', 'scared', 'smug', 'sick', 'sleepy', 'shocked', 'sad'];
 
 export const INK = '#1d2b4f'; // our outline colour (navy, not black)
-export const LINE = 3.2;
+export const LINE = 2.8;
 
 export type FaceProps = {
   emotion?: Emotion;
@@ -132,13 +132,12 @@ export const Arm: React.FC<{x: number; y: number; angle: number; len?: number; b
   const ey = y + Math.sin(r) * len;
   const mx = (x + ex) / 2 - Math.sin(r) * bend;
   const my = (y + ey) / 2 + Math.cos(r) * bend;
-  const limb = taperedPath([[x, y], [mx, my], [ex, ey]], 11, 0.01, 0.01);
+  const limb = taperedPath([[x, y], [mx, my], [ex, ey]], 12, 0.01, 0.01);
   return (
     <g>
       <path d={limb} fill={INK} transform="translate(0 0)" stroke={INK} strokeWidth={LINE * 1.6} strokeLinejoin="round" />
       <path d={limb} fill={color} />
-      <path d={taperedPath([[x, y], [mx, my], [ex, ey]], 4, 0.2, 0.2)} fill={tone(color, 0.18)} transform="translate(1.5 2)" />
-      <g transform={`translate(${ex} ${ey}) rotate(${angle})`}>
+      <g transform={`translate(${ex} ${ey}) rotate(${angle}) scale(1.4)`}>
         {[-6, -1.5, 3].map((fy, i) => <rect key={i} x={6} y={fy - 2.4} width={9 - i} height={4.8} rx={2.4} fill="#fff" stroke={INK} strokeWidth={LINE * 0.75} />)}
         <path d="M-2 -3 C-6 -10 2 -13 5 -7" fill="#fff" stroke={INK} strokeWidth={LINE * 0.75} />
         <path d="M-6 0 C-6 -8 9 -9 10 -1 C11 6 -4 9 -6 0 Z" fill="#fff" stroke={INK} strokeWidth={LINE * 0.85} />

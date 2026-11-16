@@ -24,9 +24,10 @@ const Head: React.FC<{p: HumanProps; skin: string; y?: number; size?: number; ch
 );
 
 const Torso: React.FC<{color: string; children?: React.ReactNode}> = ({color, children}) => (
-  <Shaded d="M-46 30 C-46 4 -22 -8 0 -8 C22 -8 46 4 46 30 L50 100 H-50 Z" color={color}>{children}</Shaded>
+  <Shaded d="M-50 100 C-53 62 -56 36 -45 15 C-37 -1 -18 -8 0 -8 C18 -8 37 -1 45 15 C56 36 53 62 50 100 Z" color={color}>{children}</Shaded>
 );
 
+const CURLS = [[-42, -10], [-47, 10], [42, -10], [47, 10], [-38, 28], [38, 28]];
 const legsFor = (p: HumanProps, trousers: string) => p.full && <Legs y={96} gap={18} len={30} color={trousers} shoe="#1d2b4f" step={p.step} />;
 
 /** Dr. Mira, MedPeak's own doctor: white coat over teal scrubs, curly hair, round glasses. */
@@ -46,7 +47,11 @@ export const Doctor: React.FC<HumanProps> = (p) => (
     {p.arms && <><Arm x={-44} y={24} angle={p.arms[0]} len={46} color="#ffffff" /><Arm x={44} y={24} angle={p.arms[1]} len={46} color="#ffffff" /></>}
     <rect x={-10} y={-24} width={20} height={20} fill={shade('#c98b62', 0.1)} {...S} />
     <Head p={p} skin="#c98b62"
-      hairBack={<>{[[-42, -10], [-46, 12], [42, -10], [46, 12], [-36, 30], [36, 30]].map(([x, y], i) => <circle key={i} cx={x} cy={y} r={15} fill="#2b1d1a" {...S} />)}</>}
+      hairBack={<>
+        {CURLS.map(([x, y], i) => <circle key={`o${i}`} cx={x} cy={y} r={15} fill="#2b1d1a" {...S} />)}
+        {CURLS.map(([x, y], i) => <circle key={`f${i}`} cx={x} cy={y} r={14} fill="#2b1d1a" />)}
+        {CURLS.map(([x, y], i) => <circle key={`h${i}`} cx={x - 4} cy={y - 5} r={5} fill="#4a342d" />)}
+      </>}
       hairFront={<>
         <path d="M-42 2 C-50 -62 50 -62 42 2 C34 -20 16 -28 0 -26 C-16 -28 -34 -20 -42 2 Z" fill="#2b1d1a" {...S} />
         {[-32, -16, 0, 16, 32].map((x, i) => <circle key={i} cx={x} cy={-38 - (i === 2 ? 6 : Math.abs(x) < 20 ? 3 : -5)} r={14} fill="#2b1d1a" />)}

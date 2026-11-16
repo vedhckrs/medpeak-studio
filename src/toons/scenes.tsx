@@ -35,32 +35,37 @@ const Atmos: React.FC<{t: number; tint: string; particles?: string; light?: [num
 };
 
 /**
- * A painted organic wall: base colour, big soft light/dark blotches, tapered wrinkle marks.
- * `area` limits marks to a band (x0,y0,x1,y1); `dir` = 'v' vertical folds, 'h' horizontal folds.
+ * A painted organic wall in flat cel style: crisp light and dark patches (no blur) and tapered
+ * wrinkle marks, each with a thin light edge. `dir` = 'v' vertical folds, 'h' horizontal folds.
  */
 const Painted: React.FC<{seed: string; base: string; area?: [number, number, number, number]; dir?: 'v' | 'h'; marks?: number; blotches?: number; t?: number}> = ({seed, base, area = [0, 0, W, H], dir = 'v', marks = 26, blotches = 14, t = 0}) => {
-  const id = useId().replace(/:/g, '');
   const [x0, y0, x1, y1] = area;
+  const n = Math.max(3, Math.round(blotches * 0.6));
   return (
     <g>
-      <defs><filter id={`pb${id}`} x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="22" /></filter></defs>
-      <g filter={`url(#pb${id})`}>
-        {Array.from({length: blotches}).map((_, i) => {
-          const cx = x0 + random(`${seed}bx${i}`) * (x1 - x0);
-          const cy = y0 + random(`${seed}by${i}`) * (y1 - y0);
-          const light = random(`${seed}bl${i}`) > 0.5;
-          return <path key={i} d={blob(60 + random(`${seed}br${i}`) * 140, 40 + random(`${seed}bq${i}`) * 110, `${seed}b${i}`, 9, 0.18, cx, cy)} fill={tone(base, light ? -0.16 : 0.14)} opacity={0.75} />;
-        })}
-      </g>
+      {Array.from({length: n}).map((_, i) => {
+        const cx = x0 + random(`${seed}bx${i}`) * (x1 - x0);
+        const cy = y0 + random(`${seed}by${i}`) * (y1 - y0);
+        const light = i % 3 === 0;
+        const rx = 70 + random(`${seed}br${i}`) * 150;
+        const ry = 50 + random(`${seed}bq${i}`) * 110;
+        return <path key={i} d={blob(dir === 'v' ? ry : rx, dir === 'v' ? rx * 1.3 : ry, `${seed}b${i}`, 9, 0.2, cx, cy)} fill={tone(base, light ? -0.1 : 0.07)} opacity={0.55} />;
+      })}
       {Array.from({length: marks}).map((_, i) => {
         const cx = x0 + random(`${seed}mx${i}`) * (x1 - x0);
         const cy = y0 + random(`${seed}my${i}`) * (y1 - y0);
-        const len = 40 + random(`${seed}ml${i}`) * 120;
-        const wob = (k: number) => (random(`${seed}mw${i}${k}`) - 0.5) * 22 + Math.sin(t * 0.8 + i) * 2;
+        const len = 50 + random(`${seed}ml${i}`) * 130;
+        const wob = (k: number) => (random(`${seed}mw${i}${k}`) - 0.5) * 24 + Math.sin(t * 0.8 + i) * 2;
         const pts: [number, number][] = dir === 'v'
           ? [[cx + wob(1), cy], [cx + wob(2), cy + len * 0.5], [cx + wob(3), cy + len]]
           : [[cx, cy + wob(1)], [cx + len * 0.5, cy + wob(2)], [cx + len, cy + wob(3)]];
-        return <path key={i} d={taperedPath(pts, 4 + random(`${seed}mt${i}`) * 4)} fill={tone(base, 0.32)} opacity={0.75} />;
+        const w = 4 + random(`${seed}mt${i}`) * 5;
+        return (
+          <g key={i}>
+            <path d={taperedPath(pts, w * 0.8)} fill={tone(base, -0.16)} transform={dir === 'v' ? 'translate(5 0)' : 'translate(0 5)'} opacity={0.8} />
+            <path d={taperedPath(pts, w)} fill={tone(base, 0.3)} />
+          </g>
+        );
       })}
     </g>
   );
@@ -189,7 +194,7 @@ export const BloodSet: React.FC<{t: number}> = ({t}) => {
   return (
     <AbsoluteFill>
       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        <defs><filter id={`vb${id}`} x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="9" /></filter></defs>
+        <defs><filter id={`vb${id}`} x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3" /></filter></defs>
         <rect width={W} height={H} fill="#e06a6f" />
         <Painted seed="vw" base="#e06a6f" area={[0, 0, W, 1320]} dir="v" marks={34} blotches={16} t={t} />
         {Array.from({length: 7}).map((_, i) => {
@@ -255,26 +260,70 @@ export const OfficeSet: React.FC<{t: number}> = ({t}) => (
       {Array.from({length: 8}).map((_, i) => <line key={i} x1={0} x2={W} y1={1400 + i * 75} y2={1400 + i * 75} stroke="#d4b385" strokeWidth={6} />)}
       <rect y={1324} width={W} height={26} fill="#f6f1e7" {...O} />
       <g transform="translate(110 280)">
+        <rect x={16} y={18} width={320} height={460} rx={18} fill="#7fb8ab" opacity={0.55} />
         <rect width={320} height={460} rx={18} fill="#fff" {...O} />
         <circle cx={160} cy={100} r={44} fill="#ffd2c4" {...O} />
         <rect x={116} y={156} width={88} height={190} rx={34} fill="#ffd2c4" {...O} />
         <circle cx={140} cy={220} r={16} fill="#ff6f7d" /><ellipse cx={178} cy={262} rx={20} ry={13} fill="#c9645a" /><circle cx={150} cy={300} r={9} fill="#f2a63c" />
         <rect x={64} y={378} width={192} height={20} rx={10} fill="#2ec4b6" /><rect x={90} y={410} width={140} height={14} rx={7} fill="#c8d6e5" />
       </g>
+      <path d="M660 640 L980 640 L1080 1324 L420 1324 Z" fill="#fff8d6" opacity={0.22} />
       <g transform="translate(660 250)">
+        <rect x={16} y={18} width={320} height={380} rx={22} fill="#7fb8ab" opacity={0.55} />
         <rect width={320} height={380} rx={22} fill="#e8f7ff" {...O} />
         <rect x={20} y={20} width={280} height={340} rx={12} fill="#bde6ff" />
         <circle cx={90} cy={100} r={38} fill="#ffe08a" />
         <path d={`M20 300 C90 ${250 + Math.sin(t) * 6} 160 320 300 270 V360 H20 Z`} fill="#8fd6a8" />
         <line x1={160} x2={160} y1={0} y2={380} {...O} /><line x1={0} x2={320} y1={190} y2={190} {...O} />
       </g>
-      <g transform="translate(560 760)"><rect width={180} height={240} rx={10} fill="#fff" {...O} /><rect x={20} y={20} width={140} height={14} rx={7} fill="#2ec4b6" />{[60, 90, 120, 150].map((y) => <rect key={y} x={20} y={y} width={140} height={10} rx={5} fill="#c8d6e5" />)}</g>
+      <g transform="translate(560 760)"><rect x={12} y={14} width={180} height={240} rx={10} fill="#7fb8ab" opacity={0.55} /><rect width={180} height={240} rx={10} fill="#fff" {...O} /><rect x={20} y={20} width={140} height={14} rx={7} fill="#2ec4b6" />{[60, 90, 120, 150].map((y) => <rect key={y} x={20} y={y} width={140} height={10} rx={5} fill="#c8d6e5" />)}</g>
       <g transform="translate(900 1120)">
         <path d="M-56 200 L-44 70 H44 L56 200 Z" fill="#ff9f6e" {...O} />
         {[-44, 0, 44].map((a, i) => <ellipse key={i} cx={a} cy={20 - (i === 1 ? 50 : 0)} rx={32} ry={78} fill="#43c08a" {...O} transform={`rotate(${a / 2 + Math.sin(t + i) * 2} ${a} 60)`} />)}
       </g>
           </svg>
     <Atmos t={t} tint="#3d6b66" light={[780, 400]} particles="#ffffff" />
+  </AbsoluteFill>
+);
+
+/** Dr. Mira's desk: drawn in FRONT of the characters (clipboard, pill bottle, mug). */
+export const OfficeDesk: React.FC<{y?: number}> = ({y = 1470}) => (
+  <AbsoluteFill>
+    <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+      <g transform={`translate(0 ${y})`}>
+        <rect x={-20} y={34} width={W + 40} height={520} fill="#b98557" />
+        <rect x={-20} y={34} width={W + 40} height={40} fill="#8f623c" opacity={0.6} />
+        <rect x={-20} y={0} width={W + 40} height={44} rx={12} fill="#d9a877" {...O} />
+        <rect x={-20} y={4} width={W + 40} height={10} fill="#f0c898" opacity={0.8} />
+        {[140, 420, 700, 960].map((x, i) => <path key={i} d={taperedPath([[x, 120], [x + 60, 135], [x + 150, 125]], 6)} fill="#9c6c43" />)}
+        {/* clipboard */}
+        <g transform="translate(90 -150) rotate(-8)">
+          <rect x={10} y={12} width={190} height={150} rx={10} fill="#5b4030" opacity={0.3} />
+          <rect width={190} height={150} rx={10} fill="#c98b5a" {...O} />
+          <rect x={14} y={16} width={162} height={122} rx={4} fill="#fff" />
+          {[36, 60, 84, 108].map((yy, i) => <rect key={yy} x={28} y={yy} width={i === 3 ? 80 : 134} height={9} rx={4} fill={i === 0 ? '#2ec4b6' : '#c8d6e5'} />)}
+          <rect x={70} y={-12} width={50} height={24} rx={6} fill="#9fb3c8" {...O} />
+        </g>
+        {/* pill bottle */}
+        <g transform="translate(760 -150)">
+          <ellipse cx={52} cy={152} rx={60} ry={10} fill="#5b4030" opacity={0.3} />
+          <rect x={0} y={30} width={100} height={122} rx={14} fill="#ff9f43" {...O} />
+          <rect x={0} y={66} width={100} height={52} fill="#fff" stroke={INK} strokeWidth={LINE * 1.6} />
+          <rect x={22} y={80} width={56} height={8} rx={4} fill="#2ec4b6" /><rect x={22} y={96} width={36} height={7} rx={3} fill="#c8d6e5" />
+          <rect x={-6} y={0} width={112} height={36} rx={8} fill="#fff" {...O} />
+          <rect x={14} y={40} width={10} height={100} rx={5} fill="#ffd29a" opacity={0.8} />
+        </g>
+        {/* mug */}
+        <g transform="translate(930 -110)">
+          <ellipse cx={46} cy={112} rx={54} ry={9} fill="#5b4030" opacity={0.3} />
+          <path d="M84 30 C120 30 120 84 84 84" fill="none" stroke={INK} strokeWidth={LINE * 5} />
+          <path d="M84 30 C120 30 120 84 84 84" fill="none" stroke="#2ec4b6" strokeWidth={LINE * 2} />
+          <rect x={0} y={0} width={90} height={112} rx={14} fill="#2ec4b6" {...O} />
+          <path d="M30 60 l10 -22 l8 34 l10 -22 h12" fill="none" stroke="#fff" strokeWidth={6} strokeLinecap="round" strokeLinejoin="round" />
+          <rect x={10} y={10} width={10} height={90} rx={5} fill="#7fe3d6" opacity={0.8} />
+        </g>
+      </g>
+    </svg>
   </AbsoluteFill>
 );
 
