@@ -56,6 +56,7 @@ MedPeak Toons (the cartoon Shorts) have their own steps; the order of work is in
 `references/toons-script.md`: `toon-check` (script, Retention 7, own and unique rooms, accuracy) ->
 `toon:camera`, `toon:motion`, `toon:staging` and `toon:sound` (measured, all required) -> silent preview and rooms board ->
 owner's yes -> `toon-voice` -> the same checks on the real timings -> `toon-render` ->
+`toon:listen` (earshot reads the finished sound: loudness, which planned sounds are heard, what each sounds like) ->
 `toon-package` (title, description, tags, cover, captions) -> `publish/upload.py <slug> toon`
 only after the owner's yes. After the upload, each with its own yes from the owner:
 `publish/after_upload.py <slug> toon --captions` (adds the caption file), `--comment` (posts the
@@ -96,6 +97,7 @@ long-video watch time counts toward the 4,000 hours, so every Short links to a l
 - `references/toons-camera.md` - shot sizes, lenses, camera moves and what the director does on its own. Read before writing a Toon script.
 - `references/toons-script.md` - how to write a Toon script: the steady style (a body stage, events, time card, the person at home, Dr. Mira), Retention 7 in dialogue, sources on every doctor line, the order of work and its required checks (`toon-check`, `toon:camera`, `toon:motion`). Read before writing any Toon.
 - `references/toons-rooms.md` - every video gets a clinic and a home of its own, built from a recipe; what "unique" means and how the gate checks it. Read before choosing a video's rooms.
+- `references/toons-listening.md` - the listening step: Claude cannot hear, so earshot (local, free, nothing uploaded) reads every finished video's sound and the effect library; how to run it, read it and install it. `references/earshot-guide.md` is the tool's own guide to its numbers.
 - `references/toons-known-issues.md` - every bug found so far, its root cause and the check that now stops it; what is still open. Read before starting a new Toon and add to it the day a bug is found.
 - `references/toons-reference-study.md` - what the top cartoon health Shorts do (measured on 20), and how our videos compare.
 - `toons-cast.json` - the fixed voice of every Toons character. A character never changes voice between videos; a new character gets a new entry here (and a line in `references/toons.md`).

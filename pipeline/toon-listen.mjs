@@ -79,7 +79,7 @@ const plan = soundPlan(L).map((e) => ({t: e.at / TOON_FPS, name: e.name, why: e.
 const outDir = path.join(videoDir(slug), 'renders', 'listen');
 fs.mkdirSync(outDir, {recursive: true});
 console.log(`Listening to ${path.relative(ROOT, file)} (the models take about half a minute to load)...`);
-const r = run({mode: 'film', file, sheet: path.join(outDir, 'sheet.png')});
+const r = run({mode: 'film', file, sheet: path.join(outDir, 'sheet.png'), cues: {events: plan.map((p) => ({t: Number(p.t.toFixed(3)), kind: 'sfx', id: p.name}))}});
 const events = r.timeline?.events ?? [];
 const timeOf = (e) => e.t ?? e.time ?? e.start ?? 0;
 const heard = plan.map((p) => { const near = events.map((e) => ({e, d: timeOf(e) - p.t})).filter((x) => Math.abs(x.d) <= NEAR).sort((x, y) => Math.abs(x.d) - Math.abs(y.d))[0]; return {...p, heardAt: near ? timeOf(near.e) : null, offsetMs: near ? Math.round(near.d * 1000) : null, sounds: near ? tagOf(near.e) : null, level: near?.e.level ?? near?.e.lufs ?? near?.e.db ?? null}; });

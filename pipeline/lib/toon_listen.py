@@ -4,7 +4,7 @@ Run with earshot's own Python (the models load once per run and every job in the
     ~/.local/share/uv/tools/earshot/bin/python pipeline/lib/toon_listen.py job.json
 
 job.json:
-    {"mode": "film", "file": "...mp4", "sheet": "...png", "out": "...json"}
+    {"mode": "film", "file": "...mp4", "sheet": "...png", "cues": {"events": [{"t", "kind", "id"}]}, "out": "...json"}
         what the finished video sounds like: loudness, every sound event with its time, level and
         what it sounds like, where the picture cuts are and whether a sound lands on them
     {"mode": "library", "items": [{"name", "file", "prompt"}], "out": "...json"}
@@ -23,10 +23,11 @@ from earshot import api  # noqa: E402
 
 def film(job):
     out = {'measure': api.measure(job['file'], light=True)}
-    tl = api.timeline(job['file'], detail=job.get('detail', 'normal'))
+    cues = job.get('cues')  # the script's planned sounds: earshot checks a sound really lands on each
+    tl = api.timeline(job['file'], cues=cues, detail=job.get('detail', 'normal'))
     out['timeline'] = {k: tl.get(k) for k in ('duration', 'loudness', 'events', 'sections', 'sync', 'cuts', 'summary') if k in tl}
     if job.get('sheet'):
-        api.sheet(job['file'], job['sheet'])
+        api.sheet(job['file'], job['sheet'], cues=cues, tl=tl)
         out['sheet'] = job['sheet']
     return out
 
