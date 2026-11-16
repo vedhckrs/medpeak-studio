@@ -3,18 +3,20 @@
 // Our palette: warm coral body interiors, navy outlines, teal labels; real-world sets in mint/cream.
 import React, {useId} from 'react';
 import {AbsoluteFill, random} from 'remotion';
-import {INK, LINE} from './rig';
-import {blob, Grain, InkBody, spline, taperedPath, tone} from './ink';
-import {shade} from './paint';
+import {blob, Grain, InkBody, lineOf, spline, taperedPath, tone} from './ink';
 import {theme} from '../brand/theme';
 import {STYLE} from './style';
 
 const W = 1080;
 const H = 1920;
-const O = {stroke: INK, strokeWidth: LINE * 2.4, strokeLinejoin: 'round' as const};
+// Set outlines are thin and coloured: maroon inside the body, slate in rooms. Never heavy black.
+const FLESH = STYLE.fleshLine;
+const ROOM = STYLE.roomLine;
+const LW = STYLE.setLinePx;
+const O = {stroke: ROOM, strokeWidth: LW, strokeLinejoin: 'round' as const};
 
 export const Label: React.FC<{text: string; x?: number; y?: number}> = ({text, x = 740, y = 170}) => (
-  <div style={{position: 'absolute', left: x, top: y, background: STYLE.label, color: '#fff', fontFamily: theme.font, fontWeight: 900, fontSize: 40, padding: '10px 28px', borderRadius: 40, border: `5px solid ${INK}`, letterSpacing: 1, boxShadow: '0 8px 0 rgba(29,43,79,0.25)'}}>{text}</div>
+  <div style={{position: 'absolute', left: x, top: y, background: STYLE.label, color: '#fff', fontFamily: theme.font, fontWeight: 900, fontSize: 40, padding: '10px 28px', borderRadius: 40, border: '3px solid #0f6f66', letterSpacing: 1, boxShadow: '0 8px 0 rgba(29,43,79,0.25)'}}>{text}</div>
 );
 
 /** Finishing: a soft light from the top-left, a gentle darkening at the very bottom, paper grain. */
@@ -50,7 +52,7 @@ const Painted: React.FC<{seed: string; base: string; area?: [number, number, num
         const light = i % 3 === 0;
         const rx = 70 + random(`${seed}br${i}`) * 150;
         const ry = 50 + random(`${seed}bq${i}`) * 110;
-        return <path key={i} d={blob(dir === 'v' ? ry : rx, dir === 'v' ? rx * 1.3 : ry, `${seed}b${i}`, 9, 0.2, cx, cy)} fill={tone(base, light ? -0.1 : 0.07)} opacity={0.55} />;
+        return <path key={i} d={blob(dir === 'v' ? ry : rx, dir === 'v' ? rx * 1.3 : ry, `${seed}b${i}`, 9, 0.2, cx, cy)} fill={tone(base, light ? -0.1 : 0.07)} opacity={0.42} />;
       })}
       {Array.from({length: marks}).map((_, i) => {
         const cx = x0 + random(`${seed}mx${i}`) * (x1 - x0);
@@ -64,7 +66,7 @@ const Painted: React.FC<{seed: string; base: string; area?: [number, number, num
         return (
           <g key={i}>
             <path d={taperedPath(pts, w * 0.8)} fill={tone(base, -0.16)} transform={dir === 'v' ? 'translate(5 0)' : 'translate(0 5)'} opacity={0.8} />
-            <path d={taperedPath(pts, w)} fill={tone(base, 0.3)} />
+            <path d={taperedPath(pts, w)} fill={tone(base, 0.22)} />
           </g>
         );
       })}
@@ -89,7 +91,7 @@ const Floor: React.FC<{y: number; color: string; seed: string}> = ({y, color, se
       <path d={d} fill={color} />
       <Painted seed={`${seed}fl`} base={color} area={[0, y + 40, W, H]} dir="h" marks={10} blotches={10} />
       <path d={spline(top, false)} fill="none" stroke={tone(color, -0.25)} strokeWidth={10} strokeLinecap="round" transform="translate(0 8)" opacity={0.7} />
-      <path d={spline(top, false)} fill="none" stroke={INK} strokeWidth={LINE * 2.2} strokeLinecap="round" />
+      <path d={spline(top, false)} fill="none" stroke={FLESH} strokeWidth={LW} strokeLinecap="round" />
     </g>
   );
 };
@@ -108,8 +110,8 @@ export const ThroatSet: React.FC<{t: number}> = ({t}) => {
         <path d={spline([[W + 80, -40], ...R.map(([x, y]) => [x - breathe, y] as [number, number]), [W + 80, H + 40]], true, 0.45)} fill="#e07a83" />
         <Painted seed="thw1" base="#e07a83" area={[0, 0, 280, H]} t={t} />
         <Painted seed="thw2" base="#e07a83" area={[800, 0, W, H]} t={t} />
-        <path d={spline(L.map(([x, y]) => [x + breathe, y] as [number, number]), false)} fill="none" stroke={INK} strokeWidth={LINE * 2.4} />
-        <path d={spline(R.map(([x, y]) => [x - breathe, y] as [number, number]), false)} fill="none" stroke={INK} strokeWidth={LINE * 2.4} />
+        <path d={spline(L.map(([x, y]) => [x + breathe, y] as [number, number]), false)} fill="none" stroke={FLESH} strokeWidth={LW} />
+        <path d={spline(R.map(([x, y]) => [x - breathe, y] as [number, number]), false)} fill="none" stroke={FLESH} strokeWidth={LW} />
         <path d={spline(L.map(([x, y]) => [x + breathe + 18, y] as [number, number]), false)} fill="none" stroke="#f6c2b8" strokeWidth={8} opacity={0.6} />
       </svg>
       <Atmos t={t} tint="#6b1f2e" light={[540, 700]} />
@@ -128,7 +130,7 @@ export const GutSet: React.FC<{t: number}> = ({t}) => (
         const x = 40 + i * 125;
         const h = 150 + random(`gv${i}`) * 90;
         const sway = Math.sin(t * 1.5 + i) * 10;
-        return <path key={i} d={spline([[x - 38, 1290], [x - 30 + sway * 0.5, 1290 - h * 0.6], [x + sway, 1290 - h], [x + 30 + sway * 0.5, 1290 - h * 0.6], [x + 38, 1290]], false)} fill="#e4848b" stroke={INK} strokeWidth={LINE * 1.8} />;
+        return <path key={i} d={spline([[x - 38, 1290], [x - 30 + sway * 0.5, 1290 - h * 0.6], [x + sway, 1290 - h], [x + 30 + sway * 0.5, 1290 - h * 0.6], [x + 38, 1290]], false)} fill="#e4848b" stroke={FLESH} strokeWidth={LW} />;
       })}
       <Floor y={1300} color="#e88b90" seed="gf" />
     </svg>
@@ -148,13 +150,13 @@ export const StomachSet: React.FC<{t: number}> = ({t}) => {
         <path d={spline([[-40, H + 40], [-40, 1420], ...surf, [W + 40, 1420], [W + 40, H + 40]], true, 0.4)} fill="#b7d65a" />
         <Painted seed="sa" base="#b7d65a" area={[0, 1460, W, H]} dir="h" marks={6} blotches={10} />
         <path d={spline(surf, false)} fill="none" stroke="#e3f39b" strokeWidth={12} transform="translate(0 10)" opacity={0.8} />
-        <path d={spline(surf, false)} fill="none" stroke={INK} strokeWidth={LINE * 2.2} />
+        <path d={spline(surf, false)} fill="none" stroke={FLESH} strokeWidth={LW} />
         {Array.from({length: 16}).map((_, i) => {
           const life = (t * 0.7 + random(`b${i}`) * 3) % 3;
           const r = 9 + random(`br${i}`) * 18;
           return (
             <g key={i} opacity={Math.min(1, 3 - life)}>
-              <path d={blob(r, r * 0.92, `bb${i}`, 8, 0.06, 60 + random(`bx${i}`) * 960, 1880 - life * 150)} fill="#d9ef8a" stroke={INK} strokeWidth={2.6} />
+              <path d={blob(r, r * 0.92, `bb${i}`, 8, 0.06, 60 + random(`bx${i}`) * 960, 1880 - life * 150)} fill="#d9ef8a" stroke={lineOf('#b7d65a')} strokeWidth={2.4} />
               <circle cx={60 + random(`bx${i}`) * 960 - r * 0.35} cy={1880 - life * 150 - r * 0.35} r={r * 0.22} fill="#fff" opacity={0.8} />
             </g>
           );
@@ -173,7 +175,7 @@ export const MouthSet: React.FC<{t: number}> = ({t}) => (
       <rect width={W} height={H} fill="#7c2636" />
       <Painted seed="mw" base="#7c2636" area={[0, 300, W, 1300]} dir="v" marks={14} />
       <path d={blob(170, 240, 'thr', 10, 0.08, 540, 780)} fill="#2e0a14" />
-      <path d={spline([[470, 560], [500, 690], [540, 715], [580, 690], [610, 560]], false)} fill="#ff8f9c" stroke={INK} strokeWidth={LINE * 2} />
+      <path d={spline([[470, 560], [500, 690], [540, 715], [580, 690], [610, 560]], false)} fill="#ff8f9c" stroke={FLESH} strokeWidth={LW} />
       <path d={spline([[-40, 380], [200, 520], [540, 560], [880, 520], [1120, 380], [1120, -40], [-40, -40]], true, 0.4)} fill="#e8707e" />
       <Painted seed="mp" base="#e8707e" area={[0, 0, W, 460]} dir="h" marks={10} blotches={8} />
       {Array.from({length: 7}).map((_, i) => {
@@ -185,7 +187,7 @@ export const MouthSet: React.FC<{t: number}> = ({t}) => (
       <path d={spline([[540, 1280], [530, 1500], [550, 1700], [540, 1940]], false)} fill="none" stroke="#e46b7c" strokeWidth={9} strokeLinecap="round" />
     </svg>
     <Atmos t={t} tint="#2e0a14" light={[540, 260]} />
-    <Label text="MOUTH" y={980} />
+    <Label text="MOUTH" x={60} y={70} />
   </AbsoluteFill>
 );
 
@@ -202,7 +204,7 @@ export const BloodSet: React.FC<{t: number}> = ({t}) => {
           const x = ((random(`x${i}`) * 1400 + t * (50 + random(`s${i}`) * 60)) % 1400) - 160;
           const y = 260 + random(`y${i}`) * 900;
           return (
-            <g key={i} transform={`translate(${x} ${y}) scale(${0.6 + random(`k${i}`) * 0.5}) rotate(${random(`r${i}`) * 40})`} filter={`url(#vb${id})`} opacity={0.75}>
+            <g key={i} transform={`translate(${x} ${y}) scale(${0.6 + random(`k${i}`) * 0.5}) rotate(${random(`r${i}`) * 40})`} filter={`url(#vb${id})`} opacity={0.5}>
               <path d={blob(70, 48, `rc${i}`, 10, 0.05)} fill="#c8333b" />
               <path d={blob(36, 22, `rd${i}`, 8, 0.05)} fill="#a82730" />
             </g>
@@ -230,7 +232,7 @@ export const LungsSet: React.FC<{t: number}> = ({t}) => {
     const x2 = x + Math.cos(a) * len;
     const y2 = y + Math.sin(a) * len;
     return [
-      <path key={`l${key}`} d={taperedPath([[x, y], [(x + x2) / 2 + Math.sin(d) * 8, (y + y2) / 2], [x2, y2]], d * 9, 0.01, 0.3)} fill="#f8d2db" stroke={INK} strokeWidth={2.4} />,
+      <path key={`l${key}`} d={taperedPath([[x, y], [(x + x2) / 2 + Math.sin(d) * 8, (y + y2) / 2], [x2, y2]], d * 9, 0.01, 0.3)} fill="#f8d2db" stroke={FLESH} strokeWidth={2.2} />,
       ...branch(x2, y2, a - 0.48, len * 0.72, d - 1, key + 'a'),
       ...branch(x2, y2, a + 0.48, len * 0.72, d - 1, key + 'b'),
     ];
@@ -309,7 +311,7 @@ export const OfficeDesk: React.FC<{y?: number}> = ({y = 1470}) => (
         <g transform="translate(760 -150)">
           <ellipse cx={52} cy={152} rx={60} ry={10} fill="#5b4030" opacity={0.3} />
           <rect x={0} y={30} width={100} height={122} rx={14} fill="#ff9f43" {...O} />
-          <rect x={0} y={66} width={100} height={52} fill="#fff" stroke={INK} strokeWidth={LINE * 1.6} />
+          <rect x={0} y={66} width={100} height={52} fill="#fff" stroke={ROOM} strokeWidth={LW} />
           <rect x={22} y={80} width={56} height={8} rx={4} fill="#2ec4b6" /><rect x={22} y={96} width={36} height={7} rx={3} fill="#c8d6e5" />
           <rect x={-6} y={0} width={112} height={36} rx={8} fill="#fff" {...O} />
           <rect x={14} y={40} width={10} height={100} rx={5} fill="#ffd29a" opacity={0.8} />
@@ -317,8 +319,8 @@ export const OfficeDesk: React.FC<{y?: number}> = ({y = 1470}) => (
         {/* mug */}
         <g transform="translate(930 -110)">
           <ellipse cx={46} cy={112} rx={54} ry={9} fill="#5b4030" opacity={0.3} />
-          <path d="M84 30 C120 30 120 84 84 84" fill="none" stroke={INK} strokeWidth={LINE * 5} />
-          <path d="M84 30 C120 30 120 84 84 84" fill="none" stroke="#2ec4b6" strokeWidth={LINE * 2} />
+          <path d="M84 30 C120 30 120 84 84 84" fill="none" stroke={ROOM} strokeWidth={13} />
+          <path d="M84 30 C120 30 120 84 84 84" fill="none" stroke="#2ec4b6" strokeWidth={6.6} />
           <rect x={0} y={0} width={90} height={112} rx={14} fill="#2ec4b6" {...O} />
           <path d="M30 60 l10 -22 l8 34 l10 -22 h12" fill="none" stroke="#fff" strokeWidth={6} strokeLinecap="round" strokeLinejoin="round" />
           <rect x={10} y={10} width={10} height={90} rx={5} fill="#7fe3d6" opacity={0.8} />

@@ -1,334 +1,476 @@
-// MedPeak Toons cast (body parts, cells, germs, pills). Each one is drawn in code in a 200x200 box
-// centred on (0,0), cel-shaded with light from the top-left, and takes the same props so the
-// director can pose any of them the same way. People live in humans.tsx.
+// MedPeak Toons body cast (v5). Every character is a Blueprint (see blueprint.tsx) drawn in a
+// 200x200 box centred on (0,0). Organs are drawn from their real anatomy (vessels, airways,
+// lobes) and have NO legs: they live in one place. Only travellers (pill, white cell, platelet)
+// get legs. One accessory shows a character's job (guard cap, medic helmet).
 import React from 'react';
-import {Arm, Face, INK, LINE, type Emotion} from './rig';
-import {GroundShadow, Legs, Shaded, Shine, shade} from './paint';
+import {blob, circlePath, ellipsePath, lineOf, lobePts, Mark, Merge, Part, roundRect, spline, tone, Tube, useLine, type P} from './ink';
+import {type Blueprint, type Character, makeCharacter} from './blueprint';
 
-export type CharProps = {
-  emotion?: Emotion;
-  talk?: number;
-  blink?: number;
-  look?: {x: number; y: number};
-  arms?: [number, number]; // left / right arm angles in degrees (0 = right, 90 = down); omit for none
-  squash?: number; // >0 squashed (landing), <0 stretched (jump)
-  step?: number; // -1..1 leg swing for walking
-  t?: number; // seconds, for idle details (cilia, tails, spikes)
-  noLegs?: boolean;
+/** A darker shade of a colour for folds and creases (low contrast, never a hard line). */
+const D = (c: string, k = 0.17) => tone(c, k);
+
+/** The open end of a cut tube (vessel, airway): a dark oval with a rim. */
+const TubeEnd: React.FC<{x: number; y: number; rx: number; ry: number; rot?: number; color: string}> = ({x, y, rx, ry, rot = 0, color}) => (
+  <g transform={`translate(${x} ${y}) rotate(${rot})`}>
+    <Part d={ellipsePath(0, 0, rx, ry)} fill={tone(color, 0.42)} line={lineOf(color)} flat />
+  </g>
+);
+/** A thin detail line (seams, rings) in the house line weight. */
+const Tick: React.FC<{d: string; color: string; k?: number}> = ({d, color, k = 0.62}) => {
+  const w = useLine(k);
+  return <path d={d} fill="none" stroke={color} strokeWidth={w} strokeLinecap="round" strokeLinejoin="round" />;
 };
 
-const Body: React.FC<{squash?: number; children: React.ReactNode}> = ({squash = 0, children}) => (
-  <g transform={`translate(0 ${squash * 10}) scale(${1 + squash * 0.12} ${1 - squash * 0.12})`}>{children}</g>
-);
-const face = (p: CharProps, skin: string, size = 1) => <Face emotion={p.emotion} talk={p.talk} blink={p.blink} look={p.look} skin={skin} size={size} />;
-const arms = (p: CharProps, l: [number, number], r: [number, number], color: string, len = 34) =>
-  p.arms && <><Arm x={l[0]} y={l[1]} angle={p.arms[0]} color={color} len={len} /><Arm x={r[0]} y={r[1]} angle={p.arms[1]} color={color} len={len} /></>;
-const legs = (p: CharProps, y: number, color: string, gap = 22) => !p.noLegs && <Legs y={y} gap={gap} color={color} step={p.step} />;
-
-// ---------------------------------------------------------------- pills and digestion
-
-export const Pill: React.FC<CharProps> = (p) => (
-  <Body squash={p.squash}>
-    <GroundShadow y={70} w={60} />
-    {legs(p, 30, '#ffffff', 26)}
-    {arms(p, [-50, 6], [50, 6], '#ffffff')}
-    <Shaded d="M-28 -34 H28 A34 34 0 0 1 28 34 H-28 A34 34 0 0 1 -28 -34 Z" color="#ffffff" shadow={0.1}>
-      <path d="M2 -40 H70 V40 H2 Z" fill="#2ec4b6" />
-      <path d="M2 -40 H70 V40 H2 Z" fill={shade('#2ec4b6', 0.2)} transform="translate(8 10)" />
-    </Shaded>
-    <line x1={2} x2={2} y1={-34} y2={34} stroke={INK} strokeWidth={LINE} />
-    <Shine x={-40} y={-20} w={10} h={5} />
-    <g transform="translate(-16 -2)">{face(p, '#ffffff', 0.85)}</g>
-  </Body>
-);
-
-export const Stomach: React.FC<CharProps> = (p) => (
-  <Body squash={p.squash}>
-    <GroundShadow y={96} />
-    {legs(p, 70, '#ff9ea6')}
-    {arms(p, [-62, 10], [74, 0], '#ff9ea6')}
-    <path d="M-38 -96 C-36 -80 -30 -74 -28 -70" fill="none" stroke={INK} strokeWidth={22} strokeLinecap="round" />
-    <path d="M-38 -96 C-36 -80 -30 -74 -28 -70" fill="none" stroke="#f08a93" strokeWidth={15} strokeLinecap="round" />
-    <Shaded d="M-30 -80 C-28 -58 -10 -55 10 -58 C55 -64 85 -30 78 10 C70 60 25 84 -20 80 C-62 76 -80 40 -66 5 C-58 -15 -40 -30 -44 -60 C-46 -75 -40 -82 -30 -80 Z" color="#ff9ea6">
-      {['M-50 30 C-20 50 30 46 58 24', 'M-40 52 C-10 66 24 62 44 48', 'M30 -40 C50 -36 66 -20 68 0'].map((d, i) => <path key={i} d={d} fill="none" stroke={shade('#ff9ea6', 0.22)} strokeWidth={5} strokeLinecap="round" />)}
-    </Shaded>
-    <Shine x={-20} y={-40} />
-    <g transform="translate(10 -8)">{face(p, '#ff9ea6')}</g>
-  </Body>
-);
-
-export const Intestine: React.FC<CharProps> = (p) => (
-  <Body squash={p.squash}>
-    <GroundShadow y={96} w={74} />
-    {legs(p, 74, '#f7a7a0', 28)}
-    {arms(p, [-74, 0], [74, 0], '#f7a7a0')}
-    <Shaded d="M-76 -10 C-80 -60 -30 -84 0 -80 C40 -86 82 -56 78 -6 C82 40 46 82 0 80 C-46 82 -76 40 -76 -10 Z" color="#f7a7a0">
-      {['M-60 -40 C-30 -60 30 -60 60 -40', 'M-66 -6 C-40 -26 -10 -10 10 -24 C30 -38 50 -20 66 -10', 'M-62 30 C-40 14 -20 34 0 24 C20 12 44 30 62 22', 'M-46 60 C-20 48 20 54 44 60'].map((d, i) => (
-        <path key={i} d={d} fill="none" stroke={shade('#f7a7a0', 0.25)} strokeWidth={7} strokeLinecap="round" />
-      ))}
-    </Shaded>
-    <Shine x={-40} y={-50} />
-    <g transform="translate(0 2)">{face(p, '#f7a7a0')}</g>
-  </Body>
-);
-
-export const Liver: React.FC<CharProps> = (p) => (
-  <Body squash={p.squash}>
-    <GroundShadow y={78} w={80} />
-    {legs(p, 50, '#c8584c', 30)}
-    {arms(p, [-80, -10], [70, 6], '#c8584c')}
-    <Shaded d="M-92 -10 C-96 -50 -40 -66 20 -62 C70 -60 96 -44 94 -20 C92 10 50 26 10 40 C-30 54 -70 60 -84 40 C-92 28 -90 10 -92 -10 Z" color="#c8584c">
-      <path d="M10 -62 C4 -30 -4 0 -20 46" fill="none" stroke={shade('#c8584c', 0.3)} strokeWidth={5} />
-    </Shaded>
-    <Shine x={-50} y={-38} />
-    <g transform="translate(-24 -8)">{face(p, '#c8584c')}</g>
-  </Body>
-);
-
-export const Kidney: React.FC<CharProps> = (p) => (
-  <Body squash={p.squash}>
-    <GroundShadow y={96} w={56} />
-    {legs(p, 72, '#b8475a', 20)}
-    {arms(p, [-52, 0], [40, -40], '#b8475a')}
-    <path d="M30 4 C50 20 40 70 54 96" fill="none" stroke={INK} strokeWidth={12} strokeLinecap="round" />
-    <path d="M30 4 C50 20 40 70 54 96" fill="none" stroke="#f3d2b4" strokeWidth={7} strokeLinecap="round" />
-    <Shaded d="M-10 -84 C40 -90 66 -50 52 -26 C42 -10 26 -6 28 10 C30 26 46 40 40 60 C30 90 -30 90 -54 56 C-74 26 -70 -70 -10 -84 Z" color="#b8475a">
-      <path d="M30 -20 C10 -6 10 20 30 30" fill="none" stroke={shade('#b8475a', 0.3)} strokeWidth={6} />
-    </Shaded>
-    <Shine x={-30} y={-56} />
-    <g transform="translate(-14 -8)">{face(p, '#b8475a', 0.95)}</g>
-  </Body>
-);
-
-export const Bladder: React.FC<CharProps> = (p) => (
-  <Body squash={p.squash}>
-    <GroundShadow y={98} w={58} />
-    {arms(p, [-62, 6], [62, 6], '#ffd36e')}
-    <path d="M0 70 V96" stroke={INK} strokeWidth={16} strokeLinecap="round" />
-    <path d="M0 70 V96" stroke="#ffcf6a" strokeWidth={10} strokeLinecap="round" />
-    <Shaded d="M0 -82 C52 -82 76 -36 70 10 C64 50 30 78 0 78 C-30 78 -64 50 -70 10 C-76 -36 -52 -82 0 -82 Z" color="#ffd36e">
-      <path d={`M-80 ${18 - (p.t ? Math.sin(p.t * 3) * 4 : 0)} Q0 ${8 + (p.t ? Math.sin(p.t * 3) * 6 : 0)} 80 18 V90 H-80 Z`} fill="#ffc140" opacity={0.6} />
-    </Shaded>
-    <Shine x={-34} y={-46} />
-    <g transform="translate(0 -14)">{face(p, '#ffd36e')}</g>
-  </Body>
-);
-
-export const Poop: React.FC<CharProps> = (p) => (
-  <Body squash={p.squash}>
-    <GroundShadow y={88} w={76} />
-    {arms(p, [-60, 42], [60, 42], '#9b6a43')}
-    <Shaded d="M-72 58 C-72 40 -40 30 0 30 C40 30 72 40 72 58 C72 76 40 86 0 86 C-40 86 -72 76 -72 58 Z" color="#8a5a36" />
-    <Shaded d="M-56 22 C-56 6 -30 -4 0 -4 C30 -4 56 6 56 22 C56 40 30 48 0 48 C-30 48 -56 40 -56 22 Z" color="#9b6a43" />
-    <Shaded d="M-40 -10 C-40 -24 -20 -32 0 -32 C20 -32 40 -24 40 -10 C40 4 20 12 0 12 C-20 12 -40 4 -40 -10 Z" color="#a87547" />
-    <Shaded d="M-8 -28 Q4 -62 28 -68 Q14 -50 18 -28 Z" color="#a87547" />
-    <Shine x={-30} y={-18} w={9} h={4} />
-    <g transform="translate(0 32)">{face(p, '#9b6a43', 0.92)}</g>
-  </Body>
-);
-
-// ---------------------------------------------------------------- organs
-
-export const Tooth: React.FC<CharProps> = (p) => (
-  <Body squash={p.squash}>
-    <GroundShadow y={96} w={56} />
-    {arms(p, [-54, 0], [54, 0], '#ffffff')}
-    <Shaded d="M-52 -60 C-30 -78 -8 -66 0 -62 C8 -66 30 -78 52 -60 C70 -40 60 10 52 40 C46 70 40 90 26 90 C12 90 12 54 0 54 C-12 54 -12 90 -26 90 C-40 90 -46 70 -52 40 C-60 10 -70 -40 -52 -60 Z" color="#fdfbf4" shadow={0.12} />
-    <Shine x={-34} y={-50} w={12} h={6} />
-    <g transform="translate(0 -6)">{face(p, '#fdfbf4')}</g>
-  </Body>
-);
-
-export const Lung: React.FC<CharProps> = (p) => (
-  <Body squash={p.squash}>
-    <GroundShadow y={98} w={56} />
-    {legs(p, 76, '#ff9fb4', 18)}
-    {arms(p, [-40, 10], [36, 10], '#ff9fb4')}
-    <path d="M30 -100 V-60" stroke={INK} strokeWidth={20} strokeLinecap="round" />
-    <path d="M30 -100 V-60" stroke="#c8d6e5" strokeWidth={13} strokeLinecap="round" />
-    {[-90, -80, -70].map((y) => <line key={y} x1={22} x2={38} y1={y} y2={y} stroke="#9fb3c8" strokeWidth={3} />)}
-    <Shaded d="M30 -60 C18 -76 -26 -72 -38 -30 C-50 10 -46 70 -16 86 C14 100 34 86 38 60 C42 20 40 -40 30 -60 Z" color="#ff9fb4">
-      <path d="M30 -56 C20 -30 0 -10 -16 0 M8 -24 C0 -4 6 20 -2 40 M-16 0 C-26 10 -30 30 -24 50" fill="none" stroke={shade('#ff9fb4', 0.25)} strokeWidth={4} strokeLinecap="round" />
-    </Shaded>
-    <Shine x={-22} y={-34} />
-    <g transform="translate(2 8)">{face(p, '#ff9fb4', 0.9)}</g>
-  </Body>
-);
-
-export const Brain: React.FC<CharProps> = (p) => (
-  <Body squash={p.squash}>
-    <GroundShadow y={96} w={70} />
-    {legs(p, 56, '#ffc2d1', 24)}
-    {arms(p, [-74, 20], [74, 20], '#ffc2d1')}
-    <Shaded d="M-78 10 C-96 -20 -70 -60 -40 -62 C-30 -86 10 -88 22 -66 C50 -82 90 -60 82 -26 C100 -6 90 36 60 44 C50 66 10 70 -6 56 C-30 72 -70 58 -66 36 C-82 32 -86 22 -78 10 Z" color="#ffc2d1">
-      {['M-50 -30 C-40 -44 -24 -40 -22 -26', 'M10 -60 C4 -46 18 -36 30 -42', 'M44 -20 C58 -26 66 -8 58 4', 'M-60 20 C-50 10 -38 18 -36 30', 'M30 40 C40 26 56 30 56 40', 'M0 -76 C-6 -40 6 -10 -2 30', 'M-70 -6 C-60 -14 -50 -6 -46 4'].map((d, i) => (
-        <path key={i} d={d} fill="none" stroke={shade('#ffc2d1', 0.28)} strokeWidth={5} strokeLinecap="round" />
-      ))}
-    </Shaded>
-    <Shine x={-46} y={-48} />
-    <g transform="translate(0 6)">{face(p, '#ffc2d1')}</g>
-  </Body>
-);
-
-export const Heart: React.FC<CharProps> = (p) => {
-  const beat = p.t ? 1 + Math.max(0, Math.sin(p.t * Math.PI * 2.2)) ** 8 * 0.05 : 1;
-  return (
-    <Body squash={p.squash}>
-      <GroundShadow y={98} w={60} />
-      {legs(p, 70, '#ff6f7d', 20)}
-      {arms(p, [-72, -4], [72, -4], '#ff6f7d')}
-      <g transform={`scale(${beat})`}>
-        <path d="M-14 -50 C-16 -80 4 -96 30 -92 C50 -88 56 -70 52 -54" fill="none" stroke={INK} strokeWidth={22} strokeLinecap="round" />
-        <path d="M-14 -50 C-16 -80 4 -96 30 -92 C50 -88 56 -70 52 -54" fill="none" stroke="#e8505f" strokeWidth={15} strokeLinecap="round" />
-        <path d="M18 -48 V-84" stroke={INK} strokeWidth={18} strokeLinecap="round" />
-        <path d="M18 -48 V-84" stroke="#5b8de0" strokeWidth={11} strokeLinecap="round" />
-        <Shaded d="M0 86 C-60 50 -92 10 -84 -28 C-76 -66 -30 -74 0 -40 C30 -74 76 -66 84 -28 C92 10 60 50 0 86 Z" color="#ff6f7d">
-          <path d="M-10 -36 C-20 0 -10 40 0 80" fill="none" stroke={shade('#ff6f7d', 0.25)} strokeWidth={5} />
-        </Shaded>
-        <Shine x={-56} y={-38} />
-      </g>
-      <g transform="translate(0 0)">{face(p, '#ff6f7d')}</g>
-    </Body>
-  );
+// ============================================================ digestion
+const STOMACH = spline([[-18, -52], [-28, -32], [-38, -10], [-54, 8], [-74, 18], [-88, 30], [-86, 46], [-70, 54], [-44, 58], [-10, 70], [28, 66], [60, 42], [74, 4], [66, -34], [46, -58], [20, -66], [-2, -60]]);
+const stomach: Blueprint = {
+  name: 'stomach', family: 'organ', role: 'The hard-working cook: mixes food with acid. Grumpy when overfed.',
+  color: '#ff8f9c',
+  face: {x: 12, y: -8, size: 1.12},
+  arms: {l: [-40, 0], r: [70, 6]},
+  rest: [168, 62],
+  legs: null,
+  ground: {y: 74, w: 58},
+  back: ({color}) => (
+    <>
+      <Tube d="M-10 -48 C-11 -64 -15 -76 -13 -92" r={9.5} fill={tone(color, 0.06)} cap="butt" />
+      <TubeEnd x={-13} y={-92} rx={9.5} ry={3.4} rot={-6} color={color} />
+    </>
+  ),
+  body: ({color}) => (
+    <Part d={STOMACH} fill={color} shine={[40, -44, 1.3]}>
+      <Mark pts={[[-36, 52], [2, 62], [44, 46]]} w={3.4} color={D(color)} />
+      <Mark pts={[[-16, 42], [14, 50], [42, 34]]} w={2.6} color={D(color)} />
+      <Mark pts={[[50, -38], [64, -16], [64, 8]]} w={2.6} color={D(color)} />
+      <Mark pts={[[-72, 21], [-79, 36], [-73, 51]]} w={2.6} color={D(color, 0.26)} />
+    </Part>
+  ),
 };
 
-// ---------------------------------------------------------------- cells and germs
-
-export const RedCell: React.FC<CharProps> = (p) => (
-  <Body squash={p.squash}>
-    <GroundShadow y={70} w={70} />
-    {legs(p, 44, '#e2493f', 24)}
-    {arms(p, [-78, 0], [78, 0], '#e2493f')}
-    <Shaded d="M-86 0 C-86 -46 -46 -60 0 -60 C46 -60 86 -46 86 0 C86 46 46 60 0 60 C-46 60 -86 46 -86 0 Z" color="#e2493f">
-      <ellipse cx={0} cy={2} rx={52} ry={30} fill={shade('#e2493f', 0.18)} />
-    </Shaded>
-    <Shine x={-56} y={-32} />
-    <g transform="translate(0 0)">{face(p, '#e2493f')}</g>
-  </Body>
-);
-
-export const WhiteCell: React.FC<CharProps> = (p) => {
-  const t = p.t ?? 0;
-  const wob = (i: number) => Math.sin(t * 2.4 + i) * 3;
-  return (
-    <Body squash={p.squash}>
-      <GroundShadow y={96} w={70} />
-      {legs(p, 70, '#eef0ff', 26)}
-      {arms(p, [-76, 10], [76, 10], '#eef0ff', 38)}
-      <Shaded d={`M-80 ${-6 + wob(1)} C-84 -56 -40 ${-84 + wob(2)} 0 -80 C44 ${-86 + wob(3)} 86 -50 80 ${-4 + wob(4)} C${86 + wob(5)} 46 44 82 0 80 C-44 ${84 + wob(6)} -80 46 -80 -6 Z`} color="#eef0ff" shadow={0.14}>
-        <path d="M-40 34 C-20 20 10 50 30 30 C46 16 30 -4 14 4 C-6 14 -30 10 -40 34 Z" fill="#b8a9f5" opacity={0.8} />
-        {[[-46, -40], [50, -30], [56, 40], [-20, 58], [36, 60]].map(([x, y], i) => <circle key={i} cx={x} cy={y} r={5} fill="#c9bdf7" />)}
-      </Shaded>
-      {/* helmet: our white cells are the body's security team */}
-      <path d="M-46 -66 C-40 -100 40 -100 46 -66 Z" fill="#2ec4b6" stroke={INK} strokeWidth={LINE} />
-      <rect x={-52} y={-70} width={104} height={10} rx={5} fill="#1fa596" stroke={INK} strokeWidth={LINE} />
-      <Shine x={-50} y={-44} />
-      <g transform="translate(0 -14)">{face(p, '#eef0ff')}</g>
-    </Body>
-  );
+const COIL = spline([[-48, -24], [0, -32], [48, -24], [54, 18], [42, 58], [0, 70], [-42, 58], [-54, 18]]);
+const COLON = 'M-58 60 C-64 30 -64 -16 -58 -40 C-52 -62 -26 -64 0 -60 C26 -64 52 -62 58 -40 C64 -16 64 30 58 60';
+const intestine: Blueprint = {
+  name: 'intestine', family: 'organ', role: 'The long conveyor belt: soaks up food and water. Patient, a bit of a gossip.',
+  color: '#ffb3aa', accents: [{label: 'colon', color: '#f08f86'}],
+  face: {x: 0, y: 14, size: 1},
+  arms: {l: [-68, 10], r: [68, 10], color: '#f08f86'},
+  legs: null,
+  ground: {y: 76, w: 62},
+  back: () => <Tube d="M-58 62 C-60 74 -70 78 -74 70" r={3} fill="#f08f86" />,
+  body: ({color}) => {
+    const colon = '#f08f86';
+    const ticks: [number, number, boolean][] = [[-61, 38, true], [-63, 14, true], [-63, -10, true], [-40, -59, false], [-20, -62, false], [0, -60, false], [20, -62, false], [40, -59, false], [63, -10, true], [63, 14, true], [61, 38, true]];
+    return (
+      <>
+        <Part d={COIL} fill={color}>
+          <Mark pts={[[-36, -12], [-24, -22], [-12, -12], [0, -22], [12, -12], [24, -22], [36, -12]]} w={2.4} color={D(color)} />
+          <Mark pts={[[-34, 54], [-22, 44], [-10, 54], [2, 44], [14, 54], [26, 44], [36, 54]]} w={2.4} color={D(color)} />
+          <Mark pts={[[-20, 64], [-8, 58], [4, 64], [16, 58]]} w={2} color={D(color)} />
+        </Part>
+        <Tube d={COLON} r={11} fill={colon} />
+        {ticks.map(([x, y, side], i) => <Tick key={i} d={side ? `M${x - 6.5} ${y} H${x + 6.5}` : `M${x} ${y - 6.5} V${y + 6.5}`} color={D(colon, 0.26)} />)}
+      </>
+    );
+  },
 };
 
-export const Virus: React.FC<CharProps> = (p) => {
-  const t = p.t ?? 0;
-  return (
-    <Body squash={p.squash}>
-      <GroundShadow y={96} w={58} />
+const LIVER = spline([[-88, -6], [-82, -40], [-44, -58], [8, -56], [54, -48], [86, -34], [92, -18], [72, 2], [32, 24], [-8, 46], [-48, 58], [-78, 42]]);
+const liver: Blueprint = {
+  name: 'liver', family: 'organ', role: 'The chemistry lab and cleaner: filters blood, handles sugar and alcohol. Calm, overworked.',
+  color: '#c9584b', accents: [{label: 'gallbladder', color: '#7dbb5c'}],
+  face: {x: -30, y: -6, size: 1.05},
+  arms: {l: [-84, 6], r: [62, -4]},
+  legs: null,
+  ground: {y: 62, w: 66},
+  back: () => <Part d={blob(10, 15, 'gb', 10, 0.04, -14, 50, 0.3)} fill="#7dbb5c" shine={[-18, 44, 0.5]} depth={3} />,
+  body: ({color}) => (
+    <Part d={LIVER} fill={color} shine={[-60, -38, 1.2]}>
+      <Mark pts={[[12, -54], [6, -22], [-4, 10], [-10, 42]]} w={2.6} color={D(color, 0.24)} />
+      <Mark pts={[[40, -40], [62, -30], [80, -24]]} w={2.2} color={D(color)} />
+    </Part>
+  ),
+};
+
+const KIDNEY = spline([[-8, -82], [28, -78], [50, -54], [48, -26], [34, -8], [32, 10], [46, 30], [50, 56], [28, 78], [-8, 84], [-40, 68], [-58, 32], [-60, -10], [-50, -52], [-32, -74]]);
+const kidney: Blueprint = {
+  name: 'kidney', family: 'organ', role: 'The water filter: cleans the blood and makes urine. Precise, a little fussy.',
+  color: '#b84e62', accents: [{label: 'artery', color: '#ea5560'}, {label: 'vein', color: '#5f8fe6'}, {label: 'ureter', color: '#f2dcae'}],
+  face: {x: -10, y: -6, size: 1},
+  arms: {l: [-58, 12], r: [46, 42]},
+  legs: null,
+  ground: {y: 88, w: 46},
+  back: () => (
+    <>
+      <Tube d="M30 14 C50 26 46 60 60 92" r={3.4} fill="#f2dcae" />
+      <Tube d="M30 -6 C46 -10 60 -12 76 -18" r={4.4} fill="#ea5560" cap="butt" />
+      <TubeEnd x={76} y={-18} rx={1.8} ry={4.4} rot={-12} color="#ea5560" />
+      <Tube d="M32 6 C48 6 62 4 78 2" r={4.4} fill="#5f8fe6" cap="butt" />
+      <TubeEnd x={78} y={2} rx={1.8} ry={4.4} rot={-4} color="#5f8fe6" />
+    </>
+  ),
+  body: ({color}) => (
+    <Part d={KIDNEY} fill={color} shine={[-34, -54, 1.1]}>
+      <Mark pts={[[34, -24], [22, 2], [34, 26]]} w={4.4} color={D(color, 0.22)} />
+    </Part>
+  ),
+};
+
+const BLADDER = spline([[0, -66], [36, -58], [62, -28], [68, 10], [54, 48], [22, 68], [0, 70], [-22, 68], [-54, 48], [-68, 10], [-62, -28], [-36, -58]]);
+const bladder: Blueprint = {
+  name: 'bladder', family: 'organ', role: 'The water tank: holds urine until it is time. Anxious when full.',
+  color: '#ffd685', accents: [{label: 'urine', color: '#ffb42e'}],
+  face: {x: 0, y: -12, size: 1.08},
+  arms: {l: [-66, 10], r: [66, 10]},
+  legs: null,
+  ground: {y: 88, w: 50},
+  back: ({color}) => (
+    <>
+      <Tube d="M-34 -54 C-46 -70 -42 -86 -56 -96" r={3.4} fill="#f3dcae" />
+      <Tube d="M34 -54 C46 -70 42 -86 56 -96" r={3.4} fill="#f3dcae" />
+      <Tube d="M0 62 L0 84" r={5.4} fill={tone(color, 0.08)} />
+    </>
+  ),
+  body: ({color, t}) => {
+    const s = Math.sin(t * 2.2) * 3;
+    return (
+      <Part d={BLADDER} fill={color} shine={[-36, -44, 1.2]}>
+        <path d={`M-80 ${22 + s} Q-40 ${14 - s} 0 ${21} T80 ${22 - s} V90 H-80 Z`} fill="#ffb42e" opacity={0.5} />
+        <path d={`M-80 ${22 + s} Q-40 ${14 - s} 0 ${21} T80 ${22 - s}`} fill="none" stroke="#fff3c9" strokeWidth={2} opacity={0.8} />
+      </Part>
+    );
+  },
+};
+
+// ============================================================ chest and head
+const LUNG_L = spline([[3, -48], [-22, -66], [-52, -52], [-72, -12], [-80, 34], [-72, 72], [-48, 84], [-22, 74], [-6, 52], [3, 10]]);
+const LUNG_R = spline([[-3, -48], [22, -66], [52, -52], [72, -12], [80, 34], [72, 72], [48, 84], [30, 76], [22, 56], [10, 44], [-3, 10]]);
+const lungs: Blueprint = {
+  name: 'lungs', family: 'organ', role: 'The air team: bring oxygen in, push carbon dioxide out. Cheerful, hates smoke.',
+  color: '#ff9db4', accents: [{label: 'windpipe', color: '#e3eaf4'}],
+  face: {x: 0, y: 2, size: 1.12},
+  arms: {l: [-76, 20], r: [76, 20]},
+  legs: null,
+  ground: {y: 90, w: 66},
+  back: () => (
+    <>
+      <Tube d="M0 -98 L0 -52" r={7.5} fill="#e3eaf4" cap="butt" />
+      {[-90, -80, -70].map((y) => <Tick key={y} d={`M-7 ${y} Q0 ${y + 2.4} 7 ${y}`} color="#9fb0c8" />)}
+      <TubeEnd x={0} y={-98} rx={7.5} ry={2.8} color="#e3eaf4" />
+    </>
+  ),
+  body: ({color}) => (
+    <>
+      <Merge>
+        <Part d={LUNG_L} fill={color} shine={[-50, -34, 1.1]}>
+          <Mark pts={[[-78, 34], [-58, 44], [-34, 40]]} w={2.6} color={D(color)} />
+          <Mark pts={[[-66, -26], [-50, -18], [-36, -22]]} w={2.2} color={D(color)} />
+        </Part>
+        <Part d={LUNG_R} fill={color}>
+          <Mark pts={[[34, 40], [58, 44], [78, 34]]} w={2.6} color={D(color)} />
+          <Mark pts={[[36, -22], [50, -18], [66, -26]]} w={2.2} color={D(color)} />
+        </Part>
+      </Merge>
+      <Mark pts={[[0, 22], [1, 34], [4, 46]]} w={2.2} color={D(color, 0.24)} />
+    </>
+  ),
+};
+
+const HEART = spline([[0, -34], [20, -58], [52, -62], [78, -42], [82, -8], [64, 28], [36, 58], [6, 84], [-6, 82], [-34, 56], [-64, 24], [-80, -12], [-74, -46], [-50, -62], [-22, -56]]);
+const heart: Blueprint = {
+  name: 'heart', family: 'organ', role: 'The pump that never rests: sends blood everywhere. Loyal, dramatic under stress.',
+  color: '#f25f70', accents: [{label: 'aorta', color: '#e9434f'}, {label: 'pulmonary artery', color: '#6f93ee'}],
+  face: {x: 0, y: -6, size: 1.12},
+  arms: {l: [-78, 2], r: [80, 0]},
+  legs: null,
+  ground: {y: 90, w: 44},
+  back: () => (
+    <>
+      <Tube d="M-6 -40 C-10 -62 -26 -74 -46 -74" r={8} fill="#6f93ee" cap="butt" />
+      <TubeEnd x={-46} y={-74} rx={3} ry={8} color="#6f93ee" />
+      {[['M16 -86 L13 -99'], ['M28 -90 L28 -103'], ['M40 -85 L44 -97']].map(([d]) => <Tube key={d} d={d} r={3} fill="#e9434f" />)}
+      <Tube d="M8 -40 C6 -76 30 -94 46 -78 C52 -70 52 -60 50 -48" r={9} fill="#e9434f" />
+    </>
+  ),
+  body: ({color}) => (
+    <Part d={HEART} fill={color} shine={[-52, -40, 1.2]}>
+      <Mark pts={[[46, -54], [62, -24], [56, 8]]} w={2.4} color={D(color, 0.2)} />
+      <Mark pts={[[-52, -50], [-66, -18], [-54, 14]]} w={2.4} color={D(color, 0.2)} />
+    </Part>
+  ),
+};
+
+const BRAIN = spline(lobePts(82, 58, 9, 0.1, 0, -8, -Math.PI / 2), true, 0.6);
+const brain: Blueprint = {
+  name: 'brain', family: 'organ', role: 'The control room: gives the orders, takes every call. Smart, easily distracted.',
+  color: '#ffb3c7', accents: [{label: 'cerebellum', color: '#f59ab2'}],
+  face: {x: 0, y: 2, size: 1.1},
+  arms: {l: [-82, 8], r: [82, 8]},
+  legs: null,
+  ground: {y: 90, w: 50},
+  back: ({color}) => (
+    <>
+      <Tube d="M14 40 C12 58 10 72 12 86" r={7} fill={tone(color, 0.1)} />
+      <Part d={blob(27, 19, 'cb', 10, 0.05, 46, 44)} fill="#f59ab2" depth={4}>
+        {[36, 44, 52].map((y) => <Mark key={y} pts={[[24, y], [46, y + 3], [68, y - 1]]} w={1.8} color={D('#f59ab2', 0.2)} />)}
+      </Part>
+    </>
+  ),
+  body: ({color}) => (
+    <Part d={BRAIN} fill={color} shine={[-46, -46, 1.2]}>
+      <Mark pts={[[0, -66], [-3, -52], [1, -40]]} w={2.6} color={D(color, 0.22)} />
+      <Mark pts={[[-62, -30], [-48, -46], [-32, -38], [-36, -24]]} w={2.6} color={D(color)} />
+      <Mark pts={[[30, -52], [46, -42], [42, -28]]} w={2.6} color={D(color)} />
+      <Mark pts={[[60, -8], [72, -22], [64, -36]]} w={2.4} color={D(color)} />
+      <Mark pts={[[-74, 2], [-60, 14], [-64, 30]]} w={2.4} color={D(color)} />
+      <Mark pts={[[-30, 40], [-12, 46], [8, 42]]} w={2.2} color={D(color)} />
+    </Part>
+  ),
+};
+
+const TOOTH = spline([[-50, -58], [-28, -72], [-8, -62], [0, -58], [8, -62], [28, -72], [50, -58], [62, -30], [56, 8], [48, 40], [40, 74], [30, 90], [20, 84], [14, 56], [0, 46], [-14, 56], [-20, 84], [-30, 90], [-40, 74], [-48, 40], [-56, 8], [-62, -30]]);
+const tooth: Blueprint = {
+  name: 'tooth', family: 'organ', role: 'The chopper: tough outside, sensitive inside. Terrified of sugar and acid.',
+  color: '#fffdf6',
+  face: {x: 0, y: -14, size: 1.08},
+  arms: {l: [-56, 2], r: [56, 2]},
+  legs: null,
+  ground: {y: 92, w: 40},
+  body: ({color}) => <Part d={TOOTH} fill={color} shadow={0.12} shine={[-32, -52, 1.1]} />,
+};
+
+const bone: Blueprint = {
+  name: 'bone', family: 'skeleton', role: 'The frame: holds everything up and makes blood inside. Sturdy, old-fashioned.',
+  color: '#fbf5e6',
+  face: {x: 0, y: -4, size: 0.9},
+  arms: {l: [-30, 4], r: [30, 4]},
+  legs: null,
+  ground: {y: 94, w: 40},
+  body: ({color}) => (
+    <Merge>
+      <Part d={circlePath(-21, -70, 23)} fill={color} shadow={0.12} depth={5} />
+      <Part d={circlePath(21, -70, 23)} fill={color} shadow={0.12} depth={5} />
+      <Part d={circlePath(-21, 70, 23)} fill={color} shadow={0.12} depth={5} />
+      <Part d={circlePath(21, 70, 23)} fill={color} shadow={0.12} depth={5} />
+      <Part d={roundRect(-32, -66, 64, 132, 16)} fill={color} shadow={0.12} shine={[-12, -44, 0.9]} />
+    </Merge>
+  ),
+};
+
+// ============================================================ medicine and waste
+const PILL_TOP = 'M-40 -6 V-38 A40 40 0 0 1 40 -38 V-6 Z';
+const PILL_BOTTOM = 'M-40 -6 H40 V38 A40 40 0 0 1 -40 38 Z';
+const pill: Blueprint = {
+  name: 'pill', family: 'medicine', role: 'The helper on a mission: travels to where it is needed. Eager, sometimes lost.',
+  color: '#19b8a6', accents: [{label: 'body', color: '#fffdf6'}],
+  face: {x: 0, y: 28, size: 0.86, skin: '#fffdf6'},
+  arms: {l: [-40, 6], r: [40, 6], color: '#eef1f6'},
+  legs: {y: 70, gap: 15, len: 18, color: '#eef1f6', shoe: '#128f81'},
+  ground: {y: 96, w: 40},
+  body: ({color}) => (
+    <>
+      <Merge>
+        <Part d={PILL_BOTTOM} fill="#fffdf6" shadow={0.12} />
+        <Part d={PILL_TOP} fill={color} shine={[-16, -56, 1.1]} />
+      </Merge>
+      <Tick d="M-40 -6 H40" color={lineOf(color)} k={0.8} />
+      <path d="M-34 -2.6 H34" stroke="#ffffff" strokeWidth={2.2} strokeLinecap="round" opacity={0.7} />
+    </>
+  ),
+};
+
+const POOP_B = spline([[-72, 62], [-62, 42], [-22, 34], [22, 34], [62, 42], [72, 62], [60, 82], [0, 90], [-60, 82]]);
+const POOP_M = spline([[-52, 28], [-44, 8], [0, 2], [44, 8], [52, 28], [40, 44], [0, 48], [-40, 44]]);
+const POOP_T = spline([[-34, -4], [-26, -22], [0, -28], [26, -22], [34, -4], [22, 8], [0, 10], [-22, 8]]);
+const POOP_TIP = spline([[-12, -22], [-8, -46], [6, -64], [26, -70], [18, -58], [20, -42], [16, -24]]);
+const poop: Blueprint = {
+  name: 'poop', family: 'waste', role: 'The leftovers on the way out: blunt, proud, refuses to be rushed.',
+  color: '#a06a45',
+  face: {x: 0, y: 56, size: 0.98},
+  arms: {l: [-64, 60], r: [64, 60]},
+  legs: null,
+  ground: {y: 92, w: 68},
+  body: ({color}) => (
+    <>
+      <Part d={POOP_B} fill={color} shine={[-48, 46, 0.9]} />
+      <Part d={POOP_M} fill={tone(color, -0.06)} shine={[-34, 12, 0.8]} depth={5} />
+      <Part d={POOP_TIP} fill={tone(color, -0.14)} depth={3} />
+      <Part d={POOP_T} fill={tone(color, -0.1)} shine={[-20, -18, 0.7]} depth={4} />
+    </>
+  ),
+};
+
+// ============================================================ blood and immune cells
+const RED = spline([[-84, 0], [-74, -36], [-40, -56], [0, -60], [40, -56], [74, -36], [84, 0], [74, 36], [40, 56], [0, 60], [-40, 56], [-74, 36]]);
+const redcell: Blueprint = {
+  name: 'redcell', family: 'cell', role: 'The delivery driver: carries oxygen all day. Friendly, always in a hurry.',
+  color: '#e94b50',
+  face: {x: 0, y: 2, size: 1.05},
+  arms: {l: [-80, 8], r: [80, 8]},
+  legs: null,
+  ground: {y: 74, w: 58},
+  body: ({color}) => (
+    <Part d={RED} fill={color} shine={[-56, -36, 1.1]}>
+      <Part d={ellipsePath(0, 3, 52, 31)} fill={tone(color, 0.09)} line={null} depth={-6} shadow={0.14} />
+    </Part>
+  ),
+};
+
+const WHITE = spline([[-72, -28], [-42, -62], [0, -70], [42, -62], [72, -28], [80, 10], [64, 48], [30, 70], [-8, 74], [-46, 64], [-76, 36], [-84, 2]]);
+const whitecell: Blueprint = {
+  name: 'whitecell', family: 'cell', role: 'The body\'s security guard: patrols the blood and stops germs. Strict but kind.',
+  color: '#eef1ff', accents: [{label: 'guard cap', color: '#1fb5a3'}, {label: 'nucleus', color: '#b7a4f0'}, {label: 'badge', color: '#ffc93c'}],
+  face: {x: 0, y: -2, size: 1.08},
+  arms: {l: [-78, 18], r: [78, 18], len: 36},
+  legs: {y: 64, gap: 24, len: 20, color: '#dfe4f7', shoe: '#17907f'},
+  ground: {y: 94, w: 60},
+  body: ({color}) => (
+    <Part d={WHITE} fill={color} shadow={0.11} shine={[-52, -22, 1.1]}>
+      <path d={blob(20, 15, 'n1', 9, 0.08, 42, 44)} fill="#b7a4f0" opacity={0.42} />
+      <path d={blob(15, 12, 'n2', 9, 0.08, 60, 24)} fill="#b7a4f0" opacity={0.42} />
+      <path d={blob(13, 11, 'n3', 9, 0.08, 22, 58)} fill="#b7a4f0" opacity={0.42} />
+      {[[-56, 30], [-44, 48], [-62, 8], [-24, 58]].map(([x, y], i) => <circle key={i} cx={x} cy={y} r={3.4} fill="#cfc6f7" />)}
+    </Part>
+  ),
+  front: () => (
+    <>
+      <Part d="M-42 -50 C-44 -90 44 -90 42 -50 Z" fill="#1fb5a3" shine={[-18, -76, 0.9]} />
+      <Part d={roundRect(-45, -57, 90, 11, 5)} fill="#17907f" depth={3} />
+      <Part d="M-34 -47 Q0 -32 34 -47 Q0 -53 -34 -47 Z" fill="#126f63" depth={2} />
+      <Part d="M-6.5 -79 H6.5 V-71 Q6.5 -64.5 0 -62 Q-6.5 -64.5 -6.5 -71 Z" fill="#ffc93c" depth={2} />
+    </>
+  ),
+};
+
+const PLATE = spline([[-56, -4], [-40, -26], [-48, -46], [-24, -38], [0, -44], [18, -56], [30, -36], [52, -30], [48, -6], [62, 10], [42, 26], [34, 46], [10, 36], [-12, 48], [-30, 34], [-54, 36], [-46, 14]]);
+const platelet: Blueprint = {
+  name: 'platelet', family: 'cell', role: 'The first-aid crew: rushes to cuts and plugs the leak. Tiny, brave, noisy.',
+  color: '#ffb24a', accents: [{label: 'medic helmet', color: '#fffdf6'}, {label: 'cross', color: '#ea4a55'}],
+  face: {x: 0, y: 6, size: 0.86},
+  arms: {l: [-50, 14], r: [50, 14], len: 26},
+  legs: {y: 38, gap: 15, len: 16, shoe: '#b96a1c'},
+  ground: {y: 64, w: 42},
+  body: ({color}) => (
+    <Part d={PLATE} fill={color} depth={5}>
+      {[[-34, 20], [30, 22], [-4, 34]].map(([x, y], i) => <circle key={i} cx={x} cy={y} r={3.6} fill={D(color, 0.2)} />)}
+    </Part>
+  ),
+  front: () => (
+    <>
+      <Part d="M-30 -27 C-30 -62 30 -62 30 -27 Z" fill="#fffdf6" shadow={0.12} shine={[-12, -50, 0.7]} depth={4} />
+      <Part d={roundRect(-35, -31, 70, 7.5, 3.6)} fill="#e6eaf2" depth={2} />
+      <path d="M-3 -54 h6 v5.5 h5.5 v6 h-5.5 v5.5 h-6 v-5.5 h-5.5 v-6 h5.5 Z" fill="#ea4a55" />
+    </>
+  ),
+};
+
+// ============================================================ germs
+const virus: Blueprint = {
+  name: 'virus', family: 'germ', role: 'The sneaky intruder: breaks into cells to copy itself. Smug until caught.',
+  color: '#9b5cf0', accents: [{label: 'spikes', color: '#ff5c9d'}],
+  face: {x: 0, y: 0, size: 1.02},
+  arms: {l: [-56, 26], r: [56, 26], len: 30},
+  legs: null,
+  ground: {y: 96, w: 44},
+  back: ({color, t}) => (
+    <>
       {Array.from({length: 12}).map((_, i) => {
-        const a = (i / 12) * Math.PI * 2 + t * 0.4;
-        const r1 = 62;
-        const r2 = 84 + Math.sin(t * 4 + i) * 3;
+        const a = (i / 12) * Math.PI * 2 + t * 0.25;
+        const cx = Math.cos(a);
+        const sy = Math.sin(a);
         return (
           <g key={i}>
-            <line x1={Math.cos(a) * r1} y1={Math.sin(a) * r1} x2={Math.cos(a) * r2} y2={Math.sin(a) * r2} stroke={INK} strokeWidth={LINE * 2.2} strokeLinecap="round" />
-            <line x1={Math.cos(a) * r1} y1={Math.sin(a) * r1} x2={Math.cos(a) * r2} y2={Math.sin(a) * r2} stroke="#c56bff" strokeWidth={LINE * 0.9} strokeLinecap="round" />
-            <circle cx={Math.cos(a) * r2} cy={Math.sin(a) * r2} r={9} fill="#ff5fa2" stroke={INK} strokeWidth={LINE} />
+            <Tube d={`M${(cx * 54).toFixed(1)} ${(sy * 54).toFixed(1)} L${(cx * 75).toFixed(1)} ${(sy * 75).toFixed(1)}`} r={2.8} fill={tone(color, 0.1)} cap="butt" />
+            <Part d={circlePath(cx * 80, sy * 80, 7)} fill="#ff5c9d" depth={2.4} />
           </g>
         );
       })}
-      {arms(p, [-54, 26], [54, 26], '#9d5cf0')}
-      <Shaded d="M-66 0 C-66 -40 -36 -66 0 -66 C36 -66 66 -40 66 0 C66 40 36 66 0 66 C-36 66 -66 40 -66 0 Z" color="#9d5cf0">
-        {[[-30, -30, 8], [36, -24, 6], [30, 36, 7], [-36, 34, 5]].map(([x, y, r], i) => <circle key={i} cx={x} cy={y} r={r} fill={shade('#9d5cf0', 0.2)} />)}
-      </Shaded>
-      <Shine x={-34} y={-36} />
-      <g>{face(p, '#9d5cf0', 0.95)}</g>
-    </Body>
-  );
+    </>
+  ),
+  body: ({color}) => (
+    <Part d={blob(62, 62, 'virus', 14, 0.035)} fill={color} shine={[-34, -38, 1.1]}>
+      {[[-34, 34, 7], [38, -30, 6], [34, 38, 7], [-44, -6, 4.5], [8, 50, 4]].map(([x, y, r], i) => <path key={i} d={blob(r, r * 0.85, `cr${i}`, 8, 0.1, x, y)} fill={D(color, 0.2)} />)}
+    </Part>
+  ),
 };
 
-export const Bacteria: React.FC<CharProps> = (p) => {
-  const t = p.t ?? 0;
-  return (
-    <Body squash={p.squash}>
-      <GroundShadow y={72} w={70} />
-      {Array.from({length: 16}).map((_, i) => {
-        const a = (i / 16) * Math.PI * 2;
-        const w = Math.sin(t * 8 + i) * 4;
-        return <line key={i} x1={Math.cos(a) * 66} y1={Math.sin(a) * 44} x2={Math.cos(a) * (80 + w)} y2={Math.sin(a) * (58 + w)} stroke={INK} strokeWidth={LINE} strokeLinecap="round" />;
-      })}
-      <path d={`M72 0 C92 ${10 + Math.sin(t * 6) * 12} 102 ${-10 - Math.sin(t * 6) * 12} 124 0`} fill="none" stroke={INK} strokeWidth={LINE * 1.4} strokeLinecap="round" />
-      {arms(p, [-44, 26], [44, 26], '#8fd66a')}
-      <Shaded d="M-24 -48 H24 A48 48 0 0 1 24 48 H-24 A48 48 0 0 1 -24 -48 Z" color="#8fd66a">
-        {[[-44, -22, 7], [38, 24, 6], [46, -26, 4], [-10, 34, 5]].map(([x, y, r], i) => <circle key={i} cx={x} cy={y} r={r} fill={shade('#8fd66a', 0.2)} />)}
-      </Shaded>
-      <Shine x={-46} y={-26} w={10} h={5} />
-      <g>{face(p, '#8fd66a')}</g>
-    </Body>
-  );
+const bacteria: Blueprint = {
+  name: 'bacteria', family: 'germ', role: 'The troublemaker: multiplies wherever food is left. Mischievous, loves sugar.',
+  color: '#8bd469',
+  face: {x: 0, y: -2, size: 1.02},
+  arms: {l: [-52, 30], r: [52, 30], len: 26},
+  legs: null,
+  ground: {y: 60, w: 58},
+  back: ({color, t}) => {
+    const s = Math.sin(t * 6) * 10;
+    return (
+      <>
+        <Tube d={`M68 2 Q82 ${14 + s} 94 2 T120 ${2 - s * 0.4}`} r={1.9} fill={lineOf(color)} line={null} flat />
+        {Array.from({length: 18}).map((_, i) => {
+          const a = (i / 18) * Math.PI * 2 + 0.17;
+          const p0: P = [Math.cos(a) * 62, Math.sin(a) * 36];
+          const p1: P = [Math.cos(a) * 84, Math.sin(a) * 55];
+          return <Mark key={i} pts={[p0, [(p0[0] + p1[0]) / 2 + 2, (p0[1] + p1[1]) / 2], p1]} w={2.4} color={lineOf(color)} />;
+        })}
+      </>
+    );
+  },
+  body: ({color}) => (
+    <Part d={roundRect(-72, -44, 144, 88, 44)} fill={color} shine={[-46, -26, 1.1]}>
+      {[[-50, 20, 6], [44, 24, 6], [52, -22, 4], [-16, 34, 4.5], [18, -32, 3.6]].map(([x, y, r], i) => <circle key={i} cx={x} cy={y} r={r} fill={D(color, 0.2)} />)}
+    </Part>
+  ),
 };
 
-export const Platelet: React.FC<CharProps> = (p) => (
-  <Body squash={p.squash}>
-    <GroundShadow y={70} w={50} />
-    {legs(p, 40, '#ffb44d', 18)}
-    {arms(p, [-52, 6], [52, 6], '#ffb44d', 28)}
-    <Shaded d="M-58 0 C-62 -30 -30 -46 0 -40 C26 -50 62 -34 58 -4 C64 26 34 46 4 40 C-26 50 -56 30 -58 0 Z" color="#ffb44d">
-      {[[-26, -18], [20, 16], [26, -20]].map(([x, y], i) => <circle key={i} cx={x} cy={y} r={5} fill={shade('#ffb44d', 0.25)} />)}
-    </Shaded>
-    <Shine x={-34} y={-22} w={9} h={4} />
-    <g>{face(p, '#ffb44d', 0.85)}</g>
-  </Body>
-);
-
-export const Egg: React.FC<CharProps> = (p) => (
-  <Body squash={p.squash}>
-    <GroundShadow y={98} w={70} />
-    {Array.from({length: 16}).map((_, i) => {
-      const a = (i / 16) * Math.PI * 2;
-      return <circle key={i} cx={Math.cos(a) * 82} cy={Math.sin(a) * 82} r={11} fill="#ffe3a8" stroke={INK} strokeWidth={LINE * 0.8} />;
-    })}
-    {arms(p, [-66, 14], [66, 14], '#ffd9c2')}
-    <Shaded d="M-72 0 C-72 -44 -40 -72 0 -72 C40 -72 72 -44 72 0 C72 44 40 72 0 72 C-40 72 -72 44 -72 0 Z" color="#ffd9c2" shadow={0.14}>
-      <circle cx={18} cy={30} r={16} fill="#ffc29a" opacity={0.8} />
-    </Shaded>
-    <Shine x={-40} y={-40} />
-    {/* a little bow: the egg cell is our "lady in waiting" */}
-    <path d="M-12 -70 L-30 -84 L-30 -58 Z M12 -70 L30 -84 L30 -58 Z" fill="#ff7bac" stroke={INK} strokeWidth={LINE} strokeLinejoin="round" />
-    <circle cx={0} cy={-70} r={7} fill="#ff7bac" stroke={INK} strokeWidth={LINE} />
-    <g transform="translate(0 -4)">{face(p, '#ffd9c2')}</g>
-  </Body>
-);
-
-export const Sperm: React.FC<CharProps> = (p) => {
-  const t = p.t ?? 0;
-  const tail = Array.from({length: 9}).map((_, i) => `${i === 0 ? 'M' : 'L'}${30 + i * 9} ${Math.sin(t * 10 - i * 0.9) * (3 + i * 1.2)}`).join(' ');
-  return (
-    <Body squash={p.squash}>
-     <g transform="scale(1.6) translate(-14 0)">
-      <path d={tail} fill="none" stroke={INK} strokeWidth={LINE * 2.4} strokeLinecap="round" strokeLinejoin="round" />
-      <path d={tail} fill="none" stroke="#f4f7ff" strokeWidth={LINE} strokeLinecap="round" strokeLinejoin="round" />
-      <Shaded d="M-50 0 C-50 -26 -26 -38 0 -36 C22 -34 36 -16 36 0 C36 16 22 34 0 36 C-26 38 -50 26 -50 0 Z" color="#f4f7ff" shadow={0.12} />
-      <path d="M-20 -36 C-14 -50 14 -50 20 -34" fill="#2ec4b6" stroke={INK} strokeWidth={LINE} />
-      <Shine x={-30} y={-18} w={8} h={4} />
-      <g transform="translate(-8 0)">{face(p, '#f4f7ff', 0.72)}</g>
-     </g>
-    </Body>
-  );
+// ============================================================ reproduction
+const egg: Blueprint = {
+  name: 'egg', family: 'cell', role: 'The egg cell: waits patiently once a month. Calm, a little picky.',
+  color: '#ffd8c6', accents: [{label: 'outer layer', color: '#fff1e6'}, {label: 'helper cells', color: '#ffe7ab'}, {label: 'bow', color: '#ff7bac'}],
+  face: {x: 0, y: -2, size: 1.08},
+  arms: {l: [-64, 20], r: [64, 20]},
+  legs: null,
+  ground: {y: 98, w: 56},
+  back: () => <>{Array.from({length: 14}).map((_, i) => { const a = (i / 14) * Math.PI * 2; return <Part key={i} d={circlePath(Math.cos(a) * 84, Math.sin(a) * 84, 9.5)} fill="#ffe7ab" depth={3} />; })}</>,
+  body: ({color}) => (
+    <>
+      <Part d={circlePath(0, 0, 77)} fill="#fff1e6" shadow={0.1} />
+      <Part d={circlePath(0, 0, 65)} fill={color} shine={[-32, -36, 1.1]}>
+        <path d={blob(15, 13, 'nuc', 9, 0.08, 26, 34)} fill={D(color, 0.14)} />
+      </Part>
+    </>
+  ),
+  front: () => (
+    <>
+      <Part d="M-3 -67 L-22 -80 L-22 -54 Z" fill="#ff7bac" depth={2} />
+      <Part d="M3 -67 L22 -80 L22 -54 Z" fill="#ff7bac" depth={2} />
+      <Part d={circlePath(0, -67, 6.5)} fill="#ff7bac" depth={2} />
+    </>
+  ),
 };
 
-export const CAST = {
-  pill: Pill, stomach: Stomach, intestine: Intestine, liver: Liver, kidney: Kidney, bladder: Bladder, poop: Poop,
-  tooth: Tooth, lung: Lung, brain: Brain, heart: Heart,
-  redcell: RedCell, whitecell: WhiteCell, platelet: Platelet, virus: Virus, bacteria: Bacteria, egg: Egg, sperm: Sperm,
+const SPERM = spline([[-74, 0], [-64, -24], [-36, -34], [-6, -28], [10, 0], [-6, 28], [-36, 34], [-64, 24]]);
+const sperm: Blueprint = {
+  name: 'sperm', family: 'cell', role: 'The swimmer: one of millions in a race. Determined, competitive.',
+  color: '#f3f6ff', accents: [{label: 'cap', color: '#bfe9e4'}, {label: 'midpiece', color: '#d5def8'}],
+  face: {x: -30, y: 0, size: 0.78},
+  arms: null,
+  legs: null,
+  ground: {y: 56, w: 46},
+  back: ({t}) => {
+    const s = Math.sin(t * 9) * 9;
+    return (
+      <>
+        <Tube d={`M34 0 Q48 ${10 + s} 60 0 T86 ${-s * 0.6} T108 ${s * 0.5}`} r={2.4} fill="#dfe6fb" />
+        <Tube d="M6 0 L36 0" r={7} fill="#d5def8" />
+      </>
+    );
+  },
+  body: ({color}) => (
+    <Part d={SPERM} fill={color} shadow={0.11} shine={[-48, -18, 0.9]} depth={5}>
+      <path d="M-80 -40 H-52 Q-46 0 -52 40 H-80 Z" fill="#bfe9e4" opacity={0.9} />
+    </Part>
+  ),
 };
-export type CastName = keyof typeof CAST;
-export type {Emotion};
+
+export const BLUEPRINTS = {stomach, intestine, liver, kidney, bladder, lungs, heart, brain, tooth, bone, pill, poop, redcell, whitecell, platelet, virus, bacteria, egg, sperm};
+export type CastName = keyof typeof BLUEPRINTS;
+export const CAST = Object.fromEntries(Object.entries(BLUEPRINTS).map(([k, bp]) => [k, makeCharacter(bp)])) as Record<CastName, Character>;

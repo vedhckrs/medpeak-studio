@@ -1,42 +1,51 @@
-# MedPeak Toons style guide (v2, 2026-11-16)
+# MedPeak Toons style guide (v5, 2026-11-16)
 
-Why v1 looked cheap, from full-size reference frames and research on pro 2D vector illustration,
-and the rules the v2 engine (`src/toons/ink.tsx`) enforces.
+The look of the cartoon "talking organs" Shorts. Everything here is enforced by `src/toons/style.ts`
+(one settings file) and the drawing engine `src/toons/ink.tsx`. New characters follow
+`toons-blueprint.md`.
 
-| v1 problem | v2 rule |
-|---|---|
-| Characters tiny in big empty rooms | Hero character fills 40-70% of the frame width; the camera is low and close; organs can *be* the set |
-| Perfect circles and ellipses | Every silhouette is organic: `organic()` (Catmull-Rom spline through hand-placed points) or `blob()` with seeded irregularity. No `<ellipse>` or `<circle>` for a body |
-| One line width everywhere | `Ink`: outline heavier on the shadow side (bottom-right), lighter on the lit side; inner marks are `Tapered` (thin-thick-thin) in a darker tone of the fill, never navy |
-| Machine-perfect lines | Line boil: a turbulence displacement that changes every 3 frames (subtle, scale ~1.5) |
-| Hard copy-paste shading | 3-step cel shading with a feathered edge: core shadow (blurred, clipped), rim light (thin light band on the dark edge), glossy highlight streak + 2 dots, contact shadow on the floor |
-| Glow particles, vignette, rings | Sets are painted: soft light/dark blotches, tapered wrinkle marks, a floor plane with blotches; a light paper grain over everything |
-| Personality only in the face | Props and costume: caps, glasses, tools, phones; poses that act |
+## What earlier versions got wrong (owner feedback + research)
+| Problem | Cause | v5 rule |
+|---|---|---|
+| "Too much thick black lines" | one heavy navy outline, thickened again on one side, scaling up with the character | outline = a darker shade of each fill (`lineOf`), `STYLE.line` 1.9 units and never more than `maxLinePx` 4.2 px on screen (Slot, Camera and Scaled share the scale) |
+| "Hand is not proper" | white gloves built from separate outlined blocks | one mitten silhouette (bundled fingers + thumb wedge) in the character's own colour, 5 poses |
+| "Animation like a burning screen, very wavy" | a turbulence displacement filter (line boil) on every character + constant sway | `STYLE.boil = 0`. Characters hold a pose (breathing 0.7%) and move with anticipation, easing, a small overshoot and a settle |
+| "Cheap, not professional" | mascot bodies with boots; soft airbrush shading; generic shapes | organs drawn from real anatomy with vessels, airways and lobes, no legs; flat colour + one crisp shadow edge + one gloss; tone-on-tone detail marks |
+| People cut off at the waist | half-body rigs | full-body people from one recipe: adults 4 heads, kids 3, toddlers 2.5 |
+| No way to stay on-style | every character hand-made | the character blueprint (`makeCharacter`, `makeHuman`, `checkBlueprint`) + a model sheet per character |
 
-## Full control: one settings file (owner 2026-11-16: 100% code-drawn only, no AI art)
-`src/toons/style.ts` holds every look decision: outline colour and thickness, shadow-side weight, eye
-size and spacing, pupil size, brow weight, shadow and gloss strength, line wobble, paper grain, idle
-sway and breathing, caption and label colours. Change a number, re-render `ToonCast`, `ToonSets` and
-`ToonActing` to see the whole cast follow. Never add AI-generated art to Toons.
+## What the reference frames show (studied at full size, format only, nothing copied)
+- Lines about 4 px at 1080 wide, uniform and thin.
+- Organs drawn large and anatomically, in place, with tiny arms in the body colour.
+- Flat colour with a few hard-edged shadow shapes and small highlights. Simple, muted backgrounds.
+- People about 4 heads tall with full outfits; costume gives a character its job.
 
-## Acting toolkit (see `ActingDemo` in `src/toons/Preview.tsx`)
-Drop-in with squash on landing and a dust puff, reaction take, cuts to close-ups (camera zoom 1.8-2.2
-on the speaker), jump with stretch then squash, run-off with a leg cycle, one-word captions on the beat.
-
-## Line weights (at 1080x1920)
-- Character outline: 5-8 px (thicker on the shadow side).
-- Inner detail marks: 2-6 px, tapered, colour = fill darkened 30-40%.
-- Background marks: 3-7 px, tapered, colour = wall darkened 25%.
+## Line
+- Colour: `lineOf(fill)`: same hue, darker and calmer (pink -> maroon, yellow -> brown, white -> slate).
+  Face features use a deeper shade of the skin colour. Only pupils are near-black.
+- Sets: maroon lines inside the body (`fleshLine`), slate in rooms (`roomLine`), 3.2 px.
 
 ## Light
-Always from the top-left. Shadow crescent bottom-right. Highlight streak upper-left. Rim light on the
-lower-right edge, very thin, lighter than the base.
+Top-left. Crisp shadow edge lower-right (`shadow`, `shadowDepth`), soft top light (`topLight`), one
+gloss streak and dot upper-left (`gloss`). A flat contact shadow on the floor.
 
-## Eyes and faces
-Large white eyes with a slight egg shape, small pupils for comedy, eyebrows as tapered strokes, a little
-asymmetry (one eye 4% bigger). Mouths are shapes with a darker inside, teeth and tongue when open.
+## Face
+Big clean eyes (white, dark pupil, two highlights, a stronger upper lash line, soft lid shadow),
+brush-stroke brows, shaped mouths with teeth and tongue, soft blush. 9 emotions. Closed eyes are one
+curved lash line. People add a small nose.
+
+## Motion (`src/toons/motion.ts`)
+`key(frame, [[frame, value, ease]])` for posed moves, `E.back` for overshoot, `settle` for landings,
+`speak` for mouth movement, `Hold` (stage.tsx) for the breathing hold. Guideline numbers: overshoot
+1-3% scale or 2-8 px, settle within 4-8 frames; anticipation before every big move.
 
 ## Sources
-- Hand-drawn "line boil" with SVG turbulence + displacement: camillovisini.com/coding/simulating-hand-drawn-motion-with-svg-filters
-- Line weight as a design tool (thicker for focal and shadow sides, thin for detail): blog.daisie.com/7-tips-to-enhance-line-work-in-cartoon-drawings ; hertzmann.github.io/2021/05/19/how-to-draw-line-thickness.html
-- Cel shading steps, rim light, highlight/core shadow/reflected light: fp.udit.es (cel shading), garagefarm.net/blog/types-of-shading-in-3d-and-2d-art, sketchbook.com/blog/shading-techniques
+- Mitten hands, thumb wedge, four-finger convention: Toons Mag "How to draw cartoon hands"; Preston
+  Blair's hand model sheets; tutsplus "Cartoon fundamentals: how to draw cartoon hands".
+- Coloured line art (a darker version of the nearest fill; black kept for the eyes): Graphixly
+  "Creating colored line art"; Ctrl+Paint "Colored lineart".
+- Floaty animation, moving holds, overshoot and settle: Animation Mentor "Why all animators need to
+  master the moving hold"; School of Motion "New to 2D character animation? Common mistakes".
+- Model sheets and head-height proportions: Wikipedia "Model sheet"; Toon Boom Learn "Character
+  proportions"; Clip Studio "Model sheets for character designers".
+- Cel shading steps and rim light: garagefarm "Types of shading in 3D and 2D art".
