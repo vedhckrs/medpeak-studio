@@ -8,6 +8,7 @@ import {LIBRARY} from '../toon-sfx.mjs';
 import {BEDS} from '../toon-music.mjs';
 import {checkToon} from '../lib/toon-rules.mjs';
 import {scanCamera} from '../lib/toon-camera.mjs';
+import {blendPose, POSES} from '../../src/toons/poses.ts';
 import {AUTO_SFX, changesOf, EMO_SFX, frameOf, layoutToon, longestStill, parseCam, stateAt, TOON_FPS} from '../../src/toons/director.ts';
 
 const EMOTIONS = ['neutral', 'happy', 'angry', 'scared', 'smug', 'sick', 'sleepy', 'shocked', 'sad'];
@@ -197,4 +198,23 @@ test('the gate catches a broken stage script and a picture that stands still', (
   t = clone(steady);
   for (const s of t.shots) { s.props = []; s.events = []; }
   assert.ok(failed(t).includes('4 3-sec change'), 'nothing happening in a locked picture fails point 4');
+});
+
+// ---------------------------------------------------------------- people's arms have real joints
+test('every pose gives a person a shoulder and an elbow angle, and poses blend joint by joint', () => {
+  for (const [name, p] of Object.entries(POSES)) {
+    for (const arm of p.person) {
+      assert.equal(typeof arm, 'object', `${name}: a person's arm is jointed`);
+      assert.ok(Number.isFinite(arm.u) && Number.isFinite(arm.f), `${name}: upper-arm and forearm directions`);
+      assert.ok((arm.ul ?? 1) > 0.4 && (arm.ul ?? 1) <= 1, `${name}: the upper arm is never shortened below 40%`);
+    }
+  }
+  // a hanging arm points down and slightly away from the body, mirrored left and right
+  const [l, r] = POSES.rest.person;
+  assert.ok(r.u > 60 && r.u < 90 && l.u > 90 && l.u < 120);
+  assert.equal(l.u + r.u, 180);
+  // halfway between two poses every joint is halfway too
+  const mid = blendPose(POSES.rest.person, POSES.present.person, 0.5)[1];
+  assert.ok(Math.abs(mid.u - (POSES.rest.person[1].u + POSES.present.person[1].u) / 2) < 1e-9);
+  assert.ok(Math.abs(mid.f - (POSES.rest.person[1].f + POSES.present.person[1].f) / 2) < 1e-9);
 });

@@ -1,8 +1,8 @@
 // MedPeak Toons rig v6: the face, hands, arms and legs every character shares.
 // Face: big eyes with a coloured, shaded iris, a dark pupil and two highlights, a stronger upper
 // lash line, brush brows, shaped mouths with shaded teeth and tongue, soft gradient blush.
-// Features are drawn in a deep shade of the character's own colour, never navy. Hands are mitten
-// hands in the character's own colour.
+// Features are drawn in a deep shade of the character's own colour, never navy. Hands are one
+// clean silhouette (palm, four fingers, thumb) in the character's own colour.
 import React, {useId} from 'react';
 import {circlePath, deepOf, ellipsePath, lift, lineOf, Merge, Part, roundRect, Scaled, shade, taperedPath, tone, Tube, useLine} from './ink';
 import {STYLE} from './style';
@@ -214,48 +214,57 @@ export const Face: React.FC<FaceProps> = ({emotion = 'neutral', talk = 0, blink 
 // ------------------------------------------------------------------ hands
 export type HandPose = 'relaxed' | 'open' | 'fist' | 'point' | 'thumb';
 export const HAND_POSES: HandPose[] = ['relaxed', 'open', 'fist', 'point', 'thumb'];
-// A mitten hand: wrist at (0,0), fingers toward +x, thumb on the -y side.
-// f = three finger tubes [x1, y1, x2, y2]; th = the thumb; palm = palm radius.
-const HANDS: Record<HandPose, {palm: number; f: [number, number, number, number][]; th: [number, number, number, number]}> = {
-  relaxed: {palm: 6, f: [[8, -3.4, 13.4, -4.2], [9, 0, 14.8, 0], [8, 3.4, 13.2, 4.2]], th: [3.6, -4.2, 7.4, -9.2]},
-  open: {palm: 6.2, f: [[8, -3.7, 13.8, -6.4], [9.4, 0, 15.8, 0], [8, 3.7, 13.8, 6.4]], th: [3.2, -4.2, 5.4, -10.2]},
-  fist: {palm: 6.6, f: [[9.4, -3.6, 11.2, -3.8], [10, 0, 12, 0], [9.4, 3.6, 11.2, 3.8]], th: [5.6, -6, 10, -5.2]},
-  point: {palm: 6.2, f: [[8.5, -3, 18.2, -3.6], [9.8, 1, 11.6, 1.2], [8.8, 4.6, 10.4, 4.8]], th: [4, -4.4, 8.2, -8]},
-  thumb: {palm: 6.6, f: [[9.4, -3.6, 11.2, -3.8], [10, 0, 12, 0], [9.4, 3.6, 11.2, 3.8]], th: [4.6, -5, 5.4, -13.6]},
+// A cartoon hand: wrist at (0,0), fingers toward +x, thumb on the -y side. One clean silhouette:
+// a rounded palm, four fingers that read at their tips, a thumb. Lines are [x1, y1, x2, y2].
+type Seg4 = [number, number, number, number];
+type HandShape = {palm: [number, number, number, number, number]; f: Seg4[]; th: Seg4; seams: Seg4[]};
+const PALM: HandShape['palm'] = [0.4, -5.9, 11, 11.8, 5];
+const KNUCKLES: Seg4[] = [[10.6, -2.7, 13.5, -2.7], [10.9, 0, 13.9, 0], [10.6, 2.6, 13.4, 2.6]];
+const CURLED: Seg4[] = [[9.6, -4, 12.2, -4], [9.8, -1.35, 12.9, -1.35], [9.8, 1.3, 12.9, 1.3], [9.6, 3.9, 12.2, 3.9]];
+const HANDS: Record<HandPose, HandShape> = {
+  relaxed: {palm: PALM, f: [[9.6, -4, 15.4, -4.5], [9.8, -1.35, 16.8, -1.6], [9.8, 1.3, 16.5, 1.4], [9.6, 3.9, 14.9, 4.2]], th: [3.4, -4.8, 8.8, -8.4], seams: [[10.6, -2.75, 14.4, -3], [10.9, -0.05, 15.2, -0.1], [10.6, 2.6, 14.2, 2.8]]},
+  open: {palm: PALM, f: [[9.2, -4.2, 15.6, -7.4], [9.9, -1.5, 18, -2.9], [9.9, 1.4, 17.8, 2.3], [9.2, 4.2, 15.2, 6.7]], th: [3, -4.6, 6.2, -11.8], seams: []},
+  fist: {palm: [0.6, -6.2, 11.2, 12.4, 5.4], f: CURLED, th: [5.4, -6.1, 11.2, -5.5], seams: KNUCKLES},
+  point: {palm: PALM, f: [[9.6, -4, 20.4, -4.6], CURLED[1], CURLED[2], CURLED[3]], th: [3.8, -4.8, 8.6, -8.6], seams: [KNUCKLES[1], KNUCKLES[2]]},
+  thumb: {palm: [0.6, -6.2, 11.2, 12.4, 5.4], f: CURLED, th: [4.6, -5, 6, -14.2], seams: KNUCKLES},
 };
-/** A mitten hand in one clean silhouette. `flip` puts the thumb on the other side. */
+/** A hand in one clean silhouette. `flip` puts the thumb on the other side. */
 export const Hand: React.FC<{pose?: HandPose; fill: string; line?: string; s?: number; flip?: boolean}> = ({pose = 'relaxed', fill, line, s = 1, flip = false}) => {
   const h = HANDS[pose];
   const lc = line ?? lineOf(fill);
   return (
     <Scaled s={s} transform={`scale(${s} ${flip ? -s : s})`}>
-      <HandShapes h={h} fill={fill} lc={lc} pose={pose} />
+      <HandShapes h={h} fill={fill} lc={lc} />
     </Scaled>
   );
 };
-const HandShapes: React.FC<{h: (typeof HANDS)[HandPose]; fill: string; lc: string; pose: HandPose}> = ({h, fill, lc, pose}) => {
+const HandShapes: React.FC<{h: HandShape; fill: string; lc: string}> = ({h, fill, lc}) => {
   const lw = useLine();
+  const [px, py, pw, ph, pr] = h.palm;
   return (
     <g>
       <Merge>
-        <Tube d={`M${h.th[0]} ${h.th[1]} L${h.th[2]} ${h.th[3]}`} r={2.6} fill={fill} line={lc} flat />
-        {h.f.map((f, i) => <Tube key={i} d={`M${f[0]} ${f[1]} L${f[2]} ${f[3]}`} r={2.75} fill={fill} line={lc} flat />)}
-        <Part d={circlePath(6, 0, h.palm)} fill={fill} line={lc} flat />
+        <Tube d={`M${h.th[0]} ${h.th[1]} L${h.th[2]} ${h.th[3]}`} r={2.15} fill={fill} line={lc} flat />
+        {h.f.map((f, i) => <Tube key={i} d={`M${f[0]} ${f[1]} L${f[2]} ${f[3]}`} r={1.9} fill={fill} line={lc} flat />)}
+        <Part d={roundRect(px, py, pw, ph, pr)} fill={fill} line={lc} flat />
       </Merge>
-      {pose === 'relaxed' && <path d="M10.6 -1.8 L13.6 -2.2 M10.6 1.8 L13.6 2.2" fill="none" stroke={lc} strokeWidth={lw * 0.55} strokeLinecap="round" />}
-      {(pose === 'fist' || pose === 'thumb') && <path d="M10.4 -1.9 L12.4 -2 M10.4 1.9 L12.4 2" fill="none" stroke={lc} strokeWidth={lw * 0.55} strokeLinecap="round" />}
-      <path d="M1.6 3.4 Q5.6 7.4 10.6 4.4 Q6 5.4 1.6 3.4 Z" fill={shade(fill, 0.22)} opacity={0.75} />
-      <path d="M3 -3.4 Q5.6 -5 8 -4" fill="none" stroke={lift(fill, 0.55)} strokeWidth={lw * 0.7} strokeLinecap="round" opacity={0.8} />
+      {h.seams.map((m, i) => <path key={i} d={`M${m[0]} ${m[1]} L${m[2]} ${m[3]}`} fill="none" stroke={lc} strokeWidth={lw * 0.5} strokeLinecap="round" opacity={0.85} />)}
+      <path d={`M${px + 1.6} ${py + ph - 2.6} Q${px + pw * 0.5} ${py + ph + 0.4} ${px + pw - 0.6} ${py + ph - 2.2} Q${px + pw * 0.5} ${py + ph - 1.6} ${px + 1.6} ${py + ph - 2.6} Z`} fill={shade(fill, 0.22)} opacity={0.7} />
+      <path d={`M${px + 2.6} ${py + 2.2} Q${px + pw * 0.5} ${py + 0.9} ${px + pw - 2.6} ${py + 1.9}`} fill="none" stroke={lift(fill, 0.55)} strokeWidth={lw * 0.7} strokeLinecap="round" opacity={0.8} />
     </g>
   );
 };
 
 // ------------------------------------------------------------------ arms and legs
-/** An arm pose: just an angle in degrees (0 = right, 90 = down, 180 = left, -90 = up) or the full spec. */
-export type ArmSpec = number | {a: number; len?: number; bend?: number; hand?: HandPose; front?: boolean};
+/**
+ * An arm pose: just an angle in degrees (0 = right, 90 = down, 180 = left, -90 = up) or the full spec.
+ * People have real joints: `u` = where the upper arm points, `f` = where the forearm points (same
+ * degrees); `ul` / `fl` shorten a segment that points toward the viewer (a hand on the chin).
+ */
+export type ArmSpec = number | {a: number; len?: number; bend?: number; hand?: HandPose; front?: boolean; u?: number; f?: number; ul?: number; fl?: number};
 export const armOf = (s: ArmSpec) => (typeof s === 'number' ? {a: s} : s);
 
-/** A soft, slightly bent arm from a shoulder point, ending in a mitten hand. */
+/** A soft, slightly bent arm from a shoulder point, ending in a hand (body characters; people have jointed arms in humans.tsx). */
 export const Arm: React.FC<{
   x: number; y: number; spec: ArmSpec; color: string; handColor?: string; r?: number; len?: number;
   sleeve?: {color: string; r: number; to: number} | null; handScale?: number;

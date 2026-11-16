@@ -4,7 +4,7 @@ Every character in a Toons video follows this blueprint, so a new character matc
 first try. The rules live in code (`src/toons/blueprint.tsx`, `humans.tsx`, `style.ts`) and are shown
 on two rendered pages: `ToonBlueprint` (the rules) and `ToonSheet` (one model sheet per character).
 
-Owner rules (2026-11-16): 100% code-drawn, no AI art. Thin lines, never heavy black. Proper mitten
+Owner rules (2026-11-16): 100% code-drawn, no AI art. Thin lines, never heavy black. Proper
 hands. Nothing wobbles. People are full-body. Every new character goes through this blueprint.
 
 ## The six rules
@@ -91,12 +91,30 @@ nurse: {name: 'nurse', role: 'The nurse: practical, quick, kind.', skin: '#d9a47
 | people | natural skin tones; Dr. Mira in white coat over teal scrubs | teal ties the doctor to the brand |
 
 ## Hands
-One mitten shape: bundled fingers + a thumb wedge, one outline, in the character's own colour
-(skin for people). Five poses: relaxed, open, fist, point, thumb. Set per arm:
-`arms={[112, {a: -30, hand: 'point'}]}` (angles: 0 = right, 90 = down, 180 = left, -90 = up).
-People bend a real elbow: `len` is how far the hand is from the shoulder (49 = straight, shorter =
-bent). Scripts use the named poses in `src/toons/poses.ts` (rest, wave, point, pointLeft, panic,
-fists, thumb, shrug, hips, belly, explain, think, present, cheer, heart, facepalm, crossed).
+One clean silhouette in the character's own colour (skin for people): a rounded palm, four fingers
+that read at their tips, a thumb. Five poses: relaxed, open, fist, point, thumb. The thumb turns
+to the side that faces up, or toward the body when the hand hangs.
+
+## People's arms (rebuilt 2026-11-16, owner: "doctor hand and arms look weird")
+What was wrong: each arm was one bendy tube of even thickness, so there was no elbow; the upper arm
+hid against a coat of the same colour, so the forearm looked as if it grew out of the ribs; the
+open hand was three stubs on a ball and read as a paw.
+
+- An arm is shoulder -> elbow -> wrist: **two straight segments that taper**, with a rounded elbow,
+  a fold line inside a sharp bend, a cuff (ribbed on hoodies and cardigans, a short sleeve with a
+  bare arm on tees) and a soft shadow thrown on the body under the arm.
+- A person's pose gives both joints: `u` = where the upper arm points, `f` = where the forearm
+  points (0 = out to the side, 90 = down, -90 = up, 180 and beyond = across the body). `ul` under 1
+  shortens an upper arm that points at the viewer (a hand on the chin or chest). Poses are written
+  once for the right arm with `R(u, f)` and mirrored with `L(u, f)` in `src/toons/poses.ts`.
+- Elbows stay a little away from the body in every gesture, so the upper arm can be seen.
+- A gesturing hand stays within about 62 units of the body's centre line; two people stand 100
+  apart, so a longer reach touches the other person. `point` aims up at the graphics for this reason.
+- Scripts only use the named poses (rest, wave, point, pointLeft, panic, fists, thumb, shrug, hips,
+  belly, explain, think, present, cheer, heart, facepalm, crossed). Body characters keep soft arms:
+  `arms={[112, {a: -30, hand: 'point'}]}`.
+- Check any change on the pose board: `node pipeline/toon-sheets.mjs --boards` renders every pose
+  for the doctor, the patient and the kid (`toons-boards/poses-doctor.jpg`).
 
 ## Checklist before a new character is used in a video
 - [ ] The model sheet reads at thumbnail size: you can name the organ without the label.

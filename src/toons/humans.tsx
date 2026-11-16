@@ -8,6 +8,7 @@
 import React from 'react';
 import {Cast, circlePath, Contact, ellipsePath, Groove, lift, lineOf, Mark, Merge, Part, roundRect, Scaled, shade, spline, Tube, useLine} from './ink';
 import {type ArmSpec, armOf, Face, Hand, Shoe} from './rig';
+import {POSES} from './poses';
 import type {CharProps} from './blueprint';
 
 export type HairStyle = 'curly' | 'short' | 'long' | 'cap' | 'balding' | 'baby';
@@ -62,6 +63,19 @@ const joint = (a: V, b: V, l1: number, l2: number, toward: V): V => {
   return [a[0] + ux * along + nx * h, a[1] + uy * along + ny * h];
 };
 const f1 = (n: number) => n.toFixed(1);
+const dirOf = (deg: number): V => [Math.cos((deg * Math.PI) / 180), Math.sin((deg * Math.PI) / 180)];
+const along = (a: V, b: V, t: number): V => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
+/** A limb segment: round at both ends, tapering from radius `ra` at a to `rb` at b. `ky` squeezes y (for a shadow drawn inside a scaled group). */
+const capsule = (a0: V, b0: V, ra: number, rb: number, ky = 1) => {
+  const a: V = [a0[0], a0[1] / ky];
+  const b: V = [b0[0], b0[1] / ky];
+  const dx = b[0] - a[0];
+  const dy = b[1] - a[1];
+  const len = Math.hypot(dx, dy) || 1;
+  const nx = -dy / len;
+  const ny = dx / len;
+  return `M${f1(a[0] + nx * ra)} ${f1(a[1] + ny * ra)} L${f1(b[0] + nx * rb)} ${f1(b[1] + ny * rb)} A${f1(rb)} ${f1(rb)} 0 0 0 ${f1(b[0] - nx * rb)} ${f1(b[1] - ny * rb)} L${f1(a[0] - nx * ra)} ${f1(a[1] - ny * ra)} A${f1(ra)} ${f1(ra)} 0 0 0 ${f1(a[0] + nx * ra)} ${f1(a[1] + ny * ra)} Z`;
+};
 /** A smooth curve from a to b that passes through k (the joint). `t` < 1 stops early (sleeves, shorts). */
 const through = (a: V, k: V, b: V, t = 1) => {
   const c: V = [2 * k[0] - (a[0] + b[0]) / 2, 2 * k[1] - (a[1] + b[1]) / 2];
@@ -220,6 +234,9 @@ const Glasses: React.FC<{kind: 'round' | 'square'}> = ({kind}) => {
 // ------------------------------------------------------------------ clothes (torso-local: hips at 0,0; shoulders at y = -51; neck at y = -58)
 const TORSO = 'M-19.5 -50 C-19.5 -56 -12 -58.5 0 -58.5 C12 -58.5 19.5 -56 19.5 -50 L17 -18 C16.6 -10 17.6 -4 18 3 C18 7.5 -18 7.5 -18 3 C-17.6 -4 -16.6 -10 -17 -18 Z';
 const WIDE = 'M-21.5 -50 C-21.5 -56.4 -13 -59 0 -59 C13 -59 21.5 -56.4 21.5 -50 L19.6 -6 C19.6 2 20 5 20 6.5 C20 10.5 -20 10.5 -20 6.5 C-20 5 -19.6 2 -19.6 -6 Z';
+const COAT = 'M-21.6 -50 C-21.6 -57 -14 -59.4 0 -59.6 C14 -59.4 21.6 -57 21.6 -50 C19.4 -18 22.4 6 23 26 C19.6 29.4 10 30 3.6 27 L-3.6 27 C-10 30 -19.6 29.4 -23 26 C-22.4 6 -19.4 -18 -21.6 -50 Z';
+/** The outline of each top, for the shadow an arm throws on it. */
+const silhouetteOf = (kind: string) => (kind === 'coat' ? COAT : kind === 'hoodie' || kind === 'cardigan' ? WIDE : TORSO);
 const Top: React.FC<{s: HumanSpec}> = ({s}) => {
   const c = s.top.color;
   const under = s.top.under ?? c;
@@ -374,7 +391,7 @@ export const makeHuman = (s: HumanSpec): Person => {
     const lean = (act.lean ?? 0) + (act.shift ?? 0) * -2.2;
     const torsoT = `translate(${f1(hip[0])} ${f1(hip[1])}) rotate(${lean.toFixed(2)})`;
     const headT = `${torsoT} translate(0 ${f1(-(k.torsoLen + 9))}) rotate(${((act.tilt ?? 0) + (act.shift ?? 0) * 1.6).toFixed(2)}) translate(0 ${f1(-25 * hs + (act.nod ?? 0) * 2.2)}) scale(${hs})`;
-    const arms = p.arms === null ? null : p.arms ?? [95, 85];
+    const arms = p.arms === null ? null : p.arms ?? POSES.rest.person;
     const shrug = (act.shrug ?? 0) * 3.4;
 
     // ---- legs: hips to planted feet, the knee found by the joint solver
@@ -450,30 +467,78 @@ export const makeHuman = (s: HumanSpec): Person => {
       );
     }
 
-    // ---- arms: shoulder, elbow (joint solver), wrist; a sleeve over the skin
+    // ---- arms: shoulder -> elbow -> wrist. Two tapering segments with a real bend, a sleeve that
+    // ends in a cuff, a soft shadow on the body under the arm, and a hand that follows the forearm.
     const arm = (i: 0 | 1, front: boolean) => {
       if (!arms) return null;
       const sp = armOf(arms[i] as ArmSpec);
       if (!!sp.front !== front) return null;
       const side = i === 0 ? -1 : 1;
-      const S: V = [side * 18.6, -50.4 * tk - shrug];
-      const L = (Math.min(sp.len ?? 49.4, 49.4) * seg) / 25;
-      const a = (sp.a * Math.PI) / 180;
-      const H: V = [S[0] + Math.cos(a) * L, S[1] + Math.sin(a) * L];
-      let n: V = [-Math.sin(a), Math.cos(a)];
-      if (Math.abs(n[1]) < 0.3) n = [side, 0.2]; else if (n[1] < 0) n = [-n[0], -n[1]];
-      const E = joint(S, H, seg, seg, n);
-      const ang = (Math.atan2(H[1] - E[1], H[0] - E[0]) * 180) / Math.PI;
-      const flip = Math.cos((ang * Math.PI) / 180) < 0;
+      const S: V = [side * 18.2, -49.6 * tk - shrug];
+      let E: V;
+      let W: V;
+      if (sp.u !== undefined && sp.f !== undefined) { // joints given: forward from the shoulder
+        const du = dirOf(sp.u);
+        const df = dirOf(sp.f);
+        const l1 = seg * (sp.ul ?? 1);
+        const l2 = seg * 0.94 * (sp.fl ?? 1);
+        E = [S[0] + du[0] * l1, S[1] + du[1] * l1];
+        W = [E[0] + df[0] * l2, E[1] + df[1] * l2];
+      } else { // a direction and a reach: the elbow is solved (down, or outward for a hanging arm)
+        const L = (Math.min(sp.len ?? 49.4, 49.4) * seg) / 25;
+        const a = (sp.a * Math.PI) / 180;
+        W = [S[0] + Math.cos(a) * L, S[1] + Math.sin(a) * L];
+        let n: V = [-Math.sin(a), Math.cos(a)];
+        if (Math.abs(n[1]) < 0.3) n = [side, 0.2]; else if (n[1] < 0) n = [-n[0], -n[1]];
+        E = joint(S, W, seg, seg, n);
+      }
+      const fa = Math.atan2(W[1] - E[1], W[0] - E[0]);
+      const ang = (fa * 180) / Math.PI;
+      // the thumb sits on the side that faces up, or toward the body when the hand hangs
+      const flip = Math.sin(fa) * (-side * 0.55) + Math.cos(fa) < 0;
       const sc = s.top.color;
-      const cuff = long ? through(S, E, H, sleeveTo) : null;
+      const kind = s.top.kind;
+      const cover = kind === 'tee' ? 0.64 : kind === 'blouse' ? 1.5 : 1.86; // how far the sleeve reaches: 1 = the elbow, 2 = the wrist
+      const ribbed = kind === 'hoodie' || kind === 'cardigan';
+      const [rS, rE, rW] = [6.5, 5.8, 5.2]; // sleeve radii: shoulder, elbow, wrist
+      const [kS, kE, kW] = [4.8, 4.3, 3.7]; // bare arm
+      const end1 = cover < 1 ? along(S, E, cover) : E; // where the sleeve stops on the upper arm
+      const r1 = rS + (rE - rS) * Math.min(1, cover);
+      const C = cover > 1 ? along(E, W, cover - 1) : null; // the cuff
+      const rC = rE + (rW - rE) * (cover - 1);
+      const u1: V = [(S[0] - E[0]), (S[1] - E[1])];
+      const u2: V = [(W[0] - E[0]), (W[1] - E[1])];
+      const n1 = Math.hypot(u1[0], u1[1]) || 1;
+      const n2 = Math.hypot(u2[0], u2[1]) || 1;
+      const bis: V = [u1[0] / n1 + u2[0] / n2, u1[1] / n1 + u2[1] / n2]; // points into the bend
+      const bl = Math.hypot(bis[0], bis[1]);
+      const bent = bl > 0.62; // sharper than about 145 degrees
+      const hem = (at: V, from: V, r: number, back: number) => { // a line across the sleeve, `back` units before its end
+        const d = Math.hypot(at[0] - from[0], at[1] - from[1]) || 1;
+        const ux = (at[0] - from[0]) / d;
+        const uy = (at[1] - from[1]) / d;
+        const cx = at[0] - ux * back;
+        const cy = at[1] - uy * back;
+        return `M${f1(cx - uy * r)} ${f1(cy + ux * r)} L${f1(cx + uy * r)} ${f1(cy - ux * r)}`;
+      };
+      const shadowD = `${capsule(S, E, rS, rE, tk)} ${capsule(E, C ?? W, rE, C ? rC : kW, tk)}`;
       return (
         <g key={`a${i}`}>
-          <Tube d={through(S, E, H)} r={3.7} fill={s.skin} soft />
-          <Tube d={through(S, E, H, sleeveTo)} r={5.5} fill={sc} soft />
-          {cuff && sleeveTo > 0.7 && <Groove pts={[[E[0] - 3.4, E[1] - 2.6], [E[0], E[1] + 0.6], [E[0] + 3.4, E[1] - 2.6]]} w={1.1} color={sc} k={0.2} />}
-          <g transform={`translate(${f1(H[0])} ${f1(H[1])}) rotate(${ang.toFixed(1)}) translate(-2.6 0)`}>
-            <Hand pose={sp.hand ?? 'relaxed'} fill={s.skin} s={0.84} flip={flip} />
+          <g transform={`scale(1 ${tk})`}><Cast d={shadowD} on={silhouetteOf(kind)} color={sc} dx={1.3} dy={2.4} k={0.3} /></g>
+          <Merge>
+            {cover < 1 && <Part d={capsule(S, E, kS, kE)} fill={s.skin} mat="skin" depth={1.6} />}
+            <Part d={capsule(E, W, kE, kW)} fill={s.skin} mat="skin" depth={1.6} />
+          </Merge>
+          <Merge>
+            <Part d={capsule(S, end1, rS, r1)} fill={sc} mat="cloth" depth={2.4} />
+            {C && <Part d={capsule(E, C, rE, rC)} fill={sc} mat="cloth" depth={2.4} />}
+          </Merge>
+          {C && ribbed && <path d={capsule(along(E, W, cover - 1.13), C, rC, rC)} fill={shade(sc, 0.16)} opacity={0.8} />}
+          {C && <Line d={hem(C, E, rC * 0.86, ribbed ? 3.2 : 1.5)} color={lineOf(sc)} k={0.5} opacity={0.85} />}
+          {cover < 1 && <Line d={hem(end1, S, r1 * 0.86, 1.3)} color={lineOf(sc)} k={0.5} opacity={0.85} />}
+          {cover >= 1 && bent && <Groove pts={[[E[0] + (bis[0] / bl) * rE * 0.95, E[1] + (bis[1] / bl) * rE * 0.95], [E[0] + (bis[0] / bl) * rE * 0.2, E[1] + (bis[1] / bl) * rE * 0.2], [E[0] - (bis[0] / bl) * rE * 0.3, E[1] - (bis[1] / bl) * rE * 0.3]]} w={1.15} color={sc} k={0.22} />}
+          <g transform={`translate(${f1(W[0])} ${f1(W[1])}) rotate(${ang.toFixed(1)}) translate(-2.2 0)`}>
+            <Hand pose={sp.hand ?? 'relaxed'} fill={s.skin} s={0.9} flip={flip} />
           </g>
         </g>
       );

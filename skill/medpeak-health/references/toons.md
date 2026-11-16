@@ -28,7 +28,7 @@ cartoon health channel (format only). We never copy anyone's characters, art, au
 |---|---|
 | `src/toons/style.ts` | The one settings file: line, eyes, light, texture, motion, colours |
 | `src/toons/ink.tsx` | Paint engine: `Part` (volume paint + materials), `Tube`, `Merge`, `Groove`, `Vein`, `Cast`, `shade`, `lift`, shapes |
-| `src/toons/rig.tsx` | Face (9 emotions, coloured iris, head turn), mitten `Hand` (5 poses), `Arm`, `Leg`, `Shoe`, `blinkAt` |
+| `src/toons/rig.tsx` | Face (9 emotions, coloured iris, head turn), `Hand` (palm, four fingers, thumb; 5 poses), `Arm`, `Leg`, `Shoe`, `blinkAt` |
 | `src/toons/blueprint.tsx` | `Blueprint`, `makeCharacter`, `checkBlueprint`, `Act` (body acting) |
 | `src/toons/characters.tsx` | 19 body characters as blueprints, each with its anatomy |
 | `src/toons/humans.tsx` | Full-body people on a skeleton from `HumanSpec`: Dr. Mira, patient, mum, kid, grandpa, toddler |

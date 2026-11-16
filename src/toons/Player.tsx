@@ -213,8 +213,10 @@ const acting = (a: ToonActor, shot: ToonShot, lines: Placed[], f: number, cur: P
   const posed = now ? blendPose(from, to, E.back(clamp01((f - now.from) / 10))) : to;
   const arms = posed.map((sp, i) => {
     const s = armOf(sp as ArmSpec);
-    const up = s.a < 20 || s.a > 160; // a raised or gesturing arm beats more than a hanging one
-    return {...s, a: s.a + (i === 0 ? 1 : -1) * beat * (up ? 7 : 3)};
+    const way = s.f ?? s.a;
+    const up = way < 20 || way > 160; // a raised or gesturing arm beats more than a hanging one
+    const d = (i === 0 ? 1 : -1) * beat * (s.front ? 1.5 : up ? 7 : 3); // a hand resting on the body barely moves
+    return s.u !== undefined && s.f !== undefined ? {...s, a: s.a + d, u: s.u + d * 0.35, f: s.f + d} : {...s, a: s.a + d};
   }) as [ArmSpec, ArmSpec];
   const talk = speaking && cur ? lipsync(cur.words, (f - cur.from) / TOON_FPS) : 0;
   // eyes: look at whoever is talking; the speaker looks at the listener and sometimes at the viewer

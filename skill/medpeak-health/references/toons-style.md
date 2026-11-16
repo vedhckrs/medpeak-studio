@@ -8,7 +8,8 @@ The look of the cartoon "talking organs" Shorts. Everything here is enforced by 
 | Problem (owner's words) | Cause | Rule now |
 |---|---|---|
 | "Too much thick black lines" | one heavy navy outline that scaled up with the character | outline = a darker shade of each fill (`lineOf`), `STYLE.line` 1.8 units, never more than 4.2 px on screen |
-| "Hand is not proper" | white gloves built from separate outlined blocks | one mitten silhouette in the character's own colour, 5 poses |
+| "Hand is not proper" | white gloves built from separate outlined blocks | one clean hand silhouette in the character's own colour (palm, four fingers, thumb), 5 poses |
+| "Doctor hand and arms look weird" (pilot) | arms were single bendy tubes with no elbow; the upper arm vanished against the coat; open hands read as paws | people's arms are two tapering segments with a real elbow, cuff and a shadow on the body; every pose sets shoulder and elbow angles (toons-blueprint.md) |
 | "Animation like a burning screen, very wavy" | a displacement filter (line boil) on every character + constant sway | `STYLE.boil = 0`. No filters on characters. Poses are held; every move has a reason |
 | "Cheap, not professional" (v5) | flat stickers: one fill, a faint shadow, black-dot eyes | **volume paint** (below), coloured shaded irises, real anatomy on every organ |
 | "More high-end texture and detailed structure" | no surface texture; 2-3 features per organ | every surface names a **material**; organs show vessels, ducts, lobes, folds; cells show their insides |

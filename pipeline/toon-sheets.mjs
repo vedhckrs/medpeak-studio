@@ -4,7 +4,7 @@
  *
  *   node pipeline/toon-sheets.mjs                 # all boards + every model sheet
  *   node pipeline/toon-sheets.mjs stomach doctor  # only these model sheets
- *   node pipeline/toon-sheets.mjs --boards        # only the boards: cast, blueprint, camera and lenses, sets, stage
+ *   node pipeline/toon-sheets.mjs --boards        # only the boards: cast, blueprint, camera and lenses, sets, stage, arm poses
  *
  * Output: out/toons/sheets/. After adding a character (a Blueprint in src/toons/characters.tsx or a
  * HumanSpec in src/toons/humans.tsx), add its name to ORDER in src/toons/Preview.tsx, render its
@@ -30,6 +30,7 @@ if (!names.length) {
   still('ToonCamera', 'camera.jpg');
   still('ToonSets', 'sets.jpg');
   still('ToonStage', 'stage.jpg');
+  for (const who of ['doctor', 'patient', 'kid']) still('ToonPoses', `poses-${who}.jpg`, {who});
   console.log('boards done');
 }
 if (!boardsOnly) {

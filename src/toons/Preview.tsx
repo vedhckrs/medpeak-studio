@@ -123,8 +123,8 @@ export const ModelSheet: React.FC<{who?: string}> = ({who = 'stomach'}) => {
     {label: 'panic', emotion: 'scared', arms: POSES.panic[kind], talk: 0.8, act: {lean: -4, bob: 3}},
   ];
   const rules = bp
-    ? [`Family: ${bp.family}`, `Face: size ${bp.face.size} at (${bp.face.x}, ${bp.face.y})`, bp.legs ? 'Legs: yes (a traveller)' : 'Legs: none (stays in place)', bp.arms ? 'Arms: thin, in the body colour, mitten hands' : 'Arms: none', `Stands on y = ${bp.ground.y}`]
-    : ['Family: person', `Height: ${sp!.height === undefined || sp!.height >= 0.9 ? '3.6 heads (adult)' : (sp!.legs ?? 1) > 0.6 ? '2.9 heads (kid)' : '2.2 heads (toddler)'}`, `Hair: ${sp!.hair.style}`, `Top: ${sp!.top.kind} · Bottom: ${sp!.bottom.kind}`, 'Hands: mitten hands in the skin colour'];
+    ? [`Family: ${bp.family}`, `Face: size ${bp.face.size} at (${bp.face.x}, ${bp.face.y})`, bp.legs ? 'Legs: yes (a traveller)' : 'Legs: none (stays in place)', bp.arms ? 'Arms: thin, in the body colour, clean hands' : 'Arms: none', `Stands on y = ${bp.ground.y}`]
+    : ['Family: person', `Height: ${sp!.height === undefined || sp!.height >= 0.9 ? '3.6 heads (adult)' : (sp!.legs ?? 1) > 0.6 ? '2.9 heads (kid)' : '2.2 heads (toddler)'}`, `Hair: ${sp!.hair.style}`, `Top: ${sp!.top.kind} · Bottom: ${sp!.bottom.kind}`, 'Hands: palm, four fingers and a thumb in the skin colour'];
   return (
     <AbsoluteFill style={{background: PAPER}}>
       <div style={{position: 'absolute', left: 0, top: 0, width: 1920, height: 12, background: STYLE.label}} />
@@ -206,6 +206,31 @@ export const StageBoard: React.FC = () => {
   );
 };
 
+/** POSE BOARD: one person in every arm pose, large enough to judge shoulders, elbows and hands (1920x1600). */
+export const PoseBoard: React.FC<{who: string}> = ({who}) => {
+  const C = ALL[who];
+  const person = who in PEOPLE;
+  const names = Object.keys(POSES) as PoseName[];
+  const cols = 6;
+  return (
+    <AbsoluteFill style={{background: PAPER}}>
+      <T x={40} y={22} w={1200} size={34} weight={900}>{`Arm poses: ${who}`}</T>
+      {names.map((n, i) => {
+        const x = 24 + (i % cols) * 314;
+        const y = 80 + Math.floor(i / cols) * 500;
+        return (
+          <React.Fragment key={n}>
+            <div style={{position: 'absolute', left: x, top: y, width: 302, height: 470, overflow: 'hidden', borderRadius: 14, background: '#ffffff', border: '2px solid #e6dfd2'}}>
+              <Stand x={151} floor={440} size={person ? 400 : 230} ground={groundOf(who)}><C emotion="happy" t={0.6} arms={person ? POSES[n].person : POSES[n].body} /></Stand>
+            </div>
+            <T x={x + 8} y={y + 6} w={190} size={20} weight={900} color="#8a8498">{n}</T>
+          </React.Fragment>
+        );
+      })}
+    </AbsoluteFill>
+  );
+};
+
 /** CAMERA BOARD: the same scene through nine shot sizes and lenses (1080x1920). */
 export const CameraBoard: React.FC = () => {
   const office: ToonActor[] = [{who: 'doctor', x: 310, size: 1040, emotion: 'happy', pose: 'explain'}, {who: 'patient', x: 780, size: 1000, emotion: 'sick', pose: 'belly'}];
@@ -261,7 +286,7 @@ const Partial: React.FC<{bp: Blueprint; grey?: boolean; face?: boolean}> = ({bp,
 export const BlueprintBoard: React.FC = () => {
   const bp = BLUEPRINTS.stomach;
   const Stomach = CAST.stomach;
-  const steps = ['1 Real anatomy, simplified', '2 Volume paint + structure', '3 Face zone', '4 Arms + mitten hands', '5 Pose + emotion'];
+  const steps = ['1 Real anatomy, simplified', '2 Volume paint + structure', '3 Face zone', '4 Arms + hands', '5 Pose + emotion'];
   const people: PersonName[] = ['doctor', 'patient', 'mom', 'grandpa', 'kid', 'baby'];
   const families: {label: string; colors: string[]}[] = [
     {label: 'organs: warm pinks and reds', colors: ['#ff8f9c', '#ffb3aa', '#c9584b', '#f25f70', '#ffb3c7']},
