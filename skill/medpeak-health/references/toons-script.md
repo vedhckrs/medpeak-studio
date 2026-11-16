@@ -56,7 +56,7 @@ after voicing. Leave a second of margin on the promise (aim for 7 s) and stay cl
 
 ## The file
 ```json
-{"slug": "...", "title": "...", "music": "panic",
+{"slug": "...", "title": "...", "music": "doctor",
  "retention": {"noIntro": {"scene": "A1", "line": "..."}, "promise": {"scene": "A3", "line": "..."},
    "counting": {"scene": "A4,A5,A6", "line": "Number one / Number two / Number three"},
    "change3s": {"scene": "all", "line": "the director"}, "twist": {"scene": "B3", "line": "..."},
@@ -142,8 +142,9 @@ eight a video. The player adds nothing on its own except a soft whoosh for a new
   the music about 8.5 LU under and steady.
 - `npm run toon:sound -- <slug>` counts and, once the voices exist, builds the three layers and
   measures them. `--list` prints every sound with its time and reason.
-- **The bed never goes quiet.** `"music"` is `panic` (playful) or `doctor` (calm): the two beds
-  with no rest inside their loop. A track that stops and starts leaves holes where the whole sound
+- **The bed never goes quiet, and it is the calm one.** `"music"` is `doctor`: the owner heard the
+  same video over both steady beds and chose "Calm" (2026-11-17). `panic` (playful) is the other
+  bed with no rest inside its loop; use it only if the owner asks for it. A track that stops and starts leaves holes where the whole sound
   nearly stops; moving its rests under words did not hide them (tried, heard by earshot). The
   sound check fails any other bed ("A steady bed"); a new bed is scanned first (`npm run toon:music:scan`).
 - A sound never sits on a spoken word: it cannot be heard there and must not be turned up. Put it

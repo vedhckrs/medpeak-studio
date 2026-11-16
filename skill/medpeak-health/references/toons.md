@@ -54,7 +54,7 @@ A Toon is one file, `videos/<slug>/toon.json`. The player (`src/toons/Player.tsx
 turns it into the whole Short: staging, acting, lip-sync, camera cuts, captions, sound effects, music.
 
 ```json
-{"slug": "pill-without-water", "title": "...", "music": "panic",
+{"slug": "pill-without-water", "title": "...", "music": "doctor",
  "shots": [{"id": "A", "set": "throat",
    "cast": [{"who": "whitecell", "x": 350, "y": 700, "size": 720, "noLegs": true, "pose": "hips"}],
    "lines": [{"id": "A1", "who": "whitecell", "text": "Hey! You can't park here.",
@@ -74,7 +74,7 @@ turns it into the whole Short: staging, acting, lip-sync, camera cuts, captions,
 | `skill/medpeak-health/toons-cast.json` | The fixed voice of each of the 25 characters (ElevenLabs default voices, so every key has them), pitch in semitones, speed, and the acting settings per emotion |
 | `pipeline/toon-voice.mjs` | One clip per line with word timing; ffmpeg shifts the pitch per character (speed unchanged, so timing stays valid). `--audition` makes one sample per character |
 | `pipeline/toon-sfx.mjs` | The cartoon sound-effect library (38 effects), made once, kept in `assets/toons-sfx/` and committed |
-| `pipeline/toon-music.mjs` | 4 beds, made once, kept in `assets/toons-music/` and committed. Only the two that never go quiet are used: `panic` (playful ukulele, 99 BPM) and `doctor` (calm, 120 BPM). `bouncy` and `sneaky` stop and start and fail the sound check |
+| `pipeline/toon-music.mjs` | 4 beds, made once, kept in `assets/toons-music/` and committed. The owner's pick is `doctor` (calm, 120 BPM; chosen by ear on 2026-11-17 over `panic`, playful ukulele, 99 BPM): these two never go quiet. `bouncy` and `sneaky` stop and start and fail the sound check |
 | `pipeline/toon-music-scan.mjs` | Measures each bed's loudness over time (`<name>.shape.json` next to it): where it rests, where its loop ends. Free; run after adding a bed (`npm run toon:music:scan`) |
 | `pipeline/toon-render.mjs` | Renders the Short (`--draft`, `--stills`); works silent before the voice exists; masters to -14 LUFS |
 | `src/toons/motion.ts` | `lipsync(words, t)`: the mouth opens on each spoken word and closes between words |

@@ -79,7 +79,7 @@ the finished file. Fixes are open in `toons-known-issues.md`.
 - The whoosh still stands 17 to 21 dB over the bed at a new place. It is a soft sound now and its
   level is `SOUND.whoosh` in director.ts; whether it is quiet enough is for the owner's ear.
 - Both samples went to the owner (`renders/after-playful-bed.mp4`, `after-calm-bed.mp4`; the old
-  mix is `before-sound-fix.mp4`). The scripts use `panic` until the owner says which they prefer.
+  mix is `before-sound-fix.mp4`). The owner chose **Calm**: every script uses `doctor`.
 
 ## What it does not do
 - It does not watch motion. Motion is still measured frame by frame (`toon:camera`, `toon:motion`).
