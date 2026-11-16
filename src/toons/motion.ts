@@ -26,6 +26,14 @@ export const key = (f: number, ks: [number, number, Ease?][]) => {
 /** A damped wobble that starts at `start` and dies out in about 12 frames (landing, impact). */
 export const settle = (f: number, start: number, amp = 1, speed = 0.9, decay = 0.28) =>
   f < start ? 0 : amp * Math.exp(-decay * (f - start)) * Math.cos(speed * (f - start));
+/** Like `settle`, but it starts from zero: a quick push that swings back and dies out (no pop on the first frame). */
+export const kick = (f: number, start: number, amp = 1, speed = 0.9, decay = 0.28) =>
+  f < start ? 0 : amp * 1.6 * Math.exp(-decay * (f - start)) * Math.sin(speed * (f - start));
+/** 0 -> 1 -> 0 around a stretch [from, to): eased over `ease` frames at both ends (no step at the edges). */
+export const ramp = (f: number, from: number, to: number, ease = 8) => {
+  const u = Math.max(0, Math.min(1, (f - from) / ease, (to - f) / ease));
+  return u < 0.5 ? 4 * u * u * u : 1 - (-2 * u + 2) ** 3 / 2;
+};
 /** Mouth opening for speech between two frames: about 5 syllables a second, closed outside. */
 export const speak = (f: number, from: number, to: number, seed = 0) => {
   if (f < from || f >= to) return 0;

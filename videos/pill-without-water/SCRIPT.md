@@ -1,6 +1,6 @@
 # What happens when you swallow a pill without water
 
-Toon script `pill-without-water` · about 50 seconds · 26 pictures
+Toon script `pill-without-water` · about 50 seconds · 28 pictures
 
 ## Retention 7
 
@@ -22,7 +22,7 @@ Toon script `pill-without-water` · about 50 seconds · 26 pictures
 | PASS | 1 No intro | hook: "Hey! You can't park here. This is the food pipe!" |
 | PASS | 2 Promise | starts at 7.1 s (limit 8 s) |
 | PASS | 3 Counting | 3 numbered beats said in order |
-| PASS | 4 3-sec change | the longest picture is 2.9 s (line B2); 26 pictures in 50 s |
+| PASS | 4 3-sec change | the longest picture is 2.3 s (line B3); 28 pictures in 50 s |
 | PASS | 5 Twist | twist starts at 59% |
 | PASS | 6 Best last | best point starts at 83% |
 | PASS | 7 Loop | last line shares 3 key word(s) with the first: park, food, pipe |
@@ -48,11 +48,11 @@ Characters: whitecell, pill
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
 | 0.0 s | A1 | whitecell | angry | Hey! You can't park here. This is the food pipe! | wide 24 truck → low 35 push |  |
-| 4.1 s | A2 | pill | scared | I'm stuck! He swallowed me without water! | cu 85 dutch → ms 50 |  |
-| 7.1 s | A3 | whitecell | neutral | Three things happen next. Wait for the third! | whip to mcu 50 push → ms 50 |  |
-| 10.4 s | A4 | pill | sick | Number one: I stick to the wall. | cu 85 push → ots 50 push | statpearls |
-| 13.4 s | A5 | whitecell | shocked | Number two: you start to melt right here! | cu 85 crash → two 35 truck | statpearls |
-| 16.7 s | A6 | pill | sad | Number three: my medicine burns the lining. Sorry! | whip to cu 85 push → ms 50 | statpearls |
+| 4.1 s | A2 | pill | scared | I'm stuck! He swallowed me without water! | cu 85 dutch → ms 35 |  |
+| 7.1 s | A3 | whitecell | neutral | Three things happen next. Wait for the third! | mcu 50 push → cu 85 push |  |
+| 10.4 s | A4 | pill | sick | Number one: I stick to the wall. | cu 85 push → ms 35 | statpearls |
+| 13.4 s | A5 | whitecell | shocked | Number two: you start to melt right here! | cu 85 push → ms 35 | statpearls |
+| 16.7 s | A6 | pill | sad | Number three: my medicine burns the lining. Sorry! | cu 85 push → ms 35 | statpearls |
 
 ## Scene B: office
 
@@ -62,11 +62,11 @@ Characters: doctor, patient · props: glass
 |---|---|---|---|---|---|---|
 | 20.3 s | B1 | patient | sick | Doc, why does my chest burn when I swallow? | wide 24 truck → cu 85 push |  |
 | 24.0 s | B2 | doctor | neutral | A pill got stuck in your food pipe. It dissolved there and irritated it. | mcu 50 push → patient: cu 85 → cu 85 push | statpearls, zografos2009 |
-| 29.5 s | B3 | doctor | happy | But here's the twist: don't blame the medicine. It just needed a ride down. | ms 35 → ots 50 push | statpearls, nhs-doxycycline |
+| 29.5 s | B3 | doctor | happy | But here's the twist: don't blame the medicine. It just needed a ride down. | ms 35 → patient: cu 85 → cu 85 push | statpearls, nhs-doxycycline |
 | 35.0 s | B4 | patient | neutral | So water is the ride? | mcu 50 push |  |
-| 37.3 s | B5 | doctor | happy | Exactly. A glass of water, sitting or standing up. | ms 35 → two 35 truck | nhs-doxycycline |
-| 41.0 s | B6 | doctor | neutral | And with some antibiotics, the NHS says: no lying down for thirty minutes. | cu 85 push → ms 50 | nhs-doxycycline |
-| 46.1 s | B7 | patient | happy | So nothing can park in my food pipe! | two 35 pull → ms 50 |  |
+| 37.3 s | B5 | doctor | happy | Exactly. A glass of water, sitting or standing up. | ms 35 → cu 85 push | nhs-doxycycline |
+| 41.0 s | B6 | doctor | neutral | And with some antibiotics, the NHS says: no lying down for thirty minutes. | ms 35 → patient: cu 85 → cu 85 push | nhs-doxycycline |
+| 46.1 s | B7 | patient | happy | So nothing can park in my food pipe! | two 35 pull → cu 85 push |  |
 
 ## Sources
 

@@ -69,11 +69,39 @@ export const AUTO_SFX = ['whoosh-soft', 'swish', 'whoosh-fast', 'caption-pop', '
 /** The director's default picture for each mood: shot size, lens, move. */
 export const EMO_CAM: Record<Emotion, [ShotName, LensName, MoveName]> = {
   neutral: ['mcu', '50', 'push'], happy: ['ms', '35', 'static'], angry: ['low', '35', 'push'], scared: ['cu', '85', 'dutch'],
-  smug: ['mcu', '50', 'push'], sick: ['cu', '85', 'push'], sleepy: ['mcu', '50', 'static'], shocked: ['cu', '85', 'crash'], sad: ['cu', '85', 'push'],
+  smug: ['mcu', '50', 'push'], sick: ['cu', '85', 'push'], sleepy: ['mcu', '50', 'static'], shocked: ['cu', '85', 'push'], sad: ['cu', '85', 'push'],
 };
-/** When a line is long, the camera keeps changing the picture in this order. */
-export const RELIEF: [ShotName, LensName, MoveName][] = [['two', '35', 'truck'], ['cu', '85', 'push'], ['ms', '50', 'static'], ['ots', '50', 'push']];
+/** The lens and move that go with a shot size when the director picks it as a change of picture. */
+export const SIZE_CAM: Record<ShotName, [LensName, MoveName]> = {
+  ews: ['18', 'truck'], wide: ['24', 'truck'], two: ['35', 'truck'], full: ['24', 'static'], ms: ['35', 'static'],
+  mcu: ['50', 'push'], low: ['35', 'push'], ots: ['50', 'push'], cu: ['85', 'push'], ecu: ['135', 'push'],
+};
 export const CLOSE: ShotName[] = ['mcu', 'cu', 'ecu', 'ots', 'low'];
+export const PEOPLE_NAMES = ['doctor', 'patient', 'mom', 'kid', 'grandpa', 'baby'];
+/**
+ * Roughly how big each shot size makes a character on screen (wide = 1). People are tall in the
+ * frame, so their steps differ from the round body characters. The camera framing follows these.
+ */
+export const NOMINAL: Record<'person' | 'body', Record<ShotName, number>> = {
+  person: {ews: 1, wide: 1.04, two: 1.05, full: 1.12, ms: 1.3, low: 1.75, mcu: 1.75, ots: 1.75, cu: 2.35, ecu: 3.2},
+  body: {ews: 1, wide: 1.04, two: 1.05, full: 1.25, ms: 1.6, low: 1.6, mcu: 1.6, ots: 1.6, cu: 2.5, ecu: 3.2},
+};
+const GROUP: ShotName[] = ['ews', 'wide', 'two'];
+/**
+ * May picture `b` follow picture `a` with a cut? A cut to another character always works. A cut
+ * that keeps the same character on screen must change its size clearly (about 1.5 times), or it
+ * reads as a jump: a small punch-in on the same drawing.
+ */
+export const cutWorks = (a: {who: string; shot: ShotName} | null, b: {who: string; shot: ShotName}) => {
+  if (!a) return true;
+  const ga = GROUP.includes(a.shot);
+  const gb = GROUP.includes(b.shot);
+  if (ga && gb) return false;
+  if (!ga && !gb && a.who !== b.who) return true;
+  const t = NOMINAL[PEOPLE_NAMES.includes(ga ? b.who : a.who) ? 'person' : 'body'];
+  const r = t[a.shot] / t[b.shot];
+  return r >= 1.45 || r <= 1 / 1.45;
+};
 
 export type Placed = {line: ToonLine; si: number; li: number; from: number; frames: number; words: SpokenWord[]; file?: string};
 export type Seg = {from: number; to: number; si: number; line: Placed; who: string; shot: ShotName; lens: LensName; move: MoveName; whip: boolean};
@@ -113,56 +141,85 @@ export const layoutToon = (toon: Toon, timings: ToonTimings | null) => {
     shots.push({shot, from, frames: at - from});
   });
 
-  // ---- the director: camera segments
+  // ---- the director: camera segments.
+  // Every cut lands on the start of a word (best: the start of a phrase), never in the middle of one.
+  // A long line is covered like a conversation: the speaker, a look at the listener, the speaker
+  // again. Two pictures of the same character in a row always differ clearly in size.
   const segs: Seg[] = [];
-  let speakerChanges = 0;
   lines.forEach((l, idx) => {
     const shot = toon.shots[l.si];
-    const end = l.from + l.frames;
+    const F = l.frames;
     const own = parseCam(l.line.cam);
     const [es, el, em] = EMO_CAM[l.line.emotion ?? 'neutral'];
     const main: [ShotName, LensName, MoveName] = [own.shot ?? es, own.lens ?? el, own.move ?? em];
-    const prev = lines[idx - 1];
-    const changed = !!prev && prev.si === l.si && prev.line.who !== l.line.who;
-    if (changed) speakerChanges++;
-    const plan: {len: number; who: string; cam: [ShotName, LensName, MoveName]}[] = [];
-    let left = l.frames;
-    if (l.li === 0 && !own.shot) {
-      const open = Math.min(54, Math.round(l.frames * 0.42));
-      plan.push({len: open, who: l.line.who, cam: ['wide', '24', 'truck']});
-      left -= open;
-    }
-    const reactor = l.line.react ? Object.keys(l.line.react).find((w) => shot.cast.some((a) => a.who === w)) : undefined;
-    let k = 0;
-    let first = true;
-    let last: ShotName | null = plan.length ? plan[plan.length - 1].cam[0] : null;
-    while (left > 0) {
-      let len = left <= SEG_MAX ? left : Math.min(left, SEG); // a line may run up to 2.9 s in one picture
-      if (left - len > 0 && left - len < 24) len = Math.ceil(left / 2); // never leave a sliver
-      if (first) {
-        // a long first stretch with a reaction: cut away to the listener's face for a moment
-        if (reactor && len >= 62) {
-          const a = Math.round(len * 0.56);
-          plan.push({len: a, who: l.line.who, cam: main}, {len: len - a, who: reactor, cam: ['cu', '85', 'static']});
-        } else plan.push({len, who: l.line.who, cam: main});
-        last = main[0];
-      } else {
-        // the next picture must differ in size from the one before (no jump cuts)
-        let pick = RELIEF[(k + l.li) % RELIEF.length];
-        if (pick[0] === last || (pick[0] === 'two' && shot.cast.length < 2)) { k++; pick = RELIEF[(k + l.li) % RELIEF.length]; }
-        plan.push({len, who: l.line.who, cam: pick});
-        last = pick[0];
-        k++;
+    const speaker = l.line.who;
+    const reactTo = l.line.react ? Object.keys(l.line.react).find((w) => shot.cast.some((a) => a.who === w)) : undefined;
+    const listener = reactTo ?? shot.cast.find((a) => a.who !== speaker)?.who;
+    const starts = l.words.map((w, i) => ({f: Math.round(w.start * TOON_FPS), phrase: i > 0 && /[,.!?:;]$/.test(l.words[i - 1].w)}));
+    const snap = (target: number, lo: number, hi: number) => {
+      let best = -1;
+      let score = Infinity;
+      for (const w of starts) {
+        if (w.f < lo || w.f > hi) continue;
+        const sc = Math.abs(w.f - target) * (w.phrase ? 0.4 : 1);
+        if (sc < score) { score = sc; best = w.f; }
       }
-      first = false;
-      left -= len;
+      return best >= 0 ? best : Math.max(lo, Math.min(hi, target));
+    };
+    // 1. where the cuts fall, and whose picture each stretch is
+    const kinds: ('open' | 'speaker' | 'react')[] = [];
+    const cutsAt: number[] = [0];
+    let pos = 0;
+    if (l.li === 0 && !own.shot && F >= 66) {
+      pos = snap(Math.min(50, Math.round(F * 0.42)), 28, Math.min(60, F - 32));
+      kinds.push('open');
+      cutsAt.push(pos);
     }
-    let f = l.from;
-    plan.forEach((p, i) => {
-      const whip = i === 0 && changed && l.li > 0 && CLOSE.includes(p.cam[0]) && (own.move === 'whip' || speakerChanges % 3 === 2);
-      segs.push({from: f, to: Math.min(end, f + p.len), si: l.si, line: l, who: p.who, shot: p.cam[0], lens: p.cam[1], move: p.cam[2] === 'whip' ? 'push' : p.cam[2], whip});
-      f += p.len;
+    let want: 'speaker' | 'react' = 'speaker';
+    while (F - pos > SEG_MAX) {
+      if (want === 'speaker') {
+        pos = snap(pos + 66, pos + 40, Math.min(pos + 84, F - 28));
+        kinds.push('speaker');
+        want = listener ? 'react' : 'speaker';
+      } else {
+        pos = snap(pos + 38, pos + 28, Math.min(pos + 50, F - 28));
+        kinds.push('react');
+        want = 'speaker';
+      }
+      cutsAt.push(pos);
+    }
+    if (want === 'react' && F - pos >= 64) { // room for a look at the listener and a return to the speaker
+      pos = snap(pos + 36, pos + 28, pos + 46);
+      kinds.push('react');
+      cutsAt.push(pos);
+    }
+    kinds.push('speaker');
+    cutsAt.push(F);
+    // 2. the picture for each stretch
+    const before = segs[segs.length - 1];
+    let prev: {who: string; shot: ShotName} | null = before && before.si === l.si ? {who: before.who, shot: before.shot} : null;
+    let said = false; // has the speaker had a picture in this line yet?
+    let lastOwn: ShotName | null = null;
+    kinds.forEach((kind, i) => {
+      let who = speaker;
+      let cam: [ShotName, LensName, MoveName];
+      if (kind === 'open') cam = ['wide', '24', 'truck'];
+      else if (kind === 'react' && listener) {
+        who = listener;
+        cam = ['cu', '85', 'static'];
+      } else {
+        const order: ShotName[] = said ? ['cu', 'ms', 'mcu', 'two', 'wide'] : [main[0], 'cu', 'ms', 'mcu', 'two', 'wide'];
+        const fits = (c: ShotName) => (c !== 'two' || shot.cast.length > 1) && c !== lastOwn && cutWorks(prev, {who, shot: c});
+        const pick = !said && own.shot ? main[0] : order.find(fits) ?? main[0];
+        cam = pick === main[0] && !said ? main : [pick, SIZE_CAM[pick][0], SIZE_CAM[pick][1]];
+        said = true;
+        lastOwn = pick;
+      }
+      const whip = i === 0 && own.move === 'whip' && !!prev;
+      segs.push({from: l.from + cutsAt[i], to: l.from + cutsAt[i + 1], si: l.si, line: l, who, shot: cam[0], lens: cam[1], move: cam[2] === 'whip' ? 'push' : cam[2], whip});
+      prev = {who, shot: cam[0]};
     });
+    void idx;
   });
   return {lines, shots, segs, cuts: segs, total: Math.max(TOON_FPS, at)};
 };

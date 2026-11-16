@@ -47,12 +47,12 @@ Characters: stomach, heart · props: burger
 
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
-| 0.0 s | A1 | stomach | angry | He ate a huge dinner. Now he's lying down! | wide 24 truck → low 35 push → heart: cu 85 |  |
-| 3.7 s | A2 | heart | scared | Lying down? Your acid will come up to me! | cu 85 dutch → ms 50 | nhs-heartburn |
-| 7.4 s | A3 | stomach | neutral | Three things happen now. Stay for the third! | whip to mcu 50 push → ms 50 |  |
-| 10.7 s | A4 | stomach | sick | Number one: I'm too full. | cu 85 push | nhs-heartburn |
-| 13.0 s | A5 | heart | shocked | Number two: your top valve relaxes! | cu 85 crash | niddk-gerd |
-| 15.6 s | A6 | stomach | sad | Number three: my acid flows up the food pipe! | cu 85 push → heart: cu 85 → ms 50 | nhs-heartburn |
+| 0.0 s | A1 | stomach | angry | He ate a huge dinner. Now he's lying down! | wide 24 truck → low 35 push |  |
+| 3.7 s | A2 | heart | scared | Lying down? Your acid will come up to me! | cu 85 dutch → ms 35 | nhs-heartburn |
+| 7.4 s | A3 | stomach | neutral | Three things happen now. Stay for the third! | mcu 50 push → cu 85 push |  |
+| 10.7 s | A4 | stomach | sick | Number one: I'm too full. | ms 35 | nhs-heartburn |
+| 13.0 s | A5 | heart | shocked | Number two: your top valve relaxes! | cu 85 push | niddk-gerd |
+| 15.6 s | A6 | stomach | sad | Number three: my acid flows up the food pipe! | cu 85 push → ms 35 | nhs-heartburn |
 
 ## Scene B: office
 
@@ -61,12 +61,12 @@ Characters: doctor, patient · props: clock, pillow
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
 | 19.6 s | B1 | patient | sick | Doctor, why does my chest burn after dinner? | wide 24 truck → cu 85 push |  |
-| 22.9 s | B2 | doctor | neutral | That's heartburn: stomach acid travelling up toward your throat. | whip to mcu 50 push → cu 85 push | nhs-heartburn |
-| 26.6 s | B3 | doctor | happy | But here's the twist: the problem is a door. The valve above your stomach relaxes when it shouldn't. | ms 35 → patient: cu 85 → ots 50 push → two 35 truck | niddk-gerd |
-| 33.6 s | B4 | patient | shocked | And lying down makes it worse? | cu 85 crash |  |
-| 36.2 s | B5 | doctor | neutral | Yes. So no food for three or four hours before bed. | mcu 50 push → two 35 truck | nhs-heartburn |
-| 40.6 s | B6 | doctor | happy | And raise the head of your bed ten to twenty centimetres. | cu 85 push → ms 50 | nhs-heartburn |
-| 45.1 s | B7 | patient | happy | So no more lying down after a huge dinner! | two 35 pull → ms 50 |  |
+| 22.9 s | B2 | doctor | neutral | That's heartburn: stomach acid travelling up toward your throat. | mcu 50 push → two 35 truck | nhs-heartburn |
+| 26.6 s | B3 | doctor | happy | But here's the twist: the problem is a door. The valve above your stomach relaxes when it shouldn't. | cu 85 push → patient: cu 85 → ms 35 → cu 85 push | niddk-gerd |
+| 33.6 s | B4 | patient | shocked | And lying down makes it worse? | cu 85 push |  |
+| 36.2 s | B5 | doctor | neutral | Yes. So no food for three or four hours before bed. | mcu 50 push → patient: cu 85 → cu 85 push | nhs-heartburn |
+| 40.6 s | B6 | doctor | happy | And raise the head of your bed ten to twenty centimetres. | ms 35 → patient: cu 85 → cu 85 push | nhs-heartburn |
+| 45.1 s | B7 | patient | happy | So no more lying down after a huge dinner! | two 35 pull → cu 85 push |  |
 
 ## Sources
 

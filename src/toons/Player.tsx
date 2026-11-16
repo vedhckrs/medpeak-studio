@@ -15,7 +15,7 @@ import {Camera, type Cam, CAM0, clampCam, H, LENSES, W} from './camera';
 import {AUTO_SFX, EMO_SFX, GAP, layoutToon, type LensName, type MoveName, parseCam, type Placed, type Seg, SEG, type SetName, type ShotName, type Toon, type ToonActor, type ToonLine, type ToonShot, type ToonTimings, TOON_FPS} from './director';
 import {PEOPLE, skeleton, SPECS} from './humans';
 import {Grain} from './ink';
-import {clamp01, E, lerp, lipsync, settle, type SpokenWord} from './motion';
+import {clamp01, E, kick, lerp, lipsync, ramp, settle, type SpokenWord} from './motion';
 import {blendPose, POSES, type PoseName} from './poses';
 import {Prop} from './props';
 import {armOf, blinkAt, type ArmSpec, type Emotion} from './rig';
@@ -51,45 +51,52 @@ const place = (a: ToonActor, set: SetName) => {
 };
 type Spot = ReturnType<typeof place>;
 
-/** The picture a shot size gives for a character (A) talking to another (B). */
+/**
+ * The picture a shot size gives for a character (A) talking to another (B). The sizes step
+ * clearly (they follow NOMINAL in director.ts): people 1.3 / 1.75 / 2.35 / 3.2 times the wide shot,
+ * body characters "whole body" / "face" / "eyes".
+ */
 const framing = (shot: ShotName, A: Spot, B: Spot | null): {zoom: number; cx: number; cy: number; rot: number} => {
   const dir = B ? Math.sign(B.faceX - A.faceX) || 1 : 1;
   const lead = (z: number) => A.faceX + (dir * 56) / z;
   const z0 = (z: number) => Math.max(1, Math.min(3.3, z));
+  const head = (k: number) => z0((k * H) / A.headH); // people: the head fills this share of the frame height
+  const body = z0((0.9 * W) / (A.size * 0.82)); // body characters: the whole character fills the width
+  const face = z0(Math.max(body * 1.5, Math.min(3, (0.8 * W) / A.faceW))); // ...or the face does
   switch (shot) {
     case 'ews': return {zoom: 1, cx: W / 2, cy: H / 2, rot: 0};
     case 'wide': return {zoom: 1.04, cx: W / 2, cy: H / 2, rot: 0};
     case 'full': {
-      const z = z0((0.78 * H) / (A.bottom - A.top));
+      const z = z0(A.person ? (0.72 * H) / (A.bottom - A.top) : body * 0.78);
       return {zoom: z, cx: A.cx, cy: (A.top + A.bottom) / 2 + 60 / z, rot: 0};
     }
     case 'two': {
       if (!B) return framing('ms', A, null);
-      const z = z0((W * 0.9) / (Math.abs(B.faceX - A.faceX) + (A.faceW + B.faceW) * 1.25));
-      return {zoom: Math.min(z, 1.8), cx: (A.faceX + B.faceX) / 2, cy: (A.faceY + B.faceY) / 2 + 250 / Math.min(z, 1.8), rot: 0};
+      const z = Math.min(1.25, z0((W * 0.9) / (Math.abs(B.faceX - A.faceX) + (A.faceW + B.faceW) * 1.25)));
+      return {zoom: z, cx: (A.faceX + B.faceX) / 2, cy: (A.faceY + B.faceY) / 2 + 250 / z, rot: 0};
     }
     case 'ms': {
-      const z = z0(A.person ? (0.23 * H) / A.headH : (0.8 * W) / (A.size * 0.82));
+      const z = A.person ? head(0.218) : body;
       return {zoom: z, cx: lead(z), cy: A.faceY + (A.person ? 330 : 190) / z, rot: 0};
     }
     case 'cu': {
-      const z = A.person ? z0((0.36 * H) / A.headH) : Math.min(2.5, z0((0.56 * W) / A.faceW));
+      const z = A.person ? head(0.394) : face;
       return {zoom: z, cx: A.faceX + (dir * 26) / z, cy: A.faceY + 170 / z, rot: 0};
     }
     case 'ecu': {
-      const z = z0((A.person ? (0.36 * H) / A.headH : Math.min(2.5, (0.56 * W) / A.faceW)) * 1.45);
+      const z = A.person ? head(0.536) : z0(face * 1.3);
       return {zoom: z, cx: A.faceX, cy: A.faceY + 110 / z, rot: 0};
     }
     case 'ots': {
-      const z = z0(A.person ? (0.3 * H) / A.headH : (0.94 * W) / (A.size * 0.82));
+      const z = A.person ? head(0.293) : body;
       return {zoom: z, cx: A.faceX + (dir * 200) / z, cy: A.faceY + 240 / z, rot: 0};
     }
     case 'low': {
-      const z = z0(A.person ? (0.33 * H) / A.headH : (1.02 * W) / (A.size * 0.82));
+      const z = A.person ? head(0.293) : body;
       return {zoom: z, cx: lead(z), cy: A.faceY + 330 / z, rot: -dir * 2.4};
     }
     default: { // mcu
-      const z = z0(A.person ? (0.3 * H) / A.headH : (0.94 * W) / (A.size * 0.82));
+      const z = A.person ? head(0.293) : body;
       return {zoom: z, cx: lead(z), cy: A.faceY + 250 / z, rot: 0};
     }
   }
@@ -106,20 +113,47 @@ const camOf = (s: Seg, shot: ToonShot, f: number, keyAt: number | null): Cam => 
   const n = f - s.from;
   const u = clamp01(n / Math.max(1, s.to - s.from));
   const c: Cam = {...CAM0, ...base, lens: s.lens};
+  const io = (v: number) => E.inOut(clamp01(v));
   switch (s.move) {
-    case 'push': c.zoom *= 1 + 0.065 * u; break;
-    case 'pull': c.zoom *= 1.075 - 0.07 * u; break;
-    case 'truck': c.cx += (dir * lerp(-52, 52, E.inOut(u))) / c.zoom; c.zoom *= 1.035 + 0.03 * u; break;
-    case 'tilt': c.cy += ((1 - E.out(clamp01(n / 26))) * 330) / c.zoom; c.zoom *= 1 + 0.03 * u; break;
-    case 'crash': c.zoom *= (n < 8 ? lerp(0.6, 1.07, E.out(n / 8)) : lerp(1.07, 1, E.out(clamp01((n - 8) / 7)))) * (1 + 0.03 * u); break;
-    case 'dutch': c.rot += dir * (3.4 + 3.6 * Math.exp(-n / 9)); c.zoom *= 1.05 + 0.04 * u; c.sx = 12 * Math.exp(-n / 5) * Math.sin(n * 2.9); c.sy = 9 * Math.exp(-n / 5) * Math.cos(n * 3.7); break;
-    case 'shake': c.sx = 18 * Math.exp(-n / 5.5) * Math.sin(n * 2.9); c.sy = 13 * Math.exp(-n / 5.5) * Math.cos(n * 3.7); c.zoom *= 1.02 + 0.03 * u; break;
-    case 'rack': c.soft = Math.max(0, 7 * (1 - n / 9)); c.zoom *= 1 + 0.04 * u; break;
+    case 'push': c.zoom *= 1 + 0.06 * u; break;
+    case 'pull': c.zoom *= 1.07 - 0.065 * u; break;
+    case 'truck': c.cx += (dir * lerp(-46, 46, u)) / c.zoom; c.zoom *= 1.035 + 0.025 * u; break;
+    case 'tilt': c.cy += ((1 - io(n / 40)) * 300) / c.zoom; c.zoom *= 1 + 0.03 * u; break;
+    // a crash zoom is a fast move, but an eased one: it runs in over a third of a second
+    case 'crash': c.zoom *= lerp(0.86, 1, io(n / 11)) * (1 + 0.03 * u); break;
+    // a tilted horizon, held still (no swing, no shake)
+    case 'dutch': c.rot += dir * 2.6; c.zoom *= 1.05 + 0.04 * u; break;
+    // the only move that shakes, and only when the script asks for it
+    case 'shake': c.sx = 12 * Math.exp(-n / 6) * Math.sin(n * 1.9); c.sy = 9 * Math.exp(-n / 6) * Math.sin(n * 2.3); c.zoom *= 1.02 + 0.03 * u; break;
+    case 'rack': c.soft = Math.max(0, 7 * (1 - io(n / 10))); c.zoom *= 1 + 0.04 * u; break;
     default: c.zoom *= 1 + 0.014 * u;
   }
-  if (s.move === 'crash') { c.sx = 8 * Math.exp(-Math.max(0, n - 7) / 4) * Math.sin(n * 2.7) * (n >= 7 ? 1 : 0); }
-  if (keyAt !== null && f >= keyAt && keyAt >= s.from) c.zoom *= 1 + 0.04 * Math.exp(-(f - keyAt) / 7); // a punch-in on the key word
+  // the key word gets a small, soft push: it swells over a quarter of a second and eases back
+  if (keyAt !== null && keyAt >= s.from + 6 && f >= keyAt) {
+    const t = f - keyAt;
+    c.zoom *= 1 + 0.022 * (t < 8 ? io(t / 8) : Math.exp(-(t - 8) / 12));
+  }
   return clampCam(c);
+};
+
+/** The picture on frame `f`: which segment the director is on and everything the camera does. */
+export const cameraAt = (L: ReturnType<typeof layoutToon>, f: number): {cam: Cam; seg: Seg} => {
+  const shotAt = [...L.shots].reverse().find((s) => f >= s.from) ?? L.shots[0];
+  const si = L.shots.indexOf(shotAt);
+  const shot = shotAt.shot;
+  const clean = (w: string) => w.replace(/[^\p{L}\p{N}'’!?-]/gu, '');
+  const keyFrame = (l: Placed) => { const kw = (l.line.key ?? clean(l.words[l.words.length - 1]?.w ?? '')).toLowerCase(); const k = l.words.find((w) => clean(w.w).toLowerCase() === kw); return k ? l.from + Math.round(k.start * TOON_FPS) : null; };
+  // the picture that started last in this scene (in the pause before the next scene it simply holds)
+  const seg = [...L.segs].reverse().find((s) => s.si === si && s.from <= f) ?? L.segs.find((s) => s.si === si) ?? L.segs[0];
+  let cam = camOf(seg, shot, f, keyFrame(seg.line));
+  const prevSeg = L.segs[L.segs.indexOf(seg) - 1];
+  const wn = f - seg.from;
+  if (seg.whip && prevSeg && prevSeg.si === seg.si && wn < 9) { // only when the script asks: "cam": "whip"
+    const p = camOf(prevSeg, shot, prevSeg.to - 1, null);
+    const u = E.inOut(wn / 9);
+    cam = clampCam({...cam, zoom: lerp(p.zoom, cam.zoom, u), cx: lerp(p.cx, cam.cx, u), cy: lerp(p.cy, cam.cy, u), rot: lerp(p.rot, cam.rot, u), whip: 40 * Math.sin((Math.PI * wn) / 9)});
+  }
+  return {cam, seg};
 };
 
 // ------------------------------------------------------------------ acting
@@ -182,24 +216,29 @@ const Actor: React.FC<{a: ToonActor; shot: ToonShot; shotFrom: number; lines: Pl
   const others = shot.cast.filter((o) => o.who !== a.who);
   const target = speaking || !cur ? others[0] : shot.cast.find((o) => o.who === cur.line.who);
   const side = target ? Math.sign(target.x - a.x) * (a.flip ? -1 : 1) : 0;
-  const toViewer = speaking && (f + seed) % 84 > 60;
-  const lookX = toViewer ? 0 : side * 0.8;
+  // a glance at the viewer eases in and out (about once every three seconds while speaking)
+  const ph = (f + seed) % 90;
+  const glance = speaking ? ramp(ph, 62, 86, 6) : 0;
+  const lookX = side * 0.8 * (1 - glance);
+  // how much this character is "the one talking" right now: eased at both ends of each of its lines
+  const voice = lines.filter((l) => l.line.who === a.who).reduce((m, l) => Math.max(m, ramp(f, l.from - 3, l.from + l.frames - 2, 9)), 0);
   // body: the mood sets the stance; speech adds nods and a forward lean; listeners shift their weight
   const m0 = EMO_ACT[prevEmotion];
   const m1 = EMO_ACT[emotion];
   const mk = E.back(clamp01((f - emotionFrom) / 12));
   const mood = (k: keyof typeof m1) => lerp(m0[k], m1[k], mk);
+  const take = emotion === 'shocked' || emotion === 'scared';
   const act: Act = {
-    lean: side * mood('lean') * (speaking ? 1.25 : 0.7) + settle(f, emotionFrom, 3, 0.9, 0.25) * (emotion === 'shocked' || emotion === 'scared' ? -side : 0),
-    tilt: side * mood('tilt') * 0.8 + (speaking ? 0 : hop(f, 96, seed, 18) * 2.4),
-    nod: mood('nod') + beat * 0.55 + (!speaking && cur ? Math.max(0, Math.sin((f + seed) / 11)) ** 6 * 0.5 : 0),
-    turn: (toViewer ? 0 : side * 0.62) * E.out(clamp01((f - (cur?.from ?? 0)) / 8 + 0.4)),
-    shift: person ? (speaking ? 0.25 : 0.75) * hop(f, 104, seed + 3, 20) : 0,
+    lean: side * mood('lean') * lerp(0.7, 1.25, voice) + kick(f, emotionFrom, 2, 0.8, 0.22) * (take ? -side : 0),
+    tilt: side * mood('tilt') * 0.8 + (1 - voice) * hop(f, 96, seed, 18) * 2.4,
+    nod: mood('nod') + beat * 0.55 + (1 - voice) * (cur ? Math.max(0, Math.sin((f + seed) / 11)) ** 6 * 0.5 : 0),
+    turn: side * 0.62 * (1 - glance),
+    shift: person ? lerp(0.75, 0.25, voice) * hop(f, 104, seed + 3, 20) : 0,
     shrug: mood('shrug') * (0.6 + 0.4 * beat),
     bob: person ? beat * 1.3 : -beat * (emotion === 'happy' || emotion === 'angry' ? 3.4 : 1.6),
   };
-  // a "take" when the emotion changes, and a nudge when starting to speak
-  const squash = settle(f, emotionFrom, emotion === 'shocked' || emotion === 'scared' ? 0.3 : 0.14, 1.1, 0.3) + (speaking && cur ? settle(f, cur.from, 0.08, 1.2, 0.4) : 0);
+  // a "take" when the emotion changes and a nudge when starting to speak: both swell from zero
+  const squash = kick(f, emotionFrom, take ? 0.24 : 0.11, 0.9, 0.26) + (speaking && cur ? kick(f, cur.from, 0.06, 1, 0.34) : 0);
   const ground = groundOf(a.who);
   // entrances
   const n = f - shotFrom;
@@ -214,9 +253,9 @@ const Actor: React.FC<{a: ToonActor; shot: ToonShot; shotFrom: number; lines: Pl
   const blinkNow = Math.max(blinkAt(f, TOON_FPS, seed), f - emotionFrom >= 0 && f - emotionFrom < 5 ? 1 - Math.abs(f - emotionFrom - 2) / 3 : 0);
   return (
     <Slot x={cx + dx} y={cy + dy} size={a.size} blur={blur}>
-      <g transform={`${a.rot ? `rotate(${a.rot + settle(f, emotionFrom, 5, 0.8, 0.25)})` : ''} ${scale !== 1 ? `scale(${scale})` : ''}`}>
+      <g transform={`${a.rot ? `rotate(${a.rot + kick(f, emotionFrom, 3, 0.8, 0.25)})` : ''} ${scale !== 1 ? `scale(${scale})` : ''}`}>
         <Hold frame={f} seed={a.x} ground={ground}>
-          <C emotion={emotion} talk={talk} blink={blinkNow} arms={arms} look={{x: lookX, y: toViewer ? 0 : mood('nod') * 0.3}} squash={squash + land} noLegs={a.noLegs} flip={a.flip} t={f / TOON_FPS} act={act} step={step} />
+          <C emotion={emotion} talk={talk} blink={blinkNow} arms={arms} look={{x: lookX, y: mood('nod') * 0.3 * (1 - glance)}} squash={squash + land} noLegs={a.noLegs} flip={a.flip} t={f / TOON_FPS} act={act} step={step} />
         </Hold>
       </g>
     </Slot>
@@ -269,17 +308,8 @@ export const ToonPlayer: React.FC<ToonProps> = ({toon, timings, sfx, music}) => 
   const keyOf = (l: Placed) => (l.line.key ?? clean(l.words[l.words.length - 1]?.w ?? '')).toLowerCase();
   const keyFrame = (l: Placed) => { const k = l.words.find((w) => clean(w.w).toLowerCase() === keyOf(l)); return k ? l.from + Math.round(k.start * TOON_FPS) : null; };
 
-  // ---- camera: the director's segment for this frame (a whip pans in from the previous picture)
-  const sidx = Math.max(0, L.segs.findIndex((s) => f >= s.from && f < s.to && s.si === si));
-  const seg = L.segs.find((s, i) => i === sidx && s.si === si) ?? [...L.segs].reverse().find((s) => s.si === si && s.from <= f) ?? L.segs.find((s) => s.si === si) ?? L.segs[0];
-  let cam = camOf(seg, shot, f, keyFrame(seg.line));
-  const prevSeg = L.segs[L.segs.indexOf(seg) - 1];
-  const wn = f - seg.from;
-  if (seg.whip && prevSeg && prevSeg.si === seg.si && wn < 7) {
-    const p = camOf(prevSeg, shot, prevSeg.to - 1, null);
-    const u = E.inOut(wn / 7);
-    cam = clampCam({...cam, zoom: lerp(p.zoom, cam.zoom, u), cx: lerp(p.cx, cam.cx, u), cy: lerp(p.cy, cam.cy, u), rot: lerp(p.rot, cam.rot, u), whip: 46 * Math.sin((Math.PI * wn) / 7)});
-  }
+  // ---- camera
+  const {cam, seg} = cameraAt(L, f);
   const tight = seg.shot === 'cu' || seg.shot === 'ecu' || seg.shot === 'ots' || seg.lens === '85' || seg.lens === '135' || seg.lens === 'macro';
   const blurOf = (who: string) => (tight && who !== seg.who ? LENSES[seg.lens].bg * (seg.shot === 'ots' ? 0.9 : 0.55) : 0);
 

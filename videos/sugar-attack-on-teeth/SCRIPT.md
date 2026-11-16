@@ -1,6 +1,6 @@
 # What sugar really does to your teeth
 
-Toon script `sugar-attack-on-teeth` · about 50 seconds · 26 pictures
+Toon script `sugar-attack-on-teeth` · about 50 seconds · 29 pictures
 
 ## Retention 7
 
@@ -22,7 +22,7 @@ Toon script `sugar-attack-on-teeth` · about 50 seconds · 26 pictures
 | PASS | 1 No intro | hook: "Sugar! He's eating candy again. Party on this tooth!" |
 | PASS | 2 Promise | starts at 7.0 s (limit 8 s) |
 | PASS | 3 Counting | 3 numbered beats said in order |
-| PASS | 4 3-sec change | the longest picture is 2.6 s (line A4); 26 pictures in 50 s |
+| PASS | 4 3-sec change | the longest picture is 2.6 s (line A4); 29 pictures in 50 s |
 | PASS | 5 Twist | twist starts at 58% |
 | PASS | 6 Best last | best point starts at 82% |
 | PASS | 7 Loop | last line shares 4 key word(s) with the first: candy, party, tooth, sugar |
@@ -47,11 +47,11 @@ Characters: tooth, bacteria · props: candy
 
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
-| 0.0 s | A1 | bacteria | happy | Sugar! He's eating candy again. Party on this tooth! | wide 24 truck → ms 35 → tooth: cu 85 |  |
-| 3.7 s | A2 | tooth | scared | Oh no! You'll spit acid on me again! | cu 85 dutch → ms 50 | nidcr |
-| 7.0 s | A3 | bacteria | smug | Relax. I do three things. The third one leaves a hole! | whip to mcu 50 push → ms 50 | who-sugars |
+| 0.0 s | A1 | bacteria | happy | Sugar! He's eating candy again. Party on this tooth! | wide 24 truck → ms 35 |  |
+| 3.7 s | A2 | tooth | scared | Oh no! You'll spit acid on me again! | cu 85 dutch → ms 35 | nidcr |
+| 7.0 s | A3 | bacteria | smug | Relax. I do three things. The third one leaves a hole! | mcu 50 push → tooth: cu 85 → cu 85 push | who-sugars |
 | 11.5 s | A4 | bacteria | happy | Number one: I eat his sugar. | ms 35 | nidcr |
-| 14.1 s | A5 | tooth | angry | Number two: you turn it into acid! | low 35 push → two 35 truck | nidcr |
+| 14.1 s | A5 | tooth | angry | Number two: you turn it into acid! | low 35 push → cu 85 push | nidcr |
 | 17.1 s | A6 | bacteria | smug | Number three: the acid eats your enamel. Delicious! | mcu 50 push → cu 85 push | nidcr |
 
 ## Scene B: office
@@ -61,12 +61,12 @@ Characters: doctor, kid · props: toothbrush
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
 | 20.7 s | B1 | kid | sad | Doctor, my tooth hurts. Is sugar really that bad? | wide 24 truck → cu 85 push |  |
-| 24.4 s | B2 | doctor | neutral | Mouth bacteria turn sugar into acid. And that acid attacks your enamel. | whip to mcu 50 push → cu 85 push | nidcr, who-sugars |
-| 29.2 s | B3 | doctor | happy | But here's the twist: your spit fights back. Its minerals help repair enamel. | ms 35 → kid: cu 85 → ots 50 push | nidcr |
-| 34.3 s | B4 | kid | shocked | My spit fixes my teeth?! | cu 85 crash |  |
-| 36.6 s | B5 | doctor | neutral | Yes, if you give it time. So snack less often between meals. | mcu 50 push → two 35 truck | nidcr |
-| 41.3 s | B6 | doctor | happy | And brush twice a day with fluoride toothpaste. Fluoride helps enamel rebuild. | cu 85 push → ms 50 | nidcr |
-| 46.1 s | B7 | kid | happy | So no more candy party on this tooth, sugar bugs! | two 35 pull → ms 50 |  |
+| 24.4 s | B2 | doctor | neutral | Mouth bacteria turn sugar into acid. And that acid attacks your enamel. | mcu 50 push → kid: cu 85 → cu 85 push | nidcr, who-sugars |
+| 29.2 s | B3 | doctor | happy | But here's the twist: your spit fights back. Its minerals help repair enamel. | ms 35 → kid: cu 85 → cu 85 push | nidcr |
+| 34.3 s | B4 | kid | shocked | My spit fixes my teeth?! | cu 85 push |  |
+| 36.6 s | B5 | doctor | neutral | Yes, if you give it time. So snack less often between meals. | mcu 50 push → kid: cu 85 → cu 85 push | nidcr |
+| 41.3 s | B6 | doctor | happy | And brush twice a day with fluoride toothpaste. Fluoride helps enamel rebuild. | ms 35 → kid: cu 85 → cu 85 push | nidcr |
+| 46.1 s | B7 | kid | happy | So no more candy party on this tooth, sugar bugs! | two 35 pull → cu 85 push |  |
 
 ## Sources
 

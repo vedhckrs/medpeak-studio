@@ -234,7 +234,6 @@
      "emotion": "neutral",
      "pose": "point",
      "key": "thirty",
-     "cam": "cu 85 push",
      "src": [
       "nhs-doxycycline"
      ]

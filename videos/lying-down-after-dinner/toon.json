@@ -240,7 +240,6 @@
      "emotion": "happy",
      "pose": "thumb",
      "key": "twenty",
-     "cam": "cu 85 push",
      "src": [
       "nhs-heartburn"
      ]
