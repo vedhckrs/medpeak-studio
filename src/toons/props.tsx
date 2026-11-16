@@ -142,6 +142,45 @@ const Chip: React.FC<{t: number; text?: string}> = ({text = '1'}) => (
   </g>
 );
 
+/** A drop of spit with two mineral sparkles (the body's own repair kit). */
+const Drop: React.FC<{t: number}> = ({t}) => (
+  <g>
+    <path d="M0 -76 C34 -30 56 0 56 26 C56 58 30 80 0 80 C-30 80 -56 58 -56 26 C-56 0 -34 -30 0 -76 Z" fill="#8fd3ff" stroke="#2f86c9" strokeWidth={2.4} />
+    <path d="M-30 20 C-30 44 -14 60 6 62" fill="none" stroke="#ffffff" strokeWidth={9} strokeLinecap="round" opacity={0.85} />
+    {[[20, -6, 15], [-14, 40, 10]].map(([x, y, r], i) => { const k = r * (0.8 + 0.2 * Math.sin(t * 5 + i * 2)); return <path key={i} d={`M${x} ${y - k} Q${x + k * 0.16} ${y - k * 0.16} ${x + k} ${y} Q${x + k * 0.16} ${y + k * 0.16} ${x} ${y + k} Q${x - k * 0.16} ${y + k * 0.16} ${x - k} ${y} Q${x - k * 0.16} ${y - k * 0.16} ${x} ${y - k} Z`} fill="#ffffff" />; })}
+  </g>
+);
+/** A tiny diagram of the valve between the food pipe and the stomach, open, with acid coming up through it. */
+const ValveDiagram: React.FC<{t: number}> = ({t}) => (
+  <g>
+    <path d="M-30 -84 V-6 C-70 -2 -84 30 -78 62 C-70 92 70 92 78 62 C84 30 70 -2 30 -6 V-84 Z" fill="#f7a5a8" stroke="#8c3848" strokeWidth={2.4} />
+    <path d="M-16 -84 V2 C-52 8 -64 30 -60 56 C-54 76 54 76 60 56 C64 30 52 8 16 2 V-84 Z" fill="#ffd3cb" />
+    <path d="M-58 44 C-54 74 54 74 58 44 Z" fill="#dfe45a" stroke="#9aa22c" strokeWidth={1.6} />
+    <path d="M-16 -14 C-4 -12 -3 -2 -16 2 Z M16 -14 C4 -12 3 -2 16 2 Z" fill="#d9566e" stroke="#8c3848" strokeWidth={1.6} />
+    <g transform={`translate(0 ${Math.sin(t * 5) * 4})`}>
+      <path d="M0 36 V-46" stroke="#b7c02c" strokeWidth={9} strokeLinecap="round" />
+      <path d="M-13 -34 L0 -56 L13 -34 Z" fill="#b7c02c" stroke="#7d8518" strokeWidth={1.6} strokeLinejoin="round" />
+    </g>
+  </g>
+);
+/** A bed seen from the side with its head end raised on a block (the NHS advice for night-time heartburn). */
+const Bed: React.FC<{t: number}> = ({t}) => (
+  <g>
+    <path d="M-92 62 H92" stroke="#b9ae97" strokeWidth={5} strokeLinecap="round" />
+    <rect x={-85} y={45} width={26} height={17} rx={3} fill="#ffc93c" stroke="#b9892c" strokeWidth={2.4} />
+    <path d="M-72 16 V45 M66 30 V62" stroke="#5a4028" strokeWidth={7} strokeLinecap="round" />
+    <g transform="rotate(-6 66 28)">
+      <path d="M-80 -44 V28" stroke="#5a4028" strokeWidth={8} strokeLinecap="round" />
+      <rect x={-80} y={8} width={152} height={20} rx={6} fill="#8a6a4a" stroke="#5a4028" strokeWidth={2.4} />
+      <rect x={-76} y={-16} width={146} height={26} rx={11} fill="#8fb4ff" stroke="#3f62b0" strokeWidth={2.4} />
+      <rect x={-72} y={-32} width={46} height={20} rx={9} fill="#ffffff" stroke="#9fb3c8" strokeWidth={2.4} />
+    </g>
+    <g transform={`translate(-44 ${(-58 + Math.sin(t * 5) * 4).toFixed(1)})`}>
+      <path d="M0 14 V-14" stroke="#2ec4b6" strokeWidth={8} strokeLinecap="round" />
+      <path d="M-12 -8 L0 -28 L12 -8 Z" fill="#2ec4b6" stroke="#0f6f66" strokeWidth={1.6} strokeLinejoin="round" />
+    </g>
+  </g>
+);
 /** A name tag: a few words on a sticker (labels a thing, a moment, or a rule like "SIT UP"). */
 const TagProp: React.FC<{t: number; text?: string}> = ({text = ''}) => {
   const w = Math.max(70, text.length * 19 + 34);
@@ -154,7 +193,7 @@ const TagProp: React.FC<{t: number; text?: string}> = ({text = ''}) => {
   );
 };
 
-export const PROPS: Record<PropName, React.FC<{t: number; text?: string}>> = {tag: TagProp, glass: Glass, pillbottle: PillBottle, soda: Soda, candy: Candy, toothbrush: Toothbrush, burger: Burger, pillow: Pillow, clock: ClockProp, pain: Pain, pipe: PipeDiagram, chip: Chip};
+export const PROPS: Record<PropName, React.FC<{t: number; text?: string}>> = {tag: TagProp, drop: Drop, valve: ValveDiagram, bed: Bed, glass: Glass, pillbottle: PillBottle, soda: Soda, candy: Candy, toothbrush: Toothbrush, burger: Burger, pillow: Pillow, clock: ClockProp, pain: Pain, pipe: PipeDiagram, chip: Chip};
 
 /**
  * A prop on screen. `halo` = a soft glowing disc behind it; `bubble` = inside a thought bubble

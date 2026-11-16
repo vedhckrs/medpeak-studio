@@ -89,22 +89,23 @@ test('the director never holds a picture over 3 seconds and never repeats a size
 });
 
 test('the gate catches a broken script', () => {
-  const base = real.find((t) => t.camera !== 'steady');
-  const doc = base.shots.flatMap((s) => s.lines).find((l) => l.who === 'doctor' && l.src);
+  const base = real[0];
+  const linesOf = (t) => t.shots.flatMap((s) => s.lines ?? []);
+  const doc = linesOf(base).find((l) => l.who === 'doctor' && l.src);
   let t = clone(base);
-  delete t.shots.flatMap((s) => s.lines).find((l) => l.id === doc.id).src;
+  delete linesOf(t).find((l) => l.id === doc.id).src;
   assert.ok(failed(t).includes('Doctor lines are sourced'));
   t = clone(base);
-  t.shots[0].lines[0].text = `Hello friends, welcome! ${t.shots[0].lines[0].text}`;
+  linesOf(t)[0].text = `Hello friends, welcome! ${linesOf(t)[0].text}`;
   assert.ok(failed(t).includes('1 No intro'));
   t = clone(base);
-  t.shots[0].lines[1].cam = 'cu 85 wobblecam';
+  linesOf(t)[1].cam = 'cu 85 wobblecam';
   assert.deepEqual(failed(t), ['Script is valid']);
   t = clone(base);
   t.sources[0].url = 'https://some-health-blog.example.com/post';
   assert.ok(failed(t).includes('Sources are allowed'));
   t = clone(base);
-  t.shots[1].lines[1].text += ' Take 500 mg twice a day.';
+  linesOf(t).find((l) => l.id === doc.id).text += ' Take 500 mg twice a day.';
   assert.ok(failed(t).includes('No dosing advice'));
   t = clone(base);
   delete t.retention;
@@ -151,7 +152,7 @@ test('the camera check catches a jump cut and a jolt that a script forces', asyn
 });
 
 // ---------------------------------------------------------------- steady camera, stages, events
-const steady = real.find((t) => t.camera === 'steady');
+const steady = real.find((t) => t.slug === 'pill-without-water');
 
 test('a steady script keeps one locked picture per place and cuts only when the place changes', () => {
   assert.ok(steady, 'a steady script is in the repo');
@@ -217,4 +218,21 @@ test('every pose gives a person a shoulder and an elbow angle, and poses blend j
   const mid = blendPose(POSES.rest.person, POSES.present.person, 0.5)[1];
   assert.ok(Math.abs(mid.u - (POSES.rest.person[1].u + POSES.present.person[1].u) / 2) < 1e-9);
   assert.ok(Math.abs(mid.f - (POSES.rest.person[1].f + POSES.present.person[1].f) / 2) < 1e-9);
+});
+
+test('every stage a script uses has its dials, and every steady script is a shown story', () => {
+  for (const t of real) {
+    assert.equal(t.camera, 'steady', `${t.slug} uses the steady camera`);
+    const stages = t.shots.filter((s) => (s.cast ?? []).some((a) => a.stage));
+    assert.ok(stages.length >= 2, `${t.slug}: the body stage opens and closes the story`);
+    assert.ok(t.shots.some((s) => s.card !== undefined), `${t.slug}: a time card`);
+    const L = layoutToon(t, null);
+    for (const sh of stages) {
+      const si = t.shots.indexOf(sh);
+      const end = stateAt(L, si, L.shots[si].from + L.shots[si].frames - 1);
+      const start = stateAt(L, si, L.shots[si].from);
+      assert.notDeepEqual(end, start, `${t.slug} scene ${sh.id}: something happens on the stage`);
+    }
+    assert.equal(t.shots[0].set, t.shots[t.shots.length - 1].set, `${t.slug}: the last scene returns to the first stage`);
+  }
 });

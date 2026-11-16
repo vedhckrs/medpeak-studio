@@ -108,8 +108,10 @@ falling in, sticking, melting and leaving a sore, a time card, the patient at ho
 thought-bubble graphics, and the same stage again with water. New pieces: `src/toons/stages.tsx`
 (stages and their dials), `events` / `state` / `card` / `"camera": "steady"` in toon.json
 (toons-script.md), the props `tag`, `chip`, `pain`, `pipe`, and the stage board
-(`node pipeline/toon-sheets.mjs --boards` -> toons-boards/stage.jpg). The other two scripts are
-still in the old cinematic style until the owner approves the pilot.
+(`node pipeline/toon-sheets.mjs --boards` -> toons-boards/stage.jpg). The owner approved the
+pilot and the rebuilt arms, and the other two scripts were converted the same day with two new
+stages: `tooth` (a molar cut open: sugar, germs, acid, a hole, spit, a brush, fluoride) and `tummy`
+(the stomach cut open; it tips over when he lies down and the acid stays level).
 
 ## Roadmap
 - Phase A (v6, 2026-11-16, after the owner's review of the first voiced scene): volume paint and

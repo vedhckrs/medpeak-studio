@@ -83,10 +83,19 @@ the stage, and the viewer WATCHES the thing happen. A script switches to this st
 
 - **One locked picture per place.** The director no longer cuts inside a scene. A cut happens when
   the place changes, or on a line that asks for its own picture with `cam` (use it once, if at all).
-- **Stages** (`src/toons/stages.tsx`, board: toons-boards/stage.jpg). A stage is an organ drawn as
-  a cutaway that fills the frame, with its own face and hands on its wall. Cast members marked
-  `"stage": true` are drawn by the stage (the organ itself, the thing stuck in it). So far:
-  `foodpipe`, with the dials `drop, stick, melt, sore, pain, water, slide`.
+- **Stages** (`src/toons/stages.tsx`). A stage is an organ drawn as a cutaway that fills the frame,
+  with its own face and hands on its wall. Cast members marked `"stage": true` are drawn by the
+  stage (the organ itself, the thing stuck in it). The stages so far:
+
+  | Set | Who the stage draws | Dials (0 to 1) | Board |
+  |---|---|---|---|
+  | `foodpipe` | foodpipe, pill | drop, stick, melt, sore, pain, water, slide | toons-boards/stage.jpg |
+  | `tooth` | tooth, bacteria | sugar, feast, acid, hole, pain, saliva, mend, brush, shield | toons-boards/stage-tooth.jpg |
+  | `tummy` | stomach, foodpipe | food, full, tilt, valve, leak, burn | toons-boards/stage-tummy.jpg |
+
+  What each dial does is written next to `STAGE_KEYS` in `src/toons/director.ts`. The stomach
+  stage tips the whole organ over with `tilt` and keeps the juice level with the ground, so lying
+  down is seen, not said; a small posture sign in the corner tips with it.
 - **State and events.** `state` on a shot is where the stage's dials start. `events` move them:
   `{"at": "A5", "word": "melt", "set": {"melt": 0.62}, "over": 40, "sfx": "sizzle-acid"}` means
   "when A5 says *melt*, melt the pill to 62% over 40 frames, with a sizzle". `at` is a line id or
@@ -97,12 +106,33 @@ the stage, and the viewer WATCHES the thing happen. A script switches to this st
 - **Graphics.** A prop appears on a word (`"from": "D1", "word": "stuck"`) and leaves after the
   line in `to`. `bubble` puts it in a thought bubble, `no` puts a red "not this" sign on it,
   `halo` a glowing disc behind it. `tag` is a few words on a sticker, `chip` a counting number;
-  both need `text`. In the office the free space is above the heads (y 250-450) and between the
+  both need `text`. Explaining graphics: `pipe` (a pill stuck in the food pipe), `valve` (the
+  stomach's valve open, acid coming up), `drop` (spit with minerals), `bed` (the head end raised),
+  `pain`, plus the objects (glass, pillbottle, candy, toothbrush, burger, pillow, clock, soda). In the office the free space is above the heads (y 250-450) and between the
   bodies below the waist (x 450-650, y 1100-1300).
 - **Story with a consequence.** Body scene (the thing happens) -> a promise of what it will cost
   -> time card -> the person at home feels it -> Dr. Mira explains and gives the fix -> the body
   scene again, this time done right. The last scene mirrors the first (that is the loop).
 - **Captions** are smaller, white with a dark outline, no box, key word in amber.
+
+### A new stage (one per organ)
+1. Read the sources first and list only what they say happens; the stage may show nothing more
+   (the tooth stage shows a white spot, a hole and an ache because NIDCR says so; it does not show
+   the hole reaching the nerve, because neither page says that).
+2. Draw the organ in `stages.tsx` as a cutaway in world pixels (1080 x 1920) with gradients and
+   thin `FLESH` outlines, its face with `Face` inside `Scaled`, and one block per dial. Anything
+   that depends on the state and has an id (`clipPath`, a gradient) gets a `useId()` suffix: a
+   board shows six copies of the stage at once and plain ids collide.
+3. Add the set to `SET_NAMES`, its dials to `STAGE_KEYS`, the faces to `STAGE_SPOTS`, the stage
+   to `SETS` / `FLOORS` / `SET_LIFE` (scenes.tsx) and six moments to `STAGE_BOARDS` (Preview.tsx).
+4. Render the board (`node pipeline/toon-sheets.mjs --boards`) and one moment at full size
+   (`npx remotion still src/index.ts ToonStage out.jpg --props='{"stage":"tummy","cell":3}'`).
+
+### Acting between lines
+A gesture (wave, point, panic, thumb, shrug, explain, present, cheer, facepalm) is let go a moment
+after the line that made it, and the character returns to the pose given in the scene's `cast`.
+Held poses (rest, think, heart, hips, crossed, belly, fists) stay until that character's next
+line. So give `cast` the pose the character should rest in, and give lines the gestures.
 
 ### Retention 7, point 4 in a steady script
 "A change every 3 seconds" is counted as **something new appearing in the picture**: a new place
@@ -121,9 +151,13 @@ new in it is a line where the story is only being told.
 5. Show the owner the script sheet and the preview, quote the voice cost
    (`toon-voice.mjs <slug> --dry-run`), wait for approval.
 
-## The first three scripts (pill-without-water is now the steady pilot)
-| Slug | Topic | Body scene | Twist | Best last |
-|---|---|---|---|---|
-| `pill-without-water` | a pill swallowed dry | white cell + pill in the throat | don't blame the medicine, it needed a ride down | some antibiotics: no lying down for 30 minutes (NHS) |
-| `sugar-attack-on-teeth` | sugar and teeth | bacteria + tooth in the mouth | your spit repairs enamel | fluoride toothpaste twice a day (NIH) |
-| `lying-down-after-dinner` | heartburn at night | stomach + heart in the stomach | the problem is a valve, not the acid | raise the head of the bed 10-20 cm (NHS) |
+## The first three scripts (all in the steady style since 2026-11-16)
+| Script | Stage | Story |
+|---|---|---|
+| `pill-without-water` (voiced) | foodpipe | the pill sticks, melts and burns; that night his chest burns; water is the ride |
+| `sugar-attack-on-teeth` | tooth | the germs eat the sugar, spit acid, a hole opens; many snacks later a cavity; spit, fewer snacks, a brush and fluoride |
+| `lying-down-after-dinner` | tummy | a huge dinner, he lies down, the stomach tips, acid climbs the food pipe; wait 3 to 4 hours, raise the bed head |
+
+Each one: body stage -> time card -> the person -> Dr. Mira -> the same stage, done right.
+Estimated length is about 15% longer than the voiced length (the body voices speak fast), so run
+`toon-check` again after voicing: a quiet stretch or the twist's position can move.

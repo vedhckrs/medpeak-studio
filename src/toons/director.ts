@@ -11,7 +11,7 @@ export const SEG = 78; // frames: the usual longest stretch of one picture (2.6 
 export const SEG_MAX = SEG + 10; // a line that ends within 2.9 s keeps its one picture
 export const WPS = 2.8; // words a second, the pace measured on the reference Shorts
 
-export const SET_NAMES = ['throat', 'gut', 'stomach', 'mouth', 'blood', 'lungs', 'office', 'bathroom', 'bedroom', 'foodpipe'] as const;
+export const SET_NAMES = ['throat', 'gut', 'stomach', 'mouth', 'blood', 'lungs', 'office', 'bathroom', 'bedroom', 'foodpipe', 'tooth', 'tummy'] as const;
 export type SetName = (typeof SET_NAMES)[number];
 export const SHOT_NAMES = ['ews', 'wide', 'full', 'two', 'ms', 'mcu', 'cu', 'ecu', 'ots', 'low'] as const;
 export type ShotName = (typeof SHOT_NAMES)[number];
@@ -19,7 +19,7 @@ export const LENS_NAMES = ['18', '24', '35', '50', '85', '135', 'macro'] as cons
 export type LensName = (typeof LENS_NAMES)[number];
 export const MOVE_NAMES = ['lock', 'static', 'push', 'pull', 'truck', 'tilt', 'crash', 'whip', 'dutch', 'shake', 'rack'] as const;
 export type MoveName = (typeof MOVE_NAMES)[number];
-export const PROP_NAMES = ['glass', 'pillbottle', 'soda', 'candy', 'toothbrush', 'burger', 'pillow', 'clock', 'pain', 'pipe', 'chip', 'tag'] as const;
+export const PROP_NAMES = ['glass', 'pillbottle', 'soda', 'candy', 'toothbrush', 'burger', 'pillow', 'clock', 'pain', 'pipe', 'chip', 'tag', 'drop', 'valve', 'bed'] as const;
 export type PropName = (typeof PROP_NAMES)[number];
 export const ENTRANCES = ['walk', 'drop', 'pop'] as const;
 /**
@@ -31,6 +31,15 @@ export const STAGE_KEYS: Partial<Record<SetName, string[]>> = {
   // melt: 0 = whole, 1 = dissolved. sore: 0 = healthy wall, 1 = an open sore. pain: a throb of redness.
   // water: a wave of water comes down (0.25 = it reaches the pill, 1 = it has passed). slide: the pill rides it down and out.
   foodpipe: ['drop', 'stick', 'melt', 'sore', 'pain', 'water', 'slide'],
+  // sugar: sugar rains onto the tooth. feast: the germs eat it and multiply. acid: they spit acid.
+  // hole: 0.1 = a white spot, more = a hole through the enamel. pain: the tooth aches. saliva: spit
+  // washes over (it thins the acid). mend: minerals go back in while the hole is small.
+  // brush: a toothbrush sweeps the germs off. shield: a fluoride coat on the enamel.
+  tooth: ['sugar', 'feast', 'acid', 'hole', 'pain', 'saliva', 'mend', 'brush', 'shield'],
+  // food: dinner drops in. full: how full the stomach is (the juice level). tilt: 0 = standing or
+  // sitting up, 1 = lying flat (the whole stomach tips over). valve: the ring of muscle at the top opens.
+  // leak: acid climbs the food pipe. burn: the food pipe hurts.
+  tummy: ['food', 'full', 'tilt', 'valve', 'leak', 'burn'],
 };
 export const EMOTION_NAMES = ['neutral', 'happy', 'angry', 'scared', 'smug', 'sick', 'sleepy', 'shocked', 'sad'] as const;
 

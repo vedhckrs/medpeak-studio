@@ -1,72 +1,135 @@
 # What happens when you lie down after a big dinner
 
-Toon script `lying-down-after-dinner` · about 49 seconds · 27 pictures
+Toon script `lying-down-after-dinner` · about 57 seconds · 5 pictures
 
 ## Retention 7
 
 | Point | Line | Words |
 |---|---|---|
 | 1 No intro | A1 | He ate a huge dinner. Now he's lying down! |
-| 2 Promise | A3 | Three things happen now. Stay for the third! |
-| 3 Counting | A4,A5,A6 | Number one / Number two / Number three |
-| 4 3-sec change | all | a new picture at least every 3 s (the director does it) |
-| 5 Twist | B3 | But here's the twist: the problem is a door. The valve above your stomach relaxes when it shouldn't. |
-| 6 Best last | B6 | And raise the head of your bed ten to twenty centimetres. |
-| 7 Loop | B7 | So no more lying down after a huge dinner! |
+| 2 Promise | A3 | Then three things happen. The third one burns! |
+| 3 Counting | A4,A5,A6 | First / Second / Third |
+| 4 3-sec change | all | steady camera: something new happens in the picture at least every 3 s |
+| 5 Twist | D3 | But here's the twist: the problem is a door. Your stomach's valve relaxes when it shouldn't. |
+| 6 Best last | D6 | And raise the head of your bed ten to twenty centimetres. |
+| 7 Loop | E2 | A huge dinner, four hours ago. Now he can lie down! |
 
 ## Check
 
 | | Rule | Result |
 |---|---|---|
-| PASS | Script is valid | 2 scenes, 13 lines, 4 voices |
+| PASS | Script is valid | 4 scenes, 16 lines, 4 voices |
 | PASS | 1 No intro | hook: "He ate a huge dinner. Now he's lying down!" |
 | PASS | 2 Promise | starts at 7.4 s (limit 8 s) |
 | PASS | 3 Counting | 3 numbered beats said in order |
-| PASS | 4 3-sec change | the longest picture is 2.6 s (line A5); 27 pictures in 49 s |
-| PASS | 5 Twist | twist starts at 54% |
-| PASS | 6 Best last | best point starts at 83% |
-| PASS | 7 Loop | last line shares 4 key word(s) with the first: lying, down, huge, dinner |
+| PASS | 4 3-sec change | something new appears 37 times in 57 s (a place, a cut, a prop, a change of the stage); the longest wait is 2.9 s (from 17.9 s) |
+| PASS | 5 Twist | twist starts at 55% |
+| PASS | 6 Best last | best point starts at 79% |
+| PASS | 7 Loop | last line shares 4 key word(s) with the first: huge, dinner, now, down |
 | PASS | Sources on numbers | every number has a source |
 | PASS | Source ids exist | all source ids known |
 | PASS | No banned claims | no cure/miracle/detox claims |
-| PASS | Length | 49.0 s (a Short must stay under 60 s; aim for 40-58) |
-| PASS | Places | 2 set(s): stomach, office (at least a body scene and the doctor's office) |
+| PASS | Length | 57.5 s (a Short must stay under 60 s; aim for 40-58) |
+| PASS | Places | 3 set(s): tummy, bedroom, office (at least a body scene and the doctor's office) |
 | PASS | Voices | 4 speaking characters (3 or more keep it a conversation) |
-| PASS | Doctor explains | Dr. Mira speaks for 40% of the video (15-50%) |
-| PASS | Body scene | body characters speak for 39% of the video (30% or more: they are the show) |
-| PASS | Short lines | the longest line is 18 words |
+| PASS | Doctor explains | Dr. Mira speaks for 33% of the video (15-50%) |
+| PASS | Body scene | body characters speak for 48% of the video (30% or more: they are the show) |
+| PASS | Short lines | the longest line is 16 words |
 | PASS | Banter | at most 2 lines in a row by one speaker (3 or fewer) |
 | PASS | Sources are complete | 2 source(s), each with its finding written out |
 | PASS | Sources are allowed | research databases, WHO and national health bodies only |
 | PASS | Doctor lines are sourced | every statement by Dr. Mira names its source |
 | PASS | No dosing advice | no doses, no "stop taking your medicine" |
 
-## Scene A: stomach
+## Scene A: tummy
 
-Characters: stomach, heart · props: burger
-
-| Time | Line | Who | Feeling | Words | Camera | Source |
-|---|---|---|---|---|---|---|
-| 0.0 s | A1 | stomach | angry | He ate a huge dinner. Now he's lying down! | wide 24 truck → low 35 push |  |
-| 3.7 s | A2 | heart | scared | Lying down? Your acid will come up to me! | cu 85 dutch → ms 35 | nhs-heartburn |
-| 7.4 s | A3 | stomach | neutral | Three things happen now. Stay for the third! | mcu 50 push → cu 85 push |  |
-| 10.7 s | A4 | stomach | sick | Number one: I'm too full. | ms 35 | nhs-heartburn |
-| 13.0 s | A5 | heart | shocked | Number two: your top valve relaxes! | cu 85 push | niddk-gerd |
-| 15.6 s | A6 | stomach | sad | Number three: my acid flows up the food pipe! | cu 85 push → ms 35 | nhs-heartburn |
-
-## Scene B: office
-
-Characters: doctor, patient · props: clock, pillow
+Characters: stomach, foodpipe · props: burger, pillow, tag, tag, pain, chip, chip, chip
 
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
-| 19.6 s | B1 | patient | sick | Doctor, why does my chest burn after dinner? | wide 24 truck → cu 85 push |  |
-| 22.9 s | B2 | doctor | neutral | That's heartburn: stomach acid travelling up toward your throat. | mcu 50 push → two 35 truck | nhs-heartburn |
-| 26.6 s | B3 | doctor | happy | But here's the twist: the problem is a door. The valve above your stomach relaxes when it shouldn't. | cu 85 push → patient: cu 85 → ms 35 → cu 85 push | niddk-gerd |
-| 33.6 s | B4 | patient | shocked | And lying down makes it worse? | cu 85 push |  |
-| 36.2 s | B5 | doctor | neutral | Yes. So no food for three or four hours before bed. | mcu 50 push → patient: cu 85 → cu 85 push | nhs-heartburn |
-| 40.6 s | B6 | doctor | happy | And raise the head of your bed ten to twenty centimetres. | ms 35 → patient: cu 85 → cu 85 push | nhs-heartburn |
-| 45.1 s | B7 | patient | happy | So no more lying down after a huge dinner! | two 35 pull → cu 85 push |  |
+| 0.0 s | A1 | stomach | happy | He ate a huge dinner. Now he's lying down! | ews 24 lock |  |
+| 3.7 s | A2 | foodpipe | scared | Lying down? Your acid will come up to me! | the scene, locked | nhs-heartburn |
+| 7.4 s | A3 | stomach | sick | Then three things happen. The third one burns! | the scene, locked |  |
+| 10.7 s | A4 | stomach | sick | First, I'm too full. | the scene, locked | nhs-heartburn |
+| 12.7 s | A5 | foodpipe | shocked | Second, my valve relaxes! | the scene, locked | niddk-gerd |
+| 14.6 s | A6 | stomach | scared | Third, my acid flows up the food pipe! | the scene, locked | nhs-heartburn |
+| 17.9 s | A7 | foodpipe | sad | Ow! It burns! Make it stop! | the scene, locked | nhs-heartburn |
+
+What happens in the picture:
+
+- at start: food to 1, full to 0.85 [plop]
+- at A1 ("lying"): tilt to 1 [slide-whistle-down]
+- at A4 ("full"): full to 1 [gurgle-stomach]
+- at A5 ("valve"): valve to 1 [spring-bounce]
+- at A6 ("acid"): leak to 1 [sizzle-acid]
+- at A7: burn to 1 [gasp]
+- at A1 ("dinner"): burger
+- at A2: pillow
+- at A2 ("acid"): tag "uh-oh!"
+- at A3: tag "3 things"
+- at A3 ("burns"): pain
+- at A4: chip "1"
+- at A5: chip "2"
+- at A6: chip "3"
+
+## Time card: "Meanwhile, in bed..."
+
+## Scene C: bedroom
+
+Characters: patient · props: pain
+
+| Time | Line | Who | Feeling | Words | Camera | Source |
+|---|---|---|---|---|---|---|
+| 22.2 s | C1 | patient | sick | Ow! My chest is on fire! | ews 24 lock |  |
+
+What happens in the picture:
+
+- at C1 ("chest"): pain
+
+## Scene D: office
+
+Characters: doctor, patient · props: burger, tag, pain, tag, valve, tag, pillow, burger, clock, tag, pillow, tag
+
+| Time | Line | Who | Feeling | Words | Camera | Source |
+|---|---|---|---|---|---|---|
+| 25.1 s | D1 | patient | sick | Doctor, why does my chest burn after dinner? | ews 24 lock |  |
+| 28.5 s | D2 | doctor | neutral | That's heartburn: stomach acid travelling up toward your throat. | the scene, locked | nhs-heartburn |
+| 32.2 s | D3 | doctor | happy | But here's the twist: the problem is a door. Your stomach's valve relaxes when it shouldn't. | the scene, locked | niddk-gerd |
+| 38.4 s | D4 | patient | neutral | And lying down makes it worse? | the scene, locked |  |
+| 41.0 s | D5 | doctor | happy | Yes. So no food for three or four hours before bed. | the scene, locked | nhs-heartburn |
+| 45.4 s | D6 | doctor | neutral | And raise the head of your bed ten to twenty centimetres. | the scene, locked | nhs-heartburn |
+
+What happens in the picture:
+
+- at D1 ("dinner"): burger
+- at D2: tag "heartburn"
+- at D2 ("acid"): pain
+- at D3: tag "the twist"
+- at D3 ("door"): valve in a thought bubble
+- at D3 ("relaxes"): tag "it opens too soon"
+- at D4 ("lying"): pillow
+- at D5: burger with a "not this" sign
+- at D5 ("hours"): clock
+- at D5 ("three"): tag "3 to 4 hours"
+- at D6 ("raise"): pillow
+- at D6 ("ten"): tag "10 to 20 cm"
+
+## Scene E: tummy
+
+Characters: stomach, foodpipe · props: tag, clock, pillow, tag
+
+| Time | Line | Who | Feeling | Words | Camera | Source |
+|---|---|---|---|---|---|---|
+| 50.1 s | E1 | foodpipe | happy | Ahh. Nothing is coming up tonight! | ews 24 lock |  |
+| 52.8 s | E2 | stomach | happy | A huge dinner, four hours ago. Now he can lie down! | the scene, locked | nhs-heartburn |
+
+What happens in the picture:
+
+- at start: tilt to 1 [slide-whistle-down]
+- at E1 ("Nothing"): tag "all quiet"
+- at E2: clock
+- at E2 ("Now"): pillow
+- at E2 ("down"): tag "sleep well"
 
 ## Sources
 

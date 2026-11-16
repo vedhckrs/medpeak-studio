@@ -187,6 +187,8 @@ const EMO_ACT: Record<Emotion, {lean: number; tilt: number; nod: number; shrug: 
   sleepy: {lean: 1, tilt: 7, nod: 0.8, shrug: 0}, shocked: {lean: -5, tilt: 0, nod: -0.5, shrug: 0.9}, sad: {lean: 1, tilt: 6, nod: 1, shrug: 0.1},
 };
 
+/** Poses a character keeps after its line; every other pose is a gesture that goes back to the scene's pose. */
+const HELD: PoseName[] = ['rest', 'think', 'heart', 'hips', 'crossed', 'belly', 'fists'];
 /** Everything a character is doing on frame `f`: face, eyes, arms, body. */
 const acting = (a: ToonActor, shot: ToonShot, lines: Placed[], f: number, cur: Placed | undefined) => {
   const person = isPerson(a.who);
@@ -208,9 +210,16 @@ const acting = (a: ToonActor, shot: ToonShot, lines: Placed[], f: number, cur: P
   const poseOf = (n: PoseName | undefined) => POSES[n ?? 'rest'][person ? 'person' : 'body'];
   const now = own[own.length - 1];
   const before = own[own.length - 2];
-  const from = poseOf(before ? before.line.pose : a.pose);
+  // a gesture is let go a moment after the line that made it; a held pose (a hand on the chin, the
+  // chest, the hips) stays until the character's next line
+  const base = poseOf(a.pose);
+  const letGo = (l: Placed | undefined) => (l && !HELD.includes(l.line.pose ?? 'rest') ? l.from + l.frames + 8 : null);
+  const beforeGone = letGo(before);
+  const from = !before ? base : now && beforeGone !== null && now.from >= beforeGone + 14 ? base : poseOf(before.line.pose);
   const to = poseOf(now ? now.line.pose : a.pose);
-  const posed = now ? blendPose(from, to, E.back(clamp01((f - now.from) / 10))) : to;
+  const gone = letGo(now);
+  let posed = now ? blendPose(from, to, E.back(clamp01((f - now.from) / 10))) : to;
+  if (gone !== null && f > gone) { const k = clamp01((f - gone) / 14); posed = blendPose(to, base, k * k * (3 - 2 * k)); }
   const arms = posed.map((sp, i) => {
     const s = armOf(sp as ArmSpec);
     const way = s.f ?? s.a;

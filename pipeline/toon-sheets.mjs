@@ -29,7 +29,9 @@ if (!names.length) {
   still('ToonBlueprint', 'blueprint.jpg');
   still('ToonCamera', 'camera.jpg');
   still('ToonSets', 'sets.jpg');
-  still('ToonStage', 'stage.jpg');
+  still('ToonStage', 'stage.jpg', {stage: 'foodpipe'});
+  still('ToonStage', 'stage-tooth.jpg', {stage: 'tooth'});
+  still('ToonStage', 'stage-tummy.jpg', {stage: 'tummy'});
   for (const who of ['doctor', 'patient', 'kid']) still('ToonPoses', `poses-${who}.jpg`, {who});
   console.log('boards done');
 }

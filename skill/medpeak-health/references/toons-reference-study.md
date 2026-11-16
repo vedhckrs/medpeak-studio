@@ -120,6 +120,11 @@ shot 4.1 s, longest 20.5 s, still seconds 36%, big-change seconds 9%, sound at -
 true peak of -0.9 dB. A quiet stretch of 3.5 s appeared on the NHS line once the real word times
 were in; a source label on the word "NHS" filled it. Check the gate again after every voicing.
 
+The other two scripts, converted the same day (silent previews, estimated timing): sugar on
+teeth 4 cuts in 56 s (one every 11.2 s), still seconds 52%, big-change seconds 7%; lying down
+after dinner 4 cuts in 57 s (the detector also counts one flash), still seconds 47%, big-change
+seconds 11%. Their longest shot holds 25 s.
+
 What closed: the cutting and the big changes are at their level. What did not: "still seconds" is
 33%, not 85%, because our sets keep moving on purpose (the owner asked for living backgrounds),
 our stage face is large, and a caption word changes several times a second. If the picture still
@@ -127,5 +132,6 @@ feels busy on a phone, the next dials are slower set life and fewer caption word
 
 Gaps from the list above that the pilot covers: 1 calm camera, 2 organ as the stage, 3 the process
 shown, 6 graphics and labels, 8 time card, 9 the person at home, 10 small captions. Still open:
-4 tools and hands reaching in from outside, 5 labelled job characters, 7 slapstick, 11 one stage
-only (the food pipe; every other organ needs its own), 12 silent beats.
+4 tools and hands reaching in from outside (the toothbrush on the tooth stage is the first), 5
+labelled job characters, 7 slapstick, 11 three stages so far (food pipe, tooth, stomach; every
+other organ needs its own), 12 silent beats.

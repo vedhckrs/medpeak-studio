@@ -33,7 +33,7 @@ export const Root: React.FC = () => (
     <Still id="ToonBlueprint" component={BlueprintBoard} width={1920} height={1080} />
     <Still id="ToonSets" component={SetBoard} width={1080} height={1920} />
     <Still id="ToonCamera" component={CameraBoard} width={1080} height={1920} />
-    <Still id="ToonStage" component={StageBoard} width={1080} height={1920} />
+    <Still id="ToonStage" component={StageBoard} width={1080} height={1920} defaultProps={{stage: 'foodpipe'}} />
     <Still id="ToonPoses" component={PoseBoard} width={1920} height={1600} defaultProps={{who: 'doctor'}} />
     <Composition id="ToonScenes" component={SceneDemo} fps={30} width={1080} height={1920} durationInFrames={540} />
     <Composition id="Toon" component={ToonPlayer} fps={TOON_FPS} width={1080} height={1920} durationInFrames={TOON_FPS * 10} defaultProps={toonDefaults} calculateMetadata={toonLength} />

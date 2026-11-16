@@ -2,34 +2,35 @@
  "slug": "lying-down-after-dinner",
  "title": "What happens when you lie down after a big dinner",
  "music": "bouncy",
+ "camera": "steady",
  "retention": {
-  "change3s": {
-   "scene": "all",
-   "line": "a new picture at least every 3 s (the director does it)"
-  },
   "noIntro": {
    "scene": "A1",
    "line": "He ate a huge dinner. Now he's lying down!"
   },
   "promise": {
    "scene": "A3",
-   "line": "Three things happen now. Stay for the third!"
+   "line": "Then three things happen. The third one burns!"
   },
   "counting": {
    "scene": "A4,A5,A6",
-   "line": "Number one / Number two / Number three"
+   "line": "First / Second / Third"
+  },
+  "change3s": {
+   "scene": "all",
+   "line": "steady camera: something new happens in the picture at least every 3 s"
   },
   "twist": {
-   "scene": "B3",
-   "line": "But here's the twist: the problem is a door. The valve above your stomach relaxes when it shouldn't."
+   "scene": "D3",
+   "line": "But here's the twist: the problem is a door. Your stomach's valve relaxes when it shouldn't."
   },
   "bestLast": {
-   "scene": "B6",
+   "scene": "D6",
    "line": "And raise the head of your bed ten to twenty centimetres."
   },
   "loop": {
-   "scene": "B7",
-   "line": "So no more lying down after a huge dinner!"
+   "scene": "E2",
+   "line": "A huge dinner, four hours ago. Now he can lie down!"
   }
  },
  "sources": [
@@ -49,30 +50,158 @@
  "shots": [
   {
    "id": "A",
-   "set": "stomach",
+   "set": "tummy",
+   "label": "STOMACH",
    "cast": [
     {
      "who": "stomach",
-     "x": 330,
-     "size": 780,
-     "emotion": "angry",
-     "pose": "fists"
+     "x": 540,
+     "size": 600,
+     "stage": true,
+     "emotion": "happy",
+     "pose": "cheer"
     },
     {
-     "who": "heart",
-     "x": 800,
-     "y": 800,
-     "size": 520,
-     "emotion": "scared"
+     "who": "foodpipe",
+     "x": 540,
+     "size": 600,
+     "stage": true,
+     "emotion": "neutral",
+     "pose": "rest"
+    }
+   ],
+   "state": {
+    "full": 0.15
+   },
+   "events": [
+    {
+     "at": "start",
+     "set": {
+      "food": 1,
+      "full": 0.85
+     },
+     "over": 60,
+     "sfx": "plop"
+    },
+    {
+     "at": "A1",
+     "word": "lying",
+     "set": {
+      "tilt": 1
+     },
+     "over": 34,
+     "sfx": "slide-whistle-down"
+    },
+    {
+     "at": "A4",
+     "word": "full",
+     "set": {
+      "full": 1
+     },
+     "over": 20,
+     "sfx": "gurgle-stomach"
+    },
+    {
+     "at": "A5",
+     "word": "valve",
+     "set": {
+      "valve": 1
+     },
+     "over": 18,
+     "sfx": "spring-bounce"
+    },
+    {
+     "at": "A6",
+     "word": "acid",
+     "set": {
+      "leak": 1
+     },
+     "over": 50,
+     "sfx": "sizzle-acid"
+    },
+    {
+     "at": "A7",
+     "set": {
+      "burn": 1
+     },
+     "over": 10,
+     "fx": "flash",
+     "sfx": "gasp"
     }
    ],
    "props": [
     {
      "kind": "burger",
-     "x": 880,
-     "y": 1590,
+     "x": 190,
+     "y": 520,
      "size": 230,
-     "rot": -12
+     "from": "A1",
+     "word": "dinner",
+     "to": "A1",
+     "halo": true
+    },
+    {
+     "kind": "pillow",
+     "x": 330,
+     "y": 520,
+     "size": 230,
+     "from": "A2",
+     "to": "A2",
+     "halo": true
+    },
+    {
+     "kind": "tag",
+     "text": "uh-oh!",
+     "x": 330,
+     "y": 330,
+     "size": 340,
+     "rot": -5,
+     "from": "A2",
+     "word": "acid",
+     "to": "A2"
+    },
+    {
+     "kind": "tag",
+     "text": "3 things",
+     "x": 330,
+     "y": 330,
+     "size": 340,
+     "rot": -4,
+     "from": "A3",
+     "to": "A3"
+    },
+    {
+     "kind": "pain",
+     "x": 330,
+     "y": 560,
+     "size": 170,
+     "from": "A3",
+     "word": "burns",
+     "to": "A3"
+    },
+    {
+     "kind": "chip",
+     "text": "1",
+     "x": 110,
+     "y": 440,
+     "size": 150,
+     "from": "A4"
+    },
+    {
+     "kind": "chip",
+     "text": "2",
+     "x": 110,
+     "y": 620,
+     "size": 150,
+     "from": "A5"
+    },
+    {
+     "kind": "chip",
+     "text": "3",
+     "x": 110,
+     "y": 800,
+     "size": 150,
+     "from": "A6"
     }
    ],
    "lines": [
@@ -80,16 +209,16 @@
      "id": "A1",
      "who": "stomach",
      "text": "He ate a huge dinner. Now he's lying down!",
-     "emotion": "angry",
-     "pose": "fists",
+     "emotion": "happy",
+     "pose": "cheer",
      "key": "lying",
      "react": {
-      "heart": "scared"
+      "foodpipe": "scared"
      }
     },
     {
      "id": "A2",
-     "who": "heart",
+     "who": "foodpipe",
      "text": "Lying down? Your acid will come up to me!",
      "emotion": "scared",
      "pose": "panic",
@@ -101,15 +230,15 @@
     {
      "id": "A3",
      "who": "stomach",
-     "text": "Three things happen now. Stay for the third!",
-     "emotion": "neutral",
-     "pose": "present",
-     "key": "third"
+     "text": "Then three things happen. The third one burns!",
+     "emotion": "sick",
+     "pose": "shrug",
+     "key": "burns"
     },
     {
      "id": "A4",
      "who": "stomach",
-     "text": "Number one: I'm too full.",
+     "text": "First, I'm too full.",
      "emotion": "sick",
      "pose": "belly",
      "key": "full",
@@ -119,10 +248,10 @@
     },
     {
      "id": "A5",
-     "who": "heart",
-     "text": "Number two: your top valve relaxes!",
+     "who": "foodpipe",
+     "text": "Second, my valve relaxes!",
      "emotion": "shocked",
-     "pose": "pointLeft",
+     "pose": "panic",
      "key": "valve",
      "src": [
       "niddk-gerd"
@@ -131,12 +260,26 @@
     {
      "id": "A6",
      "who": "stomach",
-     "text": "Number three: my acid flows up the food pipe!",
-     "emotion": "sad",
-     "pose": "shrug",
+     "text": "Third, my acid flows up the food pipe!",
+     "emotion": "scared",
+     "pose": "panic",
      "key": "acid",
      "react": {
-      "heart": "sick"
+      "foodpipe": "scared"
+     },
+     "src": [
+      "nhs-heartburn"
+     ]
+    },
+    {
+     "id": "A7",
+     "who": "foodpipe",
+     "text": "Ow! It burns! Make it stop!",
+     "emotion": "sad",
+     "pose": "panic",
+     "key": "burns",
+     "react": {
+      "stomach": "sad"
      },
      "src": [
       "nhs-heartburn"
@@ -145,7 +288,48 @@
    ]
   },
   {
-   "id": "B",
+   "id": "T1",
+   "set": "tummy",
+   "card": "Meanwhile, in bed...",
+   "seconds": 1.4,
+   "cast": [],
+   "lines": []
+  },
+  {
+   "id": "C",
+   "set": "bedroom",
+   "cast": [
+    {
+     "who": "patient",
+     "x": 540,
+     "size": 1040,
+     "emotion": "sick",
+     "pose": "heart"
+    }
+   ],
+   "props": [
+    {
+     "kind": "pain",
+     "x": 560,
+     "y": 1010,
+     "size": 170,
+     "from": "C1",
+     "word": "chest"
+    }
+   ],
+   "lines": [
+    {
+     "id": "C1",
+     "who": "patient",
+     "text": "Ow! My chest is on fire!",
+     "emotion": "sick",
+     "pose": "heart",
+     "key": "fire"
+    }
+   ]
+  },
+  {
+   "id": "D",
    "set": "office",
    "cast": [
     {
@@ -163,26 +347,126 @@
    ],
    "props": [
     {
-     "kind": "clock",
-     "x": 550,
-     "y": 1010,
-     "size": 250,
-     "from": "B5",
-     "to": "B5",
+     "kind": "burger",
+     "x": 800,
+     "y": 330,
+     "size": 210,
+     "from": "D1",
+     "word": "dinner",
+     "to": "D1",
      "halo": true
     },
     {
-     "kind": "pillow",
+     "kind": "tag",
+     "text": "heartburn",
      "x": 550,
-     "y": 1020,
-     "size": 270,
-     "from": "B6",
+     "y": 300,
+     "size": 340,
+     "rot": -4,
+     "from": "D2",
+     "to": "D2"
+    },
+    {
+     "kind": "pain",
+     "x": 790,
+     "y": 900,
+     "size": 150,
+     "from": "D2",
+     "word": "acid",
+     "to": "D2"
+    },
+    {
+     "kind": "tag",
+     "text": "the twist",
+     "x": 250,
+     "y": 240,
+     "size": 320,
+     "rot": -4,
+     "from": "D3",
+     "to": "D3"
+    },
+    {
+     "kind": "valve",
+     "x": 600,
+     "y": 470,
+     "size": 340,
+     "from": "D3",
+     "word": "door",
+     "to": "D3",
+     "bubble": true
+    },
+    {
+     "kind": "tag",
+     "text": "it opens too soon",
+     "x": 550,
+     "y": 1180,
+     "size": 280,
+     "from": "D3",
+     "word": "relaxes",
+     "to": "D3"
+    },
+    {
+     "kind": "pillow",
+     "x": 800,
+     "y": 330,
+     "size": 210,
+     "from": "D4",
+     "word": "lying",
+     "to": "D4",
      "halo": true
+    },
+    {
+     "kind": "burger",
+     "x": 455,
+     "y": 1190,
+     "size": 190,
+     "from": "D5",
+     "to": "D5",
+     "halo": true,
+     "no": true
+    },
+    {
+     "kind": "clock",
+     "x": 648,
+     "y": 1190,
+     "size": 190,
+     "from": "D5",
+     "word": "hours",
+     "to": "D5",
+     "halo": true
+    },
+    {
+     "kind": "tag",
+     "text": "3 to 4 hours",
+     "x": 550,
+     "y": 300,
+     "size": 300,
+     "from": "D5",
+     "word": "three",
+     "to": "D5"
+    },
+    {
+     "kind": "bed",
+     "x": 550,
+     "y": 1170,
+     "size": 270,
+     "from": "D6",
+     "word": "raise",
+     "halo": true
+    },
+    {
+     "kind": "tag",
+     "text": "10 to 20 cm",
+     "x": 550,
+     "y": 300,
+     "size": 300,
+     "from": "D6",
+     "word": "ten"
     }
    ],
    "lines": [
     {
-     "id": "B1",
+     "id": "D1",
      "who": "patient",
      "text": "Doctor, why does my chest burn after dinner?",
      "emotion": "sick",
@@ -190,68 +474,164 @@
      "key": "burn"
     },
     {
-     "id": "B2",
+     "id": "D2",
      "who": "doctor",
      "text": "That's heartburn: stomach acid travelling up toward your throat.",
      "emotion": "neutral",
      "pose": "explain",
      "key": "heartburn",
+     "react": {
+      "patient": "shocked"
+     },
      "src": [
       "nhs-heartburn"
      ]
     },
     {
-     "id": "B3",
+     "id": "D3",
      "who": "doctor",
-     "text": "But here's the twist: the problem is a door. The valve above your stomach relaxes when it shouldn't.",
+     "text": "But here's the twist: the problem is a door. Your stomach's valve relaxes when it shouldn't.",
      "emotion": "happy",
      "pose": "present",
-     "key": "door",
-     "react": {
-      "patient": "shocked"
-     },
+     "key": "twist",
      "src": [
       "niddk-gerd"
      ]
     },
     {
-     "id": "B4",
+     "id": "D4",
      "who": "patient",
      "text": "And lying down makes it worse?",
-     "emotion": "shocked",
+     "emotion": "neutral",
      "pose": "think",
      "key": "worse"
     },
     {
-     "id": "B5",
+     "id": "D5",
      "who": "doctor",
      "text": "Yes. So no food for three or four hours before bed.",
-     "emotion": "neutral",
-     "pose": "explain",
+     "emotion": "happy",
+     "pose": "thumb",
      "key": "hours",
      "src": [
       "nhs-heartburn"
      ]
     },
     {
-     "id": "B6",
+     "id": "D6",
      "who": "doctor",
      "text": "And raise the head of your bed ten to twenty centimetres.",
-     "emotion": "happy",
-     "pose": "thumb",
-     "key": "twenty",
+     "emotion": "neutral",
+     "pose": "point",
+     "key": "raise",
+     "react": {
+      "patient": "happy"
+     },
      "src": [
       "nhs-heartburn"
      ]
+    }
+   ]
+  },
+  {
+   "id": "E",
+   "set": "tummy",
+   "label": "NEXT TIME",
+   "cast": [
+    {
+     "who": "stomach",
+     "x": 540,
+     "size": 600,
+     "stage": true,
+     "emotion": "sleepy",
+     "pose": "rest"
     },
     {
-     "id": "B7",
-     "who": "patient",
-     "text": "So no more lying down after a huge dinner!",
+     "who": "foodpipe",
+     "x": 540,
+     "size": 600,
+     "stage": true,
+     "emotion": "neutral",
+     "pose": "rest"
+    }
+   ],
+   "state": {
+    "food": 0.35,
+    "full": 0.22
+   },
+   "events": [
+    {
+     "at": "start",
+     "delay": 0.3,
+     "set": {
+      "tilt": 1
+     },
+     "over": 34,
+     "sfx": "slide-whistle-down"
+    }
+   ],
+   "props": [
+    {
+     "kind": "tag",
+     "text": "all quiet",
+     "x": 330,
+     "y": 330,
+     "size": 340,
+     "rot": -4,
+     "from": "E1",
+     "word": "Nothing",
+     "to": "E1"
+    },
+    {
+     "kind": "clock",
+     "x": 300,
+     "y": 500,
+     "size": 230,
+     "from": "E2",
+     "halo": true
+    },
+    {
+     "kind": "pillow",
+     "x": 560,
+     "y": 500,
+     "size": 230,
+     "from": "E2",
+     "word": "Now",
+     "halo": true
+    },
+    {
+     "kind": "tag",
+     "text": "sleep well",
+     "x": 330,
+     "y": 330,
+     "size": 340,
+     "rot": -4,
+     "from": "E2",
+     "word": "down"
+    }
+   ],
+   "lines": [
+    {
+     "id": "E1",
+     "who": "foodpipe",
+     "text": "Ahh. Nothing is coming up tonight!",
      "emotion": "happy",
      "pose": "thumb",
-     "key": "dinner",
-     "cam": "two 35 pull"
+     "key": "Nothing",
+     "react": {
+      "stomach": "sleepy"
+     }
+    },
+    {
+     "id": "E2",
+     "who": "stomach",
+     "text": "A huge dinner, four hours ago. Now he can lie down!",
+     "emotion": "happy",
+     "pose": "cheer",
+     "key": "down",
+     "src": [
+      "nhs-heartburn"
+     ]
     }
    ]
   }
