@@ -54,7 +54,11 @@ MedPeak Toons (the cartoon Shorts) have their own steps; the order of work is in
 `toon:camera` and `toon:motion` (measured, both required) -> silent preview and rooms board ->
 owner's yes -> `toon-voice` -> the same checks on the real timings -> `toon-render` ->
 `toon-package` (title, description, tags, cover, captions) -> `publish/upload.py <slug> toon`
-only after the owner's yes.
+only after the owner's yes. After the upload, each with its own yes from the owner:
+`publish/after_upload.py <slug> toon --captions` (adds the caption file), `--comment` (posts the
+package's question from the channel; pinning is done by hand, the API cannot pin), `--public`.
+`publish/recent.py` reads the newest uploads' views and, 1 to 3 days later, watch share and traffic
+source (read-only).
 
 
 ElevenLabs keys: `medpeak-studio/.env` holds ELEVENLABS_API_KEY, _2, _3, _4 (never committed). They are
