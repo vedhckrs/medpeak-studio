@@ -4,6 +4,7 @@
 import React, {useId} from 'react';
 import {AbsoluteFill, random} from 'remotion';
 import {INK, LINE} from './rig';
+import {blob, Grain, InkBody, spline, taperedPath, tone} from './ink';
 import {shade} from './paint';
 import {theme} from '../brand/theme';
 
@@ -15,26 +16,53 @@ export const Label: React.FC<{text: string; x?: number; y?: number}> = ({text, x
   <div style={{position: 'absolute', left: x, top: y, background: '#2ec4b6', color: '#fff', fontFamily: theme.font, fontWeight: 900, fontSize: 40, padding: '10px 28px', borderRadius: 40, border: `5px solid ${INK}`, letterSpacing: 1, boxShadow: '0 8px 0 rgba(29,43,79,0.25)'}}>{text}</div>
 );
 
-/** Shared finishing layers: light pool, floating particles, vignette. */
-const Atmos: React.FC<{t: number; tint: string; particles?: string; light?: [number, number]}> = ({t, tint, particles = '#ffffff', light = [380, 520]}) => {
+/** Finishing: a soft light from the top-left, a gentle darkening at the very bottom, paper grain. */
+const Atmos: React.FC<{t: number; tint: string; particles?: string; light?: [number, number]}> = ({tint, light = [380, 520]}) => {
   const id = useId().replace(/:/g, '');
   return (
-  <>
-    <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%" style={{position: 'absolute', inset: 0}}>
-      <defs>
-        <radialGradient id={`pool${id}`} cx={light[0] / W} cy={light[1] / H} r="0.6"><stop offset="0" stopColor="#fff" stopOpacity="0.28" /><stop offset="1" stopColor="#fff" stopOpacity="0" /></radialGradient>
-        <radialGradient id={`vig${id}`} cx="0.5" cy="0.48" r="0.75"><stop offset="0.6" stopColor={tint} stopOpacity="0" /><stop offset="1" stopColor={tint} stopOpacity="0.55" /></radialGradient>
-      </defs>
-      <rect width={W} height={H} fill={`url(#pool${id})`} />
-      {Array.from({length: 26}).map((_, i) => {
-        const x = (random(`px${i}`) * W + Math.sin(t * 0.6 + i) * 30) % W;
-        const y = (random(`py${i}`) * H - t * (12 + random(`pv${i}`) * 26) + H * 4) % H;
-        const r = 3 + random(`pr${i}`) * 9;
-        return <circle key={i} cx={x} cy={y} r={r} fill={particles} opacity={0.18 + random(`po${i}`) * 0.25} />;
+    <>
+      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%" style={{position: 'absolute', inset: 0}}>
+        <defs>
+          <radialGradient id={`pool${id}`} cx={light[0] / W} cy={light[1] / H} r="0.7"><stop offset="0" stopColor="#fff6e8" stopOpacity="0.3" /><stop offset="1" stopColor="#fff6e8" stopOpacity="0" /></radialGradient>
+          <linearGradient id={`bot${id}`} x1="0" y1="0" x2="0" y2="1"><stop offset="0.75" stopColor={tint} stopOpacity="0" /><stop offset="1" stopColor={tint} stopOpacity="0.25" /></linearGradient>
+        </defs>
+        <rect width={W} height={H} fill={`url(#pool${id})`} />
+        <rect width={W} height={H} fill={`url(#bot${id})`} />
+      </svg>
+      <Grain opacity={0.09} />
+    </>
+  );
+};
+
+/**
+ * A painted organic wall: base colour, big soft light/dark blotches, tapered wrinkle marks.
+ * `area` limits marks to a band (x0,y0,x1,y1); `dir` = 'v' vertical folds, 'h' horizontal folds.
+ */
+const Painted: React.FC<{seed: string; base: string; area?: [number, number, number, number]; dir?: 'v' | 'h'; marks?: number; blotches?: number; t?: number}> = ({seed, base, area = [0, 0, W, H], dir = 'v', marks = 26, blotches = 14, t = 0}) => {
+  const id = useId().replace(/:/g, '');
+  const [x0, y0, x1, y1] = area;
+  return (
+    <g>
+      <defs><filter id={`pb${id}`} x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="22" /></filter></defs>
+      <g filter={`url(#pb${id})`}>
+        {Array.from({length: blotches}).map((_, i) => {
+          const cx = x0 + random(`${seed}bx${i}`) * (x1 - x0);
+          const cy = y0 + random(`${seed}by${i}`) * (y1 - y0);
+          const light = random(`${seed}bl${i}`) > 0.5;
+          return <path key={i} d={blob(60 + random(`${seed}br${i}`) * 140, 40 + random(`${seed}bq${i}`) * 110, `${seed}b${i}`, 9, 0.18, cx, cy)} fill={tone(base, light ? -0.16 : 0.14)} opacity={0.75} />;
+        })}
+      </g>
+      {Array.from({length: marks}).map((_, i) => {
+        const cx = x0 + random(`${seed}mx${i}`) * (x1 - x0);
+        const cy = y0 + random(`${seed}my${i}`) * (y1 - y0);
+        const len = 40 + random(`${seed}ml${i}`) * 120;
+        const wob = (k: number) => (random(`${seed}mw${i}${k}`) - 0.5) * 22 + Math.sin(t * 0.8 + i) * 2;
+        const pts: [number, number][] = dir === 'v'
+          ? [[cx + wob(1), cy], [cx + wob(2), cy + len * 0.5], [cx + wob(3), cy + len]]
+          : [[cx, cy + wob(1)], [cx + len * 0.5, cy + wob(2)], [cx + len, cy + wob(3)]];
+        return <path key={i} d={taperedPath(pts, 4 + random(`${seed}mt${i}`) * 4)} fill={tone(base, 0.32)} opacity={0.75} />;
       })}
-      <rect width={W} height={H} fill={`url(#vig${id})`} />
-    </svg>
-  </>
+    </g>
   );
 };
 
@@ -42,152 +70,171 @@ const Blur: React.FC<{id: string; s?: number}> = ({id, s = 10}) => <filter id={i
 
 // ------------------------------------------------------------------- inside the body
 
-/** Inside the throat: a long tube with rings, receding into the dark. */
-export const ThroatSet: React.FC<{t: number}> = ({t}) => (
-  <AbsoluteFill>
-    <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-      <defs><Blur id="tb" s={12} /><linearGradient id="tg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#7a2c3a" /><stop offset="0.45" stopColor="#f4b3a8" /><stop offset="1" stopColor="#f8c8bd" /></linearGradient></defs>
-      <rect width={W} height={H} fill="#c95b67" />
-      <path d={`M250 0 C${290 + Math.sin(t) * 10} 640 220 1300 280 1920 L800 1920 C860 1300 790 640 830 0 Z`} fill="url(#tg)" />
-      {Array.from({length: 11}).map((_, i) => {
-        const y = 60 + i * i * 15 + i * 40;
-        const w = 140 + i * 30;
-        return <path key={i} d={`M${540 - w} ${y} Q540 ${y + 30 + i * 4 + Math.sin(t + i) * 5} ${540 + w} ${y}`} fill="none" stroke={shade('#f4b3a8', 0.18)} strokeWidth={6 + i} strokeLinecap="round" opacity={0.4 + i * 0.05} />;
-      })}
-      <path d={`M0 0 H260 C${300 + Math.sin(t) * 10} 640 230 1300 290 1920 H0 Z`} fill="#e57f88" {...O} />
-      <path d={`M1080 0 H820 C${780 - Math.sin(t) * 10} 640 850 1300 790 1920 H1080 Z`} fill="#e57f88" {...O} />
-      {Array.from({length: 22}).map((_, i) => (
-        <ellipse key={i} cx={i % 2 ? 60 + random(`tx${i}`) * 160 : 880 + random(`tx${i}`) * 160} cy={random(`ty${i}`) * H} rx={14 + random(`tr${i}`) * 18} ry={10 + random(`tq${i}`) * 12} fill={shade('#e57f88', 0.12)} />
-      ))}
-      <g filter="url(#tb)" opacity={0.85}>
-        <ellipse cx={-30} cy={1700} rx={220} ry={300} fill="#b84756" />
-        <ellipse cx={1110} cy={260} rx={200} ry={280} fill="#b84756" />
-      </g>
-    </svg>
-    <Atmos t={t} tint="#5a1b2a" light={[540, 900]} />
-    <Label text="THROAT" />
-  </AbsoluteFill>
-);
+/** Organic wall edge: a wavy vertical line made of bumps (for throat / vessel sides). */
+const edge = (x: number, seed: string, amp = 40, bumps = 9, flip = 1): [number, number][] =>
+  Array.from({length: bumps + 1}, (_, i) => [x + flip * (Math.sin(i * 1.7) * amp * 0.4 + (random(`${seed}${i}`) - 0.5) * amp), (i / bumps) * H] as [number, number]);
 
-/** The gut: a tunnel lined with villi, a fold-arch in front. */
+/** Floor: an organic band at the bottom with soft blotches and a lit top edge. */
+const Floor: React.FC<{y: number; color: string; seed: string}> = ({y, color, seed}) => {
+  const top = Array.from({length: 9}, (_, i) => [(i / 8) * W, y + (random(`${seed}f${i}`) - 0.5) * 50] as [number, number]);
+  const d = spline([[-60, H + 60], [-60, y], ...top, [W + 60, y], [W + 60, H + 60]], true, 0.4);
+  return (
+    <g>
+      <path d={d} fill={color} />
+      <Painted seed={`${seed}fl`} base={color} area={[0, y + 40, W, H]} dir="h" marks={10} blotches={10} />
+      <path d={spline(top, false)} fill="none" stroke={tone(color, -0.25)} strokeWidth={10} strokeLinecap="round" transform="translate(0 8)" opacity={0.7} />
+      <path d={spline(top, false)} fill="none" stroke={INK} strokeWidth={LINE * 2.2} strokeLinecap="round" />
+    </g>
+  );
+};
+
+/** Inside the throat: soft mucosa walls closing in from both sides, folds receding upward. */
+export const ThroatSet: React.FC<{t: number}> = ({t}) => {
+  const L = edge(300, 'thl', 70, 10, 1);
+  const R = edge(780, 'thr', 70, 10, -1);
+  const breathe = Math.sin(t * 1.2) * 8;
+  return (
+    <AbsoluteFill>
+      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+        <rect width={W} height={H} fill="#f2a99e" />
+        <Painted seed="thc" base="#f2a99e" area={[260, 0, 820, H]} dir="h" marks={18} t={t} />
+        <path d={spline([[-80, -40], ...L.map(([x, y]) => [x + breathe, y] as [number, number]), [-80, H + 40]], true, 0.45)} fill="#e07a83" />
+        <path d={spline([[W + 80, -40], ...R.map(([x, y]) => [x - breathe, y] as [number, number]), [W + 80, H + 40]], true, 0.45)} fill="#e07a83" />
+        <Painted seed="thw1" base="#e07a83" area={[0, 0, 280, H]} t={t} />
+        <Painted seed="thw2" base="#e07a83" area={[800, 0, W, H]} t={t} />
+        <path d={spline(L.map(([x, y]) => [x + breathe, y] as [number, number]), false)} fill="none" stroke={INK} strokeWidth={LINE * 2.4} />
+        <path d={spline(R.map(([x, y]) => [x - breathe, y] as [number, number]), false)} fill="none" stroke={INK} strokeWidth={LINE * 2.4} />
+        <path d={spline(L.map(([x, y]) => [x + breathe + 18, y] as [number, number]), false)} fill="none" stroke="#f6c2b8" strokeWidth={8} opacity={0.6} />
+      </svg>
+      <Atmos t={t} tint="#6b1f2e" light={[540, 700]} />
+      <Label text="THROAT" />
+    </AbsoluteFill>
+  );
+};
+
+/** The gut: a soft corridor with a back wall of folds and a floor lined with finger-like villi. */
 export const GutSet: React.FC<{t: number}> = ({t}) => (
   <AbsoluteFill>
     <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-      <defs><Blur id="gb" s={14} /><radialGradient id="gg" cx="0.5" cy="0.52" r="0.6"><stop offset="0" stopColor="#ffe3d6" /><stop offset="0.5" stopColor="#f6b2a6" /><stop offset="1" stopColor="#b84a59" /></radialGradient></defs>
-      <rect width={W} height={H} fill="url(#gg)" />
-      {[0, 1, 2, 3].map((k) => (
-        <ellipse key={k} cx={540} cy={1000} rx={540 - k * 120} ry={780 - k * 170} fill="none" stroke={shade('#f2a3a0', 0.1 + k * 0.05)} strokeWidth={30 - k * 5} opacity={0.6} />
-      ))}
-      {Array.from({length: 30}).map((_, i) => {
-        const a = (i / 30) * Math.PI * 2;
-        const x = 540 + Math.cos(a) * 470;
-        const y = 1000 + Math.sin(a) * 700;
-        const s = 1 + Math.sin(t * 2 + i) * 0.07;
-        return <ellipse key={i} cx={x} cy={y} rx={46 * s} ry={86 * s} transform={`rotate(${(a * 180) / Math.PI + 90} ${x} ${y})`} fill="#ee8f93" {...O} strokeWidth={LINE * 1.8} />;
+      <rect width={W} height={H} fill="#f0a8a0" />
+      <Painted seed="gw" base="#f0a8a0" area={[0, 0, W, 1300]} dir="h" marks={30} t={t} />
+      {Array.from({length: 9}).map((_, i) => {
+        const x = 40 + i * 125;
+        const h = 150 + random(`gv${i}`) * 90;
+        const sway = Math.sin(t * 1.5 + i) * 10;
+        return <path key={i} d={spline([[x - 38, 1290], [x - 30 + sway * 0.5, 1290 - h * 0.6], [x + sway, 1290 - h], [x + 30 + sway * 0.5, 1290 - h * 0.6], [x + 38, 1290]], false)} fill="#e4848b" stroke={INK} strokeWidth={LINE * 1.8} />;
       })}
-      <path d="M0 1560 C200 1480 360 1600 540 1560 C720 1520 880 1600 1080 1540 V1920 H0 Z" fill="#e47c86" {...O} />
-      <g filter="url(#gb)">
-        <ellipse cx={120} cy={1840} rx={260} ry={150} fill="#c45a68" />
-        <ellipse cx={980} cy={120} rx={240} ry={160} fill="#c45a68" />
-      </g>
+      <Floor y={1300} color="#e88b90" seed="gf" />
     </svg>
-    <Atmos t={t} tint="#5a1b2a" light={[540, 1000]} particles="#ffe9c9" />
+    <Atmos t={t} tint="#6b1f2e" light={[420, 600]} />
     <Label text="GUT" />
   </AbsoluteFill>
 );
 
-/** Inside the stomach: wrinkly walls (rugae) and a bubbling acid pool. */
-export const StomachSet: React.FC<{t: number}> = ({t}) => (
-  <AbsoluteFill>
-    <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-      <defs><Blur id="sb" s={12} /><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#c9606c" /><stop offset="1" stopColor="#f3a5a2" /></linearGradient></defs>
-      <rect width={W} height={H} fill="url(#sg)" />
-      {Array.from({length: 9}).map((_, i) => (
-        <path key={i} d={`M-40 ${200 + i * 130} C200 ${150 + i * 130 + Math.sin(t + i) * 12} 400 ${260 + i * 130} 560 ${200 + i * 130} C720 ${140 + i * 130} 900 ${250 + i * 130} 1120 ${190 + i * 130}`} fill="none" stroke={shade('#f3a5a2', 0.2 + (i % 2) * 0.06)} strokeWidth={22} strokeLinecap="round" />
-      ))}
-      <path d={`M0 1400 C220 ${1370 + Math.sin(t * 2) * 14} 420 ${1430 - Math.sin(t * 2) * 14} 640 1400 C840 ${1370 + Math.sin(t * 2 + 1) * 14} 980 1420 1080 1400 V1920 H0 Z`} fill="#c7e66b" {...O} />
-      <path d="M0 1460 C260 1440 500 1480 760 1450 C900 1440 1000 1460 1080 1450 V1920 H0 Z" fill="#a9d14f" />
-      {Array.from({length: 18}).map((_, i) => {
-        const life = (t * 0.8 + random(`b${i}`) * 3) % 3;
-        return <circle key={i} cx={60 + random(`bx${i}`) * 960} cy={1880 - life * 160} r={8 + random(`br${i}`) * 16} fill="#e5f7a2" stroke={INK} strokeWidth={2.5} opacity={Math.min(1, 3 - life)} />;
-      })}
-      <g filter="url(#sb)"><ellipse cx={1040} cy={1700} rx={200} ry={260} fill="#8fb93a" /><ellipse cx={30} cy={300} rx={200} ry={260} fill="#b04c59" /></g>
-    </svg>
-    <Atmos t={t} tint="#4a1824" light={[540, 700]} />
-    <Label text="STOMACH" />
-  </AbsoluteFill>
-);
+/** Inside the stomach: wrinkly walls (rugae) above, a bubbling green acid pool below. */
+export const StomachSet: React.FC<{t: number}> = ({t}) => {
+  const surf = Array.from({length: 9}, (_, i) => [(i / 8) * W, 1420 + Math.sin(t * 2 + i * 1.3) * 16 + (random(`ss${i}`) - 0.5) * 20] as [number, number]);
+  return (
+    <AbsoluteFill>
+      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+        <rect width={W} height={H} fill="#e8909a" />
+        <Painted seed="sw" base="#e8909a" area={[0, 0, W, 1420]} dir="h" marks={40} blotches={18} t={t} />
+        <path d={spline([[-40, H + 40], [-40, 1420], ...surf, [W + 40, 1420], [W + 40, H + 40]], true, 0.4)} fill="#b7d65a" />
+        <Painted seed="sa" base="#b7d65a" area={[0, 1460, W, H]} dir="h" marks={6} blotches={10} />
+        <path d={spline(surf, false)} fill="none" stroke="#e3f39b" strokeWidth={12} transform="translate(0 10)" opacity={0.8} />
+        <path d={spline(surf, false)} fill="none" stroke={INK} strokeWidth={LINE * 2.2} />
+        {Array.from({length: 16}).map((_, i) => {
+          const life = (t * 0.7 + random(`b${i}`) * 3) % 3;
+          const r = 9 + random(`br${i}`) * 18;
+          return (
+            <g key={i} opacity={Math.min(1, 3 - life)}>
+              <path d={blob(r, r * 0.92, `bb${i}`, 8, 0.06, 60 + random(`bx${i}`) * 960, 1880 - life * 150)} fill="#d9ef8a" stroke={INK} strokeWidth={2.6} />
+              <circle cx={60 + random(`bx${i}`) * 960 - r * 0.35} cy={1880 - life * 150 - r * 0.35} r={r * 0.22} fill="#fff" opacity={0.8} />
+            </g>
+          );
+        })}
+      </svg>
+      <Atmos t={t} tint="#5a1b2a" light={[400, 500]} />
+      <Label text="STOMACH" />
+    </AbsoluteFill>
+  );
+};
 
-/** Inside the mouth: a row of teeth above, the tongue below, light from the open lips. */
+/** Inside the mouth: teeth above, the tongue as a soft floor, light from the open lips. */
 export const MouthSet: React.FC<{t: number}> = ({t}) => (
   <AbsoluteFill>
     <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-      <defs><Blur id="mb" s={10} /><radialGradient id="mg" cx="0.5" cy="0.45" r="0.7"><stop offset="0" stopColor="#7b2232" /><stop offset="1" stopColor="#3d0f1b" /></radialGradient></defs>
-      <rect width={W} height={H} fill="url(#mg)" />
-      <ellipse cx={540} cy={760} rx={160} ry={230} fill="#2a0912" />
-      <path d="M470 560 C500 700 580 700 610 560" fill="#ff8f9c" {...O} />
-      <path d="M-20 360 C200 520 880 520 1100 360 V0 H-20 Z" fill="#e8626f" {...O} />
+      <rect width={W} height={H} fill="#7c2636" />
+      <Painted seed="mw" base="#7c2636" area={[0, 300, W, 1300]} dir="v" marks={14} />
+      <path d={blob(170, 240, 'thr', 10, 0.08, 540, 780)} fill="#2e0a14" />
+      <path d={spline([[470, 560], [500, 690], [540, 715], [580, 690], [610, 560]], false)} fill="#ff8f9c" stroke={INK} strokeWidth={LINE * 2} />
+      <path d={spline([[-40, 380], [200, 520], [540, 560], [880, 520], [1120, 380], [1120, -40], [-40, -40]], true, 0.4)} fill="#e8707e" />
+      <Painted seed="mp" base="#e8707e" area={[0, 0, W, 460]} dir="h" marks={10} blotches={8} />
       {Array.from({length: 7}).map((_, i) => {
-        const x = 30 + i * 150;
-        const y = 380 + Math.abs(3 - i) * -18 + 60;
-        return <path key={i} d={`M${x} ${y - 60} C${x + 10} ${y + 70} ${x + 120} ${y + 70} ${x + 130} ${y - 60} Z`} fill="#fdfbf4" {...O} />;
+        const x = 90 + i * 150;
+        const y = 455 + (Math.abs(3 - i) * -16);
+        return <g key={i} transform={`translate(${x} ${y})`}><InkBody d={spline([[-62, -40], [-58, 40], [-30, 78], [0, 70], [30, 78], [58, 40], [62, -40]], true, 0.5)} color="#fdfbf4" shadow={0.1} /></g>;
       })}
-      <path d={`M-40 1340 C120 ${1080 + Math.sin(t * 1.5) * 20} 960 ${1080 - Math.sin(t * 1.5) * 20} 1120 1340 V1920 H-40 Z`} fill="#ff8a98" {...O} />
-      <path d="M540 1180 C530 1400 550 1600 540 1920" fill="none" stroke="#e86a7b" strokeWidth={10} strokeLinecap="round" />
-      {Array.from({length: 40}).map((_, i) => <circle key={i} cx={random(`tx${i}`) * 1080} cy={1240 + random(`ty${i}`) * 640} r={5} fill="#f6788a" />)}
-      <g filter="url(#mb)"><ellipse cx={-40} cy={1820} rx={260} ry={200} fill="#c94a5c" /></g>
+      <Floor y={1240 + Math.sin(t * 1.5) * 10} color="#ff8a98" seed="mt" />
+      <path d={spline([[540, 1280], [530, 1500], [550, 1700], [540, 1940]], false)} fill="none" stroke="#e46b7c" strokeWidth={9} strokeLinecap="round" />
     </svg>
-    <Atmos t={t} tint="#2a0912" light={[540, 300]} particles="#ffd0d6" />
+    <Atmos t={t} tint="#2e0a14" light={[540, 260]} />
     <Label text="MOUTH" y={980} />
   </AbsoluteFill>
 );
 
-/** The bloodstream: a vessel tunnel with red cells drifting past. */
-export const BloodSet: React.FC<{t: number}> = ({t}) => (
-  <AbsoluteFill>
-    <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-      <defs><Blur id="vb" s={16} /><radialGradient id="vg" cx="0.5" cy="0.5" r="0.65"><stop offset="0" stopColor="#ff9a8f" /><stop offset="0.6" stopColor="#d6404c" /><stop offset="1" stopColor="#6d1424" /></radialGradient></defs>
-      <rect width={W} height={H} fill="url(#vg)" />
-      {[0, 1, 2, 3, 4].map((k) => <ellipse key={k} cx={540} cy={960} rx={640 - k * 110} ry={1020 - k * 180} fill="none" stroke="#ff7f86" strokeWidth={8} opacity={0.35} />)}
-      {Array.from({length: 16}).map((_, i) => {
-        const depth = random(`d${i}`);
-        const x = ((random(`x${i}`) * 1400 + t * (60 + depth * 160)) % 1400) - 160;
-        const y = 120 + random(`y${i}`) * 1680;
-        const s = 0.5 + depth;
-        return (
-          <g key={i} transform={`translate(${x} ${y}) scale(${s}) rotate(${random(`r${i}`) * 60 + t * 20})`} opacity={0.5 + depth * 0.5} filter={depth < 0.25 ? 'url(#vb)' : undefined}>
-            <ellipse rx={58} ry={38} fill="#e2493f" stroke={INK} strokeWidth={LINE * 1.6} />
-            <ellipse rx={30} ry={18} fill="#c23a32" />
-          </g>
-        );
-      })}
-    </svg>
-    <Atmos t={t} tint="#4a0d18" light={[540, 900]} particles="#ffd2c6" />
-    <Label text="BLOODSTREAM" x={600} />
-  </AbsoluteFill>
-);
+/** The bloodstream: a vessel corridor with a soft floor; red cells drift past, blurred when far. */
+export const BloodSet: React.FC<{t: number}> = ({t}) => {
+  const id = useId().replace(/:/g, '');
+  return (
+    <AbsoluteFill>
+      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
+        <defs><filter id={`vb${id}`} x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="9" /></filter></defs>
+        <rect width={W} height={H} fill="#e06a6f" />
+        <Painted seed="vw" base="#e06a6f" area={[0, 0, W, 1320]} dir="v" marks={34} blotches={16} t={t} />
+        {Array.from({length: 7}).map((_, i) => {
+          const x = ((random(`x${i}`) * 1400 + t * (50 + random(`s${i}`) * 60)) % 1400) - 160;
+          const y = 260 + random(`y${i}`) * 900;
+          return (
+            <g key={i} transform={`translate(${x} ${y}) scale(${0.6 + random(`k${i}`) * 0.5}) rotate(${random(`r${i}`) * 40})`} filter={`url(#vb${id})`} opacity={0.75}>
+              <path d={blob(70, 48, `rc${i}`, 10, 0.05)} fill="#c8333b" />
+              <path d={blob(36, 22, `rd${i}`, 8, 0.05)} fill="#a82730" />
+            </g>
+          );
+        })}
+        <Floor y={1330} color="#ee8a8a" seed="vf" />
+      </svg>
+      <Atmos t={t} tint="#4a0d18" light={[420, 600]} />
+      <Label text="BLOODSTREAM" x={590} />
+    </AbsoluteFill>
+  );
+};
 
-/** Inside the lungs: branching airways and grape-like air sacs. */
+/** Inside the lungs: branching airways ending in grape-like air sacs that breathe. */
 export const LungsSet: React.FC<{t: number}> = ({t}) => {
-  const breathe = 1 + Math.sin(t * 1.4) * 0.03;
-  const branch = (x: number, y: number, a: number, len: number, d: number): React.ReactNode[] => {
+  const breathe = 1 + Math.sin(t * 1.4) * 0.04;
+  const branch = (x: number, y: number, a: number, len: number, d: number, key: string): React.ReactNode[] => {
     if (d === 0) {
-      return [<g key={`${x}${y}`}>{[0, 1, 2].map((k) => <circle key={k} cx={x + Math.cos(a + k - 1) * 22} cy={y + Math.sin(a + k - 1) * 22} r={22 * breathe} fill="#ffb3c4" {...O} strokeWidth={3} />)}</g>];
+      return [<g key={key}>{[0, 1, 2, 3].map((k) => (
+        <g key={k} transform={`translate(${x + Math.cos(a + k * 0.9 - 1.3) * 26} ${y + Math.sin(a + k * 0.9 - 1.3) * 26}) scale(${breathe})`}>
+          <InkBody d={blob(24, 22, `${key}${k}`, 8, 0.08)} color="#ffb0c2" line={2.6} shadow={0.2} />
+        </g>
+      ))}</g>];
     }
     const x2 = x + Math.cos(a) * len;
     const y2 = y + Math.sin(a) * len;
     return [
-      <line key={`l${x}${y}${d}`} x1={x} y1={y} x2={x2} y2={y2} stroke="#f7c9d3" strokeWidth={d * 10} strokeLinecap="round" />,
-      ...branch(x2, y2, a - 0.45, len * 0.72, d - 1),
-      ...branch(x2, y2, a + 0.45, len * 0.72, d - 1),
+      <path key={`l${key}`} d={taperedPath([[x, y], [(x + x2) / 2 + Math.sin(d) * 8, (y + y2) / 2], [x2, y2]], d * 9, 0.01, 0.3)} fill="#f8d2db" stroke={INK} strokeWidth={2.4} />,
+      ...branch(x2, y2, a - 0.48, len * 0.72, d - 1, key + 'a'),
+      ...branch(x2, y2, a + 0.48, len * 0.72, d - 1, key + 'b'),
     ];
   };
   return (
     <AbsoluteFill>
       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%">
-        <defs><linearGradient id="lg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#f4a4b6" /><stop offset="1" stopColor="#d76c86" /></linearGradient></defs>
-        <rect width={W} height={H} fill="url(#lg)" />
-        <g transform={`translate(540 0) scale(${breathe}) translate(-540 0)`}>{branch(540, -40, Math.PI / 2, 420, 5)}</g>
+        <rect width={W} height={H} fill="#eb9cb0" />
+        <Painted seed="lw" base="#eb9cb0" area={[0, 0, W, H]} dir="v" marks={16} />
+        {branch(540, -60, Math.PI / 2, 430, 5, 'r')}
       </svg>
       <Atmos t={t} tint="#6a1f3a" light={[540, 500]} />
       <Label text="LUNGS" />

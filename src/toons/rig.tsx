@@ -2,6 +2,7 @@
 // glint, soft cheeks). Every character puts a <Face> on its body. Drawn in a local box where the
 // face centre is (0,0) and the eyes sit about 20 units apart; `size` scales it.
 import React from 'react';
+import {taperedPath, tone} from './ink';
 
 export type Emotion = 'neutral' | 'happy' | 'angry' | 'scared' | 'smug' | 'sick' | 'sleepy' | 'shocked' | 'sad';
 export const EMOTIONS: Emotion[] = ['neutral', 'happy', 'angry', 'scared', 'smug', 'sick', 'sleepy', 'shocked', 'sad'];
@@ -33,22 +34,39 @@ const POSES: Record<Emotion, Pose> = {
   sad: {lid: 0.2, brow: [-24, -24], browY: -2, pupil: 1.05, mouth: 'frown', extra: 'tear'},
 };
 
-const Eye: React.FC<{x: number; lid: number; pupil: number; look: {x: number; y: number}; skin: string; flip?: boolean}> = ({x, lid, pupil, look, skin}) => {
-  const rx = 12;
-  const ry = 15;
-  const id = `eye${x}`;
+const egg = (rx: number, ry: number) => `M0 ${-ry} C${rx * 0.95} ${-ry} ${rx} ${ry * 0.15} ${rx * 0.8} ${ry * 0.6} C${rx * 0.55} ${ry} ${-rx * 0.55} ${ry} ${-rx * 0.8} ${ry * 0.6} C${-rx} ${ry * 0.15} ${-rx * 0.95} ${-ry} 0 ${-ry} Z`;
+
+const Eye: React.FC<{x: number; lid: number; pupil: number; look: {x: number; y: number}; skin: string; k?: number}> = ({x, lid, pupil, look, skin, k = 1}) => {
+  const rx = 12.5 * k;
+  const ry = 16 * k;
+  const id = `eye${x}${Math.round(k * 100)}`;
+  const d = egg(rx, ry);
+  const lidY = -ry - 2 + (ry * 2 + 4) * Math.min(1, lid);
+  if (lid > 0.88) {
+    // closed: a happy curved lash line on the skin, like a hand-drawn blink
+    return (
+      <g transform={`translate(${x} 0)`}>
+        <path d={taperedPath([[-rx, 1], [-rx * 0.4, 5.5], [rx * 0.4, 5.5], [rx, 1]], 5, 0.25, 0.25)} fill={INK} />
+        <path d={taperedPath([[rx * 0.75, 2.5], [rx + 4, -1]], 2.6, 0.3, 0.3)} fill={INK} />
+      </g>
+    );
+  }
   return (
     <g transform={`translate(${x} 0)`}>
-      <defs><clipPath id={id}><ellipse cx={0} cy={0} rx={rx} ry={ry} /></clipPath></defs>
-      <ellipse cx={0} cy={0} rx={rx} ry={ry} fill="#fff" stroke={INK} strokeWidth={LINE} />
+      <defs><clipPath id={id}><path d={d} /></clipPath></defs>
+      <path d={d} fill="#fff" />
       <g clipPath={`url(#${id})`}>
-        <circle cx={look.x * 4.5} cy={look.y * 5 + 2} r={6.5 * pupil} fill={INK} />
-        <circle cx={look.x * 4.5 + 2.6} cy={look.y * 5 - 1.5} r={2.3 * pupil} fill="#7fe3d6" />
-        {/* eyelid: body-coloured, comes down from the top */}
+        {/* soft shadow under the upper lid makes the eye a ball, not a sticker */}
+        <path d={`M${-rx} ${-ry} H${rx} V${-ry * 0.35} C${rx * 0.4} ${-ry * 0.1} ${-rx * 0.4} ${-ry * 0.1} ${-rx} ${-ry * 0.35} Z`} fill="#dfe6f2" />
+        <circle cx={look.x * 4.8} cy={look.y * 5.5 + 2} r={6.4 * pupil} fill={INK} />
+        <circle cx={look.x * 4.8 + 2.4} cy={look.y * 5.5 - 1.4} r={2.4 * pupil} fill="#fff" />
+        <circle cx={look.x * 4.8 - 2} cy={look.y * 5.5 + 4} r={1.1 * pupil} fill="#fff" opacity={0.8} />
         <rect x={-rx - 2} y={-ry - 2} width={rx * 2 + 4} height={(ry * 2 + 4) * Math.min(1, lid)} fill={skin} />
-        {lid > 0.02 && <line x1={-rx} x2={rx} y1={-ry - 2 + (ry * 2 + 4) * Math.min(1, lid)} y2={-ry - 2 + (ry * 2 + 4) * Math.min(1, lid)} stroke={INK} strokeWidth={LINE} />}
+        <rect x={-rx - 2} y={-ry - 2} width={rx * 2 + 4} height={(ry * 2 + 4) * Math.min(1, lid)} fill={tone(skin, 0.12)} opacity={0.5} />
+        {lid > 0.02 && <path d={taperedPath([[-rx, lidY], [0, lidY + 1.5], [rx, lidY]], 4.2, 0.2, 0.2)} fill={INK} />}
       </g>
-      <ellipse cx={0} cy={0} rx={rx} ry={ry} fill="none" stroke={INK} strokeWidth={LINE} />
+      <path d={d} fill="none" stroke={INK} strokeWidth={LINE * 0.9} />
+      <path d={taperedPath([[-rx * 0.6, ry * 0.95 + 3], [0, ry + 4.5], [rx * 0.6, ry * 0.95 + 3]], 2.4)} fill={tone(skin, 0.3)} opacity={0.7} />
     </g>
   );
 };
@@ -91,13 +109,14 @@ export const Face: React.FC<FaceProps> = ({emotion = 'neutral', talk = 0, blink 
   return (
     <g transform={`scale(${size})`}>
       {p.cheeks && <><ellipse cx={-26} cy={14} rx={7} ry={4} fill={p.cheeks} opacity={0.7} /><ellipse cx={26} cy={14} rx={7} ry={4} fill={p.cheeks} opacity={0.7} /></>}
-      <Eye x={-gap} lid={lidL} pupil={p.pupil} look={look} skin={skin} />
-      <Eye x={gap} lid={lidR} pupil={p.pupil} look={look} skin={skin} />
-      {/* brows */}
-      <g stroke={INK} strokeWidth={LINE + 0.6} strokeLinecap="round">
-        <line x1={-gap - 9} x2={-gap + 9} y1={-23 + p.browY} y2={-23 + p.browY} transform={`rotate(${p.brow[0]} ${-gap} ${-23 + p.browY})`} />
-        <line x1={gap - 9} x2={gap + 9} y1={-23 + p.browY} y2={-23 + p.browY} transform={`rotate(${-p.brow[1]} ${gap} ${-23 + p.browY})`} />
-      </g>
+      <Eye x={-gap} lid={lidL} pupil={p.pupil} look={look} skin={skin} k={1} />
+      <Eye x={gap} lid={lidR} pupil={p.pupil} look={look} skin={skin} k={1.05} />
+      {/* brows: brush strokes, thicker at the inner end */}
+      {[[-1, p.brow[0]], [1, -p.brow[1]]].map(([side, rot]) => (
+        <g key={side} transform={`translate(${side * gap} ${-25 + p.browY}) rotate(${rot})`}>
+          <path d={taperedPath(side < 0 ? [[-10, 2], [-2, -1.5], [9, 0]] : [[-9, 0], [2, -1.5], [10, 2]], 6.5, side < 0 ? 0.5 : 0.15, side < 0 ? 0.15 : 0.5)} fill={INK} />
+        </g>
+      ))}
       <g transform="translate(0 25)"><Mouth shape={p.mouth} talk={talk} /></g>
       {p.extra === 'sweat' && <path d="M34 -18 q6 9 0 13 q-6 -4 0 -13 Z" fill="#8fd8ff" stroke={INK} strokeWidth={2} />}
       {p.extra === 'tear' && <path d="M-18 16 q5 8 0 12 q-5 -4 0 -12 Z" fill="#8fd8ff" stroke={INK} strokeWidth={2} />}
@@ -106,23 +125,24 @@ export const Face: React.FC<FaceProps> = ({emotion = 'neutral', talk = 0, blink 
   );
 };
 
-/** Noodle arm from a shoulder, `angle` in degrees (0 = straight out to the right), with a round hand. */
+/** Arm from a shoulder (`angle` in degrees, 0 = right, 90 = down): a tapered, shaded limb with a 4-finger glove hand. */
 export const Arm: React.FC<{x: number; y: number; angle: number; len?: number; bend?: number; color?: string}> = ({x, y, angle, len = 34, bend = 10, color = '#fff'}) => {
   const r = (angle * Math.PI) / 180;
   const ex = x + Math.cos(r) * len;
   const ey = y + Math.sin(r) * len;
   const mx = (x + ex) / 2 - Math.sin(r) * bend;
   const my = (y + ey) / 2 + Math.cos(r) * bend;
-  const deg = angle;
+  const limb = taperedPath([[x, y], [mx, my], [ex, ey]], 11, 0.01, 0.01);
   return (
     <g>
-      <path d={`M${x} ${y} Q${mx} ${my} ${ex} ${ey}`} fill="none" stroke={INK} strokeWidth={LINE * 2.6} strokeLinecap="round" />
-      <path d={`M${x} ${y} Q${mx} ${my} ${ex} ${ey}`} fill="none" stroke={color} strokeWidth={LINE * 1.3} strokeLinecap="round" />
-      {/* mitten hand with a thumb, turned along the arm */}
-      <g transform={`translate(${ex} ${ey}) rotate(${deg})`}>
-        <ellipse cx={-2} cy={-7} rx={4.5} ry={3.5} fill="#fff" stroke={INK} strokeWidth={LINE * 0.8} transform="rotate(-30 -2 -7)" />
-        <ellipse cx={3} cy={0} rx={9} ry={7.5} fill="#fff" stroke={INK} strokeWidth={LINE} />
-        <path d="M6 -3 v6" stroke={INK} strokeWidth={1.4} strokeLinecap="round" opacity={0.5} />
+      <path d={limb} fill={INK} transform="translate(0 0)" stroke={INK} strokeWidth={LINE * 1.6} strokeLinejoin="round" />
+      <path d={limb} fill={color} />
+      <path d={taperedPath([[x, y], [mx, my], [ex, ey]], 4, 0.2, 0.2)} fill={tone(color, 0.18)} transform="translate(1.5 2)" />
+      <g transform={`translate(${ex} ${ey}) rotate(${angle})`}>
+        {[-6, -1.5, 3].map((fy, i) => <rect key={i} x={6} y={fy - 2.4} width={9 - i} height={4.8} rx={2.4} fill="#fff" stroke={INK} strokeWidth={LINE * 0.75} />)}
+        <path d="M-2 -3 C-6 -10 2 -13 5 -7" fill="#fff" stroke={INK} strokeWidth={LINE * 0.75} />
+        <path d="M-6 0 C-6 -8 9 -9 10 -1 C11 6 -4 9 -6 0 Z" fill="#fff" stroke={INK} strokeWidth={LINE * 0.85} />
+        <path d="M-6 0 C-6 -8 9 -9 10 -1 C11 6 -4 9 -6 0 Z" fill="none" stroke="#dfe6f2" strokeWidth={2} transform="translate(0.8 1.2) scale(0.8)" />
       </g>
     </g>
   );
