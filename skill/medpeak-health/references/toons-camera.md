@@ -72,6 +72,15 @@ A cut is a decision. A jump is a mistake. The first version jumped; these rules 
    them in `cam`.
 6. **In a pause the picture holds.** Between lines and before a scene change the last picture stays.
 
+## Steady camera (`"camera": "steady"` in toon.json)
+Measured on 20 top Shorts: a cut every 14.6 s and a locked camera; our first director cut every
+2 s. In a steady script each place is ONE locked wide picture (`ews`, 24 mm, move `lock`): no
+push, no truck, no punch-in on key words. The camera cuts when the place changes; a line may ask
+for its own picture with `cam` (the scene's picture returns after that line). What keeps the eye
+is what happens in the picture (toons-script.md, "The steady style"). The camera scan
+(`npm run toon:camera`) still runs and must stay at 0 / 0 / 0. Scripts without the field keep
+the cinematic director described below.
+
 ## What the director does on its own
 A script does not have to name any camera. For each line the director picks a picture from the
 speaker's emotion, and it never holds one picture longer than 2.9 seconds (Retention 7).

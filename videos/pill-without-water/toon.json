@@ -2,34 +2,35 @@
  "slug": "pill-without-water",
  "title": "What happens when you swallow a pill without water",
  "music": "bouncy",
+ "camera": "steady",
  "retention": {
-  "change3s": {
-   "scene": "all",
-   "line": "a new picture at least every 3 s (the director does it)"
-  },
   "noIntro": {
    "scene": "A1",
-   "line": "Hey! You can't park here. This is the food pipe!"
+   "line": "Whoa! A pill? Where's the water?"
   },
   "promise": {
    "scene": "A3",
-   "line": "Three things happen next. Wait for the third!"
+   "line": "Then three things happen. And I hate the third."
   },
   "counting": {
    "scene": "A4,A5,A6",
-   "line": "Number one / Number two / Number three"
+   "line": "First / Second / Third"
+  },
+  "change3s": {
+   "scene": "all",
+   "line": "steady camera: something new happens in the picture at least every 3 s"
   },
   "twist": {
-   "scene": "B3",
+   "scene": "D2",
    "line": "But here's the twist: don't blame the medicine. It just needed a ride down."
   },
   "bestLast": {
-   "scene": "B6",
+   "scene": "D5",
    "line": "And with some antibiotics, the NHS says: no lying down for thirty minutes."
   },
   "loop": {
-   "scene": "B7",
-   "line": "So nothing can park in my food pipe!"
+   "scene": "E2",
+   "line": "Whoa... a pill with water. Thank you!"
   }
  },
  "sources": [
@@ -55,61 +56,190 @@
  "shots": [
   {
    "id": "A",
-   "set": "throat",
+   "set": "foodpipe",
+   "label": "FOOD PIPE",
    "cast": [
     {
-     "who": "whitecell",
-     "x": 350,
-     "y": 700,
-     "size": 720,
-     "noLegs": true,
-     "pose": "hips"
+     "who": "foodpipe",
+     "x": 540,
+     "size": 700,
+     "stage": true,
+     "emotion": "shocked",
+     "pose": "panic"
     },
     {
      "who": "pill",
-     "x": 740,
-     "y": 1090,
-     "size": 600,
-     "rot": -68,
-     "noLegs": true,
+     "x": 606,
+     "size": 520,
+     "stage": true,
      "emotion": "scared",
      "pose": "panic"
+    }
+   ],
+   "state": {
+    "drop": 0
+   },
+   "events": [
+    {
+     "at": "start",
+     "set": {
+      "drop": 1
+     },
+     "over": 20,
+     "sfx": "slide-whistle-down"
+    },
+    {
+     "at": "start",
+     "delay": 0.67,
+     "set": {
+      "stick": 1
+     },
+     "over": 5,
+     "sfx": "bonk",
+     "fx": "flash"
+    },
+    {
+     "at": "A3",
+     "word": "third",
+     "set": {
+      "melt": 0.1
+     },
+     "over": 24,
+     "sfx": "drip"
+    },
+    {
+     "at": "A5",
+     "word": "melt",
+     "set": {
+      "melt": 0.62
+     },
+     "over": 40,
+     "sfx": "sizzle-acid"
+    },
+    {
+     "at": "A6",
+     "word": "burns",
+     "set": {
+      "sore": 0.7,
+      "pain": 1
+     },
+     "over": 26,
+     "sfx": "sizzle-acid"
+    },
+    {
+     "at": "A6",
+     "word": "Ow",
+     "set": {
+      "melt": 0.92,
+      "sore": 0.8
+     },
+     "over": 24,
+     "fx": "flash",
+     "sfx": "gasp"
+    },
+    {
+     "at": "A7",
+     "word": "swallow",
+     "set": {
+      "sore": 1
+     },
+     "over": 22,
+     "sfx": "gulp"
+    }
+   ],
+   "props": [
+    {
+     "kind": "glass",
+     "x": 890,
+     "y": 470,
+     "size": 230,
+     "from": "A1",
+     "word": "water",
+     "to": "A2",
+     "no": true
+    },
+    {
+     "kind": "tag",
+     "text": "stuck!",
+     "x": 230,
+     "y": 430,
+     "size": 340,
+     "rot": -6,
+     "from": "A2",
+     "word": "stuck",
+     "to": "A2"
+    },
+    {
+     "kind": "tag",
+     "text": "3 things",
+     "x": 230,
+     "y": 300,
+     "size": 340,
+     "rot": -4,
+     "from": "A3",
+     "word": "three",
+     "to": "A3"
+    },
+    {
+     "kind": "chip",
+     "text": "1",
+     "x": 190,
+     "y": 330,
+     "size": 150,
+     "from": "A4"
+    },
+    {
+     "kind": "chip",
+     "text": "2",
+     "x": 190,
+     "y": 510,
+     "size": 150,
+     "from": "A5"
+    },
+    {
+     "kind": "chip",
+     "text": "3",
+     "x": 190,
+     "y": 690,
+     "size": 150,
+     "from": "A6"
     }
    ],
    "lines": [
     {
      "id": "A1",
-     "who": "whitecell",
-     "text": "Hey! You can't park here. This is the food pipe!",
-     "emotion": "angry",
-     "pose": "point",
-     "key": "here"
-    },
-    {
-     "id": "A2",
-     "who": "pill",
-     "text": "I'm stuck! He swallowed me without water!",
-     "emotion": "scared",
+     "who": "foodpipe",
+     "text": "Whoa! A pill? Where's the water?",
+     "emotion": "shocked",
      "pose": "panic",
-     "key": "water"
-    },
-    {
-     "id": "A3",
-     "who": "whitecell",
-     "text": "Three things happen next. Wait for the third!",
-     "emotion": "neutral",
-     "pose": "present",
-     "key": "third",
+     "key": "water",
      "react": {
       "pill": "scared"
      }
     },
     {
-     "id": "A4",
+     "id": "A2",
      "who": "pill",
-     "text": "Number one: I stick to the wall.",
-     "emotion": "sick",
-     "pose": "shrug",
+     "text": "He swallowed me dry! I'm stuck on your wall!",
+     "emotion": "scared",
+     "pose": "panic",
+     "key": "stuck",
+     "sfx": "boing"
+    },
+    {
+     "id": "A3",
+     "who": "foodpipe",
+     "text": "Then three things happen. And I hate the third.",
+     "emotion": "angry",
+     "pose": "hips",
+     "key": "third"
+    },
+    {
+     "id": "A4",
+     "who": "foodpipe",
+     "text": "First, you stick to me.",
+     "emotion": "angry",
+     "pose": "point",
      "key": "stick",
      "src": [
       "statpearls"
@@ -117,13 +247,13 @@
     },
     {
      "id": "A5",
-     "who": "whitecell",
-     "text": "Number two: you start to melt right here!",
-     "emotion": "shocked",
-     "pose": "panic",
+     "who": "pill",
+     "text": "Second... I start to melt!",
+     "emotion": "sick",
+     "pose": "shrug",
      "key": "melt",
      "react": {
-      "pill": "sick"
+      "foodpipe": "scared"
      },
      "src": [
       "statpearls"
@@ -131,14 +261,25 @@
     },
     {
      "id": "A6",
-     "who": "pill",
-     "text": "Number three: my medicine burns the lining. Sorry!",
+     "who": "foodpipe",
+     "text": "Third, your medicine burns my lining. Ow!",
      "emotion": "sad",
-     "pose": "shrug",
+     "pose": "panic",
      "key": "burns",
      "react": {
-      "whitecell": "shocked"
+      "pill": "sad"
      },
+     "src": [
+      "statpearls"
+     ]
+    },
+    {
+     "id": "A7",
+     "who": "foodpipe",
+     "text": "Soon, every swallow will sting.",
+     "emotion": "sick",
+     "pose": "shrug",
+     "key": "sting",
      "src": [
       "statpearls"
      ]
@@ -146,7 +287,48 @@
    ]
   },
   {
-   "id": "B",
+   "id": "T1",
+   "set": "foodpipe",
+   "card": "Later that night...",
+   "seconds": 1.4,
+   "cast": [],
+   "lines": []
+  },
+  {
+   "id": "C",
+   "set": "bedroom",
+   "cast": [
+    {
+     "who": "patient",
+     "x": 540,
+     "size": 1040,
+     "emotion": "sick",
+     "pose": "heart"
+    }
+   ],
+   "props": [
+    {
+     "kind": "pain",
+     "x": 560,
+     "y": 1010,
+     "size": 170,
+     "from": "C1",
+     "word": "burn"
+    }
+   ],
+   "lines": [
+    {
+     "id": "C1",
+     "who": "patient",
+     "text": "Ow! Why does my chest burn when I swallow?",
+     "emotion": "sick",
+     "pose": "heart",
+     "key": "burn"
+    }
+   ]
+  },
+  {
+   "id": "D",
    "set": "office",
    "cast": [
     {
@@ -164,25 +346,115 @@
    ],
    "props": [
     {
+     "kind": "pipe",
+     "x": 560,
+     "y": 400,
+     "size": 380,
+     "from": "D1",
+     "word": "stuck",
+     "to": "D1",
+     "bubble": true
+    },
+    {
+     "kind": "pain",
+     "x": 541,
+     "y": 386,
+     "size": 110,
+     "from": "D1",
+     "word": "dissolved",
+     "to": "D1"
+    },
+    {
+     "kind": "tag",
+     "text": "the twist",
+     "x": 550,
+     "y": 300,
+     "size": 340,
+     "rot": -4,
+     "from": "D2",
+     "to": "D2"
+    },
+    {
+     "kind": "pillbottle",
+     "x": 455,
+     "y": 1190,
+     "size": 190,
+     "from": "D2",
+     "word": "medicine",
+     "to": "D2",
+     "halo": true
+    },
+    {
+     "kind": "glass",
+     "x": 648,
+     "y": 1190,
+     "size": 190,
+     "from": "D2",
+     "word": "ride",
+     "to": "D2",
+     "halo": true
+    },
+    {
+     "kind": "tag",
+     "text": "water?",
+     "x": 800,
+     "y": 330,
+     "size": 340,
+     "rot": 5,
+     "from": "D3",
+     "word": "water",
+     "to": "D3"
+    },
+    {
      "kind": "glass",
      "x": 550,
-     "y": 1010,
-     "size": 250,
-     "from": "B5",
+     "y": 1170,
+     "size": 260,
+     "from": "D4",
+     "to": "D4",
+     "halo": true
+    },
+    {
+     "kind": "tag",
+     "text": "sit or stand up",
+     "x": 550,
+     "y": 300,
+     "size": 300,
+     "from": "D4",
+     "word": "sitting",
+     "to": "D4"
+    },
+    {
+     "kind": "pillbottle",
+     "x": 560,
+     "y": 400,
+     "size": 340,
+     "from": "D5",
+     "bubble": true
+    },
+    {
+     "kind": "pillow",
+     "x": 455,
+     "y": 1190,
+     "size": 190,
+     "from": "D5",
+     "word": "lying",
+     "no": true,
+     "halo": true
+    },
+    {
+     "kind": "clock",
+     "x": 648,
+     "y": 1190,
+     "size": 190,
+     "from": "D5",
+     "word": "thirty",
      "halo": true
     }
    ],
    "lines": [
     {
-     "id": "B1",
-     "who": "patient",
-     "text": "Doc, why does my chest burn when I swallow?",
-     "emotion": "sick",
-     "pose": "heart",
-     "key": "burn"
-    },
-    {
-     "id": "B2",
+     "id": "D1",
      "who": "doctor",
      "text": "A pill got stuck in your food pipe. It dissolved there and irritated it.",
      "emotion": "neutral",
@@ -197,7 +469,7 @@
      ]
     },
     {
-     "id": "B3",
+     "id": "D2",
      "who": "doctor",
      "text": "But here's the twist: don't blame the medicine. It just needed a ride down.",
      "emotion": "happy",
@@ -209,7 +481,7 @@
      ]
     },
     {
-     "id": "B4",
+     "id": "D3",
      "who": "patient",
      "text": "So water is the ride?",
      "emotion": "neutral",
@@ -217,7 +489,7 @@
      "key": "water"
     },
     {
-     "id": "B5",
+     "id": "D4",
      "who": "doctor",
      "text": "Exactly. A glass of water, sitting or standing up.",
      "emotion": "happy",
@@ -228,7 +500,7 @@
      ]
     },
     {
-     "id": "B6",
+     "id": "D5",
      "who": "doctor",
      "text": "And with some antibiotics, the NHS says: no lying down for thirty minutes.",
      "emotion": "neutral",
@@ -237,15 +509,101 @@
      "src": [
       "nhs-doxycycline"
      ]
+    }
+   ]
+  },
+  {
+   "id": "E",
+   "set": "foodpipe",
+   "label": "NEXT TIME",
+   "cast": [
+    {
+     "who": "foodpipe",
+     "x": 540,
+     "size": 700,
+     "stage": true,
+     "emotion": "neutral"
     },
     {
-     "id": "B7",
-     "who": "patient",
-     "text": "So nothing can park in my food pipe!",
+     "who": "pill",
+     "x": 606,
+     "size": 520,
+     "stage": true,
+     "emotion": "happy",
+     "pose": "cheer"
+    }
+   ],
+   "state": {
+    "drop": 0
+   },
+   "events": [
+    {
+     "at": "start",
+     "set": {
+      "drop": 1
+     },
+     "over": 16,
+     "sfx": "slide-whistle-down"
+    },
+    {
+     "at": "start",
+     "delay": 0.45,
+     "set": {
+      "water": 0.25
+     },
+     "over": 14,
+     "sfx": "splash-small"
+    },
+    {
+     "at": "E1",
+     "delay": 0.95,
+     "set": {
+      "slide": 1,
+      "water": 1
+     },
+     "over": 62,
+     "sfx": "zip-away"
+    }
+   ],
+   "props": [
+    {
+     "kind": "glass",
+     "x": 850,
+     "y": 660,
+     "size": 230,
+     "from": "E2",
+     "halo": true
+    },
+    {
+     "kind": "tag",
+     "text": "with water",
+     "x": 800,
+     "y": 420,
+     "size": 340,
+     "rot": -5,
+     "from": "E2",
+     "word": "water"
+    }
+   ],
+   "lines": [
+    {
+     "id": "E1",
+     "who": "pill",
+     "text": "Wheee! This time I got my water!",
+     "emotion": "happy",
+     "pose": "cheer",
+     "key": "water",
+     "react": {
+      "foodpipe": "happy"
+     }
+    },
+    {
+     "id": "E2",
+     "who": "foodpipe",
+     "text": "Whoa... a pill with water. Thank you!",
      "emotion": "happy",
      "pose": "thumb",
-     "key": "park",
-     "cam": "two 35 pull"
+     "key": "water"
     }
    ]
   }

@@ -101,6 +101,16 @@ average above -21 dB, so a click and a trombone feel equal. Music beds are store
 play about 9 dB under the voice, a little higher in the gaps. The render is mastered to -14 LUFS.
 `--remix` on `toon-voice` and `toon-sfx` applies level changes again for free from the raw downloads.
 
+## Steady style and stages (pilot, 2026-11-16)
+After measuring 20 top Shorts frame by frame (toons-reference-study.md) the pill script was
+rebuilt as a pilot: locked camera, the food pipe as a cutaway stage with its own face, the pill
+falling in, sticking, melting and leaving a sore, a time card, the patient at home, Dr. Mira with
+thought-bubble graphics, and the same stage again with water. New pieces: `src/toons/stages.tsx`
+(stages and their dials), `events` / `state` / `card` / `"camera": "steady"` in toon.json
+(toons-script.md), the props `tag`, `chip`, `pain`, `pipe`, and the stage board
+(`node pipeline/toon-sheets.mjs --boards` -> toons-boards/stage.jpg). The other two scripts are
+still in the old cinematic style until the owner approves the pilot.
+
 ## Roadmap
 - Phase A (v6, 2026-11-16, after the owner's review of the first voiced scene): volume paint and
   materials, all 25 characters redrawn with real structure, people on a skeleton with body acting,

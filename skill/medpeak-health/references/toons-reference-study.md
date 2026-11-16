@@ -101,3 +101,25 @@ line, a script gate, and a camera that CAN do lenses and depth when a moment nee
 - **Retention 7, points 2 and 3 (promise, counting).** The reference never says "three things" or
   "number one". It holds the viewer with a story. Keep the counting inside the doctor's part, or
   drop it for Toons: the owner decides.
+
+## The pilot against the same numbers (2026-11-16, silent render, same measuring script)
+`videos/pill-without-water`, rebuilt in the steady style (toons-script.md).
+
+| Measure | Their 20 Shorts | Ours before | The pilot |
+|---|---|---|---|
+| Cuts | one every 14.6 s | one every 2.0 s | one every 10.8 s (4 cuts in 54 s) |
+| Typical shot | 15 s | 2 s | 6.3 s; the longest holds 22 s |
+| Seconds where the picture barely changes | 85% | 0% | 33% |
+| Seconds with a big change | 6% | 64% | 8% |
+| Places | 2 to 5 | 2 | 3 and a time card |
+| Camera scan (wrong picture / jump cut / jolt) | - | 0 / 0 / 0 after the fix | 0 / 0 / 0 |
+
+What closed: the cutting and the big changes are at their level. What did not: "still seconds" is
+33%, not 85%, because our sets keep moving on purpose (the owner asked for living backgrounds),
+our stage face is large, and a caption word changes several times a second. If the picture still
+feels busy on a phone, the next dials are slower set life and fewer caption words on screen.
+
+Gaps from the list above that the pilot covers: 1 calm camera, 2 organ as the stage, 3 the process
+shown, 6 graphics and labels, 8 time card, 9 the person at home, 10 small captions. Still open:
+4 tools and hands reaching in from outside, 5 labelled job characters, 7 slapstick, 11 one stage
+only (the food pipe; every other organ needs its own), 12 silent beats.

@@ -4,6 +4,7 @@
 import React from 'react';
 import {circlePath, ellipsePath, lineOf, Part, roundRect, shade, spline, Tube, useLine} from './ink';
 import type {PropName} from './director';
+import {theme} from '../brand/theme';
 
 const Line: React.FC<{d: string; color: string; k?: number; opacity?: number}> = ({d, color, k = 0.7, opacity}) => {
   const w = useLine(k);
@@ -108,13 +109,69 @@ const ClockProp: React.FC<{t: number}> = ({t}) => (
   </g>
 );
 
-export const PROPS: Record<PropName, React.FC<{t: number}>> = {glass: Glass, pillbottle: PillBottle, soda: Soda, candy: Candy, toothbrush: Toothbrush, burger: Burger, pillow: Pillow, clock: ClockProp};
+/** A pain flash: a jagged star with a bolt (the consequence, felt). */
+const Pain: React.FC<{t: number}> = ({t}) => {
+  const k = 1 + Math.sin(t * 10) * 0.06;
+  return (
+    <g transform={`scale(${k})`}>
+      <path d="M0 -78 L18 -34 L62 -52 L40 -8 L82 12 L36 26 L48 72 L6 44 L-24 80 L-26 34 L-74 38 L-42 4 L-72 -34 L-28 -30 Z" fill="#ff5a5f" stroke="#a81f33" strokeWidth={2.4} strokeLinejoin="round" />
+      <path d="M0 -52 L12 -22 L42 -34 L26 -4 L54 10 L24 18 L32 48 L4 30 L-16 52 L-18 22 L-48 26 L-28 2 L-46 -22 L-18 -20 Z" fill="#ffd23c" />
+      <path d="M6 -30 L-14 4 H2 L-8 34 L18 -4 H2 Z" fill="#a81f33" />
+    </g>
+  );
+};
+/** A tiny diagram of the food pipe with a pill lodged in it and a red sore (for the doctor's bubble). */
+const PipeDiagram: React.FC<{t: number}> = () => (
+  <g transform="scale(1.5)">
+    <path d="M-34 -80 C-40 -30 -30 30 -36 80 H36 C30 30 40 -30 34 -80 Z" fill="#f7a5a8" stroke="#8c3848" strokeWidth={2.2} />
+    <path d="M-16 -80 C-20 -30 -12 30 -16 80 H16 C12 30 20 -30 16 -80 Z" fill="#fbc9bf" />
+    <circle cx={-18} cy={-6} r={15} fill="#e2283c" opacity={0.75} />
+    <g transform="translate(0 -8) rotate(-38)">
+      <path d="M-9 -22 A9 9 0 0 1 9 -22 V0 H-9 Z" fill="#19b8a6" stroke="#0f6f66" strokeWidth={1.6} />
+      <path d="M-9 0 H9 V22 A9 9 0 0 1 -9 22 Z" fill="#fffdf6" stroke="#55608c" strokeWidth={1.6} />
+    </g>
+  </g>
+);
+/** A round counting chip ("1", "2", "3") that lights up as a point is counted out loud. */
+const Chip: React.FC<{t: number; text?: string}> = ({text = '1'}) => (
+  <g>
+    <circle cx={5} cy={8} r={72} fill="#1d2b4f" opacity={0.28} />
+    <circle r={72} fill="#ffc93c" stroke="#ffffff" strokeWidth={9} />
+    <circle r={72} fill="none" stroke="#b9892c" strokeWidth={2.4} />
+    <text x={0} y={34} textAnchor="middle" fontSize={98} fontWeight={900} fill="#1d2b4f" fontFamily={theme.font}>{text}</text>
+  </g>
+);
 
-/** A prop with an optional soft halo behind it, so it reads as "look at this" over any background. */
-export const Prop: React.FC<{kind: PropName; t: number; halo?: boolean}> = ({kind, t, halo = false}) => {
+/** A name tag: a few words on a sticker (labels a thing, a moment, or a rule like "SIT UP"). */
+const TagProp: React.FC<{t: number; text?: string}> = ({text = ''}) => {
+  const w = Math.max(70, text.length * 19 + 34);
+  return (
+    <g>
+      <rect x={-w / 2 + 3} y={-22} width={w} height={52} rx={26} fill="#1d2b4f" opacity={0.28} />
+      <rect x={-w / 2} y={-28} width={w} height={52} rx={26} fill="#ffffff" stroke="#2ec4b6" strokeWidth={5} />
+      <text x={0} y={9} textAnchor="middle" fontSize={30} fontWeight={900} fill="#1d2b4f" fontFamily={theme.font} letterSpacing={0.6}>{text.toUpperCase()}</text>
+    </g>
+  );
+};
+
+export const PROPS: Record<PropName, React.FC<{t: number; text?: string}>> = {tag: TagProp, glass: Glass, pillbottle: PillBottle, soda: Soda, candy: Candy, toothbrush: Toothbrush, burger: Burger, pillow: Pillow, clock: ClockProp, pain: Pain, pipe: PipeDiagram, chip: Chip};
+
+/**
+ * A prop on screen. `halo` = a soft glowing disc behind it; `bubble` = inside a thought bubble
+ * (the doctor's picture of what she means); `no` = a red "not this" sign over it.
+ */
+export const Prop: React.FC<{kind: PropName; t: number; halo?: boolean; bubble?: boolean; no?: boolean; text?: string}> = ({kind, t, halo = false, bubble = false, no = false, text}) => {
   const P = PROPS[kind];
   return (
     <g>
+      {bubble && (
+        <g>
+          <path d="M-96 -6 C-112 -58 -62 -100 -18 -90 C6 -118 70 -112 82 -76 C122 -70 132 -18 104 6 C122 46 82 88 40 76 C22 104 -40 104 -56 76 C-100 84 -124 34 -96 -6 Z" fill="#1d2b4f" opacity={0.22} transform="translate(5 8)" />
+          <path d="M-96 -6 C-112 -58 -62 -100 -18 -90 C6 -118 70 -112 82 -76 C122 -70 132 -18 104 6 C122 46 82 88 40 76 C22 104 -40 104 -56 76 C-100 84 -124 34 -96 -6 Z" fill="#ffffff" stroke="#55608c" strokeWidth={2.4} />
+          <circle cx={-84} cy={104} r={13} fill="#ffffff" stroke="#55608c" strokeWidth={2.4} />
+          <circle cx={-110} cy={132} r={8} fill="#ffffff" stroke="#55608c" strokeWidth={2.4} />
+        </g>
+      )}
       {halo && (
         <>
           <circle r={104} fill="#ffffff" opacity={0.3} />
@@ -122,7 +179,13 @@ export const Prop: React.FC<{kind: PropName; t: number; halo?: boolean}> = ({kin
           <circle r={92} fill="none" stroke="#ffc93c" strokeWidth={2.4} strokeDasharray="7 7" opacity={0.9} />
         </>
       )}
-      <P t={t} />
+      <g transform={bubble ? 'scale(0.62)' : undefined}><P t={t} text={text} /></g>
+      {no && (
+        <g transform={bubble ? 'scale(0.62)' : undefined}>
+          <circle r={88} fill="none" stroke="#e2283c" strokeWidth={13} />
+          <path d="M-62 -62 L62 62" stroke="#e2283c" strokeWidth={13} strokeLinecap="round" />
+        </g>
+      )}
     </g>
   );
 };

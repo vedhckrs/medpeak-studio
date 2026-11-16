@@ -15,6 +15,7 @@ import {headY, PEOPLE, SPECS, type PersonName} from './humans';
 import {circlePath, Grain, lineOf, Part, tone} from './ink';
 import {clamp01, E, key, settle, speak} from './motion';
 import {POSES, type PoseName} from './poses';
+import {FoodPipeStage, type StageFace} from './stages';
 import {ShotStill, type ToonActor} from './Player';
 import {LENSES, type LensName, type MoveName, SHOTS, type ShotName} from './camera';
 import {type ArmSpec, blinkAt, EMOTIONS, type Emotion, Face, Hand, HAND_POSES, type HandPose} from './rig';
@@ -168,6 +169,39 @@ export const ModelSheet: React.FC<{who?: string}> = ({who = 'stomach'}) => {
       <T x={1370} y={860} size={22} weight={800} color={STYLE.label} spacing={4}>HANDS</T>
       {HAND_POSES.map((h, i) => <HandChip key={h} x={1420 + i * 104} y={960} pose={h} color={bp ? bp.arms?.color ?? bp.color : sp!.skin} size={104} />)}
       <T x={1850} y={50} w={900} size={16} weight={600} color="#a79fb3" align="right">volume paint: soft form, two-step shadow, bounce light, material texture · outline = darker shade of each fill, max {STYLE.maxLinePx} px · light from the top-left · main colour {main.toUpperCase()}</T>
+    </AbsoluteFill>
+  );
+};
+
+/** STAGE BOARD: one stage in six moments of its story (1080x1920). */
+export const StageBoard: React.FC = () => {
+  const f = (emotion: Emotion, talk = 0, arms: [ArmSpec, ArmSpec] = [112, 68]): StageFace => ({emotion, talk, blink: 0, look: {x: 0, y: -0.4}, arms, squash: 0, lean: 0, nod: 0});
+  const cells: {label: string; state: Record<string, number>; me: StageFace; pill: StageFace}[] = [
+    {label: '1 the pill falls in', state: {drop: 0.72}, me: f('shocked', 0.7, POSES.panic.body), pill: f('scared', 0.5, POSES.panic.body)},
+    {label: '2 it sticks', state: {drop: 1, stick: 1}, me: f('angry', 0.6, POSES.point.body), pill: f('scared', 0.6, POSES.panic.body)},
+    {label: '3 it melts', state: {drop: 1, stick: 1, melt: 0.55, sore: 0.25}, me: f('scared', 0.5, POSES.panic.body), pill: f('sick', 0.5, POSES.shrug.body)},
+    {label: '4 it burns', state: {drop: 1, stick: 1, melt: 0.9, sore: 0.7, pain: 1}, me: f('sad', 0.8, POSES.panic.body), pill: f('sad', 0.3, POSES.shrug.body)},
+    {label: '5 later: a sore', state: {drop: 1, stick: 1, melt: 1, sore: 1, pain: 0.6}, me: f('sick', 0.4, POSES.shrug.body), pill: f('sad')},
+    {label: '6 with water', state: {drop: 1, water: 0.44, slide: 0.32}, me: f('happy', 0.6, POSES.cheer.body), pill: f('happy', 0.7, POSES.cheer.body)},
+  ];
+  return (
+    <AbsoluteFill style={{background: '#1d1430'}}>
+      <T x={540} y={34} w={1040} size={50} weight={900} color="#ffffff" align="center">Stage: the food pipe</T>
+      <T x={540} y={98} w={1040} size={22} weight={600} color="#b9b2d6" align="center">the organ is the stage; the script changes its state, so the story is shown</T>
+      {cells.map((c, i) => {
+        const x = 30 + (i % 3) * 346;
+        const y = 170 + Math.floor(i / 3) * 860;
+        return (
+          <React.Fragment key={i}>
+            <div style={{position: 'absolute', left: x, top: y, width: 328, height: 583, overflow: 'hidden', borderRadius: 18, border: '3px solid #3a2f5c'}}>
+              <div style={{width: 1080, height: 1920, transform: 'scale(0.3037)', transformOrigin: 'top left', position: 'relative', overflow: 'hidden'}}>
+                <FoodPipeStage t={1.3 + i} state={c.state} faces={{foodpipe: c.me, pill: c.pill}} />
+              </div>
+            </div>
+            <T x={x + 4} y={y + 594} w={330} size={24} weight={900} color="#ffc93c">{c.label}</T>
+          </React.Fragment>
+        );
+      })}
     </AbsoluteFill>
   );
 };

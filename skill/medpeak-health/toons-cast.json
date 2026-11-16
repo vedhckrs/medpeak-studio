@@ -20,6 +20,7 @@
     "tooth": {"voice": "Alice", "voiceId": "Xb7hH8MSUJpSbSDYk0k2", "pitch": 3, "speed": 1.1, "why": "clear and prim, pitched up"},
     "bone": {"voice": "George", "voiceId": "JBFqnCBsd6RMkjVDRZzb", "pitch": -1, "speed": 1.0, "why": "warm, old-fashioned"},
 
+    "foodpipe": {"voice": "Roger", "voiceId": "CwhRBWXzGAHq8TQ4Fs17", "pitch": 1, "speed": 1.08, "why": "the long-suffering hallway everything passes through (a stage character: the organ itself talks)"},
     "pill": {"voice": "Will", "voiceId": "bIHbv24MWmeRgasZH58o", "pitch": 3, "speed": 1.12, "why": "young optimist, eager helper"},
     "poop": {"voice": "Roger", "voiceId": "CwhRBWXzGAHq8TQ4Fs17", "pitch": -3, "speed": 1.0, "why": "laid-back, blunt, low"},
     "redcell": {"voice": "Bella", "voiceId": "hpp4J3VqNfWAUOO0d1Us", "pitch": 2, "speed": 1.14, "why": "bright, friendly, in a hurry"},

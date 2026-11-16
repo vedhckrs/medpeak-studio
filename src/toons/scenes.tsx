@@ -9,6 +9,7 @@ import {blob, lineOf, Part, shade, lift, spline, taperedPath, tone, type P} from
 import {theme} from '../brand/theme';
 import {CamCtx, Canvas, H, Layer, W} from './camera';
 import type {SetName} from './director';
+import {FoodPipeStage, type SetProps} from './stages';
 import {STYLE} from './style';
 
 // Set outlines are thin and coloured: maroon inside the body, slate in rooms. Never heavy black.
@@ -842,19 +843,33 @@ export const BedroomSet: React.FC<{t: number}> = ({t}) => {
   );
 };
 
-/** One word at a time: white on a navy rounded tag, the key word in amber, a small pop-in tilt. */
-export const WordCaption: React.FC<{word: string; key_?: boolean; y?: number; pop?: number}> = ({word, key_, y = 1360, pop = 1}) => (
-  <div style={{position: 'absolute', top: y, left: 0, right: 0, display: 'flex', justifyContent: 'center'}}>
-    <div style={{background: STYLE.captionBg, color: key_ ? STYLE.captionKey : STYLE.captionText, fontFamily: theme.font, fontWeight: 900, fontSize: 96, padding: '6px 40px 14px', borderRadius: 32, letterSpacing: 1, transform: `rotate(-2deg) scale(${pop})`, boxShadow: '0 12px 0 rgba(0,0,0,0.2)', border: '5px solid #fff'}}>{word.toUpperCase()}</div>
-  </div>
-);
+/**
+ * One word at a time. Two looks: the boxed tag (white on navy, key word in amber), and `plain`:
+ * smaller white words with a dark outline and no box, low in the frame, so they never hide the drawing.
+ */
+export const WordCaption: React.FC<{word: string; key_?: boolean; y?: number; pop?: number; plain?: boolean}> = ({word, key_, y = 1360, pop = 1, plain = false}) => {
+  if (plain) {
+    const o = STYLE.captionBg;
+    const ring = [[5, 0], [-5, 0], [0, 5], [0, -5], [4, 4], [-4, 4], [4, -4], [-4, -4], [6, 3], [-6, 3], [3, 6], [-3, 6]].map(([x, yy]) => `${x}px ${yy}px 0 ${o}`).join(', ');
+    return (
+      <div style={{position: 'absolute', top: y, left: 0, right: 0, display: 'flex', justifyContent: 'center'}}>
+        <div style={{color: key_ ? STYLE.captionKey : STYLE.captionText, fontFamily: theme.font, fontWeight: 900, fontSize: key_ ? 92 : 78, letterSpacing: 1.5, transform: `scale(${pop})`, textShadow: `${ring}, 0 10px 0 rgba(0,0,0,0.35)`}}>{word.toUpperCase()}</div>
+      </div>
+    );
+  }
+  return (
+    <div style={{position: 'absolute', top: y, left: 0, right: 0, display: 'flex', justifyContent: 'center'}}>
+      <div style={{background: STYLE.captionBg, color: key_ ? STYLE.captionKey : STYLE.captionText, fontFamily: theme.font, fontWeight: 900, fontSize: 96, padding: '6px 40px 14px', borderRadius: 32, letterSpacing: 1, transform: `rotate(-2deg) scale(${pop})`, boxShadow: '0 12px 0 rgba(0,0,0,0.2)', border: '5px solid #fff'}}>{word.toUpperCase()}</div>
+    </div>
+  );
+};
 
-export const SETS: Record<SetName, React.FC<{t: number}>> = {throat: ThroatSet, gut: GutSet, stomach: StomachSet, mouth: MouthSet, blood: BloodSet, lungs: LungsSet, office: OfficeSet, bathroom: BathroomSet, bedroom: BedroomSet};
+export const SETS: Record<SetName, React.FC<SetProps>> = {throat: ThroatSet, gut: GutSet, stomach: StomachSet, mouth: MouthSet, blood: BloodSet, lungs: LungsSet, office: OfficeSet, bathroom: BathroomSet, bedroom: BedroomSet, foodpipe: FoodPipeStage};
 export type {SetName};
 /** The blurred foreground of each set: drawn OVER the characters, it moves faster than they do. */
 export const FORES: Partial<Record<SetName, React.FC<{t: number}>>> = {throat: ThroatFore, gut: GutFore, stomach: StomachFore, blood: BloodFore, office: OfficeFore, bathroom: BathroomFore};
 /** Where characters stand in each set (screen y of the floor). null = no floor: characters float. */
-export const FLOORS: Record<SetName, number | null> = {throat: null, gut: 1330, stomach: 1440, mouth: 1300, blood: 1350, lungs: null, office: 1500, bathroom: 1580, bedroom: 1580};
+export const FLOORS: Record<SetName, number | null> = {throat: null, gut: 1330, stomach: 1440, mouth: 1300, blood: 1350, lungs: null, office: 1500, bathroom: 1580, bedroom: 1580, foodpipe: null};
 /** What moves behind the characters in each set (for the skill and the script writer). */
 export const SET_LIFE: Record<SetName, string> = {
   throat: 'walls squeeze downward, bubbles rise, wet glints slide down, light breathes from above',
@@ -866,6 +881,7 @@ export const SET_LIFE: Record<SetName, string> = {
   office: 'clouds drift and a tree sways outside, the clock ticks, the heart monitor scrolls, dust floats in the light, the plant moves',
   bathroom: 'the tap drips and ripples, steam rises, a glint crosses the mirror, the shower curtain sways',
   bedroom: 'stars twinkle, a cloud crosses the moon, curtains sway, the lamp glow breathes, the clock ticks',
+  foodpipe: 'a STAGE: the food pipe cut open with its own face; the script makes a pill fall in, stick, melt, burn a sore, or ride down with water',
 };
 void tone;
 void useContext;

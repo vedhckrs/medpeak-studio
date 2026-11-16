@@ -11,17 +11,27 @@ export const SEG = 78; // frames: the usual longest stretch of one picture (2.6 
 export const SEG_MAX = SEG + 10; // a line that ends within 2.9 s keeps its one picture
 export const WPS = 2.8; // words a second, the pace measured on the reference Shorts
 
-export const SET_NAMES = ['throat', 'gut', 'stomach', 'mouth', 'blood', 'lungs', 'office', 'bathroom', 'bedroom'] as const;
+export const SET_NAMES = ['throat', 'gut', 'stomach', 'mouth', 'blood', 'lungs', 'office', 'bathroom', 'bedroom', 'foodpipe'] as const;
 export type SetName = (typeof SET_NAMES)[number];
 export const SHOT_NAMES = ['ews', 'wide', 'full', 'two', 'ms', 'mcu', 'cu', 'ecu', 'ots', 'low'] as const;
 export type ShotName = (typeof SHOT_NAMES)[number];
 export const LENS_NAMES = ['18', '24', '35', '50', '85', '135', 'macro'] as const;
 export type LensName = (typeof LENS_NAMES)[number];
-export const MOVE_NAMES = ['static', 'push', 'pull', 'truck', 'tilt', 'crash', 'whip', 'dutch', 'shake', 'rack'] as const;
+export const MOVE_NAMES = ['lock', 'static', 'push', 'pull', 'truck', 'tilt', 'crash', 'whip', 'dutch', 'shake', 'rack'] as const;
 export type MoveName = (typeof MOVE_NAMES)[number];
-export const PROP_NAMES = ['glass', 'pillbottle', 'soda', 'candy', 'toothbrush', 'burger', 'pillow', 'clock'] as const;
+export const PROP_NAMES = ['glass', 'pillbottle', 'soda', 'candy', 'toothbrush', 'burger', 'pillow', 'clock', 'pain', 'pipe', 'chip', 'tag'] as const;
 export type PropName = (typeof PROP_NAMES)[number];
 export const ENTRANCES = ['walk', 'drop', 'pop'] as const;
+/**
+ * STAGES: sets where the organ itself is the stage (a cutaway drawn in place, with a face on it).
+ * A stage has a STATE that the script changes as the story goes; these are the dials of each stage.
+ */
+export const STAGE_KEYS: Partial<Record<SetName, string[]>> = {
+  // drop: the pill falls in (0 = above the frame, 1 = lodged). stick: it presses into the wall.
+  // melt: 0 = whole, 1 = dissolved. sore: 0 = healthy wall, 1 = an open sore. pain: a throb of redness.
+  // water: a wave of water comes down (0.25 = it reaches the pill, 1 = it has passed). slide: the pill rides it down and out.
+  foodpipe: ['drop', 'stick', 'melt', 'sore', 'pain', 'water', 'slide'],
+};
 export const EMOTION_NAMES = ['neutral', 'happy', 'angry', 'scared', 'smug', 'sick', 'sleepy', 'shocked', 'sad'] as const;
 
 export type SpokenWord = {w: string; start: number; end: number};
@@ -52,20 +62,39 @@ export type ToonLine = {
   src?: string[]; // source ids that back a medical statement in this line
   chat?: boolean; // a doctor line that states no medical fact (a greeting, a joke): needs no source
 };
-export type ToonActor = {who: string; x: number; size: number; y?: number; rot?: number; noLegs?: boolean; flip?: boolean; emotion?: Emotion; pose?: PoseName; enter?: (typeof ENTRANCES)[number]};
-/** An object shown in the scene (a glass of water, a burger). `from` / `to` = the line ids it appears on and leaves after. */
-export type ToonProp = {kind: PropName; x: number; y: number; size: number; rot?: number; from?: string; to?: string; halo?: boolean};
-export type ToonShot = {id: string; set: SetName; cast: ToonActor[]; lines: ToonLine[]; desk?: boolean; props?: ToonProp[]};
+/** `stage`: this character is part of the stage (the organ's own face, the lodged pill): the stage draws it. */
+export type ToonActor = {who: string; x: number; size: number; y?: number; rot?: number; noLegs?: boolean; flip?: boolean; emotion?: Emotion; pose?: PoseName; enter?: (typeof ENTRANCES)[number]; stage?: boolean};
+/**
+ * An object or graphic shown in the scene. `from` / `to` = the line ids it appears on and leaves
+ * after; `word` = appear on that word of the `from` line. `halo` = a glowing disc behind it;
+ * `bubble` = inside a thought bubble; `no` = a red "not this" sign over it; `text` = the words on a chip or a tag.
+ */
+export type ToonProp = {kind: PropName; x: number; y: number; size: number; rot?: number; from?: string; to?: string; word?: string; halo?: boolean; bubble?: boolean; no?: boolean; text?: string};
+/**
+ * Something that happens in the picture: at line `at` (optionally on a `word` of it, plus `delay`
+ * seconds) the stage's state moves to `set` over `over` frames, a sound plays, an effect flashes.
+ * This is how a Toon SHOWS the process instead of talking about it.
+ */
+export type ToonEvent = {at: string; word?: string; delay?: number; set?: Record<string, number>; over?: number; sfx?: string; fx?: 'flash'};
+/**
+ * A shot is one place. `card` makes it a time card instead ("LATER THAT NIGHT..."), lasting
+ * `seconds`. `state` is where the stage's dials start; `events` change them.
+ */
+export type ToonShot = {id: string; set: SetName; cast: ToonActor[]; lines: ToonLine[]; desk?: boolean; props?: ToonProp[]; card?: string; seconds?: number; label?: string; state?: Record<string, number>; events?: ToonEvent[]};
 /** The owner's Retention 7 plan: which line carries each point (see retention-7.md). */
 export type ToonRetention = Record<'noIntro' | 'promise' | 'counting' | 'change3s' | 'twist' | 'bestLast' | 'loop', {scene: string; line: string}>;
 export type ToonSource = {id: string; label: string; url: string; note: string};
-export type Toon = {slug: string; title: string; test?: boolean; music?: string; retention?: ToonRetention; shots: ToonShot[]; sources?: ToonSource[]};
+/**
+ * `camera`: 'steady' = one locked picture per place, a cut only when the place changes or a line
+ * asks for one (the style of the reference Shorts); 'cinematic' (default) = the director cuts.
+ */
+export type Toon = {slug: string; title: string; test?: boolean; music?: string; camera?: 'steady' | 'cinematic'; retention?: ToonRetention; shots: ToonShot[]; sources?: ToonSource[]};
 export type ToonTimings = {lines: Record<string, {file: string; duration: number; words: SpokenWord[]}>};
 
 /** The sound that marks a line's mood when the script names none. */
 export const EMO_SFX: Partial<Record<Emotion, string>> = {shocked: 'boing', scared: 'wobble', angry: 'thud-soft', happy: 'ding', smug: 'slide-whistle-up', sick: 'gurgle-stomach', sad: 'sad-trombone'};
 /** Sounds the player places on its own (scene change, cut, whip pan, key word). */
-export const AUTO_SFX = ['whoosh-soft', 'swish', 'whoosh-fast', 'caption-pop', 'pop'];
+export const AUTO_SFX = ['whoosh-soft', 'swish', 'whoosh-fast', 'caption-pop', 'pop', 'record-scratch'];
 /** The director's default picture for each mood: shot size, lens, move. */
 export const EMO_CAM: Record<Emotion, [ShotName, LensName, MoveName]> = {
   neutral: ['mcu', '50', 'push'], happy: ['ms', '35', 'static'], angry: ['low', '35', 'push'], scared: ['cu', '85', 'dutch'],
@@ -130,22 +159,50 @@ export const layoutToon = (toon: Toon, timings: ToonTimings | null) => {
   let at = 0;
   toon.shots.forEach((shot, si) => {
     const from = at;
-    shot.lines.forEach((line, li) => {
+    (shot.lines ?? []).forEach((line, li) => {
       const tm = timings?.lines[line.id];
       const sec = lineSeconds(line, timings);
       const frames = Math.round((sec + GAP) * TOON_FPS);
       lines.push({line, si, li, from: at, frames, words: tm?.words ?? guessWords(line.text, sec), file: tm?.file});
       at += frames;
     });
-    at += Math.round(SHOT_GAP * TOON_FPS);
+    at += shot.card ? Math.round((shot.seconds ?? 1.4) * TOON_FPS) : Math.round(SHOT_GAP * TOON_FPS);
     shots.push({shot, from, frames: at - from});
   });
+  const steady = toon.camera === 'steady';
+  const total = Math.max(TOON_FPS, at);
 
   // ---- the director: camera segments.
   // Every cut lands on the start of a word (best: the start of a phrase), never in the middle of one.
   // A long line is covered like a conversation: the speaker, a look at the listener, the speaker
   // again. Two pictures of the same character in a row always differ clearly in size.
   const segs: Seg[] = [];
+  if (steady) {
+    // STEADY: one locked picture per place. A cut happens when the place changes, or when a line
+    // asks for its own picture with `cam` (then the scene's picture comes back after that line).
+    shots.forEach((sh, si) => {
+      const own = lines.filter((l) => l.si === si);
+      if (!own.length) { // a time card: one picture for its whole length
+        const blank: Placed = {line: {id: sh.shot.id, who: '', text: ''}, si, li: 0, from: sh.from, frames: sh.frames, words: []};
+        segs.push({from: sh.from, to: sh.from + sh.frames, si, line: blank, who: '', shot: 'ews', lens: '24', move: 'lock', whip: false});
+        return;
+      }
+      let open: Seg | null = null;
+      for (const l of own) {
+        const c = parseCam(l.line.cam);
+        if (c.shot || c.lens || c.move) {
+          const size = c.shot ?? 'cu';
+          segs.push({from: l.from, to: l.from + l.frames, si, line: l, who: l.line.who, shot: size, lens: c.lens ?? SIZE_CAM[size][0], move: !c.move || c.move === 'whip' ? 'lock' : c.move, whip: c.move === 'whip'});
+          open = null;
+        } else if (open) open.to = l.from + l.frames;
+        else {
+          open = {from: l.from, to: l.from + l.frames, si, line: l, who: l.line.who, shot: 'ews', lens: '24', move: 'lock', whip: false};
+          segs.push(open);
+        }
+      }
+    });
+    return {lines, shots, segs, cuts: segs, total, steady};
+  }
   lines.forEach((l, idx) => {
     const shot = toon.shots[l.si];
     const F = l.frames;
@@ -221,5 +278,69 @@ export const layoutToon = (toon: Toon, timings: ToonTimings | null) => {
     });
     void idx;
   });
-  return {lines, shots, segs, cuts: segs, total: Math.max(TOON_FPS, at)};
+  return {lines, shots, segs, cuts: segs, total, steady};
+};
+
+export type Layout = ReturnType<typeof layoutToon>;
+const ease = (t: number) => { const u = Math.max(0, Math.min(1, t)); return u < 0.5 ? 4 * u * u * u : 1 - (-2 * u + 2) ** 3 / 2; };
+const cleanWord = (w: string) => w.toLowerCase().replace(/[^a-z0-9']/g, '');
+/** The frame on which a line (optionally one word of it, plus a delay in seconds) starts. `start` = the start of the shot. */
+export const frameOf = (L: Layout, si: number, at: string | undefined, word?: string, delay = 0) => {
+  const sh = L.shots[si];
+  const l = at && at !== 'start' ? L.lines.find((x) => x.si === si && x.line.id === at) : undefined;
+  let f = l ? l.from : sh.from;
+  if (l && word) {
+    const w = l.words.find((x) => cleanWord(x.w) === cleanWord(word));
+    if (w) f += Math.round(w.start * TOON_FPS);
+  }
+  return f + Math.round(delay * TOON_FPS);
+};
+/** The stage's dials on frame `f` of shot `si`: the starting state, moved by every event so far (eased). */
+export const stateAt = (L: Layout, si: number, f: number): Record<string, number> => {
+  const shot = L.shots[si].shot;
+  const out: Record<string, number> = {...(shot.state ?? {})};
+  const evs = (shot.events ?? []).filter((e) => e.set).map((e) => ({e, f: frameOf(L, si, e.at, e.word, e.delay)})).sort((a, b) => a.f - b.f);
+  const run: Record<string, {f: number; from: number; to: number; over: number}> = {};
+  for (const {e, f: fe} of evs) {
+    if (f < fe) break;
+    for (const [k, to] of Object.entries(e.set ?? {})) {
+      const p = run[k];
+      const from = p ? p.from + (p.to - p.from) * ease((fe - p.f) / p.over) : out[k] ?? 0;
+      run[k] = {f: fe, from, to, over: Math.max(1, e.over ?? 18)};
+    }
+  }
+  for (const [k, p] of Object.entries(run)) out[k] = p.from + (p.to - p.from) * ease((f - p.f) / p.over);
+  return out;
+};
+/** When a prop is on screen: [first frame, last frame). */
+export const propFrames = (L: Layout, si: number, p: ToonProp): [number, number] => {
+  const sh = L.shots[si];
+  const from = p.from ? frameOf(L, si, p.from, p.word) : sh.from;
+  const z = p.to ? L.lines.find((x) => x.si === si && x.line.id === p.to) : undefined;
+  return [from, z ? z.from + z.frames : sh.from + sh.frames];
+};
+/**
+ * Every moment something NEW appears in the picture (Retention 7, point 4): a new place or card, a
+ * cut, a prop or graphic, a change of the stage. Captions and mouth movement do not count.
+ */
+export const changesOf = (L: Layout): {f: number; what: string}[] => {
+  const out: {f: number; what: string}[] = [];
+  L.shots.forEach((sh, si) => {
+    out.push({f: sh.from, what: sh.shot.card ? `card "${sh.shot.card}"` : `scene ${sh.shot.id} (${sh.shot.set})`});
+    for (const e of sh.shot.events ?? []) if (e.set || e.fx) out.push({f: frameOf(L, si, e.at, e.word, e.delay), what: `event ${e.set ? Object.keys(e.set).join('+') : e.fx}`});
+    for (const p of sh.shot.props ?? []) { const [a] = propFrames(L, si, p); if (a > sh.from) out.push({f: a, what: `prop ${p.kind}`}); }
+  });
+  for (const s of L.segs) if (!L.shots.some((sh) => sh.from === s.from)) out.push({f: s.from, what: `cut to ${s.who} ${s.shot}`});
+  return out.sort((a, b) => a.f - b.f);
+};
+/** The longest stretch with nothing new in the picture, in seconds, and where it is. */
+export const longestStill = (L: Layout) => {
+  const c = changesOf(L);
+  let worst = {seconds: 0, from: 0, to: 0};
+  const times = [...new Set(c.map((x) => x.f)), L.total];
+  for (let i = 1; i < times.length; i++) {
+    const g = (times[i] - times[i - 1]) / TOON_FPS;
+    if (g > worst.seconds) worst = {seconds: g, from: times[i - 1] / TOON_FPS, to: times[i] / TOON_FPS};
+  }
+  return {...worst, changes: c.length};
 };

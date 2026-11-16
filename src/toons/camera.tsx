@@ -44,6 +44,7 @@ export const SHOTS = {
   low: 'hero shot: the speaker high in the frame, a little tilted (power, anger)',
 } as const satisfies Record<ShotName, string>;
 export const MOVES = {
+  lock: 'locked off: nothing moves at all (the steady style; the action happens inside the picture)',
   static: 'locked off, with a barely visible creep (calm, deadpan)',
   push: 'slow push-in (growing importance, tension)',
   pull: 'slow pull-back (reveal, relief, the end)',

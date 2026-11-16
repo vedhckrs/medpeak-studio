@@ -8,7 +8,7 @@ import {LIBRARY} from '../toon-sfx.mjs';
 import {BEDS} from '../toon-music.mjs';
 import {checkToon} from '../lib/toon-rules.mjs';
 import {scanCamera} from '../lib/toon-camera.mjs';
-import {AUTO_SFX, EMO_SFX, layoutToon, parseCam} from '../../src/toons/director.ts';
+import {AUTO_SFX, changesOf, EMO_SFX, frameOf, layoutToon, longestStill, parseCam, stateAt, TOON_FPS} from '../../src/toons/director.ts';
 
 const EMOTIONS = ['neutral', 'happy', 'angry', 'scared', 'smug', 'sick', 'sleepy', 'shocked', 'sad'];
 const cast = loadCast();
@@ -75,6 +75,10 @@ test('every real toon script passes the gate', () => {
 test('the director never holds a picture over 3 seconds and never repeats a size on one speaker', () => {
   for (const t of real) {
     const L = layoutToon(t, null);
+    if (L.steady) { // a steady script holds its pictures; what changes is what happens in them
+      assert.ok(longestStill(L).seconds <= 3, `${t.slug}: ${longestStill(L).seconds.toFixed(1)} s with nothing new in the picture`);
+      continue;
+    }
     for (const s of L.segs) assert.ok(s.to - s.from <= 90, `${t.slug} ${s.line.line.id}: ${s.to - s.from} frames`);
     L.segs.forEach((s, i) => {
       const p = L.segs[i - 1];
@@ -84,7 +88,7 @@ test('the director never holds a picture over 3 seconds and never repeats a size
 });
 
 test('the gate catches a broken script', () => {
-  const base = real[0];
+  const base = real.find((t) => t.camera !== 'steady');
   const doc = base.shots.flatMap((s) => s.lines).find((l) => l.who === 'doctor' && l.src);
   let t = clone(base);
   delete t.shots.flatMap((s) => s.lines).find((l) => l.id === doc.id).src;
@@ -119,7 +123,7 @@ test('the camera has no jolts, jump cuts or wrong pictures on any real script', 
     assert.deepEqual(r.wrong, [], `${t.slug}: wrong picture`);
     assert.deepEqual(r.jumpCuts, [], `${t.slug}: jump cut`);
     assert.deepEqual(r.jolts, [], `${t.slug}: jolt`);
-    assert.ok(r.pictures >= 20, `${t.slug}: only ${r.pictures} pictures`);
+    assert.ok(r.pictures >= (t.camera === 'steady' ? t.shots.length : 20), `${t.slug}: only ${r.pictures} pictures`);
   }
 });
 
@@ -143,4 +147,54 @@ test('the camera check catches a jump cut and a jolt that a script forces', asyn
     {id: 'L2', who: 'patient', text: 'What was that noise?', cam: 'cu crash'},
   ]), null);
   assert.deepEqual(r.jolts, [], 'a crash zoom the script asked for is a planned fast move');
+});
+
+// ---------------------------------------------------------------- steady camera, stages, events
+const steady = real.find((t) => t.camera === 'steady');
+
+test('a steady script keeps one locked picture per place and cuts only when the place changes', () => {
+  assert.ok(steady, 'a steady script is in the repo');
+  const L = layoutToon(steady, null);
+  assert.equal(L.steady, true);
+  const asked = steady.shots.flatMap((s) => s.lines ?? []).filter((l) => l.cam).length;
+  assert.ok(L.segs.length <= steady.shots.length + 2 * asked, `${L.segs.length} pictures for ${steady.shots.length} shots`);
+  for (const s of L.segs) assert.equal(s.move, 'lock', 'the camera does not move inside a steady picture');
+  const card = steady.shots.findIndex((s) => s.card !== undefined);
+  assert.ok(card >= 0, 'the steady script uses a time card');
+  assert.equal(L.shots[card].frames, Math.round((steady.shots[card].seconds ?? 1.4) * TOON_FPS));
+});
+
+test('events move the stage in time, and every change in the picture is counted', () => {
+  const L = layoutToon(steady, null);
+  const si = steady.shots.findIndex((s) => (s.events ?? []).some((e) => e.set?.melt));
+  const sh = L.shots[si];
+  const melt = sh.shot.events.filter((e) => e.set?.melt !== undefined);
+  const first = frameOf(L, si, melt[0].at, melt[0].word, melt[0].delay);
+  assert.equal(stateAt(L, si, first - 1).melt ?? 0, 0, 'nothing melts before the first melt event');
+  const end = stateAt(L, si, sh.from + sh.frames - 1);
+  assert.ok(end.melt > 0.85 && end.sore > 0.85, 'by the end of the scene the pill has melted and the sore is open');
+  let prev = 0;
+  for (let f = sh.from; f < sh.from + sh.frames; f += 3) { const m = stateAt(L, si, f).melt ?? 0; assert.ok(m >= prev - 1e-9, 'the melt never runs backwards'); prev = m; }
+  const ch = changesOf(L);
+  assert.ok(ch.length >= 25, `${ch.length} changes`);
+  assert.ok(ch.every((c, i) => !i || c.f >= ch[i - 1].f), 'changes are in time order');
+});
+
+test('the gate catches a broken stage script and a picture that stands still', () => {
+  const stage = (t) => t.shots.find((s) => (s.events ?? []).length);
+  let t = clone(steady);
+  stage(t).events[0].set = {wobble: 1};
+  assert.deepEqual(failed(t), ['Script is valid'], 'an unknown dial');
+  t = clone(steady);
+  stage(t).events.find((e) => e.word).word = 'banana';
+  assert.deepEqual(failed(t), ['Script is valid'], 'an event on a word the line does not say');
+  t = clone(steady);
+  stage(t).events[0].sfx = 'kazoo';
+  assert.deepEqual(failed(t), ['Script is valid'], 'an unknown sound');
+  t = clone(steady);
+  t.shots.find((s) => s.card !== undefined).card = '';
+  assert.deepEqual(failed(t), ['Script is valid'], 'an empty time card');
+  t = clone(steady);
+  for (const s of t.shots) { s.props = []; s.events = []; }
+  assert.ok(failed(t).includes('4 3-sec change'), 'nothing happening in a locked picture fails point 4');
 });

@@ -1,39 +1,39 @@
 # What happens when you swallow a pill without water
 
-Toon script `pill-without-water` · about 50 seconds · 28 pictures
+Toon script `pill-without-water` · about 54 seconds · 5 pictures
 
 ## Retention 7
 
 | Point | Line | Words |
 |---|---|---|
-| 1 No intro | A1 | Hey! You can't park here. This is the food pipe! |
-| 2 Promise | A3 | Three things happen next. Wait for the third! |
-| 3 Counting | A4,A5,A6 | Number one / Number two / Number three |
-| 4 3-sec change | all | a new picture at least every 3 s (the director does it) |
-| 5 Twist | B3 | But here's the twist: don't blame the medicine. It just needed a ride down. |
-| 6 Best last | B6 | And with some antibiotics, the NHS says: no lying down for thirty minutes. |
-| 7 Loop | B7 | So nothing can park in my food pipe! |
+| 1 No intro | A1 | Whoa! A pill? Where's the water? |
+| 2 Promise | A3 | Then three things happen. And I hate the third. |
+| 3 Counting | A4,A5,A6 | First / Second / Third |
+| 4 3-sec change | all | steady camera: something new happens in the picture at least every 3 s |
+| 5 Twist | D2 | But here's the twist: don't blame the medicine. It just needed a ride down. |
+| 6 Best last | D5 | And with some antibiotics, the NHS says: no lying down for thirty minutes. |
+| 7 Loop | E2 | Whoa... a pill with water. Thank you! |
 
 ## Check
 
 | | Rule | Result |
 |---|---|---|
-| PASS | Script is valid | 2 scenes, 13 lines, 4 voices |
-| PASS | 1 No intro | hook: "Hey! You can't park here. This is the food pipe!" |
-| PASS | 2 Promise | starts at 7.1 s (limit 8 s) |
+| PASS | Script is valid | 4 scenes, 15 lines, 4 voices |
+| PASS | 1 No intro | hook: "Whoa! A pill? Where's the water?" |
+| PASS | 2 Promise | starts at 6.3 s (limit 8 s) |
 | PASS | 3 Counting | 3 numbered beats said in order |
-| PASS | 4 3-sec change | the longest picture is 2.3 s (line B3); 28 pictures in 50 s |
-| PASS | 5 Twist | twist starts at 59% |
-| PASS | 6 Best last | best point starts at 83% |
-| PASS | 7 Loop | last line shares 3 key word(s) with the first: park, food, pipe |
+| PASS | 4 3-sec change | something new appears 35 times in 54 s (a place, a cut, a prop, a change of the stage); the longest wait is 2.8 s (from 42.4 s) |
+| PASS | 5 Twist | twist starts at 56% |
+| PASS | 6 Best last | best point starts at 78% |
+| PASS | 7 Loop | last line shares 3 key word(s) with the first: whoa, pill, water |
 | PASS | Sources on numbers | every number has a source |
 | PASS | Source ids exist | all source ids known |
 | PASS | No banned claims | no cure/miracle/detox claims |
-| PASS | Length | 49.7 s (a Short must stay under 60 s; aim for 40-58) |
-| PASS | Places | 2 set(s): throat, office (at least a body scene and the doctor's office) |
+| PASS | Length | 54.1 s (a Short must stay under 60 s; aim for 40-58) |
+| PASS | Places | 3 set(s): foodpipe, bedroom, office (at least a body scene and the doctor's office) |
 | PASS | Voices | 4 speaking characters (3 or more keep it a conversation) |
-| PASS | Doctor explains | Dr. Mira speaks for 40% of the video (15-50%) |
-| PASS | Body scene | body characters speak for 40% of the video (30% or more: they are the show) |
+| PASS | Doctor explains | Dr. Mira speaks for 37% of the video (15-50%) |
+| PASS | Body scene | body characters speak for 48% of the video (30% or more: they are the show) |
 | PASS | Short lines | the longest line is 14 words |
 | PASS | Banter | at most 2 lines in a row by one speaker (3 or fewer) |
 | PASS | Sources are complete | 3 source(s), each with its finding written out |
@@ -41,32 +41,92 @@ Toon script `pill-without-water` · about 50 seconds · 28 pictures
 | PASS | Doctor lines are sourced | every statement by Dr. Mira names its source |
 | PASS | No dosing advice | no doses, no "stop taking your medicine" |
 
-## Scene A: throat
+## Scene A: foodpipe
 
-Characters: whitecell, pill
-
-| Time | Line | Who | Feeling | Words | Camera | Source |
-|---|---|---|---|---|---|---|
-| 0.0 s | A1 | whitecell | angry | Hey! You can't park here. This is the food pipe! | wide 24 truck → low 35 push |  |
-| 4.1 s | A2 | pill | scared | I'm stuck! He swallowed me without water! | cu 85 dutch → ms 35 |  |
-| 7.1 s | A3 | whitecell | neutral | Three things happen next. Wait for the third! | mcu 50 push → cu 85 push |  |
-| 10.4 s | A4 | pill | sick | Number one: I stick to the wall. | cu 85 push → ms 35 | statpearls |
-| 13.4 s | A5 | whitecell | shocked | Number two: you start to melt right here! | cu 85 push → ms 35 | statpearls |
-| 16.7 s | A6 | pill | sad | Number three: my medicine burns the lining. Sorry! | cu 85 push → ms 35 | statpearls |
-
-## Scene B: office
-
-Characters: doctor, patient · props: glass
+Characters: foodpipe, pill · props: glass, tag, tag, chip, chip, chip
 
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
-| 20.3 s | B1 | patient | sick | Doc, why does my chest burn when I swallow? | wide 24 truck → cu 85 push |  |
-| 24.0 s | B2 | doctor | neutral | A pill got stuck in your food pipe. It dissolved there and irritated it. | mcu 50 push → patient: cu 85 → cu 85 push | statpearls, zografos2009 |
-| 29.5 s | B3 | doctor | happy | But here's the twist: don't blame the medicine. It just needed a ride down. | ms 35 → patient: cu 85 → cu 85 push | statpearls, nhs-doxycycline |
-| 35.0 s | B4 | patient | neutral | So water is the ride? | mcu 50 push |  |
-| 37.3 s | B5 | doctor | happy | Exactly. A glass of water, sitting or standing up. | ms 35 → cu 85 push | nhs-doxycycline |
-| 41.0 s | B6 | doctor | neutral | And with some antibiotics, the NHS says: no lying down for thirty minutes. | ms 35 → patient: cu 85 → cu 85 push | nhs-doxycycline |
-| 46.1 s | B7 | patient | happy | So nothing can park in my food pipe! | two 35 pull → cu 85 push |  |
+| 0.0 s | A1 | foodpipe | shocked | Whoa! A pill? Where's the water? | ews 24 lock |  |
+| 2.6 s | A2 | pill | scared | He swallowed me dry! I'm stuck on your wall! | the scene, locked |  |
+| 6.3 s | A3 | foodpipe | angry | Then three things happen. And I hate the third. | the scene, locked |  |
+| 10.0 s | A4 | foodpipe | angry | First, you stick to me. | the scene, locked | statpearls |
+| 12.3 s | A5 | pill | sick | Second... I start to melt! | the scene, locked | statpearls |
+| 14.6 s | A6 | foodpipe | sad | Third, your medicine burns my lining. Ow! | the scene, locked | statpearls |
+| 17.6 s | A7 | foodpipe | sick | Soon, every swallow will sting. | the scene, locked | statpearls |
+
+What happens in the picture:
+
+- at start: drop to 1 [slide-whistle-down]
+- at start: stick to 1 [bonk]
+- at A3 ("third"): melt to 0.1 [drip]
+- at A5 ("melt"): melt to 0.62 [sizzle-acid]
+- at A6 ("burns"): sore to 0.7, pain to 1 [sizzle-acid]
+- at A6 ("Ow"): melt to 0.92, sore to 0.8 [gasp]
+- at A7 ("swallow"): sore to 1 [gulp]
+- at A1 ("water"): glass with a "not this" sign
+- at A2 ("stuck"): tag "stuck!"
+- at A3 ("three"): tag "3 things"
+- at A4: chip "1"
+- at A5: chip "2"
+- at A6: chip "3"
+
+## Time card: "Later that night..."
+
+## Scene C: bedroom
+
+Characters: patient · props: pain
+
+| Time | Line | Who | Feeling | Words | Camera | Source |
+|---|---|---|---|---|---|---|
+| 21.5 s | C1 | patient | sick | Ow! Why does my chest burn when I swallow? | ews 24 lock |  |
+
+What happens in the picture:
+
+- at C1 ("burn"): pain
+
+## Scene D: office
+
+Characters: doctor, patient · props: pipe, pain, tag, pillbottle, glass, tag, glass, tag, pillbottle, pillow, clock
+
+| Time | Line | Who | Feeling | Words | Camera | Source |
+|---|---|---|---|---|---|---|
+| 25.5 s | D1 | doctor | neutral | A pill got stuck in your food pipe. It dissolved there and irritated it. | ews 24 lock | statpearls, zografos2009 |
+| 31.0 s | D2 | doctor | happy | But here's the twist: don't blame the medicine. It just needed a ride down. | the scene, locked | statpearls, nhs-doxycycline |
+| 36.5 s | D3 | patient | neutral | So water is the ride? | the scene, locked |  |
+| 38.7 s | D4 | doctor | happy | Exactly. A glass of water, sitting or standing up. | the scene, locked | nhs-doxycycline |
+| 42.4 s | D5 | doctor | neutral | And with some antibiotics, the NHS says: no lying down for thirty minutes. | the scene, locked | nhs-doxycycline |
+
+What happens in the picture:
+
+- at D1 ("stuck"): pipe in a thought bubble
+- at D1 ("dissolved"): pain
+- at D2: tag "the twist"
+- at D2 ("medicine"): pillbottle
+- at D2 ("ride"): glass
+- at D3 ("water"): tag "water?"
+- at D4: glass
+- at D4 ("sitting"): tag "sit or stand up"
+- at D5: pillbottle in a thought bubble
+- at D5 ("lying"): pillow with a "not this" sign
+- at D5 ("thirty"): clock
+
+## Scene E: foodpipe
+
+Characters: foodpipe, pill · props: glass, tag
+
+| Time | Line | Who | Feeling | Words | Camera | Source |
+|---|---|---|---|---|---|---|
+| 47.8 s | E1 | pill | happy | Wheee! This time I got my water! | ews 24 lock |  |
+| 50.8 s | E2 | foodpipe | happy | Whoa... a pill with water. Thank you! | the scene, locked |  |
+
+What happens in the picture:
+
+- at start: drop to 1 [slide-whistle-down]
+- at start: water to 0.25 [splash-small]
+- at E1: slide to 1, water to 1 [zip-away]
+- at E2: glass
+- at E2 ("water"): tag "with water"
 
 ## Sources
 

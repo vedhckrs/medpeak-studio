@@ -12,7 +12,7 @@ import {AbsoluteFill, Audio, Sequence, interpolate, random, staticFile, useCurre
 import type {Act, CharProps} from './blueprint';
 import {BLUEPRINTS, CAST, type CastName} from './characters';
 import {Camera, type Cam, CAM0, clampCam, H, LENSES, W} from './camera';
-import {AUTO_SFX, EMO_SFX, GAP, layoutToon, type LensName, type MoveName, parseCam, type Placed, type Seg, SEG, type SetName, type ShotName, type Toon, type ToonActor, type ToonLine, type ToonShot, type ToonTimings, TOON_FPS} from './director';
+import {AUTO_SFX, EMO_SFX, frameOf, GAP, layoutToon, type LensName, type MoveName, parseCam, type Placed, propFrames, type Seg, SEG, type SetName, type ShotName, stateAt, type Toon, type ToonActor, type ToonLine, type ToonShot, type ToonTimings, TOON_FPS} from './director';
 import {PEOPLE, skeleton, SPECS} from './humans';
 import {Grain} from './ink';
 import {clamp01, E, kick, lerp, lipsync, ramp, settle, type SpokenWord} from './motion';
@@ -20,6 +20,8 @@ import {blendPose, POSES, type PoseName} from './poses';
 import {Prop} from './props';
 import {armOf, blinkAt, type ArmSpec, type Emotion} from './rig';
 import {FLOORS, FORES, OfficeDesk, SETS, WordCaption} from './scenes';
+import {STAGE_SPOTS, type StageFace} from './stages';
+import {theme} from '../brand/theme';
 import {Hold, Slot} from './stage';
 
 export {layoutToon, parseCam, TOON_FPS};
@@ -31,6 +33,8 @@ const isPerson = (who: string) => who in SPECS;
 const groundOf = (who: string) => (isPerson(who) ? 96 : BLUEPRINTS[who as CastName].ground.y);
 /** An actor on screen: slot centre, face centre, face size, top and bottom (all in set pixels). */
 const place = (a: ToonActor, set: SetName) => {
+  const spot = a.stage ? STAGE_SPOTS[set]?.[a.who] : undefined;
+  if (spot) return {cx: spot.x, cy: spot.y, faceX: spot.x, faceY: spot.y, headH: spot.headH, faceW: spot.faceW, top: spot.y - spot.headH * 0.6, bottom: spot.y + spot.headH * 0.7, person: false, size: spot.size};
   const floor = FLOORS[set];
   const u = a.size / 200;
   const cy = a.y ?? (floor === null ? 900 : floor - groundOf(a.who) * u);
@@ -104,6 +108,7 @@ const framing = (shot: ShotName, A: Spot, B: Spot | null): {zoom: number; cx: nu
 
 /** Everything the camera does on frame `f` of segment `s` (without the whip from the previous picture). */
 const camOf = (s: Seg, shot: ToonShot, f: number, keyAt: number | null): Cam => {
+  if (!shot.cast?.length) return {...CAM0, lens: s.lens}; // a time card
   const a = shot.cast.find((o) => o.who === s.who) ?? shot.cast[0];
   const other = shot.cast.find((o) => o.who !== a.who);
   const A = place(a, shot.set);
@@ -115,6 +120,7 @@ const camOf = (s: Seg, shot: ToonShot, f: number, keyAt: number | null): Cam => 
   const c: Cam = {...CAM0, ...base, lens: s.lens};
   const io = (v: number) => E.inOut(clamp01(v));
   switch (s.move) {
+    case 'lock': break; // nothing moves: the action is inside the picture
     case 'push': c.zoom *= 1 + 0.06 * u; break;
     case 'pull': c.zoom *= 1.07 - 0.065 * u; break;
     case 'truck': c.cx += (dir * lerp(-46, 46, u)) / c.zoom; c.zoom *= 1.035 + 0.025 * u; break;
@@ -145,7 +151,7 @@ export const cameraAt = (L: ReturnType<typeof layoutToon>, f: number): {cam: Cam
   const keyFrame = (l: Placed) => { const kw = (l.line.key ?? clean(l.words[l.words.length - 1]?.w ?? '')).toLowerCase(); const k = l.words.find((w) => clean(w.w).toLowerCase() === kw); return k ? l.from + Math.round(k.start * TOON_FPS) : null; };
   // the picture that started last in this scene (in the pause before the next scene it simply holds)
   const seg = [...L.segs].reverse().find((s) => s.si === si && s.from <= f) ?? L.segs.find((s) => s.si === si) ?? L.segs[0];
-  let cam = camOf(seg, shot, f, keyFrame(seg.line));
+  let cam = camOf(seg, shot, f, L.steady ? null : keyFrame(seg.line));
   const prevSeg = L.segs[L.segs.indexOf(seg) - 1];
   const wn = f - seg.from;
   if (seg.whip && prevSeg && prevSeg.si === seg.si && wn < 9) { // only when the script asks: "cam": "whip"
@@ -181,10 +187,9 @@ const EMO_ACT: Record<Emotion, {lean: number; tilt: number; nod: number; shrug: 
   sleepy: {lean: 1, tilt: 7, nod: 0.8, shrug: 0}, shocked: {lean: -5, tilt: 0, nod: -0.5, shrug: 0.9}, sad: {lean: 1, tilt: 6, nod: 1, shrug: 0.1},
 };
 
-const Actor: React.FC<{a: ToonActor; shot: ToonShot; shotFrom: number; lines: Placed[]; f: number; cur: Placed | undefined; blur: number}> = ({a, shot, shotFrom, lines, f, cur, blur}) => {
-  const C = (isPerson(a.who) ? PEOPLE[a.who as keyof typeof PEOPLE] : CAST[a.who as CastName]) as React.FC<CharProps>;
+/** Everything a character is doing on frame `f`: face, eyes, arms, body. */
+const acting = (a: ToonActor, shot: ToonShot, lines: Placed[], f: number, cur: Placed | undefined) => {
   const person = isPerson(a.who);
-  const {cx, cy} = place(a, shot.set);
   const seed = Math.round(a.x);
   const past = lines.filter((l) => l.from <= f);
   // emotion: the latest line that sets it (own line, or a reaction to someone else's)
@@ -215,11 +220,15 @@ const Actor: React.FC<{a: ToonActor; shot: ToonShot; shotFrom: number; lines: Pl
   // eyes: look at whoever is talking; the speaker looks at the listener and sometimes at the viewer
   const others = shot.cast.filter((o) => o.who !== a.who);
   const target = speaking || !cur ? others[0] : shot.cast.find((o) => o.who === cur.line.who);
-  const side = target ? Math.sign(target.x - a.x) * (a.flip ? -1 : 1) : 0;
+  const me = place(a, shot.set);
+  const it = target ? place(target, shot.set) : null;
+  const side = it ? Math.sign(it.faceX - me.faceX) * (a.flip ? -1 : 1) : 0;
+  // characters on a stage sit above and below each other, so their eyes follow the real direction
+  const up = it && a.stage ? Math.max(-1, Math.min(1, (it.faceY - me.faceY) / 300)) : 0;
   // a glance at the viewer eases in and out (about once every three seconds while speaking)
   const ph = (f + seed) % 90;
   const glance = speaking ? ramp(ph, 62, 86, 6) : 0;
-  const lookX = side * 0.8 * (1 - glance);
+  const lookX = (a.stage ? side * 0.45 : side * 0.8) * (1 - glance);
   // how much this character is "the one talking" right now: eased at both ends of each of its lines
   const voice = lines.filter((l) => l.line.who === a.who).reduce((m, l) => Math.max(m, ramp(f, l.from - 3, l.from + l.frames - 2, 9)), 0);
   // body: the mood sets the stance; speech adds nods and a forward lean; listeners shift their weight
@@ -239,6 +248,14 @@ const Actor: React.FC<{a: ToonActor; shot: ToonShot; shotFrom: number; lines: Pl
   };
   // a "take" when the emotion changes and a nudge when starting to speak: both swell from zero
   const squash = kick(f, emotionFrom, take ? 0.24 : 0.11, 0.9, 0.26) + (speaking && cur ? kick(f, cur.from, 0.06, 1, 0.34) : 0);
+  const blink = Math.max(blinkAt(f, TOON_FPS, seed), f - emotionFrom >= 0 && f - emotionFrom < 5 ? 1 - Math.abs(f - emotionFrom - 2) / 3 : 0);
+  return {emotion, emotionFrom, talk, blink, arms, act, squash, look: {x: lookX, y: (a.stage ? up * 0.7 : mood('nod') * 0.3) * (1 - glance)}};
+};
+
+const Actor: React.FC<{a: ToonActor; shot: ToonShot; shotFrom: number; lines: Placed[]; f: number; cur: Placed | undefined; blur: number}> = ({a, shot, shotFrom, lines, f, cur, blur}) => {
+  const C = (isPerson(a.who) ? PEOPLE[a.who as keyof typeof PEOPLE] : CAST[a.who as CastName]) as React.FC<CharProps>;
+  const {cx, cy} = place(a, shot.set);
+  const A = acting(a, shot, lines, f, cur);
   const ground = groundOf(a.who);
   // entrances
   const n = f - shotFrom;
@@ -250,15 +267,32 @@ const Actor: React.FC<{a: ToonActor; shot: ToonShot; shotFrom: number; lines: Pl
   if (a.enter === 'drop' && n < 22) { dy = -(1 - E.in(clamp01(n / 14))) * 1400; }
   if (a.enter === 'pop' && n < 12) scale = E.back(clamp01(n / 12));
   const land = a.enter === 'drop' ? settle(f, shotFrom + 14, 0.5, 1.1, 0.3) : 0;
-  const blinkNow = Math.max(blinkAt(f, TOON_FPS, seed), f - emotionFrom >= 0 && f - emotionFrom < 5 ? 1 - Math.abs(f - emotionFrom - 2) / 3 : 0);
   return (
     <Slot x={cx + dx} y={cy + dy} size={a.size} blur={blur}>
-      <g transform={`${a.rot ? `rotate(${a.rot + kick(f, emotionFrom, 3, 0.8, 0.25)})` : ''} ${scale !== 1 ? `scale(${scale})` : ''}`}>
+      <g transform={`${a.rot ? `rotate(${a.rot + kick(f, A.emotionFrom, 3, 0.8, 0.25)})` : ''} ${scale !== 1 ? `scale(${scale})` : ''}`}>
         <Hold frame={f} seed={a.x} ground={ground}>
-          <C emotion={emotion} talk={talk} blink={blinkNow} arms={arms} look={{x: lookX, y: mood('nod') * 0.3 * (1 - glance)}} squash={squash + land} noLegs={a.noLegs} flip={a.flip} t={f / TOON_FPS} act={act} step={step} />
+          <C emotion={A.emotion} talk={A.talk} blink={A.blink} arms={A.arms} look={A.look} squash={A.squash + land} noLegs={a.noLegs} flip={a.flip} t={f / TOON_FPS} act={A.act} step={step} />
         </Hold>
       </g>
     </Slot>
+  );
+};
+
+/** A time card: the story jumps ahead ("LATER THAT NIGHT..."). Our own look: night blue, amber words, a ticking clock. */
+const TimeCard: React.FC<{text: string; n: number; frames: number}> = ({text, n, frames}) => {
+  const k = E.back(clamp01(n / 8));
+  const out = clamp01((frames - n) / 5);
+  return (
+    <AbsoluteFill style={{background: 'radial-gradient(ellipse at 50% 42%, #2b3a78 0%, #141a3c 70%)', alignItems: 'center', justifyContent: 'center', opacity: out}}>
+      <svg width={220} height={220} viewBox="-110 -110 220 220" style={{transform: `scale(${k})`, marginBottom: 40}}>
+        <circle r={96} fill="#fffdf6" stroke="#ffc93c" strokeWidth={14} />
+        {Array.from({length: 12}).map((_, i) => <path key={i} d="M0 -80 V-66" stroke="#55608c" strokeWidth={i % 3 === 0 ? 8 : 4} strokeLinecap="round" transform={`rotate(${i * 30})`} />)}
+        <path d="M0 6 V-46" stroke="#1d2b4f" strokeWidth={11} strokeLinecap="round" transform={`rotate(${120 + n * 9})`} />
+        <path d="M0 8 V-66" stroke="#1d2b4f" strokeWidth={7} strokeLinecap="round" transform={`rotate(${n * 62})`} />
+        <circle r={9} fill="#ea4a55" />
+      </svg>
+      <div style={{fontFamily: theme.font, fontWeight: 900, fontSize: 92, lineHeight: 1.08, color: '#ffc93c', textAlign: 'center', padding: '0 70px', letterSpacing: 1, transform: `scale(${k}) rotate(-2deg)`, textShadow: '0 8px 0 rgba(0,0,0,0.35)'}}>{text.toUpperCase()}</div>
+    </AbsoluteFill>
   );
 };
 
@@ -304,6 +338,15 @@ export const ToonPlayer: React.FC<ToonProps> = ({toon, timings, sfx, music}) => 
   const cur = shotLines.find((l) => f >= l.from && f < l.from + l.frames);
   const Set = SETS[shot.set];
   const Fore = FORES[shot.set];
+  // a stage draws some characters itself (the organ's own face, the pill): hand it what they are doing
+  const faces: Record<string, StageFace> = {};
+  for (const a of shot.cast ?? []) {
+    if (!a.stage) continue;
+    const A = acting(a, shot, shotLines, f, cur);
+    faces[a.who] = {emotion: A.emotion, talk: A.talk, blink: A.blink, look: A.look, arms: A.arms, squash: A.squash, lean: A.act.lean ?? 0, nod: A.act.nod ?? 0};
+  }
+  const state = stateAt(L, si, f);
+  const flash = (shot.events ?? []).reduce((m, e) => { const n = f - frameOf(L, si, e.at, e.word, e.delay); return e.fx && n >= 0 && n < 9 ? Math.max(m, 1 - n / 9) : m; }, 0);
   const clean = (w: string) => w.replace(/[^\p{L}\p{N}'’!?-]/gu, '');
   const keyOf = (l: Placed) => (l.line.key ?? clean(l.words[l.words.length - 1]?.w ?? '')).toLowerCase();
   const keyFrame = (l: Placed) => { const k = l.words.find((w) => clean(w.w).toLowerCase() === keyOf(l)); return k ? l.from + Math.round(k.start * TOON_FPS) : null; };
@@ -322,17 +365,15 @@ export const ToonPlayer: React.FC<ToonProps> = ({toon, timings, sfx, music}) => 
   // ---- sound
   const has = (n: string | undefined): n is string => !!n && sfx.includes(n);
   const events: {at: number; name: string; vol: number}[] = [];
-  for (const s of L.shots) if (s.from > 0) events.push({at: s.from, name: 'whoosh-soft', vol: 0.45});
+  for (const s of L.shots) if (s.from > 0) events.push({at: s.from, name: s.shot.card ? 'record-scratch' : 'whoosh-soft', vol: s.shot.card ? 0.38 : 0.45});
+  L.shots.forEach((s, i) => { for (const e of s.shot.events ?? []) if (e.sfx) events.push({at: frameOf(L, i, e.at, e.word, e.delay), name: e.sfx, vol: 0.55}); });
   for (const l of L.lines) {
     const n = l.line.sfx ?? EMO_SFX[l.line.emotion ?? 'neutral'];
     if (n) events.push({at: l.from, name: n, vol: 0.5});
     const kf = keyFrame(l);
     if (kf !== null) events.push({at: kf, name: 'caption-pop', vol: 0.3});
   }
-  for (const s of L.shots) for (const p of s.shot.props ?? []) {
-    const at = p.from ? L.lines.find((l) => l.line.id === p.from)?.from : s.from;
-    if (at !== undefined && at > 0) events.push({at, name: 'pop', vol: 0.45});
-  }
+  L.shots.forEach((s, i) => { for (const p of s.shot.props ?? []) { const [at] = propFrames(L, i, p); if (at > s.from) events.push({at, name: 'pop', vol: 0.45}); } });
   for (const s of L.segs) {
     if (s.whip) events.push({at: s.from, name: 'whoosh-fast', vol: 0.4});
     else if (s.from !== s.line.from) events.push({at: s.from, name: 'swish', vol: 0.22});
@@ -345,25 +386,26 @@ export const ToonPlayer: React.FC<ToonProps> = ({toon, timings, sfx, music}) => 
 
   return (
     <AbsoluteFill style={{background: '#1d1430'}}>
-      <Camera {...cam}>
-        <Set t={f / TOON_FPS} />
-        {shot.cast.map((a) => <Actor key={a.who} a={a} shot={shot} shotFrom={shotAt.from} lines={shotLines} f={f} cur={cur} blur={blurOf(a.who)} />)}
-        {shot.desk && <OfficeDesk />}
-        {(shot.props ?? []).map((p, i) => {
-          const a = p.from ? shotLines.find((l) => l.line.id === p.from)?.from ?? shotAt.from : shotAt.from;
-          const z = p.to ? shotLines.find((l) => l.line.id === p.to) : undefined;
-          const end = z ? z.from + z.frames : Infinity;
-          if (f < a || f >= end) return null;
-          const k = Math.min(E.back(clamp01((f - a) / 9)), clamp01((end - f) / 5));
-          return (
-            <Slot key={i} x={p.x} y={p.y} size={p.size}>
-              <g transform={`rotate(${(p.rot ?? 0) + settle(f, a, 7, 0.9, 0.3)}) scale(${k.toFixed(3)})`}><Prop kind={p.kind} t={f / TOON_FPS} halo={p.halo} /></g>
-            </Slot>
-          );
-        })}
-        {Fore && <Fore t={f / TOON_FPS} />}
-      </Camera>
-      {word && <WordCaption word={clean(word.w)} key_={clean(word.w).toLowerCase() === keyWord} pop={0.72 + 0.28 * E.back(clamp01((tl - word.start) * TOON_FPS / 4))} y={1400} />}
+      {shot.card ? <TimeCard text={shot.card} n={f - shotAt.from} frames={shotAt.frames} /> : (
+        <Camera {...cam}>
+          <Set t={f / TOON_FPS} state={state} faces={faces} label={shot.label} />
+          {shot.cast.filter((a) => !a.stage).map((a) => <Actor key={a.who} a={a} shot={shot} shotFrom={shotAt.from} lines={shotLines} f={f} cur={cur} blur={blurOf(a.who)} />)}
+          {shot.desk && <OfficeDesk />}
+          {(shot.props ?? []).map((p, i) => {
+            const [a, end] = propFrames(L, si, p);
+            if (f < a || f >= end) return null;
+            const k = Math.min(E.back(clamp01((f - a) / 9)), clamp01((end - f) / 5));
+            return (
+              <Slot key={i} x={p.x} y={p.y} size={p.size}>
+                <g transform={`rotate(${(p.rot ?? 0) + kick(f, a, 4, 0.9, 0.3)}) scale(${k.toFixed(3)})`}><Prop kind={p.kind} t={f / TOON_FPS} halo={p.halo} bubble={p.bubble} no={p.no} text={p.text} /></g>
+              </Slot>
+            );
+          })}
+          {Fore && <Fore t={f / TOON_FPS} />}
+        </Camera>
+      )}
+      {flash > 0 && <AbsoluteFill style={{background: '#ffffff', opacity: flash * 0.3}} />}
+      {word && <WordCaption word={clean(word.w)} key_={clean(word.w).toLowerCase() === keyWord} pop={0.72 + 0.28 * E.back(clamp01((tl - word.start) * TOON_FPS / 4))} y={L.steady ? 1470 : 1400} plain={L.steady} />}
       <Grain />
       {L.lines.map((l) => l.file && <Sequence key={l.line.id} from={l.from} durationInFrames={l.frames + 12}><Audio src={staticFile(l.file)} /></Sequence>)}
       {events.filter((e) => has(e.name)).map((e, i) => <Sequence key={i} from={e.at} durationInFrames={90}><Audio src={staticFile(`toons/sfx/${e.name}.mp3`)} volume={e.vol} /></Sequence>)}

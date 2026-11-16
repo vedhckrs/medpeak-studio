@@ -75,6 +75,42 @@ after voicing. Leave a second of margin on the promise (aim for 7 s) and stay cl
   `from` / `to` = the line it appears on and leaves after; `halo` = a glowing disc behind it.
 - The key word (`key`) is the caption shown in amber and gets a small punch-in.
 
+## The steady style: show it, don't say it (pilot, 2026-11-16)
+The first three scripts were mascots talking in a room while the camera cut every 2 seconds. The
+20 reference Shorts do the opposite (toons-reference-study.md): the camera is locked, the organ is
+the stage, and the viewer WATCHES the thing happen. A script switches to this style with
+`"camera": "steady"`. The pilot is `videos/pill-without-water`.
+
+- **One locked picture per place.** The director no longer cuts inside a scene. A cut happens when
+  the place changes, or on a line that asks for its own picture with `cam` (use it once, if at all).
+- **Stages** (`src/toons/stages.tsx`, board: toons-boards/stage.jpg). A stage is an organ drawn as
+  a cutaway that fills the frame, with its own face and hands on its wall. Cast members marked
+  `"stage": true` are drawn by the stage (the organ itself, the thing stuck in it). So far:
+  `foodpipe`, with the dials `drop, stick, melt, sore, pain, water, slide`.
+- **State and events.** `state` on a shot is where the stage's dials start. `events` move them:
+  `{"at": "A5", "word": "melt", "set": {"melt": 0.62}, "over": 40, "sfx": "sizzle-acid"}` means
+  "when A5 says *melt*, melt the pill to 62% over 40 frames, with a sizzle". `at` is a line id or
+  `"start"`; `delay` (seconds) shifts it; `fx: "flash"` adds a soft white flash (use it twice a
+  video at most). This is how the script shows the process.
+- **Time cards.** A shot with `"card": "Later that night..."` (and `"seconds"`) is a plain card
+  with no characters. One or two a video; it carries the story across time.
+- **Graphics.** A prop appears on a word (`"from": "D1", "word": "stuck"`) and leaves after the
+  line in `to`. `bubble` puts it in a thought bubble, `no` puts a red "not this" sign on it,
+  `halo` a glowing disc behind it. `tag` is a few words on a sticker, `chip` a counting number;
+  both need `text`. In the office the free space is above the heads (y 250-450) and between the
+  bodies below the waist (x 450-650, y 1100-1300).
+- **Story with a consequence.** Body scene (the thing happens) -> a promise of what it will cost
+  -> time card -> the person at home feels it -> Dr. Mira explains and gives the fix -> the body
+  scene again, this time done right. The last scene mirrors the first (that is the loop).
+- **Captions** are smaller, white with a dark outline, no box, key word in amber.
+
+### Retention 7, point 4 in a steady script
+"A change every 3 seconds" is counted as **something new appearing in the picture**: a new place
+or card, a cut, a prop or graphic, a change of the stage. Mouths, captions and acting do not count.
+The gate lists every change and fails the script if the longest wait is over 3.0 s
+(`longestStill` in director.ts). Write the events and props first, then check: a line with nothing
+new in it is a line where the story is only being told.
+
 ## Order of work
 1. Pick the topic; find 2-3 allowed sources; copy the exact findings into `sources`.
 2. Fill the Retention 7 table, then write the 13 lines to it.
@@ -85,7 +121,7 @@ after voicing. Leave a second of margin on the promise (aim for 7 s) and stay cl
 5. Show the owner the script sheet and the preview, quote the voice cost
    (`toon-voice.mjs <slug> --dry-run`), wait for approval.
 
-## The first three scripts
+## The first three scripts (pill-without-water is now the steady pilot)
 | Slug | Topic | Body scene | Twist | Best last |
 |---|---|---|---|---|
 | `pill-without-water` | a pill swallowed dry | white cell + pill in the throat | don't blame the medicine, it needed a ride down | some antibiotics: no lying down for 30 minutes (NHS) |
