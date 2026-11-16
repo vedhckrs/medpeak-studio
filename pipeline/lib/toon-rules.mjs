@@ -22,7 +22,7 @@ const SMALL = new Set('a an the of to in on and or is are be am was it its this 
 const keysOf = (t) => [...new Set(wordsOf(t ?? '').map(bare).filter((w) => w.length > 2 && !SMALL.has(w) && !/^(you|your|you'll|you're|yours)$/.test(w)))];
 /** What a format-2 hook must be (owner, 2026-11-17: "make better hook"): short, said to the viewer, about the title. */
 export const HOOK = {words: 8, seconds: 2.5, titleWords: 2, by: 3, questionBy: 7, answerFrom: 0.75};
-const hookFaults = (text, title) => {
+export const hookFaults = (text, title) => {
   const out = [];
   const n = wordsOf(text).length;
   if (n > HOOK.words) out.push(`${n} words (at most ${HOOK.words})`);
