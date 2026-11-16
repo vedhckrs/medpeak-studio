@@ -17,6 +17,15 @@ const O = {stroke: LINE, strokeWidth: LW, strokeLinejoin: 'round' as const};
 const wrap = (v: number, m: number) => ((v % m) + m) % m;
 const hash = (s: string) => Math.floor(random(s) * 1000);
 const FLOOR_TOP = 1340; // where the wall meets the floor
+/**
+ * How much of a room's small stuff is drawn (owner, 2026-11-17, on the choice sheet: keep the
+ * rooms as they are now, "only just remove few thing"):
+ *   0 = everything (the first rooms);
+ *   1 = the wall keeps only its window and, in a clinic, the chart at the wall's edge (no clock,
+ *       certificate, pictures or shelf), and nothing blurred stands in front of the picture;
+ *   2 = also no plants and none of the small objects on and beside the furniture.
+ */
+export const ROOM_TIDY: number = 0;
 /** The floor line the characters stand on, in every built room. */
 export const ROOM_FLOOR = 1500;
 
@@ -267,7 +276,8 @@ const HeartMonitor: React.FC<{x: number; y: number; t: number}> = ({x, y, t}) =>
   );
 };
 /** The furniture of one arrangement, drawn for the "left" version (the "right" one is mirrored). */
-const Furniture: React.FC<{look: RoomLook; role: RoomRole; pal: Pal; t: number}> = ({look, role, pal, t}) => {
+const Furniture: React.FC<{look: RoomLook; role: RoomRole; pal: Pal; t: number; tidy: number}> = ({look, role, pal, t, tidy}) => {
+  const extra = tidy < 2; // plants and small objects
   const kind = roomKind(role, look);
   const seed = `${kind}${look.palette}${look.layout}`;
   const base = look.layout.replace(/-(left|right)$/, '');
@@ -279,7 +289,7 @@ const Furniture: React.FC<{look: RoomLook; role: RoomRole; pal: Pal; t: number}>
       case 'exam-bed':
         return (
           <g>
-            <HeartMonitor x={4} y={B - 380} t={t} />
+            {extra && <HeartMonitor x={4} y={B - 380} t={t} />}
             <g transform={`translate(360 ${B - 190})`}>
               <rect x={20} y={70} width={320} height={150} rx={10} fill={pal.trim} {...O} />
               <path d="M40 220 V262 M320 220 V262" stroke={LINE} strokeWidth={12} strokeLinecap="round" />
@@ -289,13 +299,13 @@ const Furniture: React.FC<{look: RoomLook; role: RoomRole; pal: Pal; t: number}>
               <rect x={150} y={30} width={150} height={56} fill="#ffffff" opacity={0.9} stroke="#c8d6e5" strokeWidth={2} />
               <rect x={60} y={110} width={110} height={84} rx={8} fill={pal.soft} stroke={LINE} strokeWidth={2.4} /><rect x={190} y={110} width={110} height={84} rx={8} fill={pal.soft} stroke={LINE} strokeWidth={2.4} />
             </g>
-            <Plant x={1000} y={B - 190} t={t} kind={hash(seed)} pot={pot} />
+            {extra && <Plant x={1000} y={B - 190} t={t} kind={hash(seed)} pot={pot} />}
           </g>
         );
       case 'cabinet':
         return (
           <g>
-            <Plant x={80} y={B - 190} t={t} kind={hash(seed) + 1} pot={pot} />
+            {extra && <Plant x={80} y={B - 190} t={t} kind={hash(seed) + 1} pot={pot} />}
             <g transform={`translate(370 ${B - 230})`}>
               <rect x={0} y={40} width={340} height={230} rx={10} fill={pal.trim} {...O} />
               <rect x={-12} y={22} width={364} height={30} rx={10} fill="#dfe6ee" {...O} />
@@ -303,15 +313,17 @@ const Furniture: React.FC<{look: RoomLook; role: RoomRole; pal: Pal; t: number}>
               <circle cx={150} cy={160} r={7} fill={pal.accent} /><circle cx={190} cy={160} r={7} fill={pal.accent} />
               <path d="M210 24 V-20 Q210 -40 236 -40 H250 V-24" fill="none" stroke="#9fb3c8" strokeWidth={12} strokeLinecap="round" />
               <ellipse cx={236} cy={30} rx={70} ry={12} fill="#c8d6e5" stroke={LINE} strokeWidth={2.4} />
+              {extra && <g>
               <rect x={24} y={-44} width={50} height={68} rx={12} fill="#ffffff" opacity={0.9} {...O} /><rect x={24} y={-52} width={50} height={16} rx={6} fill={pal.accent} {...O} />
               <rect x={86} y={-30} width={44} height={54} rx={10} fill="#ffffff" opacity={0.9} {...O} /><rect x={86} y={-38} width={44} height={14} rx={6} fill="#ffc93c" {...O} />
               <circle cx={49} cy={-6} r={12} fill="#f3f6fb" /><circle cx={108} cy={2} r={10} fill="#ffd9e0" />
+              </g>}
             </g>
-            <g transform={`translate(950 ${B - 60})`}>
+            {extra && <g transform={`translate(950 ${B - 60})`}>
               <rect x={0} y={60} width={150} height={30} rx={10} fill="#dfe6ee" {...O} />
               <rect x={62} y={-250} width={26} height={316} fill="#c8d6e5" {...O} />
               <rect x={20} y={-300} width={110} height={64} rx={12} fill="#ffffff" {...O} /><path d="M40 -268 H110" stroke={pal.accent} strokeWidth={8} strokeLinecap="round" />
-            </g>
+            </g>}
           </g>
         );
       case 'shelves':
@@ -331,23 +343,23 @@ const Furniture: React.FC<{look: RoomLook; role: RoomRole; pal: Pal; t: number}>
               <ellipse cx={0} cy={0} rx={70} ry={18} fill={pal.accent} {...O} />
               <path d="M0 16 V120 M-50 164 L0 120 L50 164" fill="none" stroke="#8f9bb0" strokeWidth={12} strokeLinecap="round" strokeLinejoin="round" />
             </g>
-            <g transform={`translate(540 ${B - 560})`}>
+            {extra && <g transform={`translate(540 ${B - 560})`}>
               <rect x={-44} y={0} width={88} height={130} rx={14} fill="#ffffff" {...O} /><rect x={-28} y={18} width={56} height={56} rx={8} fill={pal.accent} opacity={0.8} /><rect x={-10} y={126} width={20} height={26} rx={6} fill="#c8d6e5" {...O} />
-            </g>
-            <Plant x={1000} y={B - 190} t={t} kind={hash(seed) + 2} pot={pot} />
+            </g>}
+            {extra && <Plant x={1000} y={B - 190} t={t} kind={hash(seed) + 2} pot={pot} />}
           </g>
         );
       case 'desk':
         return (
           <g>
-            <Plant x={70} y={B - 190} t={t} kind={hash(seed) + 1} pot={pot} />
+            {extra && <Plant x={70} y={B - 190} t={t} kind={hash(seed) + 1} pot={pot} />}
             <g transform={`translate(350 ${B - 200})`}>
               <rect x={0} y={60} width={380} height={24} rx={8} fill={wood} {...O} />
               <rect x={14} y={84} width={120} height={170} rx={8} fill="#c99466" {...O} /><path d="M36 124 H112 M36 170 H112 M36 216 H112" stroke="#8f623c" strokeWidth={5} strokeLinecap="round" />
               <path d="M350 84 V254" stroke={LINE} strokeWidth={12} strokeLinecap="round" />
               <rect x={170} y={-70} width={170} height={112} rx={10} fill="#2b3350" {...O} /><rect x={182} y={-58} width={146} height={88} rx={4} fill="#9fd6ff" /><path d="M196 -20 l22 -18 l20 26 l24 -30 l28 22" fill="none" stroke="#ffffff" strokeWidth={5} strokeLinecap="round" strokeLinejoin="round" />
               <rect x={240} y={42} width={30} height={20} fill="#55608c" /><rect x={200} y={54} width={110} height={10} rx={5} fill="#55608c" />
-              <rect x={40} y={10} width={44} height={52} rx={8} fill={pal.accent} {...O} />{[0, 1, 2].map((i) => <path key={i} d={`M${52 + i * 10} 10 V${-16 - i * 6}`} stroke={['#ea4a55', '#ffc93c', '#3f8fd6'][i]} strokeWidth={6} strokeLinecap="round" />)}
+              {extra && <g><rect x={40} y={10} width={44} height={52} rx={8} fill={pal.accent} {...O} />{[0, 1, 2].map((i) => <path key={i} d={`M${52 + i * 10} 10 V${-16 - i * 6}`} stroke={['#ea4a55', '#ffc93c', '#3f8fd6'][i]} strokeWidth={6} strokeLinecap="round" />)}</g>}
             </g>
             <g transform={`translate(940 ${B - 300})`}>
               <rect x={0} y={0} width={170} height={340} rx={10} fill="#c8d0da" {...O} />
@@ -371,7 +383,7 @@ const Furniture: React.FC<{look: RoomLook; role: RoomRole; pal: Pal; t: number}>
               <rect x={0} y={60} width={170} height={210} rx={12} fill={wood} {...O} /><rect x={18} y={84} width={134} height={74} rx={8} fill="#c99466" stroke={LINE} strokeWidth={2.4} /><rect x={18} y={174} width={134} height={74} rx={8} fill="#c99466" stroke={LINE} strokeWidth={2.4} />
               <circle cx={85} cy={121} r={7} fill="#ffc93c" /><circle cx={85} cy={211} r={7} fill="#ffc93c" />
               <rect x={74} y={-80} width={22} height={140} fill="#b9892c" {...O} /><path d="M30 -80 L140 -80 L116 -190 L54 -190 Z" fill={look.time === 'night' ? '#ffe08a' : '#fff1bf'} {...O} />
-              {look.time === 'night' && <ellipse cx={85} cy={-110} rx={190 + Math.sin(t * 1.4) * 8} ry={170} fill="#ffe08a" opacity={0.2} />}
+              {look.time === 'night' && extra && <ellipse cx={85} cy={-110} rx={190 + Math.sin(t * 1.4) * 8} ry={170} fill="#ffe08a" opacity={0.2} />}
             </g>
           </g>
         );
@@ -387,14 +399,14 @@ const Furniture: React.FC<{look: RoomLook; role: RoomRole; pal: Pal; t: number}>
               <path d="M30 -78 H56 M196 -78 H222" stroke={LINE} strokeWidth={10} strokeLinecap="round" /><circle cx={126} cy={-118} r={9} fill="#3b4258" />
               {[0, 1, 2].map((i) => { const life = wrap(t * 0.4 + i * 0.33, 1); return <path key={i} d={`M${92 + i * 34} ${-130 - life * 120} q14 -18 0 -36 q-14 -18 0 -36`} fill="none" stroke="#ffffff" strokeWidth={8} strokeLinecap="round" opacity={0.6 * (1 - life)} />; })}
             </g>
-            <g transform={`translate(560 ${B - 214})`}>
+            {extra && <g transform={`translate(560 ${B - 214})`}>
               <path d="M0 -6 H150 L134 -64 H16 Z" fill="#ffffff" {...O} />
               {[[40, -72, '#ea4a55'], [78, -82, '#ffc93c'], [112, -72, '#5fb56a'], [60, -98, '#ff9f43']].map(([x, y, c], i) => <circle key={i} cx={x as number} cy={y as number} r={24} fill={c as string} stroke={LINE} strokeWidth={2.4} />)}
-            </g>
+            </g>}
             <g transform={`translate(870 ${B - 720})`}>
               <rect x={0} y={0} width={260} height={760} rx={16} fill="#eef2f7" {...O} />
               <path d="M0 250 H260" stroke={LINE} strokeWidth={LW} /><rect x={24} y={80} width={14} height={120} rx={7} fill="#8f9bb0" /><rect x={24} y={300} width={14} height={160} rx={7} fill="#8f9bb0" />
-              <rect x={90} y={60} width={56} height={56} rx={8} fill={pal.accent} transform="rotate(-6 118 88)" /><circle cx={190} cy={130} r={20} fill="#ffc93c" /><rect x={110} y={330} width={70} height={50} rx={6} fill="#ffffff" stroke="#c8d6e5" strokeWidth={2} transform="rotate(5 145 355)" />
+              {extra && <g><rect x={90} y={60} width={56} height={56} rx={8} fill={pal.accent} transform="rotate(-6 118 88)" /><circle cx={190} cy={130} r={20} fill="#ffc93c" /><rect x={110} y={330} width={70} height={50} rx={6} fill="#ffffff" stroke="#c8d6e5" strokeWidth={2} transform="rotate(5 145 355)" /></g>}
             </g>
           </g>
         );
@@ -406,7 +418,7 @@ const Furniture: React.FC<{look: RoomLook; role: RoomRole; pal: Pal; t: number}>
               <path d="M0 40 H300 Q300 130 150 130 Q0 130 0 40 Z" fill="#ffffff" {...O} /><rect x={-8} y={20} width={316} height={30} rx={12} fill="#f4f7fb" {...O} />
               <path d="M150 20 V-40 Q150 -70 190 -70 H206 V-46" fill="none" stroke="#9fb3c8" strokeWidth={14} strokeLinecap="round" />
               {(() => { const d = wrap(t / 2.2, 1); return <circle cx={206} cy={-40 + d * 70} r={7} fill="#62baf7" opacity={d < 0.85 ? 0.9 : 0} />; })()}
-              <rect x={40} y={-30} width={36} height={52} rx={10} fill={pal.accent} {...O} /><rect x={50} y={-48} width={16} height={22} rx={5} fill="#ffffff" {...O} />
+              {extra && <g><rect x={40} y={-30} width={36} height={52} rx={10} fill={pal.accent} {...O} /><rect x={50} y={-48} width={16} height={22} rx={5} fill="#ffffff" {...O} /></g>}
             </g>
             <g transform={`translate(560 ${B - 230})`}>
               <path d="M0 40 H560 V200 Q540 250 480 250 H80 Q20 250 0 200 Z" fill="#ffffff" {...O} /><rect x={-14} y={22} width={590} height={34} rx={14} fill="#f4f7fb" {...O} />
@@ -424,7 +436,7 @@ const Furniture: React.FC<{look: RoomLook; role: RoomRole; pal: Pal; t: number}>
               <rect x={0} y={60} width={560} height={250} rx={40} fill={pal.accent} {...O} />
               <rect x={30} y={0} width={500} height={170} rx={40} fill={pal.accent} {...O} />
               <rect x={56} y={150} width={220} height={90} rx={26} fill={pal.soft} stroke={LINE} strokeWidth={2.4} opacity={0.9} /><rect x={286} y={150} width={220} height={90} rx={26} fill={pal.soft} stroke={LINE} strokeWidth={2.4} opacity={0.9} />
-              <rect x={90} y={70} width={110} height={100} rx={22} fill="#ffc93c" {...O} transform="rotate(-8 145 120)" />
+              {extra && <rect x={90} y={70} width={110} height={100} rx={22} fill="#ffc93c" {...O} transform="rotate(-8 145 120)" />}
               <path d="M40 310 V350 M520 310 V350" stroke={LINE} strokeWidth={14} strokeLinecap="round" />
             </g>
             <g transform={`translate(880 ${B - 620})`}>
@@ -449,7 +461,7 @@ export type WallItem = {kind: 'chart' | 'clock' | 'certificate' | 'picture' | 's
 /** The window's box [x0, y0, x1, y1], frame included. */
 export const windowBox = (look: RoomLook): [number, number, number, number] => { const w = windowOf(look).box; return [w[0] - 17, w[1] - 17, w[0] + w[2] + 17, w[1] + w[3] + 17]; };
 /** Every wall item of a room with the box it takes up [x0, y0, x1, y1]. The room draws from this list and the staging check measures it. */
-export const wallItems = (look: RoomLook, role: RoomRole): WallItem[] => {
+export const wallItems = (look: RoomLook, role: RoomRole, tidy: number = ROOM_TIDY): WallItem[] => {
   const win = windowOf(look);
   const kind = roomKind(role, look);
   const seed = `${kind}${look.palette}${look.layout}${look.window.style}`;
@@ -488,12 +500,14 @@ export const wallItems = (look: RoomLook, role: RoomRole): WallItem[] => {
     out.push({kind: 'mirror', x: mx, y: 320, s: 0.85, box: [mx - 107, 170, mx + 107, 470]});
     out.push({kind: 'towel', x: tx, y: 330, s: 0.62, box: [tx - 68, 326, tx + 68, 432]});
   }
+  // a tidy wall keeps the one thing that says what room this is, at the wall's edge
+  if (tidy >= 1) return out.filter((it) => it.kind === 'chart' || it.kind === 'mirror');
   return out;
 };
 
 // ------------------------------------------------------------------ the room
 /** One room, built from its recipe. `role` = clinic or home. */
-export const Room: React.FC<{look: RoomLook; role: RoomRole; t: number}> = ({look, role, t}) => {
+export const Room: React.FC<{look: RoomLook; role: RoomRole; t: number; tidy?: number}> = ({look, role, t, tidy = ROOM_TIDY}) => {
   const uid = useId().replace(/:/g, '');
   const pal = ROOM_PALS[look.palette] ?? ROOM_PALS.mint;
   const win = windowOf(look);
@@ -540,7 +554,7 @@ export const Room: React.FC<{look: RoomLook; role: RoomRole; t: number}> = ({loo
           <path d={`M${win.box[0] + 30} ${win.box[1] + 60} l70 70 M${win.box[0] + 70} ${win.box[1] + 40} l70 70`} stroke="#ffffff" strokeWidth={13} strokeLinecap="round" opacity={0.45} />
           {win.sill && <rect x={win.sill[0]} y={win.sill[1]} width={win.sill[2]} height={34} rx={10} fill={pal.trim} {...O} />}
           {/* on the wall */}
-          {wallItems(look, role).map((it, i) => {
+          {wallItems(look, role, tidy).map((it, i) => {
             const scaled = (kids: React.ReactNode) => <g key={i} transform={`translate(${it.x} ${it.y}) scale(${it.s}) translate(${-it.x} ${-it.y})`}>{kids}</g>;
             if (it.kind === 'chart') return scaled(<Chart kind={look.chart ?? 'body'} x={it.x} y={it.y} accent={pal.accent} />);
             if (it.kind === 'clock') return <Clock key={i} x={it.x} y={it.y} r={it.r ?? 80} t={t} rim={pal.accent} />;
@@ -578,7 +592,7 @@ export const Room: React.FC<{look: RoomLook; role: RoomRole; t: number}> = ({loo
           {look.floor === 'carpet' && <g>{Array.from({length: 90}).map((_, i) => <circle key={i} cx={random(`rk${i}`) * W} cy={FLOOR_TOP + 30 + random(`rky${i}`) * 560} r={3 + random(`rkr${i}`) * 3} fill={pal.floor2} opacity={0.5} />)}</g>}
           <rect x={-300} y={FLOOR_TOP - 16} width={W + 600} height={28} fill={pal.trim} {...O} />
           <path d={`M${win.cx - 380} ${FLOOR_TOP + 60} L${win.cx - 120} ${FLOOR_TOP} L${win.cx + 220} ${FLOOR_TOP} L${win.cx - 40} ${FLOOR_TOP + 60} Z`} fill="#fff4cc" opacity={time === 'night' ? 0 : 0.22} />
-          <Furniture look={look} role={role} pal={pal} t={t} />
+          <Furniture look={look} role={role} pal={pal} t={t} tidy={tidy} />
           {/* a rug under the characters */}
           {hash(seed) % 3 !== 2 ? (
             <g>
@@ -601,7 +615,8 @@ export const Room: React.FC<{look: RoomLook; role: RoomRole; t: number}> = ({loo
 };
 
 /** In front of the characters, out of focus: leaves in a clinic, a curtain edge at home. */
-export const RoomFore: React.FC<{look: RoomLook; role: RoomRole; t: number}> = ({look, role, t}) => {
+export const RoomFore: React.FC<{look: RoomLook; role: RoomRole; t: number; tidy?: number}> = ({look, role, t, tidy = ROOM_TIDY}) => {
+  if (tidy >= 1) return null; // nothing blurred in front of the picture
   const pal = ROOM_PALS[look.palette] ?? ROOM_PALS.mint;
   const left = look.window.side !== 'left';
   const flip = left ? undefined : `translate(${W} 0) scale(-1 1)`;

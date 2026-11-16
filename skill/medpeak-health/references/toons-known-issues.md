@@ -56,7 +56,7 @@ of furniture on purpose (a desk, a bed). Neither is checked.
 |---|---|---|
 | The boy's head: A, B or C | `toons-boards/caps.jpg` | A is in the engine now; B or C is a one-line change in `SPECS.kid` |
 | Dr. Mira's global look: A, B or C | `toons-boards/doctor-options.jpg` | `SPECS.doctor` gets the chosen skin, eyes and hair; sheets and boards are rendered again |
-| The room style: clean wall, room as a box; clinic empty (A) or with one low cupboard (B) | `toons-boards/room-style-clinic.jpg`, `room-style-home.jpg` | `src/toons/room3d.tsx` replaces the first rooms in the player; the staging check gets "nothing of the room inside the pop-up area" and "nobody stands in furniture"; the three scripts' graphics are moved onto the back wall |
+| The rooms: A (a few things removed) or B (a little more removed) | `toons-boards/room-style-clinic.jpg`, `room-style-home.jpg` | `ROOM_TIDY` in `src/toons/rooms.tsx` is set to 1 or 2 (it is 0 = as before until the owner picks); the rooms boards are rendered again. The box-shaped room of 2026-11-16 was dropped on the owner's word ("make both now only, just remove few thing") |
 
 ## Open, and why
 | # | What | Why it is still open | Who can close it |

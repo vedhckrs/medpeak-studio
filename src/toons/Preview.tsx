@@ -21,7 +21,6 @@ import {LENSES, type LensName, type MoveName, SHOTS, type ShotName} from './came
 import {type ArmSpec, blinkAt, EMOTIONS, type Emotion, Face, Hand, HAND_POSES, type HandPose} from './rig';
 import {BloodSet, DEFAULT_ROOMS, FORES, GutSet, MouthSet, OfficeSet, SETS, StomachSet, ThroatSet, WordCaption, type SetName} from './scenes';
 import {Room, RoomFore, ROOM_FLOOR} from './rooms';
-import {Room3D} from './room3d';
 import {Prop} from './props';
 import {roomTone, type RoomLook} from './director';
 import {Camera, Hold, Slot, Stand} from './stage';
@@ -317,10 +316,10 @@ export const RoomsBoard: React.FC<{title?: string; clinic?: RoomLook; home?: Roo
 };
 
 /**
- * ROOM STYLE BOARD: the same clinic and home in the first style and in the second (clean wall, the
- * room as a box), with people, a thought bubble, a tag and a caption where a video puts them (1920x1080).
+ * ROOM STYLE BOARD: the same clinic or home as it is now and with a few things removed (rooms.tsx,
+ * ROOM_TIDY 1 and 2), with people, a thought bubble, a tag and a caption where a video puts them (1920x1080).
  */
-export const RoomStyleBoard: React.FC<{title?: string; which?: 'clinic' | 'home'; clinic?: RoomLook; home?: RoomLook; home2?: RoomLook; people?: [string, string]}> = ({title = 'Rooms: now and new', which = 'clinic', clinic = DEFAULT_ROOMS.clinic, home = DEFAULT_ROOMS.home, home2, people = ['patient', 'patient']}) => {
+export const RoomStyleBoard: React.FC<{title?: string; which?: 'clinic' | 'home'; clinic?: RoomLook; home?: RoomLook; people?: [string, string]}> = ({title = 'Rooms: now, and with a few things removed', which = 'clinic', clinic = DEFAULT_ROOMS.clinic, home = DEFAULT_ROOMS.home, people = ['patient', 'patient']}) => {
   const Doc = ALL.doctor;
   const A = ALL[people[0]];
   const B = ALL[people[1]];
@@ -360,15 +359,15 @@ export const RoomStyleBoard: React.FC<{title?: string; which?: 'clinic' | 'home'
       <T x={60} y={24} w={1800} size={40} weight={900} color="#ffffff">{title}</T>
       {which === 'clinic' ? (
         <>
-          {cell(0, 'Now', 'chart, clock, certificate, plants; a flat room', <><Room look={clinic} role="clinic" t={2} />{clinicCast}<RoomFore look={clinic} role="clinic" t={2} /></>)}
-          {cell(1, 'New A: empty', 'plain wall behind every pop-up; window and chart on the side walls', <><Room3D look={clinic} role="clinic" t={2} bare />{clinicCast}</>)}
-          {cell(2, 'New B: one low cupboard', 'the same, with one plain cupboard between them', <><Room3D look={clinic} role="clinic" t={2} />{clinicCast}</>)}
+          {cell(0, 'Now', 'as in the three live videos', <><Room look={clinic} role="clinic" t={2} tidy={0} />{clinicCast}<RoomFore look={clinic} role="clinic" t={2} tidy={0} /></>)}
+          {cell(1, 'A: a few things removed', 'gone: the clock, the certificate, the blurred leaf in front', <><Room look={clinic} role="clinic" t={2} tidy={1} />{clinicCast}</>)}
+          {cell(2, 'B: a little more removed', 'also gone: the plant, the jars, the stand at the side', <><Room look={clinic} role="clinic" t={2} tidy={2} />{clinicCast}</>)}
         </>
       ) : (
         <>
-          {cell(0, `Now (${home.kind ?? 'bedroom'})`, 'pictures on the wall; a flat room', <><Room look={home} role="home" t={2} />{homeCast(home)}<RoomFore look={home} role="home" t={2} /></>)}
-          {cell(1, `New (${home.kind ?? 'bedroom'})`, 'plain wall, one piece of furniture, the room has depth', <><Room3D look={home} role="home" t={2} />{homeCast(home)}</>)}
-          {home2 && cell(2, `New (${home2.kind ?? 'bedroom'})`, 'a second home in the new style', <><Room3D look={home2} role="home" t={2} />{homeCast(home2)}</>)}
+          {cell(0, `Now (${home.kind ?? 'bedroom'})`, 'as in the live video', <><Room look={home} role="home" t={2} tidy={0} />{homeCast(home)}<RoomFore look={home} role="home" t={2} tidy={0} /></>)}
+          {cell(1, 'A: a few things removed', 'gone: the two pictures on the wall', <><Room look={home} role="home" t={2} tidy={1} />{homeCast(home)}</>)}
+          {cell(2, 'B: a little more removed', "also gone: the lamp's big glow", <><Room look={home} role="home" t={2} tidy={2} />{homeCast(home)}</>)}
         </>
       )}
     </AbsoluteFill>

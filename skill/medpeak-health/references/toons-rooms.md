@@ -78,6 +78,17 @@ make:
 A new wall item goes into `wallItems` with its box, never straight into the room's drawing.
 `npm run toon:staging` fails a script when more than 15% of a wall item is behind a head.
 
+### How tidy a room is (`ROOM_TIDY`)
+The owner looked at a box-shaped room with a bare wall (2026-11-16) and chose to keep the rooms as
+they are, with a few things removed (2026-11-17). One number in `rooms.tsx` sets it for every room:
+- 0: everything, as in the first three videos;
+- 1: the wall keeps its window and, in a clinic, the chart at the wall's edge (a bathroom keeps its
+  mirror); no clock, certificate, pictures or shelf, and nothing blurred in front of the picture;
+- 2: also no plants and none of the small objects on and beside the furniture (jars, the stand,
+  the pen pot, the fruit bowl, the lamp's glow).
+A new small object goes behind `extra` in `Furniture`, a new wall item into `wallItems`, so the
+number keeps working. Do not redraw the rooms in perspective: that was offered and turned down.
+
 ### The room's light on people
 A night or evening room tints its people too (`roomTone` in `director.ts`; the player and the
 rooms board pass it to the character's slot). Without it a person in a night room is as bright as

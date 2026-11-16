@@ -37,7 +37,7 @@ export const Root: React.FC = () => (
     <Still id="ToonRooms" component={RoomsBoard} width={1920} height={1080} defaultProps={{title: 'Rooms'}} />
     <Still id="ToonCaps" component={CapBoard} width={1920} height={1080} />
     <Still id="ToonDoctor" component={DoctorBoard} width={1920} height={1080} />
-    <Still id="ToonRoomStyle" component={RoomStyleBoard} width={1920} height={1080} defaultProps={{title: 'Rooms: now and new'}} />
+    <Still id="ToonRoomStyle" component={RoomStyleBoard} width={1920} height={1080} defaultProps={{title: 'Rooms: now, and with a few things removed'}} />
     <Still id="ToonPoses" component={PoseBoard} width={1920} height={1600} defaultProps={{who: 'doctor'}} />
     <Composition id="ToonScenes" component={SceneDemo} fps={30} width={1080} height={1920} durationInFrames={540} />
     <Composition id="ToonCover" component={ToonCover} fps={TOON_FPS} width={1080} height={1920} durationInFrames={TOON_FPS * 10} defaultProps={{...toonDefaults, text: 'Cover'}} calculateMetadata={({props}) => ({durationInFrames: layoutToon(props.toon, props.timings).total})} />
