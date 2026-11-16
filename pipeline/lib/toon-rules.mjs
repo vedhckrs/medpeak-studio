@@ -6,7 +6,7 @@
 // It uses the same director as the player (src/toons/director.ts), so the picture changes it
 // measures are the ones that get rendered.
 import {checkCut} from './retention.mjs';
-import {AUTO_SFX, EMOTION_NAMES, ENTRANCES, layoutToon, longestStill, parseCam, PROP_NAMES, SET_NAMES, STAGE_KEYS, TOON_FPS} from '../../src/toons/director.ts';
+import {AUTO_SFX, checkRoom, EMOTION_NAMES, ENTRANCES, layoutToon, longestStill, parseCam, PROP_NAMES, roomsClash, roomSignature, SET_NAMES, STAGE_KEYS, TOON_FPS} from '../../src/toons/director.ts';
 import {POSES} from '../../src/toons/poses.ts';
 
 /** Where a medical fact may come from (medical-accuracy.md): research databases, WHO, national health bodies. */
@@ -19,7 +19,8 @@ const bare = (w) => w.toLowerCase().replace(/[^a-z0-9']/g, '');
 const saysWord = (text, word) => wordsOf(text ?? '').some((w) => bare(w) === bare(word));
 
 /**
- * Check one Toon. `known` = {cast: names with a voice, sfx: effect names, beds: music names}.
+ * Check one Toon. `known` = {cast: names with a voice, sfx: effect names, beds: music names,
+ * others: the other videos' [{slug, episode, rooms}] (so every video gets rooms of its own)}.
  * Returns {ok, total (seconds), results: [{group, point, pass, detail, warn?}], layout}.
  */
 export const checkToon = (toon, timings, known) => {
@@ -88,6 +89,9 @@ export const checkToon = (toon, timings, known) => {
     }
   }
   if (!lines.length) bad.push('no lines');
+  const built = ['clinic', 'home'].filter((r) => shots.some((x) => x.set === r));
+  for (const role of built) bad.push(...checkRoom(role, toon.rooms?.[role]));
+  if (built.length && !(Number.isInteger(toon.episode) && toon.episode > 0)) bad.push('"episode" (the number of this video in the series) is needed to compare its rooms with the others');
   add('script', 'Script is valid', !bad.length, bad.length ? bad.slice(0, 8).join('; ') + (bad.length > 8 ? ` … (+${bad.length - 8})` : '') : `${places.length} scenes, ${lines.length} lines, ${new Set(lines.map((l) => l.who)).size} voices`);
   if (bad.length) return {ok: false, total: 0, results: res, layout: null};
 
@@ -120,6 +124,26 @@ export const checkToon = (toon, timings, known) => {
   add('format', 'Length', total >= 25 && total < 60, `${total.toFixed(1)} s (a Short must stay under 60 s; aim for 40-58)`);
   const sets = new Set(places.map((s) => s.set));
   add('format', 'Places', sets.size >= 2, `${sets.size} set(s): ${[...sets].join(', ')} (at least a body scene and the doctor's office)`);
+  if (toon.camera === 'steady') {
+    // every video has a clinic and a home of its OWN (owner, 2026-11-16): the shared rooms are not allowed
+    const shared = [...sets].filter((x) => ['office', 'bedroom', 'bathroom'].includes(x));
+    const own = sets.has('clinic') && sets.has('home');
+    add('format', 'Own rooms', own && !shared.length, shared.length ? `uses the shared room(s) ${shared.join(', ')}: give this video its own ("set": "clinic" / "home" and a recipe in "rooms")` : own ? `clinic: ${roomSignature('clinic', toon.rooms.clinic)}; home: ${roomSignature('home', toon.rooms.home)}` : 'a steady script has a scene in its clinic and a scene in its home');
+    if (own) {
+      const clashes = [];
+      for (const o of known.others ?? []) {
+        if (o.slug === toon.slug) continue;
+        if (o.episode === toon.episode) clashes.push(`episode ${toon.episode} is also ${o.slug}`);
+        const near = Math.abs((o.episode ?? 1e9) - toon.episode) <= 6;
+        for (const role of ['clinic', 'home']) {
+          if (!o.rooms?.[role]) continue;
+          const c = roomsClash(role, toon.rooms[role], o.rooms[role], near);
+          if (c) clashes.push(`${role}: ${c} as ${o.slug}`);
+        }
+      }
+      add('format', 'Rooms are unique', !clashes.length, clashes.length ? clashes.join('; ') : `no other video has this clinic or this home (compared with ${(known.others ?? []).filter((o) => o.slug !== toon.slug).length} other video(s))`);
+    }
+  }
   const voices = new Set(lines.map((l) => l.who));
   add('format', 'Voices', voices.size >= 3, `${voices.size} speaking characters (3 or more keep it a conversation)`);
   const docFrames = L.lines.filter((p) => p.line.who === 'doctor').reduce((n, p) => n + p.frames, 0);

@@ -116,6 +116,30 @@ open hand was three stubs on a ball and read as a paw.
 - Check any change on the pose board: `node pipeline/toon-sheets.mjs --boards` renders every pose
   for the doctor, the patient and the kid (`toons-boards/poses-doctor.jpg`).
 
+## People's legs (rebuilt 2026-11-16, owner: "each character's legs jump")
+What was wrong: a leg was one bendy tube and the knee was solved back from the hips, with legs
+that were almost straight. So whenever the hips moved a hair (a talking beat, a shift of weight in
+a quarter of a second) the knees snapped sideways and the whole body lurched.
+
+- A leg is hip -> knee -> ankle: **two tapering segments** (thigh, shin) with a real knee.
+- **A knee bend is set, never solved.** A weight shift, a crouch or a step sets how far the knee
+  stands out; the hip drops by exactly what that bend takes up (`jointsOf` in humans.tsx).
+- Feet stay planted unless the character walks. Talking moves the head, the shoulders and the
+  hands; the hips stay still. People squash and stretch only a third as much as the round bodies.
+- A weight shift is slow (about a second and a half) and happens every six seconds or so.
+- A gesture takes 12 frames and starts and ends softly.
+- **Measured, not judged by eye:** `npm run toon:motion -- <slug>` walks through a script frame by
+  frame and fails on a foot that slides (over 0.6 px), a hip or knee that moves more than 3 px in
+  one frame, a hand over 85 px, or a pop. It runs in the tests. Before the rebuild a standing
+  doctor's legs changed strongly on 279 of 599 frames; after, feet 0.00 px and knees 1.0 px.
+
+## Headwear and hair
+The boy's cap (owner: "boy hat not good") was a shallow bowl with the peak sticking out sideways.
+A cap now hugs the head down to just above the ears, the panels meet at a button and the peak is
+a curved visor in FRONT of the forehead; `capback` wears it backwards (strap in front, a tuft of
+hair under it); `messy` is no cap. Whatever sits on a head stops above the eyebrows: they carry
+the expression. Options sheet: `toons-boards/caps.jpg` (`ToonCaps`).
+
 ## Checklist before a new character is used in a video
 - [ ] The model sheet reads at thumbnail size: you can name the organ without the label.
 - [ ] Its real anatomical parts are drawn and named in `accents`; nothing invented.

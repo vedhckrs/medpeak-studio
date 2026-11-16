@@ -18,7 +18,9 @@ import {checkToon, scriptSheet} from './lib/toon-rules.mjs';
 import {LIBRARY} from './toon-sfx.mjs';
 import {BEDS} from './toon-music.mjs';
 
-const known = () => ({cast: Object.keys(loadCast().cast), sfx: LIBRARY.map(([n]) => n), beds: BEDS.map(([n]) => n)});
+/** Every video's rooms, so a script can be checked against the others (each video gets rooms of its own). */
+const others = () => fs.readdirSync(VIDEOS).filter((d) => fs.existsSync(path.join(VIDEOS, d, 'toon.json'))).map((d) => readJson(path.join(VIDEOS, d, 'toon.json'))).map((t) => ({slug: t.slug, episode: t.episode, rooms: t.rooms}));
+const known = () => ({cast: Object.keys(loadCast().cast), sfx: LIBRARY.map(([n]) => n), beds: BEDS.map(([n]) => n), others: others()});
 const GROUPS = {script: 'SCRIPT', retention: 'RETENTION 7', format: 'TOONS FORMAT', accuracy: 'MEDICAL ACCURACY'};
 
 const checkUrls = async (toon) => {

@@ -8,7 +8,9 @@ import {LIBRARY} from '../toon-sfx.mjs';
 import {BEDS} from '../toon-music.mjs';
 import {checkToon} from '../lib/toon-rules.mjs';
 import {scanCamera} from '../lib/toon-camera.mjs';
+import {LIMITS, scanMotion} from '../lib/toon-motion.mjs';
 import {blendPose, POSES} from '../../src/toons/poses.ts';
+import {checkRoom, roomsClash, roomSignature} from '../../src/toons/director.ts';
 import {AUTO_SFX, changesOf, EMO_SFX, frameOf, layoutToon, longestStill, parseCam, stateAt, TOON_FPS} from '../../src/toons/director.ts';
 
 const EMOTIONS = ['neutral', 'happy', 'angry', 'scared', 'smug', 'sick', 'sleepy', 'shocked', 'sad'];
@@ -63,7 +65,7 @@ test('toon scripts only use the cast, the library and the music beds', () => {
 });
 
 // ---------------------------------------------------------------- the script gate
-const known = {cast: Object.keys(cast.cast), sfx: LIBRARY.map(([n]) => n), beds: BEDS.map(([n]) => n)};
+const known = {cast: Object.keys(cast.cast), sfx: LIBRARY.map(([n]) => n), beds: BEDS.map(([n]) => n), others: toons.map((t) => ({slug: t.slug, episode: t.episode, rooms: t.rooms}))};
 const real = toons.filter((t) => !t.test);
 const clone = (t) => JSON.parse(JSON.stringify(t));
 const failed = (t) => checkToon(t, null, known).results.filter((r) => !r.pass).map((r) => r.point);
@@ -235,4 +237,73 @@ test('every stage a script uses has its dials, and every steady script is a show
     }
     assert.equal(t.shots[0].set, t.shots[t.shots.length - 1].set, `${t.slug}: the last scene returns to the first stage`);
   }
+});
+
+// ---------------------------------------------------------------- bodies never jump (owner: "legs jump")
+test('no foot slides, no leg or arm jumps and no pops on any real script', async () => {
+  for (const t of real) {
+    const r = await scanMotion(t, null);
+    assert.ok(r.people.length >= 2, `${t.slug}: people were measured`);
+    assert.deepEqual(r.slides, [], `${t.slug}: a foot slides`);
+    assert.deepEqual(r.legJumps, [], `${t.slug}: a leg jumps`);
+    assert.deepEqual(r.armJumps, [], `${t.slug}: an arm jumps`);
+    assert.deepEqual(r.pops, [], `${t.slug}: a joint pops`);
+    assert.ok(r.worst.leg <= LIMITS.leg && r.worst.foot <= LIMITS.foot);
+  }
+});
+
+test('a knee bend is set, never solved: a small change of weight moves a knee a little', async () => {
+  const {jointsOf, SPECS} = await import('../../src/toons/humans.tsx');
+  for (const who of ['doctor', 'kid', 'baby']) {
+    let prev = jointsOf(SPECS[who], {act: {shift: -1}});
+    let worst = 0;
+    for (let sh = -0.98; sh <= 1.0001; sh += 0.02) {
+      const cur = jointsOf(SPECS[who], {act: {shift: sh}});
+      cur.legs.forEach((l, i) => {
+        worst = Math.max(worst, Math.hypot(l.kn[0] - prev.legs[i].kn[0], l.kn[1] - prev.legs[i].kn[1]));
+        assert.deepEqual(l.an, prev.legs[i].an, `${who}: the feet stay planted`);
+      });
+      prev = cur;
+    }
+    assert.ok(worst < 0.2, `${who}: the knee moves at most ${worst.toFixed(2)} units for a 1% change of weight`);
+  }
+});
+
+// ---------------------------------------------------------------- every video has rooms of its own
+test('every real script has its own clinic and home, and no two videos share one', () => {
+  const eps = new Set();
+  for (const t of real) {
+    assert.ok(Number.isInteger(t.episode) && !eps.has(t.episode), `${t.slug}: a unique episode number`);
+    eps.add(t.episode);
+    for (const role of ['clinic', 'home']) {
+      assert.deepEqual(checkRoom(role, t.rooms?.[role]), [], `${t.slug}: ${role} recipe`);
+      assert.ok(t.shots.some((s) => s.set === role), `${t.slug}: a scene in its ${role}`);
+      for (const o of real) if (o !== t) assert.equal(roomsClash(role, t.rooms[role], o.rooms[role], Math.abs(o.episode - t.episode) <= 6), null, `${t.slug} and ${o.slug}: ${role}`);
+    }
+    assert.ok(!t.shots.some((s) => ['office', 'bedroom', 'bathroom'].includes(s.set)), `${t.slug}: no shared room`);
+  }
+});
+
+test('the gate refuses a copied room, a shared room and a bad recipe', () => {
+  const [a, b] = real;
+  let t = clone(a);
+  t.rooms.clinic = clone(b.rooms.clinic);
+  assert.ok(failed(t).includes('Rooms are unique'), 'the same clinic as another video');
+  t = clone(a);
+  t.rooms.home = {...clone(t.rooms.home), palette: b.rooms.home.palette};
+  assert.ok(failed(t).includes('Rooms are unique'), 'the same colour as a neighbouring video');
+  t = clone(a);
+  t.shots.find((s) => s.set === 'clinic').set = 'office';
+  assert.ok(failed(t).includes('Own rooms'), 'the old shared office');
+  t = clone(a);
+  t.rooms.clinic.palette = 'beige';
+  assert.deepEqual(failed(t), ['Script is valid'], 'an unknown colour scheme');
+  t = clone(a);
+  delete t.episode;
+  assert.deepEqual(failed(t), ['Script is valid'], 'no episode number');
+  // far apart in the series a colour may come back, but never the whole room
+  const far = {...clone(b.rooms.clinic)};
+  assert.equal(roomsClash('clinic', a.rooms.clinic, {...far, palette: a.rooms.clinic.palette}, false), null);
+  assert.equal(roomsClash('clinic', a.rooms.clinic, clone(a.rooms.clinic), false), 'the same room');
+  assert.notEqual(roomSignature('clinic', a.rooms.clinic), roomSignature('clinic', b.rooms.clinic));
 });

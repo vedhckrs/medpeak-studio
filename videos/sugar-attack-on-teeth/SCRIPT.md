@@ -1,6 +1,6 @@
 # What sugar really does to your teeth
 
-Toon script `sugar-attack-on-teeth` · about 56 seconds · 5 pictures
+Toon script `sugar-attack-on-teeth` · about 57 seconds · 6 pictures
 
 ## Retention 7
 
@@ -18,22 +18,24 @@ Toon script `sugar-attack-on-teeth` · about 56 seconds · 5 pictures
 
 | | Rule | Result |
 |---|---|---|
-| PASS | Script is valid | 4 scenes, 15 lines, 4 voices |
+| PASS | Script is valid | 5 scenes, 16 lines, 4 voices |
 | PASS | 1 No intro | hook: "Sugar! He's eating candy again. Party on this tooth!" |
 | PASS | 2 Promise | starts at 7.0 s (limit 8 s) |
 | PASS | 3 Counting | 3 numbered beats said in order |
-| PASS | 4 3-sec change | something new appears 40 times in 56 s (a place, a cut, a prop, a change of the stage); the longest wait is 2.6 s (from 42.7 s) |
+| PASS | 4 3-sec change | something new appears 42 times in 57 s (a place, a cut, a prop, a change of the stage); the longest wait is 2.6 s (from 43.5 s) |
 | PASS | 5 Twist | twist starts at 58% |
 | PASS | 6 Best last | best point starts at 81% |
 | PASS | 7 Loop | last line shares 3 key word(s) with the first: sugar, party, tooth |
 | PASS | Sources on numbers | every number has a source |
 | PASS | Source ids exist | all source ids known |
 | PASS | No banned claims | no cure/miracle/detox claims |
-| PASS | Length | 56.2 s (a Short must stay under 60 s; aim for 40-58) |
-| PASS | Places | 2 set(s): tooth, office (at least a body scene and the doctor's office) |
+| PASS | Length | 57.0 s (a Short must stay under 60 s; aim for 40-58) |
+| PASS | Places | 3 set(s): tooth, home, clinic (at least a body scene and the doctor's office) |
+| PASS | Own rooms | clinic: clinic|butter|dots|wood|round@left|hills|shelves|tooth|day; home: bathroom|lilac|tiles|checker|wide@right|garden|sink-left|-|evening |
+| PASS | Rooms are unique | no other video has this clinic or this home (compared with 2 other video(s)) |
 | PASS | Voices | 4 speaking characters (3 or more keep it a conversation) |
-| PASS | Doctor explains | Dr. Mira speaks for 35% of the video (15-50%) |
-| PASS | Body scene | body characters speak for 50% of the video (30% or more: they are the show) |
+| PASS | Doctor explains | Dr. Mira speaks for 34% of the video (15-50%) |
+| PASS | Body scene | body characters speak for 49% of the video (30% or more: they are the show) |
 | PASS | Short lines | the longest line is 13 words |
 | PASS | Banter | at most 2 lines in a row by one speaker (3 or fewer) |
 | PASS | Sources are complete | 3 source(s), each with its finding written out |
@@ -78,30 +80,42 @@ Characters: tooth, bacteria · props: tag
 
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
-| 21.0 s | B1 | tooth | sad | Now it's a real hole. A cavity! Ow! | ews 24 lock | nidcr, nidcr-decay |
+| 21.0 s | B1 | tooth | sad | Now it's a real hole. A cavity! | ews 24 lock | nidcr, nidcr-decay |
 
 What happens in the picture:
 
 - at B1 ("hole"): hole to 0.85 [squelch]
-- at B1 ("Ow"): pain to 1 [gasp]
+- at B1 ("cavity"): pain to 1 [gasp]
 - at B1 ("cavity"): tag "a cavity"
 
-## Scene D: office
+## Scene C: home
 
-Characters: doctor, kid · props: pain, candy, tag, pain, tag, drop, tag, tag, clock, candy, toothbrush, tag, tag, tag
+Characters: kid · props: pain
 
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
-| 24.6 s | D1 | kid | sad | Doctor, my tooth hurts. Is sugar really that bad? | ews 24 lock |  |
-| 28.3 s | D2 | doctor | neutral | Mouth bacteria turn sugar into acid. And that acid attacks your enamel. | the scene, locked | nidcr, who-sugars |
-| 33.1 s | D3 | doctor | happy | But here's the twist: your spit fights back. Its minerals help repair enamel. | the scene, locked | nidcr |
-| 38.2 s | D4 | kid | shocked | My spit fixes my teeth?! | the scene, locked |  |
-| 40.5 s | D5 | doctor | happy | Yes, if you give it time. So snack less often between meals. | the scene, locked | nidcr |
-| 45.3 s | D6 | doctor | neutral | And brush twice a day with fluoride toothpaste. Fluoride helps enamel rebuild. | the scene, locked | nidcr |
+| 24.3 s | C1 | kid | sad | Ow! My tooth hurts! | ews 24 lock |  |
 
 What happens in the picture:
 
-- at D1 ("hurts"): pain
+- at C1 ("tooth"): pain
+
+## Scene D: clinic
+
+Characters: doctor, kid · props: candy, candy, tag, pain, tag, drop, tag, tag, clock, candy, toothbrush, tag, tag, tag
+
+| Time | Line | Who | Feeling | Words | Camera | Source |
+|---|---|---|---|---|---|---|
+| 26.5 s | D1 | kid | sad | Doctor, is sugar really that bad? | ews 24 lock |  |
+| 29.1 s | D2 | doctor | neutral | Mouth bacteria turn sugar into acid. And that acid attacks your enamel. | the scene, locked | nidcr, who-sugars |
+| 33.9 s | D3 | doctor | happy | But here's the twist: your spit fights back. Its minerals help repair enamel. | the scene, locked | nidcr |
+| 39.0 s | D4 | kid | shocked | My spit fixes my teeth?! | the scene, locked |  |
+| 41.3 s | D5 | doctor | happy | Yes, if you give it time. So snack less often between meals. | the scene, locked | nidcr |
+| 46.1 s | D6 | doctor | neutral | And brush twice a day with fluoride toothpaste. Fluoride helps enamel rebuild. | the scene, locked | nidcr |
+
+What happens in the picture:
+
+- at D1 ("sugar"): candy
 - at D2: candy in a thought bubble
 - at D2 ("acid"): tag "sugar = acid"
 - at D2 ("attacks"): pain
@@ -122,8 +136,8 @@ Characters: tooth, bacteria · props: tag
 
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
-| 50.3 s | E1 | bacteria | scared | Hey! Spit? A brush? Not fair! | ews 24 lock |  |
-| 52.9 s | E2 | tooth | happy | No more sugar party on this tooth! | the scene, locked |  |
+| 51.1 s | E1 | bacteria | scared | Hey! Spit? A brush? Not fair! | ews 24 lock |  |
+| 53.7 s | E2 | tooth | happy | No more sugar party on this tooth! | the scene, locked |  |
 
 What happens in the picture:
 

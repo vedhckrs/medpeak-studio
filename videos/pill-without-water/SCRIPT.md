@@ -30,7 +30,9 @@ Toon script `pill-without-water` · about 46 seconds · 5 pictures
 | PASS | Source ids exist | all source ids known |
 | PASS | No banned claims | no cure/miracle/detox claims |
 | PASS | Length | 45.8 s (a Short must stay under 60 s; aim for 40-58) |
-| PASS | Places | 3 set(s): foodpipe, bedroom, office (at least a body scene and the doctor's office) |
+| PASS | Places | 3 set(s): foodpipe, home, clinic (at least a body scene and the doctor's office) |
+| PASS | Own rooms | clinic: clinic|sky|wainscot|checker|wide@right|city|cabinet|foodpipe|day; home: kitchen|cream|tiles|wood|tall@centre|night|stove-left|-|night |
+| PASS | Rooms are unique | no other video has this clinic or this home (compared with 2 other video(s)) |
 | PASS | Voices | 4 speaking characters (3 or more keep it a conversation) |
 | PASS | Doctor explains | Dr. Mira speaks for 41% of the video (15-50%) |
 | PASS | Body scene | body characters speak for 44% of the video (30% or more: they are the show) |
@@ -73,7 +75,7 @@ What happens in the picture:
 
 ## Time card: "Later that night..."
 
-## Scene C: bedroom
+## Scene C: home
 
 Characters: patient · props: pain
 
@@ -85,7 +87,7 @@ What happens in the picture:
 
 - at C1 ("burn"): pain
 
-## Scene D: office
+## Scene D: clinic
 
 Characters: doctor, patient · props: pipe, pain, tag, pillbottle, glass, tag, glass, tag, pillbottle, tag, pillow, clock
 

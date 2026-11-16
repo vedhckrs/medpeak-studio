@@ -30,7 +30,9 @@ Toon script `lying-down-after-dinner` · about 57 seconds · 5 pictures
 | PASS | Source ids exist | all source ids known |
 | PASS | No banned claims | no cure/miracle/detox claims |
 | PASS | Length | 57.5 s (a Short must stay under 60 s; aim for 40-58) |
-| PASS | Places | 3 set(s): tummy, bedroom, office (at least a body scene and the doctor's office) |
+| PASS | Places | 3 set(s): tummy, home, clinic (at least a body scene and the doctor's office) |
+| PASS | Own rooms | clinic: clinic|peach|stripes|wood|arch@centre|garden|desk|stomach|day; home: bedroom|nightblue|paint|carpet|arch@right|night|bed-left|-|night |
+| PASS | Rooms are unique | no other video has this clinic or this home (compared with 2 other video(s)) |
 | PASS | Voices | 4 speaking characters (3 or more keep it a conversation) |
 | PASS | Doctor explains | Dr. Mira speaks for 33% of the video (15-50%) |
 | PASS | Body scene | body characters speak for 48% of the video (30% or more: they are the show) |
@@ -74,7 +76,7 @@ What happens in the picture:
 
 ## Time card: "Meanwhile, in bed..."
 
-## Scene C: bedroom
+## Scene C: home
 
 Characters: patient · props: pain
 
@@ -86,9 +88,9 @@ What happens in the picture:
 
 - at C1 ("chest"): pain
 
-## Scene D: office
+## Scene D: clinic
 
-Characters: doctor, patient · props: burger, tag, pain, tag, valve, tag, pillow, burger, clock, tag, pillow, tag
+Characters: doctor, patient · props: burger, tag, pain, tag, valve, tag, pillow, burger, clock, tag, bed, tag
 
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
@@ -111,7 +113,7 @@ What happens in the picture:
 - at D5: burger with a "not this" sign
 - at D5 ("hours"): clock
 - at D5 ("three"): tag "3 to 4 hours"
-- at D6 ("raise"): pillow
+- at D6 ("raise"): bed
 - at D6 ("ten"): tag "10 to 20 cm"
 
 ## Scene E: tummy

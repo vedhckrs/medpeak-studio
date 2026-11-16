@@ -13,7 +13,7 @@ import type {Act, CharProps} from './blueprint';
 import {BLUEPRINTS, CAST, type CastName} from './characters';
 import {Camera, type Cam, CAM0, clampCam, H, LENSES, W} from './camera';
 import {AUTO_SFX, EMO_SFX, frameOf, GAP, layoutToon, type LensName, type MoveName, parseCam, type Placed, propFrames, type Seg, SEG, type SetName, type ShotName, stateAt, type Toon, type ToonActor, type ToonLine, type ToonShot, type ToonTimings, TOON_FPS} from './director';
-import {PEOPLE, skeleton, SPECS} from './humans';
+import {PEOPLE, skeleton, SPECS, jointsOf} from './humans';
 import {Grain} from './ink';
 import {clamp01, E, kick, lerp, lipsync, ramp, settle, type SpokenWord} from './motion';
 import {blendPose, POSES, type PoseName} from './poses';
@@ -218,7 +218,9 @@ const acting = (a: ToonActor, shot: ToonShot, lines: Placed[], f: number, cur: P
   const from = !before ? base : now && beforeGone !== null && now.from >= beforeGone + 14 ? base : poseOf(before.line.pose);
   const to = poseOf(now ? now.line.pose : a.pose);
   const gone = letGo(now);
-  let posed = now ? blendPose(from, to, E.back(clamp01((f - now.from) / 10))) : to;
+  // a gesture takes 12 frames, starts and ends softly (the motion check measured the old 10-frame snap at 140 px in one frame)
+  const into = clamp01(now ? (f - now.from) / 12 : 1);
+  let posed = now ? blendPose(from, to, into * into * (3 - 2 * into)) : to;
   if (gone !== null && f > gone) { const k = clamp01((f - gone) / 14); posed = blendPose(to, base, k * k * (3 - 2 * k)); }
   const arms = posed.map((sp, i) => {
     const s = armOf(sp as ArmSpec);
@@ -253,23 +255,21 @@ const acting = (a: ToonActor, shot: ToonShot, lines: Placed[], f: number, cur: P
     tilt: side * mood('tilt') * 0.8 + (1 - voice) * hop(f, 96, seed, 18) * 2.4,
     nod: mood('nod') + beat * 0.55 + (1 - voice) * (cur ? Math.max(0, Math.sin((f + seed) / 11)) ** 6 * 0.5 : 0),
     turn: side * 0.62 * (1 - glance),
-    shift: person ? lerp(0.75, 0.25, voice) * hop(f, 104, seed + 3, 20) : 0,
+    // a slow change of the standing leg every 6 seconds or so; never a quick sidestep
+    shift: person ? lerp(0.6, 0.2, voice) * hop(f, 190, seed + 3, 40) : 0,
     shrug: mood('shrug') * (0.6 + 0.4 * beat),
-    bob: person ? beat * 1.3 : -beat * (emotion === 'happy' || emotion === 'angry' ? 3.4 : 1.6),
+    // people keep their hips still when they talk (the beat goes to the head, the shoulders and the hands)
+    bob: person ? 0 : -beat * (emotion === 'happy' || emotion === 'angry' ? 3.4 : 1.6),
   };
   // a "take" when the emotion changes and a nudge when starting to speak: both swell from zero
-  const squash = kick(f, emotionFrom, take ? 0.24 : 0.11, 0.9, 0.26) + (speaking && cur ? kick(f, cur.from, 0.06, 1, 0.34) : 0);
+  // people do not squash and stretch like the round body characters: a little goes a long way on legs
+  const squash = (kick(f, emotionFrom, take ? 0.24 : 0.11, 0.9, 0.26) + (speaking && cur ? kick(f, cur.from, 0.06, 1, 0.34) : 0)) * (person ? 0.3 : 1);
   const blink = Math.max(blinkAt(f, TOON_FPS, seed), f - emotionFrom >= 0 && f - emotionFrom < 5 ? 1 - Math.abs(f - emotionFrom - 2) / 3 : 0);
   return {emotion, emotionFrom, talk, blink, arms, act, squash, look: {x: lookX, y: (a.stage ? up * 0.7 : mood('nod') * 0.3) * (1 - glance)}};
 };
 
-const Actor: React.FC<{a: ToonActor; shot: ToonShot; shotFrom: number; lines: Placed[]; f: number; cur: Placed | undefined; blur: number}> = ({a, shot, shotFrom, lines, f, cur, blur}) => {
-  const C = (isPerson(a.who) ? PEOPLE[a.who as keyof typeof PEOPLE] : CAST[a.who as CastName]) as React.FC<CharProps>;
-  const {cx, cy} = place(a, shot.set);
-  const A = acting(a, shot, lines, f, cur);
-  const ground = groundOf(a.who);
-  // entrances
-  const n = f - shotFrom;
+/** How a character comes into its scene on frame `n` of the scene: an offset, a step phase, a scale. */
+const entrance = (a: ToonActor, n: number) => {
   let dx = 0;
   let dy = 0;
   let step = 0;
@@ -277,6 +277,41 @@ const Actor: React.FC<{a: ToonActor; shot: ToonShot; shotFrom: number; lines: Pl
   if (a.enter === 'walk' && n < 30) { const u = E.out(n / 30); dx = (a.x < W / 2 ? -1 : 1) * (1 - u) * (a.size * 0.9 + 200); step = Math.sin(n * 0.8) * (1 - u); }
   if (a.enter === 'drop' && n < 22) { dy = -(1 - E.in(clamp01(n / 14))) * 1400; }
   if (a.enter === 'pop' && n < 12) scale = E.back(clamp01(n / 12));
+  return {dx, dy, step, scale};
+};
+
+/**
+ * Every person on screen on frame `f`, with each joint in screen pixels (before the camera).
+ * The motion check walks through a script frame by frame with this and reports anything that jumps.
+ */
+export const bodiesAt = (L: ReturnType<typeof layoutToon>, f: number) => {
+  const shotAt = [...L.shots].reverse().find((s) => f >= s.from) ?? L.shots[0];
+  const shot = shotAt.shot;
+  const si = L.shots.indexOf(shotAt);
+  if (shot.card !== undefined) return {si, bodies: []};
+  const lines = L.lines.filter((l) => l.si === si);
+  const cur = lines.find((l) => f >= l.from && f < l.from + l.frames);
+  const bodies = (shot.cast ?? []).filter((a) => !a.stage && isPerson(a.who)).map((a) => {
+    const sp = SPECS[a.who as keyof typeof SPECS];
+    const A = acting(a, shot, lines, f, cur);
+    const en = entrance(a, f - shotAt.from);
+    const J = jointsOf(sp, {act: A.act, arms: A.arms, step: en.step});
+    const {cx, cy} = place(a, shot.set);
+    const h = sp.height ?? 1;
+    const u = a.size / 200;
+    const px = ([x, y]: [number, number]): [number, number] => [cx + en.dx + x * h * u * (a.flip ? -1 : 1), cy + en.dy + (96 + (y - 96) * h) * u];
+    const arm = (i: 0 | 1) => (J.arms ? {shoulder: px(J.fromTorso(J.arms[i].S)), elbow: px(J.fromTorso(J.arms[i].E)), wrist: px(J.fromTorso(J.arms[i].W))} : null);
+    return {who: a.who, walking: en.step !== 0 || en.dx !== 0 || en.dy !== 0, hip: px(J.hip), legs: J.legs.map((l) => ({hip: px(l.hp), knee: px(l.kn), ankle: px(l.an)})), arms: [arm(0), arm(1)]};
+  });
+  return {si, bodies};
+};
+
+const Actor: React.FC<{a: ToonActor; shot: ToonShot; shotFrom: number; lines: Placed[]; f: number; cur: Placed | undefined; blur: number}> = ({a, shot, shotFrom, lines, f, cur, blur}) => {
+  const C = (isPerson(a.who) ? PEOPLE[a.who as keyof typeof PEOPLE] : CAST[a.who as CastName]) as React.FC<CharProps>;
+  const {cx, cy} = place(a, shot.set);
+  const A = acting(a, shot, lines, f, cur);
+  const ground = groundOf(a.who);
+  const {dx, dy, step, scale} = entrance(a, f - shotFrom);
   const land = a.enter === 'drop' ? settle(f, shotFrom + 14, 0.5, 1.1, 0.3) : 0;
   return (
     <Slot x={cx + dx} y={cy + dy} size={a.size} blur={blur}>
@@ -348,6 +383,7 @@ export const ToonPlayer: React.FC<ToonProps> = ({toon, timings, sfx, music}) => 
   const shotLines = L.lines.filter((l) => l.si === si);
   const cur = shotLines.find((l) => f >= l.from && f < l.from + l.frames);
   const Set = SETS[shot.set];
+  const look = shot.set === 'clinic' || shot.set === 'home' ? toon.rooms?.[shot.set] : undefined; // this video's own room
   const Fore = FORES[shot.set];
   // a stage draws some characters itself (the organ's own face, the pill): hand it what they are doing
   const faces: Record<string, StageFace> = {};
@@ -399,7 +435,7 @@ export const ToonPlayer: React.FC<ToonProps> = ({toon, timings, sfx, music}) => 
     <AbsoluteFill style={{background: '#1d1430'}}>
       {shot.card ? <TimeCard text={shot.card} n={f - shotAt.from} frames={shotAt.frames} /> : (
         <Camera {...cam}>
-          <Set t={f / TOON_FPS} state={state} faces={faces} label={shot.label} />
+          <Set t={f / TOON_FPS} state={state} faces={faces} label={shot.label} look={look} />
           {shot.cast.filter((a) => !a.stage).map((a) => <Actor key={a.who} a={a} shot={shot} shotFrom={shotAt.from} lines={shotLines} f={f} cur={cur} blur={blurOf(a.who)} />)}
           {shot.desk && <OfficeDesk />}
           {(shot.props ?? []).map((p, i) => {
@@ -412,7 +448,7 @@ export const ToonPlayer: React.FC<ToonProps> = ({toon, timings, sfx, music}) => 
               </Slot>
             );
           })}
-          {Fore && <Fore t={f / TOON_FPS} />}
+          {Fore && <Fore t={f / TOON_FPS} look={look} />}
         </Camera>
       )}
       {flash > 0 && <AbsoluteFill style={{background: '#ffffff', opacity: flash * 0.3}} />}

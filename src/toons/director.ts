@@ -11,7 +11,7 @@ export const SEG = 78; // frames: the usual longest stretch of one picture (2.6 
 export const SEG_MAX = SEG + 10; // a line that ends within 2.9 s keeps its one picture
 export const WPS = 2.8; // words a second, the pace measured on the reference Shorts
 
-export const SET_NAMES = ['throat', 'gut', 'stomach', 'mouth', 'blood', 'lungs', 'office', 'bathroom', 'bedroom', 'foodpipe', 'tooth', 'tummy'] as const;
+export const SET_NAMES = ['throat', 'gut', 'stomach', 'mouth', 'blood', 'lungs', 'office', 'bathroom', 'bedroom', 'foodpipe', 'tooth', 'tummy', 'clinic', 'home'] as const;
 export type SetName = (typeof SET_NAMES)[number];
 export const SHOT_NAMES = ['ews', 'wide', 'full', 'two', 'ms', 'mcu', 'cu', 'ecu', 'ots', 'low'] as const;
 export type ShotName = (typeof SHOT_NAMES)[number];
@@ -41,6 +41,72 @@ export const STAGE_KEYS: Partial<Record<SetName, string[]>> = {
   // leak: acid climbs the food pipe. burn: the food pipe hurts.
   tummy: ['food', 'full', 'tilt', 'valve', 'leak', 'burn'],
 };
+// ------------------------------------------------------------------ rooms (owner, 2026-11-16: "each video a
+// different clinic and a different home, unique"). The sets `clinic` and `home` are BUILT from a
+// recipe in the script (`rooms`), so no two videos have to share a background.
+export const ROOM_KINDS = ['clinic', 'bedroom', 'kitchen', 'bathroom', 'living'] as const;
+export type RoomKind = (typeof ROOM_KINDS)[number];
+export const ROOM_PALETTES = ['mint', 'sky', 'peach', 'lavender', 'butter', 'sage', 'blush', 'stone', 'nightblue', 'cream', 'terracotta', 'forest', 'lilac', 'sunny', 'slate', 'rose'] as const;
+export const ROOM_WALLS = ['paint', 'stripes', 'wainscot', 'tiles', 'dots'] as const;
+export const ROOM_FLOORS = ['wood', 'checker', 'carpet'] as const;
+export const ROOM_WINDOWS = ['tall', 'wide', 'arch', 'round'] as const;
+export const ROOM_SIDES = ['left', 'centre', 'right'] as const;
+export const ROOM_VIEWS = ['garden', 'city', 'hills', 'night'] as const;
+export const ROOM_CHARTS = ['tooth', 'stomach', 'foodpipe', 'heart', 'lungs', 'body'] as const;
+export const ROOM_TIMES = ['day', 'evening', 'night'] as const;
+/** The furniture arrangements each kind of room has. */
+export const ROOM_LAYOUTS: Record<RoomKind, readonly string[]> = {
+  clinic: ['exam-bed', 'cabinet', 'shelves', 'desk'],
+  bedroom: ['bed-left', 'bed-right'],
+  kitchen: ['stove-left', 'stove-right'],
+  bathroom: ['sink-left', 'sink-right'],
+  living: ['sofa-left', 'sofa-right'],
+};
+export type RoomLook = {
+  kind?: RoomKind; // home only: which room of the home (the clinic is always a clinic)
+  palette: (typeof ROOM_PALETTES)[number];
+  wall: (typeof ROOM_WALLS)[number];
+  floor: (typeof ROOM_FLOORS)[number];
+  window: {style: (typeof ROOM_WINDOWS)[number]; side: (typeof ROOM_SIDES)[number]; view: (typeof ROOM_VIEWS)[number]};
+  layout: string;
+  chart?: (typeof ROOM_CHARTS)[number]; // the wall chart (clinic): matches the video's topic
+  time?: (typeof ROOM_TIMES)[number];
+};
+export type RoomRole = 'clinic' | 'home';
+export const roomKind = (role: RoomRole, look: RoomLook): RoomKind => (role === 'clinic' ? 'clinic' : look.kind ?? 'bedroom');
+/** Everything that makes a room what it is, as one line (two rooms with the same line are the same room). */
+export const roomSignature = (role: RoomRole, look: RoomLook) =>
+  [roomKind(role, look), look.palette, look.wall, look.floor, `${look.window.style}@${look.window.side}`, look.window.view, look.layout, look.chart ?? '-', look.time ?? 'day'].join('|');
+/** What is wrong with a room recipe (an empty list = fine). */
+export const checkRoom = (role: RoomRole, look: RoomLook | undefined): string[] => {
+  if (!look) return [`no "${role}" room recipe`];
+  const bad: string[] = [];
+  const has = (list: readonly string[], v: string | undefined, what: string) => { if (!v || !list.includes(v)) bad.push(`${role}: ${what} "${v}" (one of: ${list.join(', ')})`); };
+  if (role === 'home') has(ROOM_KINDS.filter((k) => k !== 'clinic'), look.kind, 'kind');
+  has(ROOM_PALETTES, look.palette, 'palette');
+  has(ROOM_WALLS, look.wall, 'wall');
+  has(ROOM_FLOORS, look.floor, 'floor');
+  has(ROOM_WINDOWS, look.window?.style, 'window style');
+  has(ROOM_SIDES, look.window?.side, 'window side');
+  has(ROOM_VIEWS, look.window?.view, 'window view');
+  has(ROOM_LAYOUTS[roomKind(role, look)] ?? [], look.layout, 'layout');
+  if (look.chart) has(ROOM_CHARTS, look.chart, 'chart');
+  if (look.time) has(ROOM_TIMES, look.time, 'time');
+  return bad;
+};
+/**
+ * Are two videos' rooms too alike? Never the same recipe; and for videos within six episodes of
+ * each other the colour must differ, and so must the pairing of furniture layout and window view
+ * (colour, arrangement and view are what the eye reads first).
+ */
+export const roomsClash = (role: RoomRole, a: RoomLook, b: RoomLook, near: boolean): string | null => {
+  if (roomSignature(role, a) === roomSignature(role, b)) return 'the same room';
+  if (!near) return null;
+  if (a.palette === b.palette) return `the same colour (${a.palette})`;
+  if (roomKind(role, a) === roomKind(role, b) && a.layout === b.layout && a.window.view === b.window.view) return `the same layout and view (${a.layout}, ${a.window.view})`;
+  return null;
+};
+
 export const EMOTION_NAMES = ['neutral', 'happy', 'angry', 'scared', 'smug', 'sick', 'sleepy', 'shocked', 'sad'] as const;
 
 export type SpokenWord = {w: string; start: number; end: number};
@@ -97,7 +163,8 @@ export type ToonSource = {id: string; label: string; url: string; note: string};
  * `camera`: 'steady' = one locked picture per place, a cut only when the place changes or a line
  * asks for one (the style of the reference Shorts); 'cinematic' (default) = the director cuts.
  */
-export type Toon = {slug: string; title: string; test?: boolean; music?: string; camera?: 'steady' | 'cinematic'; retention?: ToonRetention; shots: ToonShot[]; sources?: ToonSource[]};
+/** `episode`: the video's number in the series (rooms are compared with the six episodes either side). `rooms`: the recipes for this video's own clinic and home. */
+export type Toon = {slug: string; title: string; test?: boolean; music?: string; camera?: 'steady' | 'cinematic'; episode?: number; rooms?: Partial<Record<RoomRole, RoomLook>>; retention?: ToonRetention; shots: ToonShot[]; sources?: ToonSource[]};
 export type ToonTimings = {lines: Record<string, {file: string; duration: number; words: SpokenWord[]}>};
 
 /** The sound that marks a line's mood when the script names none. */

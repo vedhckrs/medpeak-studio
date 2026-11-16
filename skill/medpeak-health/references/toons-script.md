@@ -115,6 +115,11 @@ the stage, and the viewer WATCHES the thing happen. A script switches to this st
   scene again, this time done right. The last scene mirrors the first (that is the loop).
 - **Captions** are smaller, white with a dark outline, no box, key word in amber.
 
+### Rooms of its own
+Every steady script has a scene in its own clinic and a scene in its own home: `"set": "clinic"`,
+`"set": "home"`, an `"episode"` number and a `"rooms"` recipe (toons-rooms.md). The gate checks
+**Own rooms** and **Rooms are unique**.
+
 ### A new stage (one per organ)
 1. Read the sources first and list only what they say happens; the stage may show nothing more
    (the tooth stage shows a white spot, a hole and an ache because NIDCR says so; it does not show
@@ -143,13 +148,19 @@ new in it is a line where the story is only being told.
 
 ## Order of work
 1. Pick the topic; find 2-3 allowed sources; copy the exact findings into `sources`.
-2. Fill the Retention 7 table, then write the 13 lines to it.
-3. `node pipeline/toon-check.mjs <slug> --sheet --check-urls` until everything passes. `--sheet`
-   writes `videos/<slug>/SCRIPT.md`: the seven-point table, every line with its camera, the sources.
-4. `npm run toon:camera -- <slug>` (no jolts, no jump cuts), then
-   `node pipeline/toon-render.mjs <slug> --draft --silent` for a free picture-only preview.
-5. Show the owner the script sheet and the preview, quote the voice cost
+2. Give the video the next `episode` number and choose its clinic and home (toons-rooms.md).
+3. Fill the Retention 7 table, then write the lines, the stage events and the graphics to it.
+4. `node pipeline/toon-check.mjs <slug> --sheet --check-urls` until everything passes (script,
+   Retention 7, format, own and unique rooms, medical accuracy). `--sheet` writes
+   `videos/<slug>/SCRIPT.md`.
+5. The two measured checks, both required before anything is shown:
+   `npm run toon:camera -- <slug>` (no wrong picture, jump cut or jolt) and
+   `npm run toon:motion -- <slug>` (no foot slide, leg or arm jump, pop).
+6. Render the rooms board (toons-rooms.md) and `node pipeline/toon-render.mjs <slug> --draft --silent`
+   for a free picture-only preview. Look at frames from every scene yourself first.
+7. Show the owner the rooms board, the script sheet and the preview, quote the voice cost
    (`toon-voice.mjs <slug> --dry-run`), wait for approval.
+8. After voicing, run steps 4 and 5 again on the real timings before the final render.
 
 ## The first three scripts (all in the steady style since 2026-11-16)
 | Script | Stage | Story |

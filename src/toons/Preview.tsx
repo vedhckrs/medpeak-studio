@@ -11,7 +11,7 @@ import {AbsoluteFill, useCurrentFrame, useVideoConfig} from 'remotion';
 import {theme} from '../brand/theme';
 import type {Act, Blueprint, CharProps} from './blueprint';
 import {BLUEPRINTS, CAST, type CastName} from './characters';
-import {headY, PEOPLE, SPECS, type PersonName} from './humans';
+import {headY, PEOPLE, SPECS, type PersonName, makeHuman} from './humans';
 import {circlePath, Grain, lineOf, Part, tone} from './ink';
 import {clamp01, E, key, settle, speak} from './motion';
 import {POSES, type PoseName} from './poses';
@@ -19,7 +19,9 @@ import {FoodPipeStage, ToothStage, TummyStage, type SetProps, type StageFace} fr
 import {ShotStill, type ToonActor} from './Player';
 import {LENSES, type LensName, type MoveName, SHOTS, type ShotName} from './camera';
 import {type ArmSpec, blinkAt, EMOTIONS, type Emotion, Face, Hand, HAND_POSES, type HandPose} from './rig';
-import {BloodSet, FORES, GutSet, MouthSet, OfficeSet, SETS, StomachSet, ThroatSet, WordCaption, type SetName} from './scenes';
+import {BloodSet, DEFAULT_ROOMS, FORES, GutSet, MouthSet, OfficeSet, SETS, StomachSet, ThroatSet, WordCaption, type SetName} from './scenes';
+import {Room, RoomFore, ROOM_FLOOR} from './rooms';
+import type {RoomLook} from './director';
 import {Camera, Hold, Slot, Stand} from './stage';
 import {STYLE} from './style';
 
@@ -223,6 +225,61 @@ export const StageBoard: React.FC<{stage?: string; cell?: number}> = ({stage = '
           </React.Fragment>
         );
       })}
+    </AbsoluteFill>
+  );
+};
+
+/** CAP BOARD: the boy with three kinds of headwear, for the owner to choose from (1920x1080). */
+const KID_LOOKS: {key: string; label: string; note: string; C: React.FC<CharProps>}[] = [
+  {key: 'A', label: 'A  Cap facing forward', note: 'a real baseball cap: the peak is in front', C: makeHuman({...SPECS.kid, hair: {style: 'cap', color: '#22b8a8', under: '#3b2c25'}})},
+  {key: 'B', label: 'B  Cap worn backward', note: 'strap in front, a tuft of hair under it', C: makeHuman({...SPECS.kid, hair: {style: 'capback', color: '#22b8a8', under: '#3b2c25'}})},
+  {key: 'C', label: 'C  No cap', note: 'short messy hair with a cowlick', C: makeHuman({...SPECS.kid, hair: {style: 'messy', color: '#3b2c25'}})},
+];
+export const CapBoard: React.FC = () => (
+  <AbsoluteFill style={{background: PAPER}}>
+    <T x={60} y={30} w={1500} size={44} weight={900}>The boy: three choices for his head</T>
+    {KID_LOOKS.map((k, i) => {
+      const x = 60 + i * 620;
+      return (
+        <React.Fragment key={k.key}>
+          <div style={{position: 'absolute', left: x, top: 110, width: 580, height: 840, borderRadius: 22, background: '#ffffff', border: '2px solid #e6dfd2', overflow: 'hidden'}}>
+            <div style={{position: 'absolute', left: 0, top: 0, width: 580, height: 470, overflow: 'hidden'}}>
+              <Slot x={290} y={372} size={1250}><k.C emotion="happy" t={0.6} /></Slot>
+            </div>
+            <div style={{position: 'absolute', left: 0, top: 470, width: 580, height: 2, background: '#efe7d8'}} />
+            <Stand x={150} floor={820} size={330} ground={96}><k.C emotion="neutral" t={0.6} /></Stand>
+            <Stand x={300} floor={820} size={330} ground={96}><k.C emotion="shocked" t={0.6} arms={POSES.panic.person} /></Stand>
+            <Stand x={450} floor={820} size={330} ground={96}><k.C emotion="sad" t={0.6} arms={POSES.facepalm.person} /></Stand>
+          </div>
+          <T x={x + 6} y={962} w={580} size={32} weight={900}>{k.label}</T>
+          <T x={x + 6} y={1008} w={580} size={22} weight={600} color="#8a8498">{k.note}</T>
+        </React.Fragment>
+      );
+    })}
+  </AbsoluteFill>
+);
+
+/** ROOMS BOARD: one video's own clinic and home, with people standing in them (1920x1080). */
+export const RoomsBoard: React.FC<{title?: string; clinic?: RoomLook; home?: RoomLook; people?: [string, string]}> = ({title = 'Rooms', clinic = DEFAULT_ROOMS.clinic, home = DEFAULT_ROOMS.home, people = ['patient', 'patient']}) => {
+  const Doc = ALL.doctor;
+  const A = ALL[people[0]];
+  const B = ALL[people[1]];
+  const cell = (x: number, label: string, sub: string, kids: React.ReactNode) => (
+    <>
+      <div style={{position: 'absolute', left: x, top: 110, width: 506, height: 900, overflow: 'hidden', borderRadius: 22, border: '3px solid #3a2f5c'}}>
+        <div style={{width: 1080, height: 1920, transform: 'scale(0.4686)', transformOrigin: 'top left', position: 'relative', overflow: 'hidden'}}>{kids}</div>
+      </div>
+      <T x={x + 4} y={1016} w={500} size={26} weight={900} color="#ffc93c">{label}</T>
+      <T x={x + 4} y={1048} w={900} size={17} weight={600} color="#b9b2d6">{sub}</T>
+    </>
+  );
+  const line = (l: RoomLook) => `${l.palette} · ${l.wall} wall · ${l.floor} floor · ${l.window.style} window, ${l.window.view} view · ${l.layout}${l.chart ? ` · ${l.chart} chart` : ''} · ${l.time ?? 'day'}`;
+  return (
+    <AbsoluteFill style={{background: '#1d1430'}}>
+      <T x={40} y={30} w={1800} size={44} weight={900} color="#ffffff">{title}</T>
+      {cell(40, 'Clinic', line(clinic), <><Room look={clinic} role="clinic" t={2} /><Stand x={285} floor={ROOM_FLOOR} size={1040}><Doc emotion="happy" t={0.6} arms={POSES.explain.person} /></Stand><Stand x={805} floor={ROOM_FLOOR} size={1000}><A emotion="neutral" t={0.6} /></Stand><RoomFore look={clinic} role="clinic" t={2} /></>)}
+      {cell(586, 'Clinic, empty', '', <><Room look={clinic} role="clinic" t={2} /><RoomFore look={clinic} role="clinic" t={2} /></>)}
+      {cell(1132, `Home: ${home.kind ?? 'bedroom'}`, line(home), <><Room look={home} role="home" t={2} /><Stand x={540} floor={ROOM_FLOOR} size={1040}><B emotion="sick" t={0.6} arms={POSES.heart.person} /></Stand><RoomFore look={home} role="home" t={2} /></>)}
     </AbsoluteFill>
   );
 };

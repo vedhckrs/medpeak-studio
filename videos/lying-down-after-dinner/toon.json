@@ -3,6 +3,35 @@
  "title": "What happens when you lie down after a big dinner",
  "music": "bouncy",
  "camera": "steady",
+ "episode": 3,
+ "rooms": {
+  "clinic": {
+   "palette": "peach",
+   "wall": "stripes",
+   "floor": "wood",
+   "window": {
+    "style": "arch",
+    "side": "centre",
+    "view": "garden"
+   },
+   "layout": "desk",
+   "chart": "stomach",
+   "time": "day"
+  },
+  "home": {
+   "kind": "bedroom",
+   "palette": "nightblue",
+   "wall": "paint",
+   "floor": "carpet",
+   "window": {
+    "style": "arch",
+    "side": "right",
+    "view": "night"
+   },
+   "layout": "bed-left",
+   "time": "night"
+  }
+ },
  "retention": {
   "noIntro": {
    "scene": "A1",
@@ -297,7 +326,7 @@
   },
   {
    "id": "C",
-   "set": "bedroom",
+   "set": "home",
    "cast": [
     {
      "who": "patient",
@@ -311,7 +340,7 @@
     {
      "kind": "pain",
      "x": 560,
-     "y": 1010,
+     "y": 930,
      "size": 170,
      "from": "C1",
      "word": "chest"
@@ -330,7 +359,7 @@
   },
   {
    "id": "D",
-   "set": "office",
+   "set": "clinic",
    "cast": [
     {
      "who": "doctor",

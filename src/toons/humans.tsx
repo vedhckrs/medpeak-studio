@@ -9,9 +9,9 @@ import React from 'react';
 import {Cast, circlePath, Contact, ellipsePath, Groove, lift, lineOf, Mark, Merge, Part, roundRect, Scaled, shade, spline, Tube, useLine} from './ink';
 import {type ArmSpec, armOf, Face, Hand, Shoe} from './rig';
 import {POSES} from './poses';
-import type {CharProps} from './blueprint';
+import type {Act, CharProps} from './blueprint';
 
-export type HairStyle = 'curly' | 'short' | 'long' | 'cap' | 'balding' | 'baby';
+export type HairStyle = 'curly' | 'short' | 'long' | 'cap' | 'capback' | 'messy' | 'balding' | 'baby';
 export type TopKind = 'coat' | 'hoodie' | 'tee' | 'blouse' | 'cardigan' | 'onesie';
 export type BottomKind = 'trousers' | 'skirt' | 'shorts';
 export type HumanSpec = {
@@ -65,8 +65,8 @@ const joint = (a: V, b: V, l1: number, l2: number, toward: V): V => {
 const f1 = (n: number) => n.toFixed(1);
 const dirOf = (deg: number): V => [Math.cos((deg * Math.PI) / 180), Math.sin((deg * Math.PI) / 180)];
 const along = (a: V, b: V, t: number): V => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
-/** A limb segment: round at both ends, tapering from radius `ra` at a to `rb` at b. `ky` squeezes y (for a shadow drawn inside a scaled group). */
-const capsule = (a0: V, b0: V, ra: number, rb: number, ky = 1) => {
+/** A limb segment: round at both ends, tapering from radius `ra` at a to `rb` at b. `ky` squeezes y (for a shadow drawn inside a scaled group); `flat` cuts the far end square (a trouser hem). */
+const capsule = (a0: V, b0: V, ra: number, rb: number, ky = 1, flat = false) => {
   const a: V = [a0[0], a0[1] / ky];
   const b: V = [b0[0], b0[1] / ky];
   const dx = b[0] - a[0];
@@ -74,16 +74,74 @@ const capsule = (a0: V, b0: V, ra: number, rb: number, ky = 1) => {
   const len = Math.hypot(dx, dy) || 1;
   const nx = -dy / len;
   const ny = dx / len;
-  return `M${f1(a[0] + nx * ra)} ${f1(a[1] + ny * ra)} L${f1(b[0] + nx * rb)} ${f1(b[1] + ny * rb)} A${f1(rb)} ${f1(rb)} 0 0 0 ${f1(b[0] - nx * rb)} ${f1(b[1] - ny * rb)} L${f1(a[0] - nx * ra)} ${f1(a[1] - ny * ra)} A${f1(ra)} ${f1(ra)} 0 0 0 ${f1(a[0] + nx * ra)} ${f1(a[1] + ny * ra)} Z`;
+  const far = flat ? `L${f1(b[0] - nx * rb)} ${f1(b[1] - ny * rb)}` : `A${f1(rb)} ${f1(rb)} 0 0 0 ${f1(b[0] - nx * rb)} ${f1(b[1] - ny * rb)}`;
+  return `M${f1(a[0] + nx * ra)} ${f1(a[1] + ny * ra)} L${f1(b[0] + nx * rb)} ${f1(b[1] + ny * rb)} ${far} L${f1(a[0] - nx * ra)} ${f1(a[1] - ny * ra)} A${f1(ra)} ${f1(ra)} 0 0 0 ${f1(a[0] + nx * ra)} ${f1(a[1] + ny * ra)} Z`;
 };
-/** A smooth curve from a to b that passes through k (the joint). `t` < 1 stops early (sleeves, shorts). */
-const through = (a: V, k: V, b: V, t = 1) => {
-  const c: V = [2 * k[0] - (a[0] + b[0]) / 2, 2 * k[1] - (a[1] + b[1]) / 2];
-  if (t >= 1) return `M${f1(a[0])} ${f1(a[1])} Q${f1(c[0])} ${f1(c[1])} ${f1(b[0])} ${f1(b[1])}`;
-  const q0: V = [a[0] + (c[0] - a[0]) * t, a[1] + (c[1] - a[1]) * t];
-  const q1: V = [c[0] + (b[0] - c[0]) * t, c[1] + (b[1] - c[1]) * t];
-  return `M${f1(a[0])} ${f1(a[1])} Q${f1(q0[0])} ${f1(q0[1])} ${f1(q0[0] + (q1[0] - q0[0]) * t)} ${f1(q0[1] + (q1[1] - q0[1]) * t)}`;
+
+/** The parts of a pose the skeleton needs. */
+export type BodyPose = {act?: Act; arms?: [ArmSpec, ArmSpec] | null; step?: number};
+const ease01 = (v: number) => { const u = Math.max(0, Math.min(1, Math.abs(v))); return u * u * (3 - 2 * u); };
+/**
+ * Where every joint of a person is for a pose (box units, before the height scale). Pure maths, so
+ * the motion check (pipeline/lib/toon-motion.mjs) measures exactly what is drawn.
+ *
+ * LEGS: the feet stay planted. A knee bend is SET (by a weight shift, a crouch or a step) and the
+ * hip drops by exactly what that bend takes up; the knee is never solved back from the hip. That
+ * old way made a knee snap sideways whenever the hip moved a hair (the "legs jump").
+ */
+export const jointsOf = (s: {head?: number; legs?: number; torso?: number}, p: BodyPose) => {
+  const k = skeleton(s);
+  const act = p.act ?? {};
+  const step = p.step ?? 0;
+  const tk = (s.torso ?? 1) * (53 / 56);
+  const seg = 25 * Math.min(1, 0.6 + 0.4 * (s.legs ?? 1)); // upper arm = forearm; toddlers have short arms
+  const sh = Math.max(-1, Math.min(1, act.shift ?? 0)); // weight toward screen left (-) or right (+)
+  const crouch = Math.max(0, act.bob ?? 0);
+  const bends = ([-1, 1] as const).map((side) => {
+    const sw = step * side;
+    const free = sh * side < 0 ? ease01(sh) : 0; // the leg that carries no weight relaxes
+    const bend = free * 3 + crouch * 5 + Math.max(0, sw) * 3; // how far the knee stands out from the leg's line
+    return {side, sw, bend, drop: (2 * bend * bend) / k.legLen};
+  });
+  const hip: V = [sh * 2.4, k.hipY + (bends[0].drop + bends[1].drop) / 2];
+  const pelvisTilt = (Math.atan2(bends[1].drop - bends[0].drop, 16.8) * 180) / Math.PI; // the free side hangs a little lower
+  const lean = (act.lean ?? 0) - sh * 1.4;
+  const shrug = (act.shrug ?? 0) * 3.4;
+  const legs = bends.map(({side, sw, bend, drop}) => {
+    const hp: V = [hip[0] + side * 8.4, k.hipY + drop];
+    const an: V = [side * 9.6 + sw * 7, 88 - Math.max(0, sw) * 5];
+    const kn: V = [(hp[0] + an[0]) / 2 + side * bend, (hp[1] + an[1]) / 2];
+    return {side, hp, kn, an, bend};
+  });
+  const pair = p.arms === null ? null : p.arms ?? POSES.rest.person;
+  const arms = pair ? ([0, 1] as const).map((i) => {
+    const sp = armOf(pair[i] as ArmSpec);
+    const side = i === 0 ? -1 : 1;
+    const S: V = [side * 18.2, -49.6 * tk - shrug];
+    let E: V;
+    let W: V;
+    if (sp.u !== undefined && sp.f !== undefined) { // joints given: forward from the shoulder
+      const du = dirOf(sp.u);
+      const df = dirOf(sp.f);
+      const l1 = seg * (sp.ul ?? 1);
+      const l2 = seg * 0.94 * (sp.fl ?? 1);
+      E = [S[0] + du[0] * l1, S[1] + du[1] * l1];
+      W = [E[0] + df[0] * l2, E[1] + df[1] * l2];
+    } else { // a direction and a reach: the elbow is solved (down, or outward for a hanging arm)
+      const L = (Math.min(sp.len ?? 49.4, 49.4) * seg) / 25;
+      const a = (sp.a * Math.PI) / 180;
+      W = [S[0] + Math.cos(a) * L, S[1] + Math.sin(a) * L];
+      let n: V = [-Math.sin(a), Math.cos(a)];
+      if (Math.abs(n[1]) < 0.3) n = [side, 0.2]; else if (n[1] < 0) n = [-n[0], -n[1]];
+      E = joint(S, W, seg, seg, n);
+    }
+    return {i, side, sp, S, E, W};
+  }) : null;
+  /** A point given in torso coordinates (hips at 0,0), as it lands in the box once the torso leans. */
+  const fromTorso = ([x, y]: V): V => { const r = (lean * Math.PI) / 180; return [hip[0] + x * Math.cos(r) - y * Math.sin(r), hip[1] + x * Math.sin(r) + y * Math.cos(r)]; };
+  return {k, tk, hip, pelvisTilt, lean, shrug, legs, arms, fromTorso, headTilt: (act.tilt ?? 0) + sh * 1.2};
 };
+
 const Line: React.FC<{d: string; color: string; k?: number; opacity?: number; dash?: string}> = ({d, color, k = 0.62, opacity, dash}) => {
   const w = useLine(k);
   return <path d={d} fill="none" stroke={color} strokeWidth={w} strokeLinecap="round" strokeLinejoin="round" opacity={opacity} strokeDasharray={dash} />;
@@ -123,9 +181,9 @@ const HairBack: React.FC<{s: HumanSpec}> = ({s}) => {
     );
   }
   if (style === 'short') return <Part d={ellipsePath(0, -7, 24.6, 22)} fill={shade(color, 0.12)} mat="hair" depth={3} />;
-  if (style === 'cap') {
-    const u = s.hair.under ?? '#3b2c25';
-    return <Merge>{[[-22.5, 7, 5.6], [-24, -1, 5], [22.5, 7, 5.6], [24, -1, 5], [-19, 13, 4.4], [19, 13, 4.4]].map(([x, y, r], i) => <Part key={i} d={circlePath(x, y, r)} fill={u} mat="hair" depth={2} />)}</Merge>;
+  if (style === 'cap' || style === 'capback' || style === 'messy') {
+    const u = style === 'messy' ? color : s.hair.under ?? '#3b2c25';
+    return <Part d={ellipsePath(0, -4.6, 24.9, 20.6)} fill={shade(u, 0.1)} mat="hair" depth={3} />;
   }
   if (style === 'balding') {
     return <Merge>{[[-23.5, -5, 6.6], [-25.6, 4, 6.2], [-23, 12, 5.2], [23.5, -5, 6.6], [25.6, 4, 6.2], [23, 12, 5.2]].map(([x, y, r], i) => <Part key={i} d={circlePath(x, y, r)} fill={color} mat="hair" depth={2.4} />)}</Merge>;
@@ -174,24 +232,61 @@ const HairFront: React.FC<{s: HumanSpec}> = ({s}) => {
           <Part d="M23.6 -1 C27.5 9 26.5 21 22.5 29 C21.4 20 21 9 20.4 1 Z" fill={color} mat="hair" depth={1.4} />
         </>
       );
-    case 'cap': {
-      const dome = 'M-24.4 -14.6 C-27.5 -42 27.5 -42 24.4 -14.6 Z';
-      const brim = 'M1 -19.6 C20 -24.6 38 -21 41 -14 C30 -12.6 15 -13.4 1 -12.8 Z';
+    case 'cap':
+    case 'capback': {
+      // A baseball cap: the crown hugs the head down to just above the ears, the panels meet at a
+      // button, and the visor is a curved peak in FRONT of the forehead (the old one stuck out
+      // sideways like a plank). Worn backwards, the strap and its opening face front instead.
+      const u = s.hair.under ?? '#3b2c25';
+      const crown = 'M-25.4 -11 C-28.4 -32 -15.6 -43 0 -43 C15.6 -43 28.4 -32 25.4 -11 C17.4 -16.4 8.6 -19 0 -19 C-8.6 -19 -17.4 -16.4 -25.4 -11 Z';
+      const visor = 'M-20.6 -17.4 C-10 -21.6 10 -21.6 20.6 -17.4 C25 -13.6 15 -11.6 0 -11.4 C-15 -11.6 -25 -13.6 -20.6 -17.4 Z';
+      const back = style === 'capback';
       return (
         <>
-          <Cast d={brim} on={HEAD} color={s.skin} dx={-1} dy={3} k={0.2} />
-          <Part d={dome} fill={color} mat="cloth" shine={[-9, -31, 0.6]} depth={3.4}>
-            <Line d="M0 -39 V-14 M-12.5 -36 Q-15.5 -25 -14.5 -14 M12.5 -36 Q15.5 -25 14.5 -14" color={shade(color, 0.3)} k={0.5} opacity={0.8} />
+          <Part d="M-24.3 -9 L-22.5 6.4 L-20.2 -7 Z" fill={u} depth={1} />
+          <Part d="M24.3 -9 L22.5 6.4 L20.2 -7 Z" fill={u} depth={1} />
+          <g transform="translate(0 -2.6)">
+          {back && <Part d="M-16.4 -16.8 L-13.6 -12.4 L-10 -16 L-6 -11.8 L-2 -15.8 L2.4 -11.6 L6 -15.8 L10 -12.2 L13.4 -16.4 C6 -19.4 -8 -19.6 -16.4 -16.8 Z" fill={u} mat="hair" depth={1.4} />}
+          {!back && <Cast d={visor} on={HEAD} color={s.skin} dx={0} dy={2.4} k={0.2} />}
+          <Part d={crown} fill={color} mat="cloth" shine={[-10, -33, 0.6]} depth={3.4}>
+            <Line d="M0 -42.6 V-19 M-13 -39.4 Q-17.6 -28 -16.6 -15.4 M13 -39.4 Q17.6 -28 16.6 -15.4" color={shade(color, 0.3)} k={0.5} opacity={0.8} />
+            <path d="M-26 -11 C-17.4 -16.4 -8.6 -19 0 -19 C8.6 -19 17.4 -16.4 26 -11 V-14.8 C17.4 -20 8.6 -22.4 0 -22.4 C-8.6 -22.4 -17.4 -20 -26 -14.8 Z" fill={shade(color, 0.16)} opacity={0.75} />
           </Part>
-          <Part d={brim} fill={shade(color, 0.2)} mat="cloth" depth={1.6}>
-            <Line d="M4 -16.4 C18 -20.4 32 -18 38 -15" color={lift(color, 0.3)} k={0.45} dash="2 2" opacity={0.8} />
-          </Part>
-          <Part d={circlePath(0, -38, 2.3)} fill={shade(color, 0.2)} flat />
-          <Part d={circlePath(-11.5, -24.5, 5.4)} fill="#ffffff" depth={1} />
-          <path d="M-10.4 -28.4 L-14.6 -23.8 H-11.8 L-12.8 -20.4 L-8.4 -25.2 H-11.2 Z" fill="#ffb300" />
+          {back ? (
+            <>
+              <path d="M-8.6 -19.2 C-8.6 -28.6 8.6 -28.6 8.6 -19.2 Z" fill={u} stroke={lineOf(color)} strokeWidth={0.7} />
+              <path d="M-6 -21.6 Q0 -25.6 6 -21.6" fill="none" stroke={lift(u, 0.3)} strokeWidth={0.8} strokeLinecap="round" opacity={0.7} />
+              <path d="M-9.4 -19.6 H9.4" stroke={shade(color, 0.36)} strokeWidth={2.4} strokeLinecap="round" />
+              {[-5, -2, 1, 4].map((x) => <circle key={x} cx={x} cy={-19.6} r={0.55} fill={lift(color, 0.5)} />)}
+            </>
+          ) : (
+            <>
+              <Part d={visor} fill={shade(color, 0.24)} mat="cloth" depth={2}>
+                <Line d="M-16.6 -15.6 C-8 -18.8 8 -18.8 16.6 -15.6" color={lift(color, 0.3)} k={0.45} dash="2 2" opacity={0.8} />
+              </Part>
+              <Part d={circlePath(0, -30, 5)} fill="#ffffff" depth={1} />
+              <path d="M1.2 -34 L-3 -29.4 H-0.3 L-1.3 -26 L3.1 -30.8 H0.3 Z" fill="#ffb300" />
+            </>
+          )}
+          <Part d={circlePath(0, -43, 2)} fill={shade(color, 0.24)} flat />
+          </g>
         </>
       );
     }
+    case 'messy':
+      return (
+        <>
+          <Part d="M-23.7 -1.5 C-29.4 -35 -8 -43 0 -36.6 C2 -44.6 11 -45 9.6 -37.4 C23 -40.6 29.4 -21 23.7 -2.5 C22.4 -9.6 20.2 -14 17 -17.4 L14 -13.6 L10 -18.4 L6 -13.4 L0.8 -18.8 L-4.2 -13.4 L-9.2 -18.4 L-13.6 -13.8 L-17.2 -17.2 C-20.6 -12.4 -22.8 -7 -23.7 -1.5 Z" fill={color} mat="hair" depth={3.4}>
+            <Mark pts={[[-17, -26], [-7, -33], [5, -33], [17, -26]]} w={2.6} color={hi} opacity={0.8} />
+            <Mark pts={[[3, -38], [6.4, -41.6], [8.6, -39]]} w={1.4} color={hi} opacity={0.7} />
+            <Groove pts={[[-3, -34], [0, -27], [-1, -20]]} w={1.3} color={color} k={0.4} />
+            <Groove pts={[[10, -34], [13, -27], [12, -20.5]]} w={1.3} color={color} k={0.4} />
+            <Groove pts={[[-14, -32], [-13.4, -26], [-16, -20]]} w={1.3} color={color} k={0.4} />
+          </Part>
+          <Part d="M-23.8 -4 L-22.4 6.5 L-20.4 -4 Z" fill={color} depth={1} />
+          <Part d="M23.8 -4 L22.4 6.5 L20.4 -4 Z" fill={color} depth={1} />
+        </>
+      );
     case 'balding':
       return (
         <>
@@ -386,33 +481,32 @@ export const makeHuman = (s: HumanSpec): Person => {
     const sq = p.squash ?? 0;
     const act = p.act ?? {};
     const step = p.step ?? 0;
-    const bob = Math.max(0, (act.bob ?? 0) + Math.abs(act.shift ?? 0) * 0.9);
-    const hip: V = [(act.shift ?? 0) * 3.4, k.hipY + bob];
-    const lean = (act.lean ?? 0) + (act.shift ?? 0) * -2.2;
+    const J = jointsOf(s, {act, arms: p.arms, step});
+    const hip = J.hip;
+    const lean = J.lean;
     const torsoT = `translate(${f1(hip[0])} ${f1(hip[1])}) rotate(${lean.toFixed(2)})`;
-    const headT = `${torsoT} translate(0 ${f1(-(k.torsoLen + 9))}) rotate(${((act.tilt ?? 0) + (act.shift ?? 0) * 1.6).toFixed(2)}) translate(0 ${f1(-25 * hs + (act.nod ?? 0) * 2.2)}) scale(${hs})`;
-    const arms = p.arms === null ? null : p.arms ?? POSES.rest.person;
-    const shrug = (act.shrug ?? 0) * 3.4;
+    const headT = `${torsoT} translate(0 ${f1(-(k.torsoLen + 9))}) rotate(${J.headTilt.toFixed(2)}) translate(0 ${f1(-25 * hs + (act.nod ?? 0) * 2.2)}) scale(${hs})`;
+    const arms = J.arms;
 
-    // ---- legs: hips to planted feet, the knee found by the joint solver
-    const legs = ([-1, 1] as const).map((side) => {
-      const sw = step * side;
-      const hp: V = [hip[0] + side * 8.4, hip[1]];
-      const an: V = [side * 9.6 + sw * 7, 88 - Math.max(0, sw) * 5];
-      const kn = joint(hp, an, thigh, thigh, [side, 0.15]);
-      return {side, hp, an, kn};
-    });
+    // ---- legs: thigh and shin, two tapering segments meeting in a real knee (see jointsOf)
+    const legs = J.legs;
+    const legParts = (r: [number, number, number], fill: string, mat: 'skin' | 'cloth', hem = false, to = 2) => legs.map(({side, hp, kn, an}) => (
+      <React.Fragment key={side}>
+        <Part d={capsule(hp, to < 1 ? along(hp, kn, to) : kn, r[0], to < 1 ? r[0] + (r[1] - r[0]) * to : r[1], 1, hem && to < 1)} fill={fill} mat={mat} depth={2.4} />
+        {to >= 1 && <Part d={capsule(kn, an, r[1], r[2], 1, hem)} fill={fill} mat={mat} depth={2.4} />}
+      </React.Fragment>
+    ));
     const c = s.bottom.color;
     const lc = lineOf(c);
     const shoes = legs.map(({side, an}) => <g key={side} transform={`translate(${f1(an[0])} ${f1(an[1] + 4.3)}) scale(${side * 1.15} 1.15)`}><Shoe color={s.shoes} /></g>);
-    const pelvis = <g transform={`translate(${f1(hip[0])} ${f1(hip[1])})`}><Part d={roundRect(-17.6, -7, 35.2, 17, 6.5)} fill={c} mat="cloth" depth={3} /></g>;
+    const pelvis = <g transform={`translate(${f1(hip[0])} ${f1(hip[1])}) rotate(${J.pelvisTilt.toFixed(2)})`}><Part d={roundRect(-17.6, -7, 35.2, 17, 6.5)} fill={c} mat="cloth" depth={3} /></g>;
     let bottom: React.ReactNode;
     if (s.bottom.kind === 'skirt') {
       bottom = (
         <>
-          {legs.map(({side, hp, kn, an}) => <Tube key={side} d={through(hp, kn, an)} r={4.5} fill={s.skin} soft />)}
+          <Merge>{legParts([5.4, 4.8, 4.1], s.skin, 'skin')}</Merge>
           {shoes}
-          <g transform={`translate(${f1(hip[0])} ${f1(hip[1])}) rotate(${(lean * 0.4).toFixed(2)})`}>
+          <g transform={`translate(${f1(hip[0])} ${f1(hip[1])}) rotate(${(lean * 0.4 + J.pelvisTilt).toFixed(2)})`}>
             <Part d="M-17.4 -7 L17.4 -7 L25 30 C25 34 -25 34 -25 30 Z" fill={c} mat="cloth" depth={5}>
               {[-15, -5, 5, 15].map((x) => <Groove key={x} pts={[[x * 0.72, -4], [x * 0.92, 14], [x * 1.12, 32]]} w={1.5} color={c} k={0.2} />)}
               <path d="M-30 25.4 H30 V36 H-30 Z" fill={shade(c, 0.16)} opacity={0.7} />
@@ -424,7 +518,7 @@ export const makeHuman = (s: HumanSpec): Person => {
     } else if (s.bottom.kind === 'shorts') {
       bottom = (
         <>
-          {legs.map(({side, hp, kn, an}) => <Tube key={side} d={through(hp, kn, an)} r={4.5} fill={s.skin} soft />)}
+          <Merge>{legParts([5.4, 4.8, 4.1], s.skin, 'skin')}</Merge>
           {legs.map(({side, an}) => (
             <g key={side}>
               <Tube d={`M${f1(an[0])} ${f1(an[1] - 10)} L${f1(an[0])} ${f1(an[1] - 1)}`} r={5} fill="#ffffff" cap="butt" />
@@ -434,7 +528,7 @@ export const makeHuman = (s: HumanSpec): Person => {
           {shoes}
           <Merge>
             {pelvis}
-            {legs.map(({side, hp, kn, an}) => <Tube key={side} d={through(hp, kn, an, 0.46)} r={8.4} fill={c} cap="butt" soft />)}
+            {legParts([8.6, 8.2, 8.2], c, 'cloth', true, 0.82)}
           </Merge>
           <g transform={`translate(${f1(hip[0])} ${f1(hip[1])})`}>
             <Line d="M0 -4 V8" color={lc} k={0.5} opacity={0.8} />
@@ -449,7 +543,7 @@ export const makeHuman = (s: HumanSpec): Person => {
           {shoes}
           <Merge>
             {pelvis}
-            {legs.map(({side, hp, kn, an}) => <Tube key={side} d={through(hp, kn, an)} r={baby ? 7 : 7.4} fill={c} cap="butt" soft />)}
+            {legParts(baby ? [7.6, 7.1, 6.8] : [8.3, 7.3, 6.6], c, 'cloth', true)}
           </Merge>
           {legs.map(({side, kn, an}) => (
             <g key={side}>
@@ -471,27 +565,8 @@ export const makeHuman = (s: HumanSpec): Person => {
     // ends in a cuff, a soft shadow on the body under the arm, and a hand that follows the forearm.
     const arm = (i: 0 | 1, front: boolean) => {
       if (!arms) return null;
-      const sp = armOf(arms[i] as ArmSpec);
+      const {sp, side, S, E, W} = arms[i];
       if (!!sp.front !== front) return null;
-      const side = i === 0 ? -1 : 1;
-      const S: V = [side * 18.2, -49.6 * tk - shrug];
-      let E: V;
-      let W: V;
-      if (sp.u !== undefined && sp.f !== undefined) { // joints given: forward from the shoulder
-        const du = dirOf(sp.u);
-        const df = dirOf(sp.f);
-        const l1 = seg * (sp.ul ?? 1);
-        const l2 = seg * 0.94 * (sp.fl ?? 1);
-        E = [S[0] + du[0] * l1, S[1] + du[1] * l1];
-        W = [E[0] + df[0] * l2, E[1] + df[1] * l2];
-      } else { // a direction and a reach: the elbow is solved (down, or outward for a hanging arm)
-        const L = (Math.min(sp.len ?? 49.4, 49.4) * seg) / 25;
-        const a = (sp.a * Math.PI) / 180;
-        W = [S[0] + Math.cos(a) * L, S[1] + Math.sin(a) * L];
-        let n: V = [-Math.sin(a), Math.cos(a)];
-        if (Math.abs(n[1]) < 0.3) n = [side, 0.2]; else if (n[1] < 0) n = [-n[0], -n[1]];
-        E = joint(S, W, seg, seg, n);
-      }
       const fa = Math.atan2(W[1] - E[1], W[0] - E[0]);
       const ang = (fa * 180) / Math.PI;
       // the thumb sits on the side that faces up, or toward the body when the hand hangs

@@ -8,7 +8,8 @@ import {AbsoluteFill, random} from 'remotion';
 import {blob, lineOf, Part, shade, lift, spline, taperedPath, tone, type P} from './ink';
 import {theme} from '../brand/theme';
 import {CamCtx, Canvas, H, Layer, W} from './camera';
-import type {SetName} from './director';
+import type {RoomLook, SetName} from './director';
+import {Room, RoomFore, ROOM_FLOOR} from './rooms';
 import {FoodPipeStage, ToothStage, TummyStage, type SetProps} from './stages';
 import {STYLE} from './style';
 
@@ -864,12 +865,22 @@ export const WordCaption: React.FC<{word: string; key_?: boolean; y?: number; po
   );
 };
 
-export const SETS: Record<SetName, React.FC<SetProps>> = {throat: ThroatSet, gut: GutSet, stomach: StomachSet, mouth: MouthSet, blood: BloodSet, lungs: LungsSet, office: OfficeSet, bathroom: BathroomSet, bedroom: BedroomSet, foodpipe: FoodPipeStage, tooth: ToothStage, tummy: TummyStage};
+/** The rooms a video gets when its script gives no recipe (previews, old scripts). */
+export const DEFAULT_ROOMS: {clinic: RoomLook; home: RoomLook} = {
+  clinic: {palette: 'mint', wall: 'stripes', floor: 'wood', window: {style: 'tall', side: 'right', view: 'garden'}, layout: 'exam-bed', chart: 'body', time: 'day'},
+  home: {kind: 'bedroom', palette: 'nightblue', wall: 'paint', floor: 'wood', window: {style: 'tall', side: 'left', view: 'night'}, layout: 'bed-left', time: 'night'},
+};
+const ClinicSet: React.FC<SetProps> = ({t, look}) => <Room look={look ?? DEFAULT_ROOMS.clinic} role="clinic" t={t} />;
+const HomeSet: React.FC<SetProps> = ({t, look}) => <Room look={look ?? DEFAULT_ROOMS.home} role="home" t={t} />;
+const ClinicFore: React.FC<{t: number; look?: RoomLook}> = ({t, look}) => <RoomFore look={look ?? DEFAULT_ROOMS.clinic} role="clinic" t={t} />;
+const HomeFore: React.FC<{t: number; look?: RoomLook}> = ({t, look}) => <RoomFore look={look ?? DEFAULT_ROOMS.home} role="home" t={t} />;
+
+export const SETS: Record<SetName, React.FC<SetProps>> = {clinic: ClinicSet, home: HomeSet, throat: ThroatSet, gut: GutSet, stomach: StomachSet, mouth: MouthSet, blood: BloodSet, lungs: LungsSet, office: OfficeSet, bathroom: BathroomSet, bedroom: BedroomSet, foodpipe: FoodPipeStage, tooth: ToothStage, tummy: TummyStage};
 export type {SetName};
 /** The blurred foreground of each set: drawn OVER the characters, it moves faster than they do. */
-export const FORES: Partial<Record<SetName, React.FC<{t: number}>>> = {throat: ThroatFore, gut: GutFore, stomach: StomachFore, blood: BloodFore, office: OfficeFore, bathroom: BathroomFore};
+export const FORES: Partial<Record<SetName, React.FC<{t: number; look?: RoomLook}>>> = {clinic: ClinicFore, home: HomeFore, throat: ThroatFore, gut: GutFore, stomach: StomachFore, blood: BloodFore, office: OfficeFore, bathroom: BathroomFore};
 /** Where characters stand in each set (screen y of the floor). null = no floor: characters float. */
-export const FLOORS: Record<SetName, number | null> = {throat: null, gut: 1330, stomach: 1440, mouth: 1300, blood: 1350, lungs: null, office: 1500, bathroom: 1580, bedroom: 1580, foodpipe: null, tooth: null, tummy: null};
+export const FLOORS: Record<SetName, number | null> = {throat: null, gut: 1330, stomach: 1440, mouth: 1300, blood: 1350, lungs: null, office: 1500, bathroom: 1580, bedroom: 1580, foodpipe: null, tooth: null, tummy: null, clinic: ROOM_FLOOR, home: ROOM_FLOOR};
 /** What moves behind the characters in each set (for the skill and the script writer). */
 export const SET_LIFE: Record<SetName, string> = {
   throat: 'walls squeeze downward, bubbles rise, wet glints slide down, light breathes from above',
@@ -883,6 +894,8 @@ export const SET_LIFE: Record<SetName, string> = {
   bedroom: 'stars twinkle, a cloud crosses the moon, curtains sway, the lamp glow breathes, the clock ticks',
   foodpipe: 'a STAGE: the food pipe cut open with its own face; the script makes a pill fall in, stick, melt, burn a sore, or ride down with water',
   tooth: 'the germs bob and wave their tails, acid fizzes, spit drips, the brush scrubs, fluoride sparkles',
+  clinic: 'BUILT per video from a recipe: clouds, a tree or birds move outside, the clock ticks, plants sway, dust floats in the light, the monitor scrolls',
+  home: 'BUILT per video from a recipe: stars or clouds outside, a lamp glows, steam rises from a pot, a tap drips, a curtain sways',
   tummy: 'the juice rolls and bubbles and always stays level, dinner bobs in it, the stomach churns, the posture sign tips over with it',
 };
 void tone;

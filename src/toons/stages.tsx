@@ -8,12 +8,13 @@ import {AbsoluteFill, random} from 'remotion';
 import {Canvas, H, W} from './camera';
 import {blob, lift, lineOf, Part, type P, Scaled, shade, spline, stipplePath, taperedPath} from './ink';
 import {Arm, type ArmSpec, type Emotion, Face} from './rig';
+import type {RoomLook} from './director';
 import {STYLE} from './style';
 import {theme} from '../brand/theme';
 
 /** What the player hands a stage for each character the stage draws itself. */
 export type StageFace = {emotion: Emotion; talk: number; blink: number; look: {x: number; y: number}; arms: [ArmSpec, ArmSpec] | null; squash: number; lean: number; nod: number};
-export type SetProps = {t: number; state?: Record<string, number>; faces?: Record<string, StageFace>; label?: string};
+export type SetProps = {t: number; state?: Record<string, number>; faces?: Record<string, StageFace>; label?: string; look?: RoomLook};
 const REST: StageFace = {emotion: 'neutral', talk: 0, blink: 0, look: {x: 0, y: 0}, arms: [112, 68], squash: 0, lean: 0, nod: 0};
 
 const FLESH = STYLE.fleshLine;

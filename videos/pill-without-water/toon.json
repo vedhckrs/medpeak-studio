@@ -3,6 +3,35 @@
  "title": "What happens when you swallow a pill without water",
  "music": "bouncy",
  "camera": "steady",
+ "episode": 1,
+ "rooms": {
+  "clinic": {
+   "palette": "sky",
+   "wall": "wainscot",
+   "floor": "checker",
+   "window": {
+    "style": "wide",
+    "side": "right",
+    "view": "city"
+   },
+   "layout": "cabinet",
+   "chart": "foodpipe",
+   "time": "day"
+  },
+  "home": {
+   "kind": "kitchen",
+   "palette": "cream",
+   "wall": "tiles",
+   "floor": "wood",
+   "window": {
+    "style": "tall",
+    "side": "centre",
+    "view": "night"
+   },
+   "layout": "stove-left",
+   "time": "night"
+  }
+ },
  "retention": {
   "noIntro": {
    "scene": "A1",
@@ -296,7 +325,7 @@
   },
   {
    "id": "C",
-   "set": "bedroom",
+   "set": "home",
    "cast": [
     {
      "who": "patient",
@@ -310,7 +339,7 @@
     {
      "kind": "pain",
      "x": 560,
-     "y": 1010,
+     "y": 930,
      "size": 170,
      "from": "C1",
      "word": "burn"
@@ -329,7 +358,7 @@
   },
   {
    "id": "D",
-   "set": "office",
+   "set": "clinic",
    "cast": [
     {
      "who": "doctor",

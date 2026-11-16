@@ -113,6 +113,14 @@ pilot and the rebuilt arms, and the other two scripts were converted the same da
 stages: `tooth` (a molar cut open: sugar, germs, acid, a hole, spit, a brush, fluoride) and `tummy`
 (the stomach cut open; it tips over when he lies down and the acid stays level).
 
+## Legs, the boy's cap and rooms of their own (2026-11-16)
+The owner's notes on the three previews: "each character's legs jump", "boy hat not good", "each
+video a different background of clinic and a different background of home, unique". Done the same
+day: people's legs rebuilt with a set knee bend (toons-blueprint.md), a per-frame body motion
+check (`npm run toon:motion`), the cap redrawn with two more choices on a sheet
+(toons-boards/caps.jpg), and a room kit that builds a different clinic and home for every video
+from a recipe, with a gate that refuses a room another video already has (toons-rooms.md).
+
 ## Roadmap
 - Phase A (v6, 2026-11-16, after the owner's review of the first voiced scene): volume paint and
   materials, all 25 characters redrawn with real structure, people on a skeleton with body acting,

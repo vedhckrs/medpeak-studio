@@ -4,7 +4,7 @@ import {FPS, LONG, SHORT} from './brand/theme';
 import {place} from './lib/timeline';
 import {MedVideo} from './MedVideo';
 import {Thumbnail} from './Thumbnail';
-import {ActingDemo, BlueprintBoard, CastBoard, EmotionBoard, ModelSheet, SceneDemo, SetBoard, CameraBoard, PoseBoard, StageBoard} from './toons/Preview';
+import {ActingDemo, BlueprintBoard, CastBoard, EmotionBoard, ModelSheet, SceneDemo, SetBoard, CameraBoard, CapBoard, PoseBoard, RoomsBoard, StageBoard} from './toons/Preview';
 import {layoutToon, TOON_FPS, ToonPlayer, type Toon, type ToonProps} from './toons/Player';
 import type {Video, VideoProps} from './types';
 import toonDemo from '../videos/pill-without-water/toon.json';
@@ -34,6 +34,8 @@ export const Root: React.FC = () => (
     <Still id="ToonSets" component={SetBoard} width={1080} height={1920} />
     <Still id="ToonCamera" component={CameraBoard} width={1080} height={1920} />
     <Still id="ToonStage" component={StageBoard} width={1080} height={1920} defaultProps={{stage: 'foodpipe'}} />
+    <Still id="ToonRooms" component={RoomsBoard} width={1920} height={1080} defaultProps={{title: 'Rooms'}} />
+    <Still id="ToonCaps" component={CapBoard} width={1920} height={1080} />
     <Still id="ToonPoses" component={PoseBoard} width={1920} height={1600} defaultProps={{who: 'doctor'}} />
     <Composition id="ToonScenes" component={SceneDemo} fps={30} width={1080} height={1920} durationInFrames={540} />
     <Composition id="Toon" component={ToonPlayer} fps={TOON_FPS} width={1080} height={1920} durationInFrames={TOON_FPS * 10} defaultProps={toonDefaults} calculateMetadata={toonLength} />
