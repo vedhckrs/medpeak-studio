@@ -14,7 +14,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {execFileSync} from 'node:child_process';
-import {args, PUBLIC, ROOT, readJson, videoDir, writeJson} from './lib/util.mjs';
+import {args, PUBLIC, remotion, ROOT, readJson, videoDir, writeJson} from './lib/util.mjs';
 import {MUSIC_DIR, SFX_DIR} from './lib/toon-audio.mjs';
 import {bedStart, layoutToon} from '../src/toons/director.ts';
 import {master} from './render.mjs';
@@ -72,7 +72,7 @@ const main = () => {
         const sec = timings?.lines?.[line.id]?.duration ?? Math.max(1, line.text.split(/\s+/).length / 2.8 + 0.35);
         const frames = Math.round((sec + 0.14) * FPS);
         for (const [tag, k] of [['a', 0.2], ['b', 0.7]]) {
-          execFileSync('npx', ['remotion', 'still', ...base, path.join(dir, `${line.id}-${tag}.jpg`), `--frame=${at + Math.round(frames * k)}`, '--scale=0.4', ...common], {cwd: ROOT, stdio: 'inherit'});
+          remotion(['still', ...base, path.join(dir, `${line.id}-${tag}.jpg`), `--frame=${at + Math.round(frames * k)}`, '--scale=0.4', ...common]);
         }
         at += frames;
       }
@@ -84,7 +84,7 @@ const main = () => {
 
   const raw = path.join(ROOT, 'out', `toon-${slug}-raw.mp4`);
   const final = path.join(outDir, a.draft ? 'toon-draft.mp4' : 'toon.mp4');
-  execFileSync('npx', ['remotion', 'render', ...base, raw, ...(a.draft ? ['--scale=0.5'] : []), ...common], {cwd: ROOT, stdio: 'inherit'});
+  remotion(['render', ...base, raw, ...(a.draft ? ['--scale=0.5'] : []), ...common]);
   if (voiced) master(raw, final);
   else fs.copyFileSync(raw, final);
   fs.rmSync(raw);

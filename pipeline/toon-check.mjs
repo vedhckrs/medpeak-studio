@@ -12,7 +12,7 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
-import {args, readJson, VIDEOS, videoDir} from './lib/util.mjs';
+import {args, isMain, readJson, VIDEOS, videoDir} from './lib/util.mjs';
 import {loadCast} from './lib/toon-audio.mjs';
 import {checkToon, scriptSheet} from './lib/toon-rules.mjs';
 import {LIBRARY} from './toon-sfx.mjs';
@@ -80,4 +80,4 @@ const main = async () => {
   console.log(ok ? '\nALL PASS' : '\nFAILED: fix the script; nothing is voiced until every line passes.');
   process.exit(ok ? 0 : 1);
 };
-if (import.meta.url === `file://${process.argv[1]}`) main().catch((e) => { console.error(e.message); process.exit(1); });
+if (isMain(import.meta.url)) main().catch((e) => { console.error(e.message); process.exit(1); });
