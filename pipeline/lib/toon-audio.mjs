@@ -31,15 +31,17 @@ export const VOICE_LUFS = -17;
  * Give a line its character: shift the pitch by `semitones` (formants move too, which is the
  * cartoon sound we want) without changing the speed, so the word timings stay valid. Then bring
  * every line to the same loudness (not the same peak: a shouted line and a mumbled line would
- * otherwise sit 8 dB apart) and catch the peaks with a limiter.
+ * otherwise sit 8 dB apart) and catch the peaks with a limiter. The caller scales the word timings by `tempo`.
  */
-export const voiceFx = (input, output, semitones = 0) => {
+export const voiceFx = (input, output, semitones = 0, tempo = 1) => {
   const k = 2 ** (semitones / 12);
   const pitch = semitones ? `asetrate=44100*${k.toFixed(5)},aresample=44100,atempo=${(1 / k).toFixed(5)}` : 'aresample=44100';
   const lufs = loudness(input, pitch);
   const gain = lufs === null ? -2 - peakOf(input, pitch) : VOICE_LUFS - lufs;
   fs.mkdirSync(path.dirname(output), {recursive: true});
-  run(input, `${pitch},volume=${gain.toFixed(2)}dB,alimiter=limit=0.84:level=0`, output);
+  // `tempo` (0.9 to 1.15): a line said a touch faster or slower without changing its pitch (a hook that must land inside 2.5 s)
+  const pace = tempo && tempo !== 1 ? `,atempo=${Math.max(0.9, Math.min(1.15, tempo)).toFixed(4)}` : '';
+  run(input, `${pitch}${pace},volume=${gain.toFixed(2)}dB,alimiter=limit=0.84:level=0`, output);
 };
 /**
  * Tidy a generated sound effect: cut leading silence, tiny fade-out, and set its level so that a

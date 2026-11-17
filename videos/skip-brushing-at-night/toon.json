@@ -74,7 +74,7 @@
   },
   "answer": {
    "scene": "E2",
-   "line": "No! We only party at night because your spit sleeps!"
+   "line": "No! We party hardest at night because your spit sleeps!"
   },
   "change3s": {
    "scene": "all",
@@ -82,7 +82,7 @@
   },
   "twist": {
    "scene": "B6",
-   "line": "Here's the twist: when he sleeps, your spit guards sleep too!"
+   "line": "Surprise! When he sleeps, your spit guards sleep too!"
   },
   "bestLast": {
    "scene": "E3",
@@ -181,6 +181,7 @@
      "id": "A1",
      "who": "tooth",
      "text": "Skip brushing at night, your teeth pay.",
+     "tempo": 1.08,
      "emotion": "scared",
      "pose": "panic",
      "key": "night",
@@ -268,8 +269,12 @@
      "set": {
       "fight": 0.72
      },
-     "over": 52,
-     "sfx": "thud-soft"
+     "over": 52
+    },
+    {
+     "at": "B2",
+     "delay": 2.1,
+     "sfx": "bonk"
     },
     {
      "at": "B2",
@@ -278,6 +283,11 @@
       "fight": 1
      },
      "over": 34
+    },
+    {
+     "at": "B2",
+     "delay": 2.95,
+     "sfx": "zip-away"
     },
     {
      "at": "B3",
@@ -291,9 +301,17 @@
     {
      "at": "B4",
      "set": {
-      "night": 0.5
+      "night": 0.3
      },
-     "over": 44
+     "over": 30
+    },
+    {
+     "at": "B4",
+     "word": "bedtime.",
+     "set": {
+      "night": 0.6
+     },
+     "over": 30
     },
     {
      "at": "B5",
@@ -451,7 +469,7 @@
     {
      "id": "B6",
      "who": "bacteria",
-     "text": "Here's the twist: when he sleeps, your spit guards sleep too!",
+     "text": "Surprise! When he sleeps, your spit guards sleep too!",
      "emotion": "happy",
      "pose": "point",
      "key": "sleep",
@@ -675,7 +693,7 @@
     {
      "id": "E2",
      "who": "bacteria",
-     "text": "No! We only party at night because your spit sleeps!",
+     "text": "No! We party hardest at night because your spit sleeps!",
      "emotion": "scared",
      "pose": "panic",
      "key": "sleeps",

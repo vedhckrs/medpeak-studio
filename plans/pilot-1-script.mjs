@@ -13,9 +13,9 @@ const toon = {
     noIntro: {scene: 'A1', line: 'Skip brushing at night, your teeth pay.'},
     promise: {scene: 'A2', line: 'Guess why we party at night?'},
     question: {scene: 'A2', line: 'Guess why we party at night?'},
-    answer: {scene: 'E2', line: 'No! We only party at night because your spit sleeps!'},
+    answer: {scene: 'E2', line: 'No! We party hardest at night because your spit sleeps!'},
     change3s: {scene: 'all', line: 'steady camera: something happens in the picture at least every 3 s (stickers do not count)'},
-    twist: {scene: 'B6', line: "Here's the twist: when he sleeps, your spit guards sleep too!"},
+    twist: {scene: 'B6', line: "Surprise! When he sleeps, your spit guards sleep too!"},
     bestLast: {scene: 'E3', line: "Two minutes, then spit, don't rinse. Skip brushing at night? Not these teeth!"},
     loop: {scene: 'E3', line: "Two minutes, then spit, don't rinse. Skip brushing at night? Not these teeth!"},
   },
@@ -29,7 +29,7 @@ const toon = {
         {at: 'A2', word: 'night?', set: {acid: 1}, over: 20},
       ],
       lines: [
-        {id: 'A1', who: 'tooth', text: 'Skip brushing at night, your teeth pay.', emotion: 'scared', pose: 'panic', key: 'night', react: {bacteria: 'happy'}, src: ['nidcr', 'dawes-2008']},
+        {id: 'A1', who: 'tooth', text: 'Skip brushing at night, your teeth pay.', tempo: 1.08, emotion: 'scared', pose: 'panic', key: 'night', react: {bacteria: 'happy'}, src: ['nidcr', 'dawes-2008']},
         {id: 'A2', who: 'bacteria', text: 'Guess why we party at night?', emotion: 'smug', pose: 'cheer', key: 'night', chat: true, beat: 0.8},
       ]},
     {id: 'T1', set: 'molar', card: 'Earlier that evening...', seconds: 1.2, cast: [], lines: []},
@@ -40,10 +40,13 @@ const toon = {
         {at: 'B1b', set: {snack: 1}, over: 30, sfx: 'plop'},
         // the fight is three things that happen: the rush, the cloud, the germs thrown out
         {at: 'B2', set: {fight: 0.3}, over: 26},
-        {at: 'B2', delay: 0.95, set: {fight: 0.72}, over: 52, sfx: 'thud-soft'},
+        {at: 'B2', delay: 0.95, set: {fight: 0.72}, over: 52},
+        {at: 'B2', delay: 2.1, sfx: 'bonk'}, // in the silent beat, where it can be heard
         {at: 'B2', delay: 2.75, set: {fight: 1}, over: 34},
+        {at: 'B2', delay: 2.95, sfx: 'zip-away'}, // the germs fly out
         {at: 'B3', word: 'washes', set: {wash: 1}, over: 46, sfx: 'splash-small'},
-        {at: 'B4', set: {night: 0.5}, over: 44},
+        {at: 'B4', set: {night: 0.3}, over: 30},
+        {at: 'B4', word: 'bedtime.', set: {night: 0.6}, over: 30},
         {at: 'B5', set: {night: 1}, over: 36},
         {at: 'B5', word: 'brush!', set: {sugar: 1}, over: 36},
         {at: 'B5', delay: 2.5, set: {sleep: 0.12}, over: 24}, // the first guard yawns
@@ -62,7 +65,7 @@ const toon = {
         {id: 'B3', who: 'tooth', text: 'Ha! My spit washes away their sugar and their acid.', emotion: 'happy', pose: 'cheer', key: 'washes', react: {bacteria: 'sad'}, src: ['dawes-2008', 'nidcr']},
         {id: 'B4', who: 'bacteria', text: "Fine. We'll wait for bedtime.", emotion: 'smug', pose: 'think', key: 'bedtime', chat: true, beat: 1.1},
         {id: 'B5', who: 'tooth', text: "Bedtime. And he didn't brush!", emotion: 'shocked', pose: 'panic', key: 'brush', react: {bacteria: 'happy'}, chat: true, beat: 1.5},
-        {id: 'B6', who: 'bacteria', text: "Here's the twist: when he sleeps, your spit guards sleep too!", emotion: 'happy', pose: 'point', key: 'sleep', react: {tooth: 'scared'}, src: ['dawes-2008'], beat: 0.8},
+        {id: 'B6', who: 'bacteria', text: "Surprise! When he sleeps, your spit guards sleep too!", emotion: 'happy', pose: 'point', key: 'sleep', react: {tooth: 'scared'}, src: ['dawes-2008'], beat: 0.8},
         {id: 'B7', who: 'bacteria', text: 'Party time! Leftovers for everyone!', emotion: 'happy', pose: 'cheer', key: 'party', react: {tooth: 'scared'}, chat: true},
         {id: 'B8', who: 'tooth', text: 'They turn it into acid. All night. My enamel!', emotion: 'scared', pose: 'panic', key: 'acid', react: {bacteria: 'smug'}, src: ['nidcr', 'dawes-2008']},
       ]},
@@ -88,7 +91,7 @@ const toon = {
       ],
       lines: [
         {id: 'E1', who: 'tooth', text: 'But tonight he brushes, last thing before bed!', emotion: 'happy', pose: 'cheer', key: 'brushes', react: {bacteria: 'scared'}, src: ['nhs-teeth', 'dawes-2008']},
-        {id: 'E2', who: 'bacteria', text: 'No! We only party at night because your spit sleeps!', emotion: 'scared', pose: 'panic', key: 'sleeps', src: ['dawes-2008'], beat: 0.2},
+        {id: 'E2', who: 'bacteria', text: 'No! We party hardest at night because your spit sleeps!', emotion: 'scared', pose: 'panic', key: 'sleeps', src: ['dawes-2008'], beat: 0.2},
         {id: 'E3', who: 'tooth', text: "Two minutes, then spit, don't rinse. Skip brushing at night? Not these teeth!", emotion: 'happy', pose: 'cheer', key: 'teeth', src: ['nhs-teeth']},
       ]},
   ],

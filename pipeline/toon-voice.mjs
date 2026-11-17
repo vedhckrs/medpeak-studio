@@ -85,8 +85,10 @@ const main = async () => {
       const raw = path.join(ROOT, 'out', 'toons', 'raw', slug, `${l.id}.mp3`);
       if (!fs.existsSync(raw) || !timings.lines[l.id]) { console.log(`no raw file for ${l.id}`); continue; }
       const file = path.join(outDir, `${l.id}.mp3`);
-      voiceFx(raw, file, cast.cast[l.who].pitch);
-      Object.assign(timings.lines[l.id], {pitch: cast.cast[l.who].pitch, duration: +(seconds(file) + 0.05).toFixed(3)});
+      const was = timings.lines[l.id].tempo ?? 1;
+      const now = Math.max(0.9, Math.min(1.15, l.tempo ?? 1)); // a line's own pace (toon.json: "tempo"), free to change
+      voiceFx(raw, file, cast.cast[l.who].pitch, now);
+      Object.assign(timings.lines[l.id], {pitch: cast.cast[l.who].pitch, tempo: now, duration: +(seconds(file) + 0.05).toFixed(3), words: timings.lines[l.id].words.map((w) => ({...w, start: +((w.start * was) / now).toFixed(3), end: +((w.end * was) / now).toFixed(3)}))});
     }
     writeJson(tPath, timings);
     console.log('Lines mixed again (free).');
@@ -109,8 +111,9 @@ const main = async () => {
     const raw = path.join(ROOT, 'out', 'toons', 'raw', slug, `${l.id}.mp3`);
     const words = await speakLine(cast, l.who, l.text, l.emotion, raw);
     const file = path.join(outDir, `${l.id}.mp3`);
-    voiceFx(raw, file, c.pitch);
-    timings.lines[l.id] = {who: l.who, text: l.text, voiceId: c.voiceId, pitch: c.pitch, file: `toons/${slug}/voice/${l.id}.mp3`, duration: +(seconds(file) + 0.05).toFixed(3), words};
+    const tempo = Math.max(0.9, Math.min(1.15, l.tempo ?? 1));
+    voiceFx(raw, file, c.pitch, tempo);
+    timings.lines[l.id] = {who: l.who, text: l.text, voiceId: c.voiceId, pitch: c.pitch, tempo, file: `toons/${slug}/voice/${l.id}.mp3`, duration: +(seconds(file) + 0.05).toFixed(3), words: words.map((w) => ({...w, start: +(w.start / tempo).toFixed(3), end: +(w.end / tempo).toFixed(3)}))};
     writeJson(tPath, timings);
     console.log(`voiced ${l.id}  ${l.who}  ${timings.lines[l.id].duration}s`);
   }
