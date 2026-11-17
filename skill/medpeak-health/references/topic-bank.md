@@ -31,7 +31,7 @@ start with the first 15.
 
 | # | Title | Videos over 1M on page one | Biggest video | Care | Status |
 |---|---|---|---|---|---|
-| 1 | What Happens If You Get Rabies | 25 | 37M | care: fatal disease; what to do after a bite word for word from WHO or CDC | open |
+| 1 | What Happens If You Get Rabies | 25 | 37M | care: fatal disease; what to do after a bite word for word from WHO or CDC | taken (Mac, 2026-11-17) |
 | 2 | What Happens If You Don't Sleep | 17 | 40M | close to "All-Nighter" in the month plan; make one, not both | open |
 | 3 | What Happens When You Take Creatine | 17 | 31M | care: a supplement; no dose advice, no "you should take it" | open |
 | 4 | What Happens If You Quit Sugar for 30 Days | 17 | 11M | no cure or detox claims | open |
