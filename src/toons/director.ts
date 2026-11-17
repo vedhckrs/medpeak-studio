@@ -51,7 +51,8 @@ export const STAGE_KEYS: Partial<Record<SetName, string[]>> = {
   // The ARM (rabies): bite: a dog's muzzle comes in, nips, goes; saliva drops; the virus appears. climb:
   // the virus walks up the nerve (0 = the scratch, 1 = under the sign). days: the calendar (day 1 to week 10).
   // vaccine: defenders arrive from both sides. wall: they line up across the nerve. wash: soap foam on the scratch.
-  arm: ['bite', 'climb', 'days', 'vaccine', 'wall', 'wash'],
+  // dizzy: stars circle the virus's head after it hits the wall.
+  arm: ['bite', 'climb', 'days', 'vaccine', 'wall', 'wash', 'dizzy'],
   molar: ['night', 'guards', 'sleep', 'sugar', 'snack', 'wash', 'fight', 'party', 'acid', 'chalk', 'brush', 'shield'],
   // gum: a swallowed piece of gum comes down and floats with the food. pass: what is in the stomach
   // moves on through the exit at the lower left. squeeze: an empty stomach's hunger squeeze, a ring of

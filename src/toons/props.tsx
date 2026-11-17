@@ -199,9 +199,19 @@ const TagProp: React.FC<{t: number; text?: string}> = ({text = ''}) => {
   const w = Math.max(70, text.length * 19 + 34);
   return (
     <g>
-      <rect x={-w / 2 + 3} y={-22} width={w} height={52} rx={26} fill="#1d2b4f" opacity={0.28} />
-      <rect x={-w / 2} y={-28} width={w} height={52} rx={26} fill="#ffffff" stroke="#2ec4b6" strokeWidth={5} />
-      <text x={0} y={9} textAnchor="middle" fontSize={30} fontWeight={900} fill="#1d2b4f" fontFamily={theme.font} letterSpacing={0.6}>{text.toUpperCase()}</text>
+      {STYLE.outline === 'ink' ? (
+        // ink look: a label like an anatomy chart, white box, black border, black text
+        <>
+          <rect x={-w / 2} y={-28} width={w} height={52} fill="#ffffff" stroke={STYLE.inkLine} strokeWidth={4} />
+          <text x={0} y={9} textAnchor="middle" fontSize={30} fontWeight={800} fill={STYLE.inkLine} fontFamily={theme.font} letterSpacing={0.6}>{text.toUpperCase()}</text>
+        </>
+      ) : (
+        <>
+          <rect x={-w / 2 + 3} y={-22} width={w} height={52} rx={26} fill="#1d2b4f" opacity={0.28} />
+          <rect x={-w / 2} y={-28} width={w} height={52} rx={26} fill="#ffffff" stroke="#2ec4b6" strokeWidth={5} />
+          <text x={0} y={9} textAnchor="middle" fontSize={30} fontWeight={900} fill="#1d2b4f" fontFamily={theme.font} letterSpacing={0.6}>{text.toUpperCase()}</text>
+        </>
+      )}
     </g>
   );
 };

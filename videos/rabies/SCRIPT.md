@@ -29,7 +29,7 @@ Toon script `rabies` · about 46 seconds · 8 pictures
 | PASS | Script is valid | 5 scenes, 14 lines, 4 voices |
 | PASS | 1 No intro | hook: "You can get rabies from one bite." |
 | PASS | 2 Promise | starts at 2.5 s (limit 8 s) |
-| PASS | 4 3-sec change | something new HAPPENS 31 times in 46 s (a place, a cut, a thing arriving, a change of the stage; text stickers do not count); the longest wait is 2.8 s (from 28.5 s) |
+| PASS | 4 3-sec change | something new HAPPENS 33 times in 46 s (a place, a cut, a thing arriving, a change of the stage; text stickers do not count); the longest wait is 2.8 s (from 28.5 s) |
 | PASS | 5 Twist | twist starts at 60% |
 | PASS | 6 Best last | best point starts at 91% |
 | PASS | 7 Loop | last line shares 3 key word(s) with the first: one, bite, rabies |
@@ -148,7 +148,9 @@ What happens in the picture:
 - at start: vaccine to 1 [sparkle]
 - at E1 ("this?"): wall to 1
 - at E2: climb to 0.31 [bonk]
+- at E2: dizzy to 1
 - at E2 ("stopped"): climb to 0.23
+- at E3 ("rabies."): dizzy to 0
 - at E3: climb to 0.17
 - at E3 ("rabies."): climb to 0.11
 - at E3 ("vaccine"): climb to 0.04

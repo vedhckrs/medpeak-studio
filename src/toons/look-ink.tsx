@@ -37,21 +37,30 @@ export const ribbon = (line: P[], w0: number, w1: number): P[] => {
 };
 
 /**
- * A piece of tissue: its fill, a dark band inside its wall (depth), a lighter lining band, and a bold
- * outline. `d` is a closed path.
+ * A piece of tissue, drawn for depth (owner, 2026-11-17: "looks flat"):
+ *   - a two-step cel shadow: the shape's lower-right crescent is darker (light comes from the top-left);
+ *   - a light crescent on the upper-left edge;
+ *   - a dark band inside its wall (the cavity's depth) and a lighter lining band;
+ *   - a few short wet shine strokes (`shine`, seeded so they stay put);
+ *   - a bold outline.
+ * `d` is a closed path; `box` is its rough extent, used to place the shine.
  */
-export const Tissue: React.FC<{d: string; fill: string; deep: string; lining?: string; band?: number; line?: number}> = ({d, fill, deep, lining, band = 46, line = INK.w}) => {
+export const Tissue: React.FC<{d: string; fill: string; deep: string; lining?: string; band?: number; line?: number; form?: number; shine?: {x0: number; y0: number; x1: number; y1: number; n?: number; seed: string}}> = ({d, fill, deep, lining, band = 46, line = INK.w, form = 0, shine}) => {
   const id = `ti${useId().replace(/:/g, '')}`;
+  const sh = shine ? Array.from({length: shine.n ?? 3}).map((_, i) => ({x: shine.x0 + random(`${shine.seed}sx${i}`) * (shine.x1 - shine.x0), y: shine.y0 + random(`${shine.seed}sy${i}`) * (shine.y1 - shine.y0), l: 18 + random(`${shine.seed}sl${i}`) * 26})) : [];
   return (
     <g>
       <defs>
         <clipPath id={`${id}c`}><path d={d} /></clipPath>
         <filter id={`${id}f`} x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation={band * 0.32} /></filter>
       </defs>
-      <path d={d} fill={fill} />
+      <path d={d} fill={form > 0 ? deep : fill} />
       <g clipPath={`url(#${id}c)`}>
-        <path d={d} fill="none" stroke={deep} strokeWidth={band * 1.6} filter={`url(#${id}f)`} opacity={0.75} />
-        {lining && <path d={d} fill="none" stroke={lining} strokeWidth={band * 0.34} opacity={0.65} transform="translate(0 0)" />}
+        {form > 0 && <path d={d} fill={fill} transform={`translate(${-form} ${-form * 0.7})`} />}
+        {form > 0 && <path d={d} fill="none" stroke="#ffffff" strokeWidth={form * 0.9} opacity={0.18} transform={`translate(${form * 0.55} ${form * 0.4})`} />}
+        <path d={d} fill="none" stroke={deep} strokeWidth={band * 1.6} filter={`url(#${id}f)`} opacity={form > 0 ? 0.45 : 0.75} />
+        {lining && <path d={d} fill="none" stroke={lining} strokeWidth={band * 0.34} opacity={0.65} />}
+        {sh.map((p, i) => <path key={i} d={`M${p.x} ${p.y} q${p.l * 0.5} ${-p.l * 0.35} ${p.l} ${-p.l * 0.2}`} fill="none" stroke="#ffffff" strokeWidth={6} strokeLinecap="round" opacity={0.7} />)}
       </g>
       <path d={d} fill="none" stroke={INK.line} strokeWidth={line} strokeLinejoin="round" />
     </g>

@@ -6,6 +6,40 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-17 (late night) - Mac - branch `feat/toons`
+
+The owner rejected the first rabies preview ("cheap poor worst"), had every frame of the 20 reference
+Shorts studied, approved ONE look sheet ("Yes, this look"), then said the body view had no motion and
+looked flat, and asked to "upgrade skill now".
+
+### What changed
+- `plans/reference-deep-study-2026-11-17.md`: 36,308 reference frames measured (motion, cuts, lines,
+  outlines, brightness) and the plan. Data and script in `plans/data/`.
+- The ink look in `src/toons/style.ts` (old values in brackets): one dark ink outline colour, bolder
+  lines, ring eyes with no shine, `breathe` 0, `roomLife` 0, `talkBeat` 0.3, `captionPop` false.
+  Stickers (`tag`) draw as white chart labels.
+- `src/toons/look-ink.tsx`: `Tissue` (cel light and shadow, depth band, lining, wet shine), `InkEyes`,
+  `Label`, and the look sheet still `ToonInkLook`.
+- `src/toons/stage-arm.tsx` rebuilt in the look, alive in moments (heartbeat, muscle, nerve signal),
+  a creeping virus with dizzy stars, marching defenders. New dial `dizzy`.
+- `npm run toon:look` (`pipeline/toon-look.mjs`, `pipeline/lib/toon_look.py`, earshot's Python):
+  every frame measured against the reference. The staging check now also fails a body stage's face on
+  the caption line.
+- `videos/rabies`: topic 1 of the topic bank (taken), format 3, WHO and CDC sources.
+- Skill: `references/toons-look.md` (the look and motion rules), `toons-script.md` (order of work).
+
+### What was run
+- Every script passes `toon-check`; rabies passes camera, motion, staging, sound and the new look
+  check (51% still, 48% small motion, edges 11%, near-black 3.8%, brightness 156). 44 tests pass.
+- Not run: voices for rabies (quoted about 245 credits, not approved); the stomach, tooth, food-pipe
+  and tooth-arena stages are not in the new look; people keep blush and glasses shine.
+
+### Next
+- The owner judges the arm test clips; then voices for rabies on his yes.
+- Bring the other stages and the people's faces into the look, one board at a time.
+
+---
+
 ## 2026-11-17 (night) - Windows PC (commits by VED) - branch `feat/toons-cast-3d`
 
 The owner looked at the Toons cast and said it does not look good: he wants it cleaner, cuter, more

@@ -274,7 +274,9 @@ new in it is a line where the story is only being told.
    `npm run toon:sound -- <slug>` (few sounds, kept apart, under the voice).
    After voicing run `npm run toon:listen -- <slug> --words` (what each line says, against the
    script) and after a render with sound `npm run toon:listen -- <slug>` and `-- <slug> --voices`
-   (toons-listening.md). Fix what they show, then tell the owner what was heard. Do not ask the
+   (toons-listening.md). Fix what they show, then tell the owner what was heard.
+   After every render also `npm run toon:look -- <slug>` (toons-look.md): the picture measured
+   against the reference (holds still but alive, bold outlines, line detail, brightness). Do not ask the
    owner to judge what these three can measure.
 6. Render the rooms board (toons-rooms.md) and `node pipeline/toon-render.mjs <slug> --draft --silent`
    for a free picture-only preview. Look at frames from every scene yourself first.

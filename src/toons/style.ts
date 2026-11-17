@@ -44,6 +44,9 @@ export const STYLE = {
   vignette: 0, // darkening toward the corners of the frame
   // ---- motion and finish
   boil: 0, // hand-drawn line wobble. OFF: it read as a "burning screen" (owner, 2026-11-16)
+  captionPop: false, // each caption word grows in over 4 frames (v6); the ink look just swaps the word, as the reference does [true]
+  talkBeat: 0.3, // how much people's arms and heads beat on stressed words while they talk [1]
+  roomLife: 0, // clouds, birds, a monitor, plants in the real-world rooms; 0 = the room holds still and only the people act (reference rooms are still) [1]
   breathe: 0, // idle breathing; 0 = hold still between actions, as the reference does (63% of frames still) [0.007]
   grain: 0, // paper grain over the frame (0 = clean) [0.035]
   // ---- colours

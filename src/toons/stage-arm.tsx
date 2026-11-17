@@ -53,7 +53,7 @@ const DEF_N = 7;
 /** Where everything on the arm is for a state. */
 export const armLayout = (state: Record<string, number> = {}, t = 0) => {
   const st = (k: string) => clamp01(state[k] ?? 0);
-  const [bite, climb, days, vaccine, wall, wash] = ['bite', 'climb', 'days', 'vaccine', 'wall', 'wash'].map(st);
+  const [bite, climb, days, vaccine, wall, wash, dizzy] = ['bite', 'climb', 'days', 'vaccine', 'wall', 'wash', 'dizzy'].map(st);
   // the dog: its head comes up from the lower right until its nose touches the skin, nips, goes again
   const come = io(clamp01(bite / 0.42));
   const go = io(clamp01((bite - 0.62) / 0.38));
@@ -63,7 +63,9 @@ export const armLayout = (state: Record<string, number> = {}, t = 0) => {
   const drops = [0, 1].map((i) => { const u = clamp01((bite - 0.56 - i * 0.06) / 0.2); return u > 0 && u < 1 ? {i, x: SCRATCH[0] - 22 + i * 40, y: lerp(SURFACE + 90, SURFACE - 6, u), r: 13 - i * 2} : null; }).filter((d): d is NonNullable<typeof d> => !!d);
   const show = state.bite === undefined ? 1 : io(clamp01((bite - 0.8) / 0.2));
   const [vx, vy] = climbAt(climb);
-  const virus = show > 0.02 ? {x: vx, y: vy, k: show} : null; // no idle bob: it holds still unless the story moves it
+  // it creeps up the nerve: each little hop is tied to how far it has climbed, so it only hops while it moves
+  const hop = Math.abs(Math.sin(climb * 90));
+  const virus = show > 0.02 ? {x: vx, y: vy - hop * 14, k: show, hop} : null;
   // the defenders: they come in from both sides and line up across the nerve
   const [wx, wy] = climbAt(WALL_AT);
   const defenders = Array.from({length: DEF_N}).map((_, i) => {
@@ -75,11 +77,18 @@ export const armLayout = (state: Record<string, number> = {}, t = 0) => {
     const slot: P = [wx + (i - (DEF_N - 1) / 2) * 92, wy - Math.abs(i - (DEF_N - 1) / 2) * 8];
     const k = io(on);
     const p0: P = [lerp(from[0], free[0], k), lerp(from[1], free[1], k)];
-    return {i, x: lerp(p0[0], slot[0], io(wall)), y: lerp(p0[1], slot[1], io(wall)), r: 44, on: k};
+    const moving = (k > 0 && k < 1) || (wall > 0 && wall < 1);
+    const step = moving ? Math.abs(Math.sin(t * 7 + i * 1.3)) * 12 : 0; // little marching steps while they move
+    const push = wall >= 1 ? Math.sin(t * 2.4 + i * 0.5) * 3 : 0; // in the wall they lean and hold
+    const blink = (t * 0.37 + i * 0.21) % 1 < 0.04;
+    return {i, x: lerp(p0[0], slot[0], io(wall)) + push, y: lerp(p0[1], slot[1], io(wall)) - step, r: 44, on: k, blink};
   }).filter((d): d is NonNullable<typeof d> => !!d);
   const cal = state.days === undefined || vaccine > 0 ? null : {x: 900, y: 560, text: days < 0.08 ? 'DAY 1' : days < 0.35 ? 'WEEK 2' : days < 0.7 ? 'WEEK 6' : 'WEEK 10'};
   const foam = wash > 0 ? Array.from({length: 9}).map((_, i) => ({i, x: SCRATCH[0] + Math.cos(i * 0.7 + t) * (40 + (i % 3) * 22), y: SURFACE + 20 + Math.abs(Math.sin(i * 1.3 + t * 0.8)) * 30, r: (12 + (i % 4) * 5) * wash})) : [];
-  return {bite, climb, days, vaccine, wall, wash, dog, scratched, drops, virus, defenders, wallAt: [wx, wy] as P, cal, foam};
+  // the nip shakes the skin and the fat a little; the drops land with a ring
+  const shake = nip * Math.sin(t * 46) * 7;
+  const splash = [0.74, 0.86].map((at, i) => ({i, k: clamp01((bite - at) / 0.12)})).filter((r) => r.k > 0 && r.k < 1);
+  return {bite, climb, days, vaccine, wall, wash, dizzy, dog, scratched, drops, virus, defenders, wallAt: [wx, wy] as P, cal, foam, shake, splash};
 };
 
 /** For the head check: where the virus's face is, or null when it is not in the picture. */
@@ -132,18 +141,44 @@ export const ArmStage: React.FC<Props> = ({t, state = {}, faces = {}, label}) =>
   const me = faces.virus ?? REST;
   const nerveD = spline(wob(ribbon(NERVE, 54, 86), 'nv', 2.5), true, 0.5);
   const arteryD = spline(wob(ribbon(ARTERY, 50, 64), 'ar', 2.5), true, 0.5);
+  // Life comes in moments, not all the time (the reference holds still in 63% of frames): a heartbeat
+  // swell once every 1.6 s, a muscle tightening every 6 s, a nerve signal every 5 s.
+  const ph = (t / 2) % 1;
+  const beat = ph < 0.22 ? Math.sin((ph / 0.22) * Math.PI) : 0;
+  const flow = (Math.floor(t / 2) + Math.min(1, ph / 0.22)) * 80; // the blood steps forward with each beat
+  const flex = (i: number) => { const q = ((t + i * 1.9) / 6) % 1; return q < 0.25 ? Math.sin((q / 0.25) * Math.PI) : 0; };
+  const sig = (t / 5) % 1;
   return (
     <AbsoluteFill style={{background: '#dde9ee'}}>
       <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} style={{position: 'absolute', left: 0, top: 0}}>
         <rect x={0} y={0} width={W} height={H} fill="#dde9ee" />
         {/* deep tissue between the muscles, the muscle bundles with their fibres */}
         <rect x={-40} y={-80} width={W + 80} height={FAT_TOP + 140} fill="#7d2633" />
-        {BUNDLES.map((b) => <Tissue key={b.seed} d={spline(wob(b.pts, b.seed, 8), true, 0.55)} fill="#d4626a" deep="#8e2f3b" lining="#f0a29c" band={58} />)}
-        {[[60, 0], [150, 0.4], [360, 0.2], [420, 0.6], [640, 0.1], [930, 0.3], [1010, 0.5]].map(([x, s], i) => <path key={i} d={spline(wob([[x, -40], [x + 12, 260], [x - 8, 560], [x + 10, 860], [x, FAT_TOP - 20]], `fb${i}`, 10), false, 0.5)} fill="none" stroke="#a9414c" strokeWidth={4} strokeLinecap="round" opacity={0.55 + s * 0.2} />)}
-        {/* the artery and the nerve with its fibre bundles */}
-        <Tissue d={arteryD} fill="#b8414f" deep="#6e1e2a" lining="#e98a8f" band={22} />
-        <Tissue d={nerveD} fill="#f6e3a4" deep="#c9a856" lining="#fff7d6" band={26} />
+        {/* the muscles: each bundle tightens and relaxes slowly, a few pixels, on its own rhythm */}
+        {BUNDLES.map((b, i) => { const c = flex(i); return (
+          <g key={b.seed} transform={`translate(${(c * 3).toFixed(2)} 0) scale(${(1 + c * 0.004).toFixed(4)} 1)`}>
+            <Tissue d={spline(wob(b.pts, b.seed, 8), true, 0.55)} fill="#d4626a" deep="#a53c49" lining="#f0a29c" band={58} form={30} shine={{x0: b.pts[0][0] + 40, x1: b.pts[1][0] - 60, y0: 120, y1: FAT_TOP - 160, n: 3, seed: b.seed}} />
+          </g>
+        ); })}
+        {[[60, 0], [150, 0.4], [360, 0.2], [420, 0.6], [640, 0.1], [930, 0.3], [1010, 0.5]].map(([x, s], i) => { const c = flex(Math.min(3, Math.floor(x / 280))) * 3; return <path key={i} d={spline(wob([[x + c, -40], [x + 12 + c, 260], [x - 8 + c, 560], [x + 10 + c, 860], [x + c, FAT_TOP - 20]], `fb${i}`, 10), false, 0.5)} fill="none" stroke="#a9414c" strokeWidth={4} strokeLinecap="round" opacity={0.55 + s * 0.2} />; })}
+        {/* fine capillaries on the muscle */}
+        {[[[120, 380], [170, 420], [150, 480], [200, 520]], [[930, 300], [880, 360], [920, 420]], [[960, 820], [1000, 880], [960, 940], [1010, 990]]].map((pts, i) => <path key={`cap${i}`} d={spline(pts as P[], false, 0.5)} fill="none" stroke="#9a2c3a" strokeWidth={4} strokeLinecap="round" opacity={0.85} />)}
+        {/* the artery: it swells with every heartbeat and the blood flows inside it */}
+        <path d={arteryD} fill="#4a1420" opacity={0.4} transform="translate(12 14)" />
+        <path d={nerveD} fill="#4a1420" opacity={0.4} transform="translate(12 14)" />
+        <g transform={`translate(${ARTERY[3][0]} ${ARTERY[3][1]}) scale(${(1 + beat * 0.03).toFixed(4)} 1) translate(${-ARTERY[3][0]} ${-ARTERY[3][1]})`}>
+          <Tissue d={arteryD} fill="#b8414f" deep="#6e1e2a" lining="#e98a8f" band={22} form={10} />
+          <path d={spline(ARTERY, false, 0.5)} fill="none" stroke="#e98a8f" strokeWidth={6} strokeLinecap="round" strokeDasharray="26 54" strokeDashoffset={flow.toFixed(1)} opacity={0.8} />
+        </g>
+        {/* the nerve with its fibre bundles, and now and then a signal running up it */}
+        <Tissue d={nerveD} fill="#f6e3a4" deep="#c9a856" lining="#fff7d6" band={26} form={12} />
         {[-14, 0, 14].map((o, i) => <path key={i} d={spline(NERVE.map(([x, y], j) => [x + o * (1 - (j / NERVE.length) * 0.4), y] as P), false, 0.5)} fill="none" stroke="#d7b964" strokeWidth={3} opacity={0.8} />)}
+        {sig < 0.16 && <path d={spline(NERVE, false, 0.5)} fill="none" stroke="#fffbe6" strokeWidth={16} strokeLinecap="round" pathLength={1} strokeDasharray="0.06 1.94" strokeDashoffset={(-(sig / 0.16) * 1.06).toFixed(3)} opacity={0.9} />}
+        {/* where the virus has been: the nerve it has climbed turns sickly */}
+        {L.virus && L.climb > 0.01 && <path d={spline(Array.from({length: 24}, (_, i) => climbAt((L.climb * i) / 23)), false, 0.5)} fill="none" stroke="#7f9a62" strokeWidth={30} strokeLinecap="round" opacity={0.6} />}
+        {/* a few fine strands of connective tissue in front */}
+        {[[[380, 180], [520, 230], [700, 200]], [[300, 900], [470, 960], [620, 940]]].map((pts, i) => <path key={`str${i}`} d={spline(pts as P[], false, 0.5)} fill="none" stroke="#f3c6bf" strokeWidth={5} strokeLinecap="round" opacity={0.75} />)}
+        <g transform={`translate(0 ${L.shake.toFixed(2)})`}>
         {/* fat lobules */}
         <path d={`M-40 ${FAT_TOP} Q540 ${FAT_TOP - 22} 1120 ${FAT_TOP} L1120 ${DERM_TOP + 10} L-40 ${DERM_TOP + 10} Z`} fill="#e9c97a" />
         {FAT.map((f) => <Tissue key={f.i} d={spline(lump(f.x, f.y, f.rx, f.ry, `fl${f.i}`, 12, 0.12), true, 0.6)} fill="#f6dc95" deep="#d4b060" band={18} line={INK.wIn} />)}
@@ -153,6 +188,8 @@ export const ArmStage: React.FC<Props> = ({t, state = {}, faces = {}, label}) =>
         {[[[468, 1300], [456, 1340], [442, 1376]], [[468, 1300], [490, 1340], [508, 1374]]].map((pts, i) => <path key={i} d={spline(pts as P[], false, 0.5)} fill="none" stroke="#e8cf86" strokeWidth={6} strokeLinecap="round" />)}
         {L.scratched && <path d={`M${SCRATCH[0] - 46} ${SURFACE + 2} L${SCRATCH[0] - 10} ${SURFACE - 30} L${SCRATCH[0] + 8} ${SURFACE - 6} L${SCRATCH[0] + 30} ${SURFACE - 26} L${SCRATCH[0] + 50} ${SURFACE + 4} Z`} fill="#e2858a" stroke={INK.line} strokeWidth={INK.wIn} strokeLinejoin="round" />}
         {L.foam.map((f) => <circle key={f.i} cx={f.x} cy={f.y} r={f.r} fill="#ffffff" stroke={INK.line} strokeWidth={3} />)}
+        {L.splash.map((r) => <ellipse key={r.i} cx={SCRATCH[0]} cy={SURFACE - 4} rx={20 + r.k * 60} ry={6 + r.k * 14} fill="none" stroke="#9fd0e6" strokeWidth={4} opacity={1 - r.k} />)}
+        </g>
 
         {/* labels and the calendar, like an anatomy chart */}
         <Label x={300} y={380} text="NERVE" rot={-4} />
@@ -169,13 +206,18 @@ export const ArmStage: React.FC<Props> = ({t, state = {}, faces = {}, label}) =>
           <g key={d.i} transform={`translate(${d.x.toFixed(1)} ${d.y.toFixed(1)}) scale(${d.on.toFixed(3)})`}>
             {[-0.7, 0, 0.7].map((a, j) => { const ax = Math.sin(a) * d.r; const ay = -Math.cos(a) * d.r; const bx = ax + Math.sin(a) * 18; const by = ay - Math.cos(a) * 18; const tip = (b: number) => `${(bx + Math.sin(a + b) * 12).toFixed(1)} ${(by - Math.cos(a + b) * 12).toFixed(1)}`; return <path key={j} d={`M${ax.toFixed(1)} ${ay.toFixed(1)} L${bx.toFixed(1)} ${by.toFixed(1)} L${tip(-0.6)} M${bx.toFixed(1)} ${by.toFixed(1)} L${tip(0.6)}`} fill="none" stroke={INK.line} strokeWidth={5} strokeLinecap="round" />; })}
             <path d={spline(lump(0, 0, d.r, d.r * 0.94, `def${d.i}`, 12, 0.05), true, 0.6)} fill="#e4ecf2" stroke={INK.line} strokeWidth={INK.w - 1} />
-            <InkEyes x={0} y={-4} r={12} look={[0, -0.6]} />
+            <InkEyes x={0} y={-4} r={12} look={[0, -0.6]} lid={d.blink ? 0.9 : 0} />
             <path d={L.wall > 0.9 ? 'M-9 16 Q0 24 9 16' : 'M-7 17 Q0 20 7 17'} fill="none" stroke={INK.line} strokeWidth={3.5} strokeLinecap="round" />
           </g>
         ))}
 
         {/* the virus */}
-        {L.virus && <g transform={`translate(${L.virus.x.toFixed(1)} ${(L.virus.y + me.nod * 6).toFixed(1)})`}><Virus f={me} k={L.virus.k} /></g>}
+        {L.virus && (
+          <g transform={`translate(${L.virus.x.toFixed(1)} ${(L.virus.y + me.nod * 6).toFixed(1)})`}>
+            <g transform={`scale(${(1 - L.virus.hop * 0.06).toFixed(3)} ${(1 + L.virus.hop * 0.08).toFixed(3)})`}><Virus f={me} k={L.virus.k} /></g>
+            {L.dizzy > 0.05 && [0, 1, 2].map((i) => { const a = t * 4 + (i * Math.PI * 2) / 3; return <path key={i} transform={`translate(${(Math.cos(a) * 80).toFixed(1)} ${(-170 + Math.sin(a) * 20).toFixed(1)}) scale(${(L.dizzy * 1.8).toFixed(2)})`} d="M0 -16 L5 -5 L16 -4 L7 3 L10 15 L0 8 L-10 15 L-7 3 L-16 -4 L-5 -5 Z" fill="#ffd23c" stroke={INK.line} strokeWidth={3} strokeLinejoin="round" />; })}
+          </g>
+        )}
 
         {/* saliva and the dog, from outside */}
         {L.drops.map((d) => <path key={d.i} d={`M${d.x} ${d.y - d.r * 1.8} C${d.x + d.r} ${d.y - d.r * 0.4} ${d.x + d.r} ${d.y + d.r} ${d.x} ${d.y + d.r} C${d.x - d.r} ${d.y + d.r} ${d.x - d.r} ${d.y - d.r * 0.4} ${d.x} ${d.y - d.r * 1.8} Z`} fill="#eef8fc" stroke={INK.line} strokeWidth={3} />)}

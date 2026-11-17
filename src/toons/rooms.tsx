@@ -581,7 +581,8 @@ export const wallItems = (look: RoomLook, role: RoomRole, tidy: number = ROOM_TI
 
 // ------------------------------------------------------------------ the room
 /** One room, built from its recipe. `role` = clinic or home. */
-export const Room: React.FC<{look: RoomLook; role: RoomRole; t: number; tidy?: number; people?: Box[]}> = ({look, role, t, tidy = ROOM_TIDY, people = []}) => {
+export const Room: React.FC<{look: RoomLook; role: RoomRole; t: number; tidy?: number; people?: Box[]}> = ({look, role, t: clock, tidy = ROOM_TIDY, people = []}) => {
+  const t = clock * STYLE.roomLife; // the room's own life (clouds, birds, a monitor, plants); 0 = it holds still
   const uid = useId().replace(/:/g, '');
   const pal = ROOM_PALS[look.palette] ?? ROOM_PALS.mint;
   const win = windowOf(look);

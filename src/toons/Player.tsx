@@ -7,6 +7,7 @@
 //     shift their weight and react to each other;
 //   - the SET lives behind them in layers, so camera moves show depth and lenses blur the background;
 //   - captions, sound effects and the music bed are placed from the same timing.
+import {STYLE} from './style';
 import React, {useMemo} from 'react';
 import {AbsoluteFill, Audio, Sequence, interpolate, random, staticFile, useCurrentFrame} from 'remotion';
 import type {Act, CharProps} from './blueprint';
@@ -205,7 +206,7 @@ const acting = (a: ToonActor, shot: ToonShot, lines: Placed[], f: number, cur: P
   }
   const speaking = cur?.line.who === a.who;
   const key = cur ? (cur.line.key ?? '').toLowerCase() : '';
-  const beat = speaking ? beatOf(cur, f, key) : 0;
+  const beat = speaking ? beatOf(cur, f, key) * STYLE.talkBeat : 0; // the arms and head beat on stressed words; the ink look keeps it small
   // pose: own lines set it; it eases in with a small overshoot, and the arms beat on stressed words
   const own = past.filter((l) => l.line.who === a.who && l.line.pose);
   const poseOf = (n: PoseName | undefined) => POSES[n ?? 'rest'][person ? 'person' : 'body'];
@@ -503,7 +504,7 @@ export const ToonPlayer: React.FC<ToonProps> = ({toon, timings, sfx, music, bare
         </Camera>
       )}
       {flash > 0 && <AbsoluteFill style={{background: '#ffffff', opacity: flash * 0.3}} />}
-      {word && !bare && <WordCaption word={clean(word.w)} key_={clean(word.w).toLowerCase() === keyWord} pop={0.72 + 0.28 * E.back(clamp01((tl - word.start) * TOON_FPS / 4))} y={captionBox(L.steady).y} plain={L.steady} />}
+      {word && !bare && <WordCaption word={clean(word.w)} key_={clean(word.w).toLowerCase() === keyWord} pop={STYLE.captionPop ? 0.72 + 0.28 * E.back(clamp01((tl - word.start) * TOON_FPS / 4)) : 1} y={captionBox(L.steady).y} plain={L.steady} />}
       <Grain />
       {L.lines.map((l) => l.file && <Sequence key={l.line.id} from={l.from} durationInFrames={l.frames + 12}><Audio src={staticFile(l.file)} /></Sequence>)}
       {events.filter((e) => has(e.name)).map((e, i) => <Sequence key={i} from={e.at} durationInFrames={90}><Audio src={staticFile(`toons/sfx/${e.name}.mp3`)} volume={e.vol} /></Sequence>)}

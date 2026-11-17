@@ -28,7 +28,8 @@
     "toon:sound": "node pipeline/toon-sound.mjs",
     "toon:listen": "node pipeline/toon-listen.mjs",
     "toon:music:scan": "node pipeline/toon-music-scan.mjs",
-    "toon:package": "node pipeline/toon-package.mjs"
+    "toon:package": "node pipeline/toon-package.mjs",
+    "toon:look": "node pipeline/toon-look.mjs"
   },
   "dependencies": {
     "@remotion/cli": "4.0.543",

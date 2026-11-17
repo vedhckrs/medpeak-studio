@@ -592,9 +592,25 @@
     },
     {
      "at": "E2",
+     "delay": 0.15,
+     "set": {
+      "dizzy": 1
+     },
+     "over": 12
+    },
+    {
+     "at": "E2",
      "word": "stopped",
      "set": {
       "climb": 0.23
+     },
+     "over": 20
+    },
+    {
+     "at": "E3",
+     "word": "rabies.",
+     "set": {
+      "dizzy": 0
      },
      "over": 20
     },
