@@ -16,7 +16,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {execFileSync} from 'node:child_process';
-import {allScenes, args, loadVideo, PUBLIC, readJson, videoDir, writeJson} from './lib/util.mjs';
+import {allScenes, args, isMain, loadVideo, PUBLIC, readJson, videoDir, writeJson} from './lib/util.mjs';
 import {approved, balance, get, needApproval, post, printPool} from './lib/eleven.mjs';
 import {pickVoice, recentVoices, voicePool} from './lib/voices.mjs';
 
@@ -125,4 +125,4 @@ const main = async () => {
   console.log(`Done. Credits left: ${after.left} (spent ${bal.left - after.left}).`);
 };
 
-if (import.meta.url === `file://${process.argv[1]}`) main().catch((e) => { console.error(e.message); process.exit(1); });
+if (isMain(import.meta.url)) main().catch((e) => { console.error(e.message); process.exit(1); });

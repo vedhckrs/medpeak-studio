@@ -7,6 +7,19 @@ export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '
 export const VIDEOS = path.join(ROOT, 'videos');
 export const PUBLIC = path.join(ROOT, 'public');
 
+/**
+ * True when the module at `metaUrl` is the script node was started with. Pass `import.meta.url`.
+ * Compares real file paths, so it also works on Windows (where `file://${process.argv[1]}` never
+ * matches `import.meta.url`).
+ */
+export const isMain = (metaUrl) => {
+  if (!process.argv[1]) return false;
+  const real = (p) => { try { return fs.realpathSync(p); } catch { return path.resolve(p); } };
+  const a = real(fileURLToPath(metaUrl));
+  const b = real(process.argv[1]);
+  return process.platform === 'win32' ? a.toLowerCase() === b.toLowerCase() : a === b;
+};
+
 /** Parse "--key value" and "--flag" arguments. Positional args land in `_`. */
 export const args = (argv = process.argv.slice(2)) => {
   const out = {_: []};

@@ -12,7 +12,7 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
-import {args, loadVideo, videoDir, writeJson} from './lib/util.mjs';
+import {args, isMain, loadVideo, videoDir, writeJson} from './lib/util.mjs';
 
 const EUTILS = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils';
 const TOOL = 'tool=medpeak-studio';
@@ -99,4 +99,4 @@ const main = async () => {
   console.log(`\nSaved research/pubmed.json and research/abstracts.md (${ids.length} papers)`);
 };
 
-if (import.meta.url === `file://${process.argv[1]}`) main().catch((e) => { console.error(e.message); process.exit(1); });
+if (isMain(import.meta.url)) main().catch((e) => { console.error(e.message); process.exit(1); });
