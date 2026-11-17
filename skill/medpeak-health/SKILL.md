@@ -85,6 +85,9 @@ sugar / insulin is the strongest topic; titles start with the exact search phras
 emojis, no hashtags in titles); 1 comment per ~1,000 views, so every video asks a question; only
 long-video watch time counts toward the 4,000 hours, so every Short links to a long video.
 
+Topic ideas: `references/topic-bank.md` holds 70 researched candidates (17 Nov 2026). The owner wants
+the first 15 made first. Mark a topic `taken` there before starting it.
+
 ## Files
 
 - `references/retention-7.md` - the owner's global Retention 7 rule (copied from ~/Remotion/repo/skills).
