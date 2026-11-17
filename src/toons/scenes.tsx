@@ -37,6 +37,8 @@ const Motes: React.FC<{seed: string; n: number; t: number; area: [number, number
   const [x0, y0, x1, y1] = area;
   const w = x1 - x0;
   const h = y1 - y0;
+  // clean 2D: no dust and no ring bubbles in the air. Bigger solid pieces (food, crumbs, oxygen) are the story and stay.
+  if (STYLE.specks <= 0 && (ring || r[1] <= 4)) return null;
   return (
     <g>
       {Array.from({length: n}).map((_, i) => {
@@ -76,9 +78,9 @@ const Drips: React.FC<{seed: string; t: number; xs: number[]; y0: number; y1: nu
   </g>
 );
 /** Soft light shafts from a point, breathing slowly. */
-const Rays: React.FC<{id: string; t: number; from: P; to: [number, number][]; color?: string; k?: number}> = ({id, t, from, to, color = '#fff6dc', k = 0.2}) => (
+const Rays: React.FC<{id: string; t: number; from: P; to: [number, number][]; color?: string; k?: number}> = ({id, t, from, to, color = '#fff6dc', k = 0.2}) => STYLE.glow <= 0 ? null : (
   <g>
-    <defs><linearGradient id={id} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor={color} stopOpacity={k} /><stop offset="1" stopColor={color} stopOpacity="0" /></linearGradient></defs>
+    <defs><linearGradient id={id} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor={color} stopOpacity={k * STYLE.glow} /><stop offset="1" stopColor={color} stopOpacity="0" /></linearGradient></defs>
     {to.map(([a, b], i) => <path key={i} d={`M${from[0]} ${from[1]} L${a} ${H} L${b} ${H} Z`} fill={`url(#${id})`} opacity={0.6 + 0.4 * Math.sin(t * 0.6 + i * 1.9)} />)}
   </g>
 );
@@ -139,7 +141,7 @@ const Floor: React.FC<{y: number; color: string; seed: string}> = ({y, color, se
 const Atmos: React.FC<{id: string; tint: string; light?: [number, number]; k?: number}> = ({id, tint, light = [380, 520], k = 0.3}) => (
   <Canvas>
     <defs>
-      <radialGradient id={`pl${id}`} cx={light[0] / W} cy={light[1] / H} r="0.7"><stop offset="0" stopColor="#fff6e8" stopOpacity={k} /><stop offset="1" stopColor="#fff6e8" stopOpacity="0" /></radialGradient>
+      <radialGradient id={`pl${id}`} cx={light[0] / W} cy={light[1] / H} r="0.7"><stop offset="0" stopColor="#fff6e8" stopOpacity={k * STYLE.glow} /><stop offset="1" stopColor="#fff6e8" stopOpacity="0" /></radialGradient>
       <linearGradient id={`bt${id}`} x1="0" y1="0" x2="0" y2="1"><stop offset="0.7" stopColor={tint} stopOpacity="0" /><stop offset="1" stopColor={tint} stopOpacity="0.3" /></linearGradient>
     </defs>
     <rect x={-200} y={-200} width={W + 400} height={H + 400} fill={`url(#pl${id})`} />
@@ -166,7 +168,7 @@ export const ThroatSet: React.FC<{t: number}> = ({t}) => {
         <Canvas>
           <defs>
             <linearGradient id="thg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#fdd3c2" /><stop offset="0.5" stopColor="#f2a79d" /><stop offset="1" stopColor="#c2586a" /></linearGradient>
-            <radialGradient id="thk" cx="0.5" cy="-0.05" r="0.62"><stop offset="0" stopColor="#fff3df" stopOpacity={0.5 + 0.1 * Math.sin(t * 0.9)} /><stop offset="1" stopColor="#fff3df" stopOpacity="0" /></radialGradient>
+            <radialGradient id="thk" cx="0.5" cy="-0.05" r="0.62"><stop offset="0" stopColor="#fff3df" stopOpacity={(0.5 + 0.1 * Math.sin(t * 0.9)) * STYLE.glow} /><stop offset="1" stopColor="#fff3df" stopOpacity="0" /></radialGradient>
           </defs>
           <rect x={-300} y={-300} width={W + 600} height={H + 600} fill="url(#thg)" />
           {Array.from({length: 9}).map((_, i) => {
@@ -810,7 +812,7 @@ export const BedroomSet: React.FC<{t: number}> = ({t}) => {
       <Layer p={0.35}><Outside t={t} night /></Layer>
       <Layer p={0.82}>
         <Canvas>
-          <defs><radialGradient id="lamp" cx="0.78" cy="0.4" r="0.42"><stop offset="0" stopColor="#ffd98a" stopOpacity={glow} /><stop offset="1" stopColor="#ffd98a" stopOpacity="0" /></radialGradient></defs>
+          <defs><radialGradient id="lamp" cx="0.78" cy="0.4" r="0.42"><stop offset="0" stopColor="#ffd98a" stopOpacity={glow * STYLE.glow} /><stop offset="1" stopColor="#ffd98a" stopOpacity="0" /></radialGradient></defs>
           <path d={`M-300 -300 H${W + 300} V1360 H-300 Z M130 250 V650 H470 V250 Z`} fill="#2c3768" fillRule="evenodd" />
           {Array.from({length: 13}).map((_, i) => (i * 130 - 200 < 110 || i * 130 - 200 > 480 ? <line key={i} x1={i * 130 - 200} x2={i * 130 - 200} y1={-300} y2={1360} stroke="#334075" strokeWidth={30} /> : null))}
           <rect x={112} y={232} width={376} height={436} rx={20} fill="none" stroke="#56609a" strokeWidth={30} />

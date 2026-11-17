@@ -10,6 +10,7 @@ import {Cast, circlePath, Contact, ellipsePath, Groove, lift, lineOf, Mark, Merg
 import {type ArmSpec, armOf, Face, Hand, Shoe} from './rig';
 import {POSES} from './poses';
 import type {Act, CharProps} from './blueprint';
+import {STYLE} from './style';
 
 export type HairStyle = 'curly' | 'short' | 'long' | 'bun' | 'cap' | 'capback' | 'messy' | 'balding' | 'baby';
 export type TopKind = 'coat' | 'hoodie' | 'tee' | 'blouse' | 'cardigan' | 'onesie';
@@ -326,7 +327,7 @@ const HairFront: React.FC<{s: HumanSpec}> = ({s}) => {
         <>
           <Mark pts={[[-10, -23.6], [0, -27], [10, -23.6]]} w={1.2} color={shade(color, 0.3)} />
           <Mark pts={[[-6, -21], [1, -24], [8, -21.4]]} w={1} color={shade(color, 0.3)} opacity={0.8} />
-          <ellipse cx={-7} cy={-17} rx={7} ry={2.6} transform="rotate(-18 -7 -17)" fill="#ffffff" opacity={0.3} />
+          {STYLE.gloss > 0 && <ellipse cx={-7} cy={-17} rx={7} ry={2.6} transform="rotate(-18 -7 -17)" fill="#ffffff" opacity={0.3} />}
         </>
       );
     default:
@@ -350,9 +351,9 @@ const Glasses: React.FC<{kind: 'round' | 'square'}> = ({kind}) => {
     <g>
       {[-1, 1].map((k) => (
         <g key={k}>
-          <path d={`${lens(k)} Z`} fill="#ffffff" fillOpacity={0.12} />
+          {STYLE.gloss > 0 && <path d={`${lens(k)} Z`} fill="#ffffff" fillOpacity={0.12} />}
           <path d={lens(k)} fill="none" stroke={frame} strokeWidth={w} strokeLinecap="round" />
-          <path d={`M${k * 8.4 - 5.6} -1.6 l3.4 -3.2`} stroke="#ffffff" strokeWidth={1.2} strokeLinecap="round" opacity={0.7} />
+          {STYLE.gloss > 0 && <path d={`M${k * 8.4 - 5.6} -1.6 l3.4 -3.2`} stroke="#ffffff" strokeWidth={1.2} strokeLinecap="round" opacity={0.7} />}
         </g>
       ))}
       <path d="M-17.6 0.6 L-22.6 -1.4 M17.6 0.6 L22.6 -1.4" fill="none" stroke={frame} strokeWidth={w} strokeLinecap="round" />

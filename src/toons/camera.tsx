@@ -8,6 +8,7 @@ import React, {createContext, useContext} from 'react';
 import {AbsoluteFill} from 'remotion';
 import type {LensName, MoveName, ShotName} from './director';
 import {ScaleCtx} from './ink';
+import {STYLE} from './style';
 
 export type {LensName, MoveName, ShotName};
 
@@ -73,20 +74,24 @@ export const clampCam = (c: Cam): Cam => {
 /** The camera: zooms and turns the character plane; layers inside read it for parallax and focus. */
 export const Camera: React.FC<Partial<Cam> & {children: React.ReactNode}> = ({children, ...partial}) => {
   const c = clampCam({...CAM0, ...partial});
+  // STYLE.lensBlur = 0 keeps every frame sharp: no whip-pan smear, no soft rack focus
+  const whip = c.whip * STYLE.lensBlur;
+  const soft = c.soft * STYLE.lensBlur;
+  const vig = LENSES[c.lens].vig * STYLE.vignette;
   return (
     <CamCtx.Provider value={c}>
       <ScaleCtx.Provider value={c.zoom}>
-        {c.whip > 0.5 && (
+        {whip > 0.5 && (
           <svg width={0} height={0} style={{position: 'absolute'}}>
-            <filter id="toon-whip" x="-10%" y="0" width="120%" height="100%"><feGaussianBlur stdDeviation={`${c.whip.toFixed(1)} 0`} /></filter>
+            <filter id="toon-whip" x="-10%" y="0" width="120%" height="100%"><feGaussianBlur stdDeviation={`${whip.toFixed(1)} 0`} /></filter>
           </svg>
         )}
-        <AbsoluteFill style={{filter: c.whip > 0.5 ? 'url(#toon-whip)' : c.soft > 0.3 ? `blur(${c.soft.toFixed(1)}px)` : undefined}}>
+        <AbsoluteFill style={{filter: whip > 0.5 ? 'url(#toon-whip)' : soft > 0.3 ? `blur(${soft.toFixed(1)}px)` : undefined}}>
           <AbsoluteFill style={{transform: `translate(${(W / 2 - c.cx + c.sx).toFixed(2)}px, ${(H / 2 - c.cy + c.sy).toFixed(2)}px) rotate(${c.rot.toFixed(3)}deg) scale(${c.zoom.toFixed(4)})`, transformOrigin: `${c.cx.toFixed(2)}px ${c.cy.toFixed(2)}px`}}>
             {children}
           </AbsoluteFill>
         </AbsoluteFill>
-        <AbsoluteFill style={{background: `radial-gradient(ellipse 78% 70% at 50% 46%, rgba(24,12,36,0) 58%, rgba(24,12,36,${LENSES[c.lens].vig}) 100%)`, pointerEvents: 'none'}} />
+        {vig > 0 && <AbsoluteFill style={{background: `radial-gradient(ellipse 78% 70% at 50% 46%, rgba(24,12,36,0) 58%, rgba(24,12,36,${vig.toFixed(3)}) 100%)`, pointerEvents: 'none'}} />}
       </ScaleCtx.Provider>
     </CamCtx.Provider>
   );
@@ -99,6 +104,7 @@ export const Camera: React.FC<Partial<Cam> & {children: React.ReactNode}> = ({ch
 export const Layer: React.FC<{p?: number; children: React.ReactNode}> = ({p = 1, children}) => {
   const c = useContext(CamCtx);
   if (p === 1) return <AbsoluteFill>{children}</AbsoluteFill>;
+  if (p > 1 && !STYLE.foreground) return null; // clean 2D: nothing stands in front of the picture
   const lens = LENSES[c.lens];
   const q = 1 - (1 - p) * lens.depth; // the lens stretches or flattens the depth
   const zp = Math.max(0.2, 1 + (c.zoom - 1) * q);
@@ -106,7 +112,7 @@ export const Layer: React.FC<{p?: number; children: React.ReactNode}> = ({p = 1,
   const py = H / 2 + (c.cy - H / 2) * q;
   const k = zp / c.zoom;
   const blur = p < 1 ? (lens.bg * Math.min(1, (1 - p) / 0.6)) : lens.fg * Math.min(1, (p - 1) / 0.3);
-  const on = c.zoom > 1.12 || p > 1 ? blur : blur * Math.max(0, (c.zoom - 1) / 0.12); // wide shots stay sharp
+  const on = (c.zoom > 1.12 || p > 1 ? blur : blur * Math.max(0, (c.zoom - 1) / 0.12)) * STYLE.lensBlur; // wide shots stay sharp; lensBlur 0 = always sharp
   return (
     <AbsoluteFill style={{transform: `translate(${(c.cx - px * k).toFixed(2)}px, ${(c.cy - py * k).toFixed(2)}px) scale(${k.toFixed(4)})`, transformOrigin: '0 0', filter: on > 0.4 ? `blur(${(on / zp).toFixed(2)}px)` : undefined}}>
       {children}

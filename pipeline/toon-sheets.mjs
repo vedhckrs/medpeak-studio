@@ -12,8 +12,7 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
-import {execFileSync} from 'node:child_process';
-import {ROOT} from './lib/util.mjs';
+import {remotion, ROOT} from './lib/util.mjs';
 
 const argv = process.argv.slice(2);
 const boardsOnly = argv.includes('--boards');
@@ -22,7 +21,7 @@ const src = fs.readFileSync(path.join(ROOT, 'src/toons/Preview.tsx'), 'utf8');
 const all = [...src.match(/export const ORDER: string\[\] = \[([^\]]+)\]/)[1].matchAll(/'([a-z]+)'/g)].map((m) => m[1]);
 const out = path.join(ROOT, 'out/toons/sheets');
 fs.mkdirSync(out, {recursive: true});
-const still = (comp, file, props) => execFileSync('npx', ['remotion', 'still', 'src/index.ts', comp, path.join(out, file), '--log=error', '--timeout=90000', ...(props ? [`--props=${JSON.stringify(props)}`] : [])], {cwd: ROOT, stdio: 'inherit'});
+const still = (comp, file, props) => remotion(['still', 'src/index.ts', comp, path.join(out, file), '--log=error', '--timeout=90000', ...(props ? [`--props=${JSON.stringify(props)}`] : [])]);
 
 if (!names.length) {
   still('ToonCast', 'cast.jpg');

@@ -2,10 +2,31 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {execFileSync} from 'node:child_process';
 
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 export const VIDEOS = path.join(ROOT, 'videos');
 export const PUBLIC = path.join(ROOT, 'public');
+
+/**
+ * True when the module at `metaUrl` is the script node was started with. Pass `import.meta.url`.
+ * Compares real file paths, so it also works on Windows (where `file://${process.argv[1]}` never
+ * matches `import.meta.url`).
+ */
+export const isMain = (metaUrl) => {
+  if (!process.argv[1]) return false;
+  const real = (p) => { try { return fs.realpathSync(p); } catch { return path.resolve(p); } };
+  const a = real(fileURLToPath(metaUrl));
+  const b = real(process.argv[1]);
+  return process.platform === 'win32' ? a.toLowerCase() === b.toLowerCase() : a === b;
+};
+
+/**
+ * Run the Remotion CLI with this node binary. Never `npx`: on Windows that is npx.cmd, which
+ * execFileSync cannot start. `opts` are passed to execFileSync (stdio, timeout and so on).
+ */
+export const remotion = (argv, opts = {}) =>
+  execFileSync(process.execPath, [path.join(ROOT, 'node_modules', '@remotion', 'cli', 'remotion-cli.js'), ...argv], {stdio: 'inherit', cwd: ROOT, ...opts});
 
 /** Parse "--key value" and "--flag" arguments. Positional args land in `_`. */
 export const args = (argv = process.argv.slice(2)) => {

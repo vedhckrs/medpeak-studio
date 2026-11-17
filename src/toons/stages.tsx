@@ -313,7 +313,7 @@ export const FoodPipeStage: React.FC<SetProps> = ({t, state = {}, faces = {}, la
 
         {/* light from above, dark toward the stomach */}
         <defs>
-          <radialGradient id="fpLight" cx="0.5" cy="-0.05" r="0.6"><stop offset="0" stopColor="#fff3df" stopOpacity={0.42 + 0.06 * Math.sin(t * 0.9)} /><stop offset="1" stopColor="#fff3df" stopOpacity="0" /></radialGradient>
+          <radialGradient id="fpLight" cx="0.5" cy="-0.05" r="0.6"><stop offset="0" stopColor="#fff3df" stopOpacity={(0.42 + 0.06 * Math.sin(t * 0.9)) * STYLE.glow} /><stop offset="1" stopColor="#fff3df" stopOpacity="0" /></radialGradient>
           <linearGradient id="fpDown" x1="0" y1="0" x2="0" y2="1"><stop offset="0.72" stopColor="#3d1226" stopOpacity="0" /><stop offset="1" stopColor="#3d1226" stopOpacity="0.5" /></linearGradient>
         </defs>
         <rect x={-300} y={-300} width={W + 600} height={H + 600} fill="url(#fpLight)" />
@@ -605,7 +605,7 @@ export const ToothStage: React.FC<SetProps> = ({t, state = {}, faces = {}, label
         ))}
 
         <defs>
-          <radialGradient id="tsLight" cx="0.5" cy="-0.05" r="0.7"><stop offset="0" stopColor="#fff3df" stopOpacity={0.34 + 0.05 * Math.sin(t * 0.9)} /><stop offset="1" stopColor="#fff3df" stopOpacity="0" /></radialGradient>
+          <radialGradient id="tsLight" cx="0.5" cy="-0.05" r="0.7"><stop offset="0" stopColor="#fff3df" stopOpacity={(0.34 + 0.05 * Math.sin(t * 0.9)) * STYLE.glow} /><stop offset="1" stopColor="#fff3df" stopOpacity="0" /></radialGradient>
           <linearGradient id="tsDown" x1="0" y1="0" x2="0" y2="1"><stop offset="0.78" stopColor="#3d1226" stopOpacity="0" /><stop offset="1" stopColor="#3d1226" stopOpacity="0.4" /></linearGradient>
         </defs>
         <rect x={-300} y={-300} width={W + 600} height={H + 600} fill="url(#tsLight)" opacity={1 - night * 0.7} />
@@ -1009,7 +1009,7 @@ export const TummyStage: React.FC<SetProps> = ({t, state = {}, faces = {}, label
         </g>}
 
         <defs>
-          <radialGradient id="tmLight" cx="0.5" cy="-0.05" r="0.7"><stop offset="0" stopColor="#fff3df" stopOpacity={0.32 + 0.05 * Math.sin(t * 0.9)} /><stop offset="1" stopColor="#fff3df" stopOpacity="0" /></radialGradient>
+          <radialGradient id="tmLight" cx="0.5" cy="-0.05" r="0.7"><stop offset="0" stopColor="#fff3df" stopOpacity={(0.32 + 0.05 * Math.sin(t * 0.9)) * STYLE.glow} /><stop offset="1" stopColor="#fff3df" stopOpacity="0" /></radialGradient>
           <linearGradient id="tmDown" x1="0" y1="0" x2="0" y2="1"><stop offset="0.78" stopColor="#3d1226" stopOpacity="0" /><stop offset="1" stopColor="#3d1226" stopOpacity="0.42" /></linearGradient>
         </defs>
         <rect x={-300} y={-300} width={W + 600} height={H + 600} fill="url(#tmLight)" />

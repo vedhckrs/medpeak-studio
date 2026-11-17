@@ -6,6 +6,7 @@
 import React from 'react';
 import {Contact, lineOf} from './ink';
 import {Arm, type ArmSpec, armOf, type Emotion, Face, Leg} from './rig';
+import {STYLE} from './style';
 
 export type Family = 'organ' | 'cell' | 'germ' | 'medicine' | 'waste' | 'skeleton' | 'person';
 
@@ -78,12 +79,13 @@ export const makeCharacter = (bp: Blueprint): Character => {
     const arms = p.arms === null ? null : p.arms ?? bp.rest ?? [112, 68];
     const arm = (i: 0 | 1, front: boolean) => {
       if (!bp.arms || !arms) return null;
+      if (!STYLE.bodyLimbs) return null; // clean 2D: body characters are anatomy, no arms or hands
       const sp = armOf(arms[i]);
       if (!!sp.front !== front) return null;
       const [x, y] = i === 0 ? bp.arms.l : bp.arms.r;
       return <Arm key={`a${i}`} x={x} y={y} spec={sp} color={bp.arms.color ?? bp.color} len={bp.arms.len} />;
     };
-    const legs = !p.noLegs && bp.legs ? bp.legs : null;
+    const legs = STYLE.bodyLimbs && !p.noLegs && bp.legs ? bp.legs : null;
     const g = bp.ground.y;
     return (
       <g transform={`translate(0 ${g + (act.bob ?? 0)}) rotate(${((act.lean ?? 0) + (act.tilt ?? 0) * 0.5).toFixed(2)}) scale(${(p.flip ? -1 : 1) * (1 + sq * 0.12)} ${1 - sq * 0.12}) translate(0 ${-g})`}>

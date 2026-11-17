@@ -13,11 +13,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {execFileSync, spawnSync} from 'node:child_process';
-import {args, loadTimings, loadVideo, PUBLIC, ROOT, videoDir, writeJson} from './lib/util.mjs';
+import {args, isMain, loadTimings, loadVideo, PUBLIC, remotion, ROOT, videoDir, writeJson} from './lib/util.mjs';
 import {makeSfx} from './make-sfx.mjs';
 
 const FPS = 60;
-const run = (cmd, argv) => execFileSync(cmd, argv, {stdio: 'inherit', cwd: ROOT});
 
 export const buildProps = (slug, shortId) => {
   const video = loadVideo(slug);
@@ -76,7 +75,7 @@ const main = () => {
       const dir = path.join(outDir, 'stills', c.id);
       fs.mkdirSync(dir, {recursive: true});
       for (const p of panelFrames(slug, c.shortId)) {
-        run('npx', ['remotion', 'still', 'src/index.ts', c.comp, path.join(dir, `${p.name}.jpg`), `--frame=${p.frame}`, `--props=${file}`, '--scale=0.5', '--log=error']);
+        remotion(['still', 'src/index.ts', c.comp, path.join(dir, `${p.name}.jpg`), `--frame=${p.frame}`, `--props=${file}`, '--scale=0.5', '--log=error']);
       }
       console.log(`Stills for ${c.id}: ${path.relative(ROOT, dir)}`);
     }
@@ -88,13 +87,13 @@ const main = () => {
     const raw = path.join(ROOT, 'out', `${slug}-${c.id}-raw.mp4`);
     const final = path.join(outDir, c.id === 'long' ? 'long.mp4' : `short-${c.id}.mp4`);
     console.log(`\nRendering ${c.id} ...`);
-    run('npx', ['remotion', 'render', 'src/index.ts', c.comp, raw, `--props=${file}`, ...(a.draft ? ['--scale=0.5'] : []), '--log=error']);
+    remotion(['render', 'src/index.ts', c.comp, raw, `--props=${file}`, ...(a.draft ? ['--scale=0.5'] : []), '--log=error']);
     master(raw, final);
     fs.rmSync(raw);
     console.log(`MILESTONE ${c.id} done: ${path.relative(ROOT, final)}`);
     const thumbComp = c.id === 'long' ? 'Thumbnail' : 'ShortCover';
-    run('npx', ['remotion', 'still', 'src/index.ts', thumbComp, path.join(outDir, c.id === 'long' ? 'thumb.jpg' : `cover-${c.id}.jpg`), `--props=${file}`, '--log=error']);
+    remotion(['still', 'src/index.ts', thumbComp, path.join(outDir, c.id === 'long' ? 'thumb.jpg' : `cover-${c.id}.jpg`), `--props=${file}`, '--log=error']);
   }
 };
 
-if (import.meta.url === `file://${process.argv[1]}`) main();
+if (isMain(import.meta.url)) main();

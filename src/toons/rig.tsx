@@ -60,6 +60,31 @@ const Eye: React.FC<{x: number; lid: number; lower: number; pupil: number; look:
     );
   }
   const lidY = -ry + ry * 2 * Math.min(1, lid);
+  if (STYLE.eye === 'dot') {
+    // clean 2D eye: white, one dark pupil, one small catchlight. No iris, no gradients.
+    const r = 5.4 * (0.62 + 0.38 * pupil) * STYLE.pupilScale;
+    const dx = look.x * (rx - r) * 0.9;
+    const dy = look.y * 4.2 + 1.6;
+    return (
+      <g transform={`translate(${x} 0)`}>
+        <defs><clipPath id={`e${id}`}><path d={d} /></clipPath></defs>
+        <path d={d} fill="#ffffff" />
+        <g clipPath={`url(#e${id})`}>
+          <circle cx={dx} cy={dy} r={r} fill={PUPIL} />
+          <circle cx={dx + r * 0.34} cy={dy - r * 0.36} r={r * 0.3} fill="#ffffff" />
+          {lid > 0.02 && (
+            <>
+              <rect x={-rx - 1} y={-ry - 1} width={rx * 2 + 2} height={lidY + ry + 1} fill={skin} />
+              <path d={`M${-rx} ${lidY} Q0 ${lidY + 1.4} ${rx} ${lidY}`} fill="none" stroke={fc} strokeWidth={lw * 1.5} />
+            </>
+          )}
+          {lower > 0.02 && <ellipse cx={0} cy={2 * ry * (1 - lower)} rx={rx * 1.5} ry={ry} fill={skin} stroke={fc} strokeWidth={lw} />}
+        </g>
+        <path d={d} fill="none" stroke={fc} strokeWidth={lw * 1.15} />
+        {lash}
+      </g>
+    );
+  }
   const R = 8.3 * (0.6 + 0.4 * pupil) * STYLE.pupilScale; // the iris shrinks with fear and surprise
   const pr = 4.5 * pupil ** 1.15 * STYLE.pupilScale;
   const px = look.x * (rx - R) * 0.92;

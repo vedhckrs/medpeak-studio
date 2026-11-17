@@ -25,7 +25,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {execFileSync} from 'node:child_process';
-import {args, readJson, ROOT, VIDEOS, videoDir, writeJson} from './lib/util.mjs';
+import {args, readJson, remotion, ROOT, VIDEOS, videoDir, writeJson} from './lib/util.mjs';
 import {layoutToon, GAP, TOON_FPS} from '../src/toons/director.ts';
 
 const SUBSCRIBE = '🔔 Subscribe to MedPeak Health for cartoons and 3D animations that show what really happens inside your body: @MedPeakHealth';
@@ -127,7 +127,7 @@ const one = (slug, a) => {
     const props = path.join(ROOT, 'out', `toon-cover-${slug}.json`);
     writeJson(props, {toon, timings: voiced ? stored : null, sfx: [], music: null, text: pkg.cover.text, accent: pkg.cover.accent});
     const frame = Math.min(L.total - 1, Math.round((pkg.cover.at ?? 1) * TOON_FPS));
-    execFileSync('npx', ['remotion', 'still', 'src/index.ts', 'ToonCover', cover, `--props=${props}`, `--frame=${frame}`, '--log=error', '--timeout=90000', '--jpeg-quality=92'], {cwd: ROOT, stdio: 'inherit'});
+    remotion(['still', 'src/index.ts', 'ToonCover', cover, `--props=${props}`, `--frame=${frame}`, '--log=error', '--timeout=90000', '--jpeg-quality=92']);
   }
   if (!fs.existsSync(cover)) issues.push('the cover picture is missing');
 

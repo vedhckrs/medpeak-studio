@@ -9,7 +9,7 @@
  * Exit code 1 when any point fails: a failing script is fixed, never approved "with a note".
  */
 import fs from 'node:fs';
-import {args, loadTimings, loadVideo, sceneList, VIDEOS, fmtTime} from './lib/util.mjs';
+import {args, isMain, loadTimings, loadVideo, sceneList, VIDEOS, fmtTime} from './lib/util.mjs';
 import {checkCut} from './lib/retention.mjs';
 
 const table = (label, r) => {
@@ -45,4 +45,4 @@ const main = () => {
   process.exit(ok ? 0 : 1);
 };
 
-if (import.meta.url === `file://${process.argv[1]}`) main();
+if (isMain(import.meta.url)) main();

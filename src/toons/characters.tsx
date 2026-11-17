@@ -6,6 +6,14 @@
 import React from 'react';
 import {blob, Cast, circlePath, ellipsePath, Groove, lift, lineOf, lobePts, Mark, Merge, Part, roundRect, shade, spline, taperedPath, tone, Tube, useLine, Vein, type P} from './ink';
 import {type Blueprint, type Character, makeCharacter} from './blueprint';
+import {STYLE} from './style';
+
+/** Clean 2D (2026-11-17): light glints are drawn only when the style has gloss. */
+const GLINT = STYLE.gloss > 0;
+/** Costume pieces (cap, helmet, bow) are drawn only when the style asks for them. */
+const DRESS = STYLE.accessories;
+/** Travellers stand on their legs in v6; without legs they rest on the body's lowest point. */
+const LEGS = STYLE.bodyLimbs;
 
 const ARTERY = '#dc3d4f';
 const VEINC = '#5878d8';
@@ -16,7 +24,7 @@ const TubeEnd: React.FC<{x: number; y: number; rx: number; ry: number; rot?: num
   <g transform={`translate(${x} ${y}) rotate(${rot})`}>
     <Part d={ellipsePath(0, 0, rx, ry)} fill={shade(color, 0.42)} line={lineOf(color)} flat />
     <path d={ellipsePath(rx * 0.08, ry * 0.2, rx * 0.66, ry * 0.6)} fill={shade(color, 0.66)} />
-    <path d={`M${-rx * 0.7} ${-ry * 0.35} Q0 ${-ry * 1.05} ${rx * 0.7} ${-ry * 0.35}`} fill="none" stroke={lift(color, 0.5)} strokeWidth={0.9} strokeLinecap="round" opacity={0.8} />
+    {GLINT && <path d={`M${-rx * 0.7} ${-ry * 0.35} Q0 ${-ry * 1.05} ${rx * 0.7} ${-ry * 0.35}`} fill="none" stroke={lift(color, 0.5)} strokeWidth={0.9} strokeLinecap="round" opacity={0.8} />}
   </g>
 );
 /** A thin detail line (seams, rings) in the house line weight. */
@@ -27,48 +35,55 @@ const Tick: React.FC<{d: string; color: string; k?: number; opacity?: number}> =
 /** A ring around a tube (muscle band, cartilage): a dark line with a light line under it. */
 const Ring: React.FC<{d: string; color: string}> = ({d, color}) => (
   <g>
-    <Tick d={d} color={lift(color, 0.5)} k={0.9} opacity={0.7} />
+    {GLINT && <Tick d={d} color={lift(color, 0.5)} k={0.9} opacity={0.7} />}
     <g transform="translate(0 -1.1)"><Tick d={d} color={shade(color, 0.3)} k={0.62} /></g>
   </g>
 );
 /** A four-point sparkle (clean enamel, glass). */
 const Sparkle: React.FC<{x: number; y: number; s?: number}> = ({x, y, s = 1}) => (
-  <path transform={`translate(${x} ${y}) scale(${s})`} d="M0 -7 Q0.9 -0.9 7 0 Q0.9 0.9 0 7 Q-0.9 0.9 -7 0 Q-0.9 -0.9 0 -7 Z" fill="#ffffff" opacity={0.95} />
+  GLINT ? <path transform={`translate(${x} ${y}) scale(${s})`} d="M0 -7 Q0.9 -0.9 7 0 Q0.9 0.9 0 7 Q-0.9 0.9 -7 0 Q-0.9 -0.9 0 -7 Z" fill="#ffffff" opacity={0.95} /> : null
 );
 
 // ============================================================ digestion
-const STOMACH = spline([[-18, -52], [-28, -32], [-38, -10], [-54, 8], [-74, 18], [-88, 30], [-86, 46], [-70, 54], [-44, 58], [-10, 70], [28, 66], [60, 42], [74, 4], [66, -34], [46, -58], [20, -66], [-2, -60]]);
+// Clean 2D (owner's pick, 2026-11-17): the real organ seen from the front. The food pipe comes in
+// at the top left (cardia), the fundus dome rises to its right, the greater curvature runs down the
+// right side, and the stomach narrows to the pylorus (a muscle ring) and the duodenum at the lower
+// left. A few clean fold lines, no vessels, no gloss, no arms.
+const STOMACH = spline([[-30, -50], [-35, -30], [-43, -10], [-58, 6], [-76, 14], [-90, 24], [-92, 40], [-78, 51], [-54, 58], [-20, 68], [22, 67], [56, 50], [77, 14], [78, -22], [63, -53], [36, -70], [8, -68], [-12, -58]]);
 const stomach: Blueprint = {
   name: 'stomach', family: 'organ', role: 'The hard-working cook: mixes food with acid. Grumpy when overfed.',
-  color: '#ff8f9c', accents: [{label: 'food pipe', color: '#f7a3a6'}, {label: 'artery', color: ARTERY}, {label: 'vein', color: VEINC}],
-  face: {x: 12, y: -8, size: 1.12},
+  color: '#ff8f9c', accents: [{label: 'food pipe', color: '#f7a3a6'}, {label: 'duodenum', color: '#ffa5ae'}, {label: 'folds', color: '#e0707f'}],
+  face: {x: 12, y: -6, size: 1.12},
   arms: {l: [-40, 0], r: [70, 6]},
   rest: [168, 62],
   legs: null,
   ground: {y: 74, w: 58},
-  back: ({color}) => {
+  back: () => {
     const pipe = '#f7a3a6';
+    const gut = '#ffa5ae';
     return (
       <>
-        <Tube d="M-80 39 C-96 37 -105 46 -103 60" r={8.2} fill={lift(color, 0.16)} cap="butt" />
-        <TubeEnd x={-103} y={60} rx={8.2} ry={3} rot={8} color={lift(color, 0.16)} />
-        <Tube d="M-10 -48 C-11 -64 -15 -76 -13 -92" r={9.5} fill={pipe} cap="butt" />
-        {[-62, -72, -82].map((y, i) => <Ring key={y} d={`M${-21 + i * -0.8} ${y} Q${-12 + i * -0.8} ${y + 3} ${-3 + i * -0.6} ${y}`} color={pipe} />)}
-        <TubeEnd x={-13} y={-92} rx={9.5} ry={3.4} rot={-6} color={pipe} />
+        <Tube d="M-84 37 C-100 35 -109 46 -106 62" r={8.6} fill={gut} cap="butt" />
+        <TubeEnd x={-106} y={62} rx={8.6} ry={3.1} rot={8} color={gut} />
+        <Tube d="M-22 -48 C-23 -64 -27 -78 -25 -95" r={9.5} fill={pipe} cap="butt" />
+        {[-64, -75, -86].map((y, i) => <Tick key={y} d={`M${-32.5 - i * 0.9} ${y} Q${-24 - i * 0.9} ${y + 3.2} ${-15 - i * 0.7} ${y}`} color={shade(pipe, 0.3)} k={0.7} />)}
+        <TubeEnd x={-25} y={-95} rx={9.5} ry={3.4} rot={-6} color={pipe} />
       </>
     );
   },
-  body: ({color}) => (
-    <Part d={STOMACH} fill={color} mat="flesh" shine={[40, -44, 1.3]}>
-      <Groove pts={[[50, -40], [64, -18], [65, 6]]} color={color} />
-      <Groove pts={[[38, -50], [54, -30], [56, -8]]} w={2} color={color} k={0.14} />
-      <Groove pts={[[-64, 27], [-46, 36], [-26, 38]]} w={2.2} color={color} />
-      <Groove pts={[[-76, 23], [-82, 38], [-76, 52]]} w={3} color={color} k={0.28} />
-      <Vein pts={[[70, 14], [58, 40], [30, 58], [-6, 63], [-40, 53], [-66, 49]]} w={2.3} color={VEINC} opacity={0.6} />
-      <Vein pts={[[68, 20], [54, 45], [28, 61], [-8, 66], [-42, 56], [-64, 52]]} w={2.3} color={ARTERY} opacity={0.82} />
-      {([[[44, 52], [40, 42], [43, 33]], [[10, 64], [7, 54], [11, 46]], [[-24, 61], [-25, 51], [-21, 44]], [[-50, 54], [-52, 46], [-49, 40]]] as P[][]).map((pts, i) => <Vein key={i} pts={pts} w={1.4} color={ARTERY} opacity={0.7} />)}
-    </Part>
-  ),
+  body: ({color}) => {
+    const fold = '#e0707f';
+    return (
+      <Part d={STOMACH} fill={color} mat="flesh">
+        {/* folds of the stomach wall, following the greater curvature */}
+        <Mark pts={[[60, -36], [68, -8], [63, 22], [44, 44]]} w={2.6} color={fold} />
+        <Mark pts={[[40, 55], [12, 61], [-18, 59], [-44, 51]]} w={2.4} color={fold} />
+        <Mark pts={[[-66, 24], [-50, 31], [-32, 34]]} w={2.2} color={fold} />
+        {/* the pylorus: the muscle ring between the stomach and the duodenum */}
+        <Mark pts={[[-79, 17], [-84, 34], [-77, 51]]} w={3.2} color={fold} />
+      </Part>
+    );
+  },
 };
 
 const COIL = spline([[-48, -24], [0, -32], [48, -24], [54, 18], [42, 62], [0, 74], [-42, 62], [-54, 18]]);
@@ -112,7 +127,7 @@ const intestine: Blueprint = {
           <Part d={ellipsePath(-60, 66, 15.5, 12.5)} fill={colon} mat="flesh" depth={5} />
           {HAUSTRA.map(([x, y, rx, ry], i) => <Part key={i} d={ellipsePath(x, y, rx, ry)} fill={colon} mat="flesh" tex={0.6} depth={4.5} />)}
         </Merge>
-        <path d="M-63 54 V-36 Q-63 -62 -38 -62 Q0 -57 38 -62 Q63 -62 63 -36 V52" fill="none" stroke={lift(colon, 0.6)} strokeWidth={1.5} strokeLinecap="round" strokeDasharray="7 10.5" opacity={0.55} />
+        {GLINT && <path d="M-63 54 V-36 Q-63 -62 -38 -62 Q0 -57 38 -62 Q63 -62 63 -36 V52" fill="none" stroke={lift(colon, 0.6)} strokeWidth={1.5} strokeLinecap="round" strokeDasharray="7 10.5" opacity={0.55} />}
         {HAUSTRA.slice(0, -1).map(([x, y], i) => {
           const [nx, ny] = HAUSTRA[i + 1];
           const mx = (x + nx) / 2;
@@ -145,12 +160,13 @@ const liver: Blueprint = {
   ),
   body: ({color}) => (
     <Part d={LIVER} fill={color} mat="flesh" shine={[-60, -38, 1.2]}>
-      <path d="M12 -62 L100 -44 L100 30 L-12 52 Z" fill={lift(color, 0.22)} opacity={0.34} />
+      {/* the smaller left lobe is a shade lighter; the ligament between the lobes */}
+      <path d="M12 -62 L100 -44 L100 30 L-12 52 Z" fill={lift(color, 0.16)} opacity={0.3} />
       <Groove pts={[[16, -54], [10, -22], [0, 10], [-6, 42]]} w={3} color={color} k={0.3} />
       <Mark pts={[[11, -55], [5, -23], [-5, 9], [-11, 41]]} w={3} color="#f6d2c2" opacity={0.9} />
-      <Mark pts={[[-72, 40], [-34, 49], [8, 35], [48, 13], [82, -8]]} w={1.8} color={lift(color, 0.6)} opacity={0.5} />
+      {GLINT && <Mark pts={[[-72, 40], [-34, 49], [8, 35], [48, 13], [82, -8]]} w={1.8} color={lift(color, 0.6)} opacity={0.5} />}
       <Groove pts={[[40, -40], [62, -30], [80, -24]]} w={2} color={color} k={0.16} />
-      <Gl x={34} y={-34} />
+      {GLINT && <Gl x={34} y={-34} />}
     </Part>
   ),
 };
@@ -180,9 +196,10 @@ const kidney: Blueprint = {
   ),
   body: ({color}) => (
     <Part d={KIDNEY} fill={color} mat="flesh" shine={[-34, -54, 1.1]}>
+      {/* the hilum: the notch where the vessels and the ureter enter */}
       <Groove pts={[[36, -26], [23, 2], [36, 28]]} w={4.6} color={color} k={0.3} />
-      {([[[26, -4], [8, -20], [-8, -44], [-14, -62]], [[24, 2], [2, 4], [-22, 18], [-40, 34]], [[26, 8], [12, 30], [0, 54], [-4, 70]]] as P[][]).map((pts, i) => <Vein key={i} pts={pts} w={1.9} color={shade(color, 0.34)} opacity={0.5} />)}
-      <Mark pts={[[-50, -40], [-56, -6], [-52, 30]]} w={1.8} color={lift(color, 0.6)} opacity={0.42} />
+      {GLINT && ([[[26, -4], [8, -20], [-8, -44], [-14, -62]], [[24, 2], [2, 4], [-22, 18], [-40, 34]], [[26, 8], [12, 30], [0, 54], [-4, 70]]] as P[][]).map((pts, i) => <Vein key={i} pts={pts} w={1.9} color={shade(color, 0.34)} opacity={0.5} />)}
+      {GLINT && <Mark pts={[[-50, -40], [-56, -6], [-52, 30]]} w={1.8} color={lift(color, 0.6)} opacity={0.42} />}
     </Part>
   ),
 };
@@ -296,14 +313,15 @@ const heart: Blueprint = {
   ),
   body: ({color}) => (
     <Part d={HEART} fill={color} mat="flesh" shine={[-52, -40, 1.2]}>
-      <path d={blob(13, 7, 'f1', 9, 0.14, 18, -46, 0.3)} fill="#ffdc9c" opacity={0.8} />
-      <path d={blob(10, 5.5, 'f2', 9, 0.14, -30, -50, -0.2)} fill="#ffdc9c" opacity={0.7} />
+      {GLINT && <path d={blob(13, 7, 'f1', 9, 0.14, 18, -46, 0.3)} fill="#ffdc9c" opacity={0.8} />}
+      {GLINT && <path d={blob(10, 5.5, 'f2', 9, 0.14, -30, -50, -0.2)} fill="#ffdc9c" opacity={0.7} />}
+      {/* the groove between the upper and lower chambers, and the two coronary arteries */}
       <Groove pts={[[-66, -40], [-40, -46], [-10, -40], [20, -46], [56, -52]]} w={2.2} color={color} k={0.2} />
-      <Vein pts={[[30, -52], [50, -30], [52, 0], [40, 32], [16, 62], [4, 78]]} w={2.8} color={VEINC} opacity={0.5} />
+      {GLINT && <Vein pts={[[30, -52], [50, -30], [52, 0], [40, 32], [16, 62], [4, 78]]} w={2.8} color={VEINC} opacity={0.5} />}
       <Vein pts={[[24, -50], [46, -30], [48, 2], [36, 32], [12, 62], [2, 76]]} w={3.2} color="#b3202f" />
-      {([[[46, -26], [60, -12], [66, 6]], [[48, 2], [60, 16], [58, 30]], [[40, 26], [26, 30], [16, 42]]] as P[][]).map((pts, i) => <Vein key={i} pts={pts} w={1.7} color="#b3202f" opacity={0.85} />)}
+      {GLINT && ([[[46, -26], [60, -12], [66, 6]], [[48, 2], [60, 16], [58, 30]], [[40, 26], [26, 30], [16, 42]]] as P[][]).map((pts, i) => <Vein key={i} pts={pts} w={1.7} color="#b3202f" opacity={0.85} />)}
       <Vein pts={[[-18, -46], [-44, -40], [-64, -18], [-66, 6], [-52, 28]]} w={2.6} color="#b3202f" opacity={0.9} />
-      <Vein pts={[[-62, -12], [-50, 0], [-48, 14]]} w={1.5} color="#b3202f" opacity={0.8} />
+      {GLINT && <Vein pts={[[-62, -12], [-50, 0], [-48, 14]]} w={1.5} color="#b3202f" opacity={0.8} />}
     </Part>
   ),
 };
@@ -389,9 +407,9 @@ const bone: Blueprint = {
       <path d="M-50 100 H50 V76 Q24 88 8 80 Q0 74 -8 80 Q-24 88 -50 76 Z" fill="#d8ecf2" opacity={0.85} />
       <Tick d="M-23 -52 Q0 -46 23 -52" color="#cdbb93" k={0.6} />
       <Tick d="M-23 52 Q0 46 23 52" color="#cdbb93" k={0.6} />
-      {[-34, -20, 34, 20].map((x, i) => [(i < 2 ? -1 : 1)].map((s) => <circle key={`${x}${s}`} cx={x} cy={(i % 2 ? 66 : 72) * (i < 2 ? -1 : 1)} r={1.3} fill="#cdbb93" opacity={0.8} />))}
-      <Mark pts={[[9, 24], [10, 34], [8, 44]]} w={1.3} color="#cdbb93" opacity={0.8} />
-      <ellipse cx={-9} cy={36} rx={1.4} ry={2.2} fill="#b7a274" opacity={0.75} />
+      {GLINT && [-34, -20, 34, 20].map((x, i) => [(i < 2 ? -1 : 1)].map((s) => <circle key={`${x}${s}`} cx={x} cy={(i % 2 ? 66 : 72) * (i < 2 ? -1 : 1)} r={1.3} fill="#cdbb93" opacity={0.8} />))}
+      {GLINT && <Mark pts={[[9, 24], [10, 34], [8, 44]]} w={1.3} color="#cdbb93" opacity={0.8} />}
+      {GLINT && <ellipse cx={-9} cy={36} rx={1.4} ry={2.2} fill="#b7a274" opacity={0.75} />}
     </Part>
   ),
 };
@@ -405,7 +423,7 @@ const pill: Blueprint = {
   face: {x: 0, y: 28, size: 0.86, skin: '#fffdf6', eye: '#128f81'},
   arms: {l: [-40, 6], r: [40, 6], color: '#eef1f6'},
   legs: {y: 70, gap: 15, len: 18, color: '#eef1f6', shoe: '#128f81'},
-  ground: {y: 96, w: 40},
+  ground: {y: LEGS ? 96 : 82, w: 40},
   body: ({color}) => (
     <>
       <Merge>
@@ -413,13 +431,13 @@ const pill: Blueprint = {
         <Part d={PILL_TOP} fill={color} mat="hard" shine={[-18, -58, 1.1]}>
           <g transform="translate(14 -42)" opacity={0.9}>
             <path d="M-2.4 -8 h4.8 v5.6 h5.6 v4.8 h-5.6 v5.6 h-4.8 v-5.6 h-5.6 v-4.8 h5.6 Z" fill={shade(color, 0.26)} />
-            <path d="M-2.4 -8 h4.8 v5.6 h5.6 v4.8 h-5.6 v5.6 h-4.8 v-5.6 h-5.6 v-4.8 h5.6 Z" fill={lift(color, 0.4)} transform="translate(-0.9 -1)" opacity={0.75} />
+            {GLINT && <path d="M-2.4 -8 h4.8 v5.6 h5.6 v4.8 h-5.6 v5.6 h-4.8 v-5.6 h-5.6 v-4.8 h5.6 Z" fill={lift(color, 0.4)} transform="translate(-0.9 -1)" opacity={0.75} />}
           </g>
         </Part>
       </Merge>
       <path d="M-40 -6 H40 V0 H-40 Z" fill="#9aa3c2" opacity={0.3} />
       <Tick d="M-40 -6 H40" color={lineOf(color)} k={0.8} />
-      <path d="M-36 -9.4 H36" stroke={lift(color, 0.7)} strokeWidth={1.5} strokeLinecap="round" opacity={0.8} />
+      {GLINT && <path d="M-36 -9.4 H36" stroke={lift(color, 0.7)} strokeWidth={1.5} strokeLinecap="round" opacity={0.8} />}
     </>
   ),
 };
@@ -463,8 +481,8 @@ const redcell: Blueprint = {
   body: ({color}) => (
     <Part d={RED} fill={color} shine={[-56, -38, 1.1]}>
       <Part d={ellipsePath(0, 3, 54, 33)} fill={shade(color, 0.12)} line={null} depth={-7} shadow={0.2} />
-      <path d="M-46 22 Q0 44 46 22" fill="none" stroke={lift(color, 0.45)} strokeWidth={2.4} strokeLinecap="round" opacity={0.55} />
-      <path d="M-70 -18 Q-52 -46 -14 -53" fill="none" stroke="#ffffff" strokeWidth={2.2} strokeLinecap="round" opacity={0.4} />
+      {GLINT && <path d="M-46 22 Q0 44 46 22" fill="none" stroke={lift(color, 0.45)} strokeWidth={2.4} strokeLinecap="round" opacity={0.55} />}
+      {GLINT && <path d="M-70 -18 Q-52 -46 -14 -53" fill="none" stroke="#ffffff" strokeWidth={2.2} strokeLinecap="round" opacity={0.4} />}
     </Part>
   ),
 };
@@ -477,7 +495,7 @@ const whitecell: Blueprint = {
   face: {x: 0, y: -2, size: 1.08, eye: '#6a55c9'},
   arms: {l: [-78, 18], r: [78, 18], len: 36},
   legs: {y: 64, gap: 24, len: 20, color: '#dfe4f7', shoe: '#17907f'},
-  ground: {y: 94, w: 60},
+  ground: {y: LEGS ? 94 : 78, w: 60},
   body: ({color}) => {
     const nuc = '#a48fe8';
     return (
@@ -487,20 +505,20 @@ const whitecell: Blueprint = {
           <path d={blob(19, 14, 'n1', 9, 0.08, 42, 46)} fill={nuc} />
           <path d={blob(14, 11.5, 'n2', 9, 0.08, 60, 24)} fill={nuc} />
           <path d={blob(12.5, 10.5, 'n3', 9, 0.08, 22, 60)} fill={nuc} />
-          <path d={blob(9, 5, 'n4', 8, 0.1, 37, 41, -0.4)} fill="#d9d0fb" opacity={0.8} />
-          <path d={blob(6, 3.5, 'n5', 8, 0.1, 57, 20, -0.4)} fill="#d9d0fb" opacity={0.8} />
+          {GLINT && <path d={blob(9, 5, 'n4', 8, 0.1, 37, 41, -0.4)} fill="#d9d0fb" opacity={0.8} />}
+          {GLINT && <path d={blob(6, 3.5, 'n5', 8, 0.1, 57, 20, -0.4)} fill="#d9d0fb" opacity={0.8} />}
         </g>
         {[[-56, 30, 3.2], [-44, 48, 2.6], [-62, 8, 2.4], [-24, 60, 2.8], [-66, -14, 2], [-34, 34, 1.8], [64, -8, 2.2], [4, 66, 2]].map(([x, y, r], i) => (
           <g key={i}>
             <circle cx={x} cy={y} r={r} fill="#c3b8f4" />
-            <circle cx={x - r * 0.3} cy={y - r * 0.3} r={r * 0.35} fill="#ffffff" opacity={0.8} />
+            {GLINT && <circle cx={x - r * 0.3} cy={y - r * 0.3} r={r * 0.35} fill="#ffffff" opacity={0.8} />}
           </g>
         ))}
-        <Cast d={roundRect(-47, -57, 94, 14, 6)} on={WHITE} color={color} dx={1} dy={5} k={0.3} />
+        {DRESS && <Cast d={roundRect(-47, -57, 94, 14, 6)} on={WHITE} color={color} dx={1} dy={5} k={0.3} />}
       </Part>
     );
   },
-  front: () => (
+  front: () => !DRESS ? null : (
     <>
       <Part d={CAP_DOME} fill="#1fb5a3" mat="cloth" shine={[-18, -76, 0.9]}>
         <Tick d="M-22 -84 Q-24 -66 -22 -52 M22 -84 Q24 -66 22 -52" color="#148a7c" k={0.5} opacity={0.7} />
@@ -523,19 +541,19 @@ const platelet: Blueprint = {
   face: {x: 0, y: 6, size: 0.86, eye: '#7a4416'},
   arms: {l: [-50, 14], r: [50, 14], len: 26},
   legs: {y: 38, gap: 15, len: 16, shoe: '#b96a1c'},
-  ground: {y: 64, w: 42},
+  ground: {y: LEGS ? 64 : 52, w: 42},
   body: ({color}) => (
     <Part d={PLATE} fill={color} mat="cell" depth={5}>
       {[[-34, 20, 3.4], [30, 22, 3.6], [-4, 36, 3], [40, 4, 2.4], [-40, -6, 2.4], [14, 30, 2]].map(([x, y, r], i) => (
         <g key={i}>
           <circle cx={x} cy={y} r={r} fill={shade(color, 0.26)} />
-          <circle cx={x - r * 0.3} cy={y - r * 0.3} r={r * 0.34} fill="#ffe7b8" opacity={0.9} />
+          {GLINT && <circle cx={x - r * 0.3} cy={y - r * 0.3} r={r * 0.34} fill="#ffe7b8" opacity={0.9} />}
         </g>
       ))}
-      <Cast d={roundRect(-37, -31, 74, 10, 4)} on={PLATE} color={color} dx={1} dy={4.5} k={0.3} />
+      {DRESS && <Cast d={roundRect(-37, -31, 74, 10, 4)} on={PLATE} color={color} dx={1} dy={4.5} k={0.3} />}
     </Part>
   ),
-  front: () => (
+  front: () => !DRESS ? null : (
     <>
       <Part d={HELMET} fill="#fffdf6" mat="hard" shadow={0.13} shine={[-14, -50, 0.7]} depth={4} />
       <Part d={roundRect(-35, -31, 70, 7.5, 3.6)} fill="#e3e8f3" mat="hard" depth={2} />
@@ -564,7 +582,7 @@ const virus: Blueprint = {
           <g key={i}>
             <Tube d={`M${(cx * 54).toFixed(1)} ${(sy * 54).toFixed(1)} L${(cx * 75).toFixed(1)} ${(sy * 75).toFixed(1)}`} r={3} fill={shade(color, 0.12)} cap="butt" />
             <Part d={circlePath(cx * 81, sy * 81, 7.6)} fill="#ff5c9d" depth={2.6}>
-              <circle cx={cx * 81 - 2.4} cy={sy * 81 - 2.6} r={2} fill="#ffffff" opacity={0.7} />
+              {GLINT && <circle cx={cx * 81 - 2.4} cy={sy * 81 - 2.6} r={2} fill="#ffffff" opacity={0.7} />}
             </Part>
           </g>
         );
@@ -578,11 +596,11 @@ const virus: Blueprint = {
   body: ({color}) => (
     <Part d={VIRUS} fill={color} mat="cell" shine={[-34, -38, 1.1]}>
       <path d="M12 44 C22 34 34 46 42 36 C50 26 36 18 44 8 M4 52 C16 58 26 50 34 56" fill="none" stroke="#5a2bb0" strokeWidth={3.4} strokeLinecap="round" opacity={0.42} />
-      <path d="M12 44 C22 34 34 46 42 36 C50 26 36 18 44 8" fill="none" stroke="#c9a6ff" strokeWidth={0.9} strokeLinecap="round" opacity={0.6} transform="translate(-1 -1.2)" />
+      {GLINT && <path d="M12 44 C22 34 34 46 42 36 C50 26 36 18 44 8" fill="none" stroke="#c9a6ff" strokeWidth={0.9} strokeLinecap="round" opacity={0.6} transform="translate(-1 -1.2)" />}
       {[[-40, 30, 5], [-48, -4, 3.6], [-22, 48, 3.2], [40, -34, 4.4], [50, -12, 2.6]].map(([x, y, r], i) => (
         <g key={i}>
           <path d={blob(r, r * 0.85, `cr${i}`, 8, 0.1, x, y)} fill={shade(color, 0.26)} />
-          <path d={blob(r * 0.5, r * 0.36, `ch${i}`, 8, 0.1, x - r * 0.2, y - r * 0.3)} fill={lift(color, 0.5)} opacity={0.6} />
+          {GLINT && <path d={blob(r * 0.5, r * 0.36, `ch${i}`, 8, 0.1, x - r * 0.2, y - r * 0.3)} fill={lift(color, 0.5)} opacity={0.6} />}
         </g>
       ))}
     </Part>
@@ -620,7 +638,7 @@ const bacteria: Blueprint = {
       {[[-22, 32, 2.6], [8, 34, 2], [58, -24, 2.6], [-58, -4, 2.2], [40, 36, 1.8], [-34, -32, 1.8]].map(([x, y, r], i) => (
         <g key={i}>
           <circle cx={x} cy={y} r={r} fill={shade(color, 0.28)} />
-          <circle cx={x - r * 0.3} cy={y - r * 0.3} r={r * 0.36} fill="#eaffd6" opacity={0.85} />
+          {GLINT && <circle cx={x - r * 0.3} cy={y - r * 0.3} r={r * 0.36} fill="#eaffd6" opacity={0.85} />}
         </g>
       ))}
     </Part>
@@ -631,7 +649,7 @@ const bacteria: Blueprint = {
 const egg: Blueprint = {
   name: 'egg', family: 'cell', role: 'The egg cell: waits patiently once a month. Calm, a little picky.',
   color: '#ffd8c6', accents: [{label: 'outer layer', color: '#fff1e6'}, {label: 'helper cells', color: '#ffe3a1'}, {label: 'bow', color: '#ff7bac'}],
-  face: {x: 0, y: -2, size: 1.08, eye: '#8a4a34', lashes: true},
+  face: {x: 0, y: -2, size: 1.08, eye: '#8a4a34', lashes: DRESS},
   arms: {l: [-64, 20], r: [64, 20]},
   legs: null,
   ground: {y: 98, w: 56},
@@ -660,7 +678,7 @@ const egg: Blueprint = {
       </Part>
     </>
   ),
-  front: () => (
+  front: () => !DRESS ? null : (
     <>
       <Part d="M-3 -67 C-10 -78 -20 -84 -25 -80 C-28 -72 -27 -60 -23 -55 C-16 -56 -8 -61 -3 -67 Z" fill="#ff7bac" mat="cloth" depth={2}>
         <Mark pts={[[-6, -67], [-14, -70], [-22, -72]]} w={1.3} color="#d94f86" opacity={0.8} />

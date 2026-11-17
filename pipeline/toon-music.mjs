@@ -12,7 +12,7 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
-import {args, ROOT} from './lib/util.mjs';
+import {args, isMain, ROOT} from './lib/util.mjs';
 import {approved, balance, costOf, needApproval, post, printPool, settledSpend} from './lib/eleven.mjs';
 import {bedFx, MUSIC_DIR} from './lib/toon-audio.mjs';
 
@@ -59,4 +59,4 @@ const main = async () => {
   console.log(`Done. Beds in assets/toons-music/. Spent ${spent} credits (${byHeader ? 'as billed on each response' : 'from the balance'}).`);
 };
 
-if (import.meta.url === `file://${process.argv[1]}`) main().catch((e) => { console.error(e.message); process.exit(1); });
+if (isMain(import.meta.url)) main().catch((e) => { console.error(e.message); process.exit(1); });

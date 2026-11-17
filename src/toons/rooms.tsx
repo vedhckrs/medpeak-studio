@@ -641,8 +641,8 @@ export const Room: React.FC<{look: RoomLook; role: RoomRole; t: number; tidy?: n
           {/* light through the window, dust in it */}
           {time !== 'night' && (
             <g opacity={time === 'evening' ? 0.9 : 0.7}>
-              <path d={`M${win.cx - 120} ${win.cy} L${win.cx - 420} 1420 H${win.cx - 40} L${win.cx + 120} ${win.cy} Z`} fill={time === 'evening' ? '#ffb37a' : '#fff6dc'} opacity={0.12 + 0.02 * Math.sin(t * 0.9)} />
-              {Array.from({length: 18}).map((_, i) => { const fy = wrap(random(`rd${i}`) + t * 0.012 * (0.6 + random(`rds${i}`)), 1); return <circle key={i} cx={win.cx - 380 + random(`rdx${i}`) * 520 + Math.sin(t * 0.8 + i) * 12} cy={520 + fy * 860} r={1.8 + random(`rdr${i}`) * 2.2} fill="#fffbe6" opacity={0.75 * Math.min(1, Math.min(fy, 1 - fy) / 0.1)} />; })}
+              {STYLE.glow > 0 && <path d={`M${win.cx - 120} ${win.cy} L${win.cx - 420} 1420 H${win.cx - 40} L${win.cx + 120} ${win.cy} Z`} fill={time === 'evening' ? '#ffb37a' : '#fff6dc'} opacity={(0.12 + 0.02 * Math.sin(t * 0.9)) * STYLE.glow} />}
+              {STYLE.specks > 0 && Array.from({length: 18}).map((_, i) => { const fy = wrap(random(`rd${i}`) + t * 0.012 * (0.6 + random(`rds${i}`)), 1); return <circle key={i} cx={win.cx - 380 + random(`rdx${i}`) * 520 + Math.sin(t * 0.8 + i) * 12} cy={520 + fy * 860} r={1.8 + random(`rdr${i}`) * 2.2} fill="#fffbe6" opacity={0.75 * Math.min(1, Math.min(fy, 1 - fy) / 0.1)} />; })}
             </g>
           )}
         </Canvas>
