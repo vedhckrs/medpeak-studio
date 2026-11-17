@@ -591,3 +591,19 @@ test('the tooth arena: nothing covers a face in any state, and a story shape kee
   const res = checkToon(many, null, known).results.find((r) => r.point === 'Few stickers');
   assert.ok(res && !res.pass, 'a script with too many stickers is refused');
 });
+
+test('the word check: the same words pass, a wrong, missing or added word is a fault, a cry or a near miss is a note', async () => {
+  const {diffWords, normWords} = await import('../lib/toon-words.mjs');
+  assert.deepEqual(normWords("Two minutes, then spit, don’t rinse. 15% of 3-4 hours? Nooo!"), ['two', 'minutes', 'then', 'spit', "don't", 'rinse', 'fifteen', 'percent', 'of', 'three', 'four', 'hours', 'noo']);
+  const same = diffWords('It can take fifteen minutes or more to notice you\'re full.', 'It can take 15 minutes or more to notice youre full');
+  assert.deepEqual([same.faults, same.notes], [[], []], 'numbers and apostrophes are not differences');
+  const wrong = diffWords('Skip brushing at night, your teeth pay.', 'Skip brushing tonight your teeth play');
+  assert.ok(wrong.faults.length >= 2, 'a changed word and a dropped word are faults');
+  assert.equal(diffWords('Brush for two minutes.', 'Brush for minutes').faults.length, 1, 'a missing word is a fault');
+  assert.equal(diffWords('Brush for two minutes.', 'Brush for two long minutes').faults.length, 1, 'an added word is a fault');
+  const cry = diffWords('Ow! Why does this tooth ache?', 'Oh why does this tooth ache');
+  assert.deepEqual([cry.faults.length, cry.notes.length], [0, 1], 'a cry heard differently is a note');
+  const near = diffWords('The germs feast.', 'The germ feasts');
+  assert.deepEqual([near.faults.length, near.notes.length], [0, 2], 'a plural heard differently is a note');
+  assert.ok(diffWords('Your teeth pay.', 'Your teeth play').faults.length === 1, 'one letter apart in a short word is a different word');
+});

@@ -74,6 +74,85 @@ if (a.library) {
 const slug = a._[0];
 if (!slug) { console.error('Give a slug, or --library.'); process.exit(2); }
 
+// ---------------------------------------------------------------- the words (speech-to-text, on this Mac)
+if (a.words) {
+  const {WORDS, wordsPython, wordsModelDir, diffWords, normWords} = await import('./lib/toon-words.mjs');
+  const py = wordsPython();
+  const model = wordsModelDir();
+  if (!fs.existsSync(py) || !fs.existsSync(path.join(model, 'model.safetensors'))) {
+    console.error(`The word listener is not installed. Install: uv tool install --python 3.12 "parakeet-mlx==0.7.0"; model ${WORDS.model} at ${WORDS.revision} (2.5 GB), fetched once with HF_HUB_DISABLE_XET=1.`);
+    process.exit(2);
+  }
+  const tim = readJson(path.join(videoDir(slug), 'toon-timings.json'), null);
+  if (!tim) { console.error('No voices yet for this script (toon-timings.json is missing).'); process.exit(2); }
+  const dir = path.join(PUBLIC, 'toons', slug, 'voice');
+  const lines = Object.entries(tim.lines).map(([id, t]) => ({id, who: t.who, text: t.text, words: t.words, file: path.join(dir, `${id}.mp3`)})).filter((x) => fs.existsSync(x.file));
+  const listen = (items) => {
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'toon-words-'));
+    const jobFile = path.join(tmp, 'job.json');
+    const out = path.join(tmp, 'out.json');
+    writeJson(jobFile, {model, items: items.map(({id, file}) => ({id, file})), out});
+    execFileSync(py, [path.join(ROOT, 'pipeline', 'lib', 'toon_words.py'), jobFile], {stdio: ['ignore', 'inherit', 'inherit'], env: {...process.env, HF_HUB_OFFLINE: '1'}});
+    return Object.fromEntries(readJson(out).items.map((it) => [it.id, it]));
+  };
+
+  if (a.selftest) {
+    // A checker that passes everything measures nothing: break clips on purpose and see that each is caught.
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'toon-words-test-'));
+    const cases = [];
+    const long = lines.filter((l) => normWords(l.text).length >= 6 && (l.words ?? []).length >= 6).slice(0, 6);
+    long.forEach((l, n) => {
+      // 1. a word cut out of the middle of the line
+      const k = Math.floor(l.words.length / 2);
+      const w = l.words[k];
+      const cut = path.join(tmp, `${l.id}-cut.mp3`);
+      execFileSync('ffmpeg', ['-v', 'error', '-y', '-i', l.file, '-filter_complex', `[0:a]atrim=0:${Math.max(0, w.start - 0.02).toFixed(3)},asetpts=N/SR/TB[a];[0:a]atrim=${(w.end + 0.02).toFixed(3)},asetpts=N/SR/TB[b];[a][b]concat=n=2:v=0:a=1[o]`, '-map', '[o]', cut]);
+      cases.push({id: `${l.id}-cut`, file: cut, text: l.text, what: `"${w.w}" cut out of ${l.id}`});
+      // 2. another line's sound under this line's words
+      const other = long[(n + 1) % long.length];
+      if (other !== l) cases.push({id: `${l.id}-swap`, file: other.file, text: l.text, what: `${other.id}'s sound checked against ${l.id}'s words`});
+    });
+    console.log(`Self-test: ${cases.length} clips broken on purpose (the model takes a few seconds to load)...`);
+    const heard = listen(cases);
+    let caught = 0;
+    for (const c of cases) {
+      const d = diffWords(c.text, heard[c.id]?.text ?? '');
+      const ok = d.faults.length > 0;
+      if (ok) caught++;
+      console.log(`  ${ok ? 'caught' : 'MISSED'}  ${c.what.padEnd(46)} heard: "${heard[c.id]?.text ?? heard[c.id]?.error}"`);
+    }
+    console.log(caught === cases.length ? `\nEvery broken clip was caught (${caught} of ${cases.length}).` : `\n${cases.length - caught} broken clip(s) were NOT caught: the word check cannot be trusted yet.`);
+    process.exit(caught === cases.length ? 0 : 1);
+  }
+
+  console.log(`Writing down ${lines.length} voiced lines of "${slug}" with ${WORDS.tool} (${WORDS.model}); the model takes a few seconds to load...`);
+  const heard = listen(lines);
+  const rows = [];
+  const faults = [];
+  const notes = [];
+  let total = 0;
+  let wrong = 0;
+  console.log(`\nWORDS  what each line of "${slug}" says, against the script`);
+  for (const l of lines) {
+    const h = heard[l.id];
+    if (!h || h.error) { console.log(`  ?     ${l.id.padEnd(4)} ${h?.error ?? 'no result'}`); faults.push(`${l.id}: could not be read`); continue; }
+    const d = diffWords(l.text, h.text);
+    const unsure = (h.words ?? []).filter((w) => w.conf < WORDS.unsure).map((w) => `${w.w} (${Math.round(w.conf * 100)}%)`);
+    total += d.script.length;
+    wrong += d.missing.length + d.extra.length + d.changed.length;
+    rows.push({id: l.id, who: l.who, script: l.text, heard: h.text, faults: d.faults, notes: d.notes, unsure, words: h.words});
+    for (const f of d.faults) faults.push(`${l.id} (${l.who}): ${f}`);
+    for (const n of d.notes) notes.push(`${l.id} (${l.who}): ${n}`);
+    if (unsure.length) notes.push(`${l.id} (${l.who}): the listener was unsure of ${unsure.join(', ')}`);
+    console.log(`  ${d.faults.length ? 'CHECK' : d.notes.length || unsure.length ? 'note ' : 'ok   '} ${l.id.padEnd(4)} ${l.who.padEnd(9)} heard: "${h.text}"`);
+  }
+  writeJson(path.join(videoDir(slug), 'renders', 'listen', 'words.json'), {listener: WORDS, lines: rows, total, wrong});
+  console.log(`\n  ${total} script words, ${wrong} heard differently (${total ? ((wrong / total) * 100).toFixed(1) : '0'}%)`);
+  if (notes.length) console.log(`\n${notes.length} note(s) to look at by ear:\n  ${notes.join('\n  ')}`);
+  console.log(faults.length ? `\n${faults.length} word(s) differ from the script:\n  ${faults.join('\n  ')}` : '\nEvery line says its script, word for word.');
+  process.exit(faults.length ? 1 : 0);
+}
+
 /**
  * What makes a voiced line worth a second take (ours, a guide). `speech`: earshot's AudioSet reading must call it speech with at
  * least this probability. `synth`: its "speech synthesizer" reading above this is a robotic-sounding take. Both limits come from a
