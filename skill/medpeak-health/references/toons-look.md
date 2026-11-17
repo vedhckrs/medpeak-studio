@@ -47,6 +47,8 @@ The reference holds still in 63% of its frames, but the body never looks dead. S
 - **Characters act with purpose:** the virus rides INSIDE the nerve, leaning along it and rocking only
   while it moves (the nerve swells green around it and keeps a green trail), gets dizzy stars after hitting the wall; the defenders march in steps, lock into a wall
   and lean; eyes blink.
+- **Flow never stops:** blood in a vessel streams all the time (a thin dashed line moving along it), a
+  little faster on each beat. A flow that stops between beats reads as a bug (owner, 2026-11-18).
 - **Impacts move the world:** the nip shakes the skin and fat; drops land with a ring.
 - **People talk calmly:** arms and head beat less on stressed words (`talkBeat: 0.3`); caption words
   swap rather than grow in (`captionPop: false`).

@@ -149,7 +149,8 @@ export const ArmStage: React.FC<Props> = ({t, state = {}, faces = {}, label}) =>
   // swell once every 1.6 s, a muscle tightening every 6 s, a nerve signal every 5 s.
   const ph = (t / 2) % 1;
   const beat = ph < 0.22 ? Math.sin((ph / 0.22) * Math.PI) : 0;
-  const flow = (Math.floor(t / 2) + Math.min(1, ph / 0.22)) * 80; // the blood steps forward with each beat
+  // the blood flows all the time (owner, 2026-11-18: "this line not moving, continue inside line"), a little faster on each beat
+  const flow = t * 70 + (Math.floor(t / 2) + Math.min(1, ph / 0.22)) * 30;
   const flex = (i: number) => { const q = ((t + i * 1.9) / 6) % 1; return q < 0.25 ? Math.sin((q / 0.25) * Math.PI) : 0; };
   const sig = (t / 5) % 1;
   return (
