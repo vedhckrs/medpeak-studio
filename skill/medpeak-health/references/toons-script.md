@@ -118,12 +118,19 @@ the stage, and the viewer WATCHES the thing happen. A script switches to this st
   | Set | Who the stage draws | Dials (0 to 1) | Board |
   |---|---|---|---|
   | `foodpipe` | foodpipe, pill | drop, stick, melt, sore, pain, water, slide | toons-boards/stage.jpg |
-  | `tooth` | tooth, bacteria | sugar, feast, acid, hole, pain, saliva, mend, brush, shield | toons-boards/stage-tooth.jpg |
-  | `tummy` | stomach, foodpipe | food, full, tilt, valve, leak, burn | toons-boards/stage-tummy.jpg |
+  | `tooth` | tooth, bacteria | sugar, feast, acid, hole, pain, saliva, mend, brush, shield, night | toons-boards/stage-tooth.jpg, stage-tooth-night.jpg |
+  | `tummy` | stomach, foodpipe | food, full, tilt, valve, leak, burn, air, gum, pass, squeeze, burp | toons-boards/stage-tummy.jpg, stage-tummy-day1.jpg |
 
   What each dial does is written next to `STAGE_KEYS` in `src/toons/director.ts`. The stomach
   stage tips the whole organ over with `tilt` and keeps the juice level with the ground, so lying
   down is seen, not said; a small posture sign in the corner tips with it.
+- **The stomach's newer dials (2026-11-17).** `gum`: a swallowed piece of gum comes down beside the
+  wall and floats by the hands; it rests at 0 or 1. `pass`: what floats in the stomach moves on
+  through the exit at the lower left. `squeeze`: an empty stomach's hunger squeeze travels to the
+  exit, with sound rings outside the wall. `burp`: three bubbles of air go up the food pipe (open
+  `valve` first; put tags at the top RIGHT, x about 800, because the bubbles rise on the left). The
+  tooth's `night` darkens the mouth and shows a moon. `food` may rest at any value: a piece is
+  there or not, and only falls while the dial is moving.
 - **State and events.** `state` on a shot is where the stage's dials start. `events` move them:
   `{"at": "A5", "word": "melt", "set": {"melt": 0.62}, "over": 40, "sfx": "sizzle-acid"}` means
   "when A5 says *melt*, melt the pill to 62% over 40 frames, with a sizzle". `at` is a line id or

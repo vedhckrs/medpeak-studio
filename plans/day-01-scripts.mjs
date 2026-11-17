@@ -375,7 +375,7 @@ const burp = {
         {id: 'A3', who: 'stomach', text: "Rewind! He's gulping a fizzy drink.", emotion: 'neutral', pose: 'explain', key: 'fizzy', src: ['niddk-gas']},
         {id: 'A4', who: 'foodpipe', text: 'And with every gulp, air comes down too!', emotion: 'scared', pose: 'panic', key: 'air', src: ['medline-belching']},
         {id: 'A5', who: 'stomach', text: "It's piling up at my top. I'm stretching!", emotion: 'scared', pose: 'panic', key: 'stretching', react: {foodpipe: 'scared'}, src: ['medline-belching']},
-        {id: 'A6', who: 'foodpipe', text: 'That stretch tells my muscle ring: open up!', emotion: 'shocked', pose: 'point', key: 'open', react: {stomach: 'happy'}, src: ['medline-belching']},
+        {id: 'A6', who: 'foodpipe', text: 'The stretch opens my muscle ring. Out it goes!', emotion: 'shocked', pose: 'point', key: 'opens', react: {stomach: 'happy'}, src: ['medline-belching']},
       ]},
     {id: 'T1', set: 'tummy', card: 'One fizzy drink later...', seconds: 1.4, cast: [], lines: []},
     {id: 'C', set: 'home', cast: [{who: 'kid', x: 540, size: 1040, emotion: 'happy', pose: 'belly'}],
@@ -571,15 +571,15 @@ shot(burp, 'A').props = [
   obj('soda', 'A3', {word: 'fizzy', to: 'A4'}),
   TR('swallowed air', 'A4', {rot: -4, word: 'air'}),
   TR('piling up', 'A5', {rot: 4}),
-  TR('the stretch', 'A6', {rot: -4}),
+  TR('the door opens', 'A6', {rot: -4, word: 'opens', to: undefined}),
 ];
 shot(burp, 'A').events = [
   {at: 'A3', set: {food: 0, full: 0.25, air: 0}, over: 8, fx: 'flash'},
   {at: 'A3', word: 'fizzy', set: {full: 0.6, food: 0.46}, over: 30, sfx: 'splash-small'},
   {at: 'A4', word: 'air', set: {air: 1}, over: 30},
   {at: 'A5', word: 'stretching!', set: {full: 0.66}, over: 20},
-  {at: 'A6', word: 'open', set: {valve: 1}, over: 10},
-  {at: 'A6', word: 'open', delay: 0.3, set: {burp: 1, air: 0.15}, over: 40, sfx: 'burp-small'},
+  {at: 'A6', word: 'opens', set: {valve: 1}, over: 10},
+  {at: 'A6', word: 'opens', delay: 0.3, set: {burp: 1, air: 0.15}, over: 40, sfx: 'burp-small'},
 ];
 shot(burp, 'C').props = [{kind: 'soda', x: 820, y: 430, size: 230, from: 'C1', halo: true}, tag('excuse me!', 'C1', {x: 270, y: 430, size: 300, rot: -5, word: 'Excuse', to: undefined})];
 shot(burp, 'D').props = [

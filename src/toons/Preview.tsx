@@ -208,7 +208,7 @@ const STAGE_BOARDS: Record<string, {title: string; C: React.FC<SetProps>; cells:
 STAGE_BOARDS.day1 = {title: 'new moments (gum, growl, burp)', C: TummyStage, cells: [
   {label: '1 the gum lands', state: {gum: 0.55, food: 0.3, full: 0.3}, faces: {stomach: sf('shocked', 0.6, POSES.panic.body), foodpipe: sf('scared', 0.4, POSES.panic.body)}},
   {label: '2 it floats, whole', state: {gum: 1, food: 0.3, full: 0.3}, faces: {stomach: sf('sick', 0.4, POSES.belly.body), foodpipe: sf('neutral', 0, POSES.rest.body)}},
-  {label: '3 it moves on', state: {gum: 1, food: 0.3, full: 0.25, pass: 0.62}, faces: {stomach: sf('happy', 0.5, POSES.thumb.body), foodpipe: sf('happy', 0.2, POSES.rest.body)}},
+  {label: '3 it moves on', state: {gum: 1, food: 0.3, full: 0.25, pass: 0.36}, faces: {stomach: sf('happy', 0.5, POSES.thumb.body), foodpipe: sf('happy', 0.2, POSES.rest.body)}},
   {label: '4 empty: a squeeze', state: {food: 0.2, full: 0.1, squeeze: 1}, faces: {stomach: sf('scared', 0.5, POSES.panic.body), foodpipe: sf('shocked', 0.4, POSES.panic.body)}},
   {label: '5 air gathers', state: {food: 0.6, full: 0.55, air: 1}, faces: {stomach: sf('sick', 0.4, POSES.belly.body), foodpipe: sf('scared', 0.5, POSES.panic.body)}},
   {label: '6 the burp', state: {food: 0.6, full: 0.55, air: 0.3, valve: 1, burp: 0.5}, faces: {stomach: sf('happy', 0.6, POSES.cheer.body), foodpipe: sf('shocked', 0.9, POSES.panic.body)}},

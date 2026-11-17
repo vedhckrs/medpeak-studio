@@ -186,7 +186,7 @@
     },
     {
      "at": "A6",
-     "word": "open",
+     "word": "opens",
      "set": {
       "valve": 1
      },
@@ -194,7 +194,7 @@
     },
     {
      "at": "A6",
-     "word": "open",
+     "word": "opens",
      "delay": 0.3,
      "set": {
       "burp": 1,
@@ -279,13 +279,13 @@
     },
     {
      "kind": "tag",
-     "text": "the stretch",
+     "text": "the door opens",
      "x": 800,
      "y": 330,
      "size": 300,
      "rot": -4,
      "from": "A6",
-     "to": "A6"
+     "word": "opens"
     }
    ],
    "lines": [
@@ -350,10 +350,10 @@
     {
      "id": "A6",
      "who": "foodpipe",
-     "text": "That stretch tells my muscle ring: open up!",
+     "text": "The stretch opens my muscle ring. Out it goes!",
      "emotion": "shocked",
      "pose": "point",
-     "key": "open",
+     "key": "opens",
      "react": {
       "stomach": "happy"
      },

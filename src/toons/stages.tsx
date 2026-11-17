@@ -736,16 +736,29 @@ export const tummyLayout = (state: Record<string, number> = {}, t = 0) => {
     const pts: P[] = [rest, ...(rest[0] > keep[0] && rest[1] < dip ? [[meAt[0], dip] as P] : []), ...exit];
     return onPath(pts, io(u));
   };
+  // How many pieces there are depends on where the food dial RESTS (`food:to` from the director, or its
+  // value when nothing is changing): a piece is there or it is not. While the dial moves, the new pieces
+  // fall in one after another and land when the change ends; a piece never hangs in mid-fall.
+  const fFrom = clamp01(state['food:from'] ?? state.food ?? 0);
+  const fTo = clamp01(state['food:to'] ?? state.food ?? 0);
+  const has = (v: number, i: number) => v >= i * 0.16 + 0.15;
+  const prog = Math.abs(fTo - fFrom) < 1e-6 ? 1 : clamp01((food - fFrom) / (fTo - fFrom));
+  const nFresh = BITS.filter((_, i) => has(fTo, i) && !has(fFrom, i)).length;
+  let fresh = 0;
   const bits = BITS.map((b, i) => {
-    const on = clamp01((food - i * 0.16) / 0.3);
+    const [was, will] = [has(fFrom, i), has(fTo, i)];
     const x = slotX(i);
-    if (on <= 0 || x === null) return null;
-    const rest: P = [x, wave(x) + b.r * 0.2 + Math.sin(t * 2 + i) * 5];
+    if ((!was && !will) || x === null) return null;
+    const on = !was && will ? clamp01(prog * (1 + 0.5 * (nFresh - 1)) - fresh++ * 0.5) : 1;
+    const size = was && !will ? 1 - prog : 1; // the food is going (a rewind): it shrinks away where it floats
+    if (on <= 0 || size <= 0.03) return null;
+    const r = b.r * size;
+    const rest: P = [x, wave(x) + r * 0.2 + Math.sin(t * 2 + i) * 5];
     const from: P = [cardia[0], cardia[1] - 140];
     const [x1, y1] = on >= 1 ? leave(rest, clamp01(pass * 1.7 - i * 0.14)) : [lerp(from[0], rest[0], on), lerp(from[1], rest[1], on * on)];
     // on its way down a piece may cross the face's room (the stomach lying on its side): it is not drawn there
-    const hid = Math.abs(x1 - meAt[0]) < FACE_ROOM.side + b.r && y1 > meAt[1] - FACE_ROOM.up - b.r && y1 < meAt[1] + FACE_ROOM.down + b.r * 0.74;
-    return hid || x1 < -b.r - 20 ? null : {...b, i, on, x: x1, y: y1, settled: on >= 1};
+    const hid = Math.abs(x1 - meAt[0]) < FACE_ROOM.side + r && y1 > meAt[1] - FACE_ROOM.up - r && y1 < meAt[1] + FACE_ROOM.down + r * 0.74;
+    return hid || x1 < -r - 20 ? null : {...b, r, i, on, x: x1, y: y1, settled: on >= 1};
   }).filter((b): b is NonNullable<typeof b> => !!b);
   // swallowed gum: it comes down along the wall, floats with the food, and leaves through the exit like everything else
   const gumAt = (() => {

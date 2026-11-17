@@ -29,19 +29,19 @@ Toon script `when-you-burp` · about 49 seconds · 5 pictures
 | PASS | Script is valid | 4 scenes, 15 lines, 4 voices |
 | PASS | 1 No intro | hook: "When you burp, a tiny door opens." |
 | PASS | 2 Promise | starts at 2.5 s (limit 8 s) |
-| PASS | 4 3-sec change | something new appears 37 times in 49 s (a place, a cut, a prop, a change of the stage); the longest wait is 2.6 s (from 22.1 s) |
-| PASS | 5 Twist | twist starts at 51% |
+| PASS | 4 3-sec change | something new appears 37 times in 49 s (a place, a cut, a prop, a change of the stage); the longest wait is 2.6 s (from 22.5 s) |
+| PASS | 5 Twist | twist starts at 52% |
 | PASS | 6 Best last | best point starts at 79% |
 | PASS | 7 Loop | last line shares 5 key word(s) with the first: when, burp, tiny, door, opens |
 | PASS | Sources on numbers | every number has a source |
 | PASS | Source ids exist | all source ids known |
 | PASS | No banned claims | no cure/miracle/detox claims |
 | PASS | 1 Hook: short, to the viewer, about the title | "When you burp, a tiny door opens." (7 words, 2.4 s, says "you", says the title's words) |
-| PASS | 1 Hook: the first frame shows the consequence | the video opens on the tummy with food, full, air already there |
+| PASS | 1 Hook: the first frame shows the consequence | the video opens on the tummy with full, air already there |
 | PASS | 1 Hook: three choices for the owner | 3 choices, each short, to the viewer and about the title |
 | PASS | 3 Open question | asked at 2.5 s ("Guess how many times a day you burp?"), answered at 79% ("And it's normal. People burp up to thirty times a day."; shared words: times, day, burp) |
 | PASS | 3 No counting | the story is told as one chain of cause and effect, not as a numbered list |
-| PASS | Length | 48.7 s (a Short must stay under 60 s; aim for 40-58) |
+| PASS | Length | 49.1 s (a Short must stay under 60 s; aim for 40-58) |
 | PASS | Places | 3 set(s): tummy, home, clinic (at least a body scene and the doctor's office) |
 | PASS | Own rooms | clinic: clinic|stone|tiles|carpet|wide@left|hills|exam-bed|stomach|day; home: kitchen|rose|stripes|wood|round@right|garden|stove-left|-|day |
 | PASS | Rooms are unique | no other video has this clinic or this home (compared with 7 other video(s)) |
@@ -66,16 +66,16 @@ Characters: stomach, foodpipe · props: tag, tag, clock, tag, soda, tag, tag, ta
 | 5.4 s | A3 | stomach | neutral | Rewind! He's gulping a fizzy drink. | the scene, locked | niddk-gas |
 | 7.6 s | A4 | foodpipe | scared | And with every gulp, air comes down too! | the scene, locked | medline-belching |
 | 10.4 s | A5 | stomach | scared | It's piling up at my top. I'm stretching! | the scene, locked | medline-belching |
-| 13.3 s | A6 | foodpipe | shocked | That stretch tells my muscle ring: open up! | the scene, locked | medline-belching |
+| 13.3 s | A6 | foodpipe | shocked | The stretch opens my muscle ring. Out it goes! | the scene, locked | medline-belching |
 
 What happens in the picture:
 
-- at A3: food to 0.2, full to 0.25, air to 0
-- at A3 ("fizzy"): full to 0.6, food to 0.5 [splash-small]
+- at A3: food to 0, full to 0.25, air to 0
+- at A3 ("fizzy"): full to 0.6, food to 0.46 [splash-small]
 - at A4 ("air"): air to 1
 - at A5 ("stretching!"): full to 0.66
-- at A6 ("open"): valve to 1
-- at A6 ("open"): burp to 1, air to 0.15 [burp-small]
+- at A6 ("opens"): valve to 1
+- at A6 ("opens"): burp to 1, air to 0.15 [burp-small]
 - at A1 ("burp,"): tag "BURP!"
 - at A2: tag "how many a day?"
 - at A2 ("day"): clock
@@ -83,7 +83,7 @@ What happens in the picture:
 - at A3 ("fizzy"): soda
 - at A4 ("air"): tag "swallowed air"
 - at A5: tag "piling up"
-- at A6: tag "the stretch"
+- at A6 ("opens"): tag "the door opens"
 
 ## Time card: "One fizzy drink later..."
 
@@ -93,7 +93,7 @@ Characters: kid · props: soda, tag
 
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
-| 17.8 s | C1 | kid | happy | Burp! Oops. Excuse me! | ews 24 lock |  |
+| 18.2 s | C1 | kid | happy | Burp! Oops. Excuse me! | ews 24 lock |  |
 
 What happens in the picture:
 
@@ -107,12 +107,12 @@ Characters: doctor, kid · props: tag, soda, tag, tag, tag, burger, tag, tag, so
 
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
-| 19.6 s | D1 | kid | sad | Doctor, why do I burp so much? | ews 24 lock |  |
-| 22.1 s | D2 | doctor | neutral | Every time you swallow, you swallow a little air too. | the scene, locked | medline-belching |
-| 25.7 s | D3 | doctor | happy | But here's the twist: a burp isn't your food talking. It's that air coming back up. | the scene, locked | medline-belching |
-| 31.2 s | D4 | kid | shocked | Just air? Not my lunch? | the scene, locked |  |
-| 33.1 s | D5 | doctor | neutral | Just air. Want fewer burps? Eat slowly, and go easy on fizzy drinks and gum. | the scene, locked | medline-belching, niddk-gas |
-| 38.3 s | D6 | doctor | happy | And it's normal. People burp up to thirty times a day. | the scene, locked | niddk-gas |
+| 19.9 s | D1 | kid | sad | Doctor, why do I burp so much? | ews 24 lock |  |
+| 22.5 s | D2 | doctor | neutral | Every time you swallow, you swallow a little air too. | the scene, locked | medline-belching |
+| 26.0 s | D3 | doctor | happy | But here's the twist: a burp isn't your food talking. It's that air coming back up. | the scene, locked | medline-belching |
+| 31.6 s | D4 | kid | shocked | Just air? Not my lunch? | the scene, locked |  |
+| 33.4 s | D5 | doctor | neutral | Just air. Want fewer burps? Eat slowly, and go easy on fizzy drinks and gum. | the scene, locked | medline-belching, niddk-gas |
+| 38.6 s | D6 | doctor | happy | And it's normal. People burp up to thirty times a day. | the scene, locked | niddk-gas |
 
 What happens in the picture:
 
@@ -136,12 +136,12 @@ Characters: stomach, foodpipe · props: tag, glass, tag
 
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
-| 42.4 s | E1 | stomach | happy | Small sips, slowly. Hardly any air! | ews 24 lock | niddk-gas |
-| 44.6 s | E2 | foodpipe | happy | When you burp, my tiny door opens. Thirty times a day! | the scene, locked | niddk-gas |
+| 42.8 s | E1 | stomach | happy | Small sips, slowly. Hardly any air! | ews 24 lock | niddk-gas |
+| 44.9 s | E2 | foodpipe | happy | When you burp, my tiny door opens. Thirty times a day! | the scene, locked | niddk-gas |
 
 What happens in the picture:
 
-- at start: full to 0.5, food to 0.5, air to 0.3
+- at start: full to 0.5, food to 0.46, air to 0.3
 - at E2 ("door"): valve to 1
 - at E2 ("door"): burp to 1, air to 0 [burp-small]
 - at E1: tag "small sips"

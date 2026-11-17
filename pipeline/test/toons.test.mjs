@@ -554,3 +554,16 @@ test('a Toon has few sound effects, kept apart, and no automatic sound on moods,
   const crowded = checkSound(t, null);
   assert.ok(!crowded.ok, 'a sound on every line fails the check');
 });
+
+test('a piece of food in the stomach never hangs in mid-fall, whatever the food dial rests at', async () => {
+  const {tummyLayout} = await import('../../src/toons/stages.tsx');
+  for (let v = 0; v <= 1.0001; v += 0.02) {
+    const hanging = tummyLayout({food: v, full: 0.4}, 1.7).bits.filter((b) => !b.settled).map((b) => b.i + 1);
+    assert.deepEqual(hanging, [], `food ${v.toFixed(2)}: piece(s) ${hanging.join(', ')} are still falling although nothing is changing`);
+  }
+  // while the dial is moving a new piece is on its way; once the change is over it has landed
+  const mid = tummyLayout({food: 0.25, 'food:from': 0, 'food:to': 0.5, full: 0.4}, 1.7).bits;
+  assert.ok(mid.some((b) => !b.settled), 'half-way through a change a piece is falling');
+  const end = tummyLayout({food: 0.5, 'food:from': 0, 'food:to': 0.5, full: 0.4}, 1.7).bits;
+  assert.ok(end.length >= 2 && end.every((b) => b.settled), 'at the end of the change every piece has landed');
+});

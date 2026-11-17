@@ -413,7 +413,9 @@ export const stateAt = (L: Layout, si: number, f: number): Record<string, number
       run[k] = {f: fe, from, to, over: Math.max(1, e.over ?? 18)};
     }
   }
-  for (const [k, p] of Object.entries(run)) out[k] = p.from + (p.to - p.from) * ease((f - p.f) / p.over);
+  // a stage may need to know where a dial is coming from and going to (a piece of food that is on its
+  // way in must land when the change ends, whatever value the dial rests at): `<dial>:from`, `<dial>:to`
+  for (const [k, p] of Object.entries(run)) { out[k] = p.from + (p.to - p.from) * ease((f - p.f) / p.over); out[`${k}:from`] = p.from; out[`${k}:to`] = p.to; }
   return out;
 };
 /** When a prop is on screen: [first frame, last frame). */
