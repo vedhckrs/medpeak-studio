@@ -10,6 +10,9 @@ you stop. The rules are in `CLAUDE.md`.
 
 First session on the Windows PC. The repo was cloned there and the pipeline was made to run on Windows.
 
+**Status: merged.** Pull request #3 went into `main` on 2026-11-17 (merge commit `d64cd19`) after its CI
+check passed, with the owner's OK. Everything below is on `main`.
+
 ### What changed in the code
 
 - `pipeline/lib/util.mjs`: new `isMain(metaUrl)` helper. It compares real file paths, so it works on
@@ -48,9 +51,9 @@ First session on the Windows PC. The repo was cloned there and the pipeline was 
 
 `feat/toons` (the Mac's branch, 60+ commits, not merged) was not touched from the Windows PC.
 
-- **Merge conflict to expect.** Pull request #3 and `feat/toons` both edit `pipeline/render.mjs`. A test
-  merge shows one conflict in that file. Keep both sides: the `spawnSync` loudness change from
-  `feat/toons`, and `isMain` plus the `remotion()` launcher from pull request #3.
+- **Merge conflict to expect.** `main` (since pull request #3) and `feat/toons` both edit
+  `pipeline/render.mjs`. A test merge shows one conflict in that file. Keep both sides: the `spawnSync`
+  loudness change from `feat/toons`, and `isMain` plus the `remotion()` launcher from `main`.
 - **Same two bugs are still on `feat/toons`.**
   - Mac-only start-up line: `pipeline/toon-check.mjs`, `toon-music.mjs`, `toon-sfx.mjs`.
   - `npx` spawns: `pipeline/toon-package.mjs:130`, `toon-render.mjs:75` and `:87`, `toon-sheets.mjs:25`.
@@ -59,13 +62,15 @@ First session on the Windows PC. The repo was cloned there and the pipeline was 
 
 ### Open
 
-- Pull request #3 waits for the owner's OK to merge into `main`.
+- Nothing from the Windows PC is waiting for a merge. The merged branch `fix/windows-entrypoint` is still
+  on GitHub and can be deleted.
+- `feat/toons` does not have these changes yet (see the next step).
 - `loadEnv` in `pipeline/lib/util.mjs` splits `MEDPEAK_ENV_FILES` on `:`, which breaks Windows paths
   such as `C:\...`. Use `path.delimiter`.
 
 ### Next step for whoever picks this up
 
-1. Once pull request #3 is merged: on `feat/toons`, `git fetch` and `git merge origin/main`, and resolve
-   `pipeline/render.mjs` as described above.
+1. On `feat/toons`: `git fetch` and `git merge origin/main`, and resolve `pipeline/render.mjs` as
+   described above.
 2. Apply the two fixes to the Toons scripts listed above and run them once on each machine.
 3. Fix the `MEDPEAK_ENV_FILES` split.
