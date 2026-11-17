@@ -27,7 +27,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import {execFileSync} from 'node:child_process';
-import {args, readJson, ROOT, videoDir, writeJson} from './lib/util.mjs';
+import {args, PUBLIC, readJson, ROOT, videoDir, writeJson} from './lib/util.mjs';
 import {SFX_DIR} from './lib/toon-audio.mjs';
 import {layoutToon, soundPlan, TOON_FPS} from '../src/toons/director.ts';
 
@@ -73,6 +73,58 @@ if (a.library) {
 
 const slug = a._[0];
 if (!slug) { console.error('Give a slug, or --library.'); process.exit(2); }
+
+/**
+ * What makes a voiced line worth a second take (ours, a guide). `speech`: earshot's AudioSet reading must call it speech with at
+ * least this probability. `synth`: its "speech synthesizer" reading above this is a robotic-sounding take. Both limits come from a
+ * control, the 15 lines of video 4, which the owner heard and published: speech 0.66 to 0.91, synthetic 0.11 to 0.59 (the pitched
+ * organ voices read highest). `level`: dB from the other lines. `late`: seconds before the voice starts.
+ * A line much brighter or duller than its character's others is a note, not a fault: the words and the acting change it.
+ */
+export const VOICE = {speech: 0.6, synth: 0.65, level: 2.5, late: 0.3, bright: 0.35};
+if (a.voices) {
+  // every voiced line on its own, then this mix against the last video the owner approved
+  const dir = path.join(PUBLIC, 'toons', slug, 'voice');
+  const tim = readJson(path.join(videoDir(slug), 'toon-timings.json'), null);
+  if (!tim) { console.error('No voices yet for this script (toon-timings.json is missing).'); process.exit(2); }
+  const items = Object.entries(tim.lines).map(([id, t]) => ({id, who: t.who, text: t.text, file: path.join(dir, `${id}.mp3`), words: t.words, duration: t.duration})).filter((x) => fs.existsSync(x.file));
+  const mine = path.join(videoDir(slug), 'renders', 'toon.mp4');
+  const against = a.against ? path.join(videoDir(String(a.against)), 'renders', 'toon.mp4') : null;
+  console.log(`Listening to ${items.length} voiced lines of "${slug}"${against ? ` and comparing the mix with "${a.against}"` : ''} (the models take about half a minute to load)...`);
+  const r = run({mode: 'voices', items: items.map(({id, who, file}) => ({id, who, file})), file: fs.existsSync(mine) ? mine : null, against: against && fs.existsSync(against) ? against : null});
+  const med = (xs) => { const s = xs.filter((x) => Number.isFinite(x)).sort((p, q) => p - q); return s.length ? s[Math.floor(s.length / 2)] : null; };
+  const level = med(r.items.map((it) => it.measure?.lufs));
+  const brightOf = {};
+  for (const it of r.items) (brightOf[it.who] ??= []).push(it.measure?.brightness_hz);
+  const faults = [];
+  console.log(`\nLISTEN  every voiced line of "${slug}" on its own (the usual level is ${s1(level)} LUFS)`);
+  for (const it of r.items) {
+    const src = items.find((x) => x.id === it.id);
+    if (it.error) { console.log(`  ?     ${it.id.padEnd(4)} ${it.error}`); faults.push(`${it.id}: could not be read`); continue; }
+    const m = it.measure ?? {};
+    const why = [];
+    const labels = it.describe?.audioset ?? [];
+    const speech = Math.max(0, ...labels.filter((l) => /speech|speaking|conversation|narration/i.test(l.label) && !/synthesizer/i.test(l.label)).map((l) => l.p));
+    const synth = Math.max(0, ...labels.filter((l) => /synthesizer/i.test(l.label)).map((l) => l.p));
+    const other = labels.filter((l) => !/speech|speaking|conversation|narration/i.test(l.label)).slice(0, 2).map((l) => `${l.label.toLowerCase()} ${Math.round(l.p * 100)}%`).join(', ');
+    if (speech < VOICE.speech) why.push(`heard as speech only ${Math.round(speech * 100)}% (at least ${Math.round(VOICE.speech * 100)}%)`);
+    if (synth > VOICE.synth) why.push(`sounds synthetic (${Math.round(synth * 100)}%)`);
+    if ((m.clipped_samples ?? 0) > 0) why.push(`${m.clipped_samples} clipped samples`);
+    if (level !== null && Math.abs(m.lufs - level) > VOICE.level) why.push(`${s1(m.lufs - level)} dB from the others' level`);
+    if ((m.attack_at ?? 0) > VOICE.late) why.push(`starts ${s1(m.attack_at)} s late`);
+    const b = med(brightOf[it.who]);
+    const note = b && brightOf[it.who].length > 2 && Math.abs(m.brightness_hz - b) / b > VOICE.bright ? `  (${m.brightness_hz > b ? 'brighter' : 'duller'} than ${it.who}'s other lines)` : '';
+    const tail = src?.words?.length ? m.duration - src.words[src.words.length - 1].end : 0;
+    if (tail > 0.6) why.push(`${s1(tail)} s of sound after the last word`);
+    if (why.length) faults.push(`${it.id} (${it.who}): ${why.join('; ')}`);
+    console.log(`  ${why.length ? 'CHECK' : 'ok   '} ${it.id.padEnd(4)} ${it.who.padEnd(9)} ${s1(m.duration).padStart(4)} s  ${s1(m.lufs).padStart(6)} LUFS  peak ${s1(m.true_peak_dbtp).padStart(5)}  bright ${String(Math.round(m.brightness_hz ?? 0)).padStart(5)} Hz  speech ${String(Math.round(speech * 100)).padStart(3)}%  synthetic ${String(Math.round(synth * 100)).padStart(2)}%${other ? `  also: ${other}` : ''}${note}`);
+  }
+  if (r.ab) console.log(`\n  this mix against "${a.against}": ${r.ab.summary ?? JSON.stringify(r.ab).slice(0, 600)}`);
+  if (r.ab_error) console.log(`\n  the comparison with "${a.against}" failed: ${r.ab_error}`);
+  writeJson(path.join(videoDir(slug), 'renders', 'listen', 'voices.json'), r);
+  console.log(faults.length ? `\n${faults.length} line(s) to look at:\n  ${faults.join('\n  ')}` : '\nEvery line is heard as speech, at one level, with no clipping and no late start.');
+  process.exit(faults.length ? 1 : 0);
+}
 const file = a.file ? path.resolve(a.file) : path.join(videoDir(slug), 'renders', 'toon.mp4');
 if (!fs.existsSync(file)) { console.error(`No video at ${file}. Render it first (node pipeline/toon-render.mjs ${slug}).`); process.exit(2); }
 const toon = readJson(path.join(videoDir(slug), 'toon.json'));

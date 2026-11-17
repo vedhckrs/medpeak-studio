@@ -101,3 +101,29 @@ earshot doctor                                  # must report both models in the
 - Without `HF_HUB_DISABLE_XET=1` the model download stood still at 0 bytes on this Mac.
 - The tool lives in `~/.local/share/uv/tools/earshot`, the models in `~/.cache/earshot`.
   Nothing of it is in the repository; GitHub's checks do not run this step.
+
+## Listening to the voices (`npm run toon:listen -- <slug> --voices [--against <approved slug>]`)
+Owner, 2026-11-17, after I wrote "I cannot hear, please judge the voices": "Ear repo you have to
+listen audio right". Right: listen first, then report what was heard. Do not hand the owner a
+question the tool can answer.
+
+Every voiced line is listened to on its own, and the finished mix is compared with a video the
+owner already approved. A line is flagged when:
+- earshot's AudioSet reading does not call it speech (under 60%), or calls it a speech synthesizer
+  (over 65%). Both limits come from a control: the 15 lines of video 4, which the owner heard and
+  published, read 66 to 91% speech and 11 to 59% synthetic (the pitched organ voices read highest);
+- it clips, sits more than 2.5 dB from the other lines, starts more than 0.3 s late, or carries more
+  than 0.6 s of sound after its last word.
+A line much brighter or duller than its character's others is printed as a note: words and acting
+change it. Results: `renders/listen/voices.json`.
+
+What this cannot do, said plainly:
+- **It does not understand words.** earshot has no speech-to-text, so a mispronounced or swallowed
+  word is not caught. The word times come from the voice service, which only knows what it was
+  asked to say.
+- **earshot's text match is not validated for voices** (it says so itself): "a person speaking
+  clearly" came back "no match" for every line, good or bad. Use the AudioSet labels, never `match`,
+  for a voice. I found this by running the check on the approved video first: a check that fails
+  everything measures nothing.
+- **Taste.** Whether a voice suits a character is the owner's call.
+
