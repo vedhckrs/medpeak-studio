@@ -2,7 +2,7 @@
 
 > Ready. Nothing is uploaded until the owner says so; an upload is always private first.
 
-**Video:** `videos/skip-brushing-at-night/renders/toon.mp4` (51.8 s, 1080 x 1920, a Short)
+**Video:** `videos/skip-brushing-at-night/renders/toon.mp4` (51.9 s, 1080 x 1920, a Short)
 **Cover:** `videos/skip-brushing-at-night/renders/toon-cover.jpg` (the frame at 1.2 s; in the YouTube app a Short's cover is picked from the video's own frames, so choose that moment there if the picture is not accepted)
 **Captions:** none. The words are already on screen; the owner does not want a caption track.
 
@@ -52,7 +52,7 @@ Be honest: how often do you fall asleep without brushing?
 
 - [x] voices made and unchanged since
 - [x] final render exists
-- [x] under 60 seconds (51.8 s)
+- [x] under 60 seconds (51.9 s)
 - [x] title follows the channel rules
 - [x] 4 source(s) listed
 - [ ] owner has watched the final video with sound

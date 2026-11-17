@@ -156,6 +156,7 @@ export type ToonLine = {
   key?: string; // the caption word shown in amber (default: the last word)
   beat?: number; // seconds of silence after this line (0 to 2): the picture plays a gag with no words
   tempo?: number; // 0.9 to 1.15: this line's voice a touch slower or faster (free, applied by `toon-voice --remix`)
+  cut?: number; // keep only this many seconds of the voice clip: trims a stray sound after the last word (free, `--remix`)
   react?: Record<string, Emotion>; // the listeners' faces
   cam?: string; // optional camera, e.g. "cu 85 push" (see toons-camera.md)
   src?: string[]; // source ids that back a medical statement in this line

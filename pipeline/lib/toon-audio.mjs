@@ -33,7 +33,7 @@ export const VOICE_LUFS = -17;
  * every line to the same loudness (not the same peak: a shouted line and a mumbled line would
  * otherwise sit 8 dB apart) and catch the peaks with a limiter. The caller scales the word timings by `tempo`.
  */
-export const voiceFx = (input, output, semitones = 0, tempo = 1) => {
+export const voiceFx = (input, output, semitones = 0, tempo = 1, cut = null) => {
   const k = 2 ** (semitones / 12);
   const pitch = semitones ? `asetrate=44100*${k.toFixed(5)},aresample=44100,atempo=${(1 / k).toFixed(5)}` : 'aresample=44100';
   const lufs = loudness(input, pitch);
@@ -41,7 +41,9 @@ export const voiceFx = (input, output, semitones = 0, tempo = 1) => {
   fs.mkdirSync(path.dirname(output), {recursive: true});
   // `tempo` (0.9 to 1.15): a line said a touch faster or slower without changing its pitch (a hook that must land inside 2.5 s)
   const pace = tempo && tempo !== 1 ? `,atempo=${Math.max(0.9, Math.min(1.15, tempo)).toFixed(4)}` : '';
-  run(input, `${pitch}${pace},volume=${gain.toFixed(2)}dB,alimiter=limit=0.84:level=0`, output);
+  // `cut` (seconds of the finished clip to keep): a stray sound after the last word is trimmed off with a short fade
+  const end = cut ? `,atrim=0:${Number(cut).toFixed(3)},afade=t=out:st=${Math.max(0, cut - 0.05).toFixed(3)}:d=0.05` : '';
+  run(input, `${pitch}${pace}${end},volume=${gain.toFixed(2)}dB,alimiter=limit=0.84:level=0`, output);
 };
 /**
  * Tidy a generated sound effect: cut leading silence, tiny fade-out, and set its level so that a

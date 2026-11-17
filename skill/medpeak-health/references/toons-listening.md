@@ -127,3 +127,35 @@ What this cannot do, said plainly:
   everything measures nothing.
 - **Taste.** Whether a voice suits a character is the owner's call.
 
+## Listening to the words (`npm run toon:listen -- <slug> --words`, and `--words --selftest`)
+earshot does not understand words, so a second listener writes down what each voice line SAYS and
+the result is compared with the script, word by word. Installed 2026-11-17 on the owner's yes:
+- **Tool:** parakeet-mlx 0.7.0 (`uv tool install --python 3.12 "parakeet-mlx==0.7.0"`, its own
+  environment under `~/.local/share/uv/tools/parakeet-mlx`). Apache-2.0.
+- **Model:** NVIDIA Parakeet TDT 0.6b v3 (`mlx-community/parakeet-tdt-0.6b-v3` at
+  `ed2b7e8c15f9aaa0b5772e2efb986255eaef7e15`, 2.5 GB, CC-BY-4.0), in
+  `~/.cache/medpeak/parakeet-tdt-0.6b-v3-<version>/`. Checked against Hugging Face's sha256.
+  It runs with the hub switched off; no audio leaves the Mac.
+- **What is a fault:** a script word not heard, a heard word not in the script, a word heard as
+  another. **What is a note:** a cry ("Ow!", "Whee!"), a near miss (one letter apart in a longer
+  word, a plural), a little word squeezed by fast speech ("and" heard as "in"), a word the listener
+  was unsure of. Not a difference at all: numbers ("15" / "fifteen"), British and American spelling,
+  "wanna" for "want to", two words written as one ("tooth ache" / "toothache").
+- **Proved before it was trusted:** on the 62 lines of the four published videos (520 words) it
+  finds no fault and three notes; with `--selftest` it caught 36 of 36 clips broken on purpose (a
+  word cut out, one line's sound under another line's words), down to a missing "the" or "it".
+  Run `--selftest` again whenever the model or the voices change.
+- **What it found on its first real video** (the night-brushing pilot): a stray sound after the last
+  word of one line, heard as an extra "and"; "Boys," heard as "always". The first was fixed for free.
+
+Free fixes for a voiced line (toon.json, applied by `toon-voice --remix`, no credits):
+- `"tempo": 1.08` says the line 8% faster at the same pitch (a hook that must fit 2.5 seconds);
+- `"cut": 2.06` keeps only that many seconds of the clip (a stray sound after the last word). Listen
+  again afterwards: the line must still end on its last word. Give the line a `"beat"` of the same
+  length if the video's timing must not move.
+A wrong word needs a new take of that one line: quote it (about 0.4 credits a character) and ask.
+
+Limits: a word said slightly wrong but still recognisable is often written correctly; it does not
+judge acting; the download needs a single process (two writers into one file corrupt it: check the
+finished size and sha256).
+

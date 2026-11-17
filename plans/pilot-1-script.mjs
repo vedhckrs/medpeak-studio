@@ -59,7 +59,7 @@ const toon = {
         {at: 'B8', word: 'enamel!', set: {chalk: 1}, over: 40},
       ],
       lines: [
-        {id: 'B1', who: 'tooth', text: 'This evening, my spit guards were on duty.', emotion: 'happy', pose: 'present', key: 'guards', react: {bacteria: 'angry'}, src: ['dawes-2008']},
+        {id: 'B1', who: 'tooth', text: 'This evening, my spit guards were on duty.', cut: 2.06, emotion: 'happy', pose: 'present', key: 'guards', react: {bacteria: 'angry'}, src: ['dawes-2008'], beat: 0.5},
         {id: 'B1b', who: 'tooth', text: 'Every snack leaves sugar on me.', emotion: 'neutral', pose: 'explain', key: 'sugar', react: {bacteria: 'happy'}, src: ['nidcr'], beat: 0.3},
         {id: 'B2', who: 'bacteria', text: 'Sugar! Boys, charge!', emotion: 'angry', pose: 'point', key: 'charge', react: {tooth: 'shocked'}, chat: true, beat: 3.0},
         {id: 'B3', who: 'tooth', text: 'Ha! My spit washes away their sugar and their acid.', emotion: 'happy', pose: 'cheer', key: 'washes', react: {bacteria: 'sad'}, src: ['dawes-2008', 'nidcr']},

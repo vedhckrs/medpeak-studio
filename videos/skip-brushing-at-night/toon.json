@@ -390,6 +390,7 @@
      "id": "B1",
      "who": "tooth",
      "text": "This evening, my spit guards were on duty.",
+     "cut": 2.06,
      "emotion": "happy",
      "pose": "present",
      "key": "guards",
@@ -398,7 +399,8 @@
      },
      "src": [
       "dawes-2008"
-     ]
+     ],
+     "beat": 0.5
     },
     {
      "id": "B1b",

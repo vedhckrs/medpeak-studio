@@ -82,3 +82,16 @@ good ones are 2.5 GB (no. 1) and 1.6 GB (no. 2). You have 199 GB free.
 - **It does not judge acting or tone.** Whether a line sounds funny or flat is still your call.
 - **Very short cries** ("Ow!", "Nooo!") are sometimes written down oddly by any such tool. Those
   will be listed as "check by ear", not as faults.
+
+---
+
+## Result (17 November 2026, after your "Yes, install it")
+
+- Installed: parakeet-mlx 0.7.0 and the Parakeet v3 model (2.5 GB, checksum verified).
+- **Your four published videos:** 62 lines, 520 words, no fault. Three notes, one of them real:
+  in video 4 the hook's "and" is squeezed so that it is heard as "in".
+- **Clips broken on purpose:** 36 of 36 caught, even one missing only "the" or "it".
+- **The finished first video in the new look:** two findings. A stray sound after "on duty" (fixed
+  for free by trimming the clip). The germ's "Boys," is heard as "always" (needs a new take).
+- No. 2 (Whisper) was not needed.
+

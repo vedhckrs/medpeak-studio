@@ -29,7 +29,7 @@ Toon script `skip-brushing-at-night` · about 52 seconds · 6 pictures
 | PASS | Script is valid | 4 scenes, 15 lines, 3 voices |
 | PASS | 1 No intro | hook: "Skip brushing at night, your teeth pay." |
 | PASS | 2 Promise | starts at 2.6 s (limit 8 s) |
-| PASS | 4 3-sec change | something new HAPPENS 34 times in 52 s (a place, a cut, a thing arriving, a change of the stage; text stickers do not count); the longest wait is 2.4 s (from 14.3 s) |
+| PASS | 4 3-sec change | something new HAPPENS 34 times in 52 s (a place, a cut, a thing arriving, a change of the stage; text stickers do not count); the longest wait is 2.4 s (from 14.4 s) |
 | PASS | 5 Twist | twist starts at 50% |
 | PASS | 6 Best last | best point starts at 90% |
 | PASS | 7 Loop | last line shares 4 key word(s) with the first: skip, brushing, night, teeth |
@@ -41,7 +41,7 @@ Toon script `skip-brushing-at-night` · about 52 seconds · 6 pictures
 | PASS | 1 Hook: three choices for the owner | 3 choices, each short, to the viewer and about the title |
 | PASS | 3 Open question | asked at 2.6 s ("Guess why we party at night?"), answered at 83% ("No! We party hardest at night because your spit sleeps!"; shared words: party, night) |
 | PASS | 3 No counting | the story is told as one chain of cause and effect, not as a numbered list |
-| PASS | Length | 51.8 s (a Short must stay under 60 s; aim for 40-58) |
+| PASS | Length | 51.9 s (a Short must stay under 60 s; aim for 40-58) |
 | PASS | Places | 2 set(s): molar, home (at least a body scene and the doctor's office) |
 | PASS | Own rooms | home: bathroom|slate|tiles|wood|tall@left|hills|sink-right|-|day |
 | PASS | Rooms are unique | no other video has this clinic or this home (compared with 7 other video(s)) |
@@ -83,14 +83,14 @@ Characters: tooth, bacteria
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
 | 6.6 s | B1 | tooth | happy | This evening, my spit guards were on duty. | ews 24 lock | dawes-2008 |
-| 9.2 s | B1b | tooth | neutral | Every snack leaves sugar on me. | the scene, locked | nidcr |
-| 11.6 s | B2 | bacteria | angry | Sugar! Boys, charge! | the scene, locked |  |
-| 15.7 s | B3 | tooth | happy | Ha! My spit washes away their sugar and their acid. | the scene, locked | dawes-2008, nidcr |
-| 19.0 s | B4 | bacteria | smug | Fine. We'll wait for bedtime. | the scene, locked |  |
-| 22.2 s | B5 | tooth | shocked | Bedtime. And he didn't brush! | the scene, locked |  |
-| 25.8 s | B6 | bacteria | happy | Surprise! When he sleeps, your spit guards sleep too! | the scene, locked | dawes-2008 |
-| 29.9 s | B7 | bacteria | happy | Party time! Leftovers for everyone! | the scene, locked |  |
-| 32.1 s | B8 | tooth | scared | They turn it into acid. All night. My enamel! | the scene, locked | nidcr, dawes-2008 |
+| 9.3 s | B1b | tooth | neutral | Every snack leaves sugar on me. | the scene, locked | nidcr |
+| 11.7 s | B2 | bacteria | angry | Sugar! Boys, charge! | the scene, locked |  |
+| 15.8 s | B3 | tooth | happy | Ha! My spit washes away their sugar and their acid. | the scene, locked | dawes-2008, nidcr |
+| 19.1 s | B4 | bacteria | smug | Fine. We'll wait for bedtime. | the scene, locked |  |
+| 22.3 s | B5 | tooth | shocked | Bedtime. And he didn't brush! | the scene, locked |  |
+| 25.9 s | B6 | bacteria | happy | Surprise! When he sleeps, your spit guards sleep too! | the scene, locked | dawes-2008 |
+| 30.0 s | B7 | bacteria | happy | Party time! Leftovers for everyone! | the scene, locked |  |
+| 32.2 s | B8 | tooth | scared | They turn it into acid. All night. My enamel! | the scene, locked | nidcr, dawes-2008 |
 
 What happens in the picture:
 
@@ -122,7 +122,7 @@ Characters: patient · props: pain
 
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
-| 37.2 s | D1 | patient | sad | Ow! Why does this tooth ache? | ews 24 lock | nidcr-decay |
+| 37.3 s | D1 | patient | sad | Ow! Why does this tooth ache? | ews 24 lock | nidcr-decay |
 
 What happens in the picture:
 
@@ -134,9 +134,9 @@ Characters: tooth, bacteria · props: tag, tag, tag
 
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
-| 40.2 s | E1 | tooth | happy | But tonight he brushes, last thing before bed! | ews 24 lock | nhs-teeth, dawes-2008 |
-| 43.0 s | E2 | bacteria | scared | No! We party hardest at night because your spit sleeps! | the scene, locked | dawes-2008 |
-| 46.6 s | E3 | tooth | happy | Two minutes, then spit, don't rinse. Skip brushing at night? Not these teeth! | the scene, locked | nhs-teeth |
+| 40.3 s | E1 | tooth | happy | But tonight he brushes, last thing before bed! | ews 24 lock | nhs-teeth, dawes-2008 |
+| 43.1 s | E2 | bacteria | scared | No! We party hardest at night because your spit sleeps! | the scene, locked | dawes-2008 |
+| 46.7 s | E3 | tooth | happy | Two minutes, then spit, don't rinse. Skip brushing at night? Not these teeth! | the scene, locked | nhs-teeth |
 
 What happens in the picture:
 

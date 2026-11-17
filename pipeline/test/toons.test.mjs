@@ -601,9 +601,19 @@ test('the word check: the same words pass, a wrong, missing or added word is a f
   assert.ok(wrong.faults.length >= 2, 'a changed word and a dropped word are faults');
   assert.equal(diffWords('Brush for two minutes.', 'Brush for minutes').faults.length, 1, 'a missing word is a fault');
   assert.equal(diffWords('Brush for two minutes.', 'Brush for two long minutes').faults.length, 1, 'an added word is a fault');
-  const cry = diffWords('Ow! Why does this tooth ache?', 'Oh why does this tooth ache');
-  assert.deepEqual([cry.faults.length, cry.notes.length], [0, 1], 'a cry heard differently is a note');
+  const cry = diffWords('Ow! Why does this tooth ache?', 'Now why does this tooth ache');
+  assert.deepEqual([cry.faults.length, cry.notes.length], [0, 1], 'a cry heard as a word is a note');
+  const cry2 = diffWords('Ow! Why does this tooth ache?', 'Oh why does this tooth ache');
+  assert.deepEqual([cry2.faults.length, cry2.notes.length], [0, 0], 'one cry written as another is the same noise');
   const near = diffWords('The germs feast.', 'The germ feasts');
   assert.deepEqual([near.faults.length, near.notes.length], [0, 2], 'a plural heard differently is a note');
   assert.ok(diffWords('Your teeth pay.', 'Your teeth play').faults.length === 1, 'one letter apart in a short word is a different word');
+  // found on the control run over the four published videos (2026-11-17): none of these is a mistake in the voice
+  assert.deepEqual(diffWords('Raise the head of your bed 10 to 20 centimetres.', 'raise the head of your bed ten to twenty centimeters').faults, [], 'British and American spelling are the same word');
+  assert.deepEqual(diffWords('Same lunch, no balloon. Want to know how?', 'Same lunch, no balloon. Wanna know how?').faults, [], '"wanna" is "want to"');
+  const fast = diffWords('Eat too fast and your belly balloons.', 'Eat too fast in your belly balloons.');
+  assert.deepEqual([fast.faults.length, fast.notes.length], [0, 1], '"and" squeezed to "in" is a note');
+  assert.deepEqual(diffWords('Whee! This time I got my water.', 'Wee! This time I got my water.').faults, [], 'a cry spelled another way is not a fault');
+  assert.deepEqual(diffWords('Ow! Why does this tooth ache?', 'Ow. Why does this toothache?').faults, [], 'two words written as one compound are the same words');
+  assert.deepEqual(diffWords('I have a toothache today.', 'I have a tooth ache today').faults, [], 'and the other way round');
 });

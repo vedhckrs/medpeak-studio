@@ -87,7 +87,7 @@ const main = async () => {
       const file = path.join(outDir, `${l.id}.mp3`);
       const was = timings.lines[l.id].tempo ?? 1;
       const now = Math.max(0.9, Math.min(1.15, l.tempo ?? 1)); // a line's own pace (toon.json: "tempo"), free to change
-      voiceFx(raw, file, cast.cast[l.who].pitch, now);
+      voiceFx(raw, file, cast.cast[l.who].pitch, now, l.cut ?? null); // "cut": keep only this many seconds (a stray sound after the last word)
       Object.assign(timings.lines[l.id], {pitch: cast.cast[l.who].pitch, tempo: now, duration: +(seconds(file) + 0.05).toFixed(3), words: timings.lines[l.id].words.map((w) => ({...w, start: +((w.start * was) / now).toFixed(3), end: +((w.end * was) / now).toFixed(3)}))});
     }
     writeJson(tPath, timings);
@@ -112,7 +112,7 @@ const main = async () => {
     const words = await speakLine(cast, l.who, l.text, l.emotion, raw);
     const file = path.join(outDir, `${l.id}.mp3`);
     const tempo = Math.max(0.9, Math.min(1.15, l.tempo ?? 1));
-    voiceFx(raw, file, c.pitch, tempo);
+    voiceFx(raw, file, c.pitch, tempo, l.cut ?? null);
     timings.lines[l.id] = {who: l.who, text: l.text, voiceId: c.voiceId, pitch: c.pitch, tempo, file: `toons/${slug}/voice/${l.id}.mp3`, duration: +(seconds(file) + 0.05).toFixed(3), words: words.map((w) => ({...w, start: +(w.start / tempo).toFixed(3), end: +(w.end / tempo).toFixed(3)}))};
     writeJson(tPath, timings);
     console.log(`voiced ${l.id}  ${l.who}  ${timings.lines[l.id].duration}s`);
