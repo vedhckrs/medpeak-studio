@@ -5,6 +5,7 @@ import {place} from './lib/timeline';
 import {MedVideo} from './MedVideo';
 import {Thumbnail} from './Thumbnail';
 import {ActingDemo, BlueprintBoard, CastBoard, EmotionBoard, ModelSheet, SceneDemo, SetBoard, CameraBoard, CapBoard, PoseBoard, RoomsBoard, StageBoard, DoctorBoard, RoomStyleBoard} from './toons/Preview';
+import {InkArmLook} from './toons/look-ink';
 import {layoutToon, TOON_FPS, ToonCover, ToonPlayer, type Toon, type ToonProps} from './toons/Player';
 import type {Video, VideoProps} from './types';
 import toonDemo from '../videos/pill-without-water/toon.json';
@@ -34,6 +35,7 @@ export const Root: React.FC = () => (
     <Still id="ToonSets" component={SetBoard} width={1080} height={1920} />
     <Still id="ToonCamera" component={CameraBoard} width={1080} height={1920} />
     <Still id="ToonStage" component={StageBoard} width={1080} height={1920} defaultProps={{stage: 'foodpipe'}} />
+    <Still id="ToonInkLook" component={InkArmLook} width={1080} height={1920} />
     <Still id="ToonRooms" component={RoomsBoard} width={1920} height={1080} defaultProps={{title: 'Rooms'}} />
     <Still id="ToonCaps" component={CapBoard} width={1920} height={1080} />
     <Still id="ToonDoctor" component={DoctorBoard} width={1920} height={1080} />
