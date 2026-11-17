@@ -6,6 +6,41 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-17 (evening) - Windows PC (commits by VED) - branch `docs/topic-bank`
+
+The owner asked for more topics with high search demand worldwide, and wants to start with 15.
+
+### What changed
+
+- New file `skill/medpeak-health/references/topic-bank.md`: 70 topic candidates, the first 15 marked
+  "start here", each with a status column (`open`, `taken`, or the video's slug).
+- `skill/medpeak-health/SKILL.md`: three lines under "Channel facts" that point to the topic bank.
+- No code changed. `feat/toons` was not touched.
+
+### How the list was made
+
+- About 8,000 YouTube search suggestions (15 question stems, a to z, for India, the US and the UK).
+- For topics 1 to 14, the videos over 1 million views on the first page of YouTube results were counted.
+  The check for the other topics was stopped: the owner asked for the list fast.
+- The raw data and the two small scripts are not in git (they were in a temp folder on the Windows PC).
+
+### Not done
+
+- No topic has been researched for sources yet. Every one is a candidate.
+- The list was **not** compared with `plans/month-1-2026-11-18.md` on `feat/toons` or with the videos
+  already made (the owner said not to). Known near-duplicate: topic 2 "What Happens If You Don't Sleep"
+  and the month plan's "What an All-Nighter Does to Your Brain".
+- Click-through rate cannot be measured from outside the channel.
+
+### Next step for whoever picks this up
+
+1. Merge `origin/main` into `feat/toons` (see the entry below for the one conflict in `render.mjs`).
+   `SKILL.md` was edited on both sides but in different places; a test merge shows no conflict there.
+2. Start with topics 1 to 15 in `topic-bank.md`. Mark a topic `taken` and push before working on it.
+3. Decide with the owner how the 15 fit with the month plan and the parked Day 1 videos.
+
+---
+
 ## 2026-11-17 - Windows PC (commits by VED) - branch `fix/windows-entrypoint`, pull request #3
 
 First session on the Windows PC. The repo was cloned there and the pipeline was made to run on Windows.
