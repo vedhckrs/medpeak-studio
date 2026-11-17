@@ -3,8 +3,12 @@
 // ToonActing) and everything follows. 100% code-drawn: no AI art anywhere in this folder.
 export const STYLE = {
   // ---- line
-  line: 1.8, // outline thickness in character units (a character box is 200 units tall)
-  maxLinePx: 4.2, // ...but never thicker than this many pixels on screen, however big the character
+  // Ink look (owner, 2026-11-17: "Yes, this look"; plans/reference-deep-study-2026-11-17.md): every
+  // outline is one dark ink colour and bold. 'shade' = the v6 outline, a darker shade of each fill.
+  outline: 'ink' as 'ink' | 'shade',
+  inkLine: '#2b1a17',
+  line: 2.6, // outline thickness in character units (a character box is 200 units tall) [1.8]
+  maxLinePx: 6.5, // ...but never thicker than this many pixels on screen, however big the character [4.2]
   lineDarkness: 0.66, // outlines are a darker shade of each fill colour; 0.5 = soft, 0.8 = near black
   // ---- face
   eyeScale: 1.32, // eye size (1 = small, 1.5 = huge) [1.25]
@@ -13,7 +17,8 @@ export const STYLE = {
   blush: 0.3, // cheek blush strength (0 = none) [1]
   // Clean 2D look (owner's pick, 2026-11-17). 'dot' = a plain white eye with a dark pupil and one
   // small catchlight; 'iris' = the v6 eye (coloured shaded iris, lid shadow, two highlights).
-  eye: 'dot' as 'dot' | 'iris',
+  // 'ring' (ink look): a plain white eye, a black ring and a black dot, no catchlight.
+  eye: 'ring' as 'ring' | 'dot' | 'iris',
   // Body characters (organs, cells, germs, the pill, the bone, poop) are anatomy, not mascots: no
   // arms, hands or legs. People keep theirs. true = v6 (arms on bodies, legs on travellers).
   bodyLimbs: false,
@@ -39,7 +44,7 @@ export const STYLE = {
   vignette: 0, // darkening toward the corners of the frame
   // ---- motion and finish
   boil: 0, // hand-drawn line wobble. OFF: it read as a "burning screen" (owner, 2026-11-16)
-  breathe: 0.007, // idle breathing (a moving hold); characters do not sway
+  breathe: 0, // idle breathing; 0 = hold still between actions, as the reference does (63% of frames still) [0.007]
   grain: 0, // paper grain over the frame (0 = clean) [0.035]
   // ---- colours
   ink: '#2a2440', // deep colour for text and the darkest accents
@@ -47,8 +52,8 @@ export const STYLE = {
   captionText: '#ffffff',
   captionKey: '#ffc93c',
   label: '#2ec4b6',
-  fleshLine: '#8c3848', // outline colour inside the body sets
-  roomLine: '#55608c', // outline colour in the real-world sets
-  setLinePx: 3.2, // outline thickness in the sets, in pixels
+  fleshLine: '#2b1a17', // outline colour inside the body sets [#8c3848]
+  roomLine: '#2b1a17', // outline colour in the real-world sets [#55608c]
+  setLinePx: 5, // outline thickness in the sets, in pixels [3.2]
 };
 export type ToonStyle = typeof STYLE;

@@ -60,7 +60,7 @@ const Eye: React.FC<{x: number; lid: number; lower: number; pupil: number; look:
     );
   }
   const lidY = -ry + ry * 2 * Math.min(1, lid);
-  if (STYLE.eye === 'dot') {
+  if (STYLE.eye === 'dot' || STYLE.eye === 'ring') {
     // clean 2D eye: white, one dark pupil, one small catchlight. No iris, no gradients.
     const r = 5.4 * (0.62 + 0.38 * pupil) * STYLE.pupilScale;
     const dx = look.x * (rx - r) * 0.9;
@@ -71,7 +71,7 @@ const Eye: React.FC<{x: number; lid: number; lower: number; pupil: number; look:
         <path d={d} fill="#ffffff" />
         <g clipPath={`url(#e${id})`}>
           <circle cx={dx} cy={dy} r={r} fill={PUPIL} />
-          <circle cx={dx + r * 0.34} cy={dy - r * 0.36} r={r * 0.3} fill="#ffffff" />
+          {STYLE.eye === 'dot' && <circle cx={dx + r * 0.34} cy={dy - r * 0.36} r={r * 0.3} fill="#ffffff" />}
           {lid > 0.02 && (
             <>
               <rect x={-rx - 1} y={-ry - 1} width={rx * 2 + 2} height={lidY + ry + 1} fill={skin} />

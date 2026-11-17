@@ -19,12 +19,12 @@ const H = 1920;
 export const INK = {line: '#2b1a17', w: 7, wIn: 4};
 
 /** Points jittered a little, seeded, so a code-drawn outline wavers like a hand-drawn one. */
-const wob = (pts: P[], seed: string, amp = 6): P[] => pts.map(([x, y], i) => [x + (random(`${seed}x${i}`) - 0.5) * 2 * amp, y + (random(`${seed}y${i}`) - 0.5) * 2 * amp]);
+export const wob = (pts: P[], seed: string, amp = 6): P[] => pts.map(([x, y], i) => [x + (random(`${seed}x${i}`) - 0.5) * 2 * amp, y + (random(`${seed}y${i}`) - 0.5) * 2 * amp]);
 /** A closed organic shape around a centre (an ellipse with an uneven edge). */
-const lump = (cx: number, cy: number, rx: number, ry: number, seed: string, n = 14, irr = 0.12): P[] =>
+export const lump = (cx: number, cy: number, rx: number, ry: number, seed: string, n = 14, irr = 0.12): P[] =>
   Array.from({length: n}, (_, i) => { const a = (i / n) * Math.PI * 2; const k = 1 + (random(`${seed}${i}`) - 0.5) * 2 * irr; return [cx + Math.cos(a) * rx * k, cy + Math.sin(a) * ry * k] as P; });
 /** A ribbon (a tube seen from the side) along a centre line, as one closed outline. */
-const ribbon = (line: P[], w0: number, w1: number): P[] => {
+export const ribbon = (line: P[], w0: number, w1: number): P[] => {
   const n = line.length;
   const side = (s: number) => line.map(([x, y], i) => {
     const [ax, ay] = line[Math.max(0, i - 1)];
@@ -40,7 +40,7 @@ const ribbon = (line: P[], w0: number, w1: number): P[] => {
  * A piece of tissue: its fill, a dark band inside its wall (depth), a lighter lining band, and a bold
  * outline. `d` is a closed path.
  */
-const Tissue: React.FC<{d: string; fill: string; deep: string; lining?: string; band?: number; line?: number}> = ({d, fill, deep, lining, band = 46, line = INK.w}) => {
+export const Tissue: React.FC<{d: string; fill: string; deep: string; lining?: string; band?: number; line?: number}> = ({d, fill, deep, lining, band = 46, line = INK.w}) => {
   const id = `ti${useId().replace(/:/g, '')}`;
   return (
     <g>
@@ -75,7 +75,7 @@ export const InkEyes: React.FC<{x: number; y: number; r: number; gap?: number; l
 );
 
 /** A white label box with black text, as on an anatomy chart. */
-const Label: React.FC<{x: number; y: number; text: string; size?: number; rot?: number}> = ({x, y, text, size = 34, rot = 0}) => {
+export const Label: React.FC<{x: number; y: number; text: string; size?: number; rot?: number}> = ({x, y, text, size = 34, rot = 0}) => {
   const w = text.length * size * 0.62 + size * 0.9;
   return (
     <g transform={`translate(${x} ${y}) rotate(${rot})`}>

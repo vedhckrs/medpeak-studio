@@ -49,6 +49,7 @@ const neutral = (s: number, l: number) => s < 0.14 || l > 0.9;
  * yellow -> brown, green -> forest). Whites and greys get a soft slate. Never plain black.
  */
 export const lineOf = (c: string, k = STYLE.lineDarkness): string => {
+  if (STYLE.outline === 'ink') return STYLE.inkLine;
   const [h, s, l] = toHsl(c);
   if (s < 0.16 || l > 0.92) return fromHsl(0.645, 0.2, 0.4);
   return fromHsl(h, Math.min(0.58, s * 0.6 + 0.1), Math.max(0.11, l * (1 - k)));
