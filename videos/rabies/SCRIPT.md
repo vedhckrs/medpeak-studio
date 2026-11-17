@@ -1,6 +1,6 @@
 # What Happens If You Get Rabies
 
-Toon script `rabies` · about 46 seconds · 8 pictures
+Toon script `rabies` · about 43 seconds · 8 pictures
 
 ## The hook: choices for the first line
 
@@ -28,29 +28,29 @@ Toon script `rabies` · about 46 seconds · 8 pictures
 |---|---|---|
 | PASS | Script is valid | 5 scenes, 14 lines, 4 voices |
 | PASS | 1 No intro | hook: "You can get rabies from one bite." |
-| PASS | 2 Promise | starts at 2.5 s (limit 8 s) |
-| PASS | 4 3-sec change | something new HAPPENS 33 times in 46 s (a place, a cut, a thing arriving, a change of the stage; text stickers do not count); the longest wait is 2.8 s (from 28.5 s) |
-| PASS | 5 Twist | twist starts at 60% |
-| PASS | 6 Best last | best point starts at 91% |
+| PASS | 2 Promise | starts at 2.1 s (limit 8 s) |
+| PASS | 4 3-sec change | something new HAPPENS 33 times in 43 s (a place, a cut, a thing arriving, a change of the stage; text stickers do not count); the longest wait is 2.6 s (from 32.2 s) |
+| PASS | 5 Twist | twist starts at 61% |
+| PASS | 6 Best last | best point starts at 92% |
 | PASS | 7 Loop | last line shares 3 key word(s) with the first: one, bite, rabies |
 | PASS | Sources on numbers | every number has a source |
 | PASS | Source ids exist | all source ids known |
 | PASS | No banned claims | no cure/miracle/detox claims |
-| PASS | 1 Hook: short, to the viewer, about the title | "You can get rabies from one bite." (7 words, 2.4 s, says "you", says the title's words) |
+| PASS | 1 Hook: short, to the viewer, about the title | "You can get rabies from one bite." (7 words, 2.0 s, says "you", says the title's words) |
 | PASS | 1 Hook: the first frame shows the consequence | the video opens on the arm with bite already there |
 | PASS | 1 Hook: three choices for the owner | 3 choices, each short, to the viewer and about the title |
-| PASS | 3 Open question | asked at 2.5 s ("Can you stop me before the brain?"), answered at 85% ("A wall? They stopped me before the brain!"; shared words: before, brain) |
+| PASS | 3 Open question | asked at 2.1 s ("Can you stop me before the brain?"), answered at 86% ("A wall? They stopped me before the brain!"; shared words: before, brain) |
 | PASS | 3 No counting | the story is told as one chain of cause and effect, not as a numbered list |
-| PASS | Length | 46.4 s (a Short must stay under 60 s; aim for 40-58) |
+| PASS | Length | 43.2 s (a Short must stay under 60 s; aim for 40-58) |
 | PASS | Places | 3 set(s): arm, home, clinic (at least a body scene and the doctor's office) |
 | PASS | Own rooms | clinic: clinic|sky|stripes|checker|arch@right|hills|desk|body|day; home: kitchen|cream|tiles|wood|round@left|city|stove-right|-|day |
 | PASS | Rooms are unique | no other video has this clinic or this home (compared with 8 other video(s)) |
 | PASS | Voices | 4 speaking characters (3 or more keep it a conversation) |
-| PASS | Doctor explains | Dr. Mira speaks for 24% of the video (this shape needs no doctor; never over 50%) |
+| PASS | Doctor explains | Dr. Mira speaks for 26% of the video (this shape needs no doctor; never over 50%) |
 | PASS | Story shape | "clock" |
 | PASS | Few stickers | 5 text sticker(s) (at most 5: show it, do not label it) |
 | PASS | No icon twice | no picture icon is used twice |
-| PASS | Body scene | body characters speak for 56% of the video (30% or more: they are the show) |
+| PASS | Body scene | body characters speak for 52% of the video (30% or more: they are the show) |
 | PASS | Short lines | the longest line is 11 words |
 | PASS | Banter | at most 3 lines in a row by one speaker (3 or fewer) |
 | PASS | Sources are complete | 2 source(s), each with its finding written out |
@@ -66,7 +66,7 @@ Characters: virus
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
 | 0.0 s | A1 | virus | smug | You can get rabies from one bite. | ews 24 lock | who-rabies, cdc-rabies |
-| 2.5 s | A2 | virus | smug | Can you stop me before the brain? | the scene, locked |  |
+| 2.1 s | A2 | virus | smug | Can you stop me before the brain? | the scene, locked |  |
 
 What happens in the picture:
 
@@ -81,14 +81,14 @@ Characters: virus · props: tag, tag
 
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
-| 6.9 s | B1 | virus | smug | A street dog. A little nip. A tiny scratch. | ews 24 lock |  |
-| 10.5 s | B2 | virus | happy | I ride in on its spit. Now, up this nerve! | the scene, locked | who-rabies, cdc-rabies |
-| 14.1 s | B3 | virus | smug | Slowly. Usually two to three months to the brain. | the scene, locked | who-rabies, cdc-rabies |
+| 6.1 s | B1 | virus | smug | A street dog. A little nip. A tiny scratch. | ews 24 lock |  |
+| 9.5 s | B2 | virus | happy | I ride in on its spit. Now, up this nerve! | the scene, locked | who-rabies, cdc-rabies |
+| 12.4 s | B3 | virus | smug | Slowly. Usually two to three months to the brain. | the scene, locked | who-rabies, cdc-rabies |
 
 What happens in the picture:
 
 - at B1: bite to 0.42
-- at B1 ("nip."): bite to 0.62 [thud-soft]
+- at B1 ("nip."): bite to 0.62
 - at B1 ("scratch."): bite to 0.82
 - at B2: bite to 1 [plop]
 - at B2 ("nerve!"): days to 0.02
@@ -104,9 +104,9 @@ Characters: mom, kid · props: pain, drop, clock, tag
 
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
-| 17.8 s | C1 | kid | neutral | It's just a little scratch, Mum. | ews 24 lock |  |
-| 20.0 s | C2 | mom | scared | Wash it now. Soap and water, fifteen minutes. | the scene, locked | who-rabies |
-| 22.9 s | C3 | kid | shocked | Fifteen minutes? For a scratch? | the scene, locked |  |
+| 16.1 s | C1 | kid | neutral | It's just a little scratch, Mum. | ews 24 lock |  |
+| 17.9 s | C2 | mom | scared | Wash it now. Soap and water, fifteen minutes. | the scene, locked | who-rabies |
+| 21.0 s | C3 | kid | shocked | Fifteen minutes? For a scratch? | the scene, locked |  |
 
 What happens in the picture:
 
@@ -121,15 +121,15 @@ Characters: doctor, kid · props: tag, glass, pain, pillbottle, tag
 
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
-| 25.0 s | D1 | doctor | happy | Your mum was right. Washing first, then a doctor, today. | ews 24 lock | who-rabies |
-| 28.5 s | D2 | doctor | neutral | One hard truth: once symptoms start, it is almost always fatal. | mcu 50 lock | who-rabies, cdc-rabies |
-| 32.4 s | D3 | doctor | happy | But act in time and treatment works almost every time. | ews 24 lock | cdc-rabies, who-rabies |
+| 23.2 s | D1 | doctor | happy | Your mum was right. Washing first, then a doctor, today. | ews 24 lock | who-rabies |
+| 26.8 s | D2 | doctor | neutral | One hard truth: once symptoms start, it is almost always fatal. | mcu 50 lock | who-rabies, cdc-rabies |
+| 31.3 s | D3 | doctor | happy | But act in time and treatment works almost every time. | ews 24 lock | cdc-rabies, who-rabies |
 
 What happens in the picture:
 
 - at D1 ("today."): tag "same day"
 - at D1 ("Washing"): glass in a thought bubble
-- at D2 ("always"): pain
+- at D2 ("start,"): pain
 - at D3 ("treatment"): pillbottle
 - at D3 ("works"): tag "act in time"
 
@@ -139,9 +139,9 @@ Characters: virus
 
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
-| 36.2 s | E1 | virus | shocked | Wait. Who are all of you? What is this? | ews 24 lock |  |
-| 39.4 s | E2 | virus | angry | A wall? They stopped me before the brain! | the scene, locked | who-rabies |
-| 42.2 s | E3 | virus | sad | One bite, but no rabies. You got the vaccine in time! | the scene, locked | who-rabies, cdc-rabies |
+| 34.8 s | E1 | virus | shocked | Wait. Who are all of you? What is this? | ews 24 lock |  |
+| 37.0 s | E2 | virus | angry | A wall? They stopped me before the brain! | the scene, locked | who-rabies |
+| 39.6 s | E3 | virus | sad | One bite, but no rabies. You got the vaccine in time! | the scene, locked | who-rabies, cdc-rabies |
 
 What happens in the picture:
 

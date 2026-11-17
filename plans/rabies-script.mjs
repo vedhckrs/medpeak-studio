@@ -57,7 +57,7 @@ const toon = {
       state: {bite: 0},
       events: [
         {at: 'B1', set: {bite: 0.42}, over: 34},
-        {at: 'B1', word: 'nip.', set: {bite: 0.62}, over: 16, sfx: 'thud-soft'},
+        {at: 'B1', word: 'nip.', set: {bite: 0.62}, over: 16},
         {at: 'B1', word: 'scratch.', set: {bite: 0.82}, over: 24},
         {at: 'B2', set: {bite: 1}, over: 18, sfx: 'plop'},
         {at: 'B2', word: 'nerve!', set: {days: 0.02}, over: 6},
@@ -67,7 +67,7 @@ const toon = {
       ],
       props: [
         tag('2-3 months', 'B3', {word: 'two', x: 300, y: 560, size: 300, rot: -5}),
-        tag('or just 1 week!', 'B3', {word: 'brain.', x: 300, y: 560, size: 300, rot: 4}),
+        tag('or just 1 week!', 'B3', {word: 'brain.', x: 300, y: 780, size: 300, rot: 4}),
       ],
       lines: [
         {id: 'B1', who: 'virus', text: 'A street dog. A little nip. A tiny scratch.', emotion: 'smug', pose: 'rest', key: 'scratch', chat: true, beat: 0.4},
@@ -90,7 +90,7 @@ const toon = {
       props: [
         tag('same day', 'D1', {x: 550, y: 1180, size: 280, rot: 0, word: 'today.'}),
         {kind: 'glass', size: 300, from: 'D1', word: 'Washing', to: 'D1', bubble: true, of: 'doctor'},
-        {kind: 'pain', x: 880, y: 1240, size: 120, from: 'D2', word: 'always', to: 'D2', on: 'kid'},
+        {kind: 'pain', x: 880, y: 1240, size: 120, from: 'D2', word: 'start,', to: 'D2', on: 'kid'},
         {kind: 'pillbottle', x: 550, y: 1190, size: 200, from: 'D3', word: 'treatment', halo: true},
         tag('act in time', 'D3', {x: 610, y: 300, size: 300, word: 'works'}),
       ],

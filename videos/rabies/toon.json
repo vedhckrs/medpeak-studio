@@ -221,8 +221,7 @@
      "set": {
       "bite": 0.62
      },
-     "over": 16,
-     "sfx": "thud-soft"
+     "over": 16
     },
     {
      "at": "B1",
@@ -291,7 +290,7 @@
      "kind": "tag",
      "text": "or just 1 week!",
      "x": 300,
-     "y": 560,
+     "y": 780,
      "size": 300,
      "rot": 4,
      "from": "B3",
@@ -476,7 +475,7 @@
      "y": 1240,
      "size": 120,
      "from": "D2",
-     "word": "always",
+     "word": "start,",
      "to": "D2",
      "on": "kid"
     },
