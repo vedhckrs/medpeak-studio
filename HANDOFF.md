@@ -81,9 +81,22 @@ Then the owner said yes to the stomach and "do all 24". Commit "feat(toons): who
 Checked: typecheck passes, 44 of 44 tests pass, `ToonCast` and the sheets for stomach, heart, white
 cell, doctor and patient render and were looked at. The other sheets were not rendered one by one.
 
+Then the owner saw the full cast and said "remove bokeh". Commit "feat(toons): no bokeh":
+
+- `style.ts`, new block "camera and air", all off (1 / true brings v6 back): `lensBlur` (depth of
+  field in `camera.tsx` `Layer`, out-of-focus actors in `stage.tsx` `Slot`, rack-focus softness and
+  whip-pan blur in `Camera`), `foreground` (every `Layer` with p > 1: leaves, curtain edge, tissue
+  folds in front of the picture), `specks` (dust and ring bubbles in `scenes.tsx` `Motes`, room dust in
+  `rooms.tsx`; solid pieces bigger than 4 units such as food, crumbs and oxygen stay), `glow` (light
+  pools over the stages and sets, `Rays`, the lamp, the window light shaft, the soft ring around a
+  prop's disc) and `vignette`.
+- Checked on the `ToonCamera` and `ToonSets` boards: close-ups keep a sharp background, nothing stands
+  in front of the picture, the corners are not darkened.
+
 ### Open
 
-- The owner has not yet seen the full cast in this look.
+- The lenses still set how strongly the layers part when the camera moves; only their blur is off.
+  `toons-camera.md` still describes blur as part of each lens.
 - Body characters without arms or legs change the acting in every existing Toon (wave, point, thumbs
   up, walking do nothing on them now). No Toon video was re-rendered or re-checked (`toon:camera`,
   `toon:motion`, `toon:staging`) with this look.

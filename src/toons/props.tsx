@@ -5,6 +5,7 @@ import React from 'react';
 import {circlePath, ellipsePath, lineOf, Part, roundRect, shade, spline, Tube, useLine} from './ink';
 import type {PropName} from './director';
 import {theme} from '../brand/theme';
+import {STYLE} from './style';
 
 const Line: React.FC<{d: string; color: string; k?: number; opacity?: number}> = ({d, color, k = 0.7, opacity}) => {
   const w = useLine(k);
@@ -225,7 +226,7 @@ export const Prop: React.FC<{kind: PropName; t: number; halo?: boolean; bubble?:
       )}
       {halo && (
         <>
-          <circle r={104} fill="#ffffff" opacity={0.3} />
+          {STYLE.glow > 0 && <circle r={104} fill="#ffffff" opacity={0.3 * STYLE.glow} />}
           <circle r={92} fill="#fffbe6" opacity={0.8} />
           <circle r={92} fill="none" stroke="#ffc93c" strokeWidth={2.4} strokeDasharray="7 7" opacity={0.9} />
         </>

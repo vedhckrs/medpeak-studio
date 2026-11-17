@@ -450,7 +450,7 @@ export const ToothArenaStage: React.FC<Props> = ({t, state = {}, faces = {}, lab
         )}
 
         <defs>
-          <radialGradient id="arLight" cx="0.5" cy="-0.05" r="0.7"><stop offset="0" stopColor="#fff3df" stopOpacity={0.3 + 0.05 * Math.sin(t * 0.9)} /><stop offset="1" stopColor="#fff3df" stopOpacity="0" /></radialGradient>
+          <radialGradient id="arLight" cx="0.5" cy="-0.05" r="0.7"><stop offset="0" stopColor="#fff3df" stopOpacity={(0.3 + 0.05 * Math.sin(t * 0.9)) * STYLE.glow} /><stop offset="1" stopColor="#fff3df" stopOpacity="0" /></radialGradient>
           <linearGradient id="arDown" x1="0" y1="0" x2="0" y2="1"><stop offset="0.8" stopColor="#3d1226" stopOpacity="0" /><stop offset="1" stopColor="#3d1226" stopOpacity="0.4" /></linearGradient>
         </defs>
         <rect x={-300} y={-300} width={W + 600} height={H + 600} fill="url(#arLight)" opacity={1 - night * 0.75} />

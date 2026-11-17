@@ -13,8 +13,9 @@ export {Camera} from './camera';
 export const Slot: React.FC<{x: number; y: number; size: number; blur?: number; tone?: [number, number, number] | null; children: React.ReactNode}> = ({x, y, size, blur = 0, tone = null, children}) => {
   const parent = useContext(ScaleCtx);
   const id = `tone${useId().replace(/:/g, '')}`;
+  const soft = blur * STYLE.lensBlur; // lensBlur 0 = the listener stays as sharp as the speaker
   return (
-    <svg style={{position: 'absolute', left: x - size / 2, top: y - size / 2, overflow: 'visible', filter: blur > 0.3 ? `blur(${(blur / parent).toFixed(2)}px)` : undefined}} width={size} height={size} viewBox="-100 -100 200 200">
+    <svg style={{position: 'absolute', left: x - size / 2, top: y - size / 2, overflow: 'visible', filter: soft > 0.3 ? `blur(${(soft / parent).toFixed(2)}px)` : undefined}} width={size} height={size} viewBox="-100 -100 200 200">
       {tone && <defs><filter id={id} x="-50%" y="-50%" width="200%" height="200%" colorInterpolationFilters="sRGB"><feColorMatrix type="matrix" values={`${tone[0]} 0 0 0 0  0 ${tone[1]} 0 0 0  0 0 ${tone[2]} 0 0  0 0 0 1 0`} /></filter></defs>}
       <ScaleCtx.Provider value={(parent * size) / 200}>{tone ? <g filter={`url(#${id})`}>{children}</g> : children}</ScaleCtx.Provider>
     </svg>

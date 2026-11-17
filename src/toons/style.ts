@@ -31,6 +31,12 @@ export const STYLE = {
   edge: 0, // a thin bright line hugging the light-side edge [0.5]
   gloss: 0, // highlight strength (0 = matte): streaks on bodies, arms, legs, veins and sparkles [0.92]
   texture: 0, // surface texture strength (stipple, mottling, weave); 0 = clean vector [1]
+  // ---- camera and air. Clean 2D (owner, 2026-11-17: "remove bokeh"). 1 / true = v6.
+  lensBlur: 0, // depth of field, out-of-focus actors, rack-focus softness and whip-pan blur
+  foreground: false, // the layer in front of the characters (leaves, a curtain edge, a fold of tissue); it was drawn out of focus
+  specks: 0, // drifting dust and ring bubbles in the air. Food, crumbs and oxygen stay: they are the story
+  glow: 0, // soft light pools, light shafts, lamp glow and the soft ring around a prop's disc
+  vignette: 0, // darkening toward the corners of the frame
   // ---- motion and finish
   boil: 0, // hand-drawn line wobble. OFF: it read as a "burning screen" (owner, 2026-11-16)
   breathe: 0.007, // idle breathing (a moving hold); characters do not sway
