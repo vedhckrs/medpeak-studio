@@ -127,7 +127,7 @@ export const ModelSheet: React.FC<{who?: string}> = ({who = 'stomach'}) => {
     {label: 'panic', emotion: 'scared', arms: POSES.panic[kind], talk: 0.8, act: {lean: -4, bob: 3}},
   ];
   const rules = bp
-    ? [`Family: ${bp.family}`, `Face: size ${bp.face.size} at (${bp.face.x}, ${bp.face.y})`, bp.legs ? 'Legs: yes (a traveller)' : 'Legs: none (stays in place)', bp.arms ? 'Arms: thin, in the body colour, clean hands' : 'Arms: none', `Stands on y = ${bp.ground.y}`]
+    ? [`Family: ${bp.family}`, `Face: size ${bp.face.size} at (${bp.face.x}, ${bp.face.y})`, bp.legs ? 'Legs: yes (a traveller)' : 'Legs: none (stays in place)', bp.arms && (bp.family !== 'organ' || STYLE.organArms) ? 'Arms: thin, in the body colour, clean hands' : 'Arms: none (acts with its face and body)', `Stands on y = ${bp.ground.y}`]
     : ['Family: person', `Height: ${sp!.height === undefined || sp!.height >= 0.9 ? '3.6 heads (adult)' : (sp!.legs ?? 1) > 0.6 ? '2.9 heads (kid)' : '2.2 heads (toddler)'}`, `Hair: ${sp!.hair.style}`, `Top: ${sp!.top.kind} · Bottom: ${sp!.bottom.kind}`, 'Hands: palm, four fingers and a thumb in the skin colour'];
   return (
     <AbsoluteFill style={{background: PAPER}}>
@@ -170,9 +170,13 @@ export const ModelSheet: React.FC<{who?: string}> = ({who = 'stomach'}) => {
           </React.Fragment>
         );
       })}
-      <T x={1370} y={860} size={22} weight={800} color={STYLE.label} spacing={4}>HANDS</T>
-      {HAND_POSES.map((h, i) => <HandChip key={h} x={1420 + i * 104} y={960} pose={h} color={bp ? bp.arms?.color ?? bp.color : sp!.skin} size={104} />)}
-      <T x={1850} y={50} w={900} size={16} weight={600} color="#a79fb3" align="right">volume paint: soft form, two-step shadow, bounce light, material texture · outline = darker shade of each fill, max {STYLE.maxLinePx} px · light from the top-left · main colour {main.toUpperCase()}</T>
+      {(!bp || (bp.arms && (bp.family !== 'organ' || STYLE.organArms))) && (
+        <>
+          <T x={1370} y={860} size={22} weight={800} color={STYLE.label} spacing={4}>HANDS</T>
+          {HAND_POSES.map((h, i) => <HandChip key={h} x={1420 + i * 104} y={960} pose={h} color={bp ? bp.arms?.color ?? bp.color : sp!.skin} size={104} />)}
+        </>
+      )}
+      <T x={1850} y={50} w={900} size={16} weight={600} color="#a79fb3" align="right">{STYLE.gloss > 0 ? 'volume paint: soft form, two-step shadow, bounce light, material texture' : 'clean 2D: flat colour, one soft shadow, no gloss, no texture'} · outline = darker shade of each fill, max {STYLE.maxLinePx} px · light from the top-left · main colour {main.toUpperCase()}</T>
     </AbsoluteFill>
   );
 };

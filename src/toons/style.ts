@@ -7,16 +7,21 @@ export const STYLE = {
   maxLinePx: 4.2, // ...but never thicker than this many pixels on screen, however big the character
   lineDarkness: 0.66, // outlines are a darker shade of each fill colour; 0.5 = soft, 0.8 = near black
   // ---- face
-  eyeScale: 1.25, // eye size (1 = small, 1.5 = huge)
+  eyeScale: 1.32, // eye size (1 = small, 1.5 = huge) [1.25]
   eyeGap: 13, // each eye's distance from the centre (12.5 = touching)
-  pupilScale: 1, // pupil size (smaller = funnier, bigger = cuter)
-  blush: 0.45, // cheek blush strength (0 = none). Clean-look proposal 2026-11-17: was 1
+  pupilScale: 1.15, // pupil size (smaller = funnier, bigger = cuter) [1]
+  blush: 0.3, // cheek blush strength (0 = none) [1]
+  // Clean 2D look (owner's pick, 2026-11-17). 'dot' = a plain white eye with a dark pupil and one
+  // small catchlight; 'iris' = the v6 eye (coloured shaded iris, lid shadow, two highlights).
+  eye: 'dot' as 'dot' | 'iris',
+  // Organs are anatomy, not mascots: no arms or hands on the organ family. true = v6 (arms on organs).
+  organArms: false,
   // ---- light (v6: volume paint). Light comes from the top-left.
-  shadow: 0.17, // core shadow darkness: the crisp crescent on the lower right
-  shadowDeep: 0.3, // the darker, thinner occlusion edge inside the core shadow
+  shadow: 0.15, // core shadow darkness: the crisp crescent on the lower right [0.17]
+  shadowDeep: 0.15, // the darker, thinner occlusion edge inside the core shadow; same as `shadow` = one flat step [0.3]
   shadowDepth: 8, // how wide the core shadow is, in character units
-  form: 0.26, // soft roundness: a gradient from light (upper left) to shade (lower right); 0 = flat cel
-  topLight: 0.3, // strength of the soft light on the upper left
+  form: 0.1, // soft roundness: a gradient from light (upper left) to shade (lower right); 0 = flat cel [0.26]
+  topLight: 0.12, // strength of the soft light on the upper left [0.3]
   // Clean-look proposal (owner, 2026-11-17: "remove glare and all unnecessary things"). Old values in brackets.
   rim: 0.2, // bounce light: a thin lighter line hugging the shadow-side edge [0.6]
   edge: 0, // a thin bright line hugging the light-side edge [0.5]

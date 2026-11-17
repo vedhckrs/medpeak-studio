@@ -37,38 +37,45 @@ const Sparkle: React.FC<{x: number; y: number; s?: number}> = ({x, y, s = 1}) =>
 );
 
 // ============================================================ digestion
-const STOMACH = spline([[-18, -52], [-28, -32], [-38, -10], [-54, 8], [-74, 18], [-88, 30], [-86, 46], [-70, 54], [-44, 58], [-10, 70], [28, 66], [60, 42], [74, 4], [66, -34], [46, -58], [20, -66], [-2, -60]]);
+// Clean 2D (owner's pick, 2026-11-17): the real organ seen from the front. The food pipe comes in
+// at the top left (cardia), the fundus dome rises to its right, the greater curvature runs down the
+// right side, and the stomach narrows to the pylorus (a muscle ring) and the duodenum at the lower
+// left. A few clean fold lines, no vessels, no gloss, no arms.
+const STOMACH = spline([[-30, -50], [-35, -30], [-43, -10], [-58, 6], [-76, 14], [-90, 24], [-92, 40], [-78, 51], [-54, 58], [-20, 68], [22, 67], [56, 50], [77, 14], [78, -22], [63, -53], [36, -70], [8, -68], [-12, -58]]);
 const stomach: Blueprint = {
   name: 'stomach', family: 'organ', role: 'The hard-working cook: mixes food with acid. Grumpy when overfed.',
-  color: '#ff8f9c', accents: [{label: 'food pipe', color: '#f7a3a6'}, {label: 'artery', color: ARTERY}, {label: 'vein', color: VEINC}],
-  face: {x: 12, y: -8, size: 1.12},
+  color: '#ff8f9c', accents: [{label: 'food pipe', color: '#f7a3a6'}, {label: 'duodenum', color: '#ffa5ae'}, {label: 'folds', color: '#e0707f'}],
+  face: {x: 12, y: -6, size: 1.12},
   arms: {l: [-40, 0], r: [70, 6]},
   rest: [168, 62],
   legs: null,
   ground: {y: 74, w: 58},
-  back: ({color}) => {
+  back: () => {
     const pipe = '#f7a3a6';
+    const gut = '#ffa5ae';
     return (
       <>
-        <Tube d="M-80 39 C-96 37 -105 46 -103 60" r={8.2} fill={lift(color, 0.16)} cap="butt" />
-        <TubeEnd x={-103} y={60} rx={8.2} ry={3} rot={8} color={lift(color, 0.16)} />
-        <Tube d="M-10 -48 C-11 -64 -15 -76 -13 -92" r={9.5} fill={pipe} cap="butt" />
-        {[-62, -72, -82].map((y, i) => <Ring key={y} d={`M${-21 + i * -0.8} ${y} Q${-12 + i * -0.8} ${y + 3} ${-3 + i * -0.6} ${y}`} color={pipe} />)}
-        <TubeEnd x={-13} y={-92} rx={9.5} ry={3.4} rot={-6} color={pipe} />
+        <Tube d="M-84 37 C-100 35 -109 46 -106 62" r={8.6} fill={gut} cap="butt" />
+        <TubeEnd x={-106} y={62} rx={8.6} ry={3.1} rot={8} color={gut} />
+        <Tube d="M-22 -48 C-23 -64 -27 -78 -25 -95" r={9.5} fill={pipe} cap="butt" />
+        {[-64, -75, -86].map((y, i) => <Tick key={y} d={`M${-32.5 - i * 0.9} ${y} Q${-24 - i * 0.9} ${y + 3.2} ${-15 - i * 0.7} ${y}`} color={shade(pipe, 0.3)} k={0.7} />)}
+        <TubeEnd x={-25} y={-95} rx={9.5} ry={3.4} rot={-6} color={pipe} />
       </>
     );
   },
-  body: ({color}) => (
-    <Part d={STOMACH} fill={color} mat="flesh" shine={[40, -44, 1.3]}>
-      <Groove pts={[[50, -40], [64, -18], [65, 6]]} color={color} />
-      <Groove pts={[[38, -50], [54, -30], [56, -8]]} w={2} color={color} k={0.14} />
-      <Groove pts={[[-64, 27], [-46, 36], [-26, 38]]} w={2.2} color={color} />
-      <Groove pts={[[-76, 23], [-82, 38], [-76, 52]]} w={3} color={color} k={0.28} />
-      <Vein pts={[[70, 14], [58, 40], [30, 58], [-6, 63], [-40, 53], [-66, 49]]} w={2.3} color={VEINC} opacity={0.6} />
-      <Vein pts={[[68, 20], [54, 45], [28, 61], [-8, 66], [-42, 56], [-64, 52]]} w={2.3} color={ARTERY} opacity={0.82} />
-      {([[[44, 52], [40, 42], [43, 33]], [[10, 64], [7, 54], [11, 46]], [[-24, 61], [-25, 51], [-21, 44]], [[-50, 54], [-52, 46], [-49, 40]]] as P[][]).map((pts, i) => <Vein key={i} pts={pts} w={1.4} color={ARTERY} opacity={0.7} />)}
-    </Part>
-  ),
+  body: ({color}) => {
+    const fold = '#e0707f';
+    return (
+      <Part d={STOMACH} fill={color} mat="flesh">
+        {/* folds of the stomach wall, following the greater curvature */}
+        <Mark pts={[[60, -36], [68, -8], [63, 22], [44, 44]]} w={2.6} color={fold} />
+        <Mark pts={[[40, 55], [12, 61], [-18, 59], [-44, 51]]} w={2.4} color={fold} />
+        <Mark pts={[[-66, 24], [-50, 31], [-32, 34]]} w={2.2} color={fold} />
+        {/* the pylorus: the muscle ring between the stomach and the duodenum */}
+        <Mark pts={[[-79, 17], [-84, 34], [-77, 51]]} w={3.2} color={fold} />
+      </Part>
+    );
+  },
 };
 
 const COIL = spline([[-48, -24], [0, -32], [48, -24], [54, 18], [42, 62], [0, 74], [-42, 62], [-54, 18]]);

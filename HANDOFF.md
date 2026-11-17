@@ -47,10 +47,34 @@ Commits 1 and 2 finish "next step" 1 and 2 of the entries below. The Mac can tak
 - True 3D cannot be drawn by this SVG engine. It would need AI-made 3D-style pictures or real 3D models,
   which changes the pipeline and costs credits per video.
 
-### Open: the owner's decision
+### The owner's decision: clean 2D like the reference
 
-Which look: (a) clean 2D like the reference, in the current engine; (b) a soft "3D-feel" shading in the
-current engine; (c) true 3D with a different technique. Nothing more is built until he picks.
+He picked (a) clean 2D in the current engine, over a soft "3D-feel" shading and true 3D. Our characters
+stay our own designs; only the kind of look follows the reference.
+
+What is built for it, in the commit "feat(toons): clean 2D look, stomach redrawn":
+
+- `src/toons/style.ts`: `eye: 'dot'` (plain white eye, dark pupil, one small catchlight; `'iris'` brings
+  the v6 eye back), `organArms: false` (no arms or hands on the organ family), one flat shadow step
+  (`shadowDeep` = `shadow`), weaker form and top light, bigger eyes and pupils, blush 0.3.
+- `src/toons/rig.tsx`: the dot eye. `src/toons/blueprint.tsx`: organs skip their arms when
+  `organArms` is false. `src/toons/Preview.tsx`: the model sheet says so and hides the hands row.
+- `src/toons/characters.tsx`: **only the stomach is redrawn** (real shape, four fold lines, pylorus
+  ring, no vessels). The other 24 still have their v6 drawing with the new eyes and switches.
+
+Checked: typecheck passes, 44 of 44 tests pass, `ToonSheet` for the stomach and `ToonCast` render.
+
+### Open
+
+- The owner has seen the stomach but has not yet said yes to redrawing the other 24.
+- Organs without arms change the acting in every existing Toon (wave, point, thumbs up do nothing on
+  an organ now). No Toon video was re-rendered or re-checked (`toon:camera`, `toon:motion`,
+  `toon:staging`) with this look.
+- Bokeh is not removed yet: lens blur (`camera.tsx` `LENSES`), the blurred foreground layer and drifting
+  specks (`scenes.tsx`), lamp glow and halos.
+- The stages (`stages.tsx`, `stage-arena.tsx`) draw their own stomach, food pipe and tooth with arms;
+  they are not changed.
+- The boards in `skill/medpeak-health/references/toons-boards/` and `toons-style.md` still describe v6.
 
 ---
 

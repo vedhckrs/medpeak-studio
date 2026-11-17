@@ -6,6 +6,7 @@
 import React from 'react';
 import {Contact, lineOf} from './ink';
 import {Arm, type ArmSpec, armOf, type Emotion, Face, Leg} from './rig';
+import {STYLE} from './style';
 
 export type Family = 'organ' | 'cell' | 'germ' | 'medicine' | 'waste' | 'skeleton' | 'person';
 
@@ -78,6 +79,7 @@ export const makeCharacter = (bp: Blueprint): Character => {
     const arms = p.arms === null ? null : p.arms ?? bp.rest ?? [112, 68];
     const arm = (i: 0 | 1, front: boolean) => {
       if (!bp.arms || !arms) return null;
+      if (bp.family === 'organ' && !STYLE.organArms) return null; // clean 2D: organs are anatomy, no arms or hands
       const sp = armOf(arms[i]);
       if (!!sp.front !== front) return null;
       const [x, y] = i === 0 ? bp.arms.l : bp.arms.r;
