@@ -420,7 +420,7 @@
     {
      "id": "B2",
      "who": "bacteria",
-     "text": "Sugar! Boys, charge!",
+     "text": "Sugar! Charge!",
      "emotion": "angry",
      "pose": "point",
      "key": "charge",
@@ -428,7 +428,7 @@
       "tooth": "shocked"
      },
      "chat": true,
-     "beat": 3
+     "beat": 2.85
     },
     {
      "id": "B3",

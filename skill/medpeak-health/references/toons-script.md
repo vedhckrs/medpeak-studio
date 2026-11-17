@@ -25,7 +25,7 @@ script names its `"shape"` and the gate changes:
 - **Only the rooms the story needs**: no clinic and no doctor unless the shape is `visit`.
 - **Every line names its source or is marked `"chat": true`**: with no doctor to carry the facts,
   the body characters do.
-- **`"beat"` on a line**: up to 2 seconds of silence after it, so a gag can play with no words.
+- **`"beat"` on a line**: up to 3 seconds of silence after it, so a gag can play with no words.
 - The hook rules, the open question, the twist at 50 to 75%, best last and the loop stay.
 The first one is `videos/skip-brushing-at-night` (the fight, on the tooth arena, no doctor, 3 stickers).
 

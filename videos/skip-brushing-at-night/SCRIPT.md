@@ -84,7 +84,7 @@ Characters: tooth, bacteria
 |---|---|---|---|---|---|---|
 | 6.6 s | B1 | tooth | happy | This evening, my spit guards were on duty. | ews 24 lock | dawes-2008 |
 | 9.3 s | B1b | tooth | neutral | Every snack leaves sugar on me. | the scene, locked | nidcr |
-| 11.7 s | B2 | bacteria | angry | Sugar! Boys, charge! | the scene, locked |  |
+| 11.7 s | B2 | bacteria | angry | Sugar! Charge! | the scene, locked |  |
 | 15.8 s | B3 | tooth | happy | Ha! My spit washes away their sugar and their acid. | the scene, locked | dawes-2008, nidcr |
 | 19.1 s | B4 | bacteria | smug | Fine. We'll wait for bedtime. | the scene, locked |  |
 | 22.3 s | B5 | tooth | shocked | Bedtime. And he didn't brush! | the scene, locked |  |

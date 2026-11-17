@@ -154,7 +154,7 @@ export type ToonLine = {
   pose?: PoseName;
   sfx?: string; // an effect from the library; without it the emotion picks one
   key?: string; // the caption word shown in amber (default: the last word)
-  beat?: number; // seconds of silence after this line (0 to 2): the picture plays a gag with no words
+  beat?: number; // seconds of silence after this line (0 to 3): the picture plays a gag with no words
   tempo?: number; // 0.9 to 1.15: this line's voice a touch slower or faster (free, applied by `toon-voice --remix`)
   cut?: number; // keep only this many seconds of the voice clip: trims a stray sound after the last word (free, `--remix`)
   react?: Record<string, Emotion>; // the listeners' faces
@@ -277,7 +277,7 @@ export const layoutToon = (toon: Toon, timings: ToonTimings | null) => {
     (shot.lines ?? []).forEach((line, li) => {
       const tm = timings?.lines[line.id];
       const sec = lineSeconds(line, timings);
-      const frames = Math.round((sec + GAP + Math.max(0, Math.min(2, line.beat ?? 0))) * TOON_FPS); // `beat`: a silent moment after the line, so a gag can play
+      const frames = Math.round((sec + GAP + Math.max(0, Math.min(3, line.beat ?? 0))) * TOON_FPS); // `beat`: a silent moment after the line, so a gag can play
       lines.push({line, si, li, from: at, frames, words: tm?.words ?? guessWords(line.text, sec), file: tm?.file});
       at += frames;
     });

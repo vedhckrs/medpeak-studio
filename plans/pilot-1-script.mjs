@@ -61,7 +61,7 @@ const toon = {
       lines: [
         {id: 'B1', who: 'tooth', text: 'This evening, my spit guards were on duty.', cut: 2.06, emotion: 'happy', pose: 'present', key: 'guards', react: {bacteria: 'angry'}, src: ['dawes-2008'], beat: 0.5},
         {id: 'B1b', who: 'tooth', text: 'Every snack leaves sugar on me.', emotion: 'neutral', pose: 'explain', key: 'sugar', react: {bacteria: 'happy'}, src: ['nidcr'], beat: 0.3},
-        {id: 'B2', who: 'bacteria', text: 'Sugar! Boys, charge!', emotion: 'angry', pose: 'point', key: 'charge', react: {tooth: 'shocked'}, chat: true, beat: 3.0},
+        {id: 'B2', who: 'bacteria', text: 'Sugar! Charge!', emotion: 'angry', pose: 'point', key: 'charge', react: {tooth: 'shocked'}, chat: true, beat: 2.85},
         {id: 'B3', who: 'tooth', text: 'Ha! My spit washes away their sugar and their acid.', emotion: 'happy', pose: 'cheer', key: 'washes', react: {bacteria: 'sad'}, src: ['dawes-2008', 'nidcr']},
         {id: 'B4', who: 'bacteria', text: "Fine. We'll wait for bedtime.", emotion: 'smug', pose: 'think', key: 'bedtime', chat: true, beat: 1.1},
         {id: 'B5', who: 'tooth', text: "Bedtime. And he didn't brush!", emotion: 'shocked', pose: 'panic', key: 'brush', react: {bacteria: 'happy'}, chat: true, beat: 1.5},
