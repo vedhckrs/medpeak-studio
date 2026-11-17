@@ -10,21 +10,22 @@ export const STYLE = {
   eyeScale: 1.25, // eye size (1 = small, 1.5 = huge)
   eyeGap: 13, // each eye's distance from the centre (12.5 = touching)
   pupilScale: 1, // pupil size (smaller = funnier, bigger = cuter)
-  blush: 1, // cheek blush strength (0 = none)
+  blush: 0.45, // cheek blush strength (0 = none). Clean-look proposal 2026-11-17: was 1
   // ---- light (v6: volume paint). Light comes from the top-left.
   shadow: 0.17, // core shadow darkness: the crisp crescent on the lower right
   shadowDeep: 0.3, // the darker, thinner occlusion edge inside the core shadow
   shadowDepth: 8, // how wide the core shadow is, in character units
   form: 0.26, // soft roundness: a gradient from light (upper left) to shade (lower right); 0 = flat cel
   topLight: 0.3, // strength of the soft light on the upper left
-  rim: 0.6, // bounce light: a thin lighter line hugging the shadow-side edge
-  edge: 0.5, // a thin bright line hugging the light-side edge
-  gloss: 0.92, // highlight strength (0 = matte)
-  texture: 1, // surface texture strength (stipple, mottling, weave); 0 = clean vector
+  // Clean-look proposal (owner, 2026-11-17: "remove glare and all unnecessary things"). Old values in brackets.
+  rim: 0.2, // bounce light: a thin lighter line hugging the shadow-side edge [0.6]
+  edge: 0, // a thin bright line hugging the light-side edge [0.5]
+  gloss: 0, // highlight strength (0 = matte): streaks on bodies, arms, legs, veins and sparkles [0.92]
+  texture: 0, // surface texture strength (stipple, mottling, weave); 0 = clean vector [1]
   // ---- motion and finish
   boil: 0, // hand-drawn line wobble. OFF: it read as a "burning screen" (owner, 2026-11-16)
   breathe: 0.007, // idle breathing (a moving hold); characters do not sway
-  grain: 0.035, // paper grain over the frame (0 = clean)
+  grain: 0, // paper grain over the frame (0 = clean) [0.035]
   // ---- colours
   ink: '#2a2440', // deep colour for text and the darkest accents
   captionBg: '#1d2b4f',

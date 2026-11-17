@@ -200,7 +200,7 @@ export const Groove: React.FC<{pts: P[]; w?: number; color: string; k?: number}>
 export const Vein: React.FC<{pts: P[]; w?: number; color: string; opacity?: number}> = ({pts, w = 2.4, color, opacity = 0.85}) => (
   <g opacity={opacity}>
     <path d={taperedPath(pts, w, 0.02, 0.75)} fill={color} />
-    <path d={taperedPath(pts.map(([x, y]) => [x - w * 0.16, y - w * 0.2] as P), w * 0.28, 0.02, 0.75)} fill="#ffffff" opacity={0.4} />
+    {STYLE.gloss > 0 && <path d={taperedPath(pts.map(([x, y]) => [x - w * 0.16, y - w * 0.2] as P), w * 0.28, 0.02, 0.75)} fill="#ffffff" opacity={0.43 * STYLE.gloss} />}
   </g>
 );
 
@@ -453,7 +453,7 @@ export const Tube: React.FC<{d: string; r: number; fill: string; line?: string |
       {pass === 'both' && outline}
       <path d={d} {...common} stroke={flat ? fill : shade(fill, shadow + (soft ? 0 : 0.07))} strokeWidth={r * 2} />
       {!flat && <path d={d} {...common} stroke={fill} strokeWidth={r * (soft ? 1.5 : 1.3)} transform={`translate(${(-r * 0.2).toFixed(2)} ${(-r * 0.27).toFixed(2)})`} />}
-      {!flat && !soft && r >= 2.6 && <path d={d} {...common} stroke={lift(fill, 0.6)} strokeWidth={r * 0.34} transform={`translate(${(-r * 0.38).toFixed(2)} ${(-r * 0.46).toFixed(2)})`} opacity={0.7} />}
+      {!flat && !soft && r >= 2.6 && STYLE.gloss > 0 && <path d={d} {...common} stroke={lift(fill, 0.6)} strokeWidth={r * 0.34} transform={`translate(${(-r * 0.38).toFixed(2)} ${(-r * 0.46).toFixed(2)})`} opacity={0.76 * STYLE.gloss} />}
     </g>
   );
 };

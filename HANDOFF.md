@@ -6,6 +6,54 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-17 (night) - Windows PC (commits by VED) - branch `feat/toons-cast-3d`
+
+The owner looked at the Toons cast and said it does not look good: he wants it cleaner, cuter, more
+polished, without glare, bokeh and other unnecessary things, "pure 3D like the Dr. Healthcare channel"
+(youtube.com/@Dr_Healthcare1/shorts). **No look has been approved yet.** This entry is on the branch
+only, not on `main`.
+
+### What this branch is
+
+`feat/toons-cast-3d` was cut from `origin/feat/toons` at `c33e97d`. `feat/toons` itself was not touched.
+
+1. `cee6d8e` merge of `main` into it. The one conflict (`pipeline/render.mjs`) is resolved: both sides
+   kept. The Remotion launcher moved into `pipeline/lib/util.mjs` as `remotion()`.
+2. `519dbc0` the Toons scripts run on Windows: `isMain()` in `toon-check`, `toon-music`, `toon-sfx`;
+   `remotion()` instead of `npx` in `toon-sheets`, `toon-render`, `toon-package`.
+3. The last commit is a **proposal, not a decision**: a clean look in `src/toons/style.ts`
+   (gloss 0, texture 0, edge 0, rim 0.2, grain 0, blush 0.45; old values are in the comments) and two
+   lines in `src/toons/ink.tsx` so arm and vein highlights follow `STYLE.gloss`.
+
+Commits 1 and 2 finish "next step" 1 and 2 of the entries below. The Mac can take them into
+`feat/toons` with `git merge 519dbc0` (that leaves the style proposal out).
+
+### What was run (Windows 11, Node 24.22.1)
+
+- `npm run typecheck`: pass. `npm test`: 44 of 44 pass.
+- `ToonCast` and `ToonSheet` (stomach) rendered before and after the proposal. The pictures are in
+  `out/toons/sheets/` on the Windows PC (not in git): `cast-before-after.jpg`, `stomach-before-after.jpg`.
+- Not run: any Toon video render, voice, sound or listening step. The boards in
+  `skill/medpeak-health/references/toons-boards/` were not re-rendered.
+
+### What was found
+
+- The reference channel calls itself "2D animated" and it is: flat colour, thin clean outlines, real
+  anatomy in place, two plain round eyes, no arms or hands on organs, plain backgrounds. It is not 3D.
+- Our glare is `STYLE.gloss` (streaks on bodies, arms, veins), the speckle is `STYLE.texture`, the paper
+  noise is `STYLE.grain`. The "bokeh" is the lens blur in `src/toons/camera.tsx` (`LENSES` bg/fg), the
+  blurred foreground layer and drifting specks in `scenes.tsx`, and lamp glow and halos. Those are not
+  switched off yet.
+- True 3D cannot be drawn by this SVG engine. It would need AI-made 3D-style pictures or real 3D models,
+  which changes the pipeline and costs credits per video.
+
+### Open: the owner's decision
+
+Which look: (a) clean 2D like the reference, in the current engine; (b) a soft "3D-feel" shading in the
+current engine; (c) true 3D with a different technique. Nothing more is built until he picks.
+
+---
+
 ## 2026-11-17 (evening) - Windows PC (commits by VED) - branch `docs/topic-bank`
 
 The owner asked for more topics with high search demand worldwide, and wants to start with 15.
