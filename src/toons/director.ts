@@ -11,7 +11,7 @@ export const SEG = 78; // frames: the usual longest stretch of one picture (2.6 
 export const SEG_MAX = SEG + 10; // a line that ends within 2.9 s keeps its one picture
 export const WPS = 2.94; // words a second, pauses included: measured on our own 47 voiced lines (386 words in 131.4 s)
 
-export const SET_NAMES = ['throat', 'gut', 'stomach', 'mouth', 'blood', 'lungs', 'office', 'bathroom', 'bedroom', 'foodpipe', 'tooth', 'tummy', 'molar', 'clinic', 'home'] as const;
+export const SET_NAMES = ['throat', 'gut', 'stomach', 'mouth', 'blood', 'lungs', 'office', 'bathroom', 'bedroom', 'foodpipe', 'tooth', 'tummy', 'molar', 'arm', 'clinic', 'home'] as const;
 export type SetName = (typeof SET_NAMES)[number];
 export const SHOT_NAMES = ['ews', 'wide', 'full', 'two', 'ms', 'mcu', 'cu', 'ecu', 'ots', 'low'] as const;
 export type ShotName = (typeof SHOT_NAMES)[number];
@@ -48,6 +48,10 @@ export const STAGE_KEYS: Partial<Record<SetName, string[]>> = {
   // tip their cups: a pond in the groove, runs down the shoulders. chalk: chalky patches spread (lost
   // minerals). brush: a giant brush ploughs everything off. shield: a fluoride coat.
   // snack: a few crumbs land by day (the spit washes them off).
+  // The ARM (rabies): bite: a dog's muzzle comes in, nips, goes; saliva drops; the virus appears. climb:
+  // the virus walks up the nerve (0 = the scratch, 1 = under the sign). days: the calendar (day 1 to week 10).
+  // vaccine: defenders arrive from both sides. wall: they line up across the nerve. wash: soap foam on the scratch.
+  arm: ['bite', 'climb', 'days', 'vaccine', 'wall', 'wash'],
   molar: ['night', 'guards', 'sleep', 'sugar', 'snack', 'wash', 'fight', 'party', 'acid', 'chalk', 'brush', 'shield'],
   // gum: a swallowed piece of gum comes down and floats with the food. pass: what is in the stomach
   // moves on through the exit at the lower left. squeeze: an empty stomach's hunger squeeze, a ring of

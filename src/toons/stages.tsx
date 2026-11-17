@@ -11,6 +11,7 @@ import {Arm, type ArmSpec, type Emotion, Face} from './rig';
 import type {RoomLook} from './director';
 import {STYLE} from './style';
 import {ARENA_ARMS, ARENA_SPOTS, arenaSpotsAt, arenaThings} from './stage-arena';
+import {ARM_SPOTS, armSpotsAt, armThings} from './stage-arm';
 import {theme} from '../brand/theme';
 
 /** What the player hands a stage for each character the stage draws itself. */
@@ -799,6 +800,7 @@ export const tummyLayout = (state: Record<string, number> = {}, t = 0) => {
 /** For the staging check: the boxes of a stage's faces and of the loose things on it, for a state. null = this stage is not measured yet. */
 export const stageThings = (set: string, state: Record<string, number> = {}, t = 0): {faces: {who: string; x0: number; y0: number; x1: number; y1: number; dry?: boolean}[]; things: {id: string; only?: string; x0: number; y0: number; x1: number; y1: number}[]; surface?: number} | null => {
   if (set === 'molar') return arenaThings(state, t);
+  if (set === 'arm') return armThings(state, t);
   if (set !== 'tummy') return null;
   const T = tummyLayout(state, t);
   const face = {who: 'stomach', x0: T.meAt[0] - FACE_ROOM.side, y0: T.meAt[1] - FACE_ROOM.up, x1: T.meAt[0] + FACE_ROOM.side, y1: T.meAt[1] + FACE_ROOM.down};
@@ -1028,6 +1030,7 @@ export const STAGE_ARMS: Record<string, Record<string, {k: number; len: number}>
   molar: ARENA_ARMS,
 };
 STAGE_SPOTS.molar = ARENA_SPOTS;
+STAGE_SPOTS.arm = ARM_SPOTS;
 
 // ------------------------------------------------------------------ where the stage's characters are, for a state
 /**
@@ -1049,6 +1052,7 @@ export const stageSpotsAt = (set: string, state: Record<string, number> = {}): R
   }
   if (set === 'tooth') return {tooth: base.tooth, bacteria: st('brush') > 0.55 ? null : base.bacteria};
   if (set === 'molar') return arenaSpotsAt(state);
+  if (set === 'arm') return armSpotsAt(state);
   if (set === 'tummy') {
     const k = io(st('tilt'));
     const th = (TUM.lie * k * Math.PI) / 180;

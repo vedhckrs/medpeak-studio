@@ -17,6 +17,7 @@ import {clamp01, E, key, settle, speak} from './motion';
 import {POSES, type PoseName} from './poses';
 import {FoodPipeStage, ToothStage, TummyStage, type SetProps, type StageFace} from './stages';
 import {ToothArenaStage} from './stage-arena';
+import {ArmStage} from './stage-arm';
 import {peopleBoxes, ShotStill, type ToonActor} from './Player';
 import {LENSES, type LensName, type MoveName, SHOTS, type ShotName} from './camera';
 import {type ArmSpec, blinkAt, EMOTIONS, type Emotion, Face, Hand, HAND_POSES, type HandPose} from './rig';
@@ -233,6 +234,14 @@ STAGE_BOARDS.arena = {title: 'the tooth arena: guards, gang, fight', C: ToothAre
   {label: '4 the night party', state: {night: 1, guards: 1, sleep: 1, sugar: 1, party: 1, acid: 0.45}, faces: {tooth: sf('scared', 0.5, POSES.panic.body), bacteria: sf('happy', 0.8, POSES.cheer.body)}},
   {label: '5 acid, a chalky patch', state: {night: 1, guards: 1, sleep: 1, sugar: 1, party: 1, acid: 1, chalk: 1}, faces: {tooth: sf('sad', 0.7, POSES.panic.body), bacteria: sf('smug', 0.5, POSES.point.body)}},
   {label: '6 the brush', state: {night: 0.5, guards: 1, sugar: 1, party: 1, acid: 0.6, brush: 0.42}, faces: {tooth: sf('happy', 0.7, POSES.cheer.body), bacteria: sf('scared', 0.8, POSES.panic.body)}},
+]};
+STAGE_BOARDS.arm = {title: 'the arm: a race up the nerve', C: ArmStage, cells: [
+  {label: '1 the dog comes in', state: {bite: 0.4}, faces: {}},
+  {label: '2 the nip, saliva', state: {bite: 0.68}, faces: {}},
+  {label: '3 the virus arrives', state: {bite: 1, climb: 0}, faces: {virus: sf('smug', 0.5)}},
+  {label: '4 up the nerve, week 6', state: {bite: 1, climb: 0.35, days: 0.5}, faces: {virus: sf('happy', 0.4)}},
+  {label: '5 the defenders come', state: {bite: 1, climb: 0.42, days: 0.6, vaccine: 1}, faces: {virus: sf('shocked', 0.5)}},
+  {label: '6 the wall', state: {bite: 1, climb: 0.4, vaccine: 1, wall: 1}, faces: {virus: sf('sad', 0.4)}},
 ]};
 export const StageBoard: React.FC<{stage?: string; cell?: number}> = ({stage = 'foodpipe', cell}) => {
   const B = STAGE_BOARDS[stage];
