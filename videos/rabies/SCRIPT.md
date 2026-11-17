@@ -95,8 +95,8 @@ What happens in the picture:
 - at B3: climb to 0.15, days to 0.25
 - at B3 ("months"): climb to 0.28, days to 0.55
 - at B3 ("brain."): climb to 0.36, days to 0.8
-- at B3 ("two"): tag "usually 2 to 3 months"
-- at B3 ("brain."): tag "can be 1 week"
+- at B3 ("two"): tag "2-3 months"
+- at B3 ("brain."): tag "or just 1 week!"
 
 ## Scene C: home
 
@@ -113,7 +113,7 @@ What happens in the picture:
 - at C1 ("scratch,"): pain
 - at C2 ("Soap"): drop
 - at C3: clock
-- at C2 ("fifteen"): tag "WHO: 15 minutes"
+- at C2 ("fifteen"): tag "15 minutes"
 
 ## Scene D: clinic
 
@@ -131,7 +131,7 @@ What happens in the picture:
 - at D1 ("Washing"): glass in a thought bubble
 - at D2 ("always"): pain
 - at D3 ("treatment"): pillbottle
-- at D3 ("works"): tag "in time: nearly 100% works"
+- at D3 ("works"): tag "act in time"
 
 ## Scene E: arm
 

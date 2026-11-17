@@ -199,7 +199,14 @@ const TagProp: React.FC<{t: number; text?: string}> = ({text = ''}) => {
   const w = Math.max(70, text.length * 19 + 34);
   return (
     <g>
-      {STYLE.outline === 'ink' ? (
+      {STYLE.tagStyle === 'hook' ? (
+        // a hook: a bold yellow block with a hard ink shadow and big words; it pops in (Prop) and leaves fast
+        <>
+          <rect x={-w * 0.62 + 8} y={-40 + 8} width={w * 1.24} height={76} fill={STYLE.inkLine} />
+          <rect x={-w * 0.62} y={-40} width={w * 1.24} height={76} fill="#ffd23c" stroke={STYLE.inkLine} strokeWidth={6} />
+          <text x={0} y={14} textAnchor="middle" fontSize={42} fontWeight={900} fill={STYLE.inkLine} fontFamily={theme.font} letterSpacing={0.5}>{text.toUpperCase()}</text>
+        </>
+      ) : STYLE.outline === 'ink' ? (
         // ink look: a label like an anatomy chart, white box, black border, black text
         <>
           <rect x={-w / 2} y={-28} width={w} height={52} fill="#ffffff" stroke={STYLE.inkLine} strokeWidth={4} />

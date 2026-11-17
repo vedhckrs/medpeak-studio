@@ -66,8 +66,8 @@ const toon = {
         {at: 'B3', word: 'brain.', set: {climb: 0.36, days: 0.8}, over: 40},
       ],
       props: [
-        tag('usually 2 to 3 months', 'B3', {word: 'two', x: 700, y: 470, size: 300}),
-        tag('can be 1 week', 'B3', {word: 'brain.', x: 700, y: 590, size: 300, rot: 3}),
+        tag('2-3 months', 'B3', {word: 'two', x: 300, y: 560, size: 300, rot: -5}),
+        tag('or just 1 week!', 'B3', {word: 'brain.', x: 300, y: 560, size: 300, rot: 4}),
       ],
       lines: [
         {id: 'B1', who: 'virus', text: 'A street dog. A little nip. A tiny scratch.', emotion: 'smug', pose: 'rest', key: 'scratch', chat: true, beat: 0.4},
@@ -79,7 +79,7 @@ const toon = {
         {kind: 'pain', x: 880, y: 1240, size: 120, from: 'C1', word: 'scratch,', to: 'C1', on: 'kid'},
         {kind: 'drop', x: 545, y: 1180, size: 200, from: 'C2', word: 'Soap', to: 'C2', halo: true},
         {kind: 'clock', x: 545, y: 1180, size: 200, from: 'C3', halo: true},
-        tag('WHO: 15 minutes', 'C2', {x: 545, y: 330, size: 300, word: 'fifteen', to: undefined}),
+        tag('15 minutes', 'C2', {x: 545, y: 330, size: 300, word: 'fifteen'}),
       ],
       lines: [
         {id: 'C1', who: 'kid', text: "It's just a little scratch, Mum.", emotion: 'neutral', pose: 'shrug', key: 'scratch', chat: true},
@@ -92,7 +92,7 @@ const toon = {
         {kind: 'glass', size: 300, from: 'D1', word: 'Washing', to: 'D1', bubble: true, of: 'doctor'},
         {kind: 'pain', x: 880, y: 1240, size: 120, from: 'D2', word: 'always', to: 'D2', on: 'kid'},
         {kind: 'pillbottle', x: 550, y: 1190, size: 200, from: 'D3', word: 'treatment', halo: true},
-        tag('in time: nearly 100% works', 'D3', {x: 610, y: 300, size: 330, word: 'works', to: undefined}),
+        tag('act in time', 'D3', {x: 610, y: 300, size: 300, word: 'works'}),
       ],
       lines: [
         {id: 'D1', who: 'doctor', text: 'Your mum was right. Washing first, then a doctor, today.', emotion: 'happy', pose: 'explain', key: 'today', react: {kid: 'happy'}, src: ['who-rabies']},

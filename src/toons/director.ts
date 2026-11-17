@@ -179,7 +179,8 @@ export type ToonActor = {who: string; x: number; size: number; y?: number; rot?:
  * "bubble" (a mark on the picture inside the thought bubble before it; then `dx`, `dy` place it from the
  * bubble's centre and it follows wherever the bubble goes).
  */
-export type ToonProp = {kind: PropName; x?: number; y?: number; size: number; rot?: number; from?: string; to?: string; word?: string; halo?: boolean; bubble?: boolean; no?: boolean; text?: string; of?: string; on?: string; dx?: number; dy?: number};
+/** `hold`: keep a text tag up until `to` (by default a tag leaves after TAG_HOLD seconds). */
+export type ToonProp = {hold?: boolean; kind: PropName; x?: number; y?: number; size: number; rot?: number; from?: string; to?: string; word?: string; halo?: boolean; bubble?: boolean; no?: boolean; text?: string; of?: string; on?: string; dx?: number; dy?: number};
 /**
  * Something that happens in the picture: at line `at` (optionally on a `word` of it, plus `delay`
  * seconds) the stage's state moves to `set` over `over` frames, a sound plays, an effect flashes.
@@ -435,11 +436,17 @@ export const stateAt = (L: Layout, si: number, f: number): Record<string, number
   return out;
 };
 /** When a prop is on screen: [first frame, last frame). */
+/** Seconds a text tag stays up (owner, 2026-11-18). Here, not in style.ts, because Node loads this file without a bundler. */
+export const TAG_HOLD = 1.2;
 export const propFrames = (L: Layout, si: number, p: ToonProp): [number, number] => {
   const sh = L.shots[si];
   const from = p.from ? frameOf(L, si, p.from, p.word) : sh.from;
   const z = p.to ? L.lines.find((x) => x.si === si && x.line.id === p.to) : undefined;
-  return [from, z ? z.from + z.frames : sh.from + sh.frames];
+  const end = z ? z.from + z.frames : sh.from + sh.frames;
+  // a text tag is a flash, not a sign: it leaves after STYLE.tagHold seconds (owner, 2026-11-18: "when text
+  // come after 1 sec text go, don't hold text"); `hold: true` on a prop keeps it to its `to`. TAG_HOLD 0 = the old way
+  if ((p.kind === 'tag' || p.kind === 'chip') && TAG_HOLD > 0 && !p.hold) return [from, Math.min(end, from + Math.round(TAG_HOLD * TOON_FPS))];
+  return [from, end];
 };
 /**
  * Every moment something NEW appears in the picture (Retention 7, point 4): a new place or card, a

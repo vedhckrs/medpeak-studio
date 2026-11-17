@@ -48,6 +48,15 @@ export const scanStaging = async (toon, timings, opts = {}) => {
       if (low > LIMITS.caption) out.onCaption.push(`${at}: the ${name(it.p)} sits on the caption line (it reaches down to ${Math.round(it.box.y1)} px; the caption starts at ${cap.y0})`);
       if (it.box.x0 < LIMITS.sides || it.box.x1 > 1080 - LIMITS.sides || it.box.y0 < LIMITS.top) out.outside.push(`${at}: the ${name(it.p)} reaches ${it.box.y0 < LIMITS.top ? `too high (top at ${Math.round(it.box.y0)} px; keep below ${LIMITS.top})` : 'past the side of the picture'}`);
     }
+    // a graphic on top of what the stage itself draws (a calendar, a sign, a label, a crowd): the same fault as two graphics
+    // on each other (owner, 2026-11-18: a tag over the stage's calendar)
+    if (STAGE_KEYS[shot.set]) for (const it of items) {
+      for (let f = it.from; f < it.to; f += 6) {
+        const T = stageThings(shot.set, stateAt(L, si, f), f / TOON_FPS);
+        const hit = (T?.things ?? []).find((th) => th.text && overlap(it.box, th) / Math.min(area(it.box), area(th)) > LIMITS.pair * 0.1);
+        if (hit) { out.stacked.push(`${(f / TOON_FPS).toFixed(1)} s, scene ${shot.id}: the ${name(it.p)} covers the stage's ${hit.id}`); break; }
+      }
+    }
     for (let i = 0; i < items.length; i++) for (let j = i + 1; j < items.length; j++) {
       const a = items[i];
       const b = items[j];

@@ -30,13 +30,15 @@ const io = (t: number) => { const u = clamp01(t); return u < 0.5 ? 4 * u * u * u
 
 // ------------------------------------------------------------------ the shape of the stage
 /** The skin's surface; below it is the air (and the caption line, which must stay clear of faces). */
-export const SURFACE = 1384;
-const FAT_TOP = 1142;
-const DERM_TOP = 1292;
+export const SURFACE = 1700; // tissue fills the frame; only a strip of air is left (reference: anatomy edge to edge)
+const FAT_TOP = 1420;
+const DERM_TOP = 1590;
+/** The reference's own colours, measured from its frames: warm salmon and coral, brick, cream. */
+export const ARM_PAL = {muscle: '#e7867d', muscleDeep: '#cd6e68', gap: '#924142', fibre: '#c45554', lining: '#f6b3aa', artery: '#c45554', arteryDeep: '#924142', arteryLine: '#f48788', nerve: '#f6e3ce', nerveDeep: '#d9b98f', nerveFibre: '#e3c9a3', fat: '#f6dfa6', fatDeep: '#dcbf7a', fatBack: '#ebcf8c', skin: '#f2b8a8', skinDeep: '#e69d98', air: '#e1f7fb', shine: '#fff1ec'};
 const SCRATCH: P = [452, SURFACE];
 /** The nerve, from its endings in the skin up between the muscles and off the top. */
-const NERVE: P[] = [[468, 1300], [478, 1180], [520, 1060], [598, 920], [628, 760], [586, 580], [520, 420], [512, 260], [560, 100], [610, -60]];
-const ARTERY: P[] = [[735, 1120], [740, 980], [770, 820], [790, 640], [760, 440], [700, 280], [690, 100], [712, -60]];
+const NERVE: P[] = [[468, 1610], [472, 1480], [478, 1300], [520, 1160], [598, 1010], [628, 840], [586, 640], [520, 460], [512, 280], [560, 110], [610, -60]];
+const ARTERY: P[] = [[735, 1400], [740, 1220], [770, 1020], [790, 800], [760, 560], [700, 340], [690, 120], [712, -60]];
 const onPath = (pts: P[], k: number): P => {
   const lens = pts.slice(1).map((q, i) => Math.hypot(q[0] - pts[i][0], q[1] - pts[i][1]));
   let d = clamp01(k) * lens.reduce((a, b) => a + b, 0);
@@ -44,10 +46,12 @@ const onPath = (pts: P[], k: number): P => {
   return pts[pts.length - 1];
 };
 /** Where on the nerve `climb` puts the virus (0 = where the nerve leaves the skin, 1 = near the top). */
-export const climbAt = (climb: number) => onPath(NERVE, 0.06 + clamp01(climb) * 0.8);
+export const climbAt = (climb: number) => onPath(NERVE, 0.18 + clamp01(climb) * 0.66); // 0 = just above the fat, clear of the caption line
+/** Which way the nerve runs at `climb` (degrees), so the virus leans along it. */
+export const climbAngle = (climb: number) => { const [ax, ay] = climbAt(Math.max(0, climb - 0.02)); const [bx, by] = climbAt(Math.min(1, climb + 0.02)); return (Math.atan2(bx - ax, -(by - ay)) * 180) / Math.PI; };
 export const WALL_AT = 0.56; // the defenders' wall; the virus gets no higher than about WALL_AT - 0.2
 export const ARM_ROOM = {side: 130, up: 158, down: 138};
-export const ARM_SPOTS = {virus: {x: NERVE[0][0], y: NERVE[0][1], faceW: 190, headH: 250, size: 460}};
+export const ARM_SPOTS = {virus: {x: 478, y: 1300, faceW: 190, headH: 250, size: 460}};
 const DEF_N = 7;
 
 /** Where everything on the arm is for a state. */
@@ -63,9 +67,9 @@ export const armLayout = (state: Record<string, number> = {}, t = 0) => {
   const drops = [0, 1].map((i) => { const u = clamp01((bite - 0.56 - i * 0.06) / 0.2); return u > 0 && u < 1 ? {i, x: SCRATCH[0] - 22 + i * 40, y: lerp(SURFACE + 90, SURFACE - 6, u), r: 13 - i * 2} : null; }).filter((d): d is NonNullable<typeof d> => !!d);
   const show = state.bite === undefined ? 1 : io(clamp01((bite - 0.8) / 0.2));
   const [vx, vy] = climbAt(climb);
-  // it creeps up the nerve: each little hop is tied to how far it has climbed, so it only hops while it moves
-  const hop = Math.abs(Math.sin(climb * 90));
-  const virus = show > 0.02 ? {x: vx, y: vy - hop * 14, k: show, hop} : null;
+  // it rides up inside the nerve, leaning along it; a little rocking step tied to how far it has climbed (so it only rocks while it moves)
+  const hop = Math.sin(climb * 120);
+  const virus = show > 0.02 ? {x: vx, y: vy, k: show, hop, lean: climbAngle(climb)} : null;
   // the defenders: they come in from both sides and line up across the nerve
   const [wx, wy] = climbAt(WALL_AT);
   const defenders = Array.from({length: DEF_N}).map((_, i) => {
@@ -83,7 +87,7 @@ export const armLayout = (state: Record<string, number> = {}, t = 0) => {
     const blink = (t * 0.37 + i * 0.21) % 1 < 0.04;
     return {i, x: lerp(p0[0], slot[0], io(wall)) + push, y: lerp(p0[1], slot[1], io(wall)) - step, r: 44, on: k, blink};
   }).filter((d): d is NonNullable<typeof d> => !!d);
-  const cal = state.days === undefined || vaccine > 0 ? null : {x: 900, y: 560, text: days < 0.08 ? 'DAY 1' : days < 0.35 ? 'WEEK 2' : days < 0.7 ? 'WEEK 6' : 'WEEK 10'};
+  const cal = state.days === undefined || vaccine > 0 ? null : {x: 905, y: 330, n: days < 0.08 ? 1 : days < 0.35 ? 2 : days < 0.7 ? 6 : 10, unit: days < 0.08 ? 'DAY' : 'WEEK'};
   const foam = wash > 0 ? Array.from({length: 9}).map((_, i) => ({i, x: SCRATCH[0] + Math.cos(i * 0.7 + t) * (40 + (i % 3) * 22), y: SURFACE + 20 + Math.abs(Math.sin(i * 1.3 + t * 0.8)) * 30, r: (12 + (i % 4) * 5) * wash})) : [];
   // the nip shakes the skin and the fat a little; the drops land with a ring
   const shake = nip * Math.sin(t * 46) * 7;
@@ -97,15 +101,15 @@ export const armSpotsAt = (state: Record<string, number> = {}) => {
   return {virus: L.virus && L.virus.k > 0.5 ? {...ARM_SPOTS.virus, x: L.virus.x, y: L.virus.y} : null};
 };
 /** For the staging check: the virus's face room, and every loose thing that could come into it. */
-export const armThings = (state: Record<string, number> = {}, t = 0) => {
+export const armThings = (state: Record<string, number> = {}, t = 0): {faces: {who: string; x0: number; y0: number; x1: number; y1: number}[]; things: {id: string; text?: boolean; x0: number; y0: number; x1: number; y1: number}[]} => {
   const L = armLayout(state, t);
   const R = ARM_ROOM;
   const faces = L.virus && L.virus.k > 0.5 ? [{who: 'virus', x0: L.virus.x - R.side, y0: L.virus.y - R.up, x1: L.virus.x + R.side, y1: L.virus.y + R.down}] : [];
   const things = [
     ...(L.dog ? [{id: 'the dog', x0: 560 + L.dog.dx, y0: SURFACE + L.dog.dy, x1: W, y1: H}] : []),
     ...L.defenders.map((d) => ({id: `defender ${d.i + 1}`, x0: d.x - d.r - 10, y0: d.y - d.r - 26, x1: d.x + d.r + 10, y1: d.y + d.r})),
-    ...(L.cal ? [{id: 'the calendar', x0: L.cal.x - 110, y0: L.cal.y - 50, x1: L.cal.x + 110, y1: L.cal.y + 50}] : []),
-    {id: 'the sign', x0: 600, y0: 60, x1: 1060, y1: 200},
+    ...(L.cal ? [{id: 'calendar', text: true, x0: L.cal.x - 100, y0: L.cal.y - 110, x1: L.cal.x + 100, y1: L.cal.y + 100}] : []),
+    {id: 'sign', text: true, x0: 600, y0: 60, x1: 1060, y1: 200},
   ];
   return {faces, things};
 };
@@ -117,7 +121,7 @@ const BUNDLES: {seed: string; pts: P[]}[] = [
   {seed: 'm3', pts: [[560, 160], [640, 60], [670, 320], [700, 560], [690, 820], [640, 1000], [560, FAT_TOP - 20], [600, 880], [660, 660], [602, 460]]},
   {seed: 'm4', pts: [[840, -80], [1140, -80], [1140, FAT_TOP + 10], [830, FAT_TOP + 10], [880, 880], [850, 540], [880, 240]]},
 ];
-const FAT = Array.from({length: 22}).map((_, i) => ({i, x: -20 + (i % 11) * 108 + (Math.floor(i / 11) % 2) * 54, y: FAT_TOP + 46 + Math.floor(i / 11) * 80, rx: 58 + random(`fr${i}`) * 18, ry: 38 + random(`fy${i}`) * 10}));
+const FAT = Array.from({length: 22}).map((_, i) => ({i, x: -20 + (i % 11) * 108 + (Math.floor(i / 11) % 2) * 54, y: FAT_TOP + 50 + Math.floor(i / 11) * 82, rx: 58 + random(`fr${i}`) * 18, ry: 38 + random(`fy${i}`) * 10}));
 
 const Virus: React.FC<{f: StageFace; k: number}> = ({f, k}) => {
   const bullet = `M-52 64 L-52 -24 Q-52 -88 0 -92 Q52 -88 52 -24 L52 64 Z`;
@@ -149,57 +153,68 @@ export const ArmStage: React.FC<Props> = ({t, state = {}, faces = {}, label}) =>
   const flex = (i: number) => { const q = ((t + i * 1.9) / 6) % 1; return q < 0.25 ? Math.sin((q / 0.25) * Math.PI) : 0; };
   const sig = (t / 5) % 1;
   return (
-    <AbsoluteFill style={{background: '#dde9ee'}}>
+    <AbsoluteFill style={{background: ARM_PAL.air}}>
       <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} style={{position: 'absolute', left: 0, top: 0}}>
-        <rect x={0} y={0} width={W} height={H} fill="#dde9ee" />
+        <rect x={0} y={0} width={W} height={H} fill={ARM_PAL.air} />
         {/* deep tissue between the muscles, the muscle bundles with their fibres */}
-        <rect x={-40} y={-80} width={W + 80} height={FAT_TOP + 140} fill="#7d2633" />
+        <rect x={-40} y={-80} width={W + 80} height={FAT_TOP + 140} fill={ARM_PAL.gap} />
         {/* the muscles: each bundle tightens and relaxes slowly, a few pixels, on its own rhythm */}
         {BUNDLES.map((b, i) => { const c = flex(i); return (
           <g key={b.seed} transform={`translate(${(c * 3).toFixed(2)} 0) scale(${(1 + c * 0.004).toFixed(4)} 1)`}>
-            <Tissue d={spline(wob(b.pts, b.seed, 8), true, 0.55)} fill="#d4626a" deep="#a53c49" lining="#f0a29c" band={58} form={30} shine={{x0: b.pts[0][0] + 40, x1: b.pts[1][0] - 60, y0: 120, y1: FAT_TOP - 160, n: 3, seed: b.seed}} />
+            <Tissue d={spline(wob(b.pts, b.seed, 8), true, 0.55)} fill={ARM_PAL.muscle} deep={ARM_PAL.muscleDeep} lining={ARM_PAL.lining} band={58} form={30} shine={{x0: b.pts[0][0] + 40, x1: b.pts[1][0] - 60, y0: 120, y1: FAT_TOP - 160, n: 3, seed: b.seed}} />
           </g>
         ); })}
-        {[[60, 0], [150, 0.4], [360, 0.2], [420, 0.6], [640, 0.1], [930, 0.3], [1010, 0.5]].map(([x, s], i) => { const c = flex(Math.min(3, Math.floor(x / 280))) * 3; return <path key={i} d={spline(wob([[x + c, -40], [x + 12 + c, 260], [x - 8 + c, 560], [x + 10 + c, 860], [x + c, FAT_TOP - 20]], `fb${i}`, 10), false, 0.5)} fill="none" stroke="#a9414c" strokeWidth={4} strokeLinecap="round" opacity={0.55 + s * 0.2} />; })}
+        {[[60, 0], [150, 0.4], [360, 0.2], [420, 0.6], [640, 0.1], [930, 0.3], [1010, 0.5]].map(([x, s], i) => { const c = flex(Math.min(3, Math.floor(x / 280))) * 3; return <path key={i} d={spline(wob([[x + c, -40], [x + 12 + c, 260], [x - 8 + c, 560], [x + 10 + c, 860], [x + c, FAT_TOP - 20]], `fb${i}`, 10), false, 0.5)} fill="none" stroke={ARM_PAL.fibre} strokeWidth={4} strokeLinecap="round" opacity={0.5 + s * 0.2} />; })}
         {/* fine capillaries on the muscle */}
-        {[[[120, 380], [170, 420], [150, 480], [200, 520]], [[930, 300], [880, 360], [920, 420]], [[960, 820], [1000, 880], [960, 940], [1010, 990]]].map((pts, i) => <path key={`cap${i}`} d={spline(pts as P[], false, 0.5)} fill="none" stroke="#9a2c3a" strokeWidth={4} strokeLinecap="round" opacity={0.85} />)}
+        {[[[120, 380], [170, 420], [150, 480], [200, 520]], [[930, 300], [880, 360], [920, 420]], [[960, 820], [1000, 880], [960, 940], [1010, 990]]].map((pts, i) => <path key={`cap${i}`} d={spline(pts as P[], false, 0.5)} fill="none" stroke={ARM_PAL.gap} strokeWidth={4} strokeLinecap="round" opacity={0.7} />)}
         {/* the artery: it swells with every heartbeat and the blood flows inside it */}
-        <path d={arteryD} fill="#4a1420" opacity={0.4} transform="translate(12 14)" />
-        <path d={nerveD} fill="#4a1420" opacity={0.4} transform="translate(12 14)" />
+        <path d={arteryD} fill={ARM_PAL.gap} opacity={0.55} transform="translate(12 14)" />
+        <path d={nerveD} fill={ARM_PAL.gap} opacity={0.55} transform="translate(12 14)" />
         <g transform={`translate(${ARTERY[3][0]} ${ARTERY[3][1]}) scale(${(1 + beat * 0.03).toFixed(4)} 1) translate(${-ARTERY[3][0]} ${-ARTERY[3][1]})`}>
-          <Tissue d={arteryD} fill="#b8414f" deep="#6e1e2a" lining="#e98a8f" band={22} form={10} />
-          <path d={spline(ARTERY, false, 0.5)} fill="none" stroke="#e98a8f" strokeWidth={6} strokeLinecap="round" strokeDasharray="26 54" strokeDashoffset={flow.toFixed(1)} opacity={0.8} />
+          <Tissue d={arteryD} fill={ARM_PAL.artery} deep={ARM_PAL.arteryDeep} lining={ARM_PAL.arteryLine} band={22} form={10} />
+          <path d={spline(ARTERY, false, 0.5)} fill="none" stroke={ARM_PAL.arteryLine} strokeWidth={6} strokeLinecap="round" strokeDasharray="26 54" strokeDashoffset={flow.toFixed(1)} opacity={0.8} />
         </g>
         {/* the nerve with its fibre bundles, and now and then a signal running up it */}
-        <Tissue d={nerveD} fill="#f6e3a4" deep="#c9a856" lining="#fff7d6" band={26} form={12} />
-        {[-14, 0, 14].map((o, i) => <path key={i} d={spline(NERVE.map(([x, y], j) => [x + o * (1 - (j / NERVE.length) * 0.4), y] as P), false, 0.5)} fill="none" stroke="#d7b964" strokeWidth={3} opacity={0.8} />)}
-        {sig < 0.16 && <path d={spline(NERVE, false, 0.5)} fill="none" stroke="#fffbe6" strokeWidth={16} strokeLinecap="round" pathLength={1} strokeDasharray="0.06 1.94" strokeDashoffset={(-(sig / 0.16) * 1.06).toFixed(3)} opacity={0.9} />}
+        <Tissue d={nerveD} fill={ARM_PAL.nerve} deep={ARM_PAL.nerveDeep} lining="#fffaf0" band={26} form={12} />
+        {[-14, 0, 14].map((o, i) => <path key={i} d={spline(NERVE.map(([x, y], j) => [x + o * (1 - (j / NERVE.length) * 0.4), y] as P), false, 0.5)} fill="none" stroke={ARM_PAL.nerveFibre} strokeWidth={3} opacity={0.9} />)}
+        <defs><clipPath id="armNerveClip"><path d={nerveD} /></clipPath></defs>
+        <g clipPath="url(#armNerveClip)">
+          {/* a signal: a soft bright pulse that runs up inside the nerve, now and then */}
+          {sig < 0.2 && (() => { const [px, py] = onPath(NERVE, sig / 0.2); return <ellipse cx={px} cy={py} rx={60} ry={90} fill="#fffaf0" opacity={0.8 * Math.sin((sig / 0.2) * Math.PI)} />; })()}
+          {/* where the virus is, the nerve swells sickly green around it */}
+          {L.virus && <ellipse cx={L.virus.x} cy={L.virus.y} rx={80} ry={140} fill="#b9cf95" opacity={0.55 * L.virus.k} transform={`rotate(${(L.virus.lean ?? 0).toFixed(1)} ${L.virus.x.toFixed(1)} ${L.virus.y.toFixed(1)})`} />}
+        </g>
         {/* where the virus has been: the nerve it has climbed turns sickly */}
-        {L.virus && L.climb > 0.01 && <path d={spline(Array.from({length: 24}, (_, i) => climbAt((L.climb * i) / 23)), false, 0.5)} fill="none" stroke="#7f9a62" strokeWidth={30} strokeLinecap="round" opacity={0.6} />}
+        {L.virus && L.climb > 0.01 && <path d={spline(Array.from({length: 24}, (_, i) => climbAt((L.climb * i) / 23)), false, 0.5)} fill="none" stroke="#9db57a" strokeWidth={34} strokeLinecap="round" opacity={0.45} clipPath="url(#armNerveClip)" />}
         {/* a few fine strands of connective tissue in front */}
-        {[[[380, 180], [520, 230], [700, 200]], [[300, 900], [470, 960], [620, 940]]].map((pts, i) => <path key={`str${i}`} d={spline(pts as P[], false, 0.5)} fill="none" stroke="#f3c6bf" strokeWidth={5} strokeLinecap="round" opacity={0.75} />)}
+        {[[[380, 180], [520, 230], [700, 200]], [[300, 900], [470, 960], [620, 940]]].map((pts, i) => <path key={`str${i}`} d={spline(pts as P[], false, 0.5)} fill="none" stroke={ARM_PAL.shine} strokeWidth={5} strokeLinecap="round" opacity={0.7} />)}
         <g transform={`translate(0 ${L.shake.toFixed(2)})`}>
         {/* fat lobules */}
-        <path d={`M-40 ${FAT_TOP} Q540 ${FAT_TOP - 22} 1120 ${FAT_TOP} L1120 ${DERM_TOP + 10} L-40 ${DERM_TOP + 10} Z`} fill="#e9c97a" />
-        {FAT.map((f) => <Tissue key={f.i} d={spline(lump(f.x, f.y, f.rx, f.ry, `fl${f.i}`, 12, 0.12), true, 0.6)} fill="#f6dc95" deep="#d4b060" band={18} line={INK.wIn} />)}
+        <path d={`M-40 ${FAT_TOP} Q540 ${FAT_TOP - 22} 1120 ${FAT_TOP} L1120 ${DERM_TOP + 10} L-40 ${DERM_TOP + 10} Z`} fill={ARM_PAL.fatBack} />
+        {FAT.map((f) => <Tissue key={f.i} d={spline(lump(f.x, f.y, f.rx, f.ry, `fl${f.i}`, 12, 0.12), true, 0.6)} fill={ARM_PAL.fat} deep={ARM_PAL.fatDeep} band={18} line={INK.wIn} form={6} />)}
         <path d={`M-40 ${FAT_TOP} Q540 ${FAT_TOP - 22} 1120 ${FAT_TOP}`} fill="none" stroke={INK.line} strokeWidth={INK.w} />
         {/* skin */}
-        <Tissue d={spline(wob([[-60, DERM_TOP], [300, DERM_TOP - 12], [700, DERM_TOP + 4], [1140, DERM_TOP - 8], [1140, SURFACE + 2], [700, SURFACE + 8], [300, SURFACE - 2], [-60, SURFACE + 6]], 'derm', 4), true, 0.4)} fill="#efb39c" deep="#c97b62" band={22} />
-        {[[[468, 1300], [456, 1340], [442, 1376]], [[468, 1300], [490, 1340], [508, 1374]]].map((pts, i) => <path key={i} d={spline(pts as P[], false, 0.5)} fill="none" stroke="#e8cf86" strokeWidth={6} strokeLinecap="round" />)}
+        <Tissue d={spline(wob([[-60, DERM_TOP], [300, DERM_TOP - 12], [700, DERM_TOP + 4], [1140, DERM_TOP - 8], [1140, SURFACE + 2], [700, SURFACE + 8], [300, SURFACE - 2], [-60, SURFACE + 6]], 'derm', 4), true, 0.4)} fill={ARM_PAL.skin} deep={ARM_PAL.skinDeep} band={22} />
+        {[[[468, 1610], [456, 1650], [442, 1692]], [[468, 1610], [490, 1650], [508, 1690]]].map((pts, i) => <path key={i} d={spline(pts as P[], false, 0.5)} fill="none" stroke="#e8cf86" strokeWidth={6} strokeLinecap="round" />)}
         {L.scratched && <path d={`M${SCRATCH[0] - 46} ${SURFACE + 2} L${SCRATCH[0] - 10} ${SURFACE - 30} L${SCRATCH[0] + 8} ${SURFACE - 6} L${SCRATCH[0] + 30} ${SURFACE - 26} L${SCRATCH[0] + 50} ${SURFACE + 4} Z`} fill="#e2858a" stroke={INK.line} strokeWidth={INK.wIn} strokeLinejoin="round" />}
         {L.foam.map((f) => <circle key={f.i} cx={f.x} cy={f.y} r={f.r} fill="#ffffff" stroke={INK.line} strokeWidth={3} />)}
         {L.splash.map((r) => <ellipse key={r.i} cx={SCRATCH[0]} cy={SURFACE - 4} rx={20 + r.k * 60} ry={6 + r.k * 14} fill="none" stroke="#9fd0e6" strokeWidth={4} opacity={1 - r.k} />)}
         </g>
 
         {/* labels and the calendar, like an anatomy chart */}
-        <Label x={300} y={380} text="NERVE" rot={-4} />
-        <path d="M370 380 L470 380" stroke={INK.line} strokeWidth={4} />
-        <Label x={160} y={SURFACE - 46} text="SKIN" size={30} />
         <g transform="translate(830 130)">
           <Label x={0} y={0} text="TO THE BRAIN" size={36} />
           <path d="M-200 -12 L-200 -88 M-224 -62 L-200 -90 L-176 -62" fill="none" stroke={INK.line} strokeWidth={8} strokeLinecap="round" strokeLinejoin="round" />
         </g>
-        {L.cal && <Label x={L.cal.x} y={L.cal.y} text={L.cal.text} size={44} rot={3} />}
+        {L.cal && (
+          <g transform={`translate(${L.cal.x} ${L.cal.y}) rotate(4)`}>
+            <rect x={-86} y={-90} width={172} height={180} fill="#fffaf0" stroke={INK.line} strokeWidth={INK.w} />
+            <rect x={-86} y={-90} width={172} height={50} fill="#e45b55" stroke={INK.line} strokeWidth={INK.w} />
+            {[-44, 44].map((x) => <rect key={x} x={x - 8} y={-108} width={16} height={36} rx={8} fill={INK.line} />)}
+            <text x={0} y={-56} textAnchor="middle" fontFamily={theme.font} fontWeight={900} fontSize={26} fill="#ffffff">{L.cal.unit}</text>
+            <text x={0} y={52} textAnchor="middle" fontFamily={theme.font} fontWeight={900} fontSize={96} fill={INK.line}>{L.cal.n}</text>
+          </g>
+        )}
 
         {/* the defenders the vaccine calls up: round, plain, Y-shaped catchers, eyes only */}
         {L.defenders.map((d) => (
@@ -214,7 +229,7 @@ export const ArmStage: React.FC<Props> = ({t, state = {}, faces = {}, label}) =>
         {/* the virus */}
         {L.virus && (
           <g transform={`translate(${L.virus.x.toFixed(1)} ${(L.virus.y + me.nod * 6).toFixed(1)})`}>
-            <g transform={`scale(${(1 - L.virus.hop * 0.06).toFixed(3)} ${(1 + L.virus.hop * 0.08).toFixed(3)})`}><Virus f={me} k={L.virus.k} /></g>
+            <g transform={`rotate(${((L.virus.lean ?? 0) * 0.6 + L.virus.hop * 6).toFixed(1)})`}><Virus f={me} k={L.virus.k} /></g>
             {L.dizzy > 0.05 && [0, 1, 2].map((i) => { const a = t * 4 + (i * Math.PI * 2) / 3; return <path key={i} transform={`translate(${(Math.cos(a) * 80).toFixed(1)} ${(-170 + Math.sin(a) * 20).toFixed(1)}) scale(${(L.dizzy * 1.8).toFixed(2)})`} d="M0 -16 L5 -5 L16 -4 L7 3 L10 15 L0 8 L-10 15 L-7 3 L-16 -4 L-5 -5 Z" fill="#ffd23c" stroke={INK.line} strokeWidth={3} strokeLinejoin="round" />; })}
           </g>
         )}
@@ -233,7 +248,6 @@ export const ArmStage: React.FC<Props> = ({t, state = {}, faces = {}, label}) =>
           </g>
         )}
       </svg>
-      <div style={{position: 'absolute', left: 50, top: 150, background: '#ffffff', color: INK.line, fontFamily: theme.font, fontWeight: 800, fontSize: 36, padding: '6px 18px', border: `4px solid ${INK.line}`, letterSpacing: 1}}>{label ?? 'YOUR ARM'}</div>
     </AbsoluteFill>
   );
 };

@@ -24,13 +24,28 @@ Format study only: our characters, drawings, jokes and titles stay our own.
 7. **Real anatomy:** the rabies virus is bullet-shaped because it is; a nerve shows its fibre bundles;
    an artery runs beside it; fat is lobules.
 
+## Colour: the reference's own palette (measured from its frames, 2026-11-18)
+Warm salmon and coral, brick, cream, pale sky: muscle `#e7867d`, its shadow `#cd6e68`, the gaps
+between muscles `#924142` (not a deep purple-maroon), fibres and arteries `#c45554`, nerve and fat
+cream `#f6e3ce` / `#f6dfa6`, skin `#f2b8a8`, air `#e1f7fb`. `ARM_PAL` in `stage-arm.tsx`. Each new
+stage samples the reference the same way before it is drawn. Tissue fills the frame; only a strip of
+air may show (our first arm left a sixth of the picture empty).
+
+## Text: little of it, and briefly (owner, 2026-11-18: "too much text on visual", "text come, after 1 sec go")
+- No standing labels on a stage except the one that IS the story (TO THE BRAIN). No scene name pill.
+- A tag is a hook, not a sign: a bold yellow block, big black words, a hard ink shadow, a slight tilt
+  (`STYLE.tagStyle: 'hook'`), two to four words. It leaves after 1.2 s (`TAG_HOLD` in `director.ts`);
+  `hold: true` keeps one longer.
+- Numbers are drawn where possible (a calendar page with a big 10) instead of written in a box.
+- The staging check fails a graphic that covers a stage's own drawing with text (calendar, sign).
+
 ## The motion: the body is alive, in moments
 The reference holds still in 63% of its frames, but the body never looks dead. So:
 - **The camera and the rooms hold still** (`STYLE.roomLife: 0`, `breathe: 0`).
 - **The body lives in moments, not all the time:** a heartbeat swell every 2 s, a muscle tightening
   every 6 s, a nerve signal every 5 s, each a fraction of a second, a few pixels. Never a constant drift.
-- **Characters act with purpose:** the virus creeps in little hops only while it climbs, squashes and
-  stretches, gets dizzy stars after hitting the wall; the defenders march in steps, lock into a wall
+- **Characters act with purpose:** the virus rides INSIDE the nerve, leaning along it and rocking only
+  while it moves (the nerve swells green around it and keeps a green trail), gets dizzy stars after hitting the wall; the defenders march in steps, lock into a wall
   and lean; eyes blink.
 - **Impacts move the world:** the nip shakes the skin and fat; drops land with a ring.
 - **People talk calmly:** arms and head beat less on stressed words (`talkBeat: 0.3`); caption words

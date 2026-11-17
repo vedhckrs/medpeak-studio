@@ -278,22 +278,22 @@
    "props": [
     {
      "kind": "tag",
-     "text": "usually 2 to 3 months",
-     "x": 700,
-     "y": 470,
+     "text": "2-3 months",
+     "x": 300,
+     "y": 560,
      "size": 300,
-     "rot": -3,
+     "rot": -5,
      "from": "B3",
      "to": "B3",
      "word": "two"
     },
     {
      "kind": "tag",
-     "text": "can be 1 week",
-     "x": 700,
-     "y": 590,
+     "text": "or just 1 week!",
+     "x": 300,
+     "y": 560,
      "size": 300,
-     "rot": 3,
+     "rot": 4,
      "from": "B3",
      "to": "B3",
      "word": "brain."
@@ -387,12 +387,13 @@
     },
     {
      "kind": "tag",
-     "text": "WHO: 15 minutes",
+     "text": "15 minutes",
      "x": 545,
      "y": 330,
      "size": 300,
      "rot": -3,
      "from": "C2",
+     "to": "C2",
      "word": "fifteen"
     }
    ],
@@ -490,12 +491,13 @@
     },
     {
      "kind": "tag",
-     "text": "in time: nearly 100% works",
+     "text": "act in time",
      "x": 610,
      "y": 300,
-     "size": 330,
+     "size": 300,
      "rot": -3,
      "from": "D3",
+     "to": "D3",
      "word": "works"
     }
    ],
