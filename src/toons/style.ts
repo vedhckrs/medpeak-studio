@@ -14,8 +14,12 @@ export const STYLE = {
   // Clean 2D look (owner's pick, 2026-11-17). 'dot' = a plain white eye with a dark pupil and one
   // small catchlight; 'iris' = the v6 eye (coloured shaded iris, lid shadow, two highlights).
   eye: 'dot' as 'dot' | 'iris',
-  // Organs are anatomy, not mascots: no arms or hands on the organ family. true = v6 (arms on organs).
-  organArms: false,
+  // Body characters (organs, cells, germs, the pill, the bone, poop) are anatomy, not mascots: no
+  // arms, hands or legs. People keep theirs. true = v6 (arms on bodies, legs on travellers).
+  bodyLimbs: false,
+  // Costume pieces on body characters: the white cell's guard cap, the platelet's medic helmet,
+  // the egg's bow and lashes. false = plain anatomy (clean 2D); true = v6.
+  accessories: false,
   // ---- light (v6: volume paint). Light comes from the top-left.
   shadow: 0.15, // core shadow darkness: the crisp crescent on the lower right [0.17]
   shadowDeep: 0.15, // the darker, thinner occlusion edge inside the core shadow; same as `shadow` = one flat step [0.3]

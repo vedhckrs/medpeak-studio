@@ -59,17 +59,34 @@ What is built for it, in the commit "feat(toons): clean 2D look, stomach redrawn
   (`shadowDeep` = `shadow`), weaker form and top light, bigger eyes and pupils, blush 0.3.
 - `src/toons/rig.tsx`: the dot eye. `src/toons/blueprint.tsx`: organs skip their arms when
   `organArms` is false. `src/toons/Preview.tsx`: the model sheet says so and hides the hands row.
-- `src/toons/characters.tsx`: **only the stomach is redrawn** (real shape, four fold lines, pylorus
-  ring, no vessels). The other 24 still have their v6 drawing with the new eyes and switches.
+- `src/toons/characters.tsx`: the stomach is redrawn (real shape, four fold lines, pylorus ring, no
+  vessels).
 
-Checked: typecheck passes, 44 of 44 tests pass, `ToonSheet` for the stomach and `ToonCast` render.
+Then the owner said yes to the stomach and "do all 24". Commit "feat(toons): whole cast in the clean
+2D look":
+
+- `style.ts`: `organArms` became `bodyLimbs: false` (no arms, hands or legs on **any** body character:
+  organs, cells, germs, pill, bone, poop; people keep theirs) and `accessories: false` (no guard cap on
+  the white cell, no medic helmet on the platelet, no bow or lashes on the egg).
+- `characters.tsx`: every glint, squiggly inner vessel, heart fat patch, bone speck and white dot is
+  now behind `GLINT` (`STYLE.gloss > 0`); costume pieces behind `DRESS`; the pill, white cell and
+  platelet stand on their body when they have no legs (`ground.y`). Real anatomy stays: liver lobes and
+  ligament, gallbladder, kidney hilum with artery, vein and ureter, adrenal gland, lung airways, the two
+  coronary arteries, brain folds, white-cell nucleus, virus spikes, bacteria pili and flagellum.
+- `ink.tsx`: the light edge of `Groove` follows `STYLE.gloss`. `humans.tsx`: hair sheen and glasses
+  glints follow `STYLE.gloss`.
+- Setting `gloss`, `texture`, `bodyLimbs`, `accessories` and `eye` back in `style.ts` returns the v6
+  cast, except the stomach, whose old drawing was replaced.
+
+Checked: typecheck passes, 44 of 44 tests pass, `ToonCast` and the sheets for stomach, heart, white
+cell, doctor and patient render and were looked at. The other sheets were not rendered one by one.
 
 ### Open
 
-- The owner has seen the stomach but has not yet said yes to redrawing the other 24.
-- Organs without arms change the acting in every existing Toon (wave, point, thumbs up do nothing on
-  an organ now). No Toon video was re-rendered or re-checked (`toon:camera`, `toon:motion`,
-  `toon:staging`) with this look.
+- The owner has not yet seen the full cast in this look.
+- Body characters without arms or legs change the acting in every existing Toon (wave, point, thumbs
+  up, walking do nothing on them now). No Toon video was re-rendered or re-checked (`toon:camera`,
+  `toon:motion`, `toon:staging`) with this look.
 - Bokeh is not removed yet: lens blur (`camera.tsx` `LENSES`), the blurred foreground layer and drifting
   specks (`scenes.tsx`), lamp glow and halos.
 - The stages (`stages.tsx`, `stage-arena.tsx`) draw their own stomach, food pipe and tooth with arms;

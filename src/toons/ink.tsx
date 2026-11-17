@@ -192,7 +192,7 @@ export const Mark: React.FC<{pts: P[]; w?: number; color?: string; opacity?: num
 /** A fold or groove: a dark tapered mark with a thin light edge on its lower-right side (it looks cut in). */
 export const Groove: React.FC<{pts: P[]; w?: number; color: string; k?: number}> = ({pts, w = 2.6, color, k = 0.2}) => (
   <g>
-    <path d={taperedPath(pts.map(([x, y]) => [x + w * 0.42, y + w * 0.5] as P), w * 0.7)} fill={lift(color, 0.3)} opacity={0.55} />
+    {STYLE.gloss > 0 && <path d={taperedPath(pts.map(([x, y]) => [x + w * 0.42, y + w * 0.5] as P), w * 0.7)} fill={lift(color, 0.3)} opacity={0.6 * STYLE.gloss} />}
     <path d={taperedPath(pts, w)} fill={shade(color, k)} />
   </g>
 );
