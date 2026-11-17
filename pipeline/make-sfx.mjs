@@ -11,7 +11,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {execFileSync} from 'node:child_process';
-import {PUBLIC} from './lib/util.mjs';
+import {isMain, PUBLIC} from './lib/util.mjs';
 
 export const SFX = {
   whoosh: 'anoisesrc=d=0.6:c=pink:a=0.6,highpass=f=300,lowpass=f=4000,afade=t=in:d=0.25,afade=t=out:st=0.3:d=0.3,volume=0.5',
@@ -35,6 +35,6 @@ export const makeSfx = (force = false) => {
   return dir;
 };
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (isMain(import.meta.url)) {
   console.log(`SFX ready in ${makeSfx(process.argv.includes('--force'))}`);
 }
