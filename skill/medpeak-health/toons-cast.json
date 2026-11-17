@@ -28,7 +28,7 @@
     "platelet": {"voice": "Harry", "voiceId": "SOYHLrjzK2X1ezoPC6cr", "pitch": 5, "speed": 1.15, "why": "fierce but tiny"},
     "egg": {"voice": "Lily", "voiceId": "pFZP5JQG7iQjIQuC4Bku", "pitch": 1, "speed": 1.0, "why": "velvety, calm, picky"},
     "sperm": {"voice": "Charlie", "voiceId": "IKne3meq5aSn9XLyUdCD", "pitch": 5, "speed": 1.15, "why": "energetic racer, pitched up"},
-    "virus": {"voice": "Brian", "voiceId": "nPczCjzI2devNBz1zQrb", "pitch": -2, "speed": 1.02, "why": "deep, smug intruder"},
+    "virus": {"voice": "Charlie", "voiceId": "IKne3meq5aSn9XLyUdCD", "pitch": 3, "speed": 1.08, "why": "cheeky gremlin: the owner picked audition C on 2026-11-18 (was Brian, deep and smug)"},
     "bacteria": {"voice": "Callum", "voiceId": "N2lVS1w4EtoT3dr4eOWO", "pitch": 5, "speed": 1.15, "why": "trickster, pitched up"}
   },
   "acting": {

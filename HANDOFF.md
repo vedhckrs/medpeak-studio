@@ -6,6 +6,30 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-18 - Mac - branch `feat/toons`
+
+The owner asked for a new virus voice and "macro shot is my hero visual: start (hook), mid and last",
+more animation and more view changes. Then: "Voice C and Start Macros".
+
+Changed:
+- Virus voice: Charlie (`IKne3meq5aSn9XLyUdCD`), pitch 3, speed 1.08 (audition C), in `toons-cast.json`.
+- New stage `macro` (`src/toons/stage-macro.tsx`; drawings in `look-macro.tsx`): dials `view` (0 entry,
+  1 inside, 2 caught), `slide`, `speed`, `grip`; the hero virus talks and blinks. Registered in
+  director/scenes/stages/Preview. Board: `npx remotion still src/index.ts ToonStage out.jpg --props='{"stage":"macro"}'`.
+- Macro motion runs in beats (`burst` in `look-macro.tsx`): it failed the look check while it moved every frame.
+- Format 4 in `toon-rules.mjs`: 2-3 macros, the first picture a macro, spread start/middle/end, each a
+  new view, a new picture every 6 s on average and none over 7.5 s. Written into `toons-script.md` and `toons-look.md`.
+- The sound planner now keeps the per-minute budget itself (drops cuts, then the most crowded place whoosh).
+- Rabies rewritten to format 4: entry macro (hook), arm, inside macro (B3), home (C3 now a closer cut),
+  clinic, arm wall, caught macro (E3). B1 now says "stray dog" ("street" was heard as "straight").
+
+Run: npm test 44/44; toon:check, camera, motion, staging, sound, listen --voices, listen --words (all 14
+lines heard right), look (45% still, 53% small movement) all pass. Rendered and packaged; NOT uploaded.
+Spent 150 ElevenLabs credits (virus re-voice in voice C, 133 + B1 17), within the approved cap of 160.
+
+Open: rabies upload waits for the owner's yes (private only). The look check's "still" is at the 45% edge.
+Other stages are still in the old look. Next topics need their own macro views drawn (one still first).
+
 ## 2026-11-17 (late night) - Mac - branch `feat/toons`
 
 The owner rejected the first rabies preview ("cheap poor worst"), had every frame of the 20 reference

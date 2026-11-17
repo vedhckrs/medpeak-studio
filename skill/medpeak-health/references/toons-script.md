@@ -4,6 +4,24 @@ A Toon is one file, `videos/<slug>/toon.json`. Before a single credit is spent i
 `node pipeline/toon-check.mjs <slug>` (free, instant). The gate uses the same director as the
 player (`src/toons/director.ts`), so what it measures is what gets rendered.
 
+## Macros, the hero visual (`"format": 4`, owner, 2026-11-18)
+The owner: "macro shot is my hero visual: start (hook), mid and last". From format 4 every video has
+**2 to 3 macro close-ups**: an extreme close-up drawn as its own detailed scene (set `macro`,
+`src/toons/stage-macro.tsx`, drawings in `look-macro.tsx`). Checked by `toon:check`:
+- **Macros:** 2 or 3 (back-to-back macro shots count as one).
+- **Macro hook:** the first picture is a macro. It still has to open on the consequence (a dial at 0.5
+  or more), so start the entry mid-way (rabies: `slide: 0.55`, the virus already sliding into the cut).
+- **Macros spread:** one at the start, then the middle and/or the end (all three with three macros).
+- **Macro views differ:** each macro is a new close-up (`state.view`).
+- **View changes:** a new picture (a place, a card, or a cut to another size) every 6 s or less on
+  average, none held over 7.5 s (aim for 4 to 6 s).
+The macro stage's dials: `view` (0 entry, 1 inside, 2 caught), `slide` (entry: 0 in the drop, 1 deep in
+the cut), `speed` (inside: how fast it rides; 0 stops it), `grip` (caught: 0 the catchers far out, 1
+gripping). The hero is the stage character (`stage: true`): it talks, blinks, changes face. The views
+are drawn for a virus that enters through a wound and climbs a nerve; a new topic draws its own views
+in `look-macro.tsx` and adds them to `view`. One still of a new view goes to the owner first.
+Preview: `npx remotion still src/index.ts ToonStage out.jpg --props='{"stage":"macro"}'`.
+
 ## Story shapes (`"format": 3`): things happen, labels stop (owner, 2026-11-17)
 The owner on the first eight videos: "every video looks same, repeated template, icons and all, not
 interesting". Measured: 7 of 8 had the same scene order, 116 text stickers, the clock and the burger

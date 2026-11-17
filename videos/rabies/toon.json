@@ -1,7 +1,7 @@
 {
  "slug": "rabies",
  "title": "What Happens If You Get Rabies",
- "format": 3,
+ "format": 4,
  "shape": "clock",
  "music": "panic",
  "camera": "steady",
@@ -123,8 +123,7 @@
  "shots": [
   {
    "id": "A",
-   "set": "arm",
-   "label": "YOUR ARM",
+   "set": "macro",
    "cast": [
     {
      "who": "virus",
@@ -136,23 +135,32 @@
     }
    ],
    "state": {
-    "bite": 1,
-    "climb": 0
+    "view": 0,
+    "slide": 0.55
    },
    "events": [
     {
      "at": "A1",
+     "word": "rabies",
+     "set": {
+      "slide": 0.68
+     },
+     "over": 24
+    },
+    {
+     "at": "A1",
      "word": "bite.",
      "set": {
-      "climb": 0.05
+      "slide": 0.84
      },
-     "over": 30
+     "over": 20,
+     "sfx": "plop"
     },
     {
      "at": "A2",
      "word": "brain?",
      "set": {
-      "climb": 0.1
+      "slide": 1
      },
      "over": 30
     }
@@ -248,61 +256,19 @@
      "over": 6
     },
     {
-     "at": "B3",
+     "at": "B2",
+     "word": "nerve!",
      "set": {
-      "climb": 0.15,
-      "days": 0.25
+      "climb": 0.08
      },
-     "over": 40
-    },
-    {
-     "at": "B3",
-     "word": "months",
-     "set": {
-      "climb": 0.28,
-      "days": 0.55
-     },
-     "over": 40
-    },
-    {
-     "at": "B3",
-     "word": "brain.",
-     "set": {
-      "climb": 0.36,
-      "days": 0.8
-     },
-     "over": 40
-    }
-   ],
-   "props": [
-    {
-     "kind": "tag",
-     "text": "2-3 months",
-     "x": 300,
-     "y": 560,
-     "size": 300,
-     "rot": -5,
-     "from": "B3",
-     "to": "B3",
-     "word": "two"
-    },
-    {
-     "kind": "tag",
-     "text": "or just 1 week!",
-     "x": 300,
-     "y": 780,
-     "size": 300,
-     "rot": 4,
-     "from": "B3",
-     "to": "B3",
-     "word": "brain."
+     "over": 24
     }
    ],
    "lines": [
     {
      "id": "B1",
      "who": "virus",
-     "text": "A street dog. A little nip. A tiny scratch.",
+     "text": "A stray dog. A little nip. A tiny scratch.",
      "emotion": "smug",
      "pose": "rest",
      "key": "scratch",
@@ -320,7 +286,84 @@
       "who-rabies",
       "cdc-rabies"
      ]
+    }
+   ]
+  },
+  {
+   "id": "M2",
+   "set": "macro",
+   "cast": [
+    {
+     "who": "virus",
+     "x": 420,
+     "size": 380,
+     "stage": true,
+     "emotion": "smug",
+     "pose": "rest"
+    }
+   ],
+   "state": {
+    "view": 1,
+    "speed": 0.3
+   },
+   "events": [
+    {
+     "at": "start",
+     "set": {
+      "speed": 0.6
+     },
+     "over": 20
     },
+    {
+     "at": "B3",
+     "word": "two",
+     "set": {
+      "speed": 1
+     },
+     "over": 20
+    },
+    {
+     "at": "B3",
+     "word": "months",
+     "set": {
+      "speed": 1.4
+     },
+     "over": 20
+    },
+    {
+     "at": "B3",
+     "word": "brain.",
+     "set": {
+      "speed": 1.8
+     },
+     "over": 20
+    }
+   ],
+   "props": [
+    {
+     "kind": "tag",
+     "text": "2-3 months",
+     "x": 300,
+     "y": 430,
+     "size": 300,
+     "rot": -5,
+     "from": "B3",
+     "to": "B3",
+     "word": "two"
+    },
+    {
+     "kind": "tag",
+     "text": "or just 1 week!",
+     "x": 760,
+     "y": 590,
+     "size": 300,
+     "rot": 4,
+     "from": "B3",
+     "to": "B3",
+     "word": "brain."
+    }
+   ],
+   "lines": [
     {
      "id": "B3",
      "who": "virus",
@@ -424,6 +467,7 @@
      "id": "C3",
      "who": "kid",
      "text": "Fifteen minutes? For a scratch?",
+     "cam": "mcu",
      "emotion": "shocked",
      "pose": "think",
      "key": "scratch",
@@ -606,37 +650,6 @@
       "climb": 0.23
      },
      "over": 20
-    },
-    {
-     "at": "E3",
-     "word": "rabies.",
-     "set": {
-      "dizzy": 0
-     },
-     "over": 20
-    },
-    {
-     "at": "E3",
-     "set": {
-      "climb": 0.17
-     },
-     "over": 24
-    },
-    {
-     "at": "E3",
-     "word": "rabies.",
-     "set": {
-      "climb": 0.11
-     },
-     "over": 30
-    },
-    {
-     "at": "E3",
-     "word": "vaccine",
-     "set": {
-      "climb": 0.04
-     },
-     "over": 30
     }
    ],
    "lines": [
@@ -659,7 +672,44 @@
      "src": [
       "who-rabies"
      ]
+    }
+   ]
+  },
+  {
+   "id": "M3",
+   "set": "macro",
+   "cast": [
+    {
+     "who": "virus",
+     "x": 420,
+     "size": 380,
+     "stage": true,
+     "emotion": "sad",
+     "pose": "rest"
+    }
+   ],
+   "state": {
+    "view": 2,
+    "grip": 0
+   },
+   "events": [
+    {
+     "at": "E3",
+     "set": {
+      "grip": 0.45
+     },
+     "over": 18
     },
+    {
+     "at": "E3",
+     "word": "rabies.",
+     "set": {
+      "grip": 1
+     },
+     "over": 16
+    }
+   ],
+   "lines": [
     {
      "id": "E3",
      "who": "virus",

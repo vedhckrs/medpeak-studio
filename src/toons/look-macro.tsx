@@ -21,7 +21,7 @@ const H = 1920;
 export const MACRO_PAL = {air: '#e1f7fb', skinTop: '#f6d0c2', skinCell: '#f2b8a8', skinCellDeep: '#e69d98', nucleus: '#cd6e68', dermis: '#e7867d', dermisDeep: '#cd6e68', collagen: '#f6b3aa', gap: '#924142', nerve: '#f6e3ce', nerveDeep: '#d9b98f', sheath: '#fbefd9', sheathDeep: '#e3c9a3', axon: '#fdf6ea', track: '#e3c9a3', saliva: '#dff2fa', salivaLine: '#9fc9dc', virus: '#9db57a', virusDeep: '#7f9a62', virusLight: '#c2d6a2', defender: '#e4ecf2', catcher: '#2b1a17'};
 
 /** The rabies virus close up: a bullet with a knobbed coat; `face` for the hero. */
-export const MacroVirus: React.FC<{x: number; y: number; s: number; rot?: number; face?: 'smug' | 'shock' | 'sad' | null; t?: number; seed?: string}> = ({x, y, s, rot = 0, face = null, t = 0, seed = 'v'}) => {
+export const MacroVirus: React.FC<{x: number; y: number; s: number; rot?: number; face?: 'smug' | 'shock' | 'sad' | null; talk?: number; blink?: number; t?: number; seed?: string}> = ({x, y, s, rot = 0, face = null, talk = 0, blink = 0, t = 0, seed = 'v'}) => {
   const knobs = Array.from({length: 26}).map((_, i) => {
     const a = (i / 26) * Math.PI * 2;
     const wig = Math.sin(t * 5 + i * 1.7 + random(`${seed}k${i}`) * 6) * 2.5; // the spikes twitch
@@ -43,9 +43,9 @@ export const MacroVirus: React.FC<{x: number; y: number; s: number; rot?: number
       <path d="M-56 66 L-56 -26 Q-56 -92 0 -96 Q56 -92 56 -26 L56 66 Z" fill="none" stroke={INK.line} strokeWidth={8} strokeLinejoin="round" />
       {face && (
         <g>
-          <InkEyes x={0} y={-28} r={21} look={face === 'shock' ? [0, -0.6] : [0.4, -0.3]} lid={face === 'smug' ? 0.4 : face === 'sad' ? 0.25 : 0} />
+          <InkEyes x={0} y={-28} r={21} look={face === 'shock' ? [0, -0.6] : [0.4, -0.3]} lid={blink > 0.5 ? 0.95 : face === 'smug' ? 0.4 : face === 'sad' ? 0.25 : 0} />
           {face === 'smug' && <path d="M-36 -62 L-12 -58 M36 -62 L12 -58" stroke={INK.line} strokeWidth={6} strokeLinecap="round" />}
-          {face === 'smug' ? <path d="M-16 20 Q2 34 20 16" fill="none" stroke={INK.line} strokeWidth={5} strokeLinecap="round" /> : face === 'shock' ? <ellipse cx={2} cy={24} rx={11} ry={15} fill={INK.line} /> : <path d="M-16 30 Q2 18 20 30" fill="none" stroke={INK.line} strokeWidth={5} strokeLinecap="round" />}
+          {talk > 0.15 ? <ellipse cx={2} cy={24} rx={12} ry={5 + talk * 13} fill={INK.line} /> : face === 'smug' ? <path d="M-16 20 Q2 34 20 16" fill="none" stroke={INK.line} strokeWidth={5} strokeLinecap="round" /> : face === 'shock' ? <ellipse cx={2} cy={24} rx={11} ry={15} fill={INK.line} /> : <path d="M-16 30 Q2 18 20 30" fill="none" stroke={INK.line} strokeWidth={5} strokeLinecap="round" />}
         </g>
       )}
     </g>
@@ -61,7 +61,8 @@ const Cell: React.FC<{x: number; y: number; rx: number; ry: number; seed: string
 );
 
 /** ENTRY: the scratch fills the frame; a drop of saliva sits over it and the hero slides down out of it, into the cut. */
-export const MacroEntry: React.FC<{t?: number}> = ({t = 1}) => {
+export const MacroEntry: React.FC<{t?: number; slide?: number; face?: MacroFace}> = ({t: clock = 1, slide = 0.6, face = DEFAULT_FACE}) => {
+  const t = burst(clock); // the close-up moves in beats and holds between them (look check: the body lives in moments)
   const id = useId().replace(/:/g, '');
   // the V of the scratch, wide at the surface (y 640), narrowing down to a nerve ending
   const V: P[] = [[250, 640], [420, 880], [500, 1180], [530, 1440], [550, 1440], [580, 1180], [660, 880], [830, 640]];
@@ -76,8 +77,8 @@ export const MacroEntry: React.FC<{t?: number}> = ({t = 1}) => {
       cells.push({x, y, rx: flat ? 100 : 86, ry: flat ? 38 : 52, flat});
     }
   }
-  const slide = (t * 0.6) % 1; // the hero slides down into the cut, again and again in the look sheet
-  const hy = 860 + Math.sin(t * 1.4) * 14;
+  // `slide`: 0 = the hero still inside the drop, 1 = deep in the cut. It never comes below y 1000, clear of the caption line.
+  const hy = entryHeroY(slide) + Math.sin(t * 1.4) * 6;
   return (
     <AbsoluteFill style={{background: MACRO_PAL.air}}>
       <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`}>
@@ -102,16 +103,16 @@ export const MacroEntry: React.FC<{t?: number}> = ({t = 1}) => {
         </g>
         {/* the hero: out of the drop, sliding down into the cut, grinning; speed strokes above it */}
         {[[-60, -230], [0, -260], [60, -230]].map(([dx, dy], i) => <path key={i} d={`M${540 + dx} ${hy + dy} l0 ${-60 - Math.sin(t * 7 + i) * 12}`} stroke={INK.line} strokeWidth={7} strokeLinecap="round" opacity={0.7} />)}
-        <MacroVirus x={540} y={hy} s={1.55} rot={Math.sin(t * 2) * 3} face="smug" t={t} seed="hero" />
-        {void slide}
+        <MacroVirus x={540} y={hy} s={1.55} rot={Math.sin(t * 2) * 3} face={face.face} talk={face.talk} blink={face.blink} t={t} seed="hero" />
       </svg>
     </AbsoluteFill>
   );
 };
 
 /** INSIDE: one nerve fibre, its sheath in segments, the virus riding the inner tracks upward. */
-export const MacroInside: React.FC<{t?: number}> = ({t = 1}) => {
-  const ride = (t * 60) % 240; // the tracks scroll down past the virus: it travels up
+export const MacroInside: React.FC<{t?: number; speed?: number; face?: MacroFace}> = ({t: clock = 1, speed = 1, face = DEFAULT_FACE}) => {
+  const t = burst(clock); // the close-up moves in beats and holds between them (look check: the body lives in moments)
+  const ride = (t * 60 * speed) % 240; // the tracks scroll down past the virus: it travels up (`speed` 0 = it stops)
   return (
     <AbsoluteFill style={{background: MACRO_PAL.gap}}>
       <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`}>
@@ -135,16 +136,17 @@ export const MacroInside: React.FC<{t?: number}> = ({t = 1}) => {
         {/* small cargo riding the tracks too, for scale */}
         {[[420, 300], [660, 1500], [460, 1700]].map(([x, y], i) => <circle key={i} cx={x} cy={(y + ride * 1.5) % 2000} r={22} fill="#f3d6a6" stroke={INK.line} strokeWidth={4} />)}
         {/* the hero, riding up, with speed strokes under it */}
-        {[[-40, 150], [0, 180], [40, 150]].map(([dx, dy], i) => <path key={i} d={`M${540 + dx} ${980 + dy} l0 ${70 + Math.sin(t * 9 + i) * 14}`} stroke={INK.line} strokeWidth={7} strokeLinecap="round" opacity={0.75} />)}
-        <MacroVirus x={540} y={900} s={1.6} rot={0} face="smug" t={t} seed="ride" />
+        {speed > 0.2 && [[-40, 150], [0, 180], [40, 150]].map(([dx, dy], i) => <path key={i} d={`M${540 + dx} ${980 + dy} l0 ${70 + Math.sin(t * 9 + i) * 14}`} stroke={INK.line} strokeWidth={7} strokeLinecap="round" opacity={0.75 * Math.min(1, speed)} />)}
+        <MacroVirus x={540} y={900} s={1.6} rot={0} face={face.face} talk={face.talk} blink={face.blink} t={t} seed="ride" />
       </svg>
     </AbsoluteFill>
   );
 };
 
 /** CAUGHT: the defenders' Y-shaped catchers gripping the virus by its spikes. */
-export const MacroCaught: React.FC<{t?: number}> = ({t = 1}) => {
-  const grip = [[-120, -170, -35], [120, -170, 35], [-160, 0, -80], [160, 10, 80], [-110, 170, -140], [120, 170, 140], [0, -230, 0]];
+export const MacroCaught: React.FC<{t?: number; grip?: number; face?: MacroFace}> = ({t: clock = 1, grip = 1, face = {...DEFAULT_FACE, face: 'shock'}}) => {
+  const t = burst(clock); // the close-up moves in beats and holds between them (look check: the body lives in moments)
+  const catchers = [[-120, -170, -35], [120, -170, 35], [-160, 0, -80], [160, 10, 80], [-110, 170, -140], [120, 170, 140], [0, -230, 0]];
   return (
     <AbsoluteFill style={{background: MACRO_PAL.axon}}>
       <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`}>
@@ -160,9 +162,10 @@ export const MacroCaught: React.FC<{t?: number}> = ({t = 1}) => {
           </g>
         ))}
         {/* the catchers: Y shapes, gripping the spikes */}
-        {grip.map(([dx, dy, a], i) => {
-          const x = 540 + dx * 1.05;
-          const y = 980 + dy * 1.05;
+        {catchers.map(([dx, dy, a], i) => {
+          const far = 1.05 + (1 - grip) * 2.2; // `grip` 0 = the catchers far out, 1 = gripping the spikes
+          const x = 540 + dx * far;
+          const y = 980 + dy * far;
           const pull = Math.sin(t * 3 + i) * 4;
           return (
             <g key={i} transform={`translate(${(x + Math.sin((a * Math.PI) / 180) * pull).toFixed(1)} ${(y - Math.cos((a * Math.PI) / 180) * pull).toFixed(1)}) rotate(${a})`}>
@@ -171,13 +174,24 @@ export const MacroCaught: React.FC<{t?: number}> = ({t = 1}) => {
             </g>
           );
         })}
-        <MacroVirus x={540} y={980} s={1.9} rot={Math.sin(t * 3) * 4} face="shock" t={t} seed="caught" />
+        <MacroVirus x={540} y={980} s={1.9} rot={Math.sin(t * 3) * 4 * grip} face={face.face} talk={face.talk} blink={face.blink} t={t} seed="caught" />
       </svg>
     </AbsoluteFill>
   );
 };
 
+/** Time that runs only in beats: 0.5 s of movement (eased) every 1.5 s, still in between. The reference
+ * holds still in 63% of its frames; a close-up that never stops moving failed the look check (2026-11-18). */
+export const burst = (t: number, period = 1.5, active = 0.5) => {
+  const n = Math.floor(t / period);
+  const f = Math.min(1, (t - n * period) / active);
+  return (n + f * f * (3 - 2 * f)) * active;
+};
 export const MACROS = {entry: MacroEntry, inside: MacroInside, caught: MacroCaught};
+export type MacroFace = {face: 'smug' | 'shock' | 'sad'; talk: number; blink: number};
+const DEFAULT_FACE: MacroFace = {face: 'smug', talk: 0, blink: 0};
+/** Where the entry hero is for a slide value (the staging check reads this too). */
+export const entryHeroY = (slide: number) => 560 + Math.max(0, Math.min(1, slide)) * 400;
 export const MacroLook: React.FC<{shot?: keyof typeof MACROS; t?: number}> = ({shot = 'entry', t = 1.3}) => {
   const C = MACROS[shot];
   return <C t={t} />;

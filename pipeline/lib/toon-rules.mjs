@@ -1,7 +1,7 @@
 // The rules a Toon script (videos/<slug>/toon.json) must pass before a single credit is spent:
 //   1. the script is valid (cast, sets, poses, camera words, sounds);
 //   2. the owner's Retention 7, adapted to dialogue;
-//   3. the Toons format (length, pace, the doctor's part);
+//   3. the Toons format (length, pace, the doctor's part; format 4: the macros);
 //   4. medical accuracy (a source behind every number and every medical statement).
 // It uses the same director as the player (src/toons/director.ts), so the picture changes it
 // measures are the ones that get rendered.
@@ -208,6 +208,24 @@ export const checkToon = (toon, timings, known) => {
     add('format', 'Few stickers', stickers.length <= STICKERS, `${stickers.length} text sticker(s) (at most ${STICKERS}: show it, do not label it)`);
     const twice = Object.entries(shots.flatMap((s) => (s.props ?? []).filter((p) => !['tag', 'chip', 'pain'].includes(p.kind))).reduce((m, p) => ({...m, [p.kind]: (m[p.kind] ?? 0) + 1}), {})).filter(([, n]) => n > 1).map(([k, n]) => `${k} x${n}`);
     add('format', 'No icon twice', !twice.length, twice.length ? `the same icon more than once: ${twice.join(', ')}` : 'no picture icon is used twice');
+  }
+  if (toon.format >= 4) { // the macro, the hero visual (owner, 2026-11-18): 2-3 extreme close-ups: the hook, the middle, the end
+    const at = places.map((s, i) => ({s, i, f: places.length > 1 ? i / (places.length - 1) : 0}));
+    const macros = at.filter((x) => x.s.set === 'macro');
+    const runs = macros.filter((x, k) => k === 0 || macros[k - 1].i !== x.i - 1); // back-to-back macro shots are one macro
+    const where = (x) => (x.f < 0.2 ? 'start' : x.f > 0.7 ? 'end' : 'middle');
+    const spots = new Set(runs.map(where));
+    add('format', 'Macros', runs.length >= 2 && runs.length <= 3, `${runs.length} macro close-up(s) (2 to 3: they are the hero visual)`);
+    add('format', 'Macro hook', places[0]?.set === 'macro', places[0]?.set === 'macro' ? 'the video opens on a macro' : `the first picture is "${places[0]?.set}": open on a macro`);
+    add('format', 'Macros spread', spots.has('start') && (spots.has('middle') || spots.has('end')) && runs.length >= 2 && (runs.length < 3 || spots.size === 3), `macros at: ${runs.map(where).join(', ') || 'none'} (one at the start, then the middle and/or the end)`);
+    const views = new Set(macros.map((x) => Math.round(x.s.state?.view ?? 0)));
+    add('format', 'Macro views differ', runs.length < 2 || views.size >= Math.min(runs.length, 3), `${views.size} different close-up(s) over ${runs.length} macro(s) (each macro shows a new close-up)`);
+    // a view is a picture: a new place, a card, or a cut to another size inside a place (L.segs)
+    const starts = L.segs.map((g) => g.from);
+    const holds = starts.map((f, i) => ((starts[i + 1] ?? L.total) - f) / TOON_FPS);
+    const per = total / Math.max(1, starts.length);
+    const longest = Math.max(...holds);
+    add('format', 'View changes', per <= 6 && longest <= 7.5, `${starts.length} pictures in ${total.toFixed(0)} s: a new view every ${per.toFixed(1)} s on average (6 or less), the longest held ${longest.toFixed(1)} s (7.5 or less)`);
   }
   const bodyTalk = L.lines.filter((p) => !PEOPLE.includes(p.line.who)).reduce((n, p) => n + p.frames, 0) / L.total;
   add('format', 'Body scene', bodyTalk >= 0.3, `body characters speak for ${Math.round(bodyTalk * 100)}% of the video (30% or more: they are the show)`);

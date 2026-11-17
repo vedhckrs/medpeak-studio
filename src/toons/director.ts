@@ -11,7 +11,7 @@ export const SEG = 78; // frames: the usual longest stretch of one picture (2.6 
 export const SEG_MAX = SEG + 10; // a line that ends within 2.9 s keeps its one picture
 export const WPS = 2.94; // words a second, pauses included: measured on our own 47 voiced lines (386 words in 131.4 s)
 
-export const SET_NAMES = ['throat', 'gut', 'stomach', 'mouth', 'blood', 'lungs', 'office', 'bathroom', 'bedroom', 'foodpipe', 'tooth', 'tummy', 'molar', 'arm', 'clinic', 'home'] as const;
+export const SET_NAMES = ['throat', 'gut', 'stomach', 'mouth', 'blood', 'lungs', 'office', 'bathroom', 'bedroom', 'foodpipe', 'tooth', 'tummy', 'molar', 'arm', 'macro', 'clinic', 'home'] as const;
 export type SetName = (typeof SET_NAMES)[number];
 export const SHOT_NAMES = ['ews', 'wide', 'full', 'two', 'ms', 'mcu', 'cu', 'ecu', 'ots', 'low'] as const;
 export type ShotName = (typeof SHOT_NAMES)[number];
@@ -52,6 +52,8 @@ export const STAGE_KEYS: Partial<Record<SetName, string[]>> = {
   // the virus walks up the nerve (0 = the scratch, 1 = under the sign). days: the calendar (day 1 to week 10).
   // vaccine: defenders arrive from both sides. wall: they line up across the nerve. wash: soap foam on the scratch.
   // dizzy: stars circle the virus's head after it hits the wall.
+  // MACRO (the owner's hero visual): view picks the close-up (0 entry, 1 inside, 2 caught); slide, speed and grip play it.
+  macro: ['view', 'slide', 'speed', 'grip'],
   arm: ['bite', 'climb', 'days', 'vaccine', 'wall', 'wash', 'dizzy'],
   molar: ['night', 'guards', 'sleep', 'sugar', 'snack', 'wash', 'fight', 'party', 'acid', 'chalk', 'brush', 'shield'],
   // gum: a swallowed piece of gum comes down and floats with the food. pass: what is in the stomach
@@ -514,6 +516,17 @@ export const soundPlan = (L: Layout): SoundEvent[] => {
     const last = kept[kept.length - 1];
     if (!last || e.at - last.at >= gap) kept.push(e);
     else if (e.rank > last.rank) kept[kept.length - 1] = e;
+  }
+  // The budget (perMinute): over it, the least important sound goes first (a cut, then a place change, never
+  // a story sound while another kind is left); among equals, the one with the closest neighbours. The planner
+  // keeps the rule itself, so no script can fail toon:sound by having many places (rabies, 2026-11-18).
+  const budget = Math.floor((SOUND.perMinute * L.total) / TOON_FPS / 60);
+  while (kept.length > budget) {
+    const low = Math.min(...kept.map((e) => e.rank));
+    const crowd = (i: number) => Math.min(i > 0 ? kept[i].at - kept[i - 1].at : Infinity, i < kept.length - 1 ? kept[i + 1].at - kept[i].at : Infinity);
+    let drop = -1;
+    kept.forEach((e, i) => { if (e.rank === low && (drop < 0 || crowd(i) < crowd(drop))) drop = i; });
+    kept.splice(drop, 1);
   }
   return kept;
 };

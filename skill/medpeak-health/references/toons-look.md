@@ -24,6 +24,13 @@ Format study only: our characters, drawings, jokes and titles stay our own.
 7. **Real anatomy:** the rabies virus is bullet-shaped because it is; a nerve shows its fibre bundles;
    an artery runs beside it; fat is lobules.
 
+## The macro close-up (owner, 2026-11-18: "macro shot is my hero visual")
+The hero shot: the camera goes so close that one thing fills the frame (a drop of saliva in a cut, the
+inside of one nerve fibre, a virus held by catchers). Drawn in the same ink look, with more detail than
+a stage: cells as rows of shaded lumps, a fibre's sheath in segments, the virus with knobbed spikes and
+a coil inside. It never holds still: spikes twitch, the drop wobbles, tracks stream past, catchers pull.
+Rules in `toons-script.md` (format 4); the stage is `stage-macro.tsx`.
+
 ## Colour: the reference's own palette (measured from its frames, 2026-11-18)
 Warm salmon and coral, brick, cream, pale sky: muscle `#e7867d`, its shadow `#cd6e68`, the gaps
 between muscles `#924142` (not a deep purple-maroon), fibres and arteries `#c45554`, nerve and fat

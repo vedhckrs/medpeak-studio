@@ -1,4 +1,5 @@
-// "What Happens If You Get Rabies": format 3, the clock shape (a race up one nerve).
+// "What Happens If You Get Rabies": format 4, the clock shape (a race up one nerve), with three macro
+// close-ups as the hero visual (owner, 2026-11-18): the entry (hook), inside the nerve (middle), caught (end).
 // Writes videos/rabies/toon.json. Run: node plans/rabies-script.mjs
 import fs from 'node:fs';
 import path from 'node:path';
@@ -9,7 +10,7 @@ const tag = (text, from, o = {}) => ({kind: 'tag', text, x: 760, y: 470, size: 3
 const virus = (emotion, pose) => [{who: 'virus', x: 420, size: 380, stage: true, emotion, pose}];
 
 const toon = {
-  slug: 'rabies', title: 'What Happens If You Get Rabies', format: 3, shape: 'clock', music: 'panic', camera: 'steady', episode: 9,
+  slug: 'rabies', title: 'What Happens If You Get Rabies', format: 4, shape: 'clock', music: 'panic', camera: 'steady', episode: 9,
   hooks: [
     {line: 'You can get rabies from one bite.', why: 'the plain danger in seven words; the first picture is the virus at a scratch, looking up the nerve'},
     {line: 'Get rabies, and your brain is next.', why: 'stronger, more frightening; the brain is where the race ends'},
@@ -42,11 +43,12 @@ const toon = {
     {id: 'cdc-rabies', label: 'US Centers for Disease Control and Prevention. About Rabies (27 January 2026)', url: 'https://www.cdc.gov/rabies/about/index.html', note: "'Rabies spreads primarily through bites or scratches from an infected animal.' 'The rabies virus must travel to the brain before it can cause symptoms.' Treatment after exposure is 'nearly 100% effective if you get it after exposure'. 'Once clinical signs of rabies appear, the disease is nearly always fatal.'"},
   ],
   shots: [
-    {id: 'A', set: 'arm', label: 'YOUR ARM', cast: virus('smug', 'rest'),
-      state: {bite: 1, climb: 0},
+    {id: 'A', set: 'macro', cast: virus('smug', 'rest'),
+      state: {view: 0, slide: 0.55},
       events: [
-        {at: 'A1', word: 'bite.', set: {climb: 0.05}, over: 30},
-        {at: 'A2', word: 'brain?', set: {climb: 0.1}, over: 30},
+        {at: 'A1', word: 'rabies', set: {slide: 0.68}, over: 24},
+        {at: 'A1', word: 'bite.', set: {slide: 0.84}, over: 20, sfx: 'plop'},
+        {at: 'A2', word: 'brain?', set: {slide: 1}, over: 30},
       ],
       lines: [
         {id: 'A1', who: 'virus', text: 'You can get rabies from one bite.', emotion: 'smug', pose: 'rest', key: 'bite', src: ['who-rabies', 'cdc-rabies']},
@@ -61,17 +63,25 @@ const toon = {
         {at: 'B1', word: 'scratch.', set: {bite: 0.82}, over: 24},
         {at: 'B2', set: {bite: 1}, over: 18, sfx: 'plop'},
         {at: 'B2', word: 'nerve!', set: {days: 0.02}, over: 6},
-        {at: 'B3', set: {climb: 0.15, days: 0.25}, over: 40},
-        {at: 'B3', word: 'months', set: {climb: 0.28, days: 0.55}, over: 40},
-        {at: 'B3', word: 'brain.', set: {climb: 0.36, days: 0.8}, over: 40},
-      ],
-      props: [
-        tag('2-3 months', 'B3', {word: 'two', x: 300, y: 560, size: 300, rot: -5}),
-        tag('or just 1 week!', 'B3', {word: 'brain.', x: 300, y: 780, size: 300, rot: 4}),
+        {at: 'B2', word: 'nerve!', set: {climb: 0.08}, over: 24},
       ],
       lines: [
-        {id: 'B1', who: 'virus', text: 'A street dog. A little nip. A tiny scratch.', emotion: 'smug', pose: 'rest', key: 'scratch', chat: true, beat: 0.4},
+        {id: 'B1', who: 'virus', text: 'A stray dog. A little nip. A tiny scratch.', emotion: 'smug', pose: 'rest', key: 'scratch', chat: true, beat: 0.4},
         {id: 'B2', who: 'virus', text: 'I ride in on its spit. Now, up this nerve!', emotion: 'happy', pose: 'rest', key: 'nerve', src: ['who-rabies', 'cdc-rabies']},
+      ]},
+    {id: 'M2', set: 'macro', cast: virus('smug', 'rest'),
+      state: {view: 1, speed: 0.3},
+      events: [
+        {at: 'start', set: {speed: 0.6}, over: 20},
+        {at: 'B3', word: 'two', set: {speed: 1}, over: 20},
+        {at: 'B3', word: 'months', set: {speed: 1.4}, over: 20},
+        {at: 'B3', word: 'brain.', set: {speed: 1.8}, over: 20},
+      ],
+      props: [
+        tag('2-3 months', 'B3', {word: 'two', x: 300, y: 430, size: 300, rot: -5}),
+        tag('or just 1 week!', 'B3', {word: 'brain.', x: 760, y: 590, size: 300, rot: 4}),
+      ],
+      lines: [
         {id: 'B3', who: 'virus', text: 'Slowly. Usually two to three months to the brain.', emotion: 'smug', pose: 'rest', key: 'months', src: ['who-rabies', 'cdc-rabies'], beat: 0.3},
       ]},
     {id: 'C', set: 'home', cast: [{who: 'mom', x: 285, size: 960, emotion: 'scared', pose: 'rest'}, {who: 'kid', x: 805, size: 980, emotion: 'neutral', pose: 'rest'}],
@@ -84,7 +94,7 @@ const toon = {
       lines: [
         {id: 'C1', who: 'kid', text: "It's just a little scratch, Mum.", emotion: 'neutral', pose: 'shrug', key: 'scratch', chat: true},
         {id: 'C2', who: 'mom', text: 'Wash it now. Soap and water, fifteen minutes.', emotion: 'scared', pose: 'point', key: 'fifteen', react: {kid: 'shocked'}, src: ['who-rabies']},
-        {id: 'C3', who: 'kid', text: 'Fifteen minutes? For a scratch?', emotion: 'shocked', pose: 'think', key: 'scratch', chat: true},
+        {id: 'C3', who: 'kid', text: 'Fifteen minutes? For a scratch?', cam: 'mcu', emotion: 'shocked', pose: 'think', key: 'scratch', chat: true},
       ]},
     {id: 'D', set: 'clinic', cast: [{who: 'doctor', x: 285, size: 940}, {who: 'kid', x: 805, size: 980, emotion: 'scared', pose: 'rest'}],
       props: [
@@ -107,14 +117,18 @@ const toon = {
         {at: 'E2', set: {climb: 0.31}, over: 14, sfx: 'bonk'},
         {at: 'E2', delay: 0.15, set: {dizzy: 1}, over: 12},
         {at: 'E2', word: 'stopped', set: {climb: 0.23}, over: 20},
-        {at: 'E3', word: 'rabies.', set: {dizzy: 0}, over: 20},
-        {at: 'E3', set: {climb: 0.17}, over: 24},
-        {at: 'E3', word: 'rabies.', set: {climb: 0.11}, over: 30},
-        {at: 'E3', word: 'vaccine', set: {climb: 0.04}, over: 30},
       ],
       lines: [
         {id: 'E1', who: 'virus', text: 'Wait. Who are all of you? What is this?', emotion: 'shocked', pose: 'rest', key: 'this', chat: true},
         {id: 'E2', who: 'virus', text: 'A wall? They stopped me before the brain!', emotion: 'angry', pose: 'rest', key: 'stopped', src: ['who-rabies']},
+      ]},
+    {id: 'M3', set: 'macro', cast: virus('sad', 'rest'),
+      state: {view: 2, grip: 0},
+      events: [
+        {at: 'E3', set: {grip: 0.45}, over: 18},
+        {at: 'E3', word: 'rabies.', set: {grip: 1}, over: 16},
+      ],
+      lines: [
         {id: 'E3', who: 'virus', text: 'One bite, but no rabies. You got the vaccine in time!', emotion: 'sad', pose: 'rest', key: 'time', src: ['who-rabies', 'cdc-rabies']},
       ]},
   ],

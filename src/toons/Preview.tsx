@@ -18,6 +18,7 @@ import {POSES, type PoseName} from './poses';
 import {FoodPipeStage, ToothStage, TummyStage, type SetProps, type StageFace} from './stages';
 import {ToothArenaStage} from './stage-arena';
 import {ArmStage} from './stage-arm';
+import {MacroStage} from './stage-macro';
 import {peopleBoxes, ShotStill, type ToonActor} from './Player';
 import {LENSES, type LensName, type MoveName, SHOTS, type ShotName} from './camera';
 import {type ArmSpec, blinkAt, EMOTIONS, type Emotion, Face, Hand, HAND_POSES, type HandPose} from './rig';
@@ -242,6 +243,14 @@ STAGE_BOARDS.arm = {title: 'the arm: a race up the nerve', C: ArmStage, cells: [
   {label: '4 up the nerve, week 6', state: {bite: 1, climb: 0.35, days: 0.5}, faces: {virus: sf('happy', 0.4)}},
   {label: '5 the defenders come', state: {bite: 1, climb: 0.42, days: 0.6, vaccine: 1}, faces: {virus: sf('shocked', 0.5)}},
   {label: '6 the wall', state: {bite: 1, climb: 0.4, vaccine: 1, wall: 1}, faces: {virus: sf('sad', 0.4)}},
+]};
+STAGE_BOARDS.macro = {title: 'the macro: the hero close-ups', C: MacroStage, cells: [
+  {label: '1 entry: in the drop', state: {view: 0, slide: 0}, faces: {virus: sf('smug', 0.5)}},
+  {label: '2 entry: into the cut', state: {view: 0, slide: 1}, faces: {virus: sf('happy', 0.4)}},
+  {label: '3 inside: riding up', state: {view: 1, speed: 1}, faces: {virus: sf('smug', 0.5)}},
+  {label: '4 inside: stopped', state: {view: 1, speed: 0}, faces: {virus: sf('shocked', 0.3)}},
+  {label: '5 caught: catchers come', state: {view: 2, grip: 0.3}, faces: {virus: sf('scared', 0.4)}},
+  {label: '6 caught: gripped', state: {view: 2, grip: 1}, faces: {virus: sf('sad', 0.4)}},
 ]};
 export const StageBoard: React.FC<{stage?: string; cell?: number}> = ({stage = 'foodpipe', cell}) => {
   const B = STAGE_BOARDS[stage];
