@@ -13,6 +13,14 @@ polished, without glare, bokeh and other unnecessary things, "pure 3D like the D
 (youtube.com/@Dr_Healthcare1/shorts). **No look has been approved yet.** This entry is on the branch
 only, not on `main`.
 
+### How it reaches `feat/toons`: pull request #5
+
+The owner asked for a pull request from this branch into `feat/toons` (github.com/vedhckrs/medpeak-studio/pull/5).
+If this text is on `feat/toons`, it has been merged. If it is not, read the pull request before any
+Toons work: after the merge every Toon looks and acts differently (see "Open" below). Whoever works
+on the Mac decides with the owner when to merge it; a test merge shows no conflicts as long as
+`feat/toons` is still at `c33e97d`.
+
 ### What this branch is
 
 `feat/toons-cast-3d` was cut from `origin/feat/toons` at `c33e97d`. `feat/toons` itself was not touched.
