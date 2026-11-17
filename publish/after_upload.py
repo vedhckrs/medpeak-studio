@@ -92,7 +92,12 @@ def main():
             r = yt.videos().update(part="status", body={"id": vid, "status": {**keep, "containsSyntheticMedia": True}}).execute()
             status = r["status"]
             pkg["labelSet"] = bool(status.get("containsSyntheticMedia"))
-            print(f"  label: AI-use answer is now {status.get('containsSyntheticMedia')} (video still {status['privacyStatus']})")
+            # The update call answers with the field set, but a fresh read of the video does not show it
+            # (seen 2026-11-17 on two videos). So say what was confirmed and what was not.
+            again = yt.videos().list(part="status", id=vid).execute()["items"][0]["status"]
+            pkg["labelConfirmed"] = bool(again.get("containsSyntheticMedia"))
+            print(f"  label: the update call answered {status.get('containsSyntheticMedia')} (video still {status['privacyStatus']})")
+            print("  label: confirmed on reading the video back" if pkg["labelConfirmed"] else "  label: NOT confirmed: YouTube does not show the field when the video is read back. Check it in YouTube Studio (Details, 'Altered content').")
 
     if "--remove-line" in a:  # take one exact line out of the LIVE description; everything else stays as it is on YouTube
         line = a[a.index("--remove-line") + 1]
