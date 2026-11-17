@@ -16,6 +16,7 @@ import {circlePath, Grain, lineOf, Part, tone} from './ink';
 import {clamp01, E, key, settle, speak} from './motion';
 import {POSES, type PoseName} from './poses';
 import {FoodPipeStage, ToothStage, TummyStage, type SetProps, type StageFace} from './stages';
+import {ToothArenaStage} from './stage-arena';
 import {peopleBoxes, ShotStill, type ToonActor} from './Player';
 import {LENSES, type LensName, type MoveName, SHOTS, type ShotName} from './camera';
 import {type ArmSpec, blinkAt, EMOTIONS, type Emotion, Face, Hand, HAND_POSES, type HandPose} from './rig';
@@ -220,6 +221,14 @@ STAGE_BOARDS.night = {title: 'the tooth at night', C: ToothStage, cells: [
   {label: '4 acid all night', state: {night: 1, feast: 1, acid: 1, hole: 0.1}, faces: {tooth: sf('shocked', 0.7, POSES.panic.body), bacteria: sf('smug', 0.5, POSES.point.body)}},
   {label: '5 brush before bed', state: {night: 0.4, feast: 1, brush: 0.56}, faces: {tooth: sf('happy', 0.7, POSES.cheer.body), bacteria: sf('scared', 0.8, POSES.panic.body)}},
   {label: '6 a clean night', state: {night: 1, shield: 1, brush: 1}, faces: {tooth: sf('sleepy', 0.2, POSES.rest.body), bacteria: sf('sad', 0.2, POSES.shrug.body)}},
+]};
+STAGE_BOARDS.arena = {title: 'the tooth arena: guards, gang, fight', C: ToothArenaStage, cells: [
+  {label: '1 the guards on duty', state: {guards: 1}, faces: {tooth: sf('happy', 0.5, POSES.thumb.body), bacteria: sf('angry', 0.3, POSES.fists.body)}},
+  {label: '2 the fight', state: {guards: 1, fight: 0.5}, faces: {tooth: sf('shocked', 0.6, POSES.panic.body), bacteria: sf('angry', 0.5, POSES.fists.body)}},
+  {label: '3 asleep, one by one', state: {night: 1, guards: 1, sleep: 0.7, sugar: 1}, faces: {tooth: sf('scared', 0.4, POSES.panic.body), bacteria: sf('smug', 0.5, POSES.think.body)}},
+  {label: '4 the night party', state: {night: 1, guards: 1, sleep: 1, sugar: 1, party: 1, acid: 0.45}, faces: {tooth: sf('scared', 0.5, POSES.panic.body), bacteria: sf('happy', 0.8, POSES.cheer.body)}},
+  {label: '5 acid, a chalky patch', state: {night: 1, guards: 1, sleep: 1, sugar: 1, party: 1, acid: 1, chalk: 1}, faces: {tooth: sf('sad', 0.7, POSES.panic.body), bacteria: sf('smug', 0.5, POSES.point.body)}},
+  {label: '6 the brush', state: {night: 0.5, guards: 1, sugar: 1, party: 1, acid: 0.6, brush: 0.42}, faces: {tooth: sf('happy', 0.7, POSES.cheer.body), bacteria: sf('scared', 0.8, POSES.panic.body)}},
 ]};
 export const StageBoard: React.FC<{stage?: string; cell?: number}> = ({stage = 'foodpipe', cell}) => {
   const B = STAGE_BOARDS[stage];

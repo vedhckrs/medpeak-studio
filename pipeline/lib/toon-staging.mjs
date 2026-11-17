@@ -69,6 +69,7 @@ export const scanStaging = async (toon, timings, opts = {}) => {
       for (const face of T.faces) {
         if (T.surface !== undefined && !face.dry && T.surface < face.y1 - 1 && !seen.has('surface')) { seen.add('surface'); out.onStageFace.push(`${(f / TOON_FPS).toFixed(1)} s, scene ${sh.shot.id}: the liquid's surface crosses ${face.who}'s face`); }
         for (const th of T.things) {
+          if (th.only && th.only !== face.who) continue; // drawn behind the other characters: it can only crowd this face
           const key = `${th.id}|${face.who}`;
           if (!seen.has(key) && overlap(th, face) > 0) { seen.add(key); out.onStageFace.push(`${(f / TOON_FPS).toFixed(1)} s, scene ${sh.shot.id}: ${th.id} is in front of ${face.who}'s face`); }
         }

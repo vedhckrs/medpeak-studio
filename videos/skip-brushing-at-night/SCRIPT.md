@@ -1,6 +1,6 @@
 # What Happens If You Skip Brushing at Night
 
-Toon script `skip-brushing-at-night` · about 52 seconds · 5 pictures
+Toon script `skip-brushing-at-night` · about 50 seconds · 6 pictures
 
 ## The hook: choices for the first line
 
@@ -15,140 +15,138 @@ Toon script `skip-brushing-at-night` · about 52 seconds · 5 pictures
 | Point | Line | Words |
 |---|---|---|
 | 1 Hook | A1 | Skip brushing at night, your teeth pay. |
-| 2 Open question (asked) | A2 | Why is night worse than day? Watch. |
-| 3 Its answer (held back) | D6 | Night is worse because your spit sleeps. Brush last thing, two minutes, then spit, don't rinse. |
-| 4 3-sec change | all | steady camera: something new happens in the picture at least every 3 s |
-| 5 Twist | D3 | But here's the twist: by day, your spit fights the acid. In sleep, it almost stops. |
-| 6 Best last | D6 | Night is worse because your spit sleeps. Brush last thing, two minutes, then spit, don't rinse. |
-| 7 Loop | E2 | Skip brushing at night? Not these teeth! |
+| 2 Open question (asked) | A2 | Guess why we party at night? |
+| 3 Its answer (held back) | E2 | No! We only party at night because your spit sleeps! |
+| 4 3-sec change | all | steady camera: something happens in the picture at least every 3 s (stickers do not count) |
+| 5 Twist | B6 | Here's the twist: when he sleeps, your spit guards sleep too! |
+| 6 Best last | E3 | Two minutes, then spit, don't rinse. Skip brushing at night? Not these teeth! |
+| 7 Loop | E3 | Two minutes, then spit, don't rinse. Skip brushing at night? Not these teeth! |
 
 ## Check
 
 | | Rule | Result |
 |---|---|---|
-| PASS | Script is valid | 4 scenes, 15 lines, 4 voices |
+| PASS | Script is valid | 4 scenes, 15 lines, 3 voices |
 | PASS | 1 No intro | hook: "Skip brushing at night, your teeth pay." |
 | PASS | 2 Promise | starts at 2.5 s (limit 8 s) |
-| PASS | 4 3-sec change | something new appears 41 times in 52 s (a place, a cut, a prop, a change of the stage); the longest wait is 2.8 s (from 49.0 s) |
-| PASS | 5 Twist | twist starts at 54% |
-| PASS | 6 Best last | best point starts at 79% |
+| PASS | 4 3-sec change | something new HAPPENS 33 times in 50 s (a place, a cut, a thing arriving, a change of the stage; text stickers do not count); the longest wait is 2.9 s (from 19.0 s) |
+| PASS | 5 Twist | twist starts at 51% |
+| PASS | 6 Best last | best point starts at 90% |
 | PASS | 7 Loop | last line shares 4 key word(s) with the first: skip, brushing, night, teeth |
 | PASS | Sources on numbers | every number has a source |
 | PASS | Source ids exist | all source ids known |
 | PASS | No banned claims | no cure/miracle/detox claims |
 | PASS | 1 Hook: short, to the viewer, about the title | "Skip brushing at night, your teeth pay." (7 words, 2.4 s, says "you", says the title's words) |
-| PASS | 1 Hook: the first frame shows the consequence | the video opens on the tooth with night, feast, acid already there |
+| PASS | 1 Hook: the first frame shows the consequence | the video opens on the molar with night, guards, sleep, sugar, party, acid already there |
 | PASS | 1 Hook: three choices for the owner | 3 choices, each short, to the viewer and about the title |
-| PASS | 3 Open question | asked at 2.5 s ("Why is night worse than day? Watch."), answered at 79% ("Night is worse because your spit sleeps. Brush last thing, two minutes, then spit, don't rinse."; shared words: night, worse) |
+| PASS | 3 Open question | asked at 2.5 s ("Guess why we party at night?"), answered at 83% ("No! We only party at night because your spit sleeps!"; shared words: party, night) |
 | PASS | 3 No counting | the story is told as one chain of cause and effect, not as a numbered list |
-| PASS | Length | 51.8 s (a Short must stay under 60 s; aim for 40-58) |
-| PASS | Places | 3 set(s): tooth, home, clinic (at least a body scene and the doctor's office) |
-| PASS | Own rooms | clinic: clinic|blush|stripes|checker|round@right|garden|cabinet|tooth|day; home: bathroom|slate|tiles|wood|tall@left|hills|sink-right|-|day |
+| PASS | Length | 50.3 s (a Short must stay under 60 s; aim for 40-58) |
+| PASS | Places | 2 set(s): molar, home (at least a body scene and the doctor's office) |
+| PASS | Own rooms | home: bathroom|slate|tiles|wood|tall@left|hills|sink-right|-|day |
 | PASS | Rooms are unique | no other video has this clinic or this home (compared with 7 other video(s)) |
-| PASS | Voices | 4 speaking characters (3 or more keep it a conversation) |
-| PASS | Doctor explains | Dr. Mira speaks for 37% of the video (15-50%) |
-| PASS | Body scene | body characters speak for 43% of the video (30% or more: they are the show) |
-| PASS | Short lines | the longest line is 16 words |
+| PASS | Voices | 3 speaking characters (3 or more keep it a conversation) |
+| PASS | Doctor explains | Dr. Mira speaks for 0% of the video (this shape needs no doctor; never over 50%) |
+| PASS | Story shape | "fight" |
+| PASS | Few stickers | 3 text sticker(s) (at most 5: show it, do not label it) |
+| PASS | No icon twice | no picture icon is used twice |
+| PASS | Body scene | body characters speak for 89% of the video (30% or more: they are the show) |
+| PASS | Short lines | the longest line is 13 words |
 | PASS | Banter | at most 2 lines in a row by one speaker (3 or fewer) |
 | PASS | Sources are complete | 4 source(s), each with its finding written out |
 | PASS | Sources are allowed | research databases, WHO and national health bodies only |
+| PASS | Every line is sourced or plain talk | every line names its source or is marked "chat" (it states no fact) |
 | PASS | Doctor lines are sourced | every statement by Dr. Mira names its source |
 | PASS | No dosing advice | no doses, no "stop taking your medicine" |
 
-## Scene A: tooth
+## Scene A: molar
 
-Characters: tooth, bacteria · props: toothbrush, tag, tag, pillow, burger, tag, drop, tag
+Characters: tooth, bacteria
 
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
 | 0.0 s | A1 | tooth | scared | Skip brushing at night, your teeth pay. | ews 24 lock | nidcr, dawes-2008 |
-| 2.5 s | A2 | bacteria | smug | Why is night worse than day? Watch. | the scene, locked |  |
-| 5.1 s | A3 | tooth | neutral | Rewind! Bedtime. He was too tired to brush. | the scene, locked |  |
-| 7.9 s | A4 | bacteria | happy | Dinner is still on you. And your bodyguard is leaving! | the scene, locked | nidcr, dawes-2008 |
-| 11.5 s | A5 | tooth | shocked | My spit! It almost stops while he sleeps! | the scene, locked | dawes-2008 |
-| 14.3 s | A6 | bacteria | smug | All night, no spit, all the acid we want! | the scene, locked | nidcr, dawes-2008 |
+| 2.5 s | A2 | bacteria | smug | Guess why we party at night? | the scene, locked |  |
 
 What happens in the picture:
 
-- at A3: night to 0, feast to 0, acid to 0, hole to 0, sugar to 0.8, saliva to 1
-- at A4 ("bodyguard"): night to 1
-- at A5: saliva to 0
-- at A5 ("sleeps!"): feast to 0.5
-- at A6: feast to 1
-- at A6 ("acid"): acid to 1 [sizzle-acid]
-- at A6 ("want!"): hole to 0.1
-- at A1 ("brushing"): toothbrush with a "not this" sign
-- at A2: tag "why night?"
-- at A3: tag "bedtime"
-- at A3 ("tired"): pillow
-- at A4: burger
-- at A4 ("bodyguard"): tag "spit = bodyguard"
-- at A5 ("spit!"): drop with a "not this" sign
-- at A6: tag "all night"
+- at A1 ("teeth"): acid to 0.85
+- at A2: chalk to 0.7
+- at A2 ("night?"): acid to 1
+
+## Time card: "Earlier that evening..."
+
+## Scene B: molar
+
+Characters: tooth, bacteria
+
+| Time | Line | Who | Feeling | Words | Camera | Source |
+|---|---|---|---|---|---|---|
+| 7.0 s | B1 | tooth | happy | This evening, my spit guards were on duty. | ews 24 lock | dawes-2008 |
+| 9.8 s | B1b | tooth | neutral | Every snack leaves sugar on me. | the scene, locked | nidcr |
+| 12.3 s | B2 | bacteria | angry | Sugar! Boys, charge! | the scene, locked |  |
+| 15.5 s | B3 | tooth | happy | Ha! My spit washes away their sugar and their acid. | the scene, locked | dawes-2008, nidcr |
+| 19.0 s | B4 | bacteria | smug | Fine. We'll wait for bedtime. | the scene, locked |  |
+| 21.9 s | B5 | tooth | shocked | Bedtime. And he didn't brush! | the scene, locked |  |
+| 25.3 s | B6 | bacteria | happy | Here's the twist: when he sleeps, your spit guards sleep too! | the scene, locked | dawes-2008 |
+| 29.9 s | B7 | bacteria | happy | Party time! Leftovers for everyone! | the scene, locked |  |
+| 31.8 s | B8 | tooth | scared | They turn it into acid. All night. My enamel! | the scene, locked | nidcr, dawes-2008 |
+
+What happens in the picture:
+
+- at B1 ("guards"): guards to 1
+- at B1b: snack to 1 [plop]
+- at B2: fight to 0.3
+- at B2: fight to 0.72 [thud-soft]
+- at B2: fight to 1
+- at B3 ("washes"): wash to 1 [splash-small]
+- at B4: night to 0.5
+- at B5: night to 1
+- at B5 ("brush!"): sugar to 1
+- at B5: sleep to 0.12
+- at B6 ("sleeps,"): sleep to 0.5
+- at B6 ("too!"): sleep to 1
+- at B7: party to 0.5
+- at B7 ("Leftovers"): party to 1
+- at B8 ("acid."): acid to 1 [sizzle-acid]
+- at B8 ("enamel!"): chalk to 1
 
 ## Time card: "Many nights later..."
 
-## Scene C: home
+## Scene D: home
 
-Characters: patient · props: pain, tag
-
-| Time | Line | Who | Feeling | Words | Camera | Source |
-|---|---|---|---|---|---|---|
-| 19.2 s | C1 | patient | sad | Ow! Why does this tooth ache? | ews 24 lock | nidcr-decay |
-
-What happens in the picture:
-
-- at C1 ("tooth"): pain
-- at C1 ("ache?"): tag "ouch!"
-
-## Scene D: clinic
-
-Characters: doctor, patient · props: tag, toothbrush, tag, tag, pain, tag, drop, tag, tag, pillow, pillow, toothbrush, tag, tag, toothbrush, clock, tag
+Characters: patient · props: pain
 
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
-| 21.6 s | D1 | patient | sad | Doctor, I brush every morning. Why the ache? | ews 24 lock |  |
-| 24.5 s | D2 | doctor | neutral | Mouth germs turn leftover food into acid. That acid attacks your enamel. | the scene, locked | nidcr |
-| 28.7 s | D3 | doctor | happy | But here's the twist: by day, your spit fights the acid. In sleep, it almost stops. | the scene, locked | nidcr, dawes-2008 |
-| 34.3 s | D4 | patient | shocked | So night is the worst time to skip? | the scene, locked |  |
-| 37.2 s | D5 | doctor | neutral | Yes. The most important brushing is the one just before bed. | the scene, locked | dawes-2008, nhs-teeth |
-| 41.0 s | D6 | doctor | happy | Night is worse because your spit sleeps. Brush last thing, two minutes, then spit, don't rinse. | the scene, locked | nhs-teeth, dawes-2008 |
+| 36.4 s | D1 | patient | sad | Ow! Why does this tooth ache? | ews 24 lock | nidcr-decay |
 
 What happens in the picture:
 
-- at D1: tag "every morning"
-- at D1 ("brush"): toothbrush
-- at D2: tag "germs + food"
-- at D2 ("acid."): tag "= acid"
-- at D2 ("attacks"): pain
-- at D3: tag "the twist"
-- at D3 ("spit"): drop
-- at D3 ("sleep,"): tag "asleep: almost none"
-- at D4: tag "worst time?!"
-- at D4 ("night"): pillow
-- at D5: pillow in a thought bubble
-- at D5 ("brushing"): toothbrush
-- at D5 ("before"): tag "just before bed"
-- at D6: tag "why night is worse"
-- at D6 ("Brush"): toothbrush
-- at D6 ("two"): clock
-- at D6 ("spit,"): tag "spit, don't rinse"
+- at D1 ("tooth"): pain
 
-## Scene E: tooth
+## Scene E: molar
 
-Characters: tooth, bacteria · props: tag, tag
+Characters: tooth, bacteria · props: tag, tag, tag
 
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
-| 46.9 s | E1 | bacteria | scared | A brush? At bedtime? Not fair! | ews 24 lock |  |
-| 49.0 s | E2 | tooth | happy | Skip brushing at night? Not these teeth! | the scene, locked |  |
+| 38.9 s | E1 | tooth | happy | But tonight he brushes, last thing before bed! | ews 24 lock | nhs-teeth, dawes-2008 |
+| 41.7 s | E2 | bacteria | scared | No! We only party at night because your spit sleeps! | the scene, locked | dawes-2008 |
+| 45.5 s | E3 | tooth | happy | Two minutes, then spit, don't rinse. Skip brushing at night? Not these teeth! | the scene, locked | nhs-teeth |
 
 What happens in the picture:
 
-- at E1 ("brush?"): brush to 1 [swish]
-- at E2: shield to 1
-- at E1: tag "before bed"
-- at E2: tag "clean all night"
+- at E1 ("brushes,"): brush to 0.4 [swish]
+- at E2: brush to 1
+- at E2: party to 0
+- at E2 ("because"): night to 0.7
+- at E3: shield to 1
+- at E3 ("rinse."): night to 1
+- at E3 ("night?"): sleep to 1
+- at E1 ("last"): tag "NHS: brush before bed"
+- at E3 ("Two"): tag "2 minutes"
+- at E3 ("spit,"): tag "spit, don't rinse"
 
 ## Sources
 

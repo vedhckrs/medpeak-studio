@@ -6,7 +6,7 @@ import {ROOT} from '../lib/util.mjs';
 import {loadCast} from '../lib/toon-audio.mjs';
 import {LIBRARY} from '../toon-sfx.mjs';
 import {BEDS} from '../toon-music.mjs';
-import {checkToon} from '../lib/toon-rules.mjs';
+import {checkToon, STICKERS} from '../lib/toon-rules.mjs';
 import {scanCamera} from '../lib/toon-camera.mjs';
 import {LIMITS, scanMotion} from '../lib/toon-motion.mjs';
 import {blendPose, POSES} from '../../src/toons/poses.ts';
@@ -280,9 +280,11 @@ test('every real script has its own clinic and home, and no two videos share one
     assert.ok(Number.isInteger(t.episode) && !eps.has(t.episode), `${t.slug}: a unique episode number`);
     eps.add(t.episode);
     for (const role of ['clinic', 'home']) {
+      // from format 3 a story uses only the rooms it needs (the fight has no clinic); a room it uses is still its own
+      if (t.format >= 3 && !t.shots.some((s) => s.set === role)) { assert.equal(t.rooms?.[role], undefined, `${t.slug}: no recipe for a ${role} it never shows`); continue; }
       assert.deepEqual(checkRoom(role, t.rooms?.[role]), [], `${t.slug}: ${role} recipe`);
       assert.ok(t.shots.some((s) => s.set === role), `${t.slug}: a scene in its ${role}`);
-      for (const o of real) if (o !== t) assert.equal(roomsClash(role, t.rooms[role], o.rooms[role], Math.abs(o.episode - t.episode) <= 6), null, `${t.slug} and ${o.slug}: ${role}`);
+      for (const o of real) if (o !== t && o.rooms?.[role]) assert.equal(roomsClash(role, t.rooms[role], o.rooms[role], Math.abs(o.episode - t.episode) <= 6), null, `${t.slug} and ${o.slug}: ${role}`);
     }
     assert.ok(!t.shots.some((s) => ['office', 'bedroom', 'bathroom'].includes(s.set)), `${t.slug}: no shared room`);
   }
@@ -333,7 +335,7 @@ test('every real script carries an upload package that follows the channel rules
 test('no bubble, tag or object covers a head, leaves the picture or sits on another, on any real script', async () => {
   for (const t of real) {
     const r = await scanStaging(t, null);
-    assert.ok(r.graphics >= 10, `${t.slug}: graphics were measured`);
+    assert.ok(r.graphics >= (t.format >= 3 ? 1 : 10), `${t.slug}: graphics were measured`); // a format-3 story has few graphics on purpose
     assert.deepEqual(r.onHeads, [], `${t.slug}: a graphic on a head`);
     assert.deepEqual(r.outside, [], `${t.slug}: a graphic out of the picture`);
     assert.deepEqual(r.stacked, [], `${t.slug}: graphics on each other`);
@@ -566,4 +568,26 @@ test('a piece of food in the stomach never hangs in mid-fall, whatever the food 
   assert.ok(mid.some((b) => !b.settled), 'half-way through a change a piece is falling');
   const end = tummyLayout({food: 0.5, 'food:from': 0, 'food:to': 0.5, full: 0.4}, 1.7).bits;
   assert.ok(end.length >= 2 && end.every((b) => b.settled), 'at the end of the change every piece has landed');
+});
+
+test('the tooth arena: nothing covers a face in any state, and a story shape keeps to its sticker limit', async () => {
+  const {arenaThings, arenaLayout} = await import('../../src/toons/stage-arena.tsx');
+  const hit = (a, b) => a.x0 < b.x1 && a.x1 > b.x0 && a.y0 < b.y1 && a.y1 > b.y0;
+  const dials = ['night', 'guards', 'sleep', 'sugar', 'snack', 'wash', 'fight', 'party', 'acid', 'chalk', 'brush', 'shield'];
+  let seen = 0;
+  for (let i = 0; i < 400; i++) {
+    const state = Object.fromEntries(dials.map((d, j) => [d, Math.round(((i * (j + 3) * 0.137) % 1) * 20) / 20]));
+    const T = arenaThings(state, i * 0.31);
+    for (const f of T.faces) for (const th of T.things) { if (th.only && th.only !== f.who) continue; seen++; assert.ok(!hit(th, f), `${th.id} is in front of ${f.who}'s face at ${JSON.stringify(state)}`); }
+    for (const g of arenaLayout(state, i * 0.31).guard) assert.ok(Number.isFinite(g.x) && Number.isFinite(g.y), 'a guard has a place');
+  }
+  assert.ok(seen > 200, 'faces and things were compared');
+  const t = real.find((x) => x.format >= 3);
+  assert.ok(t, 'there is a format-3 script');
+  const stickers = t.shots.flatMap((s) => (s.props ?? []).filter((p) => ['tag', 'chip'].includes(p.kind))).length;
+  assert.ok(stickers <= STICKERS, `${t.slug}: ${stickers} stickers`);
+  const many = structuredClone(t);
+  many.shots.find((s) => s.props).props.push(...Array.from({length: 6}, (_, i) => ({kind: 'tag', text: `label ${i}`, x: 540, y: 400 + i * 90, size: 300, from: many.shots.find((s) => s.props).lines[0].id})));
+  const res = checkToon(many, null, known).results.find((r) => r.point === 'Few stickers');
+  assert.ok(res && !res.pass, 'a script with too many stickers is refused');
 });

@@ -1,7 +1,8 @@
 {
  "slug": "skip-brushing-at-night",
  "title": "What Happens If You Skip Brushing at Night",
- "format": 2,
+ "format": 3,
+ "shape": "fight",
  "music": "panic",
  "camera": "steady",
  "episode": 6,
@@ -20,19 +21,6 @@
   }
  ],
  "rooms": {
-  "clinic": {
-   "palette": "blush",
-   "wall": "stripes",
-   "floor": "checker",
-   "window": {
-    "style": "round",
-    "side": "right",
-    "view": "garden"
-   },
-   "layout": "cabinet",
-   "chart": "tooth",
-   "time": "day"
-  },
   "home": {
    "kind": "bathroom",
    "palette": "slate",
@@ -50,7 +38,7 @@
  "package": {
   "title": "What Happens If You Skip Brushing at Night",
   "phrase": "what happens if you skip brushing at night",
-  "opener": "What happens if you skip brushing at night? Mouth germs turn leftover food into acid, and while you sleep your spit, which fights that acid by day, almost stops flowing. This cartoon shows the night from the tooth's side, and Dr. Mira shares the NHS advice: brush last thing before bed for two minutes with fluoride toothpaste, then spit and do not rinse.",
+  "opener": "What happens if you skip brushing at night? Mouth germs turn leftover food into acid, and while you sleep your spit, which clears sugar and acid by day, almost stops flowing. This cartoon shows the night from the top of a tooth: the spit guards fall asleep and the germs throw a party. The fix is the NHS advice: brush last thing before bed for two minutes with fluoride toothpaste, then spit and do not rinse.",
   "question": "Be honest: how often do you fall asleep without brushing?",
   "tags": [
    "what happens if you skip brushing at night",
@@ -78,31 +66,31 @@
   },
   "promise": {
    "scene": "A2",
-   "line": "Why is night worse than day? Watch."
+   "line": "Guess why we party at night?"
   },
   "question": {
    "scene": "A2",
-   "line": "Why is night worse than day? Watch."
+   "line": "Guess why we party at night?"
   },
   "answer": {
-   "scene": "D6",
-   "line": "Night is worse because your spit sleeps. Brush last thing, two minutes, then spit, don't rinse."
+   "scene": "E2",
+   "line": "No! We only party at night because your spit sleeps!"
   },
   "change3s": {
    "scene": "all",
-   "line": "steady camera: something new happens in the picture at least every 3 s"
+   "line": "steady camera: something happens in the picture at least every 3 s (stickers do not count)"
   },
   "twist": {
-   "scene": "D3",
-   "line": "But here's the twist: by day, your spit fights the acid. In sleep, it almost stops."
+   "scene": "B6",
+   "line": "Here's the twist: when he sleeps, your spit guards sleep too!"
   },
   "bestLast": {
-   "scene": "D6",
-   "line": "Night is worse because your spit sleeps. Brush last thing, two minutes, then spit, don't rinse."
+   "scene": "E3",
+   "line": "Two minutes, then spit, don't rinse. Skip brushing at night? Not these teeth!"
   },
   "loop": {
-   "scene": "E2",
-   "line": "Skip brushing at night? Not these teeth!"
+   "scene": "E3",
+   "line": "Two minutes, then spit, don't rinse. Skip brushing at night? Not these teeth!"
   }
  },
  "sources": [
@@ -134,13 +122,13 @@
  "shots": [
   {
    "id": "A",
-   "set": "tooth",
-   "label": "TOOTH",
+   "set": "molar",
+   "label": "TONIGHT",
    "cast": [
     {
      "who": "tooth",
      "x": 540,
-     "size": 600,
+     "size": 700,
      "stage": true,
      "emotion": "scared",
      "pose": "rest"
@@ -148,161 +136,44 @@
     {
      "who": "bacteria",
      "x": 540,
-     "size": 600,
+     "size": 320,
      "stage": true,
-     "emotion": "smug",
+     "emotion": "happy",
      "pose": "hips"
     }
    ],
    "state": {
     "night": 1,
-    "feast": 1,
-    "acid": 1,
-    "hole": 0.1
+    "guards": 1,
+    "sleep": 1,
+    "sugar": 1,
+    "party": 1,
+    "acid": 0.55,
+    "chalk": 0.3
    },
    "events": [
     {
-     "at": "A3",
+     "at": "A1",
+     "word": "teeth",
      "set": {
-      "night": 0,
-      "feast": 0,
-      "acid": 0,
-      "hole": 0,
-      "sugar": 0.8,
-      "saliva": 1
+      "acid": 0.85
      },
-     "over": 8,
-     "fx": "flash"
+     "over": 30
     },
     {
-     "at": "A4",
-     "word": "bodyguard",
+     "at": "A2",
      "set": {
-      "night": 1
+      "chalk": 0.7
      },
      "over": 40
     },
     {
-     "at": "A5",
-     "set": {
-      "saliva": 0
-     },
-     "over": 46
-    },
-    {
-     "at": "A5",
-     "word": "sleeps!",
-     "set": {
-      "feast": 0.5
-     },
-     "over": 24
-    },
-    {
-     "at": "A6",
-     "set": {
-      "feast": 1
-     },
-     "over": 24
-    },
-    {
-     "at": "A6",
-     "word": "acid",
+     "at": "A2",
+     "word": "night?",
      "set": {
       "acid": 1
      },
-     "over": 30,
-     "sfx": "sizzle-acid"
-    },
-    {
-     "at": "A6",
-     "word": "want!",
-     "set": {
-      "hole": 0.1
-     },
      "over": 20
-    }
-   ],
-   "props": [
-    {
-     "kind": "toothbrush",
-     "x": 230,
-     "y": 470,
-     "size": 220,
-     "from": "A1",
-     "to": "A1",
-     "halo": true,
-     "word": "brushing",
-     "no": true
-    },
-    {
-     "kind": "tag",
-     "text": "why night?",
-     "x": 310,
-     "y": 250,
-     "size": 320,
-     "rot": 3,
-     "from": "A2",
-     "to": "A2"
-    },
-    {
-     "kind": "tag",
-     "text": "bedtime",
-     "x": 310,
-     "y": 250,
-     "size": 320,
-     "rot": -4,
-     "from": "A3",
-     "to": "A3"
-    },
-    {
-     "kind": "pillow",
-     "x": 230,
-     "y": 470,
-     "size": 220,
-     "from": "A3",
-     "to": "A3",
-     "halo": true,
-     "word": "tired"
-    },
-    {
-     "kind": "burger",
-     "x": 230,
-     "y": 470,
-     "size": 220,
-     "from": "A4",
-     "to": "A4",
-     "halo": true
-    },
-    {
-     "kind": "tag",
-     "text": "spit = bodyguard",
-     "x": 310,
-     "y": 250,
-     "size": 320,
-     "rot": -3,
-     "from": "A4",
-     "to": "A4",
-     "word": "bodyguard"
-    },
-    {
-     "kind": "drop",
-     "x": 230,
-     "y": 470,
-     "size": 220,
-     "from": "A5",
-     "to": "A5",
-     "halo": true,
-     "word": "spit!",
-     "no": true
-    },
-    {
-     "kind": "tag",
-     "text": "all night",
-     "x": 310,
-     "y": 250,
-     "size": 320,
-     "rot": 4,
-     "from": "A6"
     }
    ],
    "lines": [
@@ -314,7 +185,7 @@
      "pose": "panic",
      "key": "night",
      "react": {
-      "bacteria": "smug"
+      "bacteria": "happy"
      },
      "src": [
       "nidcr",
@@ -324,57 +195,295 @@
     {
      "id": "A2",
      "who": "bacteria",
-     "text": "Why is night worse than day? Watch.",
+     "text": "Guess why we party at night?",
      "emotion": "smug",
-     "pose": "hips",
-     "key": "worse"
+     "pose": "cheer",
+     "key": "night",
+     "chat": true,
+     "beat": 0.8
+    }
+   ]
+  },
+  {
+   "id": "T1",
+   "set": "molar",
+   "card": "Earlier that evening...",
+   "seconds": 1.2,
+   "cast": [],
+   "lines": []
+  },
+  {
+   "id": "B",
+   "set": "molar",
+   "label": "THAT EVENING",
+   "cast": [
+    {
+     "who": "tooth",
+     "x": 540,
+     "size": 700,
+     "stage": true,
+     "emotion": "happy",
+     "pose": "rest"
     },
     {
-     "id": "A3",
+     "who": "bacteria",
+     "x": 540,
+     "size": 320,
+     "stage": true,
+     "emotion": "angry",
+     "pose": "fists"
+    }
+   ],
+   "state": {
+    "night": 0,
+    "guards": 0
+   },
+   "events": [
+    {
+     "at": "B1",
+     "word": "guards",
+     "set": {
+      "guards": 1
+     },
+     "over": 30
+    },
+    {
+     "at": "B1b",
+     "set": {
+      "snack": 1
+     },
+     "over": 30,
+     "sfx": "plop"
+    },
+    {
+     "at": "B2",
+     "set": {
+      "fight": 0.3
+     },
+     "over": 26
+    },
+    {
+     "at": "B2",
+     "delay": 0.95,
+     "set": {
+      "fight": 0.72
+     },
+     "over": 52,
+     "sfx": "thud-soft"
+    },
+    {
+     "at": "B2",
+     "delay": 2.75,
+     "set": {
+      "fight": 1
+     },
+     "over": 34
+    },
+    {
+     "at": "B3",
+     "word": "washes",
+     "set": {
+      "wash": 1
+     },
+     "over": 46,
+     "sfx": "splash-small"
+    },
+    {
+     "at": "B4",
+     "set": {
+      "night": 0.5
+     },
+     "over": 44
+    },
+    {
+     "at": "B5",
+     "set": {
+      "night": 1
+     },
+     "over": 36
+    },
+    {
+     "at": "B5",
+     "word": "brush!",
+     "set": {
+      "sugar": 1
+     },
+     "over": 36
+    },
+    {
+     "at": "B5",
+     "delay": 2.5,
+     "set": {
+      "sleep": 0.12
+     },
+     "over": 24
+    },
+    {
+     "at": "B6",
+     "word": "sleeps,",
+     "set": {
+      "sleep": 0.5
+     },
+     "over": 44
+    },
+    {
+     "at": "B6",
+     "word": "too!",
+     "set": {
+      "sleep": 1
+     },
+     "over": 44
+    },
+    {
+     "at": "B7",
+     "set": {
+      "party": 0.5
+     },
+     "over": 30
+    },
+    {
+     "at": "B7",
+     "word": "Leftovers",
+     "set": {
+      "party": 1
+     },
+     "over": 30
+    },
+    {
+     "at": "B8",
+     "word": "acid.",
+     "set": {
+      "acid": 1
+     },
+     "over": 44,
+     "sfx": "sizzle-acid"
+    },
+    {
+     "at": "B8",
+     "word": "enamel!",
+     "set": {
+      "chalk": 1
+     },
+     "over": 40
+    }
+   ],
+   "lines": [
+    {
+     "id": "B1",
      "who": "tooth",
-     "text": "Rewind! Bedtime. He was too tired to brush.",
+     "text": "This evening, my spit guards were on duty.",
+     "emotion": "happy",
+     "pose": "present",
+     "key": "guards",
+     "react": {
+      "bacteria": "angry"
+     },
+     "src": [
+      "dawes-2008"
+     ]
+    },
+    {
+     "id": "B1b",
+     "who": "tooth",
+     "text": "Every snack leaves sugar on me.",
      "emotion": "neutral",
      "pose": "explain",
-     "key": "tired",
+     "key": "sugar",
      "react": {
       "bacteria": "happy"
-     }
+     },
+     "src": [
+      "nidcr"
+     ],
+     "beat": 0.3
     },
     {
-     "id": "A4",
+     "id": "B2",
      "who": "bacteria",
-     "text": "Dinner is still on you. And your bodyguard is leaving!",
+     "text": "Sugar! Boys, charge!",
+     "emotion": "angry",
+     "pose": "point",
+     "key": "charge",
+     "react": {
+      "tooth": "shocked"
+     },
+     "chat": true,
+     "beat": 3
+    },
+    {
+     "id": "B3",
+     "who": "tooth",
+     "text": "Ha! My spit washes away their sugar and their acid.",
+     "emotion": "happy",
+     "pose": "cheer",
+     "key": "washes",
+     "react": {
+      "bacteria": "sad"
+     },
+     "src": [
+      "dawes-2008",
+      "nidcr"
+     ]
+    },
+    {
+     "id": "B4",
+     "who": "bacteria",
+     "text": "Fine. We'll wait for bedtime.",
+     "emotion": "smug",
+     "pose": "think",
+     "key": "bedtime",
+     "chat": true,
+     "beat": 1.1
+    },
+    {
+     "id": "B5",
+     "who": "tooth",
+     "text": "Bedtime. And he didn't brush!",
+     "emotion": "shocked",
+     "pose": "panic",
+     "key": "brush",
+     "react": {
+      "bacteria": "happy"
+     },
+     "chat": true,
+     "beat": 1.5
+    },
+    {
+     "id": "B6",
+     "who": "bacteria",
+     "text": "Here's the twist: when he sleeps, your spit guards sleep too!",
      "emotion": "happy",
      "pose": "point",
-     "key": "bodyguard",
+     "key": "sleep",
      "react": {
       "tooth": "scared"
      },
      "src": [
-      "nidcr",
       "dawes-2008"
-     ]
+     ],
+     "beat": 0.8
     },
     {
-     "id": "A5",
-     "who": "tooth",
-     "text": "My spit! It almost stops while he sleeps!",
-     "emotion": "shocked",
-     "pose": "panic",
-     "key": "spit",
-     "src": [
-      "dawes-2008"
-     ]
-    },
-    {
-     "id": "A6",
+     "id": "B7",
      "who": "bacteria",
-     "text": "All night, no spit, all the acid we want!",
-     "emotion": "smug",
+     "text": "Party time! Leftovers for everyone!",
+     "emotion": "happy",
      "pose": "cheer",
+     "key": "party",
+     "react": {
+      "tooth": "scared"
+     },
+     "chat": true
+    },
+    {
+     "id": "B8",
+     "who": "tooth",
+     "text": "They turn it into acid. All night. My enamel!",
+     "emotion": "scared",
+     "pose": "panic",
      "key": "acid",
      "react": {
-      "tooth": "sad"
+      "bacteria": "smug"
      },
      "src": [
       "nidcr",
@@ -384,15 +493,15 @@
    ]
   },
   {
-   "id": "T1",
-   "set": "tooth",
+   "id": "T2",
+   "set": "molar",
    "card": "Many nights later...",
-   "seconds": 1.4,
+   "seconds": 1.2,
    "cast": [],
    "lines": []
   },
   {
-   "id": "C",
+   "id": "D",
    "set": "home",
    "cast": [
     {
@@ -409,24 +518,14 @@
      "x": 612,
      "y": 790,
      "size": 130,
-     "from": "C1",
+     "from": "D1",
      "word": "tooth",
      "on": "patient"
-    },
-    {
-     "kind": "tag",
-     "text": "ouch!",
-     "x": 540,
-     "y": 390,
-     "size": 300,
-     "rot": -4,
-     "from": "C1",
-     "word": "ache?"
     }
    ],
    "lines": [
     {
-     "id": "C1",
+     "id": "D1",
      "who": "patient",
      "text": "Ow! Why does this tooth ache?",
      "emotion": "sad",
@@ -439,273 +538,14 @@
    ]
   },
   {
-   "id": "D",
-   "set": "clinic",
-   "cast": [
-    {
-     "who": "doctor",
-     "x": 285,
-     "size": 940
-    },
-    {
-     "who": "patient",
-     "x": 805,
-     "size": 900,
-     "emotion": "sad",
-     "pose": "think"
-    }
-   ],
-   "props": [
-    {
-     "kind": "tag",
-     "text": "every morning",
-     "x": 610,
-     "y": 300,
-     "size": 300,
-     "rot": 5,
-     "from": "D1",
-     "to": "D1"
-    },
-    {
-     "kind": "toothbrush",
-     "x": 550,
-     "y": 1170,
-     "size": 210,
-     "from": "D1",
-     "word": "brush",
-     "to": "D1",
-     "halo": true
-    },
-    {
-     "kind": "tag",
-     "text": "germs + food",
-     "x": 610,
-     "y": 300,
-     "size": 300,
-     "rot": -4,
-     "from": "D2",
-     "to": "D2"
-    },
-    {
-     "kind": "tag",
-     "text": "= acid",
-     "x": 550,
-     "y": 1180,
-     "size": 290,
-     "rot": 0,
-     "from": "D2",
-     "to": "D2",
-     "word": "acid."
-    },
-    {
-     "kind": "pain",
-     "x": 868,
-     "y": 880,
-     "size": 120,
-     "from": "D2",
-     "word": "attacks",
-     "to": "D2",
-     "on": "patient"
-    },
-    {
-     "kind": "tag",
-     "text": "the twist",
-     "x": 610,
-     "y": 300,
-     "size": 300,
-     "rot": -4,
-     "from": "D3",
-     "to": "D3"
-    },
-    {
-     "kind": "drop",
-     "x": 550,
-     "y": 1170,
-     "size": 230,
-     "from": "D3",
-     "word": "spit",
-     "to": "D3",
-     "halo": true
-    },
-    {
-     "kind": "tag",
-     "text": "asleep: almost none",
-     "x": 550,
-     "y": 1340,
-     "size": 280,
-     "rot": 0,
-     "from": "D3",
-     "to": "D3",
-     "word": "sleep,"
-    },
-    {
-     "kind": "tag",
-     "text": "worst time?!",
-     "x": 610,
-     "y": 300,
-     "size": 300,
-     "rot": 5,
-     "from": "D4",
-     "to": "D4"
-    },
-    {
-     "kind": "pillow",
-     "x": 550,
-     "y": 1170,
-     "size": 210,
-     "from": "D4",
-     "word": "night",
-     "to": "D4",
-     "halo": true
-    },
-    {
-     "kind": "pillow",
-     "size": 300,
-     "from": "D5",
-     "to": "D5",
-     "bubble": true,
-     "of": "doctor"
-    },
-    {
-     "kind": "toothbrush",
-     "x": 550,
-     "y": 1170,
-     "size": 210,
-     "from": "D5",
-     "word": "brushing",
-     "to": "D5",
-     "halo": true
-    },
-    {
-     "kind": "tag",
-     "text": "just before bed",
-     "x": 550,
-     "y": 1340,
-     "size": 280,
-     "rot": 0,
-     "from": "D5",
-     "to": "D5",
-     "word": "before"
-    },
-    {
-     "kind": "tag",
-     "text": "why night is worse",
-     "x": 610,
-     "y": 300,
-     "size": 300,
-     "rot": -4,
-     "from": "D6"
-    },
-    {
-     "kind": "toothbrush",
-     "x": 455,
-     "y": 1190,
-     "size": 190,
-     "from": "D6",
-     "word": "Brush",
-     "halo": true
-    },
-    {
-     "kind": "clock",
-     "x": 648,
-     "y": 1190,
-     "size": 190,
-     "from": "D6",
-     "word": "two",
-     "halo": true
-    },
-    {
-     "kind": "tag",
-     "text": "spit, don't rinse",
-     "x": 550,
-     "y": 1340,
-     "size": 280,
-     "rot": 0,
-     "from": "D6",
-     "word": "spit,"
-    }
-   ],
-   "lines": [
-    {
-     "id": "D1",
-     "who": "patient",
-     "text": "Doctor, I brush every morning. Why the ache?",
-     "emotion": "sad",
-     "pose": "shrug",
-     "key": "morning"
-    },
-    {
-     "id": "D2",
-     "who": "doctor",
-     "text": "Mouth germs turn leftover food into acid. That acid attacks your enamel.",
-     "emotion": "neutral",
-     "pose": "explain",
-     "key": "acid",
-     "react": {
-      "patient": "shocked"
-     },
-     "src": [
-      "nidcr"
-     ]
-    },
-    {
-     "id": "D3",
-     "who": "doctor",
-     "text": "But here's the twist: by day, your spit fights the acid. In sleep, it almost stops.",
-     "emotion": "happy",
-     "pose": "present",
-     "key": "twist",
-     "src": [
-      "nidcr",
-      "dawes-2008"
-     ]
-    },
-    {
-     "id": "D4",
-     "who": "patient",
-     "text": "So night is the worst time to skip?",
-     "emotion": "shocked",
-     "pose": "think",
-     "key": "worst"
-    },
-    {
-     "id": "D5",
-     "who": "doctor",
-     "text": "Yes. The most important brushing is the one just before bed.",
-     "emotion": "neutral",
-     "pose": "point",
-     "key": "bed",
-     "src": [
-      "dawes-2008",
-      "nhs-teeth"
-     ]
-    },
-    {
-     "id": "D6",
-     "who": "doctor",
-     "text": "Night is worse because your spit sleeps. Brush last thing, two minutes, then spit, don't rinse.",
-     "emotion": "happy",
-     "pose": "thumb",
-     "key": "last",
-     "react": {
-      "patient": "happy"
-     },
-     "src": [
-      "nhs-teeth",
-      "dawes-2008"
-     ]
-    }
-   ]
-  },
-  {
    "id": "E",
-   "set": "tooth",
-   "label": "NEXT NIGHT",
+   "set": "molar",
+   "label": "THE NEXT NIGHT",
    "cast": [
     {
      "who": "tooth",
      "x": 540,
-     "size": 600,
+     "size": 700,
      "stage": true,
      "emotion": "happy",
      "pose": "rest"
@@ -713,72 +553,147 @@
     {
      "who": "bacteria",
      "x": 540,
-     "size": 600,
+     "size": 320,
      "stage": true,
      "emotion": "smug",
      "pose": "hips"
     }
    ],
    "state": {
-    "night": 1,
-    "feast": 0.5,
-    "saliva": 0.15
+    "night": 0.35,
+    "guards": 1,
+    "sugar": 1,
+    "party": 0.5
    },
    "events": [
     {
      "at": "E1",
-     "word": "brush?",
+     "word": "brushes,",
      "set": {
-      "brush": 1
+      "brush": 0.4
      },
-     "over": 52,
+     "over": 30,
      "sfx": "swish"
     },
     {
      "at": "E2",
      "set": {
+      "brush": 1
+     },
+     "over": 56
+    },
+    {
+     "at": "E2",
+     "delay": 0.5,
+     "set": {
+      "party": 0
+     },
+     "over": 20
+    },
+    {
+     "at": "E2",
+     "word": "because",
+     "set": {
+      "night": 0.7
+     },
+     "over": 30
+    },
+    {
+     "at": "E3",
+     "set": {
       "shield": 1
      },
-     "over": 18
+     "over": 22
+    },
+    {
+     "at": "E3",
+     "word": "rinse.",
+     "set": {
+      "night": 1
+     },
+     "over": 40
+    },
+    {
+     "at": "E3",
+     "word": "night?",
+     "set": {
+      "sleep": 1
+     },
+     "over": 60
     }
    ],
    "props": [
     {
      "kind": "tag",
-     "text": "before bed",
-     "x": 310,
+     "text": "NHS: brush before bed",
+     "x": 700,
      "y": 250,
-     "size": 320,
-     "rot": -4,
+     "size": 330,
+     "rot": -3,
      "from": "E1",
-     "to": "E1"
+     "to": "E1",
+     "word": "last"
     },
     {
      "kind": "tag",
-     "text": "clean all night",
-     "x": 310,
+     "text": "2 minutes",
+     "x": 740,
      "y": 250,
-     "size": 320,
-     "rot": -5,
-     "from": "E2"
+     "size": 340,
+     "rot": 3,
+     "from": "E3",
+     "to": "E3",
+     "word": "Two"
+    },
+    {
+     "kind": "tag",
+     "text": "spit, don't rinse",
+     "x": 740,
+     "y": 352,
+     "size": 340,
+     "rot": -3,
+     "from": "E3",
+     "word": "spit,"
     }
    ],
    "lines": [
     {
      "id": "E1",
-     "who": "bacteria",
-     "text": "A brush? At bedtime? Not fair!",
-     "emotion": "scared",
-     "pose": "panic",
-     "key": "brush"
+     "who": "tooth",
+     "text": "But tonight he brushes, last thing before bed!",
+     "emotion": "happy",
+     "pose": "cheer",
+     "key": "brushes",
+     "react": {
+      "bacteria": "scared"
+     },
+     "src": [
+      "nhs-teeth",
+      "dawes-2008"
+     ]
     },
     {
      "id": "E2",
+     "who": "bacteria",
+     "text": "No! We only party at night because your spit sleeps!",
+     "emotion": "scared",
+     "pose": "panic",
+     "key": "sleeps",
+     "src": [
+      "dawes-2008"
+     ],
+     "beat": 0.2
+    },
+    {
+     "id": "E3",
      "who": "tooth",
-     "text": "Skip brushing at night? Not these teeth!",
+     "text": "Two minutes, then spit, don't rinse. Skip brushing at night? Not these teeth!",
      "emotion": "happy",
      "pose": "cheer",
-     "key": "teeth"
+     "key": "teeth",
+     "src": [
+      "nhs-teeth"
+     ]
     }
    ]
   }

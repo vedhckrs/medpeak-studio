@@ -10,6 +10,7 @@ import {blob, lift, lineOf, Part, type P, Scaled, shade, spline, stipplePath, ta
 import {Arm, type ArmSpec, type Emotion, Face} from './rig';
 import type {RoomLook} from './director';
 import {STYLE} from './style';
+import {ARENA_ARMS, ARENA_SPOTS, arenaSpotsAt, arenaThings} from './stage-arena';
 import {theme} from '../brand/theme';
 
 /** What the player hands a stage for each character the stage draws itself. */
@@ -796,7 +797,8 @@ export const tummyLayout = (state: Record<string, number> = {}, t = 0) => {
   return {food, full, air, gum, pass, squeeze, burp, beat, tilt, deg, shift, toWorld, meAt, pipeAt, inPts, outPts, polyW, maxY, level, span, wave, bits, gumAt, bubbles, burps, cardia};
 };
 /** For the staging check: the boxes of a stage's faces and of the loose things on it, for a state. null = this stage is not measured yet. */
-export const stageThings = (set: string, state: Record<string, number> = {}, t = 0): {faces: {who: string; x0: number; y0: number; x1: number; y1: number; dry?: boolean}[]; things: {id: string; x0: number; y0: number; x1: number; y1: number}[]; surface?: number} | null => {
+export const stageThings = (set: string, state: Record<string, number> = {}, t = 0): {faces: {who: string; x0: number; y0: number; x1: number; y1: number; dry?: boolean}[]; things: {id: string; only?: string; x0: number; y0: number; x1: number; y1: number}[]; surface?: number} | null => {
+  if (set === 'molar') return arenaThings(state, t);
   if (set !== 'tummy') return null;
   const T = tummyLayout(state, t);
   const face = {who: 'stomach', x0: T.meAt[0] - FACE_ROOM.side, y0: T.meAt[1] - FACE_ROOM.up, x1: T.meAt[0] + FACE_ROOM.side, y1: T.meAt[1] + FACE_ROOM.down};
@@ -1023,7 +1025,9 @@ export const STAGE_ARMS: Record<string, Record<string, {k: number; len: number}>
   foodpipe: {foodpipe: {k: 6.2, len: 22}, pill: {k: 3.25, len: 30}},
   tooth: {tooth: {k: 4.5, len: 22}, bacteria: {k: 2.25, len: 24}},
   tummy: {stomach: {k: 4.3, len: 22}, foodpipe: {k: 2.35, len: 20}},
+  molar: ARENA_ARMS,
 };
+STAGE_SPOTS.molar = ARENA_SPOTS;
 
 // ------------------------------------------------------------------ where the stage's characters are, for a state
 /**
@@ -1044,6 +1048,7 @@ export const stageSpotsAt = (set: string, state: Record<string, number> = {}): R
     return {foodpipe: base.foodpipe, pill: gone ? null : {...base.pill, x: px + 58 * (1 - ride), y: py + 70}};
   }
   if (set === 'tooth') return {tooth: base.tooth, bacteria: st('brush') > 0.55 ? null : base.bacteria};
+  if (set === 'molar') return arenaSpotsAt(state);
   if (set === 'tummy') {
     const k = io(st('tilt'));
     const th = (TUM.lie * k * Math.PI) / 180;

@@ -11,7 +11,7 @@ export const SEG = 78; // frames: the usual longest stretch of one picture (2.6 
 export const SEG_MAX = SEG + 10; // a line that ends within 2.9 s keeps its one picture
 export const WPS = 2.94; // words a second, pauses included: measured on our own 47 voiced lines (386 words in 131.4 s)
 
-export const SET_NAMES = ['throat', 'gut', 'stomach', 'mouth', 'blood', 'lungs', 'office', 'bathroom', 'bedroom', 'foodpipe', 'tooth', 'tummy', 'clinic', 'home'] as const;
+export const SET_NAMES = ['throat', 'gut', 'stomach', 'mouth', 'blood', 'lungs', 'office', 'bathroom', 'bedroom', 'foodpipe', 'tooth', 'tummy', 'molar', 'clinic', 'home'] as const;
 export type SetName = (typeof SET_NAMES)[number];
 export const SHOT_NAMES = ['ews', 'wide', 'full', 'two', 'ms', 'mcu', 'cu', 'ecu', 'ots', 'low'] as const;
 export type ShotName = (typeof SHOT_NAMES)[number];
@@ -41,6 +41,14 @@ export const STAGE_KEYS: Partial<Record<SetName, string[]>> = {
   // sitting up, 1 = lying flat (the whole stomach tips over). valve: the ring of muscle at the top opens.
   // leak: acid climbs the food pipe. burn: the food pipe hurts. air: swallowed air gathers above the
   // juice and the stomach bloats (eating too fast).
+  // The tooth ARENA (the top of a back tooth, wide, for a fight): night: evening to night. guards: the
+  // spit guards come on duty. sleep: they fall asleep one after another. sugar: dinner is left on the
+  // tooth. fight: ONE gag from 0 to 1: the gang rushes in, a dust cloud, the germs are thrown out.
+  // wash: spit washes over the top and clears the mess. party: the gang creeps in and dances. acid: they
+  // tip their cups: a pond in the groove, runs down the shoulders. chalk: chalky patches spread (lost
+  // minerals). brush: a giant brush ploughs everything off. shield: a fluoride coat.
+  // snack: a few crumbs land by day (the spit washes them off).
+  molar: ['night', 'guards', 'sleep', 'sugar', 'snack', 'wash', 'fight', 'party', 'acid', 'chalk', 'brush', 'shield'],
   // gum: a swallowed piece of gum comes down and floats with the food. pass: what is in the stomach
   // moves on through the exit at the lower left. squeeze: an empty stomach's hunger squeeze, a ring of
   // muscle travelling to the exit, with sound rings (the growl). burp: air leaves up the food pipe.
@@ -146,6 +154,7 @@ export type ToonLine = {
   pose?: PoseName;
   sfx?: string; // an effect from the library; without it the emotion picks one
   key?: string; // the caption word shown in amber (default: the last word)
+  beat?: number; // seconds of silence after this line (0 to 2): the picture plays a gag with no words
   react?: Record<string, Emotion>; // the listeners' faces
   cam?: string; // optional camera, e.g. "cu 85 push" (see toons-camera.md)
   src?: string[]; // source ids that back a medical statement in this line
@@ -266,7 +275,7 @@ export const layoutToon = (toon: Toon, timings: ToonTimings | null) => {
     (shot.lines ?? []).forEach((line, li) => {
       const tm = timings?.lines[line.id];
       const sec = lineSeconds(line, timings);
-      const frames = Math.round((sec + GAP) * TOON_FPS);
+      const frames = Math.round((sec + GAP + Math.max(0, Math.min(2, line.beat ?? 0))) * TOON_FPS); // `beat`: a silent moment after the line, so a gag can play
       lines.push({line, si, li, from: at, frames, words: tm?.words ?? guessWords(line.text, sec), file: tm?.file});
       at += frames;
     });
@@ -429,19 +438,21 @@ export const propFrames = (L: Layout, si: number, p: ToonProp): [number, number]
  * Every moment something NEW appears in the picture (Retention 7, point 4): a new place or card, a
  * cut, a prop or graphic, a change of the stage. Captions and mouth movement do not count.
  */
-export const changesOf = (L: Layout): {f: number; what: string}[] => {
+export const changesOf = (L: Layout, opts: {stickers?: boolean} = {}): {f: number; what: string}[] => {
+  // from format 3 a text sticker is not "something new" (owner, 2026-11-17: "repeated template, icons and all"): only what HAPPENS counts
+  const counts = (kind: string) => opts.stickers !== false || !['tag', 'chip'].includes(kind);
   const out: {f: number; what: string}[] = [];
   L.shots.forEach((sh, si) => {
     out.push({f: sh.from, what: sh.shot.card ? `card "${sh.shot.card}"` : `scene ${sh.shot.id} (${sh.shot.set})`});
     for (const e of sh.shot.events ?? []) if (e.set || e.fx) out.push({f: frameOf(L, si, e.at, e.word, e.delay), what: `event ${e.set ? Object.keys(e.set).join('+') : e.fx}`});
-    for (const p of sh.shot.props ?? []) { const [a] = propFrames(L, si, p); if (a > sh.from) out.push({f: a, what: `prop ${p.kind}`}); }
+    for (const p of sh.shot.props ?? []) { const [a] = propFrames(L, si, p); if (a > sh.from && counts(p.kind)) out.push({f: a, what: `prop ${p.kind}`}); }
   });
   for (const s of L.segs) if (!L.shots.some((sh) => sh.from === s.from)) out.push({f: s.from, what: `cut to ${s.who} ${s.shot}`});
   return out.sort((a, b) => a.f - b.f);
 };
 /** The longest stretch with nothing new in the picture, in seconds, and where it is. */
-export const longestStill = (L: Layout) => {
-  const c = changesOf(L);
+export const longestStill = (L: Layout, opts: {stickers?: boolean} = {}) => {
+  const c = changesOf(L, opts);
   let worst = {seconds: 0, from: 0, to: 0};
   const times = [...new Set(c.map((x) => x.f)), L.total];
   for (let i = 1; i < times.length; i++) {

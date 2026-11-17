@@ -4,6 +4,41 @@ A Toon is one file, `videos/<slug>/toon.json`. Before a single credit is spent i
 `node pipeline/toon-check.mjs <slug>` (free, instant). The gate uses the same director as the
 player (`src/toons/director.ts`), so what it measures is what gets rendered.
 
+## Story shapes (`"format": 3`): things happen, labels stop (owner, 2026-11-17)
+The owner on the first eight videos: "every video looks same, repeated template, icons and all, not
+interesting". Measured: 7 of 8 had the same scene order, 116 text stickers, the clock and the burger
+14 times each, "But here's the twist" in 8 of 8 (plans/skill-upgrade-2026-11-17.md). From format 3 a
+script names its `"shape"` and the gate changes:
+
+| Shape | What it is | Dr. Mira |
+|---|---|---|
+| `fight` | two sides battle inside the body | short, or not at all |
+| `journey` | one thing travels through several places | at the end |
+| `clock` | one place over time, the damage growing | no |
+| `crew` | the organ's workers do a job and it goes wrong | no |
+| `visit` | home, then the clinic (the old shape) | yes, 15 to 50% |
+
+- **At most 5 text stickers** (`Few stickers`), and a sticker is no longer "something new": the
+  3-second rule counts only what HAPPENS (a stage event, a thing arriving, a new place). A gag that
+  has phases is written as its phases (the fight is three events: the rush, the cloud, the rout).
+- **No picture icon twice** in a video (`No icon twice`).
+- **Only the rooms the story needs**: no clinic and no doctor unless the shape is `visit`.
+- **Every line names its source or is marked `"chat": true`**: with no doctor to carry the facts,
+  the body characters do.
+- **`"beat"` on a line**: up to 2 seconds of silence after it, so a gag can play with no words.
+- The hook rules, the open question, the twist at 50 to 75%, best last and the loop stay.
+The first one is `videos/skip-brushing-at-night` (the fight, on the tooth arena, no doctor, 3 stickers).
+
+### The tooth arena (`"set": "molar"`, `src/toons/stage-arena.tsx`)
+The top of a back tooth, wide, with a crew: four spit guards (their shields say SPIT), a gang of
+five germs that look nothing alike, and the tooth's face below. Dials: `night`, `guards`, `sleep`
+(they fall asleep one after another), `snack` and `sugar` (crumbs by day, dinner at bedtime), `fight`
+(0 to 0.3 the rush, to 0.72 a dust cloud, to 1 the germs thrown out), `wash`, `party`, `acid` (cups
+tip: a pond in the groove, runs down the shoulders), `chalk` (chalky patches beside the face), `brush`
+(a giant brush ploughs everything off; the guards jump it), `shield`. One layout (`arenaLayout`)
+places everything; the staging check and a test over 400 states read it. Board:
+toons-boards/stage-arena.jpg. Put stickers top RIGHT (x about 740): the scene's label is top left.
+
 ## The shape of a Toons Short from video 4 on (`"format": 2`, about 45-50 seconds, 15 lines)
 Owner, 2026-11-17: "remove 3 point, make better hook script". The three live videos opened on two
 organs chatting ("Whoa! A pill? Where's the water?") and then counted "First, Second, Third". The

@@ -21,6 +21,10 @@ const SMALL = new Set('a an the of to in on and or is are be am was it its this 
 /** The words of a line that carry its meaning (small words out), for "does this line pick up that one?" */
 const keysOf = (t) => [...new Set(wordsOf(t ?? '').map(bare).filter((w) => w.length > 2 && !SMALL.has(w) && !/^(you|your|you'll|you're|yours)$/.test(w)))];
 /** What a format-2 hook must be (owner, 2026-11-17: "make better hook"): short, said to the viewer, about the title. */
+/** The story shapes (format 3). A day's videos use different ones. */
+export const SHAPES = ['fight', 'journey', 'clock', 'crew', 'visit'];
+/** How many text stickers a format-3 video may have. */
+export const STICKERS = 5;
 export const HOOK = {words: 8, seconds: 2.5, titleWords: 2, by: 3, questionBy: 7, answerFrom: 0.75};
 export const hookFaults = (text, title) => {
   const out = [];
@@ -123,14 +127,15 @@ export const checkToon = (toon, timings, known) => {
   const scenes = L.lines.map((p) => ({id: p.line.id, text: p.line.text, sources: p.line.src ?? [], visual: {panels: segsOf(p.line.id)}}));
   const t7 = {scenes: Object.fromEntries(L.lines.map((p) => [p.line.id, {duration: p.frames / TOON_FPS}]))};
   const cut = checkCut({scenes, retention: toon.retention, isShort: true, sources: toon.sources ?? [], timings: t7, label: toon.slug});
-  const v2 = toon.format === 2; // the second script shape: a cold open, a hook to the viewer, an open question instead of the counting
+  const v3 = toon.format >= 3; // story shapes (the fight, the journey, the clock, the crew at work, the visit): things happen, stickers stop
+  const v2 = toon.format >= 2; // the second script shape: a cold open, a hook to the viewer, an open question instead of the counting
   for (const r of cut.results) {
     const group = /^\d|plan/.test(r.point) ? 'retention' : 'accuracy';
     if (v2 && r.point === '3 Counting') continue; // replaced by the open question, below
     if (r.point === '4 3-sec change') {
       if (L.steady) { // steady camera: the change is what HAPPENS in the picture, not a cut
-        const st = longestStill(L);
-        add('retention', r.point, st.seconds <= 3.0, `something new appears ${st.changes} times in ${total.toFixed(0)} s (a place, a cut, a prop, a change of the stage); the longest wait is ${st.seconds.toFixed(1)} s (from ${st.from.toFixed(1)} s)`);
+        const st = longestStill(L, {stickers: !v3});
+        add('retention', r.point, st.seconds <= 3.0, `something new ${v3 ? 'HAPPENS' : 'appears'} ${st.changes} times in ${total.toFixed(0)} s (a place, a cut, ${v3 ? 'a thing arriving, a change of the stage; text stickers do not count' : 'a prop, a change of the stage'}); the longest wait is ${st.seconds.toFixed(1)} s (from ${st.from.toFixed(1)} s)`);
       } else add('retention', r.point, hold <= 3.0, `the longest picture is ${hold.toFixed(1)} s (line ${longest.line.line.id}); ${L.segs.length} pictures in ${total.toFixed(0)} s`);
     }
     else add(group, r.point, r.pass, r.detail);
@@ -173,8 +178,9 @@ export const checkToon = (toon, timings, known) => {
   if (toon.camera === 'steady') {
     // every video has a clinic and a home of its OWN (owner, 2026-11-16): the shared rooms are not allowed
     const shared = [...sets].filter((x) => ['office', 'bedroom', 'bathroom'].includes(x));
-    const own = sets.has('clinic') && sets.has('home');
-    add('format', 'Own rooms', own && !shared.length, shared.length ? `uses the shared room(s) ${shared.join(', ')}: give this video its own ("set": "clinic" / "home" and a recipe in "rooms")` : own ? `clinic: ${roomSignature('clinic', toon.rooms.clinic)}; home: ${roomSignature('home', toon.rooms.home)}` : 'a steady script has a scene in its clinic and a scene in its home');
+    const used = ['clinic', 'home'].filter((r) => sets.has(r));
+    const own = v3 ? used.every((r) => toon.rooms?.[r]) : sets.has('clinic') && sets.has('home'); // a story shape uses only the rooms its story needs
+    add('format', 'Own rooms', own && !shared.length, shared.length ? `uses the shared room(s) ${shared.join(', ')}: give this video its own ("set": "clinic" / "home" and a recipe in "rooms")` : own ? (used.map((r) => `${r}: ${roomSignature(r, toon.rooms[r])}`).join('; ') || 'no clinic and no home in this story') : 'a steady script has a scene in its clinic and a scene in its home');
     if (own) {
       const clashes = [];
       for (const o of known.others ?? []) {
@@ -182,7 +188,7 @@ export const checkToon = (toon, timings, known) => {
         if (o.episode === toon.episode) clashes.push(`episode ${toon.episode} is also ${o.slug}`);
         const near = Math.abs((o.episode ?? 1e9) - toon.episode) <= 6;
         for (const role of ['clinic', 'home']) {
-          if (!o.rooms?.[role]) continue;
+          if (!o.rooms?.[role] || !toon.rooms?.[role]) continue;
           const c = roomsClash(role, toon.rooms[role], o.rooms[role], near);
           if (c) clashes.push(`${role}: ${c} as ${o.slug}`);
         }
@@ -194,7 +200,15 @@ export const checkToon = (toon, timings, known) => {
   add('format', 'Voices', voices.size >= 3, `${voices.size} speaking characters (3 or more keep it a conversation)`);
   const docFrames = L.lines.filter((p) => p.line.who === 'doctor').reduce((n, p) => n + p.frames, 0);
   const docShare = docFrames / L.total;
-  add('format', 'Doctor explains', docShare >= 0.15 && docShare <= 0.5, `Dr. Mira speaks for ${Math.round(docShare * 100)}% of the video (15-50%)`);
+  const needDoc = !v3 || toon.shape === 'visit';
+  add('format', 'Doctor explains', (needDoc ? docShare >= 0.15 : true) && docShare <= 0.5, `Dr. Mira speaks for ${Math.round(docShare * 100)}% of the video (${needDoc ? '15-50%' : 'this shape needs no doctor; never over 50%'})`);
+  if (v3) {
+    add('format', 'Story shape', SHAPES.includes(toon.shape), SHAPES.includes(toon.shape) ? `"${toon.shape}"` : `"shape" must be one of: ${SHAPES.join(', ')}`);
+    const stickers = shots.flatMap((s) => (s.props ?? []).filter((p) => ['tag', 'chip'].includes(p.kind)));
+    add('format', 'Few stickers', stickers.length <= STICKERS, `${stickers.length} text sticker(s) (at most ${STICKERS}: show it, do not label it)`);
+    const twice = Object.entries(shots.flatMap((s) => (s.props ?? []).filter((p) => !['tag', 'chip', 'pain'].includes(p.kind))).reduce((m, p) => ({...m, [p.kind]: (m[p.kind] ?? 0) + 1}), {})).filter(([, n]) => n > 1).map(([k, n]) => `${k} x${n}`);
+    add('format', 'No icon twice', !twice.length, twice.length ? `the same icon more than once: ${twice.join(', ')}` : 'no picture icon is used twice');
+  }
   const bodyTalk = L.lines.filter((p) => !PEOPLE.includes(p.line.who)).reduce((n, p) => n + p.frames, 0) / L.total;
   add('format', 'Body scene', bodyTalk >= 0.3, `body characters speak for ${Math.round(bodyTalk * 100)}% of the video (30% or more: they are the show)`);
   const long = lines.filter((l) => wordsOf(l.text).length > 20).map((l) => `${l.id} (${wordsOf(l.text).length})`);
@@ -211,6 +225,10 @@ export const checkToon = (toon, timings, known) => {
   add('accuracy', 'Sources are complete', sources.length > 0 && !weak.length, !sources.length ? 'no sources listed' : weak.length ? `id, label, https link and a note with the exact finding are required: ${weak.join(', ')}` : `${sources.length} source(s), each with its finding written out`);
   const off = sources.filter((s) => { try { const h = new URL(s.url).hostname.replace(/^www\./, ''); return !ALLOWED_SOURCES.some((re) => re.test(h)); } catch { return true; } }).map((s) => s.id);
   add('accuracy', 'Sources are allowed', !off.length, off.length ? `not a research database, WHO or a national health body: ${off.join(', ')}` : 'research databases, WHO and national health bodies only');
+  if (v3) { // with no doctor to carry the facts, every line either names its source or is marked as plain talk
+    const bare = lines.filter((l) => !l.chat && !(l.src ?? []).length).map((l) => l.id);
+    add('accuracy', 'Every line is sourced or plain talk', !bare.length, bare.length ? `no "src" and not marked "chat": ${bare.join(', ')}` : 'every line names its source or is marked "chat" (it states no fact)');
+  }
   const docBare = lines.filter((l) => l.who === 'doctor' && !l.chat && !(l.src ?? []).length).map((l) => l.id);
   add('accuracy', 'Doctor lines are sourced', !docBare.length, docBare.length ? `Dr. Mira states something without a source in: ${docBare.join(', ')} (add "src", or "chat": true if it states no fact)` : 'every statement by Dr. Mira names its source');
   const unknown = lines.flatMap((l) => (l.src ?? []).filter((id) => !sIds.has(id)).map((id) => `${l.id}->${id}`));
@@ -234,7 +252,7 @@ export const scriptSheet = (toon, check) => {
   }
   if (toon.retention) {
     out.push('## Retention 7', '', '| Point | Line | Words |', '|---|---|---|');
-    const names = toon.format === 2
+    const names = toon.format >= 2
       ? {noIntro: '1 Hook', question: '2 Open question (asked)', answer: '3 Its answer (held back)', change3s: '4 3-sec change', twist: '5 Twist', bestLast: '6 Best last', loop: '7 Loop'}
       : {noIntro: '1 No intro', promise: '2 Promise', counting: '3 Counting', change3s: '4 3-sec change', twist: '5 Twist', bestLast: '6 Best last', loop: '7 Loop'};
     for (const [k, label] of Object.entries(names)) out.push(`| ${label} | ${toon.retention[k]?.scene ?? ''} | ${toon.retention[k]?.line ?? ''} |`);
