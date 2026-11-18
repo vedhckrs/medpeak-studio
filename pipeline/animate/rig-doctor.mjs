@@ -43,12 +43,22 @@ const ffmpeg = (args) => {
   if (r.status !== 0) throw new Error('ffmpeg: ' + (r.stderr || r.error));
 };
 
+// the bare arm lies under each coat sleeve in the artwork. When the arm bends it pokes out at the elbow as
+// a pink sliver, so only its wrist end is kept (it fills the gap between the cuff and the hand), and the
+// bare upper arm is left out altogether.
+for (const id of [251, 260]) {
+  const p = need('front-' + id);
+  const keep = Math.round((p.h - 22) * PX); // the last 22 units: the wrist
+  ffmpeg(['-i', path.join(PARTS, `front-${id}.png`), '-vf', `format=rgba,geq=r='r(X,Y)':g='g(X,Y)':b='b(X,Y)':a='alpha(X,Y)*gte(Y,${keep})'`, path.join(PARTS, `front-${id}w.png`)]);
+  parts[`front-${id}w`] = {...p, name: `front-${id}w`};
+}
+
 // ---- joints, in artwork units. "L" is the arm on the right of the picture (her left). ----
 const mirror = (p) => [2 * AXIS - p[0], p[1]];
 const L_JOINT = {shoulder: [5008, 458], elbow: [5043, 573], wrist: [5044, 664]};
 const JOINT = {
-  L: {...L_JOINT, out: -1, upper: [252, 250], fore: [251, 249], hand: [224, 223, 222, 221, 220]},
-  R: {shoulder: mirror(L_JOINT.shoulder), elbow: mirror(L_JOINT.elbow), wrist: mirror(L_JOINT.wrist), out: 1, upper: [259], fore: [260, 258], hand: [257, 256, 255, 254, 253]},
+  L: {...L_JOINT, out: -1, upper: [250], fore: ['251w', 249], hand: [224, 223, 222, 221, 220]},
+  R: {shoulder: mirror(L_JOINT.shoulder), elbow: mirror(L_JOINT.elbow), wrist: mirror(L_JOINT.wrist), out: 1, upper: [259], fore: ['260w', 258], hand: [257, 256, 255, 254, 253]},
 };
 const HIP = [4955, 640]; // the upper body leans around this point
 const NECK = [4955, 408];
@@ -309,10 +319,10 @@ const place = (list, p) => {
 // ---- the poses ----
 const P = {
   rest: pose({}),
-  explain: pose({head: -3, lean: -1, brow: 0.4, R: {shoulder: 16, elbow: 96, hand: 'offer'}}),
-  point: pose({head: 3, lean: 1, brow: 0.8, L: {shoulder: 24, elbow: 128, hand: 'point'}}),
-  stop: pose({head: 0, brow: -0.8, L: {shoulder: 20, elbow: 134, hand: 'palm'}}),
-  both: pose({brow: 0.5, L: {shoulder: 2, elbow: 86, hand: 'offer'}, R: {shoulder: 2, elbow: 86, hand: 'offer'}}),
+  explain: pose({head: -3, lean: -1, brow: 0.4, R: {shoulder: 4, elbow: 128, hand: 'offer'}}),
+  point: pose({head: 3, lean: 1, brow: 0.8, L: {shoulder: 4, elbow: 146, hand: 'point'}}),
+  stop: pose({head: 0, brow: -0.8, L: {shoulder: 2, elbow: 148, hand: 'palm'}}),
+  both: pose({brow: 0.5, L: {shoulder: 0, elbow: 124, hand: 'offer'}, R: {shoulder: 0, elbow: 124, hand: 'offer'}}),
   chest: pose({head: -3, brow: 0.2, R: {shoulder: 8, elbow: -118}}),
   wave: pose({head: 4, lean: 1.5, brow: 0.7, mouth: 'wide', L: {shoulder: 42, elbow: 112, hand: 'palm'}}),
   fist: pose({head: -2, brow: -0.4, R: {shoulder: 14, elbow: 122, hand: 'fist'}}),
@@ -432,7 +442,7 @@ const clipFrames = (words, tail) => {
     const push = f < walkIn ? 0 : Math.min(1, (f - walkIn) / (50 * F));
     const e = push * push * (3 - 2 * push);
     const late = Math.max(0, Math.min(1, (f - T(at('today'))) / (20 * F)));
-    camera.push(1 + e * 0.22 + late * 0.1); // how far the view is pushed in
+    camera.push(1 + e * 0.06 + late * 0.02); // how far the view is pushed in
   }
   return {frames, camera, say, drift: walk.drift, walkFrames: n, faceUs: walkIn};
 };
@@ -468,6 +478,17 @@ const run = (mode) => {
     job.frames = job.frames.map((row, f) => row.map((m) => (m ? [r4(m[0] * camera[f]), r4(m[1] * camera[f]), r4(m[2] * camera[f]), r4(m[3] * camera[f]), r4(cx + (m[4] - cx) * camera[f]), r4(cy + (m[5] - cy) * camera[f]), ...m.slice(6)] : 0)));
   }
   if (sound && fs.existsSync(sound)) job.sound = uri(sound);
+  {
+    // how close a hand comes to the side of the frame (its wrist; the hand itself reaches about 110 px further)
+    let lo = W, hi = 0;
+    job.frames.forEach((row) => row.forEach((m, i) => { if (m && /^(gesture|hand)/.test(list[i].name)) { lo = Math.min(lo, m[4]); hi = Math.max(hi, m[4]); } }));
+    console.log(`wrists stay between x ${Math.round(lo)} and ${Math.round(hi)} of ${W}`);
+  }
+  // for testing: RIG_ONLY="from,to" keeps only those frames, RIG_PARENT=off leaves the layers unparented
+  if (process.env.RIG_ONLY) { const [a, b] = process.env.RIG_ONLY.split(',').map(Number); job.frames = job.frames.slice(a, b); if (process.env.RIG_SOUND !== "keep") delete job.sound; }
+  // layer parenting is off unless asked for: on a long time line (400 frames) Animate lost a parented layer
+  // from the picture (her right upper sleeve), although short renders with parenting were right
+  if (process.env.RIG_PARENT !== 'on') job.parenting = false;
   fs.writeFileSync(path.join(here, 'an-rig.json'), JSON.stringify(job));
   if (process.env.RIG_DRY) return; // work the motion out, do not start Animate
   const r = spawnSync('powershell', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', path.join(here, 'run-an.ps1'), path.join(here, 'an-rig.jsfl'), '-TimeoutSec', '3300'], {encoding: 'utf8'});

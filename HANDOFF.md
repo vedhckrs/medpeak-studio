@@ -163,6 +163,14 @@ and Animate driven by code, no screen control. What is built, in `pipeline/anima
   without it the turn simply skips that angle. A second AI angle (rotate 338) turned the wrong way and is
   not used (80 credits lost). The account balance fell by 1,709 over that hour, 1,549 more than these two
   images; the owner was told and it is not explained yet.
+- **Fixes after the owner's frame review (2026-11-18):** (1) pink slivers at the elbows were the bare arm
+  that lies under each sleeve in the artwork: the bare upper arm is left out and the bare forearm is trimmed
+  to its wrist end (`front-251w`, `front-260w`, made at run time). (2) hands left the frame after the push-in:
+  the gestures are tighter and the push-in is 8% at most; the run prints how near the wrists come to the
+  sides. (3) **Layer parenting is now off by default** (`RIG_PARENT=on` to try it): with it on, a full
+  410-frame render lost her right upper sleeve from every frame, while 12- and 100-frame renders with the
+  same data were right. So the .fla is one symbol per part on its own layer, not a parented skeleton.
+  `RIG_ONLY="from,to"` renders only those frames, for quick tests.
 - **Rules from the owner for Adobe scripting:** show the whole page in the window while a script runs
   (`fitPage` in an-rig.jsfl, `fitin` in the Illustrator scripts). Hidden pieces are shrunk to nothing on the
   page, never parked far away (that stretches Animate's work area and pushes the page out of view).
