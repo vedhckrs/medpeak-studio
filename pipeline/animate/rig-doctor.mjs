@@ -175,8 +175,17 @@ const pieces = () => {
   list.push({name: 'view-q', kind: 'viewQ', cels: [cel('view-q', [Q_HEAD, q.y + q.h - 3])]});
   const sb = need('sidebody');
   list.push({name: 'view-side', kind: 'viewSide', cels: [cel('view-side', [sb.x, sb.y])]});
+  // one more angle, between the side view and the three-quarter view. The sheet has none there, so this
+  // one was made with Magnific's change-camera from the three-quarter view (owner's OK, 2026-11-18) and cut
+  // out by cutout.mjs. It is a 1024 px picture, drawn a little larger to match her size.
+  if (fs.existsSync(ANGLE2 + '.json')) {
+    const a = JSON.parse(fs.readFileSync(ANGLE2 + '.json', 'utf8'));
+    const size = ((1200 / a.width) * K) / PX;
+    list.push({name: 'view-a2', kind: 'viewA', cels: [{uri: uri(ANGLE2 + '.png'), m: [r4(size), 0, 0, r4(size), r4(-a.headX * size), r4(-a.box[3] * size)]}]});
+  }
   return list;
 };
+const ANGLE2 = path.join(root, 'stock', 'doctor-3908853', 'turn', 'a2');
 const WALK = [104, 103, 102, 101, 100, 99, 98, 97]; // the eight steps of the side walk, in order
 const FEET_WALK = 1899; // the ground line of the walk row on the sheet
 const WALKS = readWalk(parts, PARTS, WALK, PX); // the skeleton of each drawing
@@ -229,7 +238,7 @@ const walkFrames = () => {
 // bends the forearm the same way (up and out), elbow < 0 folds it across the body. hand names a
 // gesture hand ('rest' = her own relaxed hand). ----
 const ARM = {shoulder: 0, elbow: 0, wrist: 0, hand: 'rest'};
-const REST = {head: 0, lean: 0, sway: 0, bob: 0, mouth: 'closed', blink: 0, look: 0, brow: 0, x: 0, wk: null, side: 0, q: 0, front: true, L: ARM, R: ARM};
+const REST = {head: 0, lean: 0, sway: 0, bob: 0, mouth: 'closed', blink: 0, look: 0, brow: 0, x: 0, wk: null, side: 0, a2: 0, q: 0, front: true, L: ARM, R: ARM};
 const pose = (p) => ({...REST, ...p, L: {...ARM, ...(p.L || {})}, R: {...ARM, ...(p.R || {})}});
 const mouthCel = Object.fromEntries(Object.keys(MOUTHS).map((k, i) => [k, i]));
 const handCel = Object.fromEntries(Object.keys(HANDS).map((k, i) => [k, i]));
@@ -266,6 +275,7 @@ const place = (list, p) => {
       return inst(add(p.wk.at, mul(b.at, K)), b.turn, p.wk.art);
     }
     if (it.kind === 'viewSide') return p.side > 0 ? faded(inst(p.sideAt), p.side) : 0;
+    if (it.kind === 'viewA') return p.a2 > 0 ? inst(add([W / 2, GROUND + 4], shift)) : 0;
     if (it.kind === 'viewQ') return p.q > 0 ? faded(inst(add([W / 2, GROUND], shift)), p.q) : 0;
     if (!p.front) return 0;
     const A = it.side ? arm[it.side] : null;
@@ -365,15 +375,14 @@ const blinkAt = (f) => {
 
 const smooth = (t) => (t <= 0 ? 0 : t >= 1 ? 1 : t * t * (3 - 2 * t));
 // how the clip opens, in frames: she walks in, stops, and turns to face us through the drawn angles
-const OPEN = {sideIn: 8, sideHold: 5, toQ: 12, qHold: 6, toFront: 12};
+const OPEN = {sideIn: 8, sideHold: 6, angle2: 8, q: 8}; // each angle of the turn is shown whole, one after the other
 const clipFrames = (words, tail) => {
   const walk = walkFrames();
   const n = walk.frames.length;
   const t1 = n + OPEN.sideIn; // the side view is fully there
-  const t2 = t1 + OPEN.sideHold; // it starts to give way to the three-quarter view
-  const t3 = t2 + OPEN.toQ;
-  const t4 = t3 + OPEN.qHold; // the three-quarter view starts to give way to the front
-  const walkIn = t4 + OPEN.toFront; // she faces us
+  const t2 = t1 + OPEN.sideHold; // the angle between side and three-quarter
+  const t3 = t2 + OPEN.angle2; // the three-quarter view
+  const walkIn = t3 + OPEN.q; // she faces us
   const say = walkIn + 6 * F; // and starts to speak
   const lineEnd = words[words.length - 1].end;
   const total = say + Math.round((lineEnd + tail) * FPS);
@@ -392,9 +401,9 @@ const clipFrames = (words, tail) => {
     if (f < t2) {
       // the walk, then the drawn side view fading in over its last pose
       p = pose({front: false, wk: f < t1 ? walk.frames[Math.min(f, n - 1)] : null, side: f < n ? 0 : smooth((f - n + 1) / OPEN.sideIn), sideAt});
-    } else if (f < t4) {
-      // the three-quarter view is complete underneath while the side view fades off it
-      p = pose({front: false, side: 1 - smooth((f - t2 + 1) / OPEN.toQ), sideAt, q: 1});
+    } else if (f < walkIn) {
+      // the turn: the next drawn angle, then the three-quarter view, each shown whole
+      p = pose({front: false, a2: f < t3 ? 1 : 0, q: f < t3 ? 0 : 1});
     } else {
       const sec = f / FPS;
       const arm = (side) => ({
@@ -406,7 +415,6 @@ const clipFrames = (words, tail) => {
       const t = (f - say) / FPS;
       const talking = mouthAt(words, t);
       p = pose({
-        q: f < walkIn ? 1 - smooth((f - t4 + 1) / OPEN.toFront) : 0, // the front view is complete underneath while the three-quarter view fades off it
         head: track(keys, f, (q) => q.head, F) + Math.sin(sec * 5.1) * 0.9 + (talking !== 'closed' ? Math.sin(sec * 11) * 0.7 : 0),
         lean: track(keys, f, (q) => q.lean) + Math.sin(sec * 1.3) * 0.5,
         sway: Math.sin(sec * 1.3 + 1) * 1.4,

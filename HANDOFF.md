@@ -154,6 +154,15 @@ and Animate driven by code, no screen control. What is built, in `pipeline/anima
   off the three-quarter view and that fades off the front rig, all three lined up on her head. Honest limit:
   the turn is still three drawings blended, not a drawn rotation, and a faint double body shows for a few
   frames in each blend.
+- **The turn, final form (owner chose it, 2026-11-18):** the blend was rejected, and motion-estimated
+  in-betweens (ffmpeg minterpolate) smear her face, so no blending is used. The turn is four whole angles one
+  after the other: side (drawn), one AI angle between side and three-quarter, three-quarter (drawn), front
+  rig. The AI angle was made with Magnific change-camera from the three-quarter view (rotate 22, 1k, 80
+  credits, owner's OK) and cut out with `pipeline/animate/cutout.mjs` (removes only the white joined to the
+  edge, so the white coat stays). It lives in `stock/doctor-3908853/turn/a2.png` + `a2.json`, not in git;
+  without it the turn simply skips that angle. A second AI angle (rotate 338) turned the wrong way and is
+  not used (80 credits lost). The account balance fell by 1,709 over that hour, 1,549 more than these two
+  images; the owner was told and it is not explained yet.
 - **Rules from the owner for Adobe scripting:** show the whole page in the window while a script runs
   (`fitPage` in an-rig.jsfl, `fitin` in the Illustrator scripts). Hidden pieces are shrunk to nothing on the
   page, never parked far away (that stretches Animate's work area and pushes the page out of view).
