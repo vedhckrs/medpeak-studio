@@ -6,7 +6,7 @@
 // It uses the same director as the player (src/toons/director.ts), so the picture changes it
 // measures are the ones that get rendered.
 import {checkCut} from './retention.mjs';
-import {AUTO_SFX, checkRoom, EMOTION_NAMES, ENTRANCES, layoutToon, longestStill, parseCam, PROP_NAMES, roomsClash, roomSignature, SET_NAMES, STAGE_KEYS, TOON_FPS} from '../../src/toons/director.ts';
+import {AUTO_SFX, checkRoom, EMOTION_NAMES, ENTRANCES, frameOf, layoutToon, longestStill, parseCam, PROP_NAMES, roomsClash, roomSignature, SET_NAMES, STAGE_KEYS, TOON_FPS} from '../../src/toons/director.ts';
 import {POSES} from '../../src/toons/poses.ts';
 
 /** Where a medical fact may come from (medical-accuracy.md): research databases, WHO, national health bodies. */
@@ -26,6 +26,49 @@ export const SHAPES = ['fight', 'journey', 'clock', 'crew', 'visit'];
 /** How many text stickers a format-3 video may have. */
 export const STICKERS = 5;
 export const HOOK = {words: 8, seconds: 2.5, titleWords: 2, by: 3, questionBy: 7, answerFrom: 0.75};
+/** Format 5, "engage": how fast the hook must hit and how long the picture may sit still. */
+export const ENGAGE = {hookSeconds: 2, firstMotion: 0.5, openSeconds: 3, openStill: 1, still: 2};
+/** A text on the picture may write a spoken number in digits ("15 minutes" for "fifteen minutes"). */
+const NUMBER_WORDS = {1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'five', 6: 'six', 7: 'seven', 8: 'eight', 9: 'nine', 10: 'ten', 11: 'eleven', 12: 'twelve', 13: 'thirteen', 14: 'fourteen', 15: 'fifteen', 16: 'sixteen', 17: 'seventeen', 18: 'eighteen', 19: 'nineteen', 20: 'twenty', 30: 'thirty', 40: 'forty', 50: 'fifty', 60: 'sixty', 70: 'seventy', 80: 'eighty', 90: 'ninety', 100: 'hundred'};
+/** Stage dials that mean "this keeps moving while it is above zero" (a ride, a flow). */
+const FLOW_DIALS = {macro: ['speed']};
+/**
+ * Every stretch of frames in which the picture changes: a cut, a camera move, a stage event while it
+ * plays, a thing arriving, a stage that flows. People's talking mouths and arm beats do not count.
+ */
+export const motionSpans = (L) => {
+  const spans = [];
+  L.shots.forEach((sh, si) => {
+    const s = sh.shot;
+    spans.push([sh.from, sh.from + 1]);
+    for (const e of s.events ?? []) {
+      if (!e.set && !e.fx) continue;
+      const f = frameOf(L, si, e.at, e.word, e.delay);
+      spans.push([f, f + Math.max(2, e.over ?? 18)]);
+    }
+    for (const p of s.props ?? []) { const f = frameOf(L, si, p.from, p.word); spans.push([f, f + 9]); }
+    // a flowing dial keeps the stage moving from the moment it is above zero to the end of the shot
+    for (const k of FLOW_DIALS[s.set] ?? []) {
+      if ((s.state?.[k] ?? 0) > 0) spans.push([sh.from, sh.from + sh.frames]);
+      else for (const e of s.events ?? []) if ((e.set?.[k] ?? 0) > 0) spans.push([frameOf(L, si, e.at, e.word, e.delay), sh.from + sh.frames]);
+    }
+  });
+  for (const g of L.segs) { spans.push([g.from, g.from + 1]); if (!['lock', 'static'].includes(g.move)) spans.push([g.from, g.to]); }
+  return spans.sort((a, b) => a[0] - b[0]);
+};
+/** The longest stretch between `from` and `to` (frames) that no span covers. */
+export const longestGap = (spans, from, to) => {
+  let at = from;
+  let best = {seconds: 0, from: from / TOON_FPS};
+  const close = (end) => { if (end - at > best.seconds * TOON_FPS) best = {seconds: (end - at) / TOON_FPS, from: at / TOON_FPS}; };
+  for (const [a, b] of spans) {
+    if (b <= from || a >= to) continue;
+    if (a > at) close(Math.min(a, to));
+    at = Math.max(at, Math.min(b, to));
+  }
+  close(to);
+  return best;
+};
 export const hookFaults = (text, title) => {
   const out = [];
   const n = wordsOf(text).length;
@@ -226,6 +269,39 @@ export const checkToon = (toon, timings, known) => {
     const per = total / Math.max(1, starts.length);
     const longest = Math.max(...holds);
     add('format', 'View changes', per <= 6 && longest <= 7.5, `${starts.length} pictures in ${total.toFixed(0)} s: a new view every ${per.toFixed(1)} s on average (6 or less), the longest held ${longest.toFixed(1)} s (7.5 or less)`);
+  }
+  if (toon.format >= 5) { // "engage" (owner, 2026-11-18: weak hook, text against the voice, nothing moves)
+    // ---- text on the picture says what the voice says, on the word
+    const tagFaults = [];
+    for (const s of shots) for (const p of s.props ?? []) {
+      if (!['tag', 'chip'].includes(p.kind)) continue;
+      const line = s.lines.find((l) => l.id === p.from);
+      const name = `"${p.text}" (${s.id})`;
+      if (!line || !p.word) { tagFaults.push(`${name}: needs "from" (a line) and "word" (the spoken word it appears on)`); continue; }
+      const said = new Set(wordsOf(line.text).map(bare));
+      const tokens = String(p.text).toLowerCase().split(/[\s-]+/).map(bare).filter(Boolean);
+      const spoken = (t) => said.has(t) || (NUMBER_WORDS[t] && said.has(NUMBER_WORDS[t]));
+      const unsaid = tokens.filter((t) => !spoken(t));
+      if (unsaid.length) tagFaults.push(`${name}: ${unsaid.join(', ')} ${unsaid.length > 1 ? 'are' : 'is'} not said in line ${line.id} ("${line.text}")`);
+      const first = tokens[0];
+      if (first && bare(p.word) !== first && bare(p.word) !== NUMBER_WORDS[first]) tagFaults.push(`${name}: appears on "${p.word}", not on its own first word "${first}"`);
+      if (p.to !== p.from) tagFaults.push(`${name}: must leave when its line ends ("to": "${p.from}")`);
+      if (p.rot) tagFaults.push(`${name}: no tilt ("rot" ${p.rot})`);
+    }
+    add('format', 'Text says what is spoken', !tagFaults.length, tagFaults.length ? tagFaults.join('; ') : 'every text on the picture uses words of its line, appears on its first spoken word, leaves with the line and sits straight');
+
+    // ---- the hook hits at once
+    const first = L.lines[0];
+    const said = first.frames / TOON_FPS - 0.14;
+    add('retention', '1 Hook: said in 2 s', said <= ENGAGE.hookSeconds + 0.05, `"${first.line.text}" takes ${said.toFixed(1)} s (at most ${ENGAGE.hookSeconds})`);
+    const moving = motionSpans(L);
+    const firstMove = moving.filter(([a, b]) => b - a > 1)[0]?.[0] ?? Infinity; // a real movement, not the opening cut
+    add('retention', '1 Hook: something big moves at once', firstMove / TOON_FPS <= ENGAGE.firstMotion, Number.isFinite(firstMove) ? `the first movement starts at ${(firstMove / TOON_FPS).toFixed(2)} s (within ${ENGAGE.firstMotion} s)` : 'nothing moves: start an event at "start" in the first scene');
+    const open = longestGap(moving, 0, Math.min(L.total, ENGAGE.openSeconds * TOON_FPS));
+    add('retention', '1 Hook: no still opening', open.seconds <= ENGAGE.openStill, `in the first ${ENGAGE.openSeconds} s the longest still is ${open.seconds.toFixed(1)} s (at most ${ENGAGE.openStill}), from ${open.from.toFixed(1)} s`);
+    // ---- the picture never sits still for long
+    const all = longestGap(moving, 0, L.total);
+    add('format', 'Never still', all.seconds <= ENGAGE.still, `the longest stretch with no movement, cut, camera move or new thing is ${all.seconds.toFixed(1)} s (at most ${ENGAGE.still}), from ${all.from.toFixed(1)} s`);
   }
   const bodyTalk = L.lines.filter((p) => !PEOPLE.includes(p.line.who)).reduce((n, p) => n + p.frames, 0) / L.total;
   add('format', 'Body scene', bodyTalk >= 0.3, `body characters speak for ${Math.round(bodyTalk * 100)}% of the video (30% or more: they are the show)`);

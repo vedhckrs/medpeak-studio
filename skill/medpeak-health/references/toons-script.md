@@ -344,3 +344,22 @@ question answered Yes (SKILL.md rule 4), and only happen after the owner's yes.
 Each one: body stage -> time card -> the person -> Dr. Mira -> the same stage, done right.
 Estimated length is about 15% longer than the voiced length (the body voices speak fast), so run
 `toon-check` again after voicing: a quiet stretch or the twist's position can move.
+
+## Format 5: engage (owner, 2026-11-18)
+
+The owner's notes on rabies: weak hook, text that does not match the voice, nothing moves, one word
+captions with no box. `"format": 5` adds these rules to format 4. `toon:check` measures all of them.
+
+- **The hook hits at once.** Something big moves within 0.5 s (start an event at `"start"` in the first
+  scene; the macro stage has the dial `snap`: a dog's jaws shut across the frame and open again). The
+  first line is said in 2 s or less. In the first 3 s the picture is never still for more than 1 s.
+- **Never still.** No stretch over 2 s without a cut, a camera move, a stage event or a new thing.
+  Talking mouths and arm beats do not count. Give a line a moving camera with `"cam"` (for example
+  `"mcu push"`), or add an event on a spoken word. Two pictures of the same size in a row are a jump
+  cut (`toon:camera` fails): add an event instead of a camera word there.
+- **Text on the picture says what the voice says.** A `tag` or `chip` uses only words of its own line
+  (a spoken number may be written in digits: "15 minutes" for "fifteen minutes"), appears on its first
+  spoken word (`"word"`), leaves when the line ends (`"to"` = `"from"`) and has no `"rot"`.
+- **Captions** (`STYLE.caption: 'box'`): 2 to 3 words at a time, white bold on a rounded black box at
+  60%, the key word in yellow. `'word'` brings the one-word caption back.
+- **Not built yet:** a music track made for each video (and a check that fails a reused track).

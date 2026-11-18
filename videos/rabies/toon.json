@@ -1,19 +1,19 @@
 {
  "slug": "rabies",
  "title": "What Happens If You Get Rabies",
- "format": 4,
+ "format": 5,
  "shape": "clock",
  "music": "panic",
  "camera": "steady",
  "episode": 9,
  "hooks": [
   {
-   "line": "You can get rabies from one bite.",
-   "why": "the plain danger in seven words; the first picture is the virus at a scratch, looking up the nerve"
+   "line": "You get rabies. Time runs out.",
+   "why": "six words, said in two seconds; the stakes are a clock, and the last line answers it (\"in time\")"
   },
   {
    "line": "Get rabies, and your brain is next.",
-   "why": "stronger, more frightening; the brain is where the race ends"
+   "why": "more frightening; the brain is where the race ends"
   },
   {
    "line": "What happens if you get rabies? A race.",
@@ -75,7 +75,7 @@
  "retention": {
   "noIntro": {
    "scene": "A1",
-   "line": "You can get rabies from one bite."
+   "line": "You get rabies. Time runs out."
   },
   "promise": {
    "scene": "A2",
@@ -99,11 +99,11 @@
   },
   "bestLast": {
    "scene": "E3",
-   "line": "One bite, but no rabies. You got the vaccine in time!"
+   "line": "One bite, but you did not get rabies. The vaccine came in time!"
   },
   "loop": {
    "scene": "E3",
-   "line": "One bite, but no rabies. You got the vaccine in time!"
+   "line": "One bite, but you did not get rabies. The vaccine came in time!"
   }
  },
  "sources": [
@@ -136,25 +136,42 @@
    ],
    "state": {
     "view": 0,
-    "slide": 0.55
+    "slide": 0.55,
+    "snap": 0
    },
    "events": [
     {
-     "at": "A1",
-     "word": "rabies",
+     "at": "start",
      "set": {
-      "slide": 0.68
+      "snap": 1
      },
-     "over": 24
+     "over": 14,
+     "sfx": "bonk",
+     "fx": "flash"
     },
     {
      "at": "A1",
-     "word": "bite.",
+     "word": "rabies.",
+     "set": {
+      "slide": 0.68
+     },
+     "over": 20
+    },
+    {
+     "at": "A1",
+     "word": "runs",
      "set": {
       "slide": 0.84
      },
-     "over": 20,
+     "over": 18,
      "sfx": "plop"
+    },
+    {
+     "at": "A2",
+     "set": {
+      "slide": 0.92
+     },
+     "over": 20
     },
     {
      "at": "A2",
@@ -162,17 +179,17 @@
      "set": {
       "slide": 1
      },
-     "over": 30
+     "over": 24
     }
    ],
    "lines": [
     {
      "id": "A1",
      "who": "virus",
-     "text": "You can get rabies from one bite.",
+     "text": "You get rabies. Time runs out.",
      "emotion": "smug",
      "pose": "rest",
-     "key": "bite",
+     "key": "time",
      "src": [
       "who-rabies",
       "cdc-rabies"
@@ -242,10 +259,26 @@
     {
      "at": "B2",
      "set": {
+      "bite": 0.92
+     },
+     "over": 14,
+     "sfx": "plop"
+    },
+    {
+     "at": "B2",
+     "word": "spit.",
+     "set": {
       "bite": 1
      },
-     "over": 18,
-     "sfx": "plop"
+     "over": 12
+    },
+    {
+     "at": "B2",
+     "word": "Now,",
+     "set": {
+      "climb": 0.03
+     },
+     "over": 14
     },
     {
      "at": "B2",
@@ -346,21 +379,9 @@
      "x": 300,
      "y": 430,
      "size": 300,
-     "rot": -5,
      "from": "B3",
      "to": "B3",
      "word": "two"
-    },
-    {
-     "kind": "tag",
-     "text": "or just 1 week!",
-     "x": 760,
-     "y": 590,
-     "size": 300,
-     "rot": 4,
-     "from": "B3",
-     "to": "B3",
-     "word": "brain."
     }
    ],
    "lines": [
@@ -433,7 +454,6 @@
      "x": 545,
      "y": 330,
      "size": 300,
-     "rot": -3,
      "from": "C2",
      "to": "C2",
      "word": "fifteen"
@@ -495,11 +515,10 @@
    "props": [
     {
      "kind": "tag",
-     "text": "same day",
+     "text": "today",
      "x": 550,
      "y": 1180,
      "size": 280,
-     "rot": 0,
      "from": "D1",
      "to": "D1",
      "word": "today."
@@ -538,10 +557,9 @@
      "x": 610,
      "y": 300,
      "size": 300,
-     "rot": -3,
      "from": "D3",
      "to": "D3",
-     "word": "works"
+     "word": "act"
     }
    ],
    "lines": [
@@ -557,13 +575,14 @@
      },
      "src": [
       "who-rabies"
-     ]
+     ],
+     "cam": "two push"
     },
     {
      "id": "D2",
      "who": "doctor",
      "text": "One hard truth: once symptoms start, it is almost always fatal.",
-     "cam": "mcu",
+     "cam": "mcu push",
      "emotion": "neutral",
      "pose": "present",
      "key": "symptoms",
@@ -588,7 +607,8 @@
      "src": [
       "cdc-rabies",
       "who-rabies"
-     ]
+     ],
+     "cam": "ms push"
     }
    ]
   },
@@ -713,14 +733,15 @@
     {
      "id": "E3",
      "who": "virus",
-     "text": "One bite, but no rabies. You got the vaccine in time!",
+     "text": "One bite, but you did not get rabies. The vaccine came in time!",
      "emotion": "sad",
      "pose": "rest",
      "key": "time",
      "src": [
       "who-rabies",
       "cdc-rabies"
-     ]
+     ],
+     "cam": "ews push"
     }
    ]
   }

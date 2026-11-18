@@ -53,7 +53,7 @@ export const STAGE_KEYS: Partial<Record<SetName, string[]>> = {
   // vaccine: defenders arrive from both sides. wall: they line up across the nerve. wash: soap foam on the scratch.
   // dizzy: stars circle the virus's head after it hits the wall.
   // MACRO (the owner's hero visual): view picks the close-up (0 entry, 1 inside, 2 caught); slide, speed and grip play it.
-  macro: ['view', 'slide', 'speed', 'grip'],
+  macro: ['view', 'slide', 'speed', 'grip', 'snap'],
   arm: ['bite', 'climb', 'days', 'vaccine', 'wall', 'wash', 'dizzy'],
   molar: ['night', 'guards', 'sleep', 'sugar', 'snack', 'wash', 'fight', 'party', 'acid', 'chalk', 'brush', 'shield'],
   // gum: a swallowed piece of gum comes down and floats with the food. pass: what is in the stomach
@@ -102,7 +102,7 @@ export const roomKind = (role: RoomRole, look: RoomLook): RoomKind => (role === 
 export const roomTone = (look?: RoomLook): [number, number, number] | null =>
   look?.time === 'night' ? [0.78, 0.8, 0.93] : look?.time === 'evening' ? [1, 0.95, 0.9] : null;
 /** Where the one-word caption sits (steady videos: low and plain; the first style: a little higher), so graphics can keep off it. */
-export const captionBox = (steady: boolean) => { const y = steady ? 1470 : 1400; return {y, x0: 220, x1: 860, y0: y - 10, y1: y + 116}; };
+export const captionBox = (steady: boolean) => { const y = steady ? 1470 : 1400; return {y, x0: 110, x1: 970, y0: y - 10, y1: y + 130}; }; // wide enough for the 3-word boxed caption [220-860, +116]
 /** Everything that makes a room what it is, as one line (two rooms with the same line are the same room). */
 export const roomSignature = (role: RoomRole, look: RoomLook) =>
   [roomKind(role, look), look.palette, look.wall, look.floor, `${look.window.style}@${look.window.side}`, look.window.view, look.layout, look.chart ?? '-', look.time ?? 'day'].join('|');

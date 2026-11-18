@@ -20,7 +20,7 @@ import {clamp01, E, kick, lerp, lipsync, ramp, settle, type SpokenWord} from './
 import {blendPose, POSES, type PoseName} from './poses';
 import {Prop} from './props';
 import {armOf, blinkAt, type ArmSpec, type Emotion} from './rig';
-import {FLOORS, FORES, OfficeDesk, SETS, WordCaption} from './scenes';
+import {captionGroups, FLOORS, FORES, OfficeDesk, PhraseCaption, SETS, WordCaption} from './scenes';
 import {STAGE_SPOTS, type StageFace, stageSpotsAt, STAGE_ARMS} from './stages';
 import {theme} from '../brand/theme';
 import {Hold, Slot} from './stage';
@@ -504,7 +504,11 @@ export const ToonPlayer: React.FC<ToonProps> = ({toon, timings, sfx, music, bare
         </Camera>
       )}
       {flash > 0 && <AbsoluteFill style={{background: '#ffffff', opacity: flash * 0.3}} />}
-      {word && !bare && <WordCaption word={clean(word.w)} key_={clean(word.w).toLowerCase() === keyWord} pop={STYLE.captionPop ? 0.72 + 0.28 * E.back(clamp01((tl - word.start) * TOON_FPS / 4)) : 1} y={captionBox(L.steady).y} plain={L.steady} />}
+      {word && !bare && STYLE.caption === 'box' && cur && (() => {
+        const group = captionGroups(cur.words.map((w) => w.w)).find((g) => g.includes(wi)) ?? [wi];
+        return <PhraseCaption words={group.map((i) => clean(cur.words[i].w))} keyWord={keyWord} y={captionBox(L.steady).y} />;
+      })()}
+      {word && !bare && STYLE.caption !== 'box' && <WordCaption word={clean(word.w)} key_={clean(word.w).toLowerCase() === keyWord} pop={STYLE.captionPop ? 0.72 + 0.28 * E.back(clamp01((tl - word.start) * TOON_FPS / 4)) : 1} y={captionBox(L.steady).y} plain={L.steady} />}
       <Grain />
       {L.lines.map((l) => l.file && <Sequence key={l.line.id} from={l.from} durationInFrames={l.frames + 12}><Audio src={staticFile(l.file)} /></Sequence>)}
       {events.filter((e) => has(e.name)).map((e, i) => <Sequence key={i} from={e.at} durationInFrames={90}><Audio src={staticFile(`toons/sfx/${e.name}.mp3`)} volume={e.vol} /></Sequence>)}

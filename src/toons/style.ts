@@ -45,6 +45,9 @@ export const STYLE = {
   // ---- motion and finish
   boil: 0, // hand-drawn line wobble. OFF: it read as a "burning screen" (owner, 2026-11-16)
   tagStyle: 'hook' as 'hook' | 'label' | 'pill', // hook = bold yellow block, big words, a slight tilt; label = white chart box; pill = v6
+  // Captions (owner, 2026-11-18): 'box' = 2 to 3 words at a time, white bold on a rounded black box at
+  // 60%, the key word in yellow; 'word' = one word at a time (the older look).
+  caption: 'box' as 'box' | 'word',
   captionPop: false, // each caption word grows in over 4 frames (v6); the ink look just swaps the word, as the reference does [true]
   talkBeat: 0.2, // how much people's arms and heads beat on stressed words while they talk [1]
   roomLife: 0, // clouds, birds, a monitor, plants in the real-world rooms; 0 = the room holds still and only the people act (reference rooms are still) [1]

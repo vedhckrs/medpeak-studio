@@ -870,6 +870,32 @@ export const WordCaption: React.FC<{word: string; key_?: boolean; y?: number; po
   );
 };
 
+/**
+ * Split a line's words into caption groups of 2 to 3 words. A group ends at punctuation, so a
+ * phrase stays together; a single left-over word joins the group before it when that fits.
+ */
+export const captionGroups = (words: string[], max = 3): number[][] => {
+  const out: number[][] = [];
+  let cur: number[] = [];
+  words.forEach((w, i) => {
+    cur.push(i);
+    if (cur.length >= max || /[,.!?:;]$/.test(w)) { out.push(cur); cur = []; }
+  });
+  if (cur.length) out.push(cur);
+  for (let i = out.length - 1; i > 0; i--) { // no one-word group if the neighbour has room
+    if (out[i].length === 1 && out[i - 1].length < max) { out[i - 1].push(...out[i]); out.splice(i, 1); }
+  }
+  return out;
+};
+/** The boxed caption: 2 to 3 words, white bold on a rounded black box at 60%, the key word in yellow. */
+export const PhraseCaption: React.FC<{words: string[]; keyWord: string; y?: number}> = ({words, keyWord, y = 1470}) => (
+  <div style={{position: 'absolute', top: y, left: 0, right: 0, display: 'flex', justifyContent: 'center'}}>
+    <div style={{background: 'rgba(0,0,0,0.6)', borderRadius: 28, padding: '14px 38px 20px', display: 'flex', gap: 22, fontFamily: theme.font, fontWeight: 900, fontSize: 74, letterSpacing: 1, lineHeight: 1.1, whiteSpace: 'nowrap'}}>
+      {words.map((w, i) => <span key={i} style={{color: w.toLowerCase() === keyWord ? STYLE.captionKey : '#ffffff'}}>{w.toUpperCase()}</span>)}
+    </div>
+  </div>
+);
+
 /** The rooms a video gets when its script gives no recipe (previews, old scripts). */
 export const DEFAULT_ROOMS: {clinic: RoomLook; home: RoomLook} = {
   clinic: {palette: 'mint', wall: 'stripes', floor: 'wood', window: {style: 'tall', side: 'right', view: 'garden'}, layout: 'exam-bed', chart: 'body', time: 'day'},

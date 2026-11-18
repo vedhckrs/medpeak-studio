@@ -38,6 +38,41 @@ export const macroThings = (state: Record<string, number> = {}) => {
   return {faces: [{who: 'virus', x0: 540 - 82 * s, y0: cy - 120 * s, x1: 540 + 82 * s, y1: cy + 100 * s}], things: [] as {id: string; text?: boolean; x0: number; y0: number; x1: number; y1: number}[]};
 };
 
+/**
+ * The bite (dial `snap`, the hook: owner 2026-11-18, "weak hook"): a dog's jaws shut across the whole
+ * frame and open again. 0 = open and out of frame, 0.5 = shut, 1 = open again. A script runs it
+ * from 0 to 1 in about half a second on the very first frame, so the video starts with a hit.
+ */
+const Jaws: React.FC<{snap: number}> = ({snap}) => {
+  const shut = 1 - Math.abs(2 * clamp01(snap) - 1); // 0 open, 1 shut
+  if (shut <= 0.001) return null;
+  const INK = '#2b1a17';
+  const teeth = (dir: 1 | -1) => {
+    // a row of fangs: two long canines and smaller teeth between them, tips toward the middle
+    const sizes = [150, 250, 120, 110, 110, 120, 250, 150];
+    const w = 1240 / sizes.length;
+    return sizes.map((h, i) => {
+      const x = -80 + i * w;
+      return <path key={i} d={`M${x + 8} 0 Q${x + w * 0.5} ${dir * h * 1.25} ${x + w - 8} 0 Z`} fill="#fff6dc" stroke={INK} strokeWidth={9} strokeLinejoin="round" />;
+    });
+  };
+  const travel = (1 - shut) * 1100;
+  return (
+    <svg viewBox="0 0 1080 1920" width="100%" height="100%" style={{position: 'absolute', inset: 0, overflow: 'visible'}}>
+      <g transform={`translate(0 ${-travel})`}>
+        <rect x={-200} y={-900} width={1480} height={1620} fill="#3a0d19" />
+        <path d="M-200 520 Q540 640 1280 520 V760 H-200 Z" fill="#e8798a" stroke={INK} strokeWidth={9} />
+        <g transform="translate(0 752)">{teeth(1)}</g>
+      </g>
+      <g transform={`translate(0 ${travel})`}>
+        <rect x={-200} y={1200} width={1480} height={1620} fill="#3a0d19" />
+        <path d="M-200 1400 Q540 1280 1280 1400 V1160 H-200 Z" fill="#e8798a" stroke={INK} strokeWidth={9} />
+        <g transform="translate(0 1168)">{teeth(-1)}</g>
+      </g>
+    </svg>
+  );
+};
+
 export const MacroStage: React.FC<Props> = ({t, state = {}, faces = {}}) => {
   const v = Math.round(state.view ?? 0);
   const me = faces.virus;
@@ -46,6 +81,7 @@ export const MacroStage: React.FC<Props> = ({t, state = {}, faces = {}}) => {
       {v === 0 && <MacroEntry t={t} slide={clamp01(state.slide ?? 0.6)} face={faceOf(me)} />}
       {v === 1 && <MacroInside t={t} speed={state.speed ?? 1} face={faceOf(me)} />}
       {v === 2 && <MacroCaught t={t} grip={clamp01(state.grip ?? 1)} face={faceOf(me, 'shock')} />}
+      <Jaws snap={state.snap ?? 0} />
     </AbsoluteFill>
   );
 };

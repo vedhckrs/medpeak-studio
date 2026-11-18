@@ -6,6 +6,36 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-18 (day) - Windows PC (commits by VED) - branch `feat/toons-engage`
+
+The owner showed the Mac session's fix plan for rabies (weak hook, same music, one-word captions, text
+against the voice, nothing moves) and said the Mac is not working on it: "you start work". Nothing of
+that plan had been pushed from the Mac. If the Mac has unpushed work on it, this branch replaces it.
+
+Changed (branch cut from `feat/toons` at `b7f894b`):
+- `pipeline/lib/toon-rules.mjs`: format 5 "engage": hook said in 2 s, movement within 0.5 s, no still
+  over 1 s in the first 3 s, no still over 2 s anywhere (`motionSpans`, `longestGap`), and "Text says
+  what is spoken" for tags and chips. Older formats are not touched.
+- `src/toons/stage-macro.tsx`: dial `snap` (a dog's jaws shut across the frame). `director.ts`: the
+  dial is registered; the caption box is wider (110 to 970).
+- `src/toons/scenes.tsx`, `Player.tsx`, `style.ts`: `STYLE.caption: 'box'`, 2 to 3 words on a black box.
+- `videos/rabies/toon.json`: format 5. New hook "You get rabies. Time runs out." (A1), new last line
+  "One bite, but you did not get rabies. The vaccine came in time!" (E3, loops to the hook), the bite
+  on frame 0, tags fixed ("or just 1 week!" removed, "same day" is now "today", "act in time" appears
+  on "act", no tilts), camera pushes on D1, D2, D3 and E3, more events in B2.
+- `videos/rabies/toon-timings.json`: the timings of A1 and E3 are removed (their words changed).
+- Skill: `toons-script.md` has a "Format 5: engage" section.
+
+Run (Windows 11, Node 24.22.1): typecheck passes, 44 tests pass, rabies passes toon:check, camera,
+motion, staging and sound. Eight silent stills were rendered and looked at (jaws, boxed captions).
+
+Not done: A1 and E3 are not voiced, and no voice file of rabies is on the Windows PC, so no render with
+sound, no listening checks and no look check were run. No music was made (per-video music is not
+built). The bigger animation items of the plan (the bite as an event on the arm, a bigger virus,
+whole-body reactions of the people) are not built. The other 8 videos are still format 3 or 4.
+The file was rewritten by a script, so `toon-timings.json` shows many changed lines (indent only).
+
+Next: the owner's yes on credits for voice and music; then render, listen, look check; then upload.
 ## 2026-11-18 - Mac - branch `feat/toons`
 
 The owner asked for a new virus voice and "macro shot is my hero visual: start (hook), mid and last",
