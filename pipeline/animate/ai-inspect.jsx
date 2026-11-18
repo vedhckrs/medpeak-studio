@@ -7,6 +7,8 @@
   if (!outDir.exists) outDir.create();
   app.userInteractionLevel = UserInteractionLevel.DONTDISPLAYALERTS;
   var doc = app.open(src);
+  // show the whole artboard in the window, so the owner can watch what is being done
+  try { app.executeMenuCommand('fitin'); } catch (e) {}
   var lines = [];
   var ab = doc.artboards[0].artboardRect; // left, top, right, bottom
   lines.push('artboard ' + Math.round(ab[2] - ab[0]) + ' x ' + Math.round(ab[1] - ab[3]) + '  layers ' + doc.layers.length + '  pageItems ' + doc.pageItems.length);

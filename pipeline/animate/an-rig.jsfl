@@ -2,7 +2,7 @@
 // The job (an-rig.json beside this file, written by rig-doctor.mjs) holds:
 //   {width, height, fps, out, name, fla, sound?, camera?: [[x, y, zoomPercent], ...],
 //    pieces: [{name, parent?, cels: [{uri, m: [a,b,c,d,tx,ty]}]}],
-//    frames: [[ [a,b,c,d,tx,ty,cel] | 0, ... ]]}
+//    frames: [[ [a,b,c,d,tx,ty,cel,alpha?] | 0, ... ]]}   (alpha in percent, left out = 100)
 // Each piece becomes a graphic symbol whose origin is its joint; its cels (a hand's shapes, the mouth's
 // shapes) are the frames of that symbol and "cel" picks one. Pieces are listed back to front, one layer
 // each, and a piece with a parent is parented to that layer (hand to forearm, forearm to upper arm).
@@ -11,6 +11,8 @@ var here = fl.scriptURI.substring(0, fl.scriptURI.lastIndexOf('/') + 1);
 var log = [];
 function finish(ok) { FLfile.write(here + 'an-rig.log', log.join('\n') + '\nRESULT ' + (ok ? 'OK' : 'FAILED') + '\n'); }
 function pad(n) { var s = '' + n; while (s.length < 4) s = '0' + s; return s; }
+// show the whole page in the window, so the owner can watch the build and the export
+function fitPage(doc) { try { doc.zoomFactor = Math.min(0.5, 430 / doc.height); } catch (e) {} }
 function setM(el, v) { var m = el.matrix; m.a = v[0]; m.b = v[1]; m.c = v[2]; m.d = v[3]; m.tx = v[4]; m.ty = v[5]; el.matrix = m; }
 try {
   var job = eval('(' + FLfile.read(here + 'an-rig.json') + ')');
@@ -18,6 +20,7 @@ try {
   doc.width = job.width;
   doc.height = job.height;
   doc.frameRate = job.fps;
+  fitPage(doc);
   var lib = doc.library;
   var n = job.pieces.length;
   var count = job.frames.length;
@@ -43,10 +46,14 @@ try {
   }
   log.push('symbols ' + n + '  cels ' + cels);
   // 2 one layer per piece, back to front
+  fitPage(doc);
   var tl = doc.getTimeline();
   for (var j = 0; j < n; j++) {
     if (j === 0) tl.layers[0].name = job.pieces[j].name; else tl.addNewLayer(job.pieces[j].name, 'normal', true);
     lib.addItemToDocument({x: 0, y: 0}, job.pieces[j].name);
+    // every piece starts hidden and showing one cel; a frame then only sets the pieces it shows
+    var first = tl.layers[0].frames[0].elements[0];
+    if (first) { first.symbolType = 'graphic'; first.loop = 'single frame'; first.firstFrame = 0; setM(first, [0.0001, 0, 0, 0.0001, job.width / 2, job.height / 2]); /* hidden: shrunk to nothing on the page, not parked far away, so the work area stays the page and the fit holds */ }
     doc.selectNone();
   }
   var layerOf = function (q) { return n - 1 - q; }; // piece 0 is the bottom layer
@@ -63,13 +70,13 @@ try {
   for (var f = 0; f < count; f++) {
     var row = job.frames[f];
     for (var q = 0; q < n; q++) {
+      var v = row[q];
+      if (!v) continue;
       var el = tl.layers[layerOf(q)].frames[f].elements[0];
       if (!el) continue;
-      var v = row[q];
-      el.symbolType = 'graphic';
-      el.loop = 'single frame';
-      el.firstFrame = v ? v[6] : 0;
-      setM(el, v ? v : [1, 0, 0, 1, -9000, -9000]);
+      el.firstFrame = v[6];
+      setM(el, v);
+      if (v.length > 7 && v[7] < 100) el.colorAlphaPercent = v[7];
       set++;
     }
   }
@@ -114,6 +121,7 @@ try {
     } catch (e3) { log.push('sound: ' + e3); }
   }
   // 7 frames out
+  fitPage(doc);
   var made = 0;
   for (var g = 0; g < count; g++) {
     tl.currentFrame = g;

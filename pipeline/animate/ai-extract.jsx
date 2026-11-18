@@ -17,6 +17,9 @@
   sf.close();
   app.userInteractionLevel = UserInteractionLevel.DONTDISPLAYALERTS;
   var doc = app.open(new File(ARGS[0]));
+  // show the whole artboard in the window, so the owner can watch what is being done
+  var fit = function () { try { app.executeMenuCommand('fitin'); } catch (e) {} };
+  fit();
   var ab = doc.artboards[0].artboardRect;
   var find = function (path) {
     var p = path.split('.');
@@ -36,8 +39,12 @@
   var one = function (item, name, z) {
     app.activeDocument = tmp;
     var copy = item.duplicate(tmp.layers[0], ElementPlacement.PLACEATBEGINNING);
-    var b = copy.visibleBounds; // left, top, right, bottom
+    var b0 = copy.visibleBounds; // left, top, right, bottom
+    // bring the copy near the page origin first: an artboard far from it is refused or silently wrong
+    copy.translate(100 - b0[0], -100 - b0[1]);
+    var b = copy.visibleBounds;
     tmp.artboards[0].artboardRect = [b[0] - 1, b[1] + 1, b[2] + 1, b[3] - 1];
+    fit();
     tmp.exportFile(new File(outDir.fsName + '/' + name + '.png'), ExportType.PNG24, opt);
     copy.remove();
     var g = item.visibleBounds;
@@ -66,7 +73,10 @@
         var cb = copies[c0].visibleBounds;
         t = t ? [Math.min(t[0], cb[0]), Math.max(t[1], cb[1]), Math.max(t[2], cb[2]), Math.min(t[3], cb[3])] : [cb[0], cb[1], cb[2], cb[3]];
       }
+      for (var c1 = 0; c1 < copies.length; c1++) copies[c1].translate(100 - t[0], -100 - t[1]);
+      t = [100, -100, 100 + (t[2] - t[0]), -100 - (t[1] - t[3])];
       tmp.artboards[0].artboardRect = [t[0] - 1, t[1] + 1, t[2] + 1, t[3] - 1];
+      fit();
       tmp.exportFile(new File(outDir.fsName + '/' + name + '.png'), ExportType.PNG24, opt);
     } catch (er) { ok = false; }
     for (var c = 0; c < copies.length; c++) copies[c].remove();

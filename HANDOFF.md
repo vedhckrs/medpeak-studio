@@ -145,6 +145,20 @@ and Animate driven by code, no screen control. What is built, in `pipeline/anima
   character angles"): the turn now uses the sheet's own standing side view (3 frames) and three-quarter view
   (4 frames), cut with rect mode as `view-side` and `view-q`, then the front rig. Rule: never fake an angle by
   flipping or squeezing when the sheet has that angle drawn.
+- **60 fps, a walk with real foot contact, a smoother turn (owner's request, 2026-11-18):** output is now
+  1080 x 1920 at 60 fps. `walk-rig.mjs` reads the eight walk drawings as a skeleton (each drawing is nine
+  separate pieces; the long axis of each piece gives hip, knee, ankle and bone angles), so the walk is drawn
+  at any moment between two drawings, and the foot that carries her is held on its spot while the body moves
+  over it (drift 0 px by construction; stride is about 414 units a cycle, not the 576 guessed before). She
+  stops into a standing pose fitted to the sheet's side view, which fades in over it; then the side view fades
+  off the three-quarter view and that fades off the front rig, all three lined up on her head. Honest limit:
+  the turn is still three drawings blended, not a drawn rotation, and a faint double body shows for a few
+  frames in each blend.
+- **Rules from the owner for Adobe scripting:** show the whole page in the window while a script runs
+  (`fitPage` in an-rig.jsfl, `fitin` in the Illustrator scripts). Hidden pieces are shrunk to nothing on the
+  page, never parked far away (that stretches Animate's work area and pushes the page out of view).
+  `ai-extract.jsx` now moves each copy near the page origin before export (an artboard far from it is refused
+  or silently exported at the wrong size). The Illustrator fit is not yet seen running.
 - Stock sources (premium, not AI, 0 credits) are kept in `stock/` which is
   git-ignored because the repo is public. On the Mac it is missing: download it again there, or keep
   rendering people on the Windows PC. Outputs are in `out/animate/` (not in git).

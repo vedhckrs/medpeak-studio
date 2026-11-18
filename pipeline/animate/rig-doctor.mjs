@@ -13,6 +13,7 @@ import {spawnSync} from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {readWalk, between, stanceOf, standFrom} from './walk-rig.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, '..', '..');
@@ -22,7 +23,8 @@ const FRAMES = path.join(OUT, 'doctor-frames');
 
 const W = 1080;
 const H = 1920;
-const FPS = 30;
+const FPS = 60;
+const F = FPS / 30; // the timings below were first written for 30 frames a second
 const K = 2; // stage pixels per artwork unit
 const PX = 2; // the PNG parts are cut at 200%: two pixels per artwork unit
 const AXIS = 4955; // the figure's centre line, in artwork units
@@ -119,9 +121,16 @@ const pieces = () => {
   // a piece is one symbol; when it is made of several pictures (a sleeve over an arm, a hand and its
   // nails) each picture gets its own symbol and layer, all placed the same way
   const many = (prefix, kind, origin, ids, more = {}) => ids.forEach((id) => list.push({name: `${prefix}-${id}`, kind, origin, cels: [cel('front-' + id, origin)], ...more}));
-  list.push({name: 'walk', kind: 'walk', origin: [0, 0], cels: WALK.map((w) => cel('walk-' + w, [need('walkbody-' + w).x + 71, FEET_WALK]))});
-  // the standing side view and three-quarter view of the sheet: the drawn angles she turns through
-  list.push({name: 'view', kind: 'view', origin: [0, 0], cels: VIEWS.map((v) => { const p = need(v); return cel(v, [p.x + p.w / 2, p.y + p.h - 1]); })});
+  // the side walk, as a skeleton: every bone is a symbol with one cel per drawing, its origin on its joint
+  const bones = (name, pick, joint) => list.push({name, kind: 'wbone', pick, cels: WALKS.map((P) => { const b = pick(P); return cel(b.name, joint(b)); })});
+  bones('w-farArm', (P) => P.farArm, (b) => b.top);
+  for (const leg of ['far', 'near']) {
+    bones(`w-${leg}Shoe`, (P) => P[leg].shoe, (b) => b.centre);
+    bones(`w-${leg}Shin`, (P) => P[leg].shin, (b) => b.top);
+    bones(`w-${leg}Thigh`, (P) => P[leg].thigh, (b) => b.top);
+  }
+  list.push({name: 'w-body', kind: 'wbody', cels: [cel(`w${WALK[0]}-1`, WALKS[0].body)]});
+  bones('w-nearArm', (P) => P.nearArm, (b) => b.top);
   many('leg', 'legs', HIP, [248, 229]);
   many('hairback', 'head', NECK, [247], {parent: 'body-246'});
   many('body', 'body', HIP, [246, 228]);
@@ -160,29 +169,74 @@ const pieces = () => {
       }),
     });
   }
+  // the standing three-quarter view and side view of the sheet, on top: the drawn angles she turns through.
+  // Each fades out over the next angle, which is already complete underneath it.
+  const q = need('view-q');
+  list.push({name: 'view-q', kind: 'viewQ', cels: [cel('view-q', [Q_HEAD, q.y + q.h - 3])]});
+  const sb = need('sidebody');
+  list.push({name: 'view-side', kind: 'viewSide', cels: [cel('view-side', [sb.x, sb.y])]});
   return list;
 };
-const VIEWS = ['view-side', 'view-q']; // the turn: side, then three-quarter, then the front rig
-const TURN = [3, 4]; // frames each of them is shown
 const WALK = [104, 103, 102, 101, 100, 99, 98, 97]; // the eight steps of the side walk, in order
 const FEET_WALK = 1899; // the ground line of the walk row on the sheet
-const STEP = 72; // how far the body travels during one walk picture, measured on the sheet (a planted foot stays put)
-const WALK_HOLD = 4; // frames each walk picture is shown
-const WALK_ORDER = [2, 3, 4, 5, 6]; // ends on a picture with the legs together, ready to turn
+const WALKS = readWalk(parts, PARTS, WALK, PX); // the skeleton of each drawing
+const STEP_FRAMES = 8; // frames from one drawing to the next (a full cycle of eight is a little over a second)
+const WALK_STEPS = 6; // drawings she walks through before she stops
+const STOP_FRAMES = 16; // frames to bring her feet together
+const HEAD_MID = 83.7; // where the middle of her head is, from the left edge of the walk's body picture
+const Q_HEAD = 4641; // the middle of the head of the three-quarter view, on the sheet
+// the walk, frame by frame: where the body is and how every bone lies. The foot that carries her is
+// held on its spot on the ground and the body is moved over it, so nothing slides.
+const walkFrames = () => {
+  const flatAt = WALKS[2].near; // a drawing with this shoe flat on the ground
+  const flat = {angle: flatAt.shoe.angle, offset: sub(flatAt.shoe.centre, flatAt.shin.end), y: flatAt.shoe.centre[1]};
+  const out = [];
+  let body = [0, 0]; // the body's corner, in sheet units; x is counted from where she starts
+  let drift = 0;
+  const go = (A, B, frames, stance, groundB, easeOut) => {
+    const groundA = A[stance].shoe.centre[1];
+    const lock = body[0] + between(A, B, 0)[stance].shoeAt[0];
+    for (let k = 0; k < frames; k++) {
+      let u = (k + 1) / frames;
+      if (easeOut) u = 1 - (1 - u) * (1 - u);
+      const lim = between(A, B, u);
+      const shoe = lim[stance].shoeAt;
+      body = [lock - shoe[0], groundA + (groundB - groundA) * u - shoe[1]];
+      drift = Math.max(drift, Math.abs(body[0] + shoe[0] - lock));
+      out.push({body, lim, art: WALK.indexOf(lim.art)});
+    }
+  };
+  for (let s = 0; s < WALK_STEPS; s++) {
+    const A = WALKS[s % 8];
+    const B = WALKS[(s + 1) % 8];
+    const stance = stanceOf(A, B);
+    go(A, B, STEP_FRAMES, stance, B[stance].shoe.centre[1], false);
+  }
+  const last = WALKS[WALK_STEPS % 8];
+  const stance = last.near.shoe.bottom >= last.far.shoe.bottom ? 'near' : 'far';
+  // she stops at the height of the sheet's standing side view, which takes over from the walk
+  const side = need('view-side');
+  const standBody = FEET_WALK - (side.y + side.h - 2 - need('sidebody').y); // the body's corner when she stands
+  const ankleY = flat.y - flat.offset[1] - standBody;
+  go(last, standFrom(last, flat, ankleY), STOP_FRAMES, stance, flat.y, true);
+  // she ends with the middle of her head on the middle of the stage, where every angle of the turn keeps it
+  const end = out[out.length - 1].body[0];
+  for (const o of out) o.at = [W / 2 + (o.body[0] - end - HEAD_MID) * K, GROUND + (o.body[1] - FEET_WALK) * K];
+  return {frames: out, drift: drift * K};
+};
 
 // ---- a pose: joint angles in degrees. shoulder > 0 lifts the arm away from the body, elbow > 0
 // bends the forearm the same way (up and out), elbow < 0 folds it across the body. hand names a
 // gesture hand ('rest' = her own relaxed hand). ----
 const ARM = {shoulder: 0, elbow: 0, wrist: 0, hand: 'rest'};
-const REST = {head: 0, lean: 0, sway: 0, bob: 0, mouth: 'closed', blink: 0, look: 0, brow: 0, walk: -1, view: -1, x: 0, L: ARM, R: ARM};
+const REST = {head: 0, lean: 0, sway: 0, bob: 0, mouth: 'closed', blink: 0, look: 0, brow: 0, x: 0, wk: null, side: 0, q: 0, front: true, L: ARM, R: ARM};
 const pose = (p) => ({...REST, ...p, L: {...ARM, ...(p.L || {})}, R: {...ARM, ...(p.R || {})}});
 const mouthCel = Object.fromEntries(Object.keys(MOUTHS).map((k, i) => [k, i]));
 const handCel = Object.fromEntries(Object.keys(HANDS).map((k, i) => [k, i]));
 
 const place = (list, p) => {
   const shift = [p.x * K, 0];
-  if (p.walk >= 0) return list.map((it) => (it.kind === 'walk' ? inst(add([W / 2, GROUND], shift), 0, p.walk) : 0));
-  if (p.view >= 0) return list.map((it) => (it.kind === 'view' ? inst(add([W / 2, GROUND], shift), 0, p.view) : 0));
+  const faded = (m, alpha) => (alpha >= 1 ? m : [...m, Math.round(alpha * 100)]);
   // the upper body: leans around the hip, sways sideways, breathes up and down
   const hip = add(add(stage(HIP), shift), [p.sway * K, p.bob * K]);
   const up = (u) => add(hip, rot(mul(sub(u, HIP), K), p.lean));
@@ -204,10 +258,18 @@ const place = (list, p) => {
   const shut = p.blink > 0.9; // fully closed: the closed lid is shown in place of the eye
   const open = 1 - 0.6 * p.blink; // on the way there the whole eye narrows
   return list.map((it) => {
+    // the walk skeleton, the side view and the three-quarter view
+    if (it.kind === 'wbody') return p.wk ? inst(p.wk.at) : 0;
+    if (it.kind === 'wbone') {
+      if (!p.wk) return 0;
+      const b = it.pick(p.wk.lim); // {at: from the body's corner, turn}
+      return inst(add(p.wk.at, mul(b.at, K)), b.turn, p.wk.art);
+    }
+    if (it.kind === 'viewSide') return p.side > 0 ? faded(inst(p.sideAt), p.side) : 0;
+    if (it.kind === 'viewQ') return p.q > 0 ? faded(inst(add([W / 2, GROUND], shift)), p.q) : 0;
+    if (!p.front) return 0;
     const A = it.side ? arm[it.side] : null;
     switch (it.kind) {
-      case 'walk': return 0;
-      case 'view': return 0;
       case 'legs': return inst(add(stage(HIP), shift));
       case 'body': return inst(hip, p.lean);
       case 'head': return inst(neck, headTurn);
@@ -267,12 +329,12 @@ const track = (keys, f, get, lag = 0) => {
   const [f0, a] = keys[k];
   const [f1, b] = keys[k + 1];
   // a move takes at most 14 frames, then the pose holds until the next key
-  const span = Math.min(14, f1 - f0);
+  const span = Math.min(14 * F, f1 - f0);
   return mix(get(a), get(b), overshoot((g - (f1 - span)) / span));
 };
 const heldHand = (keys, f, side) => {
   let k = 0;
-  while (k < keys.length - 1 && f >= keys[k + 1][0] - 7) k++; // the hand changes shape half-way through the move
+  while (k < keys.length - 1 && f >= keys[k + 1][0] - 7 * F) k++; // the hand changes shape half-way through the move
   return keys[k][1][side].hand;
 };
 // which mouth for a letter
@@ -287,70 +349,84 @@ const mouthAt = (words, t) => {
   }
   return 'closed';
 };
-// blinks at fixed, uneven moments (so every render is the same): a blink is 5 frames
-const BLINKS = [20, 97, 151, 236, 263, 340, 412, 470];
+// blinks at fixed, uneven moments (so every render is the same): a blink lasts a fifth of a second
+const BLINKS = [3.4, 5.1, 7.9, 8.8, 11.3, 13.7, 15.7]; // seconds
+const BLINK = [0, 0.5, 1, 1, 1, 0.7, 0.3, 0];
 const blinkAt = (f) => {
   for (const b of BLINKS) {
-    const d = f - b;
-    if (d >= 0 && d < 6) return [0.5, 1, 1, 1, 0.7, 0.3][d];
+    const d = (f - b * FPS) / F + 1; // where in the blink, counted in thirtieths of a second
+    if (d < 0 || d >= BLINK.length - 1) continue;
+    const i = Math.floor(d);
+    const v = BLINK[i] + (BLINK[i + 1] - BLINK[i]) * (d - i);
+    return v > 0.85 ? 1 : v;
   }
   return 0;
 };
 
-const clipFrames = (words, seconds) => {
-  const total = Math.round(seconds * FPS);
-  const steps = WALK_ORDER.length * WALK_HOLD; // she walks in first, at the speed her steps really cover
-  const walkIn = steps + TURN[0] + TURN[1]; // then turns to the front through the drawn angles
-  const say = walkIn + 8; // and starts to speak
+const smooth = (t) => (t <= 0 ? 0 : t >= 1 ? 1 : t * t * (3 - 2 * t));
+// how the clip opens, in frames: she walks in, stops, and turns to face us through the drawn angles
+const OPEN = {sideIn: 8, sideHold: 5, toQ: 12, qHold: 6, toFront: 12};
+const clipFrames = (words, tail) => {
+  const walk = walkFrames();
+  const n = walk.frames.length;
+  const t1 = n + OPEN.sideIn; // the side view is fully there
+  const t2 = t1 + OPEN.sideHold; // it starts to give way to the three-quarter view
+  const t3 = t2 + OPEN.toQ;
+  const t4 = t3 + OPEN.qHold; // the three-quarter view starts to give way to the front
+  const walkIn = t4 + OPEN.toFront; // she faces us
+  const say = walkIn + 6 * F; // and starts to speak
+  const lineEnd = words[words.length - 1].end;
+  const total = say + Math.round((lineEnd + tail) * FPS);
   const T = (s) => say + Math.round(s * FPS);
   const at = (word) => (words.find((w) => w.w.toLowerCase().startsWith(word)) || {start: 0}).start;
   const keys = [
-    [0, P.rest], [say - 2, P.rest], [T(at('your')) + 6, P.explain], [T(at('washing')) - 4, P.explain],
-    [T(at('washing')) + 8, P.point], [T(at('then')) + 2, P.point], [T(at('then')) + 14, P.both], [T(at('today')) - 2, P.both],
-    [T(at('today')) + 10, P.stop], [total - 26, P.stop], [total - 12, P.rest], [total + 30, P.rest],
+    [0, P.rest], [say - 2 * F, P.rest], [T(at('your')) + 6 * F, P.explain], [T(at('washing')) - 4 * F, P.explain],
+    [T(at('washing')) + 8 * F, P.point], [T(at('then')) + 2 * F, P.point], [T(at('then')) + 14 * F, P.both], [T(at('today')) - 2 * F, P.both],
+    [T(at('today')) + 10 * F, P.stop], [total - 26 * F, P.stop], [total - 12 * F, P.rest], [total + 30 * F, P.rest],
   ];
+  const sideAt = walk.frames[n - 1].at; // the side view stands exactly where the walk's body stopped
   const frames = [];
   const camera = [];
   for (let f = 0; f < total; f++) {
     let p;
-    if (f < steps) {
-      // the walk is drawn facing left, so she comes in from the right. The body moves steadily, one STEP
-      // per picture, so the foot on the ground does not slide.
-      p = pose({walk: WALK_ORDER[Math.floor(f / WALK_HOLD)], x: ((steps - f) / WALK_HOLD) * STEP});
-    } else if (f < walkIn) {
-      // she stops and turns to face us: the sheet's own side view, then its three-quarter view
-      p = pose({view: f < steps + TURN[0] ? 0 : 1});
+    if (f < t2) {
+      // the walk, then the drawn side view fading in over its last pose
+      p = pose({front: false, wk: f < t1 ? walk.frames[Math.min(f, n - 1)] : null, side: f < n ? 0 : smooth((f - n + 1) / OPEN.sideIn), sideAt});
+    } else if (f < t4) {
+      // the three-quarter view is complete underneath while the side view fades off it
+      p = pose({front: false, side: 1 - smooth((f - t2 + 1) / OPEN.toQ), sideAt, q: 1});
     } else {
       const sec = f / FPS;
       const arm = (side) => ({
         shoulder: track(keys, f, (q) => q[side].shoulder),
-        elbow: track(keys, f, (q) => q[side].elbow, 2), // the forearm follows the upper arm
-        wrist: track(keys, f, (q) => q[side].wrist, 4) + (track(keys, f, (q) => q[side].elbow, 2) - track(keys, f, (q) => q[side].elbow, 5)) * 0.25, // the hand drags behind, then settles
+        elbow: track(keys, f, (q) => q[side].elbow, 2 * F), // the forearm follows the upper arm
+        wrist: track(keys, f, (q) => q[side].wrist, 4 * F) + (track(keys, f, (q) => q[side].elbow, 2 * F) - track(keys, f, (q) => q[side].elbow, 5 * F)) * 0.25, // the hand drags behind, then settles
         hand: heldHand(keys, f, side),
       });
       const t = (f - say) / FPS;
       const talking = mouthAt(words, t);
       p = pose({
-        head: track(keys, f, (q) => q.head, 1) + Math.sin(sec * 5.1) * 0.9 + (talking !== 'closed' ? Math.sin(sec * 11) * 0.7 : 0),
+        q: f < walkIn ? 1 - smooth((f - t4 + 1) / OPEN.toFront) : 0, // the front view is complete underneath while the three-quarter view fades off it
+        head: track(keys, f, (q) => q.head, F) + Math.sin(sec * 5.1) * 0.9 + (talking !== 'closed' ? Math.sin(sec * 11) * 0.7 : 0),
         lean: track(keys, f, (q) => q.lean) + Math.sin(sec * 1.3) * 0.5,
         sway: Math.sin(sec * 1.3 + 1) * 1.4,
         bob: Math.sin(sec * 2.6) * 1.1,
-        brow: track(keys, f, (q) => q.brow, 1),
+        brow: track(keys, f, (q) => q.brow, F),
         mouth: talking,
         blink: blinkAt(f),
-        look: Math.abs(((f + 40) % 170) - 85) < 12 ? -1 : 0, // now and then she glances aside
+        look: Math.abs(((f + 40 * F) % (170 * F)) - 85 * F) < 12 * F ? -1 : 0, // now and then she glances aside
         L: arm('L'),
         R: arm('R'),
       });
     }
     frames.push(p);
     // the camera: wide while she walks in, then a slow push-in on her, a little closer on "today"
-    const push = f < walkIn ? 0 : Math.min(1, (f - walkIn) / 50);
+    const push = f < walkIn ? 0 : Math.min(1, (f - walkIn) / (50 * F));
     const e = push * push * (3 - 2 * push);
-    const late = Math.max(0, Math.min(1, (f - T(at('today'))) / 20));
+    const late = Math.max(0, Math.min(1, (f - T(at('today'))) / (20 * F)));
     camera.push(1 + e * 0.22 + late * 0.1); // how far the view is pushed in
   }
-  return {frames, camera, say};
+  return {frames, camera, say, drift: walk.drift, walkFrames: n, faceUs: walkIn};
 };
 
 const run = (mode) => {
@@ -362,7 +438,8 @@ const run = (mode) => {
   if (mode === 'clip') {
     const line = JSON.parse(fs.readFileSync(path.join(root, 'videos', 'rabies', 'toon-timings.json'), 'utf8')).lines.D1;
     sound = path.join(root, 'public', line.file);
-    const made = clipFrames(line.words, line.duration + 3.2);
+    const made = clipFrames(line.words, 1.4);
+    console.log(`walk ${made.walkFrames} frames, the carrying foot drifts ${made.drift.toFixed(3)} px at most; she faces us at frame ${made.faceUs}; ${made.frames.length} frames in all at ${FPS} fps`);
     poses = made.frames;
     camera = made.camera;
     say = made.say;
@@ -380,11 +457,12 @@ const run = (mode) => {
   if (camera) {
     const cx = W / 2;
     const cy = 760;
-    job.frames = job.frames.map((row, f) => row.map((m) => (m ? [r4(m[0] * camera[f]), r4(m[1] * camera[f]), r4(m[2] * camera[f]), r4(m[3] * camera[f]), r4(cx + (m[4] - cx) * camera[f]), r4(cy + (m[5] - cy) * camera[f]), m[6]] : 0)));
+    job.frames = job.frames.map((row, f) => row.map((m) => (m ? [r4(m[0] * camera[f]), r4(m[1] * camera[f]), r4(m[2] * camera[f]), r4(m[3] * camera[f]), r4(cx + (m[4] - cx) * camera[f]), r4(cy + (m[5] - cy) * camera[f]), ...m.slice(6)] : 0)));
   }
   if (sound && fs.existsSync(sound)) job.sound = uri(sound);
   fs.writeFileSync(path.join(here, 'an-rig.json'), JSON.stringify(job));
-  const r = spawnSync('powershell', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', path.join(here, 'run-an.ps1'), path.join(here, 'an-rig.jsfl'), '-TimeoutSec', '1500'], {encoding: 'utf8'});
+  if (process.env.RIG_DRY) return; // work the motion out, do not start Animate
+  const r = spawnSync('powershell', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', path.join(here, 'run-an.ps1'), path.join(here, 'an-rig.jsfl'), '-TimeoutSec', '3300'], {encoding: 'utf8'});
   process.stdout.write(r.stdout || '');
   if (r.status !== 0) throw new Error('Animate did not finish the job');
   const seq = path.join(FRAMES, 'f%04d.png');
