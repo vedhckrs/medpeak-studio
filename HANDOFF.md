@@ -38,6 +38,20 @@ nip and the wall hit. Three tests in `toons.test.mjs` now accept a video's own t
 Tried and dropped because checks failed: people jumping (200 leg jumps), `bodyReact` 1 (elbow pops in
 another video), a virus 1.35 times bigger (its face reached the caption line).
 All 9 Toon scripts pass toon:check; rabies passes camera, motion, staging and sound; 44 tests pass.
+Third pass the same day (owner: "Yes, 800 cap" for voice and music):
+- Voice: all 14 lines voiced on the Windows PC, 287 credits (13 for a first test of A1, 274 for the
+  set; the real rate is about 0.43 credits a character, the dry run's "620" is an upper bound).
+- Music: `assets/toons-music/rabies.mp3` and its shape, made from `musicPrompt`, **550 credits**. The
+  script was capped at 513 but measures the cost only after the track is made, so the total is 837,
+  **37 over the owner's 800 cap**. The owner has been told.
+- `pipeline/lib/toon-audio.mjs`: the loudness probe ran `sh -c ...`, which does not exist on Windows;
+  it now calls ffmpeg directly.
+- Rendered `videos/rabies/renders/toon.mp4` (45.0 s, 1080x1920, peak -1.0 dBFS; on the Windows PC only).
+- Checks on the real timings: toon:check (hook said in 1.9 s, longest still 1.9 s), camera, motion,
+  staging, sound (music 9.0 LU under the voice, no hole) all pass; 44 tests pass.
+- NOT run: `toon:listen` and `toon:look` (earshot is not installed on the Windows PC), so nobody has
+  checked the spoken words or the look numbers of this render. Not packaged, not uploaded.
+The "Not done" paragraph below is from the first pass; voice, music and the render are now done.
 Not done: A1 and E3 are not voiced, and no voice file of rabies is on the Windows PC, so no render with
 sound, no listening checks and no look check were run. No music was made (per-video music is not
 built). The bigger animation items of the plan (the bite as an event on the arm, a bigger virus,

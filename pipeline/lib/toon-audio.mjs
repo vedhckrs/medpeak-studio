@@ -1,7 +1,7 @@
 // Shared audio helpers for the Toons pipeline (ffmpeg only, free).
 import fs from 'node:fs';
 import path from 'node:path';
-import {execFileSync} from 'node:child_process';
+import {execFileSync, spawnSync} from 'node:child_process';
 import {ROOT, readJson} from './util.mjs';
 
 export const CAST_FILE = path.join(ROOT, 'skill', 'medpeak-health', 'toons-cast.json');
@@ -11,7 +11,8 @@ export const loadCast = () => readJson(CAST_FILE);
 
 export const seconds = (file) => Number(execFileSync('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', file]).toString().trim());
 const run = (input, filters, out) => execFileSync('ffmpeg', ['-y', '-hide_banner', '-loglevel', 'error', '-i', input, '-af', filters, '-ar', '44100', '-b:a', '160k', out]);
-const probe = (file, filters) => execFileSync('sh', ['-c', 'ffmpeg -hide_banner -i "$1" -af "$2" -f null - 2>&1 || true', 'sh', file, filters], {encoding: 'utf8'});
+// ffmpeg prints its measurements on stderr. No shell here: `sh` does not exist on Windows.
+const probe = (file, filters) => { const r = spawnSync('ffmpeg', ['-hide_banner', '-i', file, '-af', filters, '-f', 'null', '-'], {encoding: 'utf8', maxBuffer: 1 << 26}); return `${r.stdout ?? ''}${r.stderr ?? ''}`; };
 /** Peak and average level in dB (ffmpeg volumedetect). */
 export const levels = (file, pre = 'anull') => {
   const r = probe(file, `${pre},volumedetect`);

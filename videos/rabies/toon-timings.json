@@ -1,646 +1,763 @@
 {
- "lines": {
-  "A2": {
-   "who": "virus",
-   "text": "Can you stop me before the brain?",
-   "voiceId": "IKne3meq5aSn9XLyUdCD",
-   "pitch": 3,
-   "tempo": 1,
-   "file": "toons/rabies/voice/A2.mp3",
-   "duration": 1.753,
-   "words": [
-    {
-     "w": "Can",
-     "start": 0,
-     "end": 0.186
+  "lines": {
+    "A2": {
+      "who": "virus",
+      "text": "Can you stop me before the brain?",
+      "voiceId": "IKne3meq5aSn9XLyUdCD",
+      "pitch": 3,
+      "tempo": 1,
+      "file": "toons/rabies/voice/A2.mp3",
+      "duration": 1.848,
+      "words": [
+        {
+          "w": "Can",
+          "start": 0,
+          "end": 0.186
+        },
+        {
+          "w": "you",
+          "start": 0.232,
+          "end": 0.313
+        },
+        {
+          "w": "stop",
+          "start": 0.372,
+          "end": 0.615
+        },
+        {
+          "w": "me",
+          "start": 0.662,
+          "end": 0.743
+        },
+        {
+          "w": "before",
+          "start": 0.789,
+          "end": 1.057
+        },
+        {
+          "w": "the",
+          "start": 1.091,
+          "end": 1.161
+        },
+        {
+          "w": "brain?",
+          "start": 1.196,
+          "end": 1.811
+        }
+      ]
     },
-    {
-     "w": "you",
-     "start": 0.244,
-     "end": 0.313
+    "B1": {
+      "who": "virus",
+      "text": "A stray dog. A little nip. A tiny scratch.",
+      "voiceId": "IKne3meq5aSn9XLyUdCD",
+      "pitch": 3,
+      "tempo": 1,
+      "file": "toons/rabies/voice/B1.mp3",
+      "duration": 3.106,
+      "words": [
+        {
+          "w": "A",
+          "start": 0,
+          "end": 0.093
+        },
+        {
+          "w": "stray",
+          "start": 0.163,
+          "end": 0.418
+        },
+        {
+          "w": "dog.",
+          "start": 0.476,
+          "end": 0.859
+        },
+        {
+          "w": "A",
+          "start": 1.022,
+          "end": 1.091
+        },
+        {
+          "w": "little",
+          "start": 1.161,
+          "end": 1.347
+        },
+        {
+          "w": "nip.",
+          "start": 1.382,
+          "end": 1.695
+        },
+        {
+          "w": "A",
+          "start": 1.916,
+          "end": 1.985
+        },
+        {
+          "w": "tiny",
+          "start": 2.043,
+          "end": 2.276
+        },
+        {
+          "w": "scratch.",
+          "start": 2.322,
+          "end": 3.065
+        }
+      ]
     },
-    {
-     "w": "stop",
-     "start": 0.36,
-     "end": 0.58
+    "B2": {
+      "who": "virus",
+      "text": "I ride in on its spit. Now, up this nerve!",
+      "voiceId": "IKne3meq5aSn9XLyUdCD",
+      "pitch": 3,
+      "tempo": 1,
+      "file": "toons/rabies/voice/B2.mp3",
+      "duration": 2.786,
+      "words": [
+        {
+          "w": "I",
+          "start": 0,
+          "end": 0.093
+        },
+        {
+          "w": "ride",
+          "start": 0.197,
+          "end": 0.406
+        },
+        {
+          "w": "in",
+          "start": 0.441,
+          "end": 0.511
+        },
+        {
+          "w": "on",
+          "start": 0.569,
+          "end": 0.627
+        },
+        {
+          "w": "its",
+          "start": 0.685,
+          "end": 0.813
+        },
+        {
+          "w": "spit.",
+          "start": 0.836,
+          "end": 1.254
+        },
+        {
+          "w": "Now,",
+          "start": 1.393,
+          "end": 1.672
+        },
+        {
+          "w": "up",
+          "start": 1.741,
+          "end": 1.881
+        },
+        {
+          "w": "this",
+          "start": 1.939,
+          "end": 2.101
+        },
+        {
+          "w": "nerve!",
+          "start": 2.171,
+          "end": 2.74
+        }
+      ]
     },
-    {
-     "w": "me",
-     "start": 0.639,
-     "end": 0.708
+    "B3": {
+      "who": "virus",
+      "text": "Slowly. Usually two to three months to the brain.",
+      "voiceId": "IKne3meq5aSn9XLyUdCD",
+      "pitch": 3,
+      "tempo": 1,
+      "file": "toons/rabies/voice/B3.mp3",
+      "duration": 3.057,
+      "words": [
+        {
+          "w": "Slowly.",
+          "start": 0,
+          "end": 0.58
+        },
+        {
+          "w": "Usually",
+          "start": 0.94,
+          "end": 1.335
+        },
+        {
+          "w": "two",
+          "start": 1.405,
+          "end": 1.567
+        },
+        {
+          "w": "to",
+          "start": 1.614,
+          "end": 1.66
+        },
+        {
+          "w": "three",
+          "start": 1.707,
+          "end": 1.881
+        },
+        {
+          "w": "months",
+          "start": 1.927,
+          "end": 2.159
+        },
+        {
+          "w": "to",
+          "start": 2.206,
+          "end": 2.276
+        },
+        {
+          "w": "the",
+          "start": 2.345,
+          "end": 2.415
+        },
+        {
+          "w": "brain.",
+          "start": 2.438,
+          "end": 3.019
+        }
+      ]
     },
-    {
-     "w": "before",
-     "start": 0.766,
-     "end": 0.998
+    "C1": {
+      "who": "kid",
+      "text": "It's just a little scratch, Mum.",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "pitch": 4,
+      "tempo": 1,
+      "file": "toons/rabies/voice/C1.mp3",
+      "duration": 1.756,
+      "words": [
+        {
+          "w": "It's",
+          "start": 0,
+          "end": 0.221
+        },
+        {
+          "w": "just",
+          "start": 0.267,
+          "end": 0.441
+        },
+        {
+          "w": "a",
+          "start": 0.476,
+          "end": 0.499
+        },
+        {
+          "w": "little",
+          "start": 0.546,
+          "end": 0.755
+        },
+        {
+          "w": "scratch,",
+          "start": 0.789,
+          "end": 1.173
+        },
+        {
+          "w": "Mum.",
+          "start": 1.196,
+          "end": 1.718
+        }
+      ]
     },
-    {
-     "w": "the",
-     "start": 1.033,
-     "end": 1.103
+    "C2": {
+      "who": "mom",
+      "text": "Wash it now. Soap and water, fifteen minutes.",
+      "voiceId": "EXAVITQu4vr4xnSDxMaL",
+      "pitch": 0,
+      "tempo": 1,
+      "file": "toons/rabies/voice/C2.mp3",
+      "duration": 2.511,
+      "words": [
+        {
+          "w": "Wash",
+          "start": 0,
+          "end": 0.337
+        },
+        {
+          "w": "it",
+          "start": 0.395,
+          "end": 0.476
+        },
+        {
+          "w": "now.",
+          "start": 0.522,
+          "end": 0.755
+        },
+        {
+          "w": "Soap",
+          "start": 0.801,
+          "end": 1.01
+        },
+        {
+          "w": "and",
+          "start": 1.045,
+          "end": 1.115
+        },
+        {
+          "w": "water,",
+          "start": 1.161,
+          "end": 1.451
+        },
+        {
+          "w": "fifteen",
+          "start": 1.486,
+          "end": 1.8
+        },
+        {
+          "w": "minutes.",
+          "start": 1.846,
+          "end": 2.461
+        }
+      ]
     },
-    {
-     "w": "brain?",
-     "start": 1.126,
-     "end": 1.718
+    "C3": {
+      "who": "kid",
+      "text": "Fifteen minutes? For a scratch?",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "pitch": 4,
+      "tempo": 1,
+      "file": "toons/rabies/voice/C3.mp3",
+      "duration": 1.8,
+      "words": [
+        {
+          "w": "Fifteen",
+          "start": 0,
+          "end": 0.372
+        },
+        {
+          "w": "minutes?",
+          "start": 0.406,
+          "end": 0.755
+        },
+        {
+          "w": "For",
+          "start": 0.813,
+          "end": 0.952
+        },
+        {
+          "w": "a",
+          "start": 0.998,
+          "end": 1.033
+        },
+        {
+          "w": "scratch?",
+          "start": 1.068,
+          "end": 1.765
+        }
+      ]
+    },
+    "D1": {
+      "who": "doctor",
+      "text": "Your mum was right. Washing first, then a doctor, today.",
+      "voiceId": "XrExE9yKIg1WjnnlVkGX",
+      "pitch": 0,
+      "tempo": 1,
+      "file": "toons/rabies/voice/D1.mp3",
+      "duration": 3.719,
+      "words": [
+        {
+          "w": "Your",
+          "start": 0,
+          "end": 0.197
+        },
+        {
+          "w": "mum",
+          "start": 0.244,
+          "end": 0.395
+        },
+        {
+          "w": "was",
+          "start": 0.441,
+          "end": 0.546
+        },
+        {
+          "w": "right.",
+          "start": 0.615,
+          "end": 0.987
+        },
+        {
+          "w": "Washing",
+          "start": 1.161,
+          "end": 1.556
+        },
+        {
+          "w": "first,",
+          "start": 1.625,
+          "end": 1.939
+        },
+        {
+          "w": "then",
+          "start": 1.974,
+          "end": 2.125
+        },
+        {
+          "w": "a",
+          "start": 2.171,
+          "end": 2.194
+        },
+        {
+          "w": "doctor,",
+          "start": 2.241,
+          "end": 2.752
+        },
+        {
+          "w": "today.",
+          "start": 2.833,
+          "end": 3.669
+        }
+      ]
+    },
+    "D2": {
+      "who": "doctor",
+      "text": "One hard truth: once symptoms start, it is almost always fatal.",
+      "voiceId": "XrExE9yKIg1WjnnlVkGX",
+      "pitch": 0,
+      "tempo": 1,
+      "file": "toons/rabies/voice/D2.mp3",
+      "duration": 4.462,
+      "words": [
+        {
+          "w": "One",
+          "start": 0,
+          "end": 0.197
+        },
+        {
+          "w": "hard",
+          "start": 0.244,
+          "end": 0.441
+        },
+        {
+          "w": "truth:",
+          "start": 0.476,
+          "end": 0.94
+        },
+        {
+          "w": "once",
+          "start": 1.393,
+          "end": 1.672
+        },
+        {
+          "w": "symptoms",
+          "start": 1.707,
+          "end": 2.101
+        },
+        {
+          "w": "start,",
+          "start": 2.136,
+          "end": 2.577
+        },
+        {
+          "w": "it",
+          "start": 2.728,
+          "end": 2.844
+        },
+        {
+          "w": "is",
+          "start": 2.891,
+          "end": 2.961
+        },
+        {
+          "w": "almost",
+          "start": 3.019,
+          "end": 3.32
+        },
+        {
+          "w": "always",
+          "start": 3.367,
+          "end": 3.692
+        },
+        {
+          "w": "fatal.",
+          "start": 3.75,
+          "end": 4.412
+        }
+      ]
+    },
+    "D3": {
+      "who": "doctor",
+      "text": "But act in time and treatment works almost every time.",
+      "voiceId": "XrExE9yKIg1WjnnlVkGX",
+      "pitch": 0,
+      "tempo": 1,
+      "file": "toons/rabies/voice/D3.mp3",
+      "duration": 3.208,
+      "words": [
+        {
+          "w": "But",
+          "start": 0,
+          "end": 0.186
+        },
+        {
+          "w": "act",
+          "start": 0.244,
+          "end": 0.43
+        },
+        {
+          "w": "in",
+          "start": 0.476,
+          "end": 0.534
+        },
+        {
+          "w": "time",
+          "start": 0.592,
+          "end": 0.836
+        },
+        {
+          "w": "and",
+          "start": 0.871,
+          "end": 0.94
+        },
+        {
+          "w": "treatment",
+          "start": 0.975,
+          "end": 1.393
+        },
+        {
+          "w": "works",
+          "start": 1.509,
+          "end": 1.776
+        },
+        {
+          "w": "almost",
+          "start": 1.834,
+          "end": 2.171
+        },
+        {
+          "w": "every",
+          "start": 2.229,
+          "end": 2.438
+        },
+        {
+          "w": "time.",
+          "start": 2.496,
+          "end": 3.158
+        }
+      ]
+    },
+    "E1": {
+      "who": "virus",
+      "text": "Wait. Who are all of you? What is this?",
+      "voiceId": "IKne3meq5aSn9XLyUdCD",
+      "pitch": 3,
+      "tempo": 1,
+      "file": "toons/rabies/voice/E1.mp3",
+      "duration": 2.36,
+      "words": [
+        {
+          "w": "Wait.",
+          "start": 0,
+          "end": 0.337
+        },
+        {
+          "w": "Who",
+          "start": 0.441,
+          "end": 0.592
+        },
+        {
+          "w": "are",
+          "start": 0.639,
+          "end": 0.743
+        },
+        {
+          "w": "all",
+          "start": 0.766,
+          "end": 0.859
+        },
+        {
+          "w": "of",
+          "start": 0.906,
+          "end": 0.952
+        },
+        {
+          "w": "you?",
+          "start": 0.998,
+          "end": 1.231
+        },
+        {
+          "w": "What",
+          "start": 1.533,
+          "end": 1.718
+        },
+        {
+          "w": "is",
+          "start": 1.776,
+          "end": 1.892
+        },
+        {
+          "w": "this?",
+          "start": 1.95,
+          "end": 2.322
+        }
+      ]
+    },
+    "E2": {
+      "who": "virus",
+      "text": "A wall? They stopped me before the brain!",
+      "voiceId": "IKne3meq5aSn9XLyUdCD",
+      "pitch": 3,
+      "tempo": 1,
+      "file": "toons/rabies/voice/E2.mp3",
+      "duration": 2.5,
+      "words": [
+        {
+          "w": "A",
+          "start": 0,
+          "end": 0.093
+        },
+        {
+          "w": "wall?",
+          "start": 0.163,
+          "end": 0.546
+        },
+        {
+          "w": "They",
+          "start": 0.766,
+          "end": 0.929
+        },
+        {
+          "w": "stopped",
+          "start": 0.975,
+          "end": 1.277
+        },
+        {
+          "w": "me",
+          "start": 1.324,
+          "end": 1.405
+        },
+        {
+          "w": "before",
+          "start": 1.451,
+          "end": 1.695
+        },
+        {
+          "w": "the",
+          "start": 1.73,
+          "end": 1.8
+        },
+        {
+          "w": "brain!",
+          "start": 1.834,
+          "end": 2.461
+        }
+      ]
+    },
+    "A1": {
+      "who": "virus",
+      "text": "You get rabies. Time runs out.",
+      "voiceId": "IKne3meq5aSn9XLyUdCD",
+      "pitch": 3,
+      "tempo": 1,
+      "file": "toons/rabies/voice/A1.mp3",
+      "duration": 1.933,
+      "words": [
+        {
+          "w": "You",
+          "start": 0,
+          "end": 0.163
+        },
+        {
+          "w": "get",
+          "start": 0.232,
+          "end": 0.348
+        },
+        {
+          "w": "rabies.",
+          "start": 0.406,
+          "end": 0.824
+        },
+        {
+          "w": "Time",
+          "start": 0.929,
+          "end": 1.161
+        },
+        {
+          "w": "runs",
+          "start": 1.184,
+          "end": 1.382
+        },
+        {
+          "w": "out.",
+          "start": 1.428,
+          "end": 1.904
+        }
+      ]
+    },
+    "E3": {
+      "who": "virus",
+      "text": "One bite, but you did not get rabies. The vaccine came in time!",
+      "voiceId": "IKne3meq5aSn9XLyUdCD",
+      "pitch": 3,
+      "tempo": 1,
+      "file": "toons/rabies/voice/E3.mp3",
+      "duration": 3.754,
+      "words": [
+        {
+          "w": "One",
+          "start": 0,
+          "end": 0.197
+        },
+        {
+          "w": "bite,",
+          "start": 0.244,
+          "end": 0.522
+        },
+        {
+          "w": "but",
+          "start": 0.627,
+          "end": 0.778
+        },
+        {
+          "w": "you",
+          "start": 0.813,
+          "end": 0.894
+        },
+        {
+          "w": "did",
+          "start": 0.94,
+          "end": 1.08
+        },
+        {
+          "w": "not",
+          "start": 1.126,
+          "end": 1.231
+        },
+        {
+          "w": "get",
+          "start": 1.265,
+          "end": 1.405
+        },
+        {
+          "w": "rabies.",
+          "start": 1.463,
+          "end": 1.904
+        },
+        {
+          "w": "The",
+          "start": 2.206,
+          "end": 2.31
+        },
+        {
+          "w": "vaccine",
+          "start": 2.368,
+          "end": 2.775
+        },
+        {
+          "w": "came",
+          "start": 2.81,
+          "end": 3.007
+        },
+        {
+          "w": "in",
+          "start": 3.03,
+          "end": 3.088
+        },
+        {
+          "w": "time!",
+          "start": 3.135,
+          "end": 3.715
+        }
+      ]
     }
-   ]
-  },
-  "B1": {
-   "who": "virus",
-   "text": "A stray dog. A little nip. A tiny scratch.",
-   "voiceId": "IKne3meq5aSn9XLyUdCD",
-   "pitch": 3,
-   "tempo": 1,
-   "file": "toons/rabies/voice/B1.mp3",
-   "duration": 2.875,
-   "words": [
-    {
-     "w": "A",
-     "start": 0,
-     "end": 0.093
-    },
-    {
-     "w": "stray",
-     "start": 0.151,
-     "end": 0.383
-    },
-    {
-     "w": "dog.",
-     "start": 0.441,
-     "end": 0.766
-    },
-    {
-     "w": "A",
-     "start": 1.022,
-     "end": 1.08
-    },
-    {
-     "w": "little",
-     "start": 1.138,
-     "end": 1.335
-    },
-    {
-     "w": "nip.",
-     "start": 1.358,
-     "end": 1.591
-    },
-    {
-     "w": "A",
-     "start": 1.788,
-     "end": 1.858
-    },
-    {
-     "w": "tiny",
-     "start": 1.916,
-     "end": 2.159
-    },
-    {
-     "w": "scratch.",
-     "start": 2.206,
-     "end": 2.833
-    }
-   ]
-  },
-  "B2": {
-   "who": "virus",
-   "text": "I ride in on its spit. Now, up this nerve!",
-   "voiceId": "IKne3meq5aSn9XLyUdCD",
-   "pitch": 3,
-   "tempo": 1,
-   "file": "toons/rabies/voice/B2.mp3",
-   "duration": 2.64,
-   "words": [
-    {
-     "w": "I",
-     "start": 0,
-     "end": 0.093
-    },
-    {
-     "w": "ride",
-     "start": 0.197,
-     "end": 0.418
-    },
-    {
-     "w": "in",
-     "start": 0.453,
-     "end": 0.522
-    },
-    {
-     "w": "on",
-     "start": 0.58,
-     "end": 0.662
-    },
-    {
-     "w": "its",
-     "start": 0.708,
-     "end": 0.824
-    },
-    {
-     "w": "spit.",
-     "start": 0.848,
-     "end": 1.173
-    },
-    {
-     "w": "Now,",
-     "start": 1.37,
-     "end": 1.567
-    },
-    {
-     "w": "up",
-     "start": 1.591,
-     "end": 1.695
-    },
-    {
-     "w": "this",
-     "start": 1.741,
-     "end": 1.892
-    },
-    {
-     "w": "nerve!",
-     "start": 1.962,
-     "end": 2.601
-    }
-   ]
-  },
-  "B3": {
-   "who": "virus",
-   "text": "Slowly. Usually two to three months to the brain.",
-   "voiceId": "IKne3meq5aSn9XLyUdCD",
-   "pitch": 3,
-   "tempo": 1,
-   "file": "toons/rabies/voice/B3.mp3",
-   "duration": 3.013,
-   "words": [
-    {
-     "w": "Slowly.",
-     "start": 0,
-     "end": 0.569
-    },
-    {
-     "w": "Usually",
-     "start": 0.975,
-     "end": 1.335
-    },
-    {
-     "w": "two",
-     "start": 1.393,
-     "end": 1.544
-    },
-    {
-     "w": "to",
-     "start": 1.591,
-     "end": 1.649
-    },
-    {
-     "w": "three",
-     "start": 1.683,
-     "end": 1.869
-    },
-    {
-     "w": "months",
-     "start": 1.904,
-     "end": 2.125
-    },
-    {
-     "w": "to",
-     "start": 2.159,
-     "end": 2.218
-    },
-    {
-     "w": "the",
-     "start": 2.276,
-     "end": 2.345
-    },
-    {
-     "w": "brain.",
-     "start": 2.368,
-     "end": 2.972
-    }
-   ]
-  },
-  "C1": {
-   "who": "kid",
-   "text": "It's just a little scratch, Mum.",
-   "voiceId": "cgSgspJ2msm6clMCkdW9",
-   "pitch": 4,
-   "tempo": 1,
-   "file": "toons/rabies/voice/C1.mp3",
-   "duration": 1.697,
-   "words": [
-    {
-     "w": "It's",
-     "start": 0,
-     "end": 0.209
-    },
-    {
-     "w": "just",
-     "start": 0.255,
-     "end": 0.43
-    },
-    {
-     "w": "a",
-     "start": 0.476,
-     "end": 0.499
-    },
-    {
-     "w": "little",
-     "start": 0.546,
-     "end": 0.755
-    },
-    {
-     "w": "scratch,",
-     "start": 0.778,
-     "end": 1.115
-    },
-    {
-     "w": "Mum.",
-     "start": 1.149,
-     "end": 1.672
-    }
-   ]
-  },
-  "C2": {
-   "who": "mom",
-   "text": "Wash it now. Soap and water, fifteen minutes.",
-   "voiceId": "EXAVITQu4vr4xnSDxMaL",
-   "pitch": 0,
-   "tempo": 1,
-   "file": "toons/rabies/voice/C2.mp3",
-   "duration": 2.929,
-   "words": [
-    {
-     "w": "Wash",
-     "start": 0,
-     "end": 0.313
-    },
-    {
-     "w": "it",
-     "start": 0.36,
-     "end": 0.441
-    },
-    {
-     "w": "now.",
-     "start": 0.476,
-     "end": 0.859
-    },
-    {
-     "w": "Soap",
-     "start": 1.057,
-     "end": 1.289
-    },
-    {
-     "w": "and",
-     "start": 1.335,
-     "end": 1.405
-    },
-    {
-     "w": "water,",
-     "start": 1.451,
-     "end": 1.788
-    },
-    {
-     "w": "fifteen",
-     "start": 1.834,
-     "end": 2.148
-    },
-    {
-     "w": "minutes.",
-     "start": 2.194,
-     "end": 2.879
-    }
-   ]
-  },
-  "C3": {
-   "who": "kid",
-   "text": "Fifteen minutes? For a scratch?",
-   "voiceId": "cgSgspJ2msm6clMCkdW9",
-   "pitch": 4,
-   "tempo": 1,
-   "file": "toons/rabies/voice/C3.mp3",
-   "duration": 1.803,
-   "words": [
-    {
-     "w": "Fifteen",
-     "start": 0,
-     "end": 0.383
-    },
-    {
-     "w": "minutes?",
-     "start": 0.418,
-     "end": 0.72
-    },
-    {
-     "w": "For",
-     "start": 0.743,
-     "end": 0.859
-    },
-    {
-     "w": "a",
-     "start": 0.906,
-     "end": 0.94
-    },
-    {
-     "w": "scratch?",
-     "start": 0.987,
-     "end": 1.765
-    }
-   ]
-  },
-  "D1": {
-   "who": "doctor",
-   "text": "Your mum was right. Washing first, then a doctor, today.",
-   "voiceId": "XrExE9yKIg1WjnnlVkGX",
-   "pitch": 0,
-   "tempo": 1,
-   "file": "toons/rabies/voice/D1.mp3",
-   "duration": 3.487,
-   "words": [
-    {
-     "w": "Your",
-     "start": 0,
-     "end": 0.209
-    },
-    {
-     "w": "mum",
-     "start": 0.255,
-     "end": 0.406
-    },
-    {
-     "w": "was",
-     "start": 0.453,
-     "end": 0.557
-    },
-    {
-     "w": "right.",
-     "start": 0.627,
-     "end": 0.987
-    },
-    {
-     "w": "Washing",
-     "start": 1.103,
-     "end": 1.474
-    },
-    {
-     "w": "first,",
-     "start": 1.533,
-     "end": 1.916
-    },
-    {
-     "w": "then",
-     "start": 1.985,
-     "end": 2.125
-    },
-    {
-     "w": "a",
-     "start": 2.159,
-     "end": 2.183
-    },
-    {
-     "w": "doctor,",
-     "start": 2.241,
-     "end": 2.67
-    },
-    {
-     "w": "today.",
-     "start": 2.717,
-     "end": 3.437
-    }
-   ]
-  },
-  "D2": {
-   "who": "doctor",
-   "text": "One hard truth: once symptoms start, it is almost always fatal.",
-   "voiceId": "XrExE9yKIg1WjnnlVkGX",
-   "pitch": 0,
-   "tempo": 1,
-   "file": "toons/rabies/voice/D2.mp3",
-   "duration": 4.369,
-   "words": [
-    {
-     "w": "One",
-     "start": 0,
-     "end": 0.209
-    },
-    {
-     "w": "hard",
-     "start": 0.267,
-     "end": 0.488
-    },
-    {
-     "w": "truth:",
-     "start": 0.522,
-     "end": 0.975
-    },
-    {
-     "w": "once",
-     "start": 1.37,
-     "end": 1.625
-    },
-    {
-     "w": "symptoms",
-     "start": 1.66,
-     "end": 2.032
-    },
-    {
-     "w": "start,",
-     "start": 2.055,
-     "end": 2.508
-    },
-    {
-     "w": "it",
-     "start": 2.624,
-     "end": 2.728
-    },
-    {
-     "w": "is",
-     "start": 2.775,
-     "end": 2.844
-    },
-    {
-     "w": "almost",
-     "start": 2.914,
-     "end": 3.251
-    },
-    {
-     "w": "always",
-     "start": 3.309,
-     "end": 3.622
-    },
-    {
-     "w": "fatal.",
-     "start": 3.68,
-     "end": 4.319
-    }
-   ]
-  },
-  "D3": {
-   "who": "doctor",
-   "text": "But act in time and treatment works almost every time.",
-   "voiceId": "XrExE9yKIg1WjnnlVkGX",
-   "pitch": 0,
-   "tempo": 1,
-   "file": "toons/rabies/voice/D3.mp3",
-   "duration": 3.115,
-   "words": [
-    {
-     "w": "But",
-     "start": 0,
-     "end": 0.186
-    },
-    {
-     "w": "act",
-     "start": 0.232,
-     "end": 0.395
-    },
-    {
-     "w": "in",
-     "start": 0.441,
-     "end": 0.511
-    },
-    {
-     "w": "time",
-     "start": 0.569,
-     "end": 0.801
-    },
-    {
-     "w": "and",
-     "start": 0.836,
-     "end": 0.906
-    },
-    {
-     "w": "treatment",
-     "start": 0.94,
-     "end": 1.312
-    },
-    {
-     "w": "works",
-     "start": 1.428,
-     "end": 1.707
-    },
-    {
-     "w": "almost",
-     "start": 1.765,
-     "end": 2.078
-    },
-    {
-     "w": "every",
-     "start": 2.159,
-     "end": 2.38
-    },
-    {
-     "w": "time.",
-     "start": 2.438,
-     "end": 3.065
-    }
-   ]
-  },
-  "E1": {
-   "who": "virus",
-   "text": "Wait. Who are all of you? What is this?",
-   "voiceId": "IKne3meq5aSn9XLyUdCD",
-   "pitch": 3,
-   "tempo": 1,
-   "file": "toons/rabies/voice/E1.mp3",
-   "duration": 2.404,
-   "words": [
-    {
-     "w": "Wait.",
-     "start": 0,
-     "end": 0.372
-    },
-    {
-     "w": "Who",
-     "start": 0.418,
-     "end": 0.58
-    },
-    {
-     "w": "are",
-     "start": 0.615,
-     "end": 0.72
-    },
-    {
-     "w": "all",
-     "start": 0.743,
-     "end": 0.848
-    },
-    {
-     "w": "of",
-     "start": 0.906,
-     "end": 0.952
-    },
-    {
-     "w": "you?",
-     "start": 0.998,
-     "end": 1.231
-    },
-    {
-     "w": "What",
-     "start": 1.486,
-     "end": 1.66
-    },
-    {
-     "w": "is",
-     "start": 1.695,
-     "end": 1.776
-    },
-    {
-     "w": "this?",
-     "start": 1.811,
-     "end": 2.368
-    }
-   ]
-  },
-  "E2": {
-   "who": "virus",
-   "text": "A wall? They stopped me before the brain!",
-   "voiceId": "IKne3meq5aSn9XLyUdCD",
-   "pitch": 3,
-   "tempo": 1,
-   "file": "toons/rabies/voice/E2.mp3",
-   "duration": 2.498,
-   "words": [
-    {
-     "w": "A",
-     "start": 0,
-     "end": 0.081
-    },
-    {
-     "w": "wall?",
-     "start": 0.151,
-     "end": 0.522
-    },
-    {
-     "w": "They",
-     "start": 0.824,
-     "end": 0.998
-    },
-    {
-     "w": "stopped",
-     "start": 1.045,
-     "end": 1.358
-    },
-    {
-     "w": "me",
-     "start": 1.393,
-     "end": 1.463
-    },
-    {
-     "w": "before",
-     "start": 1.509,
-     "end": 1.753
-    },
-    {
-     "w": "the",
-     "start": 1.788,
-     "end": 1.858
-    },
-    {
-     "w": "brain!",
-     "start": 1.892,
-     "end": 2.461
-    }
-   ]
   }
- }
 }
