@@ -120,6 +120,8 @@ const pieces = () => {
   // nails) each picture gets its own symbol and layer, all placed the same way
   const many = (prefix, kind, origin, ids, more = {}) => ids.forEach((id) => list.push({name: `${prefix}-${id}`, kind, origin, cels: [cel('front-' + id, origin)], ...more}));
   list.push({name: 'walk', kind: 'walk', origin: [0, 0], cels: WALK.map((w) => cel('walk-' + w, [need('walkbody-' + w).x + 71, FEET_WALK]))});
+  // the standing side view and three-quarter view of the sheet: the drawn angles she turns through
+  list.push({name: 'view', kind: 'view', origin: [0, 0], cels: VIEWS.map((v) => { const p = need(v); return cel(v, [p.x + p.w / 2, p.y + p.h - 1]); })});
   many('leg', 'legs', HIP, [248, 229]);
   many('hairback', 'head', NECK, [247], {parent: 'body-246'});
   many('body', 'body', HIP, [246, 228]);
@@ -160,6 +162,8 @@ const pieces = () => {
   }
   return list;
 };
+const VIEWS = ['view-side', 'view-q']; // the turn: side, then three-quarter, then the front rig
+const TURN = [3, 4]; // frames each of them is shown
 const WALK = [104, 103, 102, 101, 100, 99, 98, 97]; // the eight steps of the side walk, in order
 const FEET_WALK = 1899; // the ground line of the walk row on the sheet
 const STEP = 72; // how far the body travels during one walk picture, measured on the sheet (a planted foot stays put)
@@ -170,14 +174,15 @@ const WALK_ORDER = [2, 3, 4, 5, 6]; // ends on a picture with the legs together,
 // bends the forearm the same way (up and out), elbow < 0 folds it across the body. hand names a
 // gesture hand ('rest' = her own relaxed hand). ----
 const ARM = {shoulder: 0, elbow: 0, wrist: 0, hand: 'rest'};
-const REST = {head: 0, lean: 0, sway: 0, bob: 0, mouth: 'closed', blink: 0, look: 0, brow: 0, walk: -1, x: 0, turn: 1, L: ARM, R: ARM};
+const REST = {head: 0, lean: 0, sway: 0, bob: 0, mouth: 'closed', blink: 0, look: 0, brow: 0, walk: -1, view: -1, x: 0, L: ARM, R: ARM};
 const pose = (p) => ({...REST, ...p, L: {...ARM, ...(p.L || {})}, R: {...ARM, ...(p.R || {})}});
 const mouthCel = Object.fromEntries(Object.keys(MOUTHS).map((k, i) => [k, i]));
 const handCel = Object.fromEntries(Object.keys(HANDS).map((k, i) => [k, i]));
 
 const place = (list, p) => {
   const shift = [p.x * K, 0];
-  if (p.walk >= 0) return list.map((it) => (it.kind === 'walk' ? inst(add([W / 2, GROUND], shift), 0, p.walk, p.turn) : 0));
+  if (p.walk >= 0) return list.map((it) => (it.kind === 'walk' ? inst(add([W / 2, GROUND], shift), 0, p.walk) : 0));
+  if (p.view >= 0) return list.map((it) => (it.kind === 'view' ? inst(add([W / 2, GROUND], shift), 0, p.view) : 0));
   // the upper body: leans around the hip, sways sideways, breathes up and down
   const hip = add(add(stage(HIP), shift), [p.sway * K, p.bob * K]);
   const up = (u) => add(hip, rot(mul(sub(u, HIP), K), p.lean));
@@ -202,6 +207,7 @@ const place = (list, p) => {
     const A = it.side ? arm[it.side] : null;
     switch (it.kind) {
       case 'walk': return 0;
+      case 'view': return 0;
       case 'legs': return inst(add(stage(HIP), shift));
       case 'body': return inst(hip, p.lean);
       case 'head': return inst(neck, headTurn);
@@ -293,7 +299,8 @@ const blinkAt = (f) => {
 
 const clipFrames = (words, seconds) => {
   const total = Math.round(seconds * FPS);
-  const walkIn = WALK_ORDER.length * WALK_HOLD; // she walks in first, at the speed her steps really cover
+  const steps = WALK_ORDER.length * WALK_HOLD; // she walks in first, at the speed her steps really cover
+  const walkIn = steps + TURN[0] + TURN[1]; // then turns to the front through the drawn angles
   const say = walkIn + 8; // and starts to speak
   const T = (s) => say + Math.round(s * FPS);
   const at = (word) => (words.find((w) => w.w.toLowerCase().startsWith(word)) || {start: 0}).start;
@@ -306,11 +313,13 @@ const clipFrames = (words, seconds) => {
   const camera = [];
   for (let f = 0; f < total; f++) {
     let p;
-    if (f < walkIn) {
+    if (f < steps) {
       // the walk is drawn facing left, so she comes in from the right. The body moves steadily, one STEP
-      // per picture, so the foot on the ground does not slide. On the last frames she turns to the front.
-      const left = walkIn - f; // frames still to go
-      p = pose({walk: WALK_ORDER[Math.floor(f / WALK_HOLD)], x: (left / WALK_HOLD) * STEP, turn: left <= 2 ? 0.55 + 0.25 * (left - 1) : 1});
+      // per picture, so the foot on the ground does not slide.
+      p = pose({walk: WALK_ORDER[Math.floor(f / WALK_HOLD)], x: ((steps - f) / WALK_HOLD) * STEP});
+    } else if (f < walkIn) {
+      // she stops and turns to face us: the sheet's own side view, then its three-quarter view
+      p = pose({view: f < steps + TURN[0] ? 0 : 1});
     } else {
       const sec = f / FPS;
       const arm = (side) => ({
@@ -322,7 +331,6 @@ const clipFrames = (words, seconds) => {
       const t = (f - say) / FPS;
       const talking = mouthAt(words, t);
       p = pose({
-        turn: f - walkIn < 3 ? [0.6, 0.85, 0.97][f - walkIn] : 1, // the front view opens out of the turn
         head: track(keys, f, (q) => q.head, 1) + Math.sin(sec * 5.1) * 0.9 + (talking !== 'closed' ? Math.sin(sec * 11) * 0.7 : 0),
         lean: track(keys, f, (q) => q.lean) + Math.sin(sec * 1.3) * 0.5,
         sway: Math.sin(sec * 1.3 + 1) * 1.4,
@@ -365,8 +373,7 @@ const run = (mode) => {
     width: W, height: H, fps: FPS, out: uri(FRAMES) + '/', name: 'f',
     fla: uri(path.join(OUT, mode === 'clip' ? 'doctor-test.fla' : 'doctor-poses.fla')),
     pieces: list.map((it) => ({name: it.name, parent: it.parent || null, cels: it.cels})),
-    // a turn squeezes the whole figure sideways around her centre line
-    frames: poses.map((p) => place(list, p).map((m) => (m && p.walk < 0 && p.turn !== 1 ? [r4(m[0] * p.turn), m[1], r4(m[2] * p.turn), m[3], r4(W / 2 + p.x * K + (m[4] - W / 2 - p.x * K) * p.turn), m[5], m[6]] : m))),
+    frames: poses.map((p) => place(list, p)),
   };
   // the camera: Animate's own camera refused the script call here ("setPosition: Argument number 1 is
   // invalid"), so the push-in is done by scaling the whole rig around a point between face and chest
