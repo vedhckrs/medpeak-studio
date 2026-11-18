@@ -12,9 +12,12 @@ var log = [];
 function finish(ok) { FLfile.write(here + 'an-rig.log', log.join('\n') + '\nRESULT ' + (ok ? 'OK' : 'FAILED') + '\n'); }
 function pad(n) { var s = '' + n; while (s.length < 4) s = '0' + s; return s; }
 // show the whole page in the window, so the owner can watch the build and the export
-function fitPage(doc) { try { doc.zoomFactor = Math.min(0.5, 430 / doc.height); } catch (e) {} }
+// (the zoom is changed twice on purpose: setting it again is what makes Animate centre the page in the
+// window as it is now, after the time line has grown and taken room from the stage)
+function fitPage(doc) { try { doc.zoomFactor = 0.1; doc.zoomFactor = Math.min(0.5, 400 / doc.height); } catch (e) {} }
 function setM(el, v) { var m = el.matrix; m.a = v[0]; m.b = v[1]; m.c = v[2]; m.d = v[3]; m.tx = v[4]; m.ty = v[5]; el.matrix = m; }
 try {
+  fl.scriptTimeoutEnabled = false; // no "this script has been running for a long time" box in the middle of a build
   var job = eval('(' + FLfile.read(here + 'an-rig.json') + ')');
   var doc = fl.createDocument('timeline');
   doc.width = job.width;
@@ -113,7 +116,9 @@ try {
     try {
       doc.importFile(job.sound, true);
       var sname = job.sound.substring(job.sound.lastIndexOf('/') + 1);
-      tl.addNewLayer('voice', 'normal', true);
+      tl.setSelectedLayers(0);
+      tl.currentLayer = 0;
+      tl.addNewLayer('voice', 'normal', true); // above the top layer
       var sf = tl.layers[0].frames[0];
       sf.soundLibraryItem = lib.items[lib.findItemIndex(sname)];
       sf.soundSync = 'stream';

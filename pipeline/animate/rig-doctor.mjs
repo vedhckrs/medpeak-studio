@@ -57,8 +57,8 @@ for (const id of [251, 260]) {
 const mirror = (p) => [2 * AXIS - p[0], p[1]];
 const L_JOINT = {shoulder: [5008, 458], elbow: [5043, 573], wrist: [5044, 664]};
 const JOINT = {
-  L: {...L_JOINT, out: -1, upper: [250], fore: ['251w', 249], hand: [224, 223, 222, 221, 220]},
-  R: {shoulder: mirror(L_JOINT.shoulder), elbow: mirror(L_JOINT.elbow), wrist: mirror(L_JOINT.wrist), out: 1, upper: [259], fore: ['260w', 258], hand: [257, 256, 255, 254, 253]},
+  L: {...L_JOINT, out: -1, upper: [250], skin: ['251w'], fore: [249], hand: [224, 223, 222, 221, 220]},
+  R: {shoulder: mirror(L_JOINT.shoulder), elbow: mirror(L_JOINT.elbow), wrist: mirror(L_JOINT.wrist), out: 1, upper: [259], skin: ['260w'], fore: [258], hand: [257, 256, 255, 254, 253]},
 };
 const HIP = [4955, 640]; // the upper body leans around this point
 const NECK = [4955, 408];
@@ -71,12 +71,13 @@ const MOUTHS = {closed: 188, open: 189, wide: 184, soft: 185, teeth: 186, tongue
 // (0 = up, 90 = to the right, 180 = down, 270 = to the left), "side" the arm it is drawn for.
 const HAND_SCALE = 0.62;
 const HANDS = {
-  point: {part: 'hand-16', wrist: [37, 110], points: 0, side: 'L'},
-  palm: {part: 'hand-35', wrist: [26, 92], points: 352, side: 'L'},
-  open: {part: 'hand-13', wrist: [30, 111], points: 5, side: 'L'},
-  offer: {part: 'hand-34', wrist: [97, 51], points: 285, side: 'R'},
-  fist: {part: 'hand-27', wrist: [75, 35], points: 270, side: 'R'},
+  point: {part: 'hand-16', wrist: [41, 104], points: 0, side: 'L'},
+  palm: {part: 'hand-35', wrist: [28, 92], points: 350, side: 'L'},
+  open: {part: 'hand-13', wrist: [32, 111], points: 355, side: 'L'},
+  offer: {part: 'hand-34', wrist: [99, 53], points: 297, side: 'R'},
+  stop: {part: 'hand-36', wrist: [43, 60], points: 357, side: 'L'},
 };
+const WRIST_IN = 6; // a gesture hand starts this far inside the cuff, behind the sleeve, so its cut wrist never shows
 
 // ---- the closed eye: the artwork has no closed eyelid, so one is made here in her own colours: a lid in
 // her skin colour with her eye-shadow on it and a lash line along the bottom ----
@@ -168,8 +169,9 @@ const pieces = () => {
   many('hair', 'head', NECK, [231, 230], {parent: 'face-245'});
   for (const side of ['R', 'L']) {
     const j = JOINT[side];
-    many('fore' + side, 'fore', j.elbow, j.fore, {side, parent: `upper${side}-${j.upper[j.upper.length - 1]}`});
-    many('hand' + side, 'hand', j.wrist, j.hand, {side, parent: `fore${side}-${j.fore[j.fore.length - 1]}`});
+    // behind the sleeve: the bare wrist that shows between the cuff and her own relaxed hand, and the
+    // gesture hands, which come out of the cuff
+    many('wrist' + side, 'wristSkin', j.elbow, j.skin, {side, parent: `upper${side}-${j.upper[j.upper.length - 1]}`});
     // the gesture hands: one symbol, a cel for each shape, the wrist of each on the symbol's origin
     list.push({
       name: 'gesture' + side, kind: 'gesture', origin: j.wrist, side, parent: `fore${side}-${j.fore[j.fore.length - 1]}`,
@@ -178,6 +180,8 @@ const pieces = () => {
         return cel(h.part, [0, 0], HAND_SCALE, [-h.wrist[0] * HAND_SCALE * flip, -h.wrist[1] * HAND_SCALE], flip);
       }),
     });
+    many('fore' + side, 'fore', j.elbow, j.fore, {side, parent: `upper${side}-${j.upper[j.upper.length - 1]}`});
+    many('hand' + side, 'hand', j.wrist, j.hand, {side, parent: `fore${side}-${j.fore[j.fore.length - 1]}`});
   }
   // the standing three-quarter view and side view of the sheet, on top: the drawn angles she turns through.
   // Each fades out over the next angle, which is already complete underneath it.
@@ -301,6 +305,7 @@ const place = (list, p) => {
       case 'mouth': return inst(onHead(it.origin), headTurn, mouthCel[p.mouth] ?? 0);
       case 'upper': return inst(A.S, A.t1);
       case 'fore': return inst(A.E, A.t2);
+      case 'wristSkin': return A.a.hand === 'rest' ? inst(A.E, A.t2) : 0;
       case 'hand': return A.a.hand === 'rest' ? inst(A.Wr, A.t3) : 0;
       case 'gesture': {
         if (A.a.hand === 'rest') return 0;
@@ -309,7 +314,9 @@ const place = (list, p) => {
         const d = sub(A.Wr, A.E);
         const fore = (Math.atan2(d[0], -d[1]) * 180) / Math.PI; // 0 = up, 90 = right
         const points = h.side === it.side ? h.points : 360 - h.points;
-        return inst(A.Wr, fore - points + A.j.out * A.a.wrist, handCel[A.a.hand]);
+        const len = Math.hypot(d[0], d[1]) || 1;
+        const inside = sub(A.Wr, mul(d, (WRIST_IN * K) / len)); // a little way back up the forearm
+        return inst(inside, fore - points + A.j.out * A.a.wrist, handCel[A.a.hand]);
       }
       default: return 0;
     }
@@ -321,15 +328,14 @@ const P = {
   rest: pose({}),
   explain: pose({head: -3, lean: -1, brow: 0.4, R: {shoulder: 4, elbow: 128, hand: 'offer'}}),
   point: pose({head: 3, lean: 1, brow: 0.8, L: {shoulder: 4, elbow: 146, hand: 'point'}}),
-  stop: pose({head: 0, brow: -0.8, L: {shoulder: 2, elbow: 148, hand: 'palm'}}),
+  stop: pose({head: 0, brow: -0.8, L: {shoulder: 2, elbow: 148, wrist: 28, hand: 'stop'}}),
   both: pose({brow: 0.5, L: {shoulder: 0, elbow: 124, hand: 'offer'}, R: {shoulder: 0, elbow: 124, hand: 'offer'}}),
   chest: pose({head: -3, brow: 0.2, R: {shoulder: 8, elbow: -118}}),
   wave: pose({head: 4, lean: 1.5, brow: 0.7, mouth: 'wide', L: {shoulder: 42, elbow: 112, hand: 'palm'}}),
-  fist: pose({head: -2, brow: -0.4, R: {shoulder: 14, elbow: 122, hand: 'fist'}}),
 };
 const SHEET = [
   ['rest', P.rest], ['explain', {...P.explain, mouth: 'soft'}], ['point', {...P.point, mouth: 'open'}], ['stop', {...P.stop, mouth: 'teeth'}],
-  ['both', {...P.both, mouth: 'wide'}], ['chest', {...P.chest, mouth: 'soft'}], ['wave', P.wave], ['blink', {...P.fist, blink: 1, mouth: 'tongue'}],
+  ['both', {...P.both, mouth: 'wide'}], ['chest', {...P.chest, mouth: 'soft'}], ['wave', P.wave], ['blink', {...P.explain, blink: 1, mouth: 'tongue'}],
 ];
 
 // ---- motion ----

@@ -171,6 +171,13 @@ and Animate driven by code, no screen control. What is built, in `pipeline/anima
   410-frame render lost her right upper sleeve from every frame, while 12- and 100-frame renders with the
   same data were right. So the .fla is one symbol per part on its own layer, not a parented skeleton.
   `RIG_ONLY="from,to"` renders only those frames, for quick tests.
+- **Hands, after the owner's close-up review (2026-11-18):** a gesture hand now starts 6 units inside the
+  cuff and is drawn behind the sleeve, so its cut wrist never shows; the bare-wrist piece is shown only with
+  her own relaxed hand. Wrist points were re-measured on a grid. `hand-27` is two clasped hands, not a fist,
+  and is no longer used; `hand-36` (flat palm, facing us) is the new "stop" hand and stands upright.
+  `an-rig.jsfl` sets `fl.scriptTimeoutEnabled = false` (no "running for a long time" box) and re-fits the page
+  after the time line has filled (the zoom is set twice to make Animate re-centre). The voice layer now goes
+  on top instead of in the middle of the stack.
 - **Rules from the owner for Adobe scripting:** show the whole page in the window while a script runs
   (`fitPage` in an-rig.jsfl, `fitin` in the Illustrator scripts). Hidden pieces are shrunk to nothing on the
   page, never parked far away (that stretches Animate's work area and pushes the page out of view).
