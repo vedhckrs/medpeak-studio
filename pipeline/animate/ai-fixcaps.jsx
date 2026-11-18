@@ -25,6 +25,7 @@
   var area = function (b) { return (b[2] - b[0]) * (b[1] - b[3]); };
   var log = [];
   var changed = 0;
+  var caps = [];
   // the whole figure: its own skin is real skin, and so is everything inside its box (its shoes may
   // have been traced as parts of their own)
   var fig = null;
@@ -66,11 +67,18 @@
         if (Math.abs(cx - (gb[0] + gb[2]) / 2) < gw * 0.3 || gb[1] - cy > gh * 0.35) continue;
       } else if (!atEdge) continue;
       setFill(it, biggest);
+      caps.push('{"part": "' + grp.name + '", "x": ' + ((b[0] + b[2]) / 2 - page[0]).toFixed(1) + ', "y": ' + (page[1] - (b[1] + b[3]) / 2).toFixed(1) + ', "w": ' + (b[2] - b[0]).toFixed(1) + ', "h": ' + (b[1] - b[3]).toFixed(1) + '}');
       n++;
     }
     if (n) { log.push(grp.name + ': ' + n); changed += n; }
   }
   var name = ARGS[2];
+  var cf = new File(out.fsName + '/' + name + '-caps.json');
+  cf.encoding = 'UTF-8';
+  cf.open('w');
+  var NL = String.fromCharCode(10);
+  cf.write('[' + NL + caps.join(',' + NL) + NL + ']' + NL);
+  cf.close();
   doc.saveAs(new File(out.fsName + '/' + name + '.ai'), new IllustratorSaveOptions());
   var svg = new ExportOptionsSVG();
   svg.fontSubsetting = SVGFontSubsetting.None;

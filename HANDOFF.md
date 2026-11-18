@@ -266,6 +266,16 @@ and Animate driven by code, no screen control. What is built, in `pipeline/anima
   hip holes, coat shoulders, shoe tops), leaving the whole figure, the neck opening, head, neck, hands and
   the bottom row alone. Files: `stock/cast-ai/01-doctor-fixed.ai` / `.svg`. Parts are still numbered
   (part-01...), not named, and nothing is rigged or bent yet.
+- **First test video of the AI doctor (2026-11-18, free):** `out/animate/cast-01-doctor-test.mp4`, 10 s, 1080 x 1920,
+  60 fps, voice D1 + D3 of rabies. Chain for a sheet: `ai-trace.jsx` with `stacked` (shapes overlap, so the face
+  keeps its skin under the eyes) -> `ai-fixcaps.jsx` (joint ends, now also writes `-caps.json`) -> `face-find.py`
+  (finds the catchlights the trace drops, and the head's eyes and mouth) -> `ai-face.jsx` (adds the catchlights
+  back as white vector circles, splits head-eyeL / head-eyeR / head-mouth off the head, puts a skin patch under
+  each) -> `ai-partpngs.jsx` (one PNG per part at 200%) -> `rig-cast.py` (joints from the caps, poses, lip sync
+  from the word timings, blinks, weight shift with feet held by two-bone IK; `preview` draws frames with PIL in
+  seconds, `render` runs Animate and adds the voice). The bottom-row eyes of the sheet have no eye white, so she
+  keeps her own drawn eyes and only the closed eyes and the mouths come from the bottom row. Parts are mapped to
+  roles by hand in `CAST` in rig-cast.py; the next sheets need their own map. Animate still gets PNGs, not vectors.
 - **Rules from the owner for Adobe scripting:** show the whole page in the window while a script runs
   (`fitPage` in an-rig.jsfl, `fitin` in the Illustrator scripts). Hidden pieces are shrunk to nothing on the
   page, never parked far away (that stretches Animate's work area and pushes the page out of view).

@@ -4,6 +4,8 @@
 //   ARGS[0] = picture (png/jpg)   ARGS[1] = output folder   ARGS[2] = name   ARGS[3] = colours (default 24)
 //   ARGS[4] = how far two shapes' boxes must overlap to count as one part (default -6: boxes that only
 //             touch, like a pelvis and the thigh drawn just below it, stay apart)
+//   ARGS[5] = "stacked": shapes are traced overlapping, so the one below stays whole (a face keeps its skin
+//             under the eyes and the mouth, which can then be taken off and replaced); default abutting
 (function () {
   var out = new Folder(ARGS[1]);
   if (!out.exists) out.create();
@@ -25,7 +27,7 @@
   set('tracingMode', TracingModeType.TRACINGMODECOLOR);
   set('tracingColorTypeValue', TracingColorType.TRACINGLIMITEDCOLOR);
   set('maxColors', ARGS.length > 3 ? Number(ARGS[3]) : 24);
-  set('tracingMethod', TracingMethodType.TRACINGMETHODABUTTING);
+  set('tracingMethod', ARGS.length > 5 && ARGS[5] === 'stacked' ? TracingMethodType.TRACINGMETHODOVERLAPPING : TracingMethodType.TRACINGMETHODABUTTING);
   set('fills', true);
   set('strokes', false);
   set('pathFidelity', 75);
