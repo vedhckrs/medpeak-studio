@@ -218,6 +218,16 @@ and Animate driven by code, no screen control. What is built, in `pipeline/anima
   pipeline. A cast options sheet (9 from the family, 3 kids from other families, no baby found yet) waits
   for his picks: `out/animate/cast-options.png`. The Mac side is untested: launchers there need osascript
   instead of COM / PowerShell, and the Adobe apps installed.
+- **Cast picked by the owner (2026-11-18):** doctor #3908853 (kept), mom #3908847, patient #4469212
+  (the "student" sheet), grandpa #4469210 (the "scientist" sheet, bald with glasses), kid #65613491 (another
+  artist: the doctor's series has no child). No baby yet. The four new kits are downloaded to
+  `stock/<role>-<id>/` (git-ignored) and opened once with ai-inspect.jsx (`work/structure.txt`,
+  `work/doctor-source.ai`). Their artboards differ (mom 1611 x 597, patient and grandpa 7200 x 2200, kid
+  4830 x 2240 in 5 layers), so sizes must be matched when the sheets are built. A line-up for his approval is
+  `out/animate/cast-lineup.png`. **Magnific credits: STOPPED.** The balance fell 124,088 -> 122,379 -> 120,039
+  during this day's work; only 160 of that is explained (two change-camera images). The second fall came
+  around these four stock downloads, and the owner's rule is to stop and tell him if a download costs
+  credits. No more Magnific calls until he says so.
 - **Rules from the owner for Adobe scripting:** show the whole page in the window while a script runs
   (`fitPage` in an-rig.jsfl, `fitin` in the Illustrator scripts). Hidden pieces are shrunk to nothing on the
   page, never parked far away (that stretches Animate's work area and pushes the page out of view).
