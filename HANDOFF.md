@@ -121,7 +121,13 @@ and Animate driven by code, no screen control. What is built, in `pipeline/anima
 - `rig-doctor.mjs` cuts elbow and wrist joints into the arms (ffmpeg), works out each pose from joint
   angles, and `an-rig.jsfl` draws it in Animate: one layer per piece, one keyframe per frame, transparent
   PNG frames out. `node pipeline/animate/rig-doctor.mjs sheet` gives 8 poses, `... clip` a 4 s talking test.
-- Source: Magnific stock vector #10005316 (premium, not AI, 0 credits), kept in `stock/` which is
+- **The owner chose the doctor himself (same day): Magnific #3908853, "Female doctor character model sheet
+  with walk cycle animations and lip syncing".** `rig-doctor.mjs` now builds that one. Its artwork already has
+  upper arm, forearm and hand pieces and seven lip-sync heads, so nothing is cut by ffmpeg any more. Parts
+  are cut at 200% (`ai-extract.jsx` takes the scale as a 4th argument; the spec can give a `z`). The first
+  doctor (#10005316) was my own pick without his OK and is dropped. Rule from the owner: show a numbered
+  options sheet and build only what he picks. The channel is for a global audience, not an Indian one.
+- Stock sources (premium, not AI, 0 credits) are kept in `stock/` which is
   git-ignored because the repo is public. On the Mac it is missing: download it again there, or keep
   rendering people on the Windows PC. Outputs are in `out/animate/` (not in git).
 - Run and looked at: parts sheet (120 parts), pose sheet (8 poses), talking test (120 frames). Not done:

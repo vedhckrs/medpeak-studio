@@ -1,8 +1,9 @@
 // Illustrator (ExtendScript): cut a character constructor sheet into separate parts.
 // Each part is one group (or path) of the source, found by its index path in the group tree
-// (see structure.txt from ai-inspect.jsx). It is exported as a transparent PNG at 400%, and its
+// (see structure.txt from ai-inspect.jsx). It is exported as a transparent PNG (at 400% unless ARGS[3] says otherwise), and its
 // place on the sheet is written to parts.json, so the figure can be put together again exactly.
-//   ARGS[0] = source .ai   ARGS[1] = output folder   ARGS[2] = spec file (JSON: [{name, path, each?}])
+//   ARGS[0] = source .ai   ARGS[1] = output folder   ARGS[2] = spec file (JSON: [{name, path, each?, z?}])
+//   ARGS[3] = export scale in percent (400 when left out)
 //   "each": true exports every child of that group as <name>-<index> (a figure's own parts, in order).
 (function () {
   var outDir = new Folder(ARGS[1]);
@@ -25,8 +26,9 @@
   opt.artBoardClipping = true;
   opt.transparency = true;
   opt.antiAliasing = true;
-  opt.horizontalScale = 400;
-  opt.verticalScale = 400;
+  var scale = ARGS.length > 3 ? Number(ARGS[3]) : 400;
+  opt.horizontalScale = scale;
+  opt.verticalScale = scale;
   var parts = [];
   var one = function (item, name, z) {
     app.activeDocument = tmp;
@@ -42,7 +44,7 @@
     var it = find(spec[s].path);
     if (spec[s].each) {
       for (var k = 0; k < it.pageItems.length; k++) one(it.pageItems[k], spec[s].name + '-' + (k < 10 ? '0' : '') + k, k); // z 0 = in front
-    } else one(it, spec[s].name, 0);
+    } else one(it, spec[s].name, spec[s].z || 0);
   }
   tmp.close(SaveOptions.DONOTSAVECHANGES);
   doc.close(SaveOptions.DONOTSAVECHANGES);
