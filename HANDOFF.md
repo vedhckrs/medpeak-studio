@@ -236,6 +236,17 @@ and Animate driven by code, no screen control. What is built, in `pipeline/anima
   art styles (doctor+mom, patient, grandpa, kid); he has been told. Credits: the balance was 120,039 before
   and straight after this one download, so a stock download does not charge at once; the day's earlier fall
   of 3,889 beyond the 160 approved is still unexplained (a delayed charge is possible).
+- **AI character sheet test (owner asked, 2026-11-18):** GPT 2.6 Sunburst on Magnific has no SVG output
+  (raster only), and Magnific's own trace tool answers "SVG conversion is disabled for your account". What
+  works: generate an "exploded" parts sheet with Sunburst (2K, High, thinking High, 3:2, the doctor's front
+  view as a style reference; 175 credits, balance 120,039 -> 119,864, exactly as quoted), then trace it in
+  Illustrator with `pipeline/animate/ai-trace.jsx` (Image Trace by script, 14 colours, white kept, the page's
+  white removed, shapes sorted into parts by touching boxes): 201 shapes in 35 named groups (`part-01`...),
+  saved as .ai and .svg with a parts list. Test files are in `stock/ai-test/` (git-ignored). Seen: the sheet
+  has every part drawn apart with its hidden ends, six mouths, open and closed eyes, brows and four gesture
+  hands. Faults: it did not copy the doctor's style (rounder, cuter cartoon), flat cloth traces slightly
+  blotchy, the loose pair of eyes lost its whites, parts are numbered not named. The owner has not decided
+  between this route and the stock kits.
 - **Rules from the owner for Adobe scripting:** show the whole page in the window while a script runs
   (`fitPage` in an-rig.jsfl, `fitin` in the Illustrator scripts). Hidden pieces are shrunk to nothing on the
   page, never parked far away (that stretches Animate's work area and pushes the page out of view).
