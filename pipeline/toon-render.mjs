@@ -56,6 +56,12 @@ const main = () => {
   }
   const voiced = timings ? Object.keys(timings.lines).length : 0;
   const props = path.join(ROOT, 'out', `toon-props-${slug}.json`);
+  // actors made in Adobe Animate: when a shot's frames are on this machine, the player shows them
+  for (const shot of toon.shots) for (const actor of shot.cast ?? []) {
+    const dir = `toons/${slug}/animate/${shot.id}-${actor.who}`;
+    const meta = readJson(path.join(PUBLIC, dir, 'meta.json'), null);
+    if (meta) { actor.puppet = {dir, ...meta}; console.log(`  puppet  ${shot.id} ${actor.who}: ${meta.frames} frames from Animate`); }
+  }
   writeJson(props, {toon, timings, sfx, music});
   const outDir = path.join(videoDir(slug), 'renders');
   fs.mkdirSync(outDir, {recursive: true});

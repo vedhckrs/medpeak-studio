@@ -9,7 +9,7 @@
 //   - captions, sound effects and the music bed are placed from the same timing.
 import {STYLE} from './style';
 import React, {useMemo} from 'react';
-import {AbsoluteFill, Audio, Sequence, interpolate, random, staticFile, useCurrentFrame} from 'remotion';
+import {AbsoluteFill, Audio, Img, Sequence, interpolate, random, staticFile, useCurrentFrame} from 'remotion';
 import type {Act, CharProps} from './blueprint';
 import {BLUEPRINTS, CAST, type CastName} from './characters';
 import {Camera, type Cam, CAM0, clampCam, H, LENSES, W} from './camera';
@@ -32,6 +32,7 @@ export type ToonProps = {toon: Toon; timings: ToonTimings | null; sfx: string[];
 
 // ------------------------------------------------------------------ where everybody is
 const isPerson = (who: string) => who in SPECS;
+const PUPPET_TALL = 186; // how tall a person stands in a slot, in its 200-unit box (head to floor)
 const groundOf = (who: string) => (isPerson(who) ? 96 : BLUEPRINTS[who as CastName].ground.y);
 /** An actor on screen: slot centre, face centre, face size, top and bottom (all in set pixels). */
 const place = (a: ToonActor, set: SetName) => {
@@ -382,6 +383,14 @@ const Actor: React.FC<{a: ToonActor; shot: ToonShot; shotFrom: number; lines: Pl
   const ground = groundOf(a.who);
   const {dx, dy, step, scale} = entrance(a, f - shotFrom);
   const land = a.enter === 'drop' ? settle(f, shotFrom + 14, 0.5, 1.1, 0.3) : 0;
+  if (a.puppet) {
+    // frames made in Adobe Animate: she stands where the code-drawn figure would, feet on the same floor
+    const P = a.puppet;
+    const u = a.size / 200;
+    const k = (PUPPET_TALL * u) / P.tall;
+    const n = Math.max(0, Math.min(P.frames - 1, f - shotFrom));
+    return <Img src={staticFile(`${P.dir}/f${String(n).padStart(4, '0')}.png`)} style={{position: 'absolute', left: cx + dx - P.axis * k, top: cy + dy + ground * u - P.ground * k, width: P.width * k, height: P.height * k}} />;
+  }
   return (
     <Slot x={cx + dx} y={cy + dy} size={a.size} blur={blur} tone={tone}>
       <g transform={`${a.rot ? `rotate(${a.rot + kick(f, A.emotionFrom, 3, 0.8, 0.25)})` : ''} ${scale !== 1 ? `scale(${scale})` : ''}`}>

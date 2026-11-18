@@ -193,6 +193,17 @@ and Animate driven by code, no screen control. What is built, in `pipeline/anima
   (he had set 300 by mistake, which is why frames were 4500 x 8000), that route stopped on the "Export PNG"
   settings window and waited for a click (seen in 1316 of 1599 checks, no frames written). Default is again
   one call per frame, which shows the Publishing box but never waits; `RIG_SEQUENCE=on` uses the one-call route.
+- **She is in the rabies video (owner said continue, 2026-11-18).**
+  `node --import tsx pipeline/animate/rig-doctor.mjs shot rabies D` makes her performance for shot D from the
+  script's own lines, words and timing (30 fps, 362 frames; D1 explain, D2 point, D3 both hands open) into
+  `public/toons/rabies/animate/D-doctor/` with a `meta.json`. `toon-render.mjs` sees that folder and gives the
+  actor a `puppet` (director.ts `ToonPuppet`); `Player.tsx` then shows the frames where the code-drawn doctor
+  would stand, feet on the same floor, inside the camera. Nothing is written in toon.json, and a machine
+  without the frames (the Mac) still draws the old doctor by code, so the two machines render different
+  doctors until the frames are made there or copied. Run and looked at: stills and the full render
+  (`videos/rabies/renders/toon.mp4`). Open: she is flat stock art with no outline and the kid beside her is
+  the code-drawn ink style, so they do not match; the other people need the same treatment (owner picks each
+  from an options sheet first). `toon:listen` / `toon:look` still cannot run on this PC.
 - **Rules from the owner for Adobe scripting:** show the whole page in the window while a script runs
   (`fitPage` in an-rig.jsfl, `fitin` in the Illustrator scripts). Hidden pieces are shrunk to nothing on the
   page, never parked far away (that stretches Animate's work area and pushes the page out of view).

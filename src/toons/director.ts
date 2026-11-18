@@ -170,7 +170,13 @@ export type ToonLine = {
   chat?: boolean; // a doctor line that states no medical fact (a greeting, a joke): needs no source
 };
 /** `stage`: this character is part of the stage (the organ's own face, the lodged pill): the stage draws it. */
-export type ToonActor = {who: string; x: number; size: number; y?: number; rot?: number; noLegs?: boolean; flip?: boolean; emotion?: Emotion; pose?: PoseName; enter?: (typeof ENTRANCES)[number]; stage?: boolean};
+/**
+ * `puppet`: this actor is not drawn by code in this shot but shown from frames made in Adobe Animate
+ * (pipeline/animate/rig-doctor.mjs shot ...). It is never written in a script: toon-render.mjs adds it when
+ * the frames are on this machine, so a machine without them still draws the actor by code.
+ */
+export type ToonPuppet = {dir: string; frames: number; width: number; height: number; axis: number; ground: number; tall: number};
+export type ToonActor = {who: string; x: number; size: number; y?: number; rot?: number; noLegs?: boolean; flip?: boolean; emotion?: Emotion; pose?: PoseName; enter?: (typeof ENTRANCES)[number]; stage?: boolean; puppet?: ToonPuppet};
 /**
  * An object or graphic shown in the scene. `from` / `to` = the line ids it appears on and leaves
  * after; `word` = appear on that word of the `from` line. `halo` = a glowing disc behind it;

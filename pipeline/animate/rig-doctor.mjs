@@ -4,6 +4,9 @@
 // the hand, mouth and walk as symbols with several cels, and the layers parented like a skeleton.
 //   node pipeline/animate/rig-doctor.mjs sheet   the poses, joined into one sheet (out/animate/doctor-poses.png)
 //   node pipeline/animate/rig-doctor.mjs clip    a voiced test with gestures, blink, walk and camera
+//   node --import tsx pipeline/animate/rig-doctor.mjs shot <slug> <shot id>
+//       her performance for one shot of a Toon (its own lines, words and timing, 30 fps), as transparent
+//       frames in public/toons/<slug>/animate/<shot>-doctor/. toon-render.mjs then puts her in the video.
 // The motion is worked out here: poses are joint angles, moves between poses ease with a small
 // overshoot, the forearm and the hand arrive a little after the upper arm (follow-through), the body
 // breathes and shifts its weight, the eyes blink and look, and the mouth follows the spoken words.
@@ -12,7 +15,7 @@
 import {spawnSync} from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
-import {fileURLToPath} from 'node:url';
+import {fileURLToPath, pathToFileURL} from 'node:url';
 import {readWalk, between, stanceOf, standFrom} from './walk-rig.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -23,7 +26,8 @@ const FRAMES = path.join(OUT, 'doctor-frames');
 
 const W = 1080;
 const H = 1920;
-const FPS = 60;
+const MODE = process.argv[2];
+const FPS = MODE === 'shot' ? 30 : 60; // a Toon runs at 30
 const F = FPS / 30; // the timings below were first written for 30 frames a second
 const K = 2; // stage pixels per artwork unit
 const PX = 2; // the PNG parts are cut at 200%: two pixels per artwork unit
@@ -529,4 +533,72 @@ const run = (mode) => {
   }
 };
 
-run(process.argv[2] === 'clip' ? 'clip' : 'sheet');
+// ---- her performance for one shot of a Toon ----
+// which of her poses plays for a line's "pose" in the script
+const POSE_OF = {explain: P.explain, present: P.point, thumb: P.both, point: P.point, stop: P.stop, wave: P.wave, rest: P.rest};
+const shotFrames = (lines, total) => {
+  // she arrives in a line's pose 14 frames into the line and holds it until the next line starts
+  const keys = [[-1, P.rest]];
+  for (const l of lines) keys.push([l.from + 14 * F, POSE_OF[l.line.pose] || P.explain]);
+  keys.push([total + 60, keys[keys.length - 1][1]]);
+  const out = [];
+  for (let f = 0; f < total; f++) {
+    const sec = f / FPS;
+    const cur = lines.find((l) => f >= l.from && f < l.from + l.frames);
+    const arm = (side) => ({
+      shoulder: track(keys, f, (q) => q[side].shoulder),
+      elbow: track(keys, f, (q) => q[side].elbow, 2 * F),
+      wrist: track(keys, f, (q) => q[side].wrist, 4 * F) + (track(keys, f, (q) => q[side].elbow, 2 * F) - track(keys, f, (q) => q[side].elbow, 5 * F)) * 0.25,
+      hand: heldHand(keys, f, side),
+    });
+    const talking = cur ? mouthAt(cur.words, (f - cur.from) / FPS) : 'closed';
+    out.push(pose({
+      head: track(keys, f, (q) => q.head, F) + Math.sin(sec * 5.1) * 0.9 + (talking !== 'closed' ? Math.sin(sec * 11) * 0.7 : 0),
+      lean: track(keys, f, (q) => q.lean) + Math.sin(sec * 1.3) * 0.5,
+      sway: Math.sin(sec * 1.3 + 1) * 1.4,
+      bob: Math.sin(sec * 2.6) * 1.1,
+      brow: track(keys, f, (q) => q.brow, F),
+      mouth: talking,
+      blink: blinkAt(f + 2.2 * FPS),
+      look: Math.abs(((f + 40 * F) % (170 * F)) - 85 * F) < 14 * F ? 0 : 0.7, // she looks at the person beside her, now and then at us
+      L: arm('L'),
+      R: arm('R'),
+    }));
+  }
+  return out;
+};
+const runShot = async (slug, shotId) => {
+  const {layoutToon} = await import(pathToFileURL(path.join(root, 'src', 'toons', 'director.ts')).href);
+  const dir = path.join(root, 'videos', slug);
+  const toon = JSON.parse(fs.readFileSync(path.join(dir, 'toon.json'), 'utf8'));
+  const timings = JSON.parse(fs.readFileSync(path.join(dir, 'toon-timings.json'), 'utf8'));
+  const L = layoutToon(toon, timings);
+  const si = toon.shots.findIndex((s) => s.id === shotId);
+  if (si < 0) throw new Error('no shot ' + shotId + ' in ' + slug);
+  const at = L.shots[si];
+  const lines = L.lines.filter((l) => l.si === si && l.line.who === 'doctor').map((l) => ({...l, from: l.from - at.from}));
+  const list = pieces();
+  const poses = shotFrames(lines, at.frames);
+  const out = path.join(root, 'public', 'toons', slug, 'animate', shotId + '-doctor');
+  fs.rmSync(out, {recursive: true, force: true});
+  fs.mkdirSync(out, {recursive: true});
+  fs.mkdirSync(OUT, {recursive: true});
+  const job = {
+    width: W, height: H, fps: FPS, out: uri(out) + '/', name: 'f', parenting: false,
+    fla: uri(path.join(OUT, slug + '-' + shotId + '-doctor.fla')),
+    pieces: list.map((it) => ({name: it.name, parent: null, cels: it.cels})),
+    frames: poses.map((p) => place(list, p)),
+  };
+  fs.writeFileSync(path.join(here, 'an-rig.json'), JSON.stringify(job));
+  console.log(slug + ' shot ' + shotId + ': ' + poses.length + ' frames at ' + FPS + ' fps, lines ' + lines.map((l) => l.line.id).join(' '));
+  if (process.env.RIG_DRY) return;
+  const r = spawnSync('powershell', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', path.join(here, 'run-an.ps1'), path.join(here, 'an-rig.jsfl'), '-TimeoutSec', process.env.RIG_TIMEOUT || '3300'], {encoding: 'utf8'});
+  process.stdout.write(r.stdout || '');
+  if (r.status !== 0) throw new Error('Animate did not finish the job');
+  // what the player needs to stand her in the scene: where her feet and her middle are in a frame, how tall she is
+  fs.writeFileSync(path.join(out, 'meta.json'), JSON.stringify({frames: poses.length, width: W, height: H, axis: W / 2, ground: GROUND, tall: (FEET - 276) * K}));
+  console.log('frames in ' + out);
+};
+
+if (MODE === 'shot') await runShot(process.argv[3], process.argv[4]);
+else run(MODE === 'clip' ? 'clip' : 'sheet');
