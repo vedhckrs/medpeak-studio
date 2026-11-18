@@ -178,6 +178,12 @@ and Animate driven by code, no screen control. What is built, in `pipeline/anima
   `an-rig.jsfl` sets `fl.scriptTimeoutEnabled = false` (no "running for a long time" box) and re-fits the page
   after the time line has filled (the zoom is set twice to make Animate re-centre). The voice layer now goes
   on top instead of in the middle of the stack.
+- **No "Publishing" box (owner asked to hide it, 2026-11-18):** Animate shows that box on every
+  `exportPNG` of one frame. `fl.suppressAlerts` alone does not hide it. Exporting all frames in ONE call
+  (`doc.exportPNG(uri, false, false)`) with alerts suppressed does: the box was seen in 0 of 8,584 checks over a
+  full 410-frame run (44 of 464 before). That route writes 4500 x 8000 frames named from 0001 (300 dpi; the
+  publish profile's PNG size is ignored), so ffmpeg scales them to 1080 x 1920. A full run takes about 9
+  minutes and 513 MB of temporary frames in `out/animate/doctor-frames`. `RIG_SEQUENCE=off` goes back.
 - **Rules from the owner for Adobe scripting:** show the whole page in the window while a script runs
   (`fitPage` in an-rig.jsfl, `fitin` in the Illustrator scripts). Hidden pieces are shrunk to nothing on the
   page, never parked far away (that stretches Animate's work area and pushes the page out of view).

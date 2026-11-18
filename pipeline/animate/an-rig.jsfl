@@ -18,6 +18,8 @@ function fitPage(doc) { try { doc.zoomFactor = 0.1; doc.zoomFactor = Math.min(0.
 function setM(el, v) { var m = el.matrix; m.a = v[0]; m.b = v[1]; m.c = v[2]; m.d = v[3]; m.tx = v[4]; m.ty = v[5]; el.matrix = m; }
 try {
   fl.scriptTimeoutEnabled = false; // no "this script has been running for a long time" box in the middle of a build
+  var job0 = eval('(' + FLfile.read(here + 'an-rig.json') + ')');
+  if (job0.suppress) { try { fl.suppressAlerts = true; log.push('alerts suppressed'); } catch (es) { log.push('suppress: ' + es); } }
   var job = eval('(' + FLfile.read(here + 'an-rig.json') + ')');
   var doc = fl.createDocument('timeline');
   doc.width = job.width;
@@ -128,7 +130,12 @@ try {
   // 7 frames out
   fitPage(doc);
   var made = 0;
-  for (var g = 0; g < count; g++) {
+  if (job.sequence) {
+    // all frames in one call: Animate names them <name>0001.png onwards
+    doc.exportPNG(job.out + job.name + '.png', false, false);
+    for (var g2 = 1; g2 <= count; g2++) if (FLfile.exists(job.out + job.name + pad(g2) + '.png')) made++;
+    log.push('sequence export');
+  } else for (var g = 0; g < count; g++) {
     tl.currentFrame = g;
     doc.exportPNG(job.out + job.name + pad(g) + '.png', true, true);
     if (FLfile.exists(job.out + job.name + pad(g) + '.png')) made++;

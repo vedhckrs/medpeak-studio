@@ -495,22 +495,28 @@ const run = (mode) => {
   // layer parenting is off unless asked for: on a long time line (400 frames) Animate lost a parented layer
   // from the picture (her right upper sleeve), although short renders with parenting were right
   if (process.env.RIG_PARENT !== 'on') job.parenting = false;
+  // all frames go out in one export call with Animate's alerts suppressed: that way its "Publishing" box never
+  // appears (tested: seen in 0 of 647 checks, against 44 of 464 with one call per frame). That route exports
+  // at 300 dpi (4500 x 8000 for this page) and names the frames from 0001; ffmpeg brings them to size.
+  // RIG_SEQUENCE=off goes back to one call per frame at the page's own size.
+  job.sequence = process.env.RIG_SEQUENCE !== 'off';
+  job.suppress = job.sequence;
   fs.writeFileSync(path.join(here, 'an-rig.json'), JSON.stringify(job));
   if (process.env.RIG_DRY) return; // work the motion out, do not start Animate
-  const r = spawnSync('powershell', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', path.join(here, 'run-an.ps1'), path.join(here, 'an-rig.jsfl'), '-TimeoutSec', '3300'], {encoding: 'utf8'});
+  const r = spawnSync('powershell', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', path.join(here, 'run-an.ps1'), path.join(here, 'an-rig.jsfl'), '-TimeoutSec', process.env.RIG_TIMEOUT || '3300'], {encoding: 'utf8'});
   process.stdout.write(r.stdout || '');
   if (r.status !== 0) throw new Error('Animate did not finish the job');
   const seq = path.join(FRAMES, 'f%04d.png');
   if (mode === 'clip') {
     const mp4 = path.join(OUT, 'doctor-test.mp4');
     const audio = sound && fs.existsSync(sound) ? ['-itsoffset', String(say / FPS), '-i', sound] : [];
-    ffmpeg(['-f', 'lavfi', '-i', `color=c=0xfaf6ef:s=${W}x${H}:r=${FPS}`, '-framerate', String(FPS), '-start_number', '0', '-i', seq, ...audio,
-      '-filter_complex', '[0][1]overlay=shortest=1,format=yuv420p[v]', '-map', '[v]', ...(audio.length ? ['-map', '2:a', '-c:a', 'aac'] : []), '-c:v', 'libx264', '-crf', '16', mp4]);
+    ffmpeg(['-f', 'lavfi', '-i', `color=c=0xfaf6ef:s=${W}x${H}:r=${FPS}`, '-framerate', String(FPS), '-start_number', job.sequence ? '1' : '0', '-i', seq, ...audio,
+      '-filter_complex', `[1]scale=${W}:${H}:flags=area[f];[0][f]overlay=shortest=1,format=yuv420p[v]`, '-map', '[v]', ...(audio.length ? ['-map', '2:a', '-c:a', 'aac'] : []), '-c:v', 'libx264', '-crf', '16', mp4]);
     console.log('clip ' + mp4);
   } else {
     const png = path.join(OUT, 'doctor-poses.png');
-    ffmpeg(['-f', 'lavfi', '-i', `color=c=0xfaf6ef:s=${W}x${H}`, '-start_number', '0', '-i', seq,
-      '-filter_complex', `[0][1]overlay,scale=${W / 2}:${H / 2},tile=4x2`, '-frames:v', '1', png]);
+    ffmpeg(['-f', 'lavfi', '-i', `color=c=0xfaf6ef:s=${W}x${H}`, '-start_number', job.sequence ? '1' : '0', '-i', seq,
+      '-filter_complex', `[1]scale=${W}:${H}:flags=area[f];[0][f]overlay,scale=${W / 2}:${H / 2},tile=4x2`, '-frames:v', '1', png]);
     console.log('sheet ' + png);
   }
 };
