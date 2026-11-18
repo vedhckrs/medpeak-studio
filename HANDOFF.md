@@ -127,6 +127,11 @@ and Animate driven by code, no screen control. What is built, in `pipeline/anima
   are cut at 200% (`ai-extract.jsx` takes the scale as a 4th argument; the spec can give a `z`). The first
   doctor (#10005316) was my own pick without his OK and is dropped. Rule from the owner: show a numbered
   options sheet and build only what he picks. The channel is for a global audience, not an Indian one.
+- **IN PROGRESS, stopped mid-way (usage limit), 2026-11-18:** owner approved a full upgrade (real rig with symbols and
+  parenting, gesture hands, blink, mouth from the voice timings, walk, camera). `an-rig.jsfl` and `rig-doctor.mjs` are
+  rewritten for it but NOT RUN yet, and `rig-doctor.mjs` does not parse: fill `__HAND_SCALE__` and `__HANDS__` first
+  (pick hands from parts hand-11..16, 27, 31, 33..36; row 2 hands sit inside group 94 and still need cutting).
+  The last working version is commit 0f9cc48. `ai-extract.jsx` gained a rect mode (tested) for loose pieces.
 - Stock sources (premium, not AI, 0 credits) are kept in `stock/` which is
   git-ignored because the repo is public. On the Mac it is missing: download it again there, or keep
   rendering people on the Windows PC. Outputs are in `out/animate/` (not in git).

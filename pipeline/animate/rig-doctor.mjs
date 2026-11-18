@@ -1,11 +1,12 @@
 // The doctor the owner chose (Magnific stock vector #3908853, "Female doctor character model sheet
-// with walk cycle animations and lip syncing"), rigged from the parts cut by ai-extract.jsx and drawn
-// by Animate (an-rig.jsfl).
+// with walk cycle animations and lip syncing"), rigged from the parts cut by ai-extract.jsx and built
+// in Animate by an-rig.jsfl as a real rig: one graphic symbol per part with its origin on the joint,
+// the hand, mouth and walk as symbols with several cels, and the layers parented like a skeleton.
 //   node pipeline/animate/rig-doctor.mjs sheet   the poses, joined into one sheet (out/animate/doctor-poses.png)
-//   node pipeline/animate/rig-doctor.mjs clip    a 4 s talking test (out/animate/doctor-test.mp4)
-// The artwork already has an upper arm, a forearm and a hand for each arm, and seven lip-sync heads.
-// Every pose is worked out here from joint angles (shoulder, elbow, wrist, head) into one matrix per
-// piece; Animate places the pieces on layers, one keyframe per frame, and exports transparent frames.
+//   node pipeline/animate/rig-doctor.mjs clip    a voiced test with gestures, blink, walk and camera
+// The motion is worked out here: poses are joint angles, moves between poses ease with a small
+// overshoot, the forearm and the hand arrive a little after the upper arm (follow-through), the body
+// breathes and shifts its weight, the eyes blink and look, and the mouth follows the spoken words.
 // Windows only (Animate and Illustrator are driven through their own scripting). The stock artwork is
 // licensed and stays in stock/ (git-ignored).
 import {spawnSync} from 'node:child_process';
@@ -26,7 +27,8 @@ const K = 2; // stage pixels per artwork unit
 const PX = 2; // the PNG parts are cut at 200%: two pixels per artwork unit
 const AXIS = 4955; // the figure's centre line, in artwork units
 const FEET = 1030;
-const stage = (u) => [(u[0] - AXIS) * K + W / 2, (u[1] - FEET) * K + 1760];
+const GROUND = 1760; // where her feet stand on the stage
+const stage = (u) => [(u[0] - AXIS) * K + W / 2, (u[1] - FEET) * K + GROUND];
 
 const parts = Object.fromEntries(JSON.parse(fs.readFileSync(path.join(PARTS, 'parts.json'), 'utf8')).map((p) => [p.name, p]));
 const need = (name) => {
@@ -46,141 +48,298 @@ const JOINT = {
   L: {...L_JOINT, out: -1, upper: [252, 250], fore: [251, 249], hand: [224, 223, 222, 221, 220]},
   R: {shoulder: mirror(L_JOINT.shoulder), elbow: mirror(L_JOINT.elbow), wrist: mirror(L_JOINT.wrist), out: 1, upper: [259], fore: [260, 258], hand: [257, 256, 255, 254, 253]},
 };
+const HIP = [4955, 640]; // the upper body leans around this point
 const NECK = [4955, 408];
-// the lip-sync heads are drawn bigger than the figure: this brings them to her size, and HEAD_AT is
-// where the top-left corner of a head sits on the figure
-const HEAD_SCALE = 0.66;
-const HEAD_AT = [4892, 277];
-const HEADS = {a: 'head-189', b: 'head-188', c: 'head-187', d: 'head-186', e: 'head-185', f: 'head-184', g: 'head-183'};
+const EYE = {L: [4969.5, 354.1], R: [4936.3, 354.1]}; // the middle of each eye
+// the lip-sync heads of the sheet are drawn bigger than the figure: this brings their mouths to her size
+const MOUTH_SCALE = 0.668;
+const MOUTHS = {closed: 188, open: 189, wide: 184, soft: 185, teeth: 186, tongue: 187};
+// the gesture hands of the sheet. "wrist" is the point of the hand's picture (in artwork units from its
+// top-left corner) that sits on the wrist, "points" is the way its fingers point in the picture
+// (0 = up, 90 = to the right, 180 = down, 270 = to the left), "side" the arm it is drawn for.
+const HAND_SCALE = __HAND_SCALE__;
+const HANDS = __HANDS__;
 
-// ---- placing ----
+// ---- geometry ----
 const rot = (v, deg) => {
   const t = (deg * Math.PI) / 180;
   return [v[0] * Math.cos(t) - v[1] * Math.sin(t), v[0] * Math.sin(t) + v[1] * Math.cos(t)];
 };
 const add = (a, b) => [a[0] + b[0], a[1] + b[1]];
 const sub = (a, b) => [a[0] - b[0], a[1] - b[1]];
-// the matrix of a bitmap whose top-left corner sits at "corner" (artwork units, measured from the
-// pivot) when the pivot is at "pivot" (stage pixels) and the piece is turned by "deg"
-const matrix = (pivot, deg, corner, size = 1) => {
+const mul = (a, k) => [a[0] * k, a[1] * k];
+const r4 = (v) => Math.round(v * 1e4) / 1e4;
+// an instance: its origin at "at" (stage pixels), turned by deg, stretched by sx, sy, showing cel
+const inst = (at, deg = 0, cel = 0, sx = 1, sy = 1) => {
   const t = (deg * Math.PI) / 180;
+  return [r4(Math.cos(t) * sx), r4(Math.sin(t) * sx), r4(-Math.sin(t) * sy), r4(Math.cos(t) * sy), r4(at[0]), r4(at[1]), cel];
+};
+// a cel: a part's picture inside its symbol, placed so that the symbol's origin is "origin" (artwork units)
+const cel = (name, origin, size = 1, at = null, flip = 1) => {
+  const p = need(name);
   const s = (size * K) / PX;
-  const c = Math.cos(t) * s;
-  const n = Math.sin(t) * s;
-  const o = add(pivot, rot([corner[0] * K, corner[1] * K], deg));
-  const r4 = (v) => Math.round(v * 1e4) / 1e4;
-  return [r4(c), r4(n), r4(-n), r4(c), r4(o[0]), r4(o[1])];
+  const corner = at || sub([p.x, p.y], origin);
+  return {uri: uri(path.join(PARTS, name + '.png')), m: [r4(s * flip), 0, 0, r4(s), r4(corner[0] * K), r4(corner[1] * K)]};
 };
-const piece = (id, group, more = {}) => {
-  const p = need('front-' + id);
-  return {name: group + '-' + id, file: path.join(PARTS, `front-${id}.png`), group, at: [p.x, p.y], ...more};
-};
-// the pieces, back to front
+
+// ---- the pieces, back to front. kind says how a piece is placed, origin is its joint. ----
 const pieces = () => {
-  const list = [piece(248, 'legs'), piece(229, 'legs'), piece(246, 'body'), piece(228, 'body')];
-  for (const side of ['R', 'L']) for (const id of JOINT[side].upper) list.push(piece(id, 'upper', {side}));
-  for (const id of [227, 226, 225, 219, 218, 217]) list.push(piece(id, 'body'));
-  for (const [key, name] of Object.entries(HEADS)) {
-    need(name);
-    list.push({name: 'head-' + key, file: path.join(PARTS, name + '.png'), group: 'head', head: key});
+  const list = [];
+  // a piece is one symbol; when it is made of several pictures (a sleeve over an arm, a hand and its
+  // nails) each picture gets its own symbol and layer, all placed the same way
+  const many = (prefix, kind, origin, ids, more = {}) => ids.forEach((id) => list.push({name: `${prefix}-${id}`, kind, origin, cels: [cel('front-' + id, origin)], ...more}));
+  list.push({name: 'walk', kind: 'walk', origin: [0, 0], cels: WALK.map((w) => cel('walk-' + w, [need('walkbody-' + w).x + 71, FEET_WALK]))});
+  many('leg', 'legs', HIP, [248, 229]);
+  many('hairback', 'head', NECK, [247], {parent: 'body-246'});
+  many('body', 'body', HIP, [246, 228]);
+  for (const side of ['R', 'L']) many('upper' + side, 'upper', JOINT[side].shoulder, JOINT[side].upper, {side, parent: 'body-246'});
+  many('body', 'body', HIP, [227, 226, 225, 219, 218, 217]);
+  many('face', 'head', NECK, [245, 244, 243, 242], {parent: 'body-246'});
+  for (const [side, white, iris, lid, brow] of [['R', 237, 236, 235, 234], ['L', 241, 240, 239, 238]]) {
+    many('eye' + side, 'eye', EYE[side], [white], {side, parent: 'face-245'});
+    many('iris' + side, 'iris', EYE[side], [iris], {side, parent: 'face-245'});
+    many('lid' + side, 'lid', EYE[side], [lid], {side, parent: 'face-245'});
+    many('brow' + side, 'brow', EYE[side], [brow], {side, parent: 'face-245'});
   }
+  // the mouth: one symbol, a cel for each shape, each set where the figure's own lips are
+  const lips = need('front-233');
+  const lipMid = [lips.x + lips.w / 2, lips.y + lips.h / 2];
+  list.push({
+    name: 'mouth', kind: 'mouth', origin: lipMid, parent: 'face-245',
+    cels: Object.values(MOUTHS).map((id) => {
+      const m = need('mouth-' + id);
+      // every mouth hangs from the same upper lip line, centred
+      return cel('mouth-' + id, lipMid, MOUTH_SCALE, [(-m.w / 2) * MOUTH_SCALE, (-lips.h / 2 - 1) * 1]);
+    }),
+  });
+  many('hair', 'head', NECK, [231, 230], {parent: 'face-245'});
   for (const side of ['R', 'L']) {
-    for (const id of JOINT[side].fore) list.push(piece(id, 'fore', {side}));
-    for (const id of JOINT[side].hand) list.push(piece(id, 'hand', {side}));
+    const j = JOINT[side];
+    many('fore' + side, 'fore', j.elbow, j.fore, {side, parent: `upper${side}-${j.upper[j.upper.length - 1]}`});
+    many('hand' + side, 'hand', j.wrist, j.hand, {side, parent: `fore${side}-${j.fore[j.fore.length - 1]}`});
+    // the gesture hands: one symbol, a cel for each shape, the wrist of each on the symbol's origin
+    list.push({
+      name: 'gesture' + side, kind: 'gesture', origin: j.wrist, side, parent: `fore${side}-${j.fore[j.fore.length - 1]}`,
+      cels: Object.values(HANDS).map((h) => {
+        const flip = h.side === side ? 1 : -1;
+        return cel(h.part, [0, 0], HAND_SCALE, [-h.wrist[0] * HAND_SCALE * flip, -h.wrist[1] * HAND_SCALE], flip);
+      }),
+    });
   }
   return list;
 };
+const WALK = [104, 103, 102, 101, 100, 99, 98, 97]; // the eight steps of the side walk, in order
+const FEET_WALK = 1899; // the ground line of the walk row on the sheet
 
 // ---- a pose: joint angles in degrees. shoulder > 0 lifts the arm away from the body, elbow > 0
-// bends the forearm the same way (up and out), elbow < 0 folds it across the body. ----
-const REST = {head: 0, face: 'b', bob: 0, L: {shoulder: 0, elbow: 0, wrist: 0}, R: {shoulder: 0, elbow: 0, wrist: 0}};
-const pose = (p) => ({...REST, ...p, L: {...REST.L, ...(p.L || {})}, R: {...REST.R, ...(p.R || {})}});
+// bends the forearm the same way (up and out), elbow < 0 folds it across the body. hand names a
+// gesture hand ('rest' = her own relaxed hand). ----
+const ARM = {shoulder: 0, elbow: 0, wrist: 0, hand: 'rest'};
+const REST = {head: 0, lean: 0, sway: 0, bob: 0, mouth: 'closed', blink: 0, look: 0, brow: 0, walk: -1, x: 0, L: ARM, R: ARM};
+const pose = (p) => ({...REST, ...p, L: {...ARM, ...(p.L || {})}, R: {...ARM, ...(p.R || {})}});
+const mouthCel = Object.fromEntries(Object.keys(MOUTHS).map((k, i) => [k, i]));
+const handCel = Object.fromEntries(Object.keys(HANDS).map((k, i) => [k, i]));
+
 const place = (list, p) => {
-  const lift = [0, p.bob]; // the body breathes: everything above the legs moves by this much
-  const neck = add(stage(NECK), [0, p.bob * K]);
+  const shift = [p.x * K, 0];
+  if (p.walk >= 0) return list.map((it) => (it.kind === 'walk' ? inst(add([W / 2, GROUND], shift), 0, p.walk) : 0));
+  // the upper body: leans around the hip, sways sideways, breathes up and down
+  const hip = add(add(stage(HIP), shift), [p.sway * K, p.bob * K]);
+  const up = (u) => add(hip, rot(mul(sub(u, HIP), K), p.lean));
+  const neck = up(NECK);
+  const headTurn = p.lean + p.head;
+  const onHead = (u) => add(neck, rot(mul(sub(u, NECK), K), headTurn));
   const arm = {};
   for (const side of ['L', 'R']) {
     const j = JOINT[side];
     const a = p[side];
-    const t1 = j.out * a.shoulder;
+    const t1 = p.lean + j.out * a.shoulder;
     const t2 = t1 + j.out * a.elbow;
     const t3 = t2 + j.out * a.wrist;
-    const S = add(stage(j.shoulder), [0, p.bob * K]);
-    const E = add(S, rot(sub(j.elbow, j.shoulder).map((n) => n * K), t1));
-    const Wr = add(E, rot(sub(j.wrist, j.elbow).map((n) => n * K), t2));
-    arm[side] = {t1, t2, t3, S, E, Wr, j};
+    const S = up(j.shoulder);
+    const E = add(S, rot(mul(sub(j.elbow, j.shoulder), K), t1));
+    const Wr = add(E, rot(mul(sub(j.wrist, j.elbow), K), t2));
+    arm[side] = {t1, t2, t3, S, E, Wr, a, j};
   }
+  const open = 1 - 0.94 * p.blink; // how open the eyes are
   return list.map((it) => {
-    if (it.group === 'legs') return matrix(stage(it.at), 0, [0, 0]);
-    if (it.group === 'body') return matrix(stage(add(it.at, lift)), 0, [0, 0]);
-    if (it.group === 'head') return it.head === p.face ? matrix(neck, p.head, sub(HEAD_AT, NECK), HEAD_SCALE) : 0;
-    const A = arm[it.side];
-    if (it.group === 'upper') return matrix(A.S, A.t1, sub(it.at, A.j.shoulder));
-    if (it.group === 'fore') return matrix(A.E, A.t2, sub(it.at, A.j.elbow));
-    if (it.group === 'hand') return matrix(A.Wr, A.t3, sub(it.at, A.j.wrist));
-    return 0;
+    const A = it.side ? arm[it.side] : null;
+    switch (it.kind) {
+      case 'walk': return 0;
+      case 'legs': return inst(add(stage(HIP), shift));
+      case 'body': return inst(hip, p.lean);
+      case 'head': return inst(neck, headTurn);
+      case 'eye': return inst(onHead(EYE[it.side]), headTurn, 0, 1, open);
+      case 'iris': return inst(onHead(add(EYE[it.side], [p.look * 2.2, 0])), headTurn, 0, 1, open);
+      case 'lid': return inst(onHead(add(EYE[it.side], [0, p.blink * 7.5])), headTurn);
+      case 'brow': return inst(onHead(add(EYE[it.side], [0, -p.brow * 3])), headTurn + (it.side === 'L' ? 1 : -1) * p.brow * -4);
+      case 'mouth': return inst(onHead(it.origin), headTurn, mouthCel[p.mouth] ?? 0);
+      case 'upper': return inst(A.S, A.t1);
+      case 'fore': return inst(A.E, A.t2);
+      case 'hand': return A.a.hand === 'rest' ? inst(A.Wr, A.t3) : 0;
+      case 'gesture': {
+        if (A.a.hand === 'rest') return 0;
+        const h = HANDS[A.a.hand];
+        // the forearm points from elbow to wrist; turn the hand so that its fingers carry on that way
+        const d = sub(A.Wr, A.E);
+        const fore = (Math.atan2(d[0], -d[1]) * 180) / Math.PI; // 0 = up, 90 = right
+        const points = h.side === it.side ? h.points : 360 - h.points;
+        return inst(A.Wr, fore - points + A.j.out * A.a.wrist, handCel[A.a.hand]);
+      }
+      default: return 0;
+    }
   });
 };
 
-// ---- the poses of the sheet ----
+// ---- the poses ----
+const P = {
+  rest: pose({}),
+  explain: pose({head: -3, lean: -1, brow: 0.4, R: {shoulder: 16, elbow: 96, hand: 'offer'}}),
+  point: pose({head: 3, lean: 1, brow: 0.8, L: {shoulder: 24, elbow: 128, hand: 'point'}}),
+  stop: pose({head: 0, brow: -0.8, L: {shoulder: 20, elbow: 134, hand: 'palm'}}),
+  both: pose({brow: 0.5, L: {shoulder: 6, elbow: 62, hand: 'offer'}, R: {shoulder: 6, elbow: 62, hand: 'offer'}}),
+  chest: pose({head: -3, brow: 0.2, R: {shoulder: 8, elbow: -118}}),
+  wave: pose({head: 4, lean: 1.5, brow: 0.7, mouth: 'wide', L: {shoulder: 42, elbow: 112, hand: 'palm'}}),
+  fist: pose({head: -2, brow: -0.4, R: {shoulder: 14, elbow: 122, hand: 'fist'}}),
+};
 const SHEET = [
-  ['rest', pose({})],
-  ['explain', pose({face: 'e', head: -3, R: {shoulder: 18, elbow: 95, wrist: -10}})],
-  ['point', pose({face: 'a', head: 3, L: {shoulder: 25, elbow: 120}})],
-  ['both', pose({face: 'd', L: {shoulder: 4, elbow: 48, wrist: 6}, R: {shoulder: 4, elbow: 48, wrist: 6}})],
-  ['chest', pose({face: 'g', head: -3, R: {shoulder: 10, elbow: -120}})],
-  ['wave', pose({face: 'd', head: 4, L: {shoulder: 50, elbow: 95, wrist: -8}})],
-  ['faces', pose({face: 'c'})],
-  ['faces2', pose({face: 'f'})],
+  ['rest', P.rest], ['explain', {...P.explain, mouth: 'soft'}], ['point', {...P.point, mouth: 'open'}], ['stop', {...P.stop, mouth: 'teeth'}],
+  ['both', {...P.both, mouth: 'wide'}], ['chest', {...P.chest, mouth: 'soft'}], ['wave', P.wave], ['blink', {...P.fist, blink: 1, mouth: 'tongue'}],
 ];
 
-// ---- the talking test: poses on a time line, eased, with a breathing body and a moving mouth ----
-const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
-const mix = (a, b, t) => a + (b - a) * t;
-const between = (a, b, t) => {
-  const e = ease(t);
-  const side = (s) => ({shoulder: mix(a[s].shoulder, b[s].shoulder, e), elbow: mix(a[s].elbow, b[s].elbow, e), wrist: mix(a[s].wrist, b[s].wrist, e)});
-  return {face: t < 0.5 ? a.face : b.face, head: mix(a.head, b.head, e), bob: 0, L: side('L'), R: side('R')};
+// ---- motion ----
+// from one pose to the next: fast out, a small overshoot, then settle
+const overshoot = (t) => {
+  if (t <= 0) return 0;
+  if (t >= 1) return 1;
+  const c = 1.35;
+  return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2);
 };
-const clipFrames = () => {
-  const P = Object.fromEntries(SHEET);
-  const keys = [[0, P.rest], [12, P.rest], [26, P.explain], [52, P.explain], [66, P.point], [92, P.point], [106, P.rest], [120, P.rest]];
-  const mouth = ['b', 'c', 'e', 'a', 'f', 'd', 'c', 'b'];
-  const out = [];
-  for (let f = 0; f < 120; f++) {
-    let k = 0;
-    while (k < keys.length - 2 && f >= keys[k + 1][0]) k++;
-    const [f0, a] = keys[k];
-    const [f1, b] = keys[k + 1];
-    const p = between(a, b, Math.min(1, Math.max(0, (f - f0) / (f1 - f0))));
-    p.bob = Math.sin((f / FPS) * Math.PI * 2 * 0.45) * 1.2;
-    p.head += Math.sin((f / FPS) * Math.PI * 2 * 0.8) * 1.2;
-    p.face = f >= 14 && f < 104 ? mouth[Math.floor((f - 14) / 3) % mouth.length] : 'b'; // she speaks
-    out.push(p);
+const mix = (a, b, t) => a + (b - a) * t;
+// the value of one track at a frame, from pose keys [[frame, pose], ...]; get picks the number
+const track = (keys, f, get, lag = 0) => {
+  const g = f - lag;
+  let k = 0;
+  while (k < keys.length - 2 && g >= keys[k + 1][0]) k++;
+  const [f0, a] = keys[k];
+  const [f1, b] = keys[k + 1];
+  // a move takes at most 14 frames, then the pose holds until the next key
+  const span = Math.min(14, f1 - f0);
+  return mix(get(a), get(b), overshoot((g - (f1 - span)) / span));
+};
+const heldHand = (keys, f, side) => {
+  let k = 0;
+  while (k < keys.length - 1 && f >= keys[k + 1][0] - 7) k++; // the hand changes shape half-way through the move
+  return keys[k][1][side].hand;
+};
+// which mouth for a letter
+const VISEME = {a: 'wide', e: 'soft', i: 'soft', o: 'open', u: 'open', w: 'open', m: 'closed', b: 'closed', p: 'closed', l: 'tongue', t: 'tongue', d: 'tongue', n: 'tongue'};
+const mouthAt = (words, t) => {
+  for (const w of words) {
+    if (t < w.start || t > w.end) continue;
+    const letters = w.w.toLowerCase().replace(/[^a-z]/g, '');
+    if (!letters) return 'closed';
+    const c = letters[Math.min(letters.length - 1, Math.floor(((t - w.start) / (w.end - w.start)) * letters.length))];
+    return VISEME[c] || 'teeth';
   }
-  return out;
+  return 'closed';
+};
+// blinks at fixed, uneven moments (so every render is the same): a blink is 5 frames
+const BLINKS = [20, 97, 151, 236, 263, 340, 412, 470];
+const blinkAt = (f) => {
+  for (const b of BLINKS) {
+    const d = f - b;
+    if (d >= 0 && d < 5) return [0.6, 1, 1, 0.6, 0.2][d];
+  }
+  return 0;
+};
+
+const clipFrames = (words, seconds) => {
+  const total = Math.round(seconds * FPS);
+  const walkIn = 40; // she walks in from the left first
+  const say = walkIn + 8; // and starts to speak
+  const T = (s) => say + Math.round(s * FPS);
+  const at = (word) => (words.find((w) => w.w.toLowerCase().startsWith(word)) || {start: 0}).start;
+  const keys = [
+    [0, P.rest], [say - 2, P.rest], [T(at('your')) + 6, P.explain], [T(at('washing')) - 4, P.explain],
+    [T(at('washing')) + 8, P.point], [T(at('then')) + 2, P.point], [T(at('then')) + 14, P.both], [T(at('today')) - 2, P.both],
+    [T(at('today')) + 10, P.stop], [total - 26, P.stop], [total - 12, P.rest], [total + 30, P.rest],
+  ];
+  const frames = [];
+  const camera = [];
+  for (let f = 0; f < total; f++) {
+    let p;
+    if (f < walkIn) {
+      // eight steps, each held three frames; the walk is drawn facing left, so she comes in from the right
+      const u = f / walkIn;
+      p = pose({walk: Math.floor(f / 3) % WALK.length, x: 150 * (1 - u) * (1 - u)});
+    } else {
+      const sec = f / FPS;
+      const arm = (side) => ({
+        shoulder: track(keys, f, (q) => q[side].shoulder),
+        elbow: track(keys, f, (q) => q[side].elbow, 2), // the forearm follows the upper arm
+        wrist: track(keys, f, (q) => q[side].wrist, 4) + (track(keys, f, (q) => q[side].elbow, 2) - track(keys, f, (q) => q[side].elbow, 5)) * 0.25, // the hand drags behind, then settles
+        hand: heldHand(keys, f, side),
+      });
+      const t = (f - say) / FPS;
+      const talking = mouthAt(words, t);
+      p = pose({
+        head: track(keys, f, (q) => q.head, 1) + Math.sin(sec * 5.1) * 0.9 + (talking !== 'closed' ? Math.sin(sec * 11) * 0.7 : 0),
+        lean: track(keys, f, (q) => q.lean) + Math.sin(sec * 1.3) * 0.5,
+        sway: Math.sin(sec * 1.3 + 1) * 1.4,
+        bob: Math.sin(sec * 2.6) * 1.1,
+        brow: track(keys, f, (q) => q.brow, 1),
+        mouth: talking,
+        blink: blinkAt(f),
+        look: Math.abs(((f + 40) % 170) - 85) < 12 ? -1 : 0, // now and then she glances aside
+        L: arm('L'),
+        R: arm('R'),
+      });
+    }
+    frames.push(p);
+    // the camera: wide while she walks in, then a slow push-in on her, a little closer on "today"
+    const push = f < walkIn ? 0 : Math.min(1, (f - walkIn) / 50);
+    const e = push * push * (3 - 2 * push);
+    const late = Math.max(0, Math.min(1, (f - T(at('today'))) / 20));
+    camera.push([0, r4(-e * 150 - late * 60), r4(100 + e * 22 + late * 10)]);
+  }
+  return {frames, camera, say};
 };
 
 const run = (mode) => {
   const list = pieces();
-  const poses = mode === 'clip' ? clipFrames() : SHEET.map((s) => s[1]);
+  let poses;
+  let camera = null;
+  let sound = null;
+  let say = 0;
+  if (mode === 'clip') {
+    const line = JSON.parse(fs.readFileSync(path.join(root, 'videos', 'rabies', 'toon-timings.json'), 'utf8')).lines.D1;
+    sound = path.join(root, 'public', line.file);
+    const made = clipFrames(line.words, line.duration + 3.2);
+    poses = made.frames;
+    camera = made.camera;
+    say = made.say;
+  } else poses = SHEET.map((s) => pose(s[1]));
   fs.rmSync(FRAMES, {recursive: true, force: true});
   fs.mkdirSync(FRAMES, {recursive: true});
   const job = {
     width: W, height: H, fps: FPS, out: uri(FRAMES) + '/', name: 'f',
     fla: uri(path.join(OUT, mode === 'clip' ? 'doctor-test.fla' : 'doctor-poses.fla')),
-    pieces: list.map((it) => ({name: it.name, uri: uri(it.file)})),
+    pieces: list.map((it) => ({name: it.name, parent: it.parent || null, cels: it.cels})),
     frames: poses.map((p) => place(list, p)),
   };
+  if (camera && process.env.RIG_CAMERA !== 'off') job.camera = camera;
+  if (sound && fs.existsSync(sound)) job.sound = uri(sound);
   fs.writeFileSync(path.join(here, 'an-rig.json'), JSON.stringify(job));
-  const r = spawnSync('powershell', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', path.join(here, 'run-an.ps1'), path.join(here, 'an-rig.jsfl'), '-TimeoutSec', '900'], {encoding: 'utf8'});
+  const r = spawnSync('powershell', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', path.join(here, 'run-an.ps1'), path.join(here, 'an-rig.jsfl'), '-TimeoutSec', '1500'], {encoding: 'utf8'});
   process.stdout.write(r.stdout || '');
   if (r.status !== 0) throw new Error('Animate did not finish the job');
   const seq = path.join(FRAMES, 'f%04d.png');
   if (mode === 'clip') {
     const mp4 = path.join(OUT, 'doctor-test.mp4');
-    ffmpeg(['-f', 'lavfi', '-i', `color=c=0xfaf6ef:s=${W}x${H}:r=${FPS}`, '-framerate', String(FPS), '-start_number', '0', '-i', seq,
-      '-filter_complex', '[0][1]overlay=shortest=1,format=yuv420p', '-c:v', 'libx264', '-crf', '16', mp4]);
+    const audio = sound && fs.existsSync(sound) ? ['-itsoffset', String(say / FPS), '-i', sound] : [];
+    ffmpeg(['-f', 'lavfi', '-i', `color=c=0xfaf6ef:s=${W}x${H}:r=${FPS}`, '-framerate', String(FPS), '-start_number', '0', '-i', seq, ...audio,
+      '-filter_complex', '[0][1]overlay=shortest=1,format=yuv420p[v]', '-map', '[v]', ...(audio.length ? ['-map', '2:a', '-c:a', 'aac'] : []), '-c:v', 'libx264', '-crf', '16', mp4]);
     console.log('clip ' + mp4);
   } else {
     const png = path.join(OUT, 'doctor-poses.png');
