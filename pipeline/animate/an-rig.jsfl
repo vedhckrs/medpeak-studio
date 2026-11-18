@@ -52,19 +52,7 @@ try {
   var layerOf = function (q) { return n - 1 - q; }; // piece 0 is the bottom layer
   var index = {};
   for (var k = 0; k < n; k++) index[job.pieces[k].name] = k;
-  // 3 parenting (hand to forearm to upper arm, head to body)
-  var parented = 0;
-  try {
-    tl.advancedLayersEnabled = true;
-    for (var a = 0; a < n; a++) {
-      var par = job.pieces[a].parent;
-      if (!par || index[par] === undefined) continue;
-      tl.layers[layerOf(a)].setRigParentAtFrame(tl.layers[layerOf(index[par])], 0);
-      parented++;
-    }
-  } catch (e1) { log.push('parenting: ' + e1); }
-  log.push('parented ' + parented);
-  // 4 keyframes and matrices
+  // 3 keyframes and matrices
   if (count > 1) tl.insertFrames(count - 1, true);
   for (var L = 0; L < n; L++) {
     tl.setSelectedLayers(L);
@@ -86,6 +74,21 @@ try {
     }
   }
   log.push('matrices ' + set);
+  // 4 parenting, after the poses are in place (a layer that gets a parent keeps where it is drawn):
+  // hand to forearm to upper arm, head to body, on every keyframe
+  var parented = 0;
+  if (job.parenting !== false) {
+    try {
+      tl.advancedLayersEnabled = true;
+      for (var a = 0; a < n; a++) {
+        var par = job.pieces[a].parent;
+        if (!par || index[par] === undefined) continue;
+        for (var pf = 0; pf < count; pf++) tl.layers[layerOf(a)].setRigParentAtFrame(tl.layers[layerOf(index[par])], pf);
+        parented++;
+      }
+    } catch (e1) { log.push('parenting: ' + e1); }
+  }
+  log.push('parented ' + parented);
   // 5 the camera
   if (job.camera) {
     try {

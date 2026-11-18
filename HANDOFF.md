@@ -127,11 +127,16 @@ and Animate driven by code, no screen control. What is built, in `pipeline/anima
   are cut at 200% (`ai-extract.jsx` takes the scale as a 4th argument; the spec can give a `z`). The first
   doctor (#10005316) was my own pick without his OK and is dropped. Rule from the owner: show a numbered
   options sheet and build only what he picks. The channel is for a global audience, not an Indian one.
-- **IN PROGRESS, stopped mid-way (usage limit), 2026-11-18:** owner approved a full upgrade (real rig with symbols and
-  parenting, gesture hands, blink, mouth from the voice timings, walk, camera). `an-rig.jsfl` and `rig-doctor.mjs` are
-  rewritten for it but NOT RUN yet, and `rig-doctor.mjs` does not parse: fill `__HAND_SCALE__` and `__HANDS__` first
-  (pick hands from parts hand-11..16, 27, 31, 33..36; row 2 hands sit inside group 94 and still need cutting).
-  The last working version is commit 0f9cc48. `ai-extract.jsx` gained a rect mode (tested) for loose pieces.
+- **Upgrade the owner approved, done and run (2026-11-18):** `an-rig.jsfl` builds a real rig: one graphic
+  symbol per part with its origin on the joint, hand / mouth / walk as symbols with several cels, layers
+  parented like a skeleton (parenting must be set AFTER the matrices, on every keyframe, or Animate moves
+  the children). `rig-doctor.mjs` does the motion: overshoot and settle, forearm and hand arriving after the
+  upper arm, breathing and weight shift, blink, glance, eyebrows, five gesture hands (point, palm, open,
+  offer, fist), mouth from the word timings of rabies line D1 (no new credits), an 8-step walk-in, a push-in.
+  Run and looked at: pose sheet (8 poses) and a 6.9 s voiced clip (208 frames). Known gaps: Animate's own
+  camera refused the script call (`camera.setPosition`: "Argument number 1 is invalid"), so the push-in
+  scales the rig instead; the walk is the sheet's side view and cuts to the front view; the middle row of
+  hands on the sheet is not cut (it sits inside group 94); not yet joined into the Toons video.
 - Stock sources (premium, not AI, 0 credits) are kept in `stock/` which is
   git-ignored because the repo is public. On the Mac it is missing: download it again there, or keep
   rendering people on the Windows PC. Outputs are in `out/animate/` (not in git).

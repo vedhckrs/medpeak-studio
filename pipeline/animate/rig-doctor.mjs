@@ -57,8 +57,14 @@ const MOUTHS = {closed: 188, open: 189, wide: 184, soft: 185, teeth: 186, tongue
 // the gesture hands of the sheet. "wrist" is the point of the hand's picture (in artwork units from its
 // top-left corner) that sits on the wrist, "points" is the way its fingers point in the picture
 // (0 = up, 90 = to the right, 180 = down, 270 = to the left), "side" the arm it is drawn for.
-const HAND_SCALE = __HAND_SCALE__;
-const HANDS = __HANDS__;
+const HAND_SCALE = 0.62;
+const HANDS = {
+  point: {part: 'hand-16', wrist: [37, 110], points: 0, side: 'L'},
+  palm: {part: 'hand-35', wrist: [26, 92], points: 352, side: 'L'},
+  open: {part: 'hand-13', wrist: [30, 111], points: 5, side: 'L'},
+  offer: {part: 'hand-34', wrist: [97, 51], points: 285, side: 'R'},
+  fist: {part: 'hand-27', wrist: [75, 35], points: 270, side: 'R'},
+};
 
 // ---- geometry ----
 const rot = (v, deg) => {
@@ -169,8 +175,8 @@ const place = (list, p) => {
       case 'legs': return inst(add(stage(HIP), shift));
       case 'body': return inst(hip, p.lean);
       case 'head': return inst(neck, headTurn);
-      case 'eye': return inst(onHead(EYE[it.side]), headTurn, 0, 1, open);
-      case 'iris': return inst(onHead(add(EYE[it.side], [p.look * 2.2, 0])), headTurn, 0, 1, open);
+      case 'eye': return p.blink > 0.9 ? 0 : inst(onHead(EYE[it.side]), headTurn, 0, 1, open);
+      case 'iris': return p.blink > 0.9 ? 0 : inst(onHead(add(EYE[it.side], [p.look * 2.2, 0])), headTurn, 0, 1, open);
       case 'lid': return inst(onHead(add(EYE[it.side], [0, p.blink * 7.5])), headTurn);
       case 'brow': return inst(onHead(add(EYE[it.side], [0, -p.brow * 3])), headTurn + (it.side === 'L' ? 1 : -1) * p.brow * -4);
       case 'mouth': return inst(onHead(it.origin), headTurn, mouthCel[p.mouth] ?? 0);
@@ -197,7 +203,7 @@ const P = {
   explain: pose({head: -3, lean: -1, brow: 0.4, R: {shoulder: 16, elbow: 96, hand: 'offer'}}),
   point: pose({head: 3, lean: 1, brow: 0.8, L: {shoulder: 24, elbow: 128, hand: 'point'}}),
   stop: pose({head: 0, brow: -0.8, L: {shoulder: 20, elbow: 134, hand: 'palm'}}),
-  both: pose({brow: 0.5, L: {shoulder: 6, elbow: 62, hand: 'offer'}, R: {shoulder: 6, elbow: 62, hand: 'offer'}}),
+  both: pose({brow: 0.5, L: {shoulder: 2, elbow: 86, hand: 'offer'}, R: {shoulder: 2, elbow: 86, hand: 'offer'}}),
   chest: pose({head: -3, brow: 0.2, R: {shoulder: 8, elbow: -118}}),
   wave: pose({head: 4, lean: 1.5, brow: 0.7, mouth: 'wide', L: {shoulder: 42, elbow: 112, hand: 'palm'}}),
   fist: pose({head: -2, brow: -0.4, R: {shoulder: 14, elbow: 122, hand: 'fist'}}),
@@ -301,7 +307,7 @@ const clipFrames = (words, seconds) => {
     const push = f < walkIn ? 0 : Math.min(1, (f - walkIn) / 50);
     const e = push * push * (3 - 2 * push);
     const late = Math.max(0, Math.min(1, (f - T(at('today'))) / 20));
-    camera.push([0, r4(-e * 150 - late * 60), r4(100 + e * 22 + late * 10)]);
+    camera.push(1 + e * 0.22 + late * 0.1); // how far the view is pushed in
   }
   return {frames, camera, say};
 };
@@ -328,7 +334,13 @@ const run = (mode) => {
     pieces: list.map((it) => ({name: it.name, parent: it.parent || null, cels: it.cels})),
     frames: poses.map((p) => place(list, p)),
   };
-  if (camera && process.env.RIG_CAMERA !== 'off') job.camera = camera;
+  // the camera: Animate's own camera refused the script call here ("setPosition: Argument number 1 is
+  // invalid"), so the push-in is done by scaling the whole rig around a point between face and chest
+  if (camera) {
+    const cx = W / 2;
+    const cy = 760;
+    job.frames = job.frames.map((row, f) => row.map((m) => (m ? [r4(m[0] * camera[f]), r4(m[1] * camera[f]), r4(m[2] * camera[f]), r4(m[3] * camera[f]), r4(cx + (m[4] - cx) * camera[f]), r4(cy + (m[5] - cy) * camera[f]), m[6]] : 0)));
+  }
   if (sound && fs.existsSync(sound)) job.sound = uri(sound);
   fs.writeFileSync(path.join(here, 'an-rig.json'), JSON.stringify(job));
   const r = spawnSync('powershell', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', path.join(here, 'run-an.ps1'), path.join(here, 'an-rig.jsfl'), '-TimeoutSec', '1500'], {encoding: 'utf8'});

@@ -60,7 +60,13 @@
     if (!u) return;
     var ok = true;
     try {
-      tmp.artboards[0].artboardRect = [u[0] - 1, u[1] + 1, u[2] + 1, u[3] - 1];
+      // where the copies landed in the temporary document (its coordinates are not the sheet's)
+      var t = null;
+      for (var c0 = 0; c0 < copies.length; c0++) {
+        var cb = copies[c0].visibleBounds;
+        t = t ? [Math.min(t[0], cb[0]), Math.max(t[1], cb[1]), Math.max(t[2], cb[2]), Math.min(t[3], cb[3])] : [cb[0], cb[1], cb[2], cb[3]];
+      }
+      tmp.artboards[0].artboardRect = [t[0] - 1, t[1] + 1, t[2] + 1, t[3] - 1];
       tmp.exportFile(new File(outDir.fsName + '/' + name + '.png'), ExportType.PNG24, opt);
     } catch (er) { ok = false; }
     for (var c = 0; c < copies.length; c++) copies[c].remove();
