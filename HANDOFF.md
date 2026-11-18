@@ -72,6 +72,21 @@ Re-rendered (43.8 s). All checks and 44 tests pass. No credits spent in this pas
 Known and NOT fixed: in close shots the caption still lies over a body (legs, coat); the doctor's close
 shot (D2) holds about 5 s with one pose; the nerve macro (M2) is one picture for about 4 s; the virus
 on the arm is still small. `toon:listen` and `toon:look` still not run (no earshot on the Windows PC).
+Fifth pass the same day (owner: "the speak of virus not proper", "more detail macroscopic level", "animation
+of nerve and animations"). All in `src/toons/look-macro.tsx` unless said; no credits spent:
+- Talking: the macro virus has a real mouth while it speaks (opens with `talk`: dark inside, upper teeth,
+  a tongue when wide). Before, the evil grin stayed shut and the other faces showed a black oval.
+- Detail: skin cells have a dark nucleus core, an inner wall and small bodies; the cut has torn edges and
+  red cells drifting in; the saliva has rising bubbles and two more tumbling viruses; defender cells have
+  a lobed core and grains.
+- Nerve close-up (`MacroInside`) runs on the real clock, not in beats: a bright signal band races up the
+  fibre, charged specks flick at the gaps between sheath segments, the sheath shows its wound layers,
+  bean-shaped power stations and packets ride the tracks, and the virus walks on two feet.
+- `stage-arm.tsx`: a nerve signal every 1.8 s (it was every 5 s), with a yellow core.
+This goes against the Mac's look rule "the body lives in moments" (63% of reference frames are still):
+the owner asked for more animation. `toon:look` has NOT been run on this render (no earshot here) and
+may now fail its "still" share; if it does, that rule needs the owner's decision, not a silent revert.
+All other checks and 44 tests pass. Re-rendered (43.8 s).
 Not done: A1 and E3 are not voiced, and no voice file of rabies is on the Windows PC, so no render with
 sound, no listening checks and no look check were run. No music was made (per-video music is not
 built). The bigger animation items of the plan (the bite as an event on the arm, a bigger virus,

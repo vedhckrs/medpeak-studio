@@ -47,12 +47,34 @@ export const MacroVirus: React.FC<{x: number; y: number; s: number; rot?: number
           {face === 'smug' && <path d="M-36 -62 L-12 -58 M36 -62 L12 -58" stroke={INK.line} strokeWidth={6} strokeLinecap="round" />}
           {/* evil (the hook: owner 2026-11-18, "the virus looks friendly"): hard slanted brows and a wide grin full of teeth */}
           {face === 'evil' && <path d="M-42 -70 L-8 -50 M42 -70 L8 -50" stroke={INK.line} strokeWidth={9} strokeLinecap="round" />}
-          {face === 'evil' ? (
+          {talk > 0.12 ? (
+            // SPEAKING (owner, 2026-11-18: "the speak of virus not proper"): a real mouth that opens with every
+            // syllable: dark inside, upper teeth, a tongue when it is wide. The evil grin used to stay shut.
+            (() => {
+              const open = Math.min(1, talk);
+              const w = (face === 'evil' ? 26 : 19) + open * 5;
+              const h = 7 + open * 27;
+              const top = face === 'evil' ? 10 : 14;
+              const d = `M${-w} ${top} Q0 ${top - 5} ${w} ${top} Q${w * 0.92} ${top + h} 0 ${top + h + 3} Q${-w * 0.92} ${top + h} ${-w} ${top} Z`;
+              return (
+                <g>
+                  <clipPath id={`mv${seed}`}><path d={d} /></clipPath>
+                  <path d={d} fill="#3a0d19" />
+                  <g clipPath={`url(#mv${seed})`}>
+                    {open > 0.35 && <ellipse cx={0} cy={top + h + 2} rx={w * 0.62} ry={h * 0.42} fill="#e8798a" />}
+                    <rect x={-w} y={top - 6} width={w * 2} height={face === 'evil' ? 15 : 11} fill="#fff6dc" />
+                    {face === 'evil' && <path d={`M${-w * 0.5} ${top - 6} v15 M0 ${top - 6} v15 M${w * 0.5} ${top - 6} v15`} stroke={INK.line} strokeWidth={2.5} />}
+                  </g>
+                  <path d={d} fill="none" stroke={INK.line} strokeWidth={5} strokeLinejoin="round" />
+                </g>
+              );
+            })()
+          ) : face === 'evil' ? (
             <g>
-              <path d={`M-30 12 Q0 ${22 + talk * 6} 30 12 Q24 ${40 + talk * 14} 0 ${42 + talk * 16} Q-24 ${40 + talk * 14} -30 12 Z`} fill="#fff6dc" stroke={INK.line} strokeWidth={5} strokeLinejoin="round" />
+              <path d="M-30 12 Q0 22 30 12 Q24 40 0 42 Q-24 40 -30 12 Z" fill="#fff6dc" stroke={INK.line} strokeWidth={5} strokeLinejoin="round" />
               <path d="M-18 16 V34 M-6 19 V38 M6 19 V38 M18 16 V34" stroke={INK.line} strokeWidth={3} />
             </g>
-          ) : talk > 0.15 ? <ellipse cx={2} cy={24} rx={12} ry={5 + talk * 13} fill={INK.line} /> : face === 'smug' ? <path d="M-16 20 Q2 34 20 16" fill="none" stroke={INK.line} strokeWidth={5} strokeLinecap="round" /> : face === 'shock' ? <ellipse cx={2} cy={24} rx={11} ry={15} fill={INK.line} /> : <path d="M-16 30 Q2 18 20 30" fill="none" stroke={INK.line} strokeWidth={5} strokeLinecap="round" />}
+          ) : face === 'smug' ? <path d="M-16 20 Q2 34 20 16" fill="none" stroke={INK.line} strokeWidth={5} strokeLinecap="round" /> : face === 'shock' ? <ellipse cx={2} cy={24} rx={11} ry={15} fill={INK.line} /> : <path d="M-16 30 Q2 18 20 30" fill="none" stroke={INK.line} strokeWidth={5} strokeLinecap="round" />}
         </g>
       )}
     </g>
@@ -64,6 +86,10 @@ const Cell: React.FC<{x: number; y: number; rx: number; ry: number; seed: string
   <g>
     <Tissue d={spline(lump(x, y, rx, ry, seed, 12, flat ? 0.05 : 0.09), true, 0.6)} fill={flat ? MACRO_PAL.skinTop : MACRO_PAL.skinCell} deep={MACRO_PAL.skinCellDeep} band={16} line={INK.wIn + 1} form={flat ? 4 : 9} />
     {!flat && <path d={spline(lump(x + rx * 0.1, y, rx * 0.32, ry * 0.36, `${seed}n`, 9, 0.12), true, 0.6)} fill={MACRO_PAL.nucleus} stroke={INK.line} strokeWidth={3} />}
+    {/* macro detail (owner, 2026-11-18): the nucleus has its dark core, and the cell its small bodies and inner wall */}
+    {!flat && <circle cx={x + rx * 0.16} cy={y - ry * 0.05} r={Math.min(rx, ry) * 0.11} fill="#a84a48" />}
+    {!flat && <path d={spline(lump(x, y, rx * 0.84, ry * 0.8, `${seed}w`, 12, 0.07), true, 0.6)} fill="none" stroke={MACRO_PAL.skinCellDeep} strokeWidth={2.5} opacity={0.8} />}
+    {!flat && [0, 1, 2, 3].map((i) => { const a = random(`${seed}o${i}`) * Math.PI * 2; return <ellipse key={i} cx={x + Math.cos(a) * rx * 0.58} cy={y + Math.sin(a) * ry * 0.52} rx={7} ry={4} transform={`rotate(${(a * 57).toFixed(0)} ${(x + Math.cos(a) * rx * 0.58).toFixed(1)} ${(y + Math.sin(a) * ry * 0.52).toFixed(1)})`} fill="#f8cfc0" stroke={INK.line} strokeWidth={1.6} />; })}
   </g>
 );
 
@@ -100,13 +126,27 @@ export const MacroEntry: React.FC<{t?: number; slide?: number; face?: MacroFace}
         {cells.map((c, i) => <Cell key={i} x={c.x} y={c.y} rx={c.rx} ry={c.ry} flat={c.flat} seed={`sc${i}`} />)}
         {/* the cut itself: a dark V through the layers */}
         <Tissue d={spline(V, true, 0.35)} fill={MACRO_PAL.gap} deep="#6e2a2c" band={30} form={0} />
+        {/* macro detail: the torn edge of the cut (ragged cell pieces), and a little blood welling in from a cut vessel.
+            These run on the real clock, not in beats: the wound is alive. */}
+        {[[300, 700, 26], [380, 820, 20], [450, 980, 16], [780, 700, 26], [704, 820, 20], [632, 980, 16], [486, 1150, 12], [596, 1150, 12]].map(([x, y, r], i) => <path key={i} d={spline(lump(x, y, r, r * 0.7, `tear${i}`, 7, 0.3), true, 0.5)} fill={MACRO_PAL.skinCellDeep} stroke={INK.line} strokeWidth={3} />)}
+        {[0, 1, 2, 3, 4, 5].map((i) => {
+          const life = (clock * 0.45 + i / 6) % 1; // a red cell drifts out of the torn vessel and down the wall of the cut
+          const side = i % 2 ? 1 : -1;
+          const x = 540 + side * (250 - life * 190);
+          const y = 700 + life * 520;
+          return <g key={i} opacity={Math.min(1, life * 5, (1 - life) * 4)}><ellipse cx={x} cy={y} rx={17} ry={12} fill="#d8414a" stroke={INK.line} strokeWidth={3} transform={`rotate(${(side * 30 + life * 120).toFixed(0)} ${x.toFixed(1)} ${y.toFixed(1)})`} /><ellipse cx={x} cy={y} rx={7} ry={4} fill="#a82a36" transform={`rotate(${(side * 30 + life * 120).toFixed(0)} ${x.toFixed(1)} ${y.toFixed(1)})`} /></g>;
+        })}
+        {/* the nerve ending answers: a small signal flickers along it now and then */}
+        {[0, 1].map((i) => { const p = (clock * 0.8 + i * 0.5) % 1; return <circle key={i} cx={540 + Math.sin(p * 9) * 6} cy={1960 - p * 480} r={11} fill="#ffe27a" stroke={INK.line} strokeWidth={3} opacity={Math.min(1, p * 4, (1 - p) * 4) * 0.95} />; })}
         {/* the nerve ending at the bottom of the cut */}
         <Tissue d={spline(wob([[500, 1990], [580, 1990], [574, 1700], [592, 1540], [640, 1450], [596, 1440], [556, 1510], [520, 1450], [476, 1462], [516, 1560], [506, 1720]], 'ne', 3), true, 0.5)} fill={MACRO_PAL.nerve} deep={MACRO_PAL.nerveDeep} band={18} form={8} />
         {/* the drop of saliva sitting over the cut, more viruses inside */}
         <g transform={`translate(0 ${(Math.sin(t * 1.6) * 6).toFixed(1)})`}>
           <path d={spline(wob([[170, 470], [260, 300], [420, 210], [600, 200], [780, 260], [900, 420], [880, 580], [720, 660], [540, 700], [360, 660], [200, 600]], 'drop', 5), true, 0.55)} fill={`url(#dr${id})`} stroke={INK.line} strokeWidth={INK.w} strokeLinejoin="round" opacity={0.93} />
           <path d="M280 340 Q360 260 470 250" fill="none" stroke="#ffffff" strokeWidth={16} strokeLinecap="round" />
-          {[[330, 470, 0.5, -25], [760, 420, 0.46, 22], [600, 330, 0.4, 8], [460, 560, 0.42, -10]].map(([x, y, s, r], i) => <MacroVirus key={i} x={x} y={y + Math.sin(t * 2 + i) * 6} s={s} rot={r} t={t} seed={`dv${i}`} />)}
+          {/* macro detail: bubbles rise in the saliva, and the viruses in it tumble slowly (real clock) */}
+          {[[250, 0.0, 9], [420, 0.3, 6], [660, 0.55, 8], [820, 0.8, 5], [540, 0.15, 5]].map(([x, o, r], i) => { const p = (clock * 0.3 + o) % 1; return <circle key={i} cx={x + Math.sin(clock * 2 + i) * 8} cy={640 - p * 380} r={r} fill="none" stroke={MACRO_PAL.salivaLine} strokeWidth={3} opacity={Math.min(1, p * 5, (1 - p) * 3)} />; })}
+          {[[330, 470, 0.5, -25], [760, 420, 0.46, 22], [600, 330, 0.4, 8], [460, 560, 0.42, -10], [230, 540, 0.3, 40], [700, 560, 0.32, -35]].map(([x, y, s, r], i) => <MacroVirus key={i} x={x + Math.sin(clock * 0.9 + i * 2) * 10} y={y + Math.sin(clock * 1.3 + i) * 9} s={s} rot={r + Math.sin(clock * 0.8 + i) * 14} t={clock} seed={`dv${i}`} />)}
         </g>
         {/* the hero: out of the drop, sliding down into the cut, grinning; speed strokes above it */}
         {[[-60, -230], [0, -260], [60, -230]].map(([dx, dy], i) => <path key={i} d={`M${540 + dx} ${hy + dy} l0 ${-60 - Math.sin(t * 7 + i) * 12}`} stroke={INK.line} strokeWidth={7} strokeLinecap="round" opacity={0.7} />)}
@@ -118,8 +158,14 @@ export const MacroEntry: React.FC<{t?: number; slide?: number; face?: MacroFace}
 
 /** INSIDE: one nerve fibre, its sheath in segments, the virus riding the inner tracks upward. */
 export const MacroInside: React.FC<{t?: number; speed?: number; face?: MacroFace}> = ({t: clock = 1, speed = 1, face = DEFAULT_FACE}) => {
-  const t = burst(clock); // the close-up moves in beats and holds between them (look check: the body lives in moments)
+  // Owner, 2026-11-18: "animation of nerve": the fibre runs on the real clock now (it moved in beats before), so
+  // the tracks, the cargo, the signals and the sparks at the gaps never stop while the virus rides.
+  const t = clock;
   const ride = (t * 60 * speed) % 240; // the tracks scroll down past the virus: it travels up (`speed` 0 = it stops)
+  const nodes = Array.from({length: 6}).map((_, i) => -120 + i * 380 + 360); // the gaps between sheath segments
+  const pulse = (t * 0.9) % 1; // a nerve signal: a bright band that runs up the fibre, jumping from gap to gap
+  const pulseY = 2000 - pulse * 2100;
+  const step = Math.sin(t * 14 * Math.min(1.4, speed)); // the hero's two feet, stepping along the track
   return (
     <AbsoluteFill style={{background: MACRO_PAL.gap}}>
       <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`}>
@@ -140,11 +186,29 @@ export const MacroInside: React.FC<{t?: number; speed?: number; face?: MacroFace
             {Array.from({length: 12}).map((_, j) => <path key={j} d={`M${x - 14} ${-80 + j * 180 + ride * 0.75} h28`} stroke={MACRO_PAL.nerveDeep} strokeWidth={6} strokeLinecap="round" />)}
           </g>
         ))}
-        {/* small cargo riding the tracks too, for scale */}
-        {[[420, 300], [660, 1500], [460, 1700]].map(([x, y], i) => <circle key={i} cx={x} cy={(y + ride * 1.5) % 2000} r={22} fill="#f3d6a6" stroke={INK.line} strokeWidth={4} />)}
+        {/* macro detail: the sheath is wound in layers (fine lines along each segment's edges) */}
+        {Array.from({length: 6}).flatMap((_, i) => { const y0 = -120 + i * 380; return [0, 1, 2].flatMap((k) => [-1, 1].map((s) => <path key={`${i}${k}${s}`} d={`M${540 + s * (318 - k * 26)} ${y0 + 44 + k * 10} Q${540 + s * (336 - k * 26)} ${y0 + 180} ${540 + s * (318 - k * 26)} ${y0 + 316 - k * 10}`} fill="none" stroke={MACRO_PAL.sheathDeep} strokeWidth={4} opacity={0.75} />)); })}
+        {/* the gaps between segments: the bare fibre shows, and charged specks flick in and out there (the signal is renewed at each gap) */}
+        {nodes.map((y, i) => (
+          <g key={i}>
+            <rect x={322} y={y - 2} width={436} height={44} fill="#f7d9a8" opacity={0.55} />
+            {[0, 1, 2, 3, 4, 5].map((j) => { const p = (t * 1.7 + j / 6 + i * 0.13) % 1; const side = j % 2 ? 1 : -1; return <circle key={j} cx={540 + side * (250 - p * 60)} cy={y + 8 + (j % 3) * 12} r={7} fill={j % 2 ? '#7fc4ee' : '#ffd23c'} stroke={INK.line} strokeWidth={2.5} opacity={Math.min(1, p * 4, (1 - p) * 4)} />; })}
+          </g>
+        ))}
+        {/* the nerve signal itself: a bright band racing up the fibre, brightest as it passes a gap */}
+        <g opacity={Math.min(1, pulse * 6, (1 - pulse) * 6)}>
+          <rect x={322} y={pulseY - 46} width={436} height={92} fill="#ffe27a" opacity={0.5} />
+          <path d={`M330 ${pulseY} H750`} stroke="#fff3b0" strokeWidth={14} strokeLinecap="round" />
+          {[-150, -60, 60, 150].map((dx, i) => <path key={i} d={`M${540 + dx} ${pulseY + 40} l${i % 2 ? 14 : -14} -40 l${i % 2 ? -18 : 18} -14 l${i % 2 ? 14 : -14} -40`} fill="none" stroke={INK.line} strokeWidth={5} strokeLinejoin="round" strokeLinecap="round" />)}
+        </g>
+        {/* cargo riding the tracks, for scale: little power stations (bean shapes with folds inside) going up, round packets coming down */}
+        {[[400, 200, 1], [680, 900, 1], [470, 1500, 1]].map(([x, y, k], i) => { const cy = 2000 - ((2000 - y + t * 90 * k) % 2100); return <g key={`m${i}`} transform={`translate(${x} ${cy.toFixed(1)}) rotate(${(Math.sin(t * 2 + i) * 8).toFixed(1)})`}><rect x={-20} y={-42} width={40} height={84} rx={20} fill="#f0a97a" stroke={INK.line} strokeWidth={4} /><path d="M-12 -24 h16 M-4 -8 h16 M-12 8 h16 M-4 24 h16" stroke="#b86a44" strokeWidth={4} strokeLinecap="round" /></g>; })}
+        {[[420, 300], [660, 1500], [460, 1700], [612, 620], [690, 1180]].map(([x, y], i) => <g key={i}><circle cx={x} cy={(y + ride * 1.5 + t * 40) % 2000} r={i > 2 ? 14 : 22} fill="#f3d6a6" stroke={INK.line} strokeWidth={4} /><circle cx={x - 5} cy={((y + ride * 1.5 + t * 40) % 2000) - 5} r={i > 2 ? 4 : 6} fill="#fff3d6" /></g>)}
+        {/* the hero walks: two small feet step along the track it holds (we draw the fibre's transport, we do not name it) */}
+        {speed > 0.05 && [-1, 1].map((s) => <path key={s} d={`M${540 + s * 26} 1040 L${540 + s * 34} ${1086 + s * step * 16} l${s * 16} 6`} fill="none" stroke={INK.line} strokeWidth={9} strokeLinecap="round" strokeLinejoin="round" />)}
         {/* the hero, riding up, with speed strokes under it */}
         {speed > 0.2 && [[-40, 150], [0, 180], [40, 150]].map(([dx, dy], i) => <path key={i} d={`M${540 + dx} ${980 + dy} l0 ${70 + Math.sin(t * 9 + i) * 14}`} stroke={INK.line} strokeWidth={7} strokeLinecap="round" opacity={0.75 * Math.min(1, speed)} />)}
-        <MacroVirus x={540} y={900} s={1.6} rot={0} face={face.face} talk={face.talk} blink={face.blink} t={t} seed="ride" />
+        <MacroVirus x={540} y={900 + Math.abs(step) * 8 * Math.min(1, speed)} s={1.6} rot={step * 3 * Math.min(1, speed)} face={face.face} talk={face.talk} blink={face.blink} t={t} seed="ride" />
       </svg>
     </AbsoluteFill>
   );
@@ -164,6 +228,9 @@ export const MacroCaught: React.FC<{t?: number; grip?: number; face?: MacroFace}
         {[[200, 520, 120], [880, 560, 110], [180, 1250, 110], [900, 1240, 120], [540, 1720, 100]] /* the lower three keep clear of the caption box (y 1460 to 1600) [1380, 1360, 1640] */.map(([x, y, r], i) => (
           <g key={i} transform={`translate(${x} ${y + Math.sin(t * 2.2 + i) * 6})`}>
             <Tissue d={spline(lump(0, 0, r, r * 0.95, `cd${i}`, 12, 0.05), true, 0.6)} fill={MACRO_PAL.defender} deep="#b8c8d6" band={22} form={14} />
+            {/* macro detail: a defender cell has its lobed core and its grains */}
+            <path d={spline(lump(r * 0.3, r * 0.42, r * 0.34, r * 0.22, `cn${i}`, 8, 0.2), true, 0.6)} fill="#a9b9df" stroke={INK.line} strokeWidth={3} opacity={0.9} />
+            {[0, 1, 2, 3, 4].map((j) => { const a = random(`cg${i}${j}`) * Math.PI * 2; return <circle key={j} cx={Math.cos(a) * r * 0.62} cy={Math.sin(a) * r * 0.6} r={5} fill="#b8c8d6" stroke={INK.line} strokeWidth={1.6} />; })}
             <InkEyes x={0} y={-r * 0.12} r={r * 0.26} look={[(540 - x) / 900, (980 - y) / 900]} />
             <path d={`M${-r * 0.2} ${r * 0.35} Q0 ${r * 0.5} ${r * 0.2} ${r * 0.35}`} fill="none" stroke={INK.line} strokeWidth={5} strokeLinecap="round" />
           </g>

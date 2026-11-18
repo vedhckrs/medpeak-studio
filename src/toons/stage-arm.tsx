@@ -152,7 +152,7 @@ export const ArmStage: React.FC<Props> = ({t, state = {}, faces = {}, label}) =>
   // the blood flows all the time (owner, 2026-11-18: "this line not moving, continue inside line"), a little faster on each beat
   const flow = t * 70 + (Math.floor(t / 2) + Math.min(1, ph / 0.22)) * 30;
   const flex = (i: number) => { const q = ((t + i * 1.9) / 6) % 1; return q < 0.25 ? Math.sin((q / 0.25) * Math.PI) : 0; };
-  const sig = (t / 5) % 1;
+  const sig = (t / 1.8) % 1; // a nerve signal every 1.8 s, taking 0.9 s to run up (owner, 2026-11-18: "animation of nerve") [every 5 s]
   return (
     <AbsoluteFill style={{background: ARM_PAL.air}}>
       <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} style={{position: 'absolute', left: 0, top: 0}}>
@@ -181,7 +181,7 @@ export const ArmStage: React.FC<Props> = ({t, state = {}, faces = {}, label}) =>
         <defs><clipPath id="armNerveClip"><path d={nerveD} /></clipPath></defs>
         <g clipPath="url(#armNerveClip)">
           {/* a signal: a soft bright pulse that runs up inside the nerve, now and then */}
-          {sig < 0.2 && (() => { const [px, py] = onPath(NERVE, sig / 0.2); return <ellipse cx={px} cy={py} rx={60} ry={90} fill="#fffaf0" opacity={0.8 * Math.sin((sig / 0.2) * Math.PI)} />; })()}
+          {sig < 0.5 && (() => { const [px, py] = onPath(NERVE, sig / 0.5); return <g opacity={Math.sin((sig / 0.5) * Math.PI)}><ellipse cx={px} cy={py} rx={60} ry={90} fill="#fffaf0" opacity={0.8} /><ellipse cx={px} cy={py} rx={26} ry={44} fill="#ffe27a" /></g>; })()}
           {/* where the virus is, the nerve swells sickly green around it */}
           {L.virus && <ellipse cx={L.virus.x} cy={L.virus.y} rx={80} ry={140} fill="#b9cf95" opacity={0.55 * L.virus.k} transform={`rotate(${(L.virus.lean ?? 0).toFixed(1)} ${L.virus.x.toFixed(1)} ${L.virus.y.toFixed(1)})`} />}
         </g>
