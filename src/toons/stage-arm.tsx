@@ -197,13 +197,14 @@ export const ArmStage: React.FC<Props> = ({t, state = {}, faces = {}, label}) =>
         {/* skin */}
         <Tissue d={spline(wob([[-60, DERM_TOP], [300, DERM_TOP - 12], [700, DERM_TOP + 4], [1140, DERM_TOP - 8], [1140, SURFACE + 2], [700, SURFACE + 8], [300, SURFACE - 2], [-60, SURFACE + 6]], 'derm', 4), true, 0.4)} fill={ARM_PAL.skin} deep={ARM_PAL.skinDeep} band={22} />
         {[[[468, 1610], [456, 1650], [442, 1692]], [[468, 1610], [490, 1650], [508, 1690]]].map((pts, i) => <path key={i} d={spline(pts as P[], false, 0.5)} fill="none" stroke="#e8cf86" strokeWidth={6} strokeLinecap="round" />)}
-        {L.scratched && <path d={`M${SCRATCH[0] - 46} ${SURFACE + 2} L${SCRATCH[0] - 10} ${SURFACE - 30} L${SCRATCH[0] + 8} ${SURFACE - 6} L${SCRATCH[0] + 30} ${SURFACE - 26} L${SCRATCH[0] + 50} ${SURFACE + 4} Z`} fill="#e2858a" stroke={INK.line} strokeWidth={INK.wIn} strokeLinejoin="round" />}
+        {L.scratched && <path transform={`translate(${SCRATCH[0]} ${SURFACE}) scale(1.9) translate(${-SCRATCH[0]} ${-SURFACE})`} d={`M${SCRATCH[0] - 46} ${SURFACE + 2} L${SCRATCH[0] - 10} ${SURFACE - 30} L${SCRATCH[0] + 8} ${SURFACE - 6} L${SCRATCH[0] + 30} ${SURFACE - 26} L${SCRATCH[0] + 50} ${SURFACE + 4} Z`} fill="#e2858a" stroke={INK.line} strokeWidth={INK.wIn} strokeLinejoin="round" />}
         {L.foam.map((f) => <circle key={f.i} cx={f.x} cy={f.y} r={f.r} fill="#ffffff" stroke={INK.line} strokeWidth={3} />)}
         {L.splash.map((r) => <ellipse key={r.i} cx={SCRATCH[0]} cy={SURFACE - 4} rx={20 + r.k * 60} ry={6 + r.k * 14} fill="none" stroke="#9fd0e6" strokeWidth={4} opacity={1 - r.k} />)}
         </g>
 
         {/* labels and the calendar, like an anatomy chart */}
-        <g transform="translate(830 130)">
+        {/* shown only while the virus is climbing (it sat on screen for the whole scene: owner, 2026-11-18) */}
+        <g transform="translate(830 130)" opacity={L.climb > 0.005 && L.wall < 0.5 ? 1 : 0}>
           <Label x={0} y={0} text="TO THE BRAIN" size={36} />
           <path d="M-200 -12 L-200 -88 M-224 -62 L-200 -90 L-176 -62" fill="none" stroke={INK.line} strokeWidth={8} strokeLinecap="round" strokeLinejoin="round" />
         </g>
@@ -243,8 +244,11 @@ export const ArmStage: React.FC<Props> = ({t, state = {}, faces = {}, label}) =>
             <path d={spline(wob([[592, 1606], [660, 1560], [780, 1546], [930, 1570], [1140, 1600], [1140, 2100], [780, 2100], [660, 1820], [610, 1710]], 'dog', 5), true, 0.5)} fill="#c98c55" stroke={INK.line} strokeWidth={INK.w} strokeLinejoin="round" />
             <path d={spline(wob([[640, 1660], [700, 1700], [780, 1720], [860, 1716]], 'muz', 3), false, 0.5)} fill="none" stroke="#9c6438" strokeWidth={5} strokeLinecap="round" />
             <path d={spline(wob([[574, 1590], [600, 1566], [640, 1570], [652, 1604], [624, 1630], [588, 1624]], 'nose', 2), true, 0.6)} fill={INK.line} />
-            <path d={`M630 1668 Q700 ${1740 + L.dog.open * 30} 800 1730`} fill="none" stroke={INK.line} strokeWidth={INK.wIn} strokeLinecap="round" />
-            <InkEyes x={880} y={1640} r={28} gap={0} look={[-0.6, -0.4]} />
+            {/* a snarling mouth: open, dark inside, fangs showing; it opens wider as it snaps (it was a closed smile) */}
+            <path d={`M612 1664 Q700 ${1690 - L.dog.open * 6} 812 1716 Q760 ${1790 + L.dog.open * 70} 640 ${1760 + L.dog.open * 60} Z`} fill="#4a1420" stroke={INK.line} strokeWidth={INK.wIn} strokeLinejoin="round" />
+            {[[636, 1672, 30], [672, 1680, 22], [704, 1688, 20], [738, 1697, 22], [776, 1708, 30]].map(([x, y, h], i) => <path key={i} d={`M${x - 11} ${y} L${x} ${y + h + (L.dog?.open ?? 0) * 10} L${x + 11} ${y + 3} Z`} fill="#fff6dc" stroke={INK.line} strokeWidth={4} strokeLinejoin="round" />)}
+            <InkEyes x={880} y={1640} r={28} gap={0} look={[-0.6, 0.3]} lid={0.3} />
+            <path d="M836 1592 L916 1622" stroke={INK.line} strokeWidth={12} strokeLinecap="round" />
             {[[690, 1660], [720, 1684], [750, 1664]].map(([x, y], i) => <circle key={i} cx={x} cy={y} r={4} fill="#7d5130" />)}
           </g>
         )}

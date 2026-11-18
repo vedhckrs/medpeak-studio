@@ -52,6 +52,26 @@ Third pass the same day (owner: "Yes, 800 cap" for voice and music):
 - NOT run: `toon:listen` and `toon:look` (earshot is not installed on the Windows PC), so nobody has
   checked the spoken words or the look numbers of this render. Not packaged, not uploaded.
 The "Not done" paragraph below is from the first pass; voice, music and the render are now done.
+Fourth pass the same day (owner, after watching: "check each frame... text overlap... not a viral hook"):
+every frame of the render was looked at (contact sheets, 2 a second). Found and fixed:
+- Hook: the jaws lasted 0.3 s and were two pink bars. `stage-macro.tsx` now draws a whole snarling dog
+  (eyes, brows, nose, fur) that bites on frame 0 and holds for "You get rabies." (about 1 s), then lets
+  go on "Time". New macro face `evil` (emotion `angry`): slanted brows, a grin full of teeth.
+- The "That morning..." time card is cut (1.2 s of dark screen right after the hook). A test now
+  allows a format-5 script without a card.
+- Text: tags and chips are drawn on the SCREEN after the camera (`Player.tsx`), so a zoom cannot cut
+  them off ("15 MINUTES" and "ACT IN TIME" were cut). A text on the picture must hold a number in
+  digits and sit at y 240 to 1300 (rules): "time runs out", "today" and "act in time" repeated the
+  caption and are gone. Caption groups no longer end on a joining word ("ME BEFORE THE" / "BRAIN?").
+- Overlaps: the people in the home and clinic stand 60 px further back (`"y"` on the cast), so their
+  feet clear the caption; the lower defender cells in the caught macro moved clear of it; the alarm
+  clock (half out of the boy's close shot) is removed.
+- Arm: the dog has an open snarling mouth with fangs and an angry eye; the scratch is 1.9 times
+  bigger; "TO THE BRAIN" shows only while the virus climbs.
+Re-rendered (43.8 s). All checks and 44 tests pass. No credits spent in this pass.
+Known and NOT fixed: in close shots the caption still lies over a body (legs, coat); the doctor's close
+shot (D2) holds about 5 s with one pose; the nerve macro (M2) is one picture for about 4 s; the virus
+on the arm is still small. `toon:listen` and `toon:look` still not run (no earshot on the Windows PC).
 Not done: A1 and E3 are not voiced, and no voice file of rabies is on the Windows PC, so no render with
 sound, no listening checks and no look check were run. No music was made (per-video music is not
 built). The bigger animation items of the plan (the bite as an event on the arm, a bigger virus,

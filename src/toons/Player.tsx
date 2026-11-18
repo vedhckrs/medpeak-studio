@@ -478,6 +478,20 @@ export const ToonPlayer: React.FC<ToonProps> = ({toon, timings, sfx, music, bare
   const word = cur && wi >= 0 ? cur.words[wi] : null;
   const keyWord = cur ? keyOf(cur) : '';
 
+  // ---- props: icons live in the scene (they move with the camera); text is laid on the screen
+  const isText = (p: {kind: string}) => p.kind === 'tag' || p.kind === 'chip';
+  const drawProp = (p: NonNullable<ToonShot['props']>[number], i: number) => {
+    const [a, end] = propFrames(L, si, p);
+    if (f < a || f >= end) return null;
+    const k = Math.min(E.back(clamp01((f - a) / 9)), clamp01((end - f) / 5));
+    const spot = propSpot(p, shot);
+    return (
+      <Slot key={i} x={spot.x} y={spot.y} size={p.size}>
+        <g transform={`rotate(${(p.rot ?? 0) + kick(f, a, 4, 0.9, 0.3)}) scale(${k.toFixed(3)})`}><Prop kind={p.kind} t={f / TOON_FPS} halo={p.halo} bubble={p.bubble} no={p.no} text={p.text} flip={spot.flip} /></g>
+      </Slot>
+    );
+  };
+
   // ---- sound
   const has = (n: string | undefined): n is string => !!n && sfx.includes(n);
   const events = soundPlan(L); // a few story sounds, kept apart and well under the voice (director.ts, "a calm mix")
@@ -490,20 +504,12 @@ export const ToonPlayer: React.FC<ToonProps> = ({toon, timings, sfx, music, bare
           <Set t={f / TOON_FPS} state={state} faces={faces} label={shot.label} look={look} people={look ? peopleBoxes(shot) : undefined} />
           {shot.cast.filter((a) => !a.stage).map((a) => <Actor key={a.who} a={a} shot={shot} shotFrom={shotAt.from} lines={shotLines} f={f} cur={cur} blur={blurOf(a.who)} tone={roomTone(look)} />)}
           {shot.desk && <OfficeDesk />}
-          {(shot.props ?? []).map((p, i) => {
-            const [a, end] = propFrames(L, si, p);
-            if (f < a || f >= end) return null;
-            const k = Math.min(E.back(clamp01((f - a) / 9)), clamp01((end - f) / 5));
-            const spot = propSpot(p, shot);
-            return (
-              <Slot key={i} x={spot.x} y={spot.y} size={p.size}>
-                <g transform={`rotate(${(p.rot ?? 0) + kick(f, a, 4, 0.9, 0.3)}) scale(${k.toFixed(3)})`}><Prop kind={p.kind} t={f / TOON_FPS} halo={p.halo} bubble={p.bubble} no={p.no} text={p.text} flip={spot.flip} /></g>
-              </Slot>
-            );
-          })}
+          {(shot.props ?? []).map((p, i) => (isText(p) ? null : drawProp(p, i)))}
           {Fore && <Fore t={f / TOON_FPS} look={look} />}
         </Camera>
       )}
+      {/* text on the picture is laid on the SCREEN, after the camera: a zoom or a push can never cut it off (owner, 2026-11-18) */}
+      {!shot.card && (shot.props ?? []).map((p, i) => (isText(p) ? drawProp(p, i) : null))}
       {flash > 0 && <AbsoluteFill style={{background: '#ffffff', opacity: flash * 0.3}} />}
       {word && !bare && STYLE.caption === 'box' && cur && (() => {
         const group = captionGroups(cur.words.map((w) => w.w)).find((g) => g.includes(wi)) ?? [wi];

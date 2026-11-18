@@ -21,7 +21,7 @@ const H = 1920;
 export const MACRO_PAL = {air: '#e1f7fb', skinTop: '#f6d0c2', skinCell: '#f2b8a8', skinCellDeep: '#e69d98', nucleus: '#cd6e68', dermis: '#e7867d', dermisDeep: '#cd6e68', collagen: '#f6b3aa', gap: '#924142', nerve: '#f6e3ce', nerveDeep: '#d9b98f', sheath: '#fbefd9', sheathDeep: '#e3c9a3', axon: '#fdf6ea', track: '#e3c9a3', saliva: '#dff2fa', salivaLine: '#9fc9dc', virus: '#9db57a', virusDeep: '#7f9a62', virusLight: '#c2d6a2', defender: '#e4ecf2', catcher: '#2b1a17'};
 
 /** The rabies virus close up: a bullet with a knobbed coat; `face` for the hero. */
-export const MacroVirus: React.FC<{x: number; y: number; s: number; rot?: number; face?: 'smug' | 'shock' | 'sad' | null; talk?: number; blink?: number; t?: number; seed?: string}> = ({x, y, s, rot = 0, face = null, talk = 0, blink = 0, t = 0, seed = 'v'}) => {
+export const MacroVirus: React.FC<{x: number; y: number; s: number; rot?: number; face?: 'smug' | 'shock' | 'sad' | 'evil' | null; talk?: number; blink?: number; t?: number; seed?: string}> = ({x, y, s, rot = 0, face = null, talk = 0, blink = 0, t = 0, seed = 'v'}) => {
   const knobs = Array.from({length: 26}).map((_, i) => {
     const a = (i / 26) * Math.PI * 2;
     const wig = Math.sin(t * 5 + i * 1.7 + random(`${seed}k${i}`) * 6) * 2.5; // the spikes twitch
@@ -43,9 +43,16 @@ export const MacroVirus: React.FC<{x: number; y: number; s: number; rot?: number
       <path d="M-56 66 L-56 -26 Q-56 -92 0 -96 Q56 -92 56 -26 L56 66 Z" fill="none" stroke={INK.line} strokeWidth={8} strokeLinejoin="round" />
       {face && (
         <g>
-          <InkEyes x={0} y={-28} r={21} look={face === 'shock' ? [0, -0.6] : [0.4, -0.3]} lid={blink > 0.5 ? 0.95 : face === 'smug' ? 0.4 : face === 'sad' ? 0.25 : 0} />
+          <InkEyes x={0} y={-28} r={21} look={face === 'shock' ? [0, -0.6] : face === 'evil' ? [0, 0.2] : [0.4, -0.3]} lid={blink > 0.5 ? 0.95 : face === 'smug' ? 0.4 : face === 'evil' ? 0.3 : face === 'sad' ? 0.25 : 0} />
           {face === 'smug' && <path d="M-36 -62 L-12 -58 M36 -62 L12 -58" stroke={INK.line} strokeWidth={6} strokeLinecap="round" />}
-          {talk > 0.15 ? <ellipse cx={2} cy={24} rx={12} ry={5 + talk * 13} fill={INK.line} /> : face === 'smug' ? <path d="M-16 20 Q2 34 20 16" fill="none" stroke={INK.line} strokeWidth={5} strokeLinecap="round" /> : face === 'shock' ? <ellipse cx={2} cy={24} rx={11} ry={15} fill={INK.line} /> : <path d="M-16 30 Q2 18 20 30" fill="none" stroke={INK.line} strokeWidth={5} strokeLinecap="round" />}
+          {/* evil (the hook: owner 2026-11-18, "the virus looks friendly"): hard slanted brows and a wide grin full of teeth */}
+          {face === 'evil' && <path d="M-42 -70 L-8 -50 M42 -70 L8 -50" stroke={INK.line} strokeWidth={9} strokeLinecap="round" />}
+          {face === 'evil' ? (
+            <g>
+              <path d={`M-30 12 Q0 ${22 + talk * 6} 30 12 Q24 ${40 + talk * 14} 0 ${42 + talk * 16} Q-24 ${40 + talk * 14} -30 12 Z`} fill="#fff6dc" stroke={INK.line} strokeWidth={5} strokeLinejoin="round" />
+              <path d="M-18 16 V34 M-6 19 V38 M6 19 V38 M18 16 V34" stroke={INK.line} strokeWidth={3} />
+            </g>
+          ) : talk > 0.15 ? <ellipse cx={2} cy={24} rx={12} ry={5 + talk * 13} fill={INK.line} /> : face === 'smug' ? <path d="M-16 20 Q2 34 20 16" fill="none" stroke={INK.line} strokeWidth={5} strokeLinecap="round" /> : face === 'shock' ? <ellipse cx={2} cy={24} rx={11} ry={15} fill={INK.line} /> : <path d="M-16 30 Q2 18 20 30" fill="none" stroke={INK.line} strokeWidth={5} strokeLinecap="round" />}
         </g>
       )}
     </g>
@@ -154,7 +161,7 @@ export const MacroCaught: React.FC<{t?: number; grip?: number; face?: MacroFace}
         {/* the fibre's tracks behind, still */}
         {[300, 420, 660, 780].map((x, i) => <path key={i} d={`M${x} -80 V2000`} stroke={MACRO_PAL.track} strokeWidth={12} />)}
         {/* the defenders around it, big and round, eyes only */}
-        {[[200, 520, 120], [880, 560, 110], [180, 1380, 110], [900, 1360, 120], [540, 1640, 100]].map(([x, y, r], i) => (
+        {[[200, 520, 120], [880, 560, 110], [180, 1250, 110], [900, 1240, 120], [540, 1720, 100]] /* the lower three keep clear of the caption box (y 1460 to 1600) [1380, 1360, 1640] */.map(([x, y, r], i) => (
           <g key={i} transform={`translate(${x} ${y + Math.sin(t * 2.2 + i) * 6})`}>
             <Tissue d={spline(lump(0, 0, r, r * 0.95, `cd${i}`, 12, 0.05), true, 0.6)} fill={MACRO_PAL.defender} deep="#b8c8d6" band={22} form={14} />
             <InkEyes x={0} y={-r * 0.12} r={r * 0.26} look={[(540 - x) / 900, (980 - y) / 900]} />
@@ -188,7 +195,7 @@ export const burst = (t: number, period = 1.5, active = 0.5) => {
   return (n + f * f * (3 - 2 * f)) * active;
 };
 export const MACROS = {entry: MacroEntry, inside: MacroInside, caught: MacroCaught};
-export type MacroFace = {face: 'smug' | 'shock' | 'sad'; talk: number; blink: number};
+export type MacroFace = {face: 'smug' | 'shock' | 'sad' | 'evil'; talk: number; blink: number};
 const DEFAULT_FACE: MacroFace = {face: 'smug', talk: 0, blink: 0};
 /** Where the entry hero is for a slide value (the staging check reads this too). */
 export const entryHeroY = (slide: number) => 560 + Math.max(0, Math.min(1, slide)) * 400;

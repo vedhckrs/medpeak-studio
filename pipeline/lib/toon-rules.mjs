@@ -29,6 +29,8 @@ export const HOOK = {words: 8, seconds: 2.5, titleWords: 2, by: 3, questionBy: 7
 /** Format 5, "engage": how fast the hook must hit and how long the picture may sit still. */
 /** Where a text on the picture may stand (x of its centre): left, middle, right. */
 export const TAG_GRID = [300, 540, 780];
+/** ...and how high or low (y of its centre): clear of the top edge and of the caption box. */
+export const TAG_Y = [240, 1300];
 export const ENGAGE = {hookSeconds: 2, firstMotion: 0.5, openSeconds: 3, openStill: 1, still: 2};
 /** A text on the picture may write a spoken number in digits ("15 minutes" for "fifteen minutes"). */
 const NUMBER_WORDS = {1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'five', 6: 'six', 7: 'seven', 8: 'eight', 9: 'nine', 10: 'ten', 11: 'eleven', 12: 'twelve', 13: 'thirteen', 14: 'fourteen', 15: 'fifteen', 16: 'sixteen', 17: 'seventeen', 18: 'eighteen', 19: 'nineteen', 20: 'twenty', 30: 'thirty', 40: 'forty', 50: 'fifty', 60: 'sixty', 70: 'seventy', 80: 'eighty', 90: 'ninety', 100: 'hundred'};
@@ -290,6 +292,10 @@ export const checkToon = (toon, timings, known) => {
       if (p.to !== p.from) tagFaults.push(`${name}: must leave when its line ends ("to": "${p.from}")`);
       if (p.rot) tagFaults.push(`${name}: no tilt ("rot" ${p.rot})`);
       if (!TAG_GRID.includes(p.x)) tagFaults.push(`${name}: x ${p.x} is off the grid (${TAG_GRID.join(', ')})`);
+      // the caption already shows every spoken word: a text on the picture is there for a NUMBER, never to say the caption twice
+      if (!/\d/.test(String(p.text))) tagFaults.push(`${name}: repeats the caption (a text on the picture shows a number, in digits)`);
+      // text is laid on the screen: it stays above the caption box and below the top edge
+      if (!(p.y >= TAG_Y[0] && p.y <= TAG_Y[1])) tagFaults.push(`${name}: y ${p.y} is outside ${TAG_Y[0]} to ${TAG_Y[1]} (clear of the top edge and of the caption)`);
     }
     add('format', 'Text says what is spoken', !tagFaults.length, tagFaults.length ? tagFaults.join('; ') : 'every text on the picture uses words of its line, appears on its first spoken word, leaves with the line and sits straight');
 

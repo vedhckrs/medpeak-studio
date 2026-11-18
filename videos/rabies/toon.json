@@ -130,7 +130,7 @@
      "x": 420,
      "size": 380,
      "stage": true,
-     "emotion": "smug",
+     "emotion": "angry",
      "pose": "rest"
     }
    ],
@@ -143,9 +143,9 @@
     {
      "at": "start",
      "set": {
-      "snap": 1
+      "snap": 0.5
      },
-     "over": 14,
+     "over": 6,
      "sfx": "bonk",
      "fx": "flash"
     },
@@ -153,18 +153,34 @@
      "at": "A1",
      "word": "rabies.",
      "set": {
-      "slide": 0.68
+      "slide": 0.62
      },
-     "over": 20
+     "over": 10
+    },
+    {
+     "at": "A1",
+     "word": "Time",
+     "set": {
+      "snap": 1
+     },
+     "over": 9,
+     "sfx": "plop"
     },
     {
      "at": "A1",
      "word": "runs",
      "set": {
+      "slide": 0.74
+     },
+     "over": 14
+    },
+    {
+     "at": "A1",
+     "word": "out.",
+     "set": {
       "slide": 0.84
      },
-     "over": 18,
-     "sfx": "plop"
+     "over": 14
     },
     {
      "at": "A2",
@@ -187,7 +203,7 @@
      "id": "A1",
      "who": "virus",
      "text": "You get rabies. Time runs out.",
-     "emotion": "smug",
+     "emotion": "angry",
      "pose": "rest",
      "key": "time",
      "src": [
@@ -199,33 +215,14 @@
      "id": "A2",
      "who": "virus",
      "text": "Can you stop me before the brain?",
-     "emotion": "smug",
+     "emotion": "angry",
      "pose": "rest",
      "key": "brain",
      "chat": true,
      "beat": 0.4
     }
    ],
-   "props": [
-    {
-     "kind": "tag",
-     "text": "time runs out",
-     "x": 540,
-     "y": 330,
-     "size": 320,
-     "from": "A1",
-     "to": "A1",
-     "word": "Time"
-    }
-   ]
-  },
-  {
-   "id": "T1",
-   "set": "arm",
-   "card": "That morning...",
-   "seconds": 1.2,
-   "cast": [],
-   "lines": []
+   "props": []
   },
   {
    "id": "B",
@@ -424,14 +421,16 @@
      "x": 285,
      "size": 960,
      "emotion": "scared",
-     "pose": "rest"
+     "pose": "rest",
+     "y": 979
     },
     {
      "who": "kid",
      "x": 805,
      "size": 980,
      "emotion": "neutral",
-     "pose": "rest"
+     "pose": "rest",
+     "y": 970
     }
    ],
    "props": [
@@ -456,17 +455,9 @@
      "halo": true
     },
     {
-     "kind": "clock",
-     "x": 545,
-     "y": 1180,
-     "size": 200,
-     "from": "C3",
-     "halo": true
-    },
-    {
      "kind": "tag",
      "text": "15 minutes",
-     "x": 540,
+     "x": 780,
      "y": 330,
      "size": 300,
      "from": "C2",
@@ -503,7 +494,7 @@
      "id": "C3",
      "who": "kid",
      "text": "Fifteen minutes? For a scratch?",
-     "cam": "mcu",
+     "cam": "mcu push",
      "emotion": "shocked",
      "pose": "think",
      "key": "scratch",
@@ -518,27 +509,19 @@
     {
      "who": "doctor",
      "x": 285,
-     "size": 940
+     "size": 940,
+     "y": 989
     },
     {
      "who": "kid",
      "x": 805,
      "size": 980,
      "emotion": "scared",
-     "pose": "rest"
+     "pose": "rest",
+     "y": 970
     }
    ],
    "props": [
-    {
-     "kind": "tag",
-     "text": "today",
-     "x": 540,
-     "y": 1180,
-     "size": 280,
-     "from": "D1",
-     "to": "D1",
-     "word": "today."
-    },
     {
      "kind": "glass",
      "size": 300,
@@ -566,16 +549,6 @@
      "from": "D3",
      "word": "treatment",
      "halo": true
-    },
-    {
-     "kind": "tag",
-     "text": "act in time",
-     "x": 540,
-     "y": 300,
-     "size": 300,
-     "from": "D3",
-     "to": "D3",
-     "word": "act"
     }
    ],
    "lines": [

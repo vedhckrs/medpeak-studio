@@ -230,7 +230,8 @@ test('every stage a script uses has its dials, and every steady script is a show
     assert.equal(t.camera, 'steady', `${t.slug} uses the steady camera`);
     const stages = t.shots.filter((s) => (s.cast ?? []).some((a) => a.stage));
     assert.ok(stages.length >= 2, `${t.slug}: the body stage opens and closes the story`);
-    assert.ok(t.shots.some((s) => s.card !== undefined), `${t.slug}: a time card`);
+    // format 5 ("engage") has no time card: a second of dark screen right after the hook loses the viewer (owner, 2026-11-18)
+    if (!(t.format >= 5)) assert.ok(t.shots.some((s) => s.card !== undefined), `${t.slug}: a time card`);
     const L = layoutToon(t, null);
     for (const sh of stages) {
       const si = t.shots.indexOf(sh);

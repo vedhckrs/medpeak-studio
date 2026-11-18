@@ -874,6 +874,7 @@ export const WordCaption: React.FC<{word: string; key_?: boolean; y?: number; po
  * Split a line's words into caption groups of 2 to 3 words. A group ends at punctuation, so a
  * phrase stays together; a single left-over word joins the group before it when that fits.
  */
+const CAPTION_JOINS = new Set('a an the to of in on at by for and or but with from before after is are was it its this that my your almost always usually'.split(' '));
 export const captionGroups = (words: string[], max = 3): number[][] => {
   const out: number[][] = [];
   let cur: number[] = [];
@@ -882,9 +883,17 @@ export const captionGroups = (words: string[], max = 3): number[][] => {
     if (cur.length >= max || /[,.!?:;]$/.test(w)) { out.push(cur); cur = []; }
   });
   if (cur.length) out.push(cur);
-  for (let i = out.length - 1; i > 0; i--) { // no one-word group if the neighbour has room
-    if (out[i].length === 1 && out[i - 1].length < max) { out[i - 1].push(...out[i]); out.splice(i, 1); }
+  // a group never ends on a small joining word while the phrase goes on ("ME BEFORE THE" / "BRAIN?"): that
+  // word moves on to the next group, so each group is a phrase a reader takes in at once
+  const joins = (w: string) => CAPTION_JOINS.has(w.toLowerCase().replace(/[^a-z']/g, '')) && !/[,.!?:;]$/.test(w);
+  for (let i = 0; i < out.length - 1; i++) {
+    while (out[i].length > 1 && joins(words[out[i][out[i].length - 1]])) out[i + 1].unshift(out[i].pop() as number);
   }
+  for (let i = out.length - 1; i > 0; i--) { // no one-word group if the neighbour has room
+    if (out[i].length === 1 && out[i - 1].length <= max && !joins(words[out[i - 1][out[i - 1].length - 1]])) { out[i - 1].push(...out[i]); out.splice(i, 1); }
+  }
+  // a group that grew past four words is cut in two
+  for (let i = 0; i < out.length; i++) if (out[i].length > max + 1) { const g = out[i]; out.splice(i, 1, g.slice(0, Math.ceil(g.length / 2)), g.slice(Math.ceil(g.length / 2))); }
   return out;
 };
 /** The boxed caption: 2 to 3 words, white bold on a rounded black box at 60%, the key word in yellow. */

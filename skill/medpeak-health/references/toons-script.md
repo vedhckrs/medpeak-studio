@@ -373,5 +373,15 @@ captions with no box. `"format": 5` adds these rules to format 4. `toon:check` m
   drawn 1.15 times bigger (more reaches the caption line).
 - **People** lean back hard and squash on a fright (`STYLE.bodyReact`, 0.4). Their feet stay planted:
   a jump, or a stronger reaction, fails the motion check (leg jumps, elbow pops).
-- **Camera words used on rabies:** `ews whip` into the middle macro, `ms crash` on the key line at
+- **Look at every frame before the owner does** (2026-11-18: the checks passed a video with text cut off
+  by the frame, text said twice, and a hook nobody could read). After a render, make contact sheets at
+  2 frames a second and read them all: `ffmpeg -i toon.mp4 -vf "fps=2,scale=360:-1,tile=6x2" s%02d.jpg`.
+- **The hook holds.** A hit shorter than about a second is a flicker. On the macro stage the dog bites
+  with `snap` 0.5 on the first frame, stays for the first sentence, and lets go (`snap` 1) on the next.
+  The virus is `angry` (the evil face) in the hook, never smiling.
+- **No time card** in format 5.
+- **Text on the picture is for a number** ("15 minutes", "2-3 months"), in digits, at y 240 to 1300. The
+  caption already shows every word; a tag that repeats it fails the check. Text is drawn on the screen,
+  not in the scene, so the camera cannot cut it off.
+- **Feet clear of the caption:** in a room, give each person `"y": 1440 - 0.48 * size`.- **Camera words used on rabies:** `ews whip` into the middle macro, `ms crash` on the key line at
   home, `push` on the doctor's lines and the last macro. Impacts take `"fx": "flash"` on their event.
