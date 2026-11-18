@@ -98,6 +98,19 @@ this", "human character hand and arm design not proper", "I want second characte
   shot) before the virus's last line. `MacroCaught` takes `cell` (talk, blink); `macroSpotsAt` has a
   `whitecell` spot. Voiced for 12 credits (total for rabies now 849 against the owner's 800 cap).
 Re-rendered (45.6 s). All checks and 44 tests pass. `toon:listen` / `toon:look` still not run here.
+People look, a PROPOSAL (owner, 2026-11-18: "hand and arm design not proper", a stock character sheet as a
+style reference, then "check Dr. Healthcare", then "Yes, doctor first"):
+- All 20 reference Shorts are from the Dr. Healthcare channel (checked by their ids). Three preview frames
+  of each were looked at (8 videos read closely). Their people: about 4 to 4.5 heads tall, arms of normal
+  thickness with the sleeve part of the shirt, small mitten hands that hold things, they sit and turn
+  three-quarter, a thin even outline, flat colour, plain rooms.
+- `src/toons/look-people.tsx` + still `ToonPeopleLook` (1920x1080): Dr. Mira in that way of drawing (our own
+  design): front, three-quarter, sitting with a clipboard, six poses, eight shared hands. It only draws a
+  sheet. `humans.tsx` and every video are unchanged by it.
+- NOT approved yet. Known weak points on the sheet: her hair is a smooth bob (it should stay curly), the
+  sitting pose's far arm is awkward, hands are small in the pose thumbnails.
+- If approved: port to `humans.tsx` (4.2 heads re-frames every shot with people; a thin outline reverses
+  the ink line for people), then the other five people, then the motion test on all scripts.
 Not done: A1 and E3 are not voiced, and no voice file of rabies is on the Windows PC, so no render with
 sound, no listening checks and no look check were run. No music was made (per-video music is not
 built). The bigger animation items of the plan (the bite as an event on the arm, a bigger virus,
