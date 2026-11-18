@@ -70,12 +70,17 @@ const MOUTHS = {closed: 188, open: 189, wide: 184, soft: 185, teeth: 186, tongue
 // top-left corner) that sits on the wrist, "points" is the way its fingers point in the picture
 // (0 = up, 90 = to the right, 180 = down, 270 = to the left), "side" the arm it is drawn for.
 const HAND_SCALE = 0.62;
+// "side" was the wrong way round at first (the owner saw every hand facing the opposite way). Read from
+// the drawings: hand-16 shows curled fingers on the left and the index on the right, a right hand; hand-34
+// and hand-36 show their nails, the back of the hand, with the thumb where a left hand has it.
 const HANDS = {
-  point: {part: 'hand-16', wrist: [41, 104], points: 0, side: 'L'},
-  palm: {part: 'hand-35', wrist: [28, 92], points: 350, side: 'L'},
-  open: {part: 'hand-13', wrist: [32, 111], points: 355, side: 'L'},
-  offer: {part: 'hand-34', wrist: [99, 53], points: 297, side: 'R'},
-  stop: {part: 'hand-36', wrist: [43, 60], points: 357, side: 'L'},
+  point: {part: 'hand-16', wrist: [41, 104], points: 0, side: 'R'},
+  // the two raised hands are cut without their nails (ai-extract "noSmall"): with nails they showed the back
+  // of the hand where a palm has to face us
+  palm: {part: 'hand-35p', wrist: [28, 91], points: 350, side: 'R'},
+  open: {part: 'hand-13', wrist: [32, 111], points: 355, side: 'R'},
+  offer: {part: 'hand-34', wrist: [99, 53], points: 297, side: 'L'},
+  stop: {part: 'hand-36p', wrist: [43, 58], points: 357, side: 'R'},
 };
 const WRIST_IN = 6; // a gesture hand starts this far inside the cuff, behind the sleeve, so its cut wrist never shows
 
@@ -327,11 +332,11 @@ const place = (list, p) => {
 const P = {
   rest: pose({}),
   explain: pose({head: -3, lean: -1, brow: 0.4, R: {shoulder: 4, elbow: 128, hand: 'offer'}}),
-  point: pose({head: 3, lean: 1, brow: 0.8, L: {shoulder: 4, elbow: 146, hand: 'point'}}),
+  point: pose({head: 3, lean: 1, brow: 0.8, L: {shoulder: 4, elbow: 146, wrist: 26, hand: 'point'}}),
   stop: pose({head: 0, brow: -0.8, L: {shoulder: 2, elbow: 148, wrist: 28, hand: 'stop'}}),
   both: pose({brow: 0.5, L: {shoulder: 0, elbow: 124, hand: 'offer'}, R: {shoulder: 0, elbow: 124, hand: 'offer'}}),
   chest: pose({head: -3, brow: 0.2, R: {shoulder: 8, elbow: -118}}),
-  wave: pose({head: 4, lean: 1.5, brow: 0.7, mouth: 'wide', L: {shoulder: 42, elbow: 112, hand: 'palm'}}),
+  wave: pose({head: 4, lean: 1.5, brow: 0.7, mouth: 'wide', L: {shoulder: 42, elbow: 112, wrist: 24, hand: 'palm'}}),
 };
 const SHEET = [
   ['rest', P.rest], ['explain', {...P.explain, mouth: 'soft'}], ['point', {...P.point, mouth: 'open'}], ['stop', {...P.stop, mouth: 'teeth'}],
@@ -499,7 +504,10 @@ const run = (mode) => {
   // appears (tested: seen in 0 of 647 checks, against 44 of 464 with one call per frame). That route exports
   // at 300 dpi (4500 x 8000 for this page) and names the frames from 0001; ffmpeg brings them to size.
   // RIG_SEQUENCE=off goes back to one call per frame at the page's own size.
-  job.sequence = process.env.RIG_SEQUENCE !== 'off';
+  // BUT that route can stop on Animate's "Export PNG" settings window and wait for a click (it did once the
+  // owner had set the export back to 72 dpi: seen in 1316 of 1599 checks, no frames written). So it is only
+  // used when asked for (RIG_SEQUENCE=on); the default is one call per frame, which never waits.
+  job.sequence = process.env.RIG_SEQUENCE === 'on';
   job.suppress = job.sequence;
   fs.writeFileSync(path.join(here, 'an-rig.json'), JSON.stringify(job));
   if (process.env.RIG_DRY) return; // work the motion out, do not start Animate

@@ -184,6 +184,15 @@ and Animate driven by code, no screen control. What is built, in `pipeline/anima
   full 410-frame run (44 of 464 before). That route writes 4500 x 8000 frames named from 0001 (300 dpi; the
   publish profile's PNG size is ignored), so ffmpeg scales them to 1080 x 1920. A full run takes about 9
   minutes and 513 MB of temporary frames in `out/animate/doctor-frames`. `RIG_SEQUENCE=off` goes back.
+- **Hands the right way round, and the export put back (2026-11-18):** the owner saw every gesture hand
+  facing the wrong way: each hand's `side` in `HANDS` was the opposite of what the drawing shows, so all five
+  are swapped (the code comment says how to read a drawing's side). The two raised hands (wave, stop) showed
+  their nails, so the back of the hand faced us: they are cut again without nails (`noSmall` in the spec,
+  parts `hand-35p` and `hand-36p`) and now read as open palms; point, stop and wave bend the wrist to stand
+  upright. **The one-call export is no longer the default:** once the owner set Animate's export back to 72 dpi
+  (he had set 300 by mistake, which is why frames were 4500 x 8000), that route stopped on the "Export PNG"
+  settings window and waited for a click (seen in 1316 of 1599 checks, no frames written). Default is again
+  one call per frame, which shows the Publishing box but never waits; `RIG_SEQUENCE=on` uses the one-call route.
 - **Rules from the owner for Adobe scripting:** show the whole page in the window while a script runs
   (`fitPage` in an-rig.jsfl, `fitin` in the Illustrator scripts). Hidden pieces are shrunk to nothing on the
   page, never parked far away (that stretches Animate's work area and pushes the page out of view).

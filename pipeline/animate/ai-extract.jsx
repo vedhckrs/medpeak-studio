@@ -6,7 +6,8 @@
 //   ARGS[3] = export scale in percent (400 when left out)
 //   {name, rect: [x, y, w, h]} takes every top-level item that lies fully inside that rectangle of the
 //   sheet (x to the right, y down, from the artboard's top-left corner) as one part: for things the
-//   artist left as loose pieces, like a hand and its nails.
+//   artist left as loose pieces, like a hand and its nails. "noSmall": n leaves out pieces smaller than n
+//   units both ways (the nails), which turns the back of a hand into a palm.
 //   "each": true exports every child of that group as <name>-<index> (a figure's own parts, in order).
 (function () {
   var outDir = new Folder(ARGS[1]);
@@ -51,7 +52,7 @@
     parts.push('{"name": "' + name + '", "x": ' + (g[0] - ab[0] - 1).toFixed(2) + ', "y": ' + (ab[1] - g[1] - 1).toFixed(2) + ', "w": ' + (g[2] - g[0] + 2).toFixed(2) + ', "h": ' + (g[1] - g[3] + 2).toFixed(2) + ', "z": ' + z + ', "type": "' + item.typename + '"}');
   };
   var boundsOf = null; // the bounds of every top-level item, read once (reading them is slow)
-  var region = function (name, r) {
+  var region = function (name, r, noSmall) {
     var top = doc.layers[0].pageItems;
     if (!boundsOf) { boundsOf = []; for (var b0 = 0; b0 < top.length; b0++) { try { boundsOf.push(top[b0].visibleBounds); } catch (eb) { boundsOf.push(null); } } }
     var L = ab[0] + r[0], T = ab[1] - r[1], R = L + r[2], B = T - r[3];
@@ -61,6 +62,8 @@
     for (var i = top.length - 1; i >= 0; i--) {
       var g = boundsOf[i];
       if (!g || g[0] < L || g[2] > R || g[1] > T || g[3] < B) continue;
+      // "noSmall": leave out the little pieces (a hand's nails), so a hand reads as its palm
+      if (noSmall && g[2] - g[0] < noSmall && g[1] - g[3] < noSmall) continue;
       copies.push(top[i].duplicate(tmp.layers[0], ElementPlacement.PLACEATBEGINNING));
       u = u ? [Math.min(u[0], g[0]), Math.max(u[1], g[1]), Math.max(u[2], g[2]), Math.min(u[3], g[3])] : [g[0], g[1], g[2], g[3]];
     }
@@ -84,7 +87,7 @@
     parts.push('{"name": "' + name + '", "x": ' + (u[0] - ab[0] - 1).toFixed(2) + ', "y": ' + (ab[1] - u[1] - 1).toFixed(2) + ', "w": ' + (u[2] - u[0] + 2).toFixed(2) + ', "h": ' + (u[1] - u[3] + 2).toFixed(2) + ', "z": 0, "type": "region", "items": ' + copies.length + '}');
   };
   for (var s = 0; s < spec.length; s++) {
-    if (spec[s].rect) { region(spec[s].name, spec[s].rect); continue; }
+    if (spec[s].rect) { region(spec[s].name, spec[s].rect, spec[s].noSmall); continue; }
     var it = find(spec[s].path);
     if (spec[s].each) {
       for (var k = 0; k < it.pageItems.length; k++) one(it.pageItems[k], spec[s].name + '-' + (k < 10 ? '0' : '') + k, k); // z 0 = in front
