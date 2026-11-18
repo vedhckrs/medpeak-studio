@@ -204,6 +204,20 @@ and Animate driven by code, no screen control. What is built, in `pipeline/anima
   (`videos/rabies/renders/toon.mp4`). Open: she is flat stock art with no outline and the kid beside her is
   the code-drawn ink style, so they do not match; the other people need the same treatment (owner picks each
   from an options sheet first). `toon:listen` / `toon:look` still cannot run on this PC.
+- **NEW DIRECTION, owner's decision 2026-11-18: a full rebuild as an Adobe pipeline.** The stock doctor does
+  not match the code-drawn look, so the videos are to be made in Illustrator + Animate + Premiere Pro, all by
+  script, on both Mac and Windows, rabies first. His seven phases: (1) every character as a proper vector
+  sheet in Illustrator, (2) a cast list he approves, (3) core engine files for Illustrator and Animate,
+  (4) every shot storyboarded in Illustrator, (5) animation in Animate, (6) Premiere Pro for camera,
+  captions, transitions, effects and graphics, (7) final 1080 x 1920, 60 fps MP4. People come from the same
+  Magnific stock family as the doctor (premium, not AI; preview file names end in `_40831-NN`); the virus,
+  cells and organs are to be drawn by code in Illustrator. Phase 0 (proof test) is done: an .ai and an .svg
+  both arrive in Animate as real vector shapes with no dialog and become symbols (`doc.importFile(uri, false)`),
+  so the new pipeline can be vector, not PNG pieces; Premiere Pro 2027 and Media Encoder are installed and
+  Premiere's script route (`/C es.processFile`, fresh launch only) is already proven in the owner's OncoSphere
+  pipeline. A cast options sheet (9 from the family, 3 kids from other families, no baby found yet) waits
+  for his picks: `out/animate/cast-options.png`. The Mac side is untested: launchers there need osascript
+  instead of COM / PowerShell, and the Adobe apps installed.
 - **Rules from the owner for Adobe scripting:** show the whole page in the window while a script runs
   (`fitPage` in an-rig.jsfl, `fitin` in the Illustrator scripts). Hidden pieces are shrunk to nothing on the
   page, never parked far away (that stretches Animate's work area and pushes the page out of view).
