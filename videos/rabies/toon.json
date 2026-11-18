@@ -696,6 +696,14 @@
      "stage": true,
      "emotion": "sad",
      "pose": "rest"
+    },
+    {
+     "who": "whitecell",
+     "x": 200,
+     "size": 280,
+     "stage": true,
+     "emotion": "angry",
+     "pose": "rest"
     }
    ],
    "state": {
@@ -704,11 +712,26 @@
    },
    "events": [
     {
+     "at": "X1",
+     "set": {
+      "grip": 0.5
+     },
+     "over": 14
+    },
+    {
+     "at": "X1",
+     "word": "further.",
+     "set": {
+      "grip": 0.7
+     },
+     "over": 10
+    },
+    {
      "at": "E3",
      "set": {
-      "grip": 0.45
+      "grip": 0.85
      },
-     "over": 18
+     "over": 14
     },
     {
      "at": "E3",
@@ -720,6 +743,16 @@
     }
    ],
    "lines": [
+    {
+     "id": "X1",
+     "who": "whitecell",
+     "text": "Got you! You go no further.",
+     "cam": "cu",
+     "emotion": "angry",
+     "pose": "rest",
+     "key": "further",
+     "chat": true
+    },
     {
      "id": "E3",
      "who": "virus",

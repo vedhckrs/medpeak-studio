@@ -215,7 +215,7 @@ export const MacroInside: React.FC<{t?: number; speed?: number; face?: MacroFace
 };
 
 /** CAUGHT: the defenders' Y-shaped catchers gripping the virus by its spikes. */
-export const MacroCaught: React.FC<{t?: number; grip?: number; face?: MacroFace}> = ({t: clock = 1, grip = 1, face = {...DEFAULT_FACE, face: 'shock'}}) => {
+export const MacroCaught: React.FC<{t?: number; grip?: number; face?: MacroFace; cell?: {talk: number; blink: number}}> = ({t: clock = 1, grip = 1, face = {...DEFAULT_FACE, face: 'shock'}, cell}) => {
   const t = burst(clock); // the close-up moves in beats and holds between them (look check: the body lives in moments)
   const catchers = [[-120, -170, -35], [120, -170, 35], [-160, 0, -80], [160, 10, 80], [-110, 170, -140], [120, 170, 140], [0, -230, 0]];
   return (
@@ -224,17 +224,7 @@ export const MacroCaught: React.FC<{t?: number; grip?: number; face?: MacroFace}
         <rect x={0} y={0} width={W} height={H} fill={MACRO_PAL.axon} />
         {/* the fibre's tracks behind, still */}
         {[300, 420, 660, 780].map((x, i) => <path key={i} d={`M${x} -80 V2000`} stroke={MACRO_PAL.track} strokeWidth={12} />)}
-        {/* the defenders around it, big and round, eyes only */}
-        {[[200, 520, 120], [880, 560, 110], [180, 1250, 110], [900, 1240, 120], [540, 1720, 100]] /* the lower three keep clear of the caption box (y 1460 to 1600) [1380, 1360, 1640] */.map(([x, y, r], i) => (
-          <g key={i} transform={`translate(${x} ${y + Math.sin(t * 2.2 + i) * 6})`}>
-            <Tissue d={spline(lump(0, 0, r, r * 0.95, `cd${i}`, 12, 0.05), true, 0.6)} fill={MACRO_PAL.defender} deep="#b8c8d6" band={22} form={14} />
-            {/* macro detail: a defender cell has its lobed core and its grains */}
-            <path d={spline(lump(r * 0.3, r * 0.42, r * 0.34, r * 0.22, `cn${i}`, 8, 0.2), true, 0.6)} fill="#a9b9df" stroke={INK.line} strokeWidth={3} opacity={0.9} />
-            {[0, 1, 2, 3, 4].map((j) => { const a = random(`cg${i}${j}`) * Math.PI * 2; return <circle key={j} cx={Math.cos(a) * r * 0.62} cy={Math.sin(a) * r * 0.6} r={5} fill="#b8c8d6" stroke={INK.line} strokeWidth={1.6} />; })}
-            <InkEyes x={0} y={-r * 0.12} r={r * 0.26} look={[(540 - x) / 900, (980 - y) / 900]} />
-            <path d={`M${-r * 0.2} ${r * 0.35} Q0 ${r * 0.5} ${r * 0.2} ${r * 0.35}`} fill="none" stroke={INK.line} strokeWidth={5} strokeLinecap="round" />
-          </g>
-        ))}
+        {/* drawn BEHIND the defenders: a catcher flying in must never lie across a face (owner saw one on an eye, 2026-11-18) */}
         {/* the catchers: Y shapes, gripping the spikes */}
         {catchers.map(([dx, dy, a], i) => {
           const far = 1.05 + (1 - grip) * 2.2; // `grip` 0 = the catchers far out, 1 = gripping the spikes
@@ -248,6 +238,20 @@ export const MacroCaught: React.FC<{t?: number; grip?: number; face?: MacroFace}
             </g>
           );
         })}
+        {/* the defenders around it, big and round, eyes only */}
+        {[[200, 520, 120], [880, 560, 110], [180, 1250, 110], [900, 1240, 120], [540, 1720, 100]] /* the lower three keep clear of the caption box (y 1460 to 1600) [1380, 1360, 1640] */.map(([x, y, r], i) => (
+          <g key={i} transform={`translate(${x} ${y + Math.sin(t * 2.2 + i) * 6})`}>
+            <Tissue d={spline(lump(0, 0, r, r * 0.95, `cd${i}`, 12, 0.05), true, 0.6)} fill={MACRO_PAL.defender} deep="#b8c8d6" band={22} form={14} />
+            {/* macro detail: a defender cell has grains along its rim (a core drawn inside sat on its mouth) */}
+            {[0, 1, 2, 3, 4, 5].map((j) => { const a = -2.6 + (j / 5) * 2.0 + (j > 2 ? 2.2 : 0); /* along the top rim and the lower sides, never on the eyes or the mouth */ return <circle key={j} cx={Math.cos(a) * r * 0.78} cy={Math.sin(a) * r * 0.76} r={5} fill="#b8c8d6" stroke={INK.line} strokeWidth={1.6} />; })}
+            <InkEyes x={0} y={-r * 0.12} r={r * 0.26} look={[(540 - x) / 900, (980 - y) / 900]} />
+            {/* the first defender is a second character: it speaks (owner, 2026-11-18: "I want second character speak also") */}
+            {i === 0 && cell && cell.talk > 0.12 ? (
+              <g><ellipse cx={0} cy={r * 0.42} rx={r * 0.2 + cell.talk * 5} ry={r * 0.06 + cell.talk * r * 0.2} fill="#3a0d19" stroke={INK.line} strokeWidth={5} /><rect x={-r * 0.16} y={r * 0.42 - (r * 0.06 + cell.talk * r * 0.2) + 3} width={r * 0.32} height={8} rx={3} fill="#fff6dc" /></g>
+            ) : <path d={`M${-r * 0.2} ${r * 0.35} Q0 ${r * 0.5} ${r * 0.2} ${r * 0.35}`} fill="none" stroke={INK.line} strokeWidth={5} strokeLinecap="round" />}
+            {i === 0 && cell && <path d={`M${-r * 0.42} ${-r * 0.52} L${-r * 0.1} ${-r * 0.42} M${r * 0.42} ${-r * 0.52} L${r * 0.1} ${-r * 0.42}`} stroke={INK.line} strokeWidth={6} strokeLinecap="round" />}
+          </g>
+        ))}
         <MacroVirus x={540} y={980} s={1.9} rot={Math.sin(t * 3) * 4 * grip} face={face.face} talk={face.talk} blink={face.blink} t={t} seed="caught" />
       </svg>
     </AbsoluteFill>

@@ -26,9 +26,10 @@ export const macroSpotsAt = (state: Record<string, number> = {}) => {
   const v = Math.round(state.view ?? 0);
   const y = v === 0 ? entryHeroY(state.slide ?? 0.6) : v === 1 ? 900 : 980;
   const s = v === 0 ? 1.55 : v === 1 ? 1.6 : 1.9;
-  return {virus: {x: 540, y: y - 28 * s, faceW: 120 * s, headH: 190 * s, size: 300 * s}};
+  // the defender that speaks in the caught view (top left); it only exists there
+  return {virus: {x: 540, y: y - 28 * s, faceW: 120 * s, headH: 190 * s, size: 300 * s}, whitecell: {x: 200, y: 505, faceW: 150, headH: 200, size: 280}};
 };
-export const MACRO_SPOTS = {virus: {x: 540, y: 860, faceW: 186, headH: 295, size: 465}};
+export const MACRO_SPOTS = {virus: {x: 540, y: 860, faceW: 186, headH: 295, size: 465}, whitecell: {x: 200, y: 505, faceW: 150, headH: 200, size: 280}};
 /** For the staging check: the hero's whole body is its room (nothing of ours may sit on it). */
 export const macroThings = (state: Record<string, number> = {}) => {
   const v = Math.round(state.view ?? 0);
@@ -96,7 +97,7 @@ export const MacroStage: React.FC<Props> = ({t, state = {}, faces = {}}) => {
     <AbsoluteFill>
       {v === 0 && <MacroEntry t={t} slide={clamp01(state.slide ?? 0.6)} face={faceOf(me)} />}
       {v === 1 && <MacroInside t={t} speed={state.speed ?? 1} face={faceOf(me)} />}
-      {v === 2 && <MacroCaught t={t} grip={clamp01(state.grip ?? 1)} face={faceOf(me, 'shock')} />}
+      {v === 2 && <MacroCaught t={t} grip={clamp01(state.grip ?? 1)} face={faceOf(me, 'shock')} cell={faces.whitecell ? {talk: faces.whitecell.talk, blink: faces.whitecell.blink} : undefined} />}
       <Jaws snap={state.snap ?? 0} />
     </AbsoluteFill>
   );

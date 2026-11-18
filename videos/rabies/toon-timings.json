@@ -758,6 +758,47 @@
           "end": 3.715
         }
       ]
+    },
+    "X1": {
+      "who": "whitecell",
+      "text": "Got you! You go no further.",
+      "voiceId": "pNInz6obpgDQGcFmaJgB",
+      "pitch": 0,
+      "tempo": 1,
+      "file": "toons/rabies/voice/X1.mp3",
+      "duration": 1.629,
+      "words": [
+        {
+          "w": "Got",
+          "start": 0,
+          "end": 0.29
+        },
+        {
+          "w": "you!",
+          "start": 0.348,
+          "end": 0.464
+        },
+        {
+          "w": "You",
+          "start": 0.499,
+          "end": 0.592
+        },
+        {
+          "w": "go",
+          "start": 0.662,
+          "end": 0.755
+        },
+        {
+          "w": "no",
+          "start": 0.824,
+          "end": 0.917
+        },
+        {
+          "w": "further.",
+          "start": 0.987,
+          "end": 1.579
+        }
+      ]
     }
   }
 }

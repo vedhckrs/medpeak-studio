@@ -87,6 +87,17 @@ This goes against the Mac's look rule "the body lives in moments" (63% of refere
 the owner asked for more animation. `toon:look` has NOT been run on this render (no earshot here) and
 may now fail its "still" share; if it does, that rule needs the owner's decision, not a silent revert.
 All other checks and 44 tests pass. Re-rendered (43.8 s).
+Sixth pass the same day (owner, with a screenshot of the caught macro: "check all 4 characters face what is
+this", "human character hand and arm design not proper", "I want second character speak also"):
+- Defender cells: the lobed core I had drawn sat on each mouth like a blob. Removed; the grains keep to the
+  rim. The catchers are drawn behind the cells, so one can never lie across a face.
+- People (`humans.tsx`, `rig.tsx`): fuller arms (sleeve radii 7.6 / 6.9 / 6.0, bare 5.7 / 5.1 / 4.4), hands
+  at 0.8, and the relaxed hand is an open hand with four fingers (it was a square fist with knuckle lines).
+  This changes every video with people; the motion test still passes on all scripts.
+- A second character speaks: the white cell (voice Adam) says "Got you! You go no further." (line X1, a close
+  shot) before the virus's last line. `MacroCaught` takes `cell` (talk, blink); `macroSpotsAt` has a
+  `whitecell` spot. Voiced for 12 credits (total for rabies now 849 against the owner's 800 cap).
+Re-rendered (45.6 s). All checks and 44 tests pass. `toon:listen` / `toon:look` still not run here.
 Not done: A1 and E3 are not voiced, and no voice file of rabies is on the Windows PC, so no render with
 sound, no listening checks and no look check were run. No music was made (per-video music is not
 built). The bigger animation items of the plan (the bite as an event on the arm, a bigger virus,

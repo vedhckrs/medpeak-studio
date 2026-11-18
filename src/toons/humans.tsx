@@ -610,8 +610,8 @@ export const makeHuman = (s: HumanSpec): Person => {
       const kind = s.top.kind;
       const cover = kind === 'tee' ? 0.64 : kind === 'blouse' ? 1.5 : 1.86; // how far the sleeve reaches: 1 = the elbow, 2 = the wrist
       const ribbed = kind === 'hoodie' || kind === 'cardigan';
-      const [rS, rE, rW] = [6.5, 5.8, 5.2]; // sleeve radii: shoulder, elbow, wrist
-      const [kS, kE, kW] = [4.8, 4.3, 3.7]; // bare arm
+      const [rS, rE, rW] = [7.6, 6.9, 6.0]; // sleeve radii: shoulder, elbow, wrist (fuller: the arms read as sticks, owner 2026-11-18) [6.5, 5.8, 5.2]
+      const [kS, kE, kW] = [5.7, 5.1, 4.4]; // bare arm [4.8, 4.3, 3.7]
       const end1 = cover < 1 ? along(S, E, cover) : E; // where the sleeve stops on the upper arm
       const r1 = rS + (rE - rS) * Math.min(1, cover);
       const C = cover > 1 ? along(E, W, cover - 1) : null; // the cuff
@@ -648,7 +648,7 @@ export const makeHuman = (s: HumanSpec): Person => {
           {cover < 1 && <Line d={hem(end1, S, r1 * 0.86, 1.3)} color={lineOf(sc)} k={0.5} opacity={0.85} />}
           {cover >= 1 && bent && <Groove pts={[[E[0] + (bis[0] / bl) * rE * 0.95, E[1] + (bis[1] / bl) * rE * 0.95], [E[0] + (bis[0] / bl) * rE * 0.2, E[1] + (bis[1] / bl) * rE * 0.2], [E[0] - (bis[0] / bl) * rE * 0.3, E[1] - (bis[1] / bl) * rE * 0.3]]} w={1.15} color={sc} k={0.22} />}
           <g transform={`translate(${f1(W[0])} ${f1(W[1])}) rotate(${ang.toFixed(1)}) translate(-2.2 0)`}>
-            <Hand pose={sp.hand ?? 'relaxed'} fill={s.skin} s={0.9} flip={flip} />
+            <Hand pose={sp.hand ?? 'relaxed'} fill={s.skin} s={0.8} flip={flip} />
           </g>
         </g>
       );
