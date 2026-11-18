@@ -259,6 +259,13 @@ and Animate driven by code, no screen control. What is built, in `pipeline/anima
   `skill/medpeak-health/references/cast-sheet-prompts.md`. Waits for his approval before sheet 02. Credits: the
   balance also fell 260 (119,489 -> 119,229) between the Recraft test and this sheet with nothing run by
   Claude in between; reported to him, not explained.
+- **Doctor sheet traced and joint ends fixed (2026-11-18, free, no generation):** `ai-trace.jsx` (16 colours,
+  parts joined only when their boxes overlap by 6 or more, so a pelvis and the thigh below stay apart) gives
+  307 shapes in 37 parts. The AI drew every limb end as a cut-open skin oval; `ai-fixcaps.jsx` refills the skin
+  shapes at the ends of each clothed part with that part's own colour (27 ends: sleeves, trouser pieces,
+  hip holes, coat shoulders, shoe tops), leaving the whole figure, the neck opening, head, neck, hands and
+  the bottom row alone. Files: `stock/cast-ai/01-doctor-fixed.ai` / `.svg`. Parts are still numbered
+  (part-01...), not named, and nothing is rigged or bent yet.
 - **Rules from the owner for Adobe scripting:** show the whole page in the window while a script runs
   (`fitPage` in an-rig.jsfl, `fitin` in the Illustrator scripts). Hidden pieces are shrunk to nothing on the
   page, never parked far away (that stretches Animate's work area and pushes the page out of view).

@@ -2,6 +2,8 @@
 // For a character sheet whose body parts are drawn apart on white: every part becomes its own named
 // group, ready to be rigged. Run from PowerShell with pipeline/animate/run-ai.ps1.
 //   ARGS[0] = picture (png/jpg)   ARGS[1] = output folder   ARGS[2] = name   ARGS[3] = colours (default 24)
+//   ARGS[4] = how far two shapes' boxes must overlap to count as one part (default -6: boxes that only
+//             touch, like a pelvis and the thigh drawn just below it, stay apart)
 (function () {
   var out = new Folder(ARGS[1]);
   if (!out.exists) out.create();
@@ -64,7 +66,7 @@
   var root = [];
   for (var r = 0; r < n; r++) root.push(r);
   var find = function (x) { while (root[x] !== x) { root[x] = root[root[x]]; x = root[x]; } return x; };
-  var pad = 1.5;
+  var pad = ARGS.length > 4 ? Number(ARGS[4]) : -6;
   for (var p = 0; p < n; p++) for (var q = p + 1; q < n; q++) {
     if (box[p][2] + pad < box[q][0] || box[q][2] + pad < box[p][0] || box[p][3] - pad > box[q][1] || box[q][3] - pad > box[p][1]) continue;
     root[find(p)] = find(q);
