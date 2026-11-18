@@ -247,6 +247,12 @@ and Animate driven by code, no screen control. What is built, in `pipeline/anima
   hands. Faults: it did not copy the doctor's style (rounder, cuter cartoon), flat cloth traces slightly
   blotchy, the loose pair of eyes lost its whites, parts are numbered not named. The owner has not decided
   between this route and the stock kits.
+- **Recraft v4 Pro Vector test (owner asked, 2026-11-18): worse than the Sunburst route.** One direct-SVG
+  sheet with the same brief cost 375 credits (119,864 -> 119,489). It is a true SVG, but: 182 loose paths
+  with no groups at all, 10 gradients although flat colour was asked for, hot-pink skin, staring eyes, the
+  separated legs drawn bare (no trousers), duplicated torsos and arms, one leg ending in toes, only three
+  mouths. It takes no reference image. File: `stock/ai-test/recraft/patient-recraft.svg`. For a rig sheet
+  the Sunburst PNG + Illustrator trace (175 credits) is both better and cheaper.
 - **Rules from the owner for Adobe scripting:** show the whole page in the window while a script runs
   (`fitPage` in an-rig.jsfl, `fitin` in the Illustrator scripts). Hidden pieces are shrunk to nothing on the
   page, never parked far away (that stretches Animate's work area and pushes the page out of view).
