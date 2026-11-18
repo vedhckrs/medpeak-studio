@@ -137,6 +137,11 @@ and Animate driven by code, no screen control. What is built, in `pipeline/anima
   camera refused the script call (`camera.setPosition`: "Argument number 1 is invalid"), so the push-in
   scales the rig instead; the walk is the sheet's side view and cuts to the front view; the middle row of
   hands on the sheet is not cut (it sits inside group 94); not yet joined into the Toons video.
+- **Blink and walk fixed after the owner's review (same day):** part 235/239 is the eye's outline, not a lid,
+  so the closed eye is now made in her own colours (`closedEye()` in rig-doctor.mjs: skin lid, eye-shadow, lash
+  line); a blink narrows the whole eye, shows the closed lid for 3 frames, reopens. The walk now moves one
+  measured stride (72 units) per walk picture at a steady speed so the planted foot does not slide, comes in
+  from the right (the walk is drawn facing left), and ends in a 5-frame sideways squeeze as the turn to front.
 - Stock sources (premium, not AI, 0 credits) are kept in `stock/` which is
   git-ignored because the repo is public. On the Mac it is missing: download it again there, or keep
   rendering people on the Windows PC. Outputs are in `out/animate/` (not in git).

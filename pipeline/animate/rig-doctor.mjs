@@ -66,6 +66,31 @@ const HANDS = {
   fist: {part: 'hand-27', wrist: [75, 35], points: 270, side: 'R'},
 };
 
+// ---- the closed eye: the artwork has no closed eyelid, so one is made here in her own colours: a lid in
+// her skin colour with her eye-shadow on it and a lash line along the bottom ----
+const pixel = (file, x, y) => {
+  const r = spawnSync('ffmpeg', ['-v', 'error', '-i', file, '-vf', `format=rgba,crop=1:1:${x}:${y}`, '-f', 'rawvideo', '-pix_fmt', 'rgba', '-'], {maxBuffer: 1 << 20});
+  return [r.stdout[0], r.stdout[1], r.stdout[2]];
+};
+const CLOSED = {w: 32, h: 20}; // artwork units, the eye's middle in the middle
+const closedEye = () => {
+  const file = path.join(PARTS, 'eye-closed.png');
+  const face = need('front-245');
+  const lidPart = need('front-235');
+  const skin = pixel(path.join(PARTS, 'front-245.png'), Math.round(face.w * PX * 0.5), Math.round(face.h * PX * 0.42));
+  const shade = pixel(path.join(PARTS, 'front-235.png'), Math.round(lidPart.w * PX * 0.5), 5);
+  const lash = [62, 26, 20];
+  const u = '((X-128)/8)';
+  const v = '((Y-80)/8)';
+  const line = `(1+3.4*(1-pow(${u}/13,2)))`; // the lash line, bowing down
+  const isLash = `lt(abs(${v}-${line}),0.8)*lt(abs(${u}),13.2)`;
+  const isShade = `lt(pow(${u}/11.5,2)+pow((${v}+0.2)/4.6,2),1)*lt(${v},${line})`;
+  const lid = `lt(pow(${u}/14.6,2)+pow((${v}+1.8)/8.4,2),1)`;
+  const ch = (i) => `if(${isLash},${lash[i]},if(${isShade},${Math.round(skin[i] * 0.45 + shade[i] * 0.55)},${skin[i]}))`;
+  ffmpeg(['-f', 'lavfi', '-i', 'color=c=black@0:s=256x160,format=rgba', '-vf', `geq=r='${ch(0)}':g='${ch(1)}':b='${ch(2)}':a='255*gt(${lid}+${isLash},0)',scale=${CLOSED.w * PX}:${CLOSED.h * PX}:flags=lanczos`, '-frames:v', '1', file]);
+  return file;
+};
+
 // ---- geometry ----
 const rot = (v, deg) => {
   const t = (deg * Math.PI) / 180;
@@ -105,6 +130,7 @@ const pieces = () => {
     many('eye' + side, 'eye', EYE[side], [white], {side, parent: 'face-245'});
     many('iris' + side, 'iris', EYE[side], [iris], {side, parent: 'face-245'});
     many('lid' + side, 'lid', EYE[side], [lid], {side, parent: 'face-245'});
+    list.push({name: 'closed' + side, kind: 'closed', origin: EYE[side], side, parent: 'face-245', cels: [{uri: uri(closedEye()), m: [K / PX, 0, 0, K / PX, (-CLOSED.w / 2) * K, (-CLOSED.h / 2) * K]}]});
     many('brow' + side, 'brow', EYE[side], [brow], {side, parent: 'face-245'});
   }
   // the mouth: one symbol, a cel for each shape, each set where the figure's own lips are
@@ -136,19 +162,22 @@ const pieces = () => {
 };
 const WALK = [104, 103, 102, 101, 100, 99, 98, 97]; // the eight steps of the side walk, in order
 const FEET_WALK = 1899; // the ground line of the walk row on the sheet
+const STEP = 72; // how far the body travels during one walk picture, measured on the sheet (a planted foot stays put)
+const WALK_HOLD = 4; // frames each walk picture is shown
+const WALK_ORDER = [2, 3, 4, 5, 6]; // ends on a picture with the legs together, ready to turn
 
 // ---- a pose: joint angles in degrees. shoulder > 0 lifts the arm away from the body, elbow > 0
 // bends the forearm the same way (up and out), elbow < 0 folds it across the body. hand names a
 // gesture hand ('rest' = her own relaxed hand). ----
 const ARM = {shoulder: 0, elbow: 0, wrist: 0, hand: 'rest'};
-const REST = {head: 0, lean: 0, sway: 0, bob: 0, mouth: 'closed', blink: 0, look: 0, brow: 0, walk: -1, x: 0, L: ARM, R: ARM};
+const REST = {head: 0, lean: 0, sway: 0, bob: 0, mouth: 'closed', blink: 0, look: 0, brow: 0, walk: -1, x: 0, turn: 1, L: ARM, R: ARM};
 const pose = (p) => ({...REST, ...p, L: {...ARM, ...(p.L || {})}, R: {...ARM, ...(p.R || {})}});
 const mouthCel = Object.fromEntries(Object.keys(MOUTHS).map((k, i) => [k, i]));
 const handCel = Object.fromEntries(Object.keys(HANDS).map((k, i) => [k, i]));
 
 const place = (list, p) => {
   const shift = [p.x * K, 0];
-  if (p.walk >= 0) return list.map((it) => (it.kind === 'walk' ? inst(add([W / 2, GROUND], shift), 0, p.walk) : 0));
+  if (p.walk >= 0) return list.map((it) => (it.kind === 'walk' ? inst(add([W / 2, GROUND], shift), 0, p.walk, p.turn) : 0));
   // the upper body: leans around the hip, sways sideways, breathes up and down
   const hip = add(add(stage(HIP), shift), [p.sway * K, p.bob * K]);
   const up = (u) => add(hip, rot(mul(sub(u, HIP), K), p.lean));
@@ -167,7 +196,8 @@ const place = (list, p) => {
     const Wr = add(E, rot(mul(sub(j.wrist, j.elbow), K), t2));
     arm[side] = {t1, t2, t3, S, E, Wr, a, j};
   }
-  const open = 1 - 0.94 * p.blink; // how open the eyes are
+  const shut = p.blink > 0.9; // fully closed: the closed lid is shown in place of the eye
+  const open = 1 - 0.6 * p.blink; // on the way there the whole eye narrows
   return list.map((it) => {
     const A = it.side ? arm[it.side] : null;
     switch (it.kind) {
@@ -175,9 +205,10 @@ const place = (list, p) => {
       case 'legs': return inst(add(stage(HIP), shift));
       case 'body': return inst(hip, p.lean);
       case 'head': return inst(neck, headTurn);
-      case 'eye': return p.blink > 0.9 ? 0 : inst(onHead(EYE[it.side]), headTurn, 0, 1, open);
-      case 'iris': return p.blink > 0.9 ? 0 : inst(onHead(add(EYE[it.side], [p.look * 2.2, 0])), headTurn, 0, 1, open);
-      case 'lid': return inst(onHead(add(EYE[it.side], [0, p.blink * 7.5])), headTurn);
+      case 'eye': return shut ? 0 : inst(onHead(EYE[it.side]), headTurn, 0, 1, open);
+      case 'iris': return shut ? 0 : inst(onHead(add(EYE[it.side], [p.look * 2.2, 0])), headTurn, 0, 1, open);
+      case 'lid': return shut ? 0 : inst(onHead(EYE[it.side]), headTurn, 0, 1, open);
+      case 'closed': return shut ? inst(onHead(EYE[it.side]), headTurn) : 0;
       case 'brow': return inst(onHead(add(EYE[it.side], [0, -p.brow * 3])), headTurn + (it.side === 'L' ? 1 : -1) * p.brow * -4);
       case 'mouth': return inst(onHead(it.origin), headTurn, mouthCel[p.mouth] ?? 0);
       case 'upper': return inst(A.S, A.t1);
@@ -255,14 +286,14 @@ const BLINKS = [20, 97, 151, 236, 263, 340, 412, 470];
 const blinkAt = (f) => {
   for (const b of BLINKS) {
     const d = f - b;
-    if (d >= 0 && d < 5) return [0.6, 1, 1, 0.6, 0.2][d];
+    if (d >= 0 && d < 6) return [0.5, 1, 1, 1, 0.7, 0.3][d];
   }
   return 0;
 };
 
 const clipFrames = (words, seconds) => {
   const total = Math.round(seconds * FPS);
-  const walkIn = 40; // she walks in from the left first
+  const walkIn = WALK_ORDER.length * WALK_HOLD; // she walks in first, at the speed her steps really cover
   const say = walkIn + 8; // and starts to speak
   const T = (s) => say + Math.round(s * FPS);
   const at = (word) => (words.find((w) => w.w.toLowerCase().startsWith(word)) || {start: 0}).start;
@@ -276,9 +307,10 @@ const clipFrames = (words, seconds) => {
   for (let f = 0; f < total; f++) {
     let p;
     if (f < walkIn) {
-      // eight steps, each held three frames; the walk is drawn facing left, so she comes in from the right
-      const u = f / walkIn;
-      p = pose({walk: Math.floor(f / 3) % WALK.length, x: 150 * (1 - u) * (1 - u)});
+      // the walk is drawn facing left, so she comes in from the right. The body moves steadily, one STEP
+      // per picture, so the foot on the ground does not slide. On the last frames she turns to the front.
+      const left = walkIn - f; // frames still to go
+      p = pose({walk: WALK_ORDER[Math.floor(f / WALK_HOLD)], x: (left / WALK_HOLD) * STEP, turn: left <= 2 ? 0.55 + 0.25 * (left - 1) : 1});
     } else {
       const sec = f / FPS;
       const arm = (side) => ({
@@ -290,6 +322,7 @@ const clipFrames = (words, seconds) => {
       const t = (f - say) / FPS;
       const talking = mouthAt(words, t);
       p = pose({
+        turn: f - walkIn < 3 ? [0.6, 0.85, 0.97][f - walkIn] : 1, // the front view opens out of the turn
         head: track(keys, f, (q) => q.head, 1) + Math.sin(sec * 5.1) * 0.9 + (talking !== 'closed' ? Math.sin(sec * 11) * 0.7 : 0),
         lean: track(keys, f, (q) => q.lean) + Math.sin(sec * 1.3) * 0.5,
         sway: Math.sin(sec * 1.3 + 1) * 1.4,
@@ -332,7 +365,8 @@ const run = (mode) => {
     width: W, height: H, fps: FPS, out: uri(FRAMES) + '/', name: 'f',
     fla: uri(path.join(OUT, mode === 'clip' ? 'doctor-test.fla' : 'doctor-poses.fla')),
     pieces: list.map((it) => ({name: it.name, parent: it.parent || null, cels: it.cels})),
-    frames: poses.map((p) => place(list, p)),
+    // a turn squeezes the whole figure sideways around her centre line
+    frames: poses.map((p) => place(list, p).map((m) => (m && p.walk < 0 && p.turn !== 1 ? [r4(m[0] * p.turn), m[1], r4(m[2] * p.turn), m[3], r4(W / 2 + p.x * K + (m[4] - W / 2 - p.x * K) * p.turn), m[5], m[6]] : m))),
   };
   // the camera: Animate's own camera refused the script call here ("setPosition: Argument number 1 is
   // invalid"), so the push-in is done by scaling the whole rig around a point between face and chest
