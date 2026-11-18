@@ -111,6 +111,23 @@ style reference, then "check Dr. Healthcare", then "Yes, doctor first"):
   sitting pose's far arm is awkward, hands are small in the pose thumbnails.
 - If approved: port to `humans.tsx` (4.2 heads re-frames every shot with people; a thin outline reverses
   the ink line for people), then the other five people, then the motion test on all scripts.
+**People, a new way: stock artwork + Illustrator + Animate, all by script (Windows PC only).** The owner
+rejected the code-drawn people sheet (`src/toons/look-people.tsx`, nothing uses it) and asked for Illustrator
+and Animate driven by code, no screen control. What is built, in `pipeline/animate/`:
+- `run-ai.ps1` runs an Illustrator script (.jsx) through COM; `ai-inspect.jsx` lists how a stock file is
+  built; `ai-extract.jsx` cuts it into transparent PNG parts (400%) and writes `parts.json`.
+- `run-an.ps1` runs an Animate script (.jsfl), waits for "RESULT" in its log and then closes the Animate it
+  started (Animate does not close itself after `fl.quit()`). `an-sheet.jsfl` lays all parts out.
+- `rig-doctor.mjs` cuts elbow and wrist joints into the arms (ffmpeg), works out each pose from joint
+  angles, and `an-rig.jsfl` draws it in Animate: one layer per piece, one keyframe per frame, transparent
+  PNG frames out. `node pipeline/animate/rig-doctor.mjs sheet` gives 8 poses, `... clip` a 4 s talking test.
+- Source: Magnific stock vector #10005316 (premium, not AI, 0 credits), kept in `stock/` which is
+  git-ignored because the repo is public. On the Mac it is missing: download it again there, or keep
+  rendering people on the Windows PC. Outputs are in `out/animate/` (not in git).
+- Run and looked at: parts sheet (120 parts), pose sheet (8 poses), talking test (120 frames). Not done:
+  no blink, legs do not bend yet, mouth is not driven by the voice yet, nothing is joined into the Toons
+  video yet, only the doctor exists. Waits for the owner's OK on the look before the other people.
+
 Not done: A1 and E3 are not voiced, and no voice file of rabies is on the Windows PC, so no render with
 sound, no listening checks and no look check were run. No music was made (per-video music is not
 built). The bigger animation items of the plan (the bite as an event on the arm, a bigger virus,
