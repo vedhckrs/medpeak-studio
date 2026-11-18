@@ -362,4 +362,16 @@ captions with no box. `"format": 5` adds these rules to format 4. `toon:check` m
   spoken word (`"word"`), leaves when the line ends (`"to"` = `"from"`) and has no `"rot"`.
 - **Captions** (`STYLE.caption: 'box'`): 2 to 3 words at a time, white bold on a rounded black box at
   60%, the key word in yellow. `'word'` brings the one-word caption back.
-- **Not built yet:** a music track made for each video (and a check that fails a reused track).
+- **Captions are 20% smaller** than the first boxed version (59 px; owner, 2026-11-18).
+- **Text stands on a grid:** a tag's `x` is 300 (left), 540 (middle) or 780 (right). The hook may show
+  one tag with the words of the first line.
+- **Music of its own.** `"music"` is the video's own slug and `"musicPrompt"` (40+ characters) describes
+  the track. Quote it with `node pipeline/toon-music.mjs --slug <slug> --dry-run`, make it after the
+  owner's yes with `--approve --max-credits N` (about 500 credits for 40 s), then `npm run toon:music:scan`.
+  A shared bed fails the check, so no two format-5 videos can have the same music.
+- **The arm:** the dog lunges well into the frame and snaps (it only peeked in before); the virus is
+  drawn 1.15 times bigger (more reaches the caption line).
+- **People** lean back hard and squash on a fright (`STYLE.bodyReact`, 0.4). Their feet stay planted:
+  a jump, or a stronger reaction, fails the motion check (leg jumps, elbow pops).
+- **Camera words used on rabies:** `ews whip` into the middle macro, `ms crash` on the key line at
+  home, `push` on the doctor's lines and the last macro. Impacts take `"fx": "flash"` on their event.

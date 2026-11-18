@@ -50,8 +50,8 @@ export const climbAt = (climb: number) => onPath(NERVE, 0.18 + clamp01(climb) * 
 /** Which way the nerve runs at `climb` (degrees), so the virus leans along it. */
 export const climbAngle = (climb: number) => { const [ax, ay] = climbAt(Math.max(0, climb - 0.02)); const [bx, by] = climbAt(Math.min(1, climb + 0.02)); return (Math.atan2(bx - ax, -(by - ay)) * 180) / Math.PI; };
 export const WALL_AT = 0.56; // the defenders' wall; the virus gets no higher than about WALL_AT - 0.2
-export const ARM_ROOM = {side: 130, up: 158, down: 138};
-export const ARM_SPOTS = {virus: {x: 478, y: 1300, faceW: 190, headH: 250, size: 460}};
+export const ARM_ROOM = {side: 150, up: 182, down: 158}; // the virus is drawn 1.15 times bigger (more reaches the caption line) [130, 158, 138]
+export const ARM_SPOTS = {virus: {x: 478, y: 1300, faceW: 219, headH: 288, size: 530}}; // [190, 250, 460]
 const DEF_N = 7;
 
 /** Where everything on the arm is for a state. */
@@ -62,7 +62,7 @@ export const armLayout = (state: Record<string, number> = {}, t = 0) => {
   const come = io(clamp01(bite / 0.42));
   const go = io(clamp01((bite - 0.62) / 0.38));
   const nip = bite > 0.42 && bite < 0.62 ? Math.sin(((bite - 0.42) / 0.2) * Math.PI) : 0;
-  const dog = bite > 0 && bite < 1 ? {dx: lerp(620, 0, come) + go * 700, dy: lerp(560, 0, come) + go * 600 - nip * 14, open: nip} : null;
+  const dog = bite > 0 && bite < 1 ? {dx: lerp(620, -150, come) + go * 850, dy: lerp(560, -170, come) + go * 770 - nip * 40, open: nip} /* it lunges well into the frame and snaps (owner, 2026-11-18: the bite was never shown) [0, 0, 14] */ : null;
   const scratched = state.bite === undefined ? true : bite > 0.5;
   const drops = [0, 1].map((i) => { const u = clamp01((bite - 0.56 - i * 0.06) / 0.2); return u > 0 && u < 1 ? {i, x: SCRATCH[0] - 22 + i * 40, y: lerp(SURFACE + 90, SURFACE - 6, u), r: 13 - i * 2} : null; }).filter((d): d is NonNullable<typeof d> => !!d);
   const show = state.bite === undefined ? 1 : io(clamp01((bite - 0.8) / 0.2));
@@ -90,7 +90,7 @@ export const armLayout = (state: Record<string, number> = {}, t = 0) => {
   const cal = state.days === undefined || vaccine > 0 ? null : {x: 905, y: 330, n: days < 0.08 ? 1 : days < 0.35 ? 2 : days < 0.7 ? 6 : 10, unit: days < 0.08 ? 'DAY' : 'WEEK'};
   const foam = wash > 0 ? Array.from({length: 9}).map((_, i) => ({i, x: SCRATCH[0] + Math.cos(i * 0.7 + t) * (40 + (i % 3) * 22), y: SURFACE + 20 + Math.abs(Math.sin(i * 1.3 + t * 0.8)) * 30, r: (12 + (i % 4) * 5) * wash})) : [];
   // the nip shakes the skin and the fat a little; the drops land with a ring
-  const shake = nip * Math.sin(t * 46) * 7;
+  const shake = nip * Math.sin(t * 46) * 16; // [7]
   const splash = [0.74, 0.86].map((at, i) => ({i, k: clamp01((bite - at) / 0.12)})).filter((r) => r.k > 0 && r.k < 1);
   return {bite, climb, days, vaccine, wall, wash, dizzy, dog, scratched, drops, virus, defenders, wallAt: [wx, wy] as P, cal, foam, shake, splash};
 };
@@ -129,7 +129,7 @@ const Virus: React.FC<{f: StageFace; k: number}> = ({f, k}) => {
   const mouth = f.talk > 0.15 ? <ellipse cx={2} cy={22} rx={9} ry={4 + f.talk * 9} fill={INK.line} /> : mood === 'sad' || mood === 'scared' ? <path d="M-12 26 Q2 16 16 26" fill="none" stroke={INK.line} strokeWidth={INK.wIn} strokeLinecap="round" /> : <path d="M-12 18 Q2 28 16 16" fill="none" stroke={INK.line} strokeWidth={INK.wIn} strokeLinecap="round" />;
   const brow = mood === 'angry' ? <path d="M-34 -62 L-10 -52 M38 -62 L14 -52" stroke={INK.line} strokeWidth={5} strokeLinecap="round" /> : mood === 'smug' ? <path d="M-34 -56 L-10 -58" stroke={INK.line} strokeWidth={5} strokeLinecap="round" /> : null;
   return (
-    <g transform={`scale(${(k * 1.3).toFixed(3)}) rotate(${(-6 + f.lean * 0.6).toFixed(1)}) scale(${1 + f.squash * 0.08} ${1 - f.squash * 0.08})`}>
+    <g transform={`scale(${(k * 1.5).toFixed(3)}) rotate(${(-6 + f.lean * 0.6).toFixed(1)}) scale(${1 + f.squash * 0.08} ${1 - f.squash * 0.08})`}>
       {Array.from({length: 18}).map((_, i) => { const a = (i / 18) * Math.PI * 2; const px = Math.cos(a) * 60; const py = Math.sin(a) * 80 - 6; return <g key={i}><path d={`M${px * 0.86} ${py * 0.86} L${px * 1.12} ${py * 1.12}`} stroke={INK.line} strokeWidth={4} /><circle cx={px * 1.16} cy={py * 1.16} r={7} fill="#7f9a62" stroke={INK.line} strokeWidth={3} /></g>; })}
       <path d={bullet} fill="#9db57a" stroke={INK.line} strokeWidth={INK.w} strokeLinejoin="round" />
       <path d="M-40 54 L-40 -20 Q-40 -72 0 -76" fill="none" stroke="#b9cf95" strokeWidth={9} strokeLinecap="round" opacity={0.8} />

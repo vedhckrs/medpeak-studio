@@ -27,6 +27,8 @@ export const SHAPES = ['fight', 'journey', 'clock', 'crew', 'visit'];
 export const STICKERS = 5;
 export const HOOK = {words: 8, seconds: 2.5, titleWords: 2, by: 3, questionBy: 7, answerFrom: 0.75};
 /** Format 5, "engage": how fast the hook must hit and how long the picture may sit still. */
+/** Where a text on the picture may stand (x of its centre): left, middle, right. */
+export const TAG_GRID = [300, 540, 780];
 export const ENGAGE = {hookSeconds: 2, firstMotion: 0.5, openSeconds: 3, openStill: 1, still: 2};
 /** A text on the picture may write a spoken number in digits ("15 minutes" for "fifteen minutes"). */
 const NUMBER_WORDS = {1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'five', 6: 'six', 7: 'seven', 8: 'eight', 9: 'nine', 10: 'ten', 11: 'eleven', 12: 'twelve', 13: 'thirteen', 14: 'fourteen', 15: 'fifteen', 16: 'sixteen', 17: 'seventeen', 18: 'eighteen', 19: 'nineteen', 20: 'twenty', 30: 'thirty', 40: 'forty', 50: 'fifty', 60: 'sixty', 70: 'seventy', 80: 'eighty', 90: 'ninety', 100: 'hundred'};
@@ -95,7 +97,7 @@ export const checkToon = (toon, timings, known) => {
   const bad = [];
   const ids = new Set();
   if (!toon.slug || !toon.title) bad.push('slug and title are required');
-  if (toon.music && !known.beds.includes(toon.music)) bad.push(`unknown music bed "${toon.music}"`);
+  if (toon.music && toon.music !== toon.slug && !known.beds.includes(toon.music)) bad.push(`unknown music bed "${toon.music}"`);
   if (toon.camera && !['steady', 'cinematic'].includes(toon.camera)) bad.push(`camera must be "steady" or "cinematic", not "${toon.camera}"`);
   for (const s of shots) {
     if (s.card !== undefined) { // a time card: a few words on a plain screen, no characters
@@ -287,9 +289,13 @@ export const checkToon = (toon, timings, known) => {
       if (first && bare(p.word) !== first && bare(p.word) !== NUMBER_WORDS[first]) tagFaults.push(`${name}: appears on "${p.word}", not on its own first word "${first}"`);
       if (p.to !== p.from) tagFaults.push(`${name}: must leave when its line ends ("to": "${p.from}")`);
       if (p.rot) tagFaults.push(`${name}: no tilt ("rot" ${p.rot})`);
+      if (!TAG_GRID.includes(p.x)) tagFaults.push(`${name}: x ${p.x} is off the grid (${TAG_GRID.join(', ')})`);
     }
     add('format', 'Text says what is spoken', !tagFaults.length, tagFaults.length ? tagFaults.join('; ') : 'every text on the picture uses words of its line, appears on its first spoken word, leaves with the line and sits straight');
 
+    // ---- music of its own (owner: "same music"): a track made for this video, named after it, never shared
+    const ownMusic = toon.music === toon.slug && String(toon.musicPrompt ?? '').length >= 40;
+    add('format', 'Own music', ownMusic, ownMusic ? `its own track "${toon.music}" (made from "musicPrompt" with: node pipeline/toon-music.mjs --slug ${toon.slug})` : `"music" must be "${toon.slug}" (this video's own track) with a "musicPrompt" of 40+ characters; it is "${toon.music ?? 'none'}"`);
     // ---- the hook hits at once
     const first = L.lines[0];
     const said = first.frames / TOON_FPS - 0.14;

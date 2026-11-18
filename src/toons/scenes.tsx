@@ -890,7 +890,7 @@ export const captionGroups = (words: string[], max = 3): number[][] => {
 /** The boxed caption: 2 to 3 words, white bold on a rounded black box at 60%, the key word in yellow. */
 export const PhraseCaption: React.FC<{words: string[]; keyWord: string; y?: number}> = ({words, keyWord, y = 1470}) => (
   <div style={{position: 'absolute', top: y, left: 0, right: 0, display: 'flex', justifyContent: 'center'}}>
-    <div style={{background: 'rgba(0,0,0,0.6)', borderRadius: 28, padding: '14px 38px 20px', display: 'flex', gap: 22, fontFamily: theme.font, fontWeight: 900, fontSize: 74, letterSpacing: 1, lineHeight: 1.1, whiteSpace: 'nowrap'}}>
+    <div style={{background: 'rgba(0,0,0,0.6)', borderRadius: 22, padding: '11px 30px 16px', display: 'flex', gap: 18, fontFamily: theme.font, fontWeight: 900, fontSize: 59, /* 20% smaller (owner, 2026-11-18) [74] */ letterSpacing: 1, lineHeight: 1.1, whiteSpace: 'nowrap'}}>
       {words.map((w, i) => <span key={i} style={{color: w.toLowerCase() === keyWord ? STYLE.captionKey : '#ffffff'}}>{w.toUpperCase()}</span>)}
     </div>
   </div>

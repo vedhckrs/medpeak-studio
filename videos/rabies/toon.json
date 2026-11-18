@@ -3,7 +3,7 @@
  "title": "What Happens If You Get Rabies",
  "format": 5,
  "shape": "clock",
- "music": "panic",
+ "music": "rabies",
  "camera": "steady",
  "episode": 9,
  "hooks": [
@@ -205,6 +205,18 @@
      "chat": true,
      "beat": 0.4
     }
+   ],
+   "props": [
+    {
+     "kind": "tag",
+     "text": "time runs out",
+     "x": 540,
+     "y": 330,
+     "size": 320,
+     "from": "A1",
+     "to": "A1",
+     "word": "Time"
+    }
    ]
   },
   {
@@ -246,7 +258,9 @@
      "set": {
       "bite": 0.62
      },
-     "over": 16
+     "over": 16,
+     "fx": "flash",
+     "sfx": "bonk"
     },
     {
      "at": "B1",
@@ -376,8 +390,8 @@
     {
      "kind": "tag",
      "text": "2-3 months",
-     "x": 300,
-     "y": 430,
+     "x": 540,
+     "y": 330,
      "size": 300,
      "from": "B3",
      "to": "B3",
@@ -396,7 +410,8 @@
       "who-rabies",
       "cdc-rabies"
      ],
-     "beat": 0.3
+     "beat": 0.3,
+     "cam": "ews whip"
     }
    ]
   },
@@ -451,7 +466,7 @@
     {
      "kind": "tag",
      "text": "15 minutes",
-     "x": 545,
+     "x": 540,
      "y": 330,
      "size": 300,
      "from": "C2",
@@ -481,7 +496,8 @@
      },
      "src": [
       "who-rabies"
-     ]
+     ],
+     "cam": "ms crash"
     },
     {
      "id": "C3",
@@ -516,7 +532,7 @@
     {
      "kind": "tag",
      "text": "today",
-     "x": 550,
+     "x": 540,
      "y": 1180,
      "size": 280,
      "from": "D1",
@@ -554,7 +570,7 @@
     {
      "kind": "tag",
      "text": "act in time",
-     "x": 610,
+     "x": 540,
      "y": 300,
      "size": 300,
      "from": "D3",
@@ -653,7 +669,8 @@
       "climb": 0.31
      },
      "over": 14,
-     "sfx": "bonk"
+     "sfx": "bonk",
+     "fx": "flash"
     },
     {
      "at": "E2",
@@ -745,5 +762,6 @@
     }
    ]
   }
- ]
+ ],
+ "musicPrompt": "Dark tense cartoon pulse for a race against time: low staccato strings, a ticking woodblock clock, soft timpani hits, 124 BPM, creeping and urgent; in the last ten seconds it lifts into a warm hopeful major resolve with bright marimba."
 }

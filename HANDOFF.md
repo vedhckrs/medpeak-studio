@@ -29,6 +29,15 @@ Changed (branch cut from `feat/toons` at `b7f894b`):
 Run (Windows 11, Node 24.22.1): typecheck passes, 44 tests pass, rabies passes toon:check, camera,
 motion, staging and sound. Eight silent stills were rendered and looked at (jaws, boxed captions).
 
+Second pass the same day (owner: "first build all, don't miss anything, captions 20% smaller"):
+captions at 59 px; a hook tag "time runs out"; tags on a grid (x 300, 540, 780); format 5 needs
+`"music"` = the slug plus a `"musicPrompt"`, and `toon-music.mjs --slug <slug>` makes that track
+(rabies has the prompt; the track is NOT made); the dog lunges into the frame; the virus on the arm is
+1.15 times bigger; `STYLE.bodyReact` 0.4; whip into the middle macro, crash zoom on C2, flashes on the
+nip and the wall hit. Three tests in `toons.test.mjs` now accept a video's own track before it is made.
+Tried and dropped because checks failed: people jumping (200 leg jumps), `bodyReact` 1 (elbow pops in
+another video), a virus 1.35 times bigger (its face reached the caption line).
+All 9 Toon scripts pass toon:check; rabies passes camera, motion, staging and sound; 44 tests pass.
 Not done: A1 and E3 are not voiced, and no voice file of rabies is on the Windows PC, so no render with
 sound, no listening checks and no look check were run. No music was made (per-video music is not
 built). The bigger animation items of the plan (the bite as an event on the arm, a bigger virus,

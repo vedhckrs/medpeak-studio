@@ -253,7 +253,7 @@ const acting = (a: ToonActor, shot: ToonShot, lines: Placed[], f: number, cur: P
   const mood = (k: keyof typeof m1) => lerp(m0[k], m1[k], mk);
   const take = emotion === 'shocked' || emotion === 'scared';
   const act: Act = {
-    lean: side * mood('lean') * lerp(0.7, 1.25, voice) + kick(f, emotionFrom, 2, 0.8, 0.22) * (take ? -side : 0),
+    lean: side * mood('lean') * lerp(0.7, 1.25, voice) + kick(f, emotionFrom, person ? 2 + 2.5 * STYLE.bodyReact : 2, 0.8, 0.22) * (take ? -side : 0),
     tilt: side * mood('tilt') * 0.8 + (1 - voice) * hop(f, 96, seed, 18) * 2.4,
     nod: mood('nod') + beat * 0.55 + (1 - voice) * (cur ? Math.max(0, Math.sin((f + seed) / 11)) ** 6 * 0.5 : 0),
     turn: side * 0.62 * (1 - glance),
@@ -261,11 +261,12 @@ const acting = (a: ToonActor, shot: ToonShot, lines: Placed[], f: number, cur: P
     shift: person ? lerp(0.6, 0.2, voice) * hop(f, 190, seed + 3, 40) : 0,
     shrug: mood('shrug') * (0.6 + 0.4 * beat),
     // people keep their hips still when they talk (the beat goes to the head, the shoulders and the hands)
+    // people keep their feet planted (the motion check fails a jumping leg); a fright is a hard lean back and a squash (STYLE.bodyReact)
     bob: person ? 0 : -beat * (emotion === 'happy' || emotion === 'angry' ? 3.4 : 1.6),
   };
   // a "take" when the emotion changes and a nudge when starting to speak: both swell from zero
   // people do not squash and stretch like the round body characters: a little goes a long way on legs
-  const squash = (kick(f, emotionFrom, take ? 0.24 : 0.11, 0.9, 0.26) + (speaking && cur ? kick(f, cur.from, 0.06, 1, 0.34) : 0)) * (person ? 0.3 : 1);
+  const squash = (kick(f, emotionFrom, take ? 0.24 : 0.11, 0.9, 0.26) + (speaking && cur ? kick(f, cur.from, 0.06, 1, 0.34) : 0)) * (person ? 0.3 + 0.12 * STYLE.bodyReact : 1);
   const blink = Math.max(blinkAt(f, TOON_FPS, seed), f - emotionFrom >= 0 && f - emotionFrom < 5 ? 1 - Math.abs(f - emotionFrom - 2) / 3 : 0);
   return {emotion, emotionFrom, talk, blink, arms, act, squash, look: {x: lookX, y: (a.stage ? up * 0.7 : mood('nod') * 0.3) * (1 - glance)}};
 };

@@ -48,7 +48,8 @@ export const STYLE = {
   // Captions (owner, 2026-11-18): 'box' = 2 to 3 words at a time, white bold on a rounded black box at
   // 60%, the key word in yellow; 'word' = one word at a time (the older look).
   caption: 'box' as 'box' | 'word',
-  captionPop: false, // each caption word grows in over 4 frames (v6); the ink look just swaps the word, as the reference does [true]
+  captionPop: false,
+  bodyReact: 0.4, // (1 made elbows pop in the motion check) how much people react with the whole body when their feeling changes: a jump back on a fright, a lean in when pleased; 0 = arms and face only [0] // each caption word grows in over 4 frames (v6); the ink look just swaps the word, as the reference does [true]
   talkBeat: 0.2, // how much people's arms and heads beat on stressed words while they talk [1]
   roomLife: 0, // clouds, birds, a monitor, plants in the real-world rooms; 0 = the room holds still and only the people act (reference rooms are still) [1]
   breathe: 0, // idle breathing; 0 = hold still between actions, as the reference does (63% of frames still) [0.007]

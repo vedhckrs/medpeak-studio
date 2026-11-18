@@ -5,6 +5,8 @@
  *
  *   node pipeline/toon-music.mjs --dry-run
  *   node pipeline/toon-music.mjs --approve --max-credits N [--only bouncy] [--model music_v2_5]
+ *   node pipeline/toon-music.mjs --slug rabies --dry-run | --approve --max-credits N [--seconds 40] [--force]
+ *       one video's OWN track (format 5), from "musicPrompt" in its toon.json, saved as <slug>.mp3
  *
  * Price measured 2026-11-16: 500 credits for a 40 s bed (12.5 a second; the four beds were 1,875). The
  * music response carries no cost header and the balance counter lags by a few minutes, so the script
@@ -27,7 +29,11 @@ export const BEDS = [
 const main = async () => {
   const a = args();
   const only = a.only ? new Set(String(a.only).split(',')) : null;
-  const todo = BEDS.filter(([n]) => (only ? only.has(n) : !fs.existsSync(path.join(MUSIC_DIR, `${n}.mp3`))));
+  // --slug <slug>: this video's own track, from "musicPrompt" in its toon.json (format 5: never a shared bed)
+  const own = a.slug ? JSON.parse(fs.readFileSync(path.join(ROOT, 'videos', String(a.slug), 'toon.json'), 'utf8')) : null;
+  if (own && String(own.musicPrompt ?? '').length < 40) { console.error(`Stopped: videos/${a.slug}/toon.json needs a "musicPrompt" (40+ characters).`); process.exit(2); }
+  const list = own ? [[String(a.slug), Number(a.seconds || 40), `${own.musicPrompt} ${TAIL}`]] : BEDS;
+  const todo = list.filter(([n]) => (own && a.force) || (only ? only.has(n) : !fs.existsSync(path.join(MUSIC_DIR, `${n}.mp3`))));
   const total = todo.reduce((s, [, d]) => s + d, 0);
   const bal = await balance();
   console.log(`Music beds to make: ${todo.map(([n, d]) => `${n} (${d} s)`).join(', ') || 'none'}  ->  ${total} s in total`);
