@@ -253,6 +253,12 @@ and Animate driven by code, no screen control. What is built, in `pipeline/anima
   separated legs drawn bare (no trousers), duplicated torsos and arms, one leg ending in toes, only three
   mouths. It takes no reference image. File: `stock/ai-test/recraft/patient-recraft.svg`. For a rig sheet
   the Sunburst PNG + Illustrator trace (175 credits) is both better and cheaper.
+- **Cast route chosen by the owner (2026-11-18): fresh GPT 2.6 Sunburst sheets, no reference image.** The
+  stock kits are set aside. Sheet 01 (Doctor, front) is made: 175 credits, 119,229 -> 119,054; file
+  `stock/cast-ai/01-doctor-front.png` (git-ignored), prompt and shared style block in
+  `skill/medpeak-health/references/cast-sheet-prompts.md`. Waits for his approval before sheet 02. Credits: the
+  balance also fell 260 (119,489 -> 119,229) between the Recraft test and this sheet with nothing run by
+  Claude in between; reported to him, not explained.
 - **Rules from the owner for Adobe scripting:** show the whole page in the window while a script runs
   (`fitPage` in an-rig.jsfl, `fitin` in the Illustrator scripts). Hidden pieces are shrunk to nothing on the
   page, never parked far away (that stretches Animate's work area and pushes the page out of view).
