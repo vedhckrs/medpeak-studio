@@ -228,6 +228,14 @@ and Animate driven by code, no screen control. What is built, in `pipeline/anima
   during this day's work; only 160 of that is explained (two change-camera images). The second fall came
   around these four stock downloads, and the owner's rule is to stop and tell him if a download costs
   credits. No more Magnific calls until he says so.
+- **Grandpa changed (owner, 2026-11-18):** the "scientist" kit read as a senior doctor (white lab coat, tie).
+  He did not want it recoloured ("i want new dont edit this") and picked Magnific #29673007 (white beard,
+  glasses, orange jumper; another artist, flatter style), now in `stock/grandpa-29673007/`. The old
+  `stock/grandpa-4469210/` is unused. He also said the patient "looks off" (orange skin, more realistic face
+  than the women of the series); a skin-match mock-up was shown, no decision yet. The cast now mixes four
+  art styles (doctor+mom, patient, grandpa, kid); he has been told. Credits: the balance was 120,039 before
+  and straight after this one download, so a stock download does not charge at once; the day's earlier fall
+  of 3,889 beyond the 160 approved is still unexplained (a delayed charge is possible).
 - **Rules from the owner for Adobe scripting:** show the whole page in the window while a script runs
   (`fitPage` in an-rig.jsfl, `fitin` in the Illustrator scripts). Hidden pieces are shrunk to nothing on the
   page, never parked far away (that stretches Animate's work area and pushes the page out of view).
