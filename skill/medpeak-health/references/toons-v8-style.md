@@ -113,8 +113,8 @@ Every Toon follows these from now on. Code: `src/toons/v8/hud.tsx`, `video.tsx`,
 - `CtaCardV4`: the logo's royal blue `#214ba1` with lighter flat rings; the logo (`assets/brand/logo.png`) top centre
   in a white circle, "MedPeak Health" typed below; the headline on ONE line (yellow, auto-sized); three white cards
   with big bold icons; the follow line in a yellow pill.
-- **The whole Short, story plus end card, stays under 60 s.** `toon-check` counts the card. If it runs over, speed the
-  narrator's clip up a little (`atempo`, at most 1.1x, pitch kept) and keep the original as `cta-raw.mp3`.
+- **Never cut or speed up the narrator** (the owner, 2026-11-20): the story stays under 60 s, the end card may take
+  the Short past one minute. The card holds 1.2 s after his last word.
 - The narrator's clip is added AFTER the story, so the script rules (loop, the answer in the last quarter) still pass.
 
 **Watermark**: `@MedPeakHealth`, Inter Regular (400), 26 px, opacity 0.44 (half transparent), no outline (a 1 px

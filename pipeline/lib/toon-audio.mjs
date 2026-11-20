@@ -22,11 +22,14 @@ export const syncVoices = (slug) => {
   const mp3s = (dir) => (fs.existsSync(dir) ? fs.readdirSync(dir).filter((f) => f.endsWith('.mp3')) : []);
   let n = 0;
   const copy = (from, to, f) => { fs.mkdirSync(to, {recursive: true}); fs.copyFileSync(path.join(from, f), path.join(to, f)); n++; };
+  // the NEWER copy wins (a clip made again here, or a clip changed in git, e.g. sped up): never the stale one
+  const differ = (f) => fs.statSync(path.join(kept, f)).size !== fs.statSync(path.join(live, f)).size;
+  const newer = (a, b, f) => fs.statSync(path.join(a, f)).mtimeMs > fs.statSync(path.join(b, f)).mtimeMs;
   for (const f of mp3s(live)) {
-    // a clip made again here (another size) replaces the kept one
-    if (!fs.existsSync(path.join(kept, f)) || fs.statSync(path.join(kept, f)).size !== fs.statSync(path.join(live, f)).size) copy(live, kept, f);
+    if (!fs.existsSync(path.join(kept, f))) copy(live, kept, f);
+    else if (differ(f) && newer(live, kept, f)) copy(live, kept, f);
   }
-  for (const f of mp3s(kept)) if (!fs.existsSync(path.join(live, f))) copy(kept, live, f);
+  for (const f of mp3s(kept)) if (!fs.existsSync(path.join(live, f)) || (differ(f) && newer(kept, live, f))) copy(kept, live, f);
   return n;
 };
 

@@ -21,7 +21,7 @@ import {BEDS} from './toon-music.mjs';
 /** Every video's rooms, so a script can be checked against the others (each video gets rooms of its own). */
 const others = () => fs.readdirSync(VIDEOS).filter((d) => fs.existsSync(path.join(VIDEOS, d, 'toon.json'))).map((d) => readJson(path.join(VIDEOS, d, 'toon.json'))).map((t) => ({slug: t.slug, episode: t.episode, rooms: t.rooms}));
 /** Keep in step with CTA_LEAD + CTA_TAIL in src/toons/v8/video.tsx. */
-export const CTA_PAD = 0.9;
+export const CTA_PAD = 1.6;
 const known = () => ({cast: Object.keys(loadCast().cast), sfx: LIBRARY.map(([n]) => n), beds: BEDS.map(([n]) => n), others: others()});
 const GROUPS = {script: 'SCRIPT', retention: 'RETENTION 7', format: 'TOONS FORMAT', accuracy: 'MEDICAL ACCURACY'};
 

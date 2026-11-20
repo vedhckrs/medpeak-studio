@@ -114,7 +114,8 @@ Do these once on a new machine. None of it needs the old machine except step 6.
   the first time they appear; no tags on humans; the tag's halo is two flat white rings, **no glow** (his answer,
   2026-11-20); a tag never covers a face. The camera moves smoothly (one eased move per shot, a continuous dive
   inside the body); transitions follow the story (dive into the skin, pull back out). No flicker: nothing appears or
-  vanishes in one frame. The whole Short, end card included, stays under 60 s. Clothes changes must read at phone
+  vanishes in one frame. The story stays under 60 s; the narrator's end card may run past one minute (never cut or
+  speed up the narrator). Clothes changes must read at phone
   size. All the version 4 rules, with the code: `skill/medpeak-health/references/toons-v8-style.md`. (2026-11-20)
 - **Work split** (updated 2026-11-20): **the session writes the code itself**; the owner's Anthropic key (env var
   `MEDPEAK_ANTHROPIC_KEY` of the `medpeak-studio` cloud environment; `ANTHROPIC_API_KEY` is not passed into cloud

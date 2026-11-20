@@ -39,7 +39,7 @@ The owner is not technical: run everything yourself, explain in plain words, nev
    `--status` at the start and end of each video and after every run.
 
 7. **The version 4 rules for every Toon** (owner, 2026-11-20): the narrator Joey reads the end card (same voice
-   every video, the whole Short under 60 s), the logo card in royal blue, the transparent Inter Regular watermark,
+   every video, never cut or sped up; the story under 60 s, the card may run past it), the logo card in royal blue, the transparent Inter Regular watermark,
    icons only when the words say it, 1-second name tags with flat rings (no glow) the first time a body character
    appears, one smooth camera move per shot, a continuous dive inside the body, transitions that follow the story,
    no flicker, detailed micro places, clothes that read at phone size. All of it, with the code that does it, is in

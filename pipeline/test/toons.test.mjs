@@ -73,11 +73,12 @@ const real = toons.filter((t) => !t.test);
 const clone = (t) => JSON.parse(JSON.stringify(t));
 const failed = (t) => checkToon(t, null, known).results.filter((r) => !r.pass).map((r) => r.point);
 
-test('the narrator end card counts toward the 60 s limit (v4)', () => {
+test('the narrator end card never fails the length rule (the owner: never cut the narrator)', () => {
   const t = real[0];
   const len = (extra) => checkToon(t, null, {...known, ctaSeconds: extra}).results.find((r) => r.point === 'Length');
   assert.equal(len(0).pass, true);
-  assert.equal(len(60).pass, false, 'a long end card must fail the length rule');
+  assert.equal(len(20).pass, true, 'a long end card is fine');
+  assert.match(len(20).detail, /with the end card/);
 });
 
 test('every real toon script passes the gate', () => {

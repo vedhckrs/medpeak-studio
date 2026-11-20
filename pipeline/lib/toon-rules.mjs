@@ -219,9 +219,10 @@ export const checkToon = (toon, timings, known) => {
   }
 
   // ---------------------------------------------------------------- 3 the Toons format
-  // v4: the narrator's end card is part of the Short: count it (known.ctaSeconds, with its lead and tail)
+  // the STORY stays under 60 s; the narrator's end card may take the Short past it (the owner, 2026-11-20:
+  // "never cut the narrator, going past one minute is fine"); it is reported, never failed
   const full = total + (known.ctaSeconds ?? 0);
-  add('format', 'Length', full >= 25 && full < 60, `${full.toFixed(1)} s${known.ctaSeconds ? ` (story ${total.toFixed(1)} s + end card ${known.ctaSeconds.toFixed(1)} s)` : ''} (a Short must stay under 60 s; aim for 40-58)`);
+  add('format', 'Length', total >= 25 && total < 60, `story ${total.toFixed(1)} s (under 60 s; aim for 40-58)${known.ctaSeconds ? `; with the end card ${full.toFixed(1)} s` : ''}`);
   const sets = new Set(places.map((s) => s.set));
   add('format', 'Places', sets.size >= 2, `${sets.size} set(s): ${[...sets].join(', ')} (at least a body scene and the doctor's office)`);
   if (toon.camera === 'steady') {

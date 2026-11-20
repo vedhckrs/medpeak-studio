@@ -22,7 +22,7 @@ export const V8_VIDEOS: Record<string, Record<string, ShotDef>> = {rabies: RABIE
 export type V8Cta = {title: string; points: CtaPoint[]; voice?: string; seconds?: number; at?: CtaAt};
 export const V8_CTA: Record<string, V8Cta> = {rabies: RABIES_CTA};
 /** The narrator starts after the card has slid in; the card holds a moment after his last word. */
-export const CTA_LEAD = 0.3, CTA_TAIL = 0.6; // keep the sum in step with CTA_PAD in pipeline/toon-check.mjs
+export const CTA_LEAD = 0.4, CTA_TAIL = 1.2; // the narrator's last word is never cut; keep the sum in step with CTA_PAD in pipeline/toon-check.mjs
 export const ctaSeconds = (c: V8Cta | undefined) => (!c ? 0 : CTA_LEAD + (c.seconds ?? 4) + CTA_TAIL);
 
 const K = V8_FPS / TOON_FPS; // the layout counts 30 frames a second; the video runs at 60
@@ -268,7 +268,7 @@ export const ToonV8: React.FC<V8VideoProps> = ({toon, timings, sfx, music, bare 
       <Watermark act={inCta ? 0 : act} t={inCta ? sec - ends : sec - acts[act]} />
       {cta && [0, 1, 2].map((i) => <Sequence key={'cta' + i} from={Math.round((ends + (ctaAt ? ctaAt.points[i] : 0.45 + i * 0.55)) * V8_FPS)} durationInFrames={60 * K}><Audio src={staticFile('toons/sfx/pop.mp3')} volume={0.35} /></Sequence>)}
       {cta && <Sequence from={Math.round((ends + (ctaAt ? ctaAt.follow : 2.3)) * V8_FPS)} durationInFrames={90 * K}><Audio src={staticFile('toons/sfx/success-chime.mp3')} volume={0.3} /></Sequence>}
-      {cta?.voice && <Sequence from={Math.round((ends + CTA_LEAD) * V8_FPS)} durationInFrames={Math.round(((cta.seconds ?? 4) + 0.5) * V8_FPS)}><Audio src={staticFile(cta.voice)} /></Sequence>}
+      {cta?.voice && <Sequence from={Math.round((ends + CTA_LEAD) * V8_FPS)} durationInFrames={Math.round(((cta.seconds ?? 4) + CTA_TAIL) * V8_FPS)}><Audio src={staticFile(cta.voice)} /></Sequence>}
       {cta && <Sequence from={Math.round(ends * V8_FPS)} durationInFrames={40 * K}><Audio src={staticFile('toons/sfx/whoosh-air.mp3')} volume={0.4} /></Sequence>}
       {L.lines.map((l) => l.file && <Sequence key={l.line.id} from={Math.round(l.from * K)} durationInFrames={Math.round((l.frames + 12) * K)}><Audio src={staticFile(l.file)} /></Sequence>)}
       {events.filter((e) => has(e.name)).map((e, i) => <Sequence key={i} from={Math.round(e.at * K)} durationInFrames={90 * K}><Audio src={staticFile(`toons/sfx/${e.name}.mp3`)} volume={e.vol} /></Sequence>)}
