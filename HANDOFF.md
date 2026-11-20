@@ -6,6 +6,77 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-20 - Windows PC (commits by VED) - branch `feat/toons-engage`
+
+**The owner's decision today: everything is code-drawn again.** After the 10-second test of the AI-sheet
+doctor on 2026-11-18 he said "stop here ... this is failed", and today: "you switch full code made only now
+create all my character sheet props and all with code as ref video follow visual ... use subagents opus 5.5
+... final jpg for approval 16:9 ... consistency match visual not look off". So the stock kits, the Adobe
+Animate rig, the Adobe rebuild roadmap and the AI character sheets (all in the entry below) are **dropped**.
+Nothing from `pipeline/animate/` is used by look v8. Do not propose those roads again unless he asks.
+
+### What changed (look v8, all in `src/toons/v8/`, nothing in the old engine was touched)
+
+- `kit.tsx`: the ONE shared drawing kit (outline colour and two thicknesses with non-scaling strokes, the
+  body / skin / cloth palettes, `shade()` and `tint()`, `Shape`, `Eyes` with ten moods, `Mouth` with nine
+  shapes, `TinyArm`, `TinyLeg`, `NameTag`, and the board pieces). Every sheet is drawn with it; nobody
+  edits it to suit one sheet.
+- Rules and our cast identities: `skill/medpeak-health/references/toons-v8-style.md` (ten rules, read from
+  sharp frames of the 20 reference Shorts: thin even dark outline, flat colour with one darker tone, two
+  white eyes with a small pupil, a tiny mouth, real anatomy simplified, job characters with one prop and a
+  name tag). We follow their drawing language, never their characters.
+- The cast, 67 characters, each a component in the 200-unit figure space:
+  - `people-rig.tsx` + `people-sheets.tsx`: one parametric person rig (`Person`, `PersonAt`, `HeadAt`, `Hand`;
+    views front / three-quarter / side as real drawn views; poses; seven expressions; six shared hands) and
+    8 people: Dr. Mira, Sam (patient), Mom, Dad, Kid, Grandpa, Grandma, Baby. Dad and Grandma are new.
+  - `organs-a.tsx` (13): stomach, food pipe, intestine, liver, kidney, bladder, lungs, heart, brain, tooth,
+    bone, pancreas, gallbladder. `organs-b.tsx` (12): eye, nose, ear, tongue, skin, nail, throat, windpipe,
+    thyroid, muscle, nerve, blood vessel.
+  - `cells.tsx` (15): red cell, white cell, platelet, egg cell, sperm, fat cell, antibody, cilia, sugar,
+    insulin, melatonin, cortisol, stomach acid, histamine, cholesterol.
+  - `germs.tsx` (15): virus, bacteria, fungus, parasite worm, allergen, venom, nicotine, tar, alcohol, poop,
+    vaccine, antivenom, creatine, water drop, pill.
+  - `animals.tsx` (4, nine drawings): dog (stand, snarl, head close-up), snake, bee, mosquito.
+- `props.tsx`: 30 props (15 clinic, 15 home), no faces.
+- Each sheet has its own entry file (`entry-*.tsx`), so one sheet's mistake cannot break another's render.
+  `node pipeline/toon-v8-sheets.mjs [name]` (or `npm run toon:sheets`) renders them to
+  `out/toons/sheets-v8/` (1920 x 1080 JPG; `out/` is not in git). It uses the `remotion()` helper, so it
+  runs on macOS and Windows.
+
+### How it was made
+
+Seven Opus 5.5 subagents, one per sheet group, each given the kit, the rules and the reference frames, each
+rendering and looking at its own sheet several times. Then one review round by the main session across all
+sheets side by side (a common layout, a more anatomical heart, the nail's face moved off the nail, nicotine
+redrawn as smoke, the dog's close-up head matched to the body dog, a "glasses" fault on small people fixed
+by thinning eye lines on small figures, and so on).
+
+### What was run
+
+- All 17 sheets rendered and looked at; `00-overview.jpg` (a contact sheet of them) made with PIL.
+- `tsc --noEmit`: no errors. `pipeline/test/toons.test.mjs`: 36 of 36 pass (the old engine is unchanged).
+- A check of every v8 file: no hard-coded stroke colours, no gradients, no blur or filters.
+
+### Not done, and open
+
+- **The sheets wait for the owner's approval.** Nothing of v8 is used in a video yet: `Player.tsx`,
+  `characters.tsx`, `humans.tsx`, the stages and rooms still draw the old cast. After his OK the next step is
+  to bring v8 into the engine (cast first, then rooms and body stages in the same language), then rabies.
+- No rooms, body stages or backgrounds are drawn in v8 yet; no animation of the v8 figures (arms, mouths
+  and moods are props, but nothing moves yet).
+- Known weak spots, told to the owner: people stand fairly upright and all share one rest stance; the
+  thumbs-up hand is small on pose figures; the throat's flap looks a little like a can lid; the venom's
+  fang is small; the coiled snake has a few short outline stubs; the bee keeps three colour families.
+- The Mac has not run any of this. It needs only `npm install`; nothing else is machine-specific.
+- Left in the repo from the dropped roads: `pipeline/animate/*`, `src/toons/look-people.tsx`, the `puppet`
+  option in `Player.tsx` / `toon-render.mjs` (inactive unless frames exist in `public/`), and
+  `skill/medpeak-health/references/cast-sheet-prompts.md`. Remove them only when the owner says so.
+- Magnific: 1,060 credits were spent by Claude on 2026-11-18 (two camera images, one Sunburst test, one
+  Recraft test, two Sunburst sheets). The balance also fell by about 4,300 more that day with no call by
+  Claude; the owner was told and it is not explained. Nothing was spent today.
+
+---
+
 ## 2026-11-18 (day) - Windows PC (commits by VED) - branch `feat/toons-engage`
 
 The owner showed the Mac session's fix plan for rabies (weak hook, same music, one-word captions, text
