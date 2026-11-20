@@ -124,7 +124,7 @@
   {
    "id": "A",
    "set": "macro",
-   "lead": 1.3,
+   "lead": 0,
    "cast": [
     {
      "who": "virus",
@@ -141,11 +141,19 @@
     "snap": 0
    },
    "events": [
-    {"at": "start", "set": {"snap": 0.5}, "over": 6, "sfx": "whoosh-fast"},
-   {"at": "start", "delay": 0.42, "sfx": "thud-soft", "fx": "flash"},
-   {"at": "start", "delay": 0.48, "sfx": "squelch"},
-   {"at": "start", "delay": 0.95, "sfx": "bubble-pop"},
-   {"at": "A1", "word": "brain!", "sfx": "whoosh-air"},
+    {
+     "at": "start",
+     "set": {
+      "snap": 0.5
+     },
+     "over": 6,
+     "sfx": "whoosh-fast"
+    },
+    {
+     "at": "A1",
+     "word": "brain!",
+     "sfx": "whoosh-air"
+    },
     {
      "at": "A1",
      "word": "rabies.",
@@ -193,9 +201,78 @@
       "slide": 1
      },
      "over": 24
+    },
+    {
+     "at": "B1",
+     "word": "scratch.",
+     "sfx": "thud-soft",
+     "fx": "flash"
+    },
+    {
+     "at": "B1",
+     "word": "scratch.",
+     "delay": 0.06,
+     "sfx": "squelch"
+    },
+    {
+     "at": "A1",
+     "delay": -0.15,
+     "sfx": "bubble-pop"
+    },
+    {
+     "at": "B1",
+     "word": "stray",
+     "set": {
+      "snap": 0.7
+     },
+     "over": 10
+    },
+    {
+     "at": "B1",
+     "word": "dog.",
+     "set": {
+      "slide": 0.6
+     },
+     "over": 8
+    },
+    {
+     "at": "B1",
+     "word": "tiny",
+     "set": {
+      "snap": 0.9
+     },
+     "over": 8
+    },
+    {
+     "at": "B1",
+     "word": "that's",
+     "set": {
+      "slide": 0.66
+     },
+     "over": 10
+    },
+    {
+     "at": "B1",
+     "word": "need.",
+     "set": {
+      "snap": 1
+     },
+     "over": 8
     }
    ],
    "lines": [
+    {
+     "id": "B1",
+     "who": "virus",
+     "text": "One stray dog. One tiny scratch. That's all I need.",
+     "emotion": "smug",
+     "pose": "rest",
+     "key": "scratch",
+     "chat": true,
+     "beat": 0.4,
+     "cold": true,
+     "cam": "ecu 50 push"
+    },
     {
      "id": "A1",
      "who": "virus",
@@ -240,29 +317,11 @@
    },
    "events": [
     {
-     "at": "B1",
-     "set": {
-      "bite": 0.42
-     },
-     "over": 34
-    },
-    {
-     "at": "B1",
-     "word": "dog.",
-     "set": {
-      "bite": 0.62
-     },
-     "over": 16,
-     "fx": "flash",
-     "sfx": "bonk"
-    },
-    {
-     "at": "B1",
-     "word": "scratch.",
+     "at": "start",
      "set": {
       "bite": 0.82
      },
-     "over": 24
+     "over": 12
     },
     {
      "at": "B2",
@@ -306,16 +365,6 @@
     }
    ],
    "lines": [
-    {
-     "id": "B1",
-     "who": "virus",
-     "text": "One stray dog. One tiny scratch. That's all I need.",
-     "emotion": "smug",
-     "pose": "rest",
-     "key": "scratch",
-     "chat": true,
-     "beat": 0.4
-    },
     {
      "id": "B2",
      "who": "virus",

@@ -58,7 +58,12 @@ const slowPush = (x: number, y: number, z0: number, z1: number) => (s: ShotNow) 
 // 0.00 a stray dog lunges at the lens -> 0.42 CHOMP: the fang slams into the skin -> 0.6 a saliva drop with the Virus
 // in it grows on the fang tip -> 0.75 the camera dives into the drop -> 1.25 it pops: the Virus bursts out at the lens
 // in the nerve tunnel ("Get rabies?") -> on "brain!" it rockets up the tunnel -> A2 it turns and taunts.
-export const HOOK_T = {chomp: 0.42, drop: 0.6, dive: 0.75, burst: 1.25};
+// The beats ride the cold-open line B1 (the owner, 2026-11-20: "start with one stray dog"): the dog snarls on
+// "One stray dog", lunges on "tiny", CHOMP on "scratch", the drop grows on "That's", the dive on "all", the burst
+// just before "Get rabies?" (A1). Fallbacks for a stand-in "now" without the words.
+export type HookT = {tiny: number; chomp: number; drop: number; dive: number; burst: number};
+const at = (s: ShotNow, id: string, word: string | undefined, dflt: number) => { const u = since(s, id, word); return u <= -900 ? dflt : s.t - u; };
+export const hookT = (s: ShotNow): HookT => ({tiny: at(s, 'B1', 'tiny', 1.26), chomp: at(s, 'B1', 'scratch', 1.57), drop: at(s, 'B1', "that's", 2.26), dive: at(s, 'B1', 'all', 2.52), burst: at(s, 'A1', undefined, 3.6) - 0.15});
 const easeOut = (k: number) => 1 - Math.pow(1 - clamp01(k), 3);
 /** The highway's speed over the shot: calm, a rush on "brain!", easing to a cruise while it taunts. */
 const speedA = (s: ShotNow, t: number) => {
@@ -67,10 +72,10 @@ const speedA = (s: ShotNow, t: number) => {
   return 0.5 + 2.4 * r - 1.6 * cruise;
 };
 /** The distance travelled in the tunnel: the speed integrated from the burst (so the rings never jump). */
-const runA = (s: ShotNow) => { let d = 0; for (let t = HOOK_T.burst; t < s.t; t += 1 / 60) d += speedA(s, t) * 0.55 / 60; return d; };
+const runA = (s: ShotNow) => { let d = 0; for (let t = hookT(s).burst; t < s.t; t += 1 / 60) d += speedA(s, t) * 0.55 / 60; return d; };
 const posA = (s: ShotNow) => {
   const t = s.t;
-  const burst = easeOut((t - HOOK_T.burst) / 0.4);
+  const burst = easeOut((t - hookT(s).burst) / 0.4);
   const rocket = go(since(s, 'A1', 'brain'), 0, 0.6);
   const turn = go(since(s, 'A2'), -0.1, 0.3); // turns back to the viewer to taunt
   const h = hop(since(s, 'A2', 'catch'), 90);
@@ -83,8 +88,9 @@ const posA = (s: ShotNow) => {
   };
 };
 /** 0-0.42 s: a stray dog lunges at the lens over a flat dusk burst. */
-const DogLunge: React.FC<{t: number}> = ({t}) => {
-  const e = Math.pow(clamp01(t / HOOK_T.chomp), 2); // it accelerates at us
+const DogLunge: React.FC<{t: number; h: HookT}> = ({t, h}) => {
+  // it creeps closer, snarling, then on "tiny" it lunges at us, faster and faster
+  const e = t < h.tiny ? 0.22 * (t / h.tiny) + Math.sin(t * 18) * 0.004 : 0.22 + 0.78 * Math.pow(clamp01((t - h.tiny) / (h.chomp - h.tiny)), 2);
   return (
     <div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, background: '#2f2238', overflow: 'hidden'}}>
       <svg style={{position: 'absolute', left: 0, top: 0}} width={1080} height={1920} viewBox="0 0 1080 1920">
@@ -107,10 +113,10 @@ const DogLunge: React.FC<{t: number}> = ({t}) => {
   );
 };
 /** The saliva drop with the Virus in it: it grows on the fang tip (0.6), then the camera dives into it (0.75-1.25). */
-const HeroDrop: React.FC<{t: number}> = ({t}) => {
-  if (t < HOOK_T.drop || t >= HOOK_T.burst) return null;
-  const grow = easeOut((t - HOOK_T.drop) / 0.15);
-  const dive = Math.pow(clamp01((t - HOOK_T.dive) / (HOOK_T.burst - HOOK_T.dive)), 3);
+const HeroDrop: React.FC<{t: number; h: HookT}> = ({t, h}) => {
+  if (t < h.drop || t >= h.burst) return null;
+  const grow = easeOut((t - h.drop) / 0.2);
+  const dive = Math.pow(clamp01((t - h.dive) / (h.burst - h.dive)), 3);
   const size = lerp(0, 260, grow) * lerp(1, 26, dive);
   return (
     <svg style={{position: 'absolute', left: 565 - size / 2, top: 780 - size / 2, overflow: 'visible'}} width={Math.max(1, size)} height={Math.max(1, size)} viewBox="-100 -100 200 200">
@@ -123,8 +129,9 @@ const HeroDrop: React.FC<{t: number}> = ({t}) => {
 };
 const ShotA: React.FC<{s: ShotNow}> = ({s}) => {
   const t = s.t;
-  if (t < HOOK_T.chomp) return <DogLunge t={t} />;
-  if (t < HOOK_T.burst) return <><BitePlace t={t} fang={go(t, HOOK_T.chomp, 0.1)} drops={t > 0.5 ? 1 : 0} /><HeroDrop t={t} /></>;
+  const h = hookT(s);
+  if (t < h.chomp) return <DogLunge t={t} h={h} />;
+  if (t < h.burst) return <><BitePlace t={t} fang={go(t, h.chomp, 0.1)} drops={t > h.chomp + 0.1 ? 1 : 0} /><HeroDrop t={t} h={h} /></>;
   const v = posA(s);
   const look: [number, number] = v.turn > 0.5 || v.rocket < 0.5 ? [0.1, 0.2] : [0, -0.9];
   return (
@@ -132,23 +139,24 @@ const ShotA: React.FC<{s: ShotNow}> = ({s}) => {
       <HighwayPlace t={t} speed={speedA(s, t)} run={runA(s)} />
       <VirusAt s={s} x={v.x} y={v.y} size={v.size} rot={v.rot} sq={v.sq} rest="angry" look={look} />
       {/* the drop's pop: a flat white wash that clears fast */}
-      {t < HOOK_T.burst + 0.2 && <div style={{position: 'absolute', inset: 0, background: '#e9f1f2', opacity: 1 - clamp01((t - HOOK_T.burst) / 0.2)}} />}
+      {t < h.burst + 0.2 && <div style={{position: 'absolute', inset: 0, background: '#e9f1f2', opacity: 1 - clamp01((t - h.burst) / 0.2)}} />}
     </>
   );
 };
 /** The hook's camera: still for the dog, the chomp and the dive; then the usual slow push in the tunnel. */
 const viewA = (s: ShotNow) => {
-  if (s.t < HOOK_T.burst) return {x: 540, y: 960, z: 1};
-  const u = clamp01((s.t - HOOK_T.burst) / Math.max(0.1, s.dur - HOOK_T.burst));
+  const b = hookT(s).burst;
+  if (s.t < b) return {x: 540, y: 960, z: 1};
+  const u = clamp01((s.t - b) / Math.max(0.1, s.dur - b));
   return {x: 540, y: lerp(960, 1050, u * u * (3 - 2 * u)), z: lerp(1.0, 1.1, u * u * (3 - 2 * u))};
 };
 
 // =================================================================== B: the bite -> the door
 const posB = (s: ShotNow) => {
-  const dog = since(s, 'B1', 'dog');
-  const fang = go(dog, -0.12, 0.18) - 0.35 * go(since(s, 'B1', 'scratch'), 0.3, 0.6);
-  const ride = go(since(s, 'B1', 'need'), 0, 1.2); // the Virus rides a drop down into the skin
-  return {fang: Math.max(0, fang), drops: dog > 0.2 ? 1 : 0, vx: 560 + Math.sin(s.t * 1.7) * 30, vy: lerp(560, 980, ride) + sway(s.t, 1.4, 3) * 8};
+  // v4: the bite was shown in the cold open, so B opens on it: the fang pulls back, the Virus rides a drop in
+  const fang = 1 - 0.35 * go(s.t, 0.3, 0.6);
+  const ride = go(s.t, 0, 1.2);
+  return {fang, drops: 1, vx: 560 + Math.sin(s.t * 1.7) * 30, vy: lerp(560, 980, ride) + sway(s.t, 1.4, 3) * 8};
 };
 const ShotB: React.FC<{s: ShotNow}> = ({s}) => {
   const b = posB(s);
@@ -163,7 +171,7 @@ const ShotB: React.FC<{s: ShotNow}> = ({s}) => {
   const bite = (
     <>
       <BitePlace t={s.t} fang={b.fang} drops={b.drops} />
-      {since(s, 'B1', 'scratch') > 0 && <VirusAt s={s} x={b.vx} y={b.vy} size={200} rot={sway(s.t, 1.6, 5) * 8 * calm(s)} look={[0.2, 0.8]} />}
+      {<VirusAt s={s} x={b.vx} y={b.vy} size={200} rot={sway(s.t, 1.6, 5) * 8 * calm(s)} look={[0.2, 0.8]} />}
     </>
   );
   return <Swap u={jump} from={bite} to={door} />;
@@ -227,7 +235,7 @@ const ShotE: React.FC<{s: ShotNow}> = ({s}) => {
 
 // =================================================================== v4: the race bar (bite -> brain)
 const fadeIn = (u: number, d = 0.3) => clamp01(u / d);
-const raceB = (s: ShotNow) => 0.03 + 0.05 * go(since(s, 'B1', 'need'), 0, 1.2) + 0.06 * go(since(s, 'B2', 'jump'), 0.4, 0.6);
+const raceB = (s: ShotNow) => 0.03 + 0.05 * go(s.t, 0, 1.2) + 0.06 * go(since(s, 'B2', 'jump'), 0.4, 0.6);
 const raceM2 = (s: ShotNow) => {
   const fast = since(s, 'B3', 'faster');
   const tFast = s.t - fast; // the shot second of "faster"
@@ -258,20 +266,19 @@ const ScreenA: React.FC<{s: ShotNow}> = ({s}) => {
   const a2 = since(s, 'A2');
   return (
     <>
-      <TagAt s={s} id="A" label="RABIES VIRUS" x={v.x} y={v.y} r={v.size * 0.36} t={s.t - (HOOK_T.burst + 0.45)} />
+      <TagAt s={s} id="A" label="RABIES VIRUS" x={v.x} y={v.y} r={v.size * 0.36} t={s.t - (hookT(s).burst + 0.45)} />
       {a2 > -900 && a2 >= 0 && <RaceBar p={0.03} t={s.t} op={fadeIn(a2)} />}
     </>
   );
 };
 const ScreenB: React.FC<{s: ShotNow}> = ({s}) => {
-  const dog = since(s, 'B1', 'dog');
+  // (v4: no dog icon here any more: the real dog opens the video, on "One stray dog")
   const nerve = since(s, 'B2', 'jump') - 0.5;
   // the bulb's left shoulder: room for the tag above it all through the dive, far from the Virus
   const [x, y, k] = inPlane(s, 330, 690, 0.35);
   return (
     <>
       <RaceBar p={raceB(s)} t={s.t} op={fadeIn(s.t)} />
-      {dog >= 0 && <IconBadge icon="dog" t={dog} x={780} y={500} size={300} out={1.9} />}
       {nerve >= 0 && <TagAt s={s} id="B" label="NERVE ENDING" x={x} y={y} r={105 * k} t={nerve} />}
     </>
   );

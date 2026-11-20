@@ -162,6 +162,7 @@ export type ToonLine = {
   sfx?: string; // an effect from the library; without it the emotion picks one
   key?: string; // the caption word shown in amber (default: the last word)
   beat?: number; // seconds of silence after this line (0 to 3): the picture plays a gag with no words
+  cold?: boolean; // a COLD OPEN line before the hook (the owner, 2026-11-20: "start with one stray dog"): only the first line, at most 4 s; the hook rules apply to the line after it
   tempo?: number; // 0.9 to 1.15: this line's voice a touch slower or faster (free, applied by `toon-voice --remix`)
   cut?: number; // keep only this many seconds of the voice clip: trims a stray sound after the last word (free, `--remix`)
   react?: Record<string, Emotion>; // the listeners' faces

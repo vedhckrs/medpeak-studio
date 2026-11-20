@@ -25,6 +25,8 @@ const keysOf = (t) => [...new Set(wordsOf(t ?? '').map(bare).filter((w) => w.len
 export const SHAPES = ['fight', 'journey', 'clock', 'crew', 'visit'];
 /** How many text stickers a format-3 video may have. */
 export const STICKERS = 5;
+/** The longest cold open before the hook (seconds). */
+export const COLD_SECONDS = 4;
 export const HOOK = {words: 8, seconds: 2.5, titleWords: 2, by: 3, questionBy: 7, answerFrom: 0.75};
 /** Format 5, "engage": how fast the hook must hit and how long the picture may sit still. */
 /** Where a text on the picture may stand (x of its centre): left, middle, right. */
@@ -171,7 +173,12 @@ export const checkToon = (toon, timings, known) => {
   }
 
   // ---------------------------------------------------------------- 2 Retention 7 (dialogue)
-  const scenes = L.lines.map((p) => ({id: p.line.id, text: p.line.text, sources: p.line.src ?? [], visual: {panels: segsOf(p.line.id)}}));
+  // a cold open (the first line marked "cold", at most COLD_SECONDS): the hook rules judge the line after it
+  const coldLine = L.lines[0]?.line.cold ? L.lines[0] : null;
+  if (L.lines.some((p, i) => p.line.cold && i > 0)) add('retention', 'Cold open', false, 'only the FIRST line may be a cold open');
+  if (coldLine) add('retention', 'Cold open', coldLine.frames / TOON_FPS - 0.14 <= COLD_SECONDS, `"${coldLine.line.text}" opens cold in ${(coldLine.frames / TOON_FPS - 0.14).toFixed(1)} s (at most ${COLD_SECONDS}); the hook is the next line`);
+  const HL = coldLine ? L.lines.slice(1) : L.lines; // the lines from the hook on
+  const scenes = HL.map((p) => ({id: p.line.id, text: p.line.text, sources: p.line.src ?? [], visual: {panels: segsOf(p.line.id)}}));
   const t7 = {scenes: Object.fromEntries(L.lines.map((p) => [p.line.id, {duration: p.frames / TOON_FPS}]))};
   const cut = checkCut({scenes, retention: toon.retention, isShort: true, sources: toon.sources ?? [], timings: t7, label: toon.slug});
   const v3 = toon.format >= 3; // story shapes (the fight, the journey, the clock, the crew at work, the visit): things happen, stickers stop
@@ -190,7 +197,7 @@ export const checkToon = (toon, timings, known) => {
 
   if (v2) {
     // ---- the hook (owner, 2026-11-17: "remove 3 point, make better hook")
-    const first = L.lines[0];
+    const first = HL[0];
     const said = first.frames / TOON_FPS - 0.14; // the line itself, without the air after it
     const faults = hookFaults(first.line.text, toon.title);
     if (said > HOOK.seconds + 0.05) faults.push(`takes ${said.toFixed(1)} s to say (at most ${HOOK.seconds})`);
@@ -306,7 +313,7 @@ export const checkToon = (toon, timings, known) => {
     const ownMusic = toon.music === toon.slug && String(toon.musicPrompt ?? '').length >= 40;
     add('format', 'Own music', ownMusic, ownMusic ? `its own track "${toon.music}" (made from "musicPrompt" with: node pipeline/toon-music.mjs --slug ${toon.slug})` : `"music" must be "${toon.slug}" (this video's own track) with a "musicPrompt" of 40+ characters; it is "${toon.music ?? 'none'}"`);
     // ---- the hook hits at once
-    const first = L.lines[0];
+    const first = HL[0];
     const said = first.frames / TOON_FPS - 0.14;
     add('retention', '1 Hook: said in 2 s', said <= ENGAGE.hookSeconds + 0.05, `"${first.line.text}" takes ${said.toFixed(1)} s (at most ${ENGAGE.hookSeconds})`);
     const moving = motionSpans(L);
@@ -356,7 +363,7 @@ export const scriptSheet = (toon, check) => {
   const out = [`# ${toon.title}`, '', `Toon script \`${toon.slug}\` · about ${check.total.toFixed(0)} seconds · ${L.segs.length} pictures`, ''];
   if (toon.hooks?.length) {
     out.push('## The hook: choices for the first line', '', '| | First line | Why |', '|---|---|---|');
-    toon.hooks.forEach((h, i) => { const line = typeof h === 'string' ? h : h.line; out.push(`| ${'ABCDEF'[i]}${h.picked ? " (the owner's pick)" : line === L.lines[0].line.text ? ' (in the script)' : ''} | ${line} | ${typeof h === 'string' ? '' : h.why ?? ''} |`); });
+    toon.hooks.forEach((h, i) => { const line = typeof h === 'string' ? h : h.line; out.push(`| ${'ABCDEF'[i]}${h.picked ? " (the owner's pick)" : line === (L.lines[0].line.cold ? L.lines[1] : L.lines[0]).line.text ? ' (in the script)' : ''} | ${line} | ${typeof h === 'string' ? '' : h.why ?? ''} |`); });
     out.push('');
   }
   if (toon.retention) {

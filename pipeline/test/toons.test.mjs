@@ -81,6 +81,15 @@ test('the narrator end card never fails the length rule (the owner: never cut th
   assert.match(len(20).detail, /with the end card/);
 });
 
+test('a cold open is allowed only as the first line, up to 4 s (v4)', () => {
+  const t = clone(real.find((x) => x.slug === 'rabies'));
+  const ok = checkToon(t, null, known).results.find((r) => r.point === 'Cold open');
+  assert.ok(ok && ok.pass, 'the rabies cold open passes');
+  const later = clone(t);
+  later.shots[0].lines[1].cold = true;
+  assert.ok(checkToon(later, null, known).results.some((r) => r.point === 'Cold open' && !r.pass), 'a cold line after the first fails');
+});
+
 test('every real toon script passes the gate', () => {
   assert.ok(real.length >= 3, 'three scripts are in the repo');
   for (const t of real) assert.deepEqual(failed(t), [], `${t.slug} fails`);
