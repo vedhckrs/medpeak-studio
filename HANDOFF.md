@@ -6,6 +6,44 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-20 (afternoon) - Cloud session (claude.ai/code) - branch `claude/github-repo-check-handoff-as1kql`
+
+The owner now works from a Claude **cloud** session, not the Mac or the Windows PC. This branch starts from
+`feat/toons-engage` (the Windows PC's latest work) plus one commit. `feat/toons-engage` was not touched.
+
+### What changed
+
+- `remotion.config.ts`: if `REMOTION_BROWSER_EXECUTABLE` is set, Remotion uses that browser. Unset on the
+  Mac and the PC, so nothing changes there. The cloud cannot download Remotion's own browser, and the
+  installed headless shell does not trust the cloud's network proxy (fonts fail to load), so in the cloud:
+  `export REMOTION_BROWSER_EXECUTABLE=/opt/pw-browsers/chromium-1243/chrome-linux64/chrome`.
+
+### What was run (cloud: Ubuntu 24.04, 4 CPU, 15 GB, no GPU, Node 22.23.5, ffmpeg 6.1.1)
+
+- `npm ci`; `npm run typecheck` clean; `npm test` 44 of 44 pass.
+- `npm run toon:v8 -- rabies --draft` (4 min) and looked at contact sheets: all seven shots move; the clinic
+  at 26..30 s keeps the Kid's face in frame (only the back of his cap touches the edge at "BUT ACT").
+- `npm run toon:v8 -- rabies` (7 min): `videos/rabies/renders/toon-v8.mp4`, 1080 x 1920, 60 fps, 45.6 s,
+  peak -1.0 dB. Sent to the owner in the chat for his approval of the MOTION. Not uploaded. Renders are not
+  in git; the cloud machine is wiped at the end of a session, so re-render to get the file again.
+
+### State of the cloud environment (not in git)
+
+- Has: the tools above, GitHub read and push, connectors for ElevenLabs, Supermetrics (YouTube analytics,
+  read only, MedPeak Health channel), Google Drive / Sheets / Gmail, Canva, Picsart.
+- Missing: a YouTube upload login (Supermetrics cannot upload to YouTube), an ElevenLabs key (its API host
+  is blocked; the ElevenLabs connector works), Poppins fonts (only the storyboard script uses them), a
+  setup script (run `npm ci` at the start of every cloud session).
+
+### Open / next step
+
+1. The owner's OK on the rabies motion. If he asks for changes, fix and re-render here.
+2. After his OK: the upload package (title, description, tags) and his upload from YouTube Studio, unless
+   a YouTube login is set up for the cloud.
+3. Merging this branch and `feat/toons-engage` into `main` waits for his word.
+
+---
+
 ## 2026-11-20 - Windows PC (commits by VED) - branch `feat/toons-engage`
 
 **The owner's decision today: everything is code-drawn again.** After the 10-second test of the AI-sheet
