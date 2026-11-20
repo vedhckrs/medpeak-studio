@@ -150,7 +150,7 @@ const ShotM3: React.FC<{s: ShotNow}> = ({s}) => {
   const sulk = since(s, 'E3') >= 0;
   return (
     <>
-      <BattlePlace t={t} fire={!sulk} />
+      <BattlePlace t={t} factory={false} />
       <VirusAt s={s} x={560 + shake} y={820} size={260} rot={sulk ? -12 : shake} rest="sad" look={sulk ? [0, 0.8] : [-0.4, 0.2]} />
       {[[140, 620, false], [940, 620, true], [560, 1300, false]].map(([x0, y0, fl], i) => {
         const x = lerp(x0 as number, i === 2 ? 560 : i === 0 ? 360 : 760, grab), y = lerp(y0 as number, i === 2 ? 1090 : 760, grab);

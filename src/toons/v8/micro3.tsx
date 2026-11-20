@@ -333,7 +333,7 @@ const Factory: React.FC<{x: number; y: number; t: number}> = ({x, y, t}) => {
     </g>
   );
 };
-export const BattlePlace: React.FC<{t: number; fire?: boolean}> = ({t, fire = true}) => {
+export const BattlePlace: React.FC<{t: number; fire?: boolean; factory?: boolean}> = ({t, fire = true, factory = true}) => {
   const fl = (d: number) => float(t, d);
   return (
     <Scene bg={PLASMA}>
@@ -347,10 +347,10 @@ export const BattlePlace: React.FC<{t: number; fire?: boolean}> = ({t, fire = tr
       </Depth>
       <Depth {...fl(0.35)}>
         <Layer>
-          <Factory x={220} y={1240} t={t} />
+          {factory && <Factory x={220} y={1240} t={t} />}
         </Layer>
         {/* antibodies fired from the hatch, flying up-right in a stream */}
-        {fire && Array.from({length: 7}, (_, i) => {
+        {fire && factory && Array.from({length: 7}, (_, i) => {
           const u = (t * 0.55 + i / 7) % 1;
           const x = 440 + u * 560 + Math.sin(u * 6 + i) * 30, y = 1120 - u * 760 + Math.cos(u * 5 + i) * 30;
           return <Put key={i} x={x} y={y} size={110 + u * 40} rot={u * 360 + i * 40}><Antibody mood="angry" mouth="grit" /></Put>;
