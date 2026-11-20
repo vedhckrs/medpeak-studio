@@ -12,7 +12,7 @@ export const RABIES_SHOTS: Record<string, ShotDef> = {
   A: framed('A', push(560, 830, 1.2, 1.26)),
   B: framed('B', push(540, 820, 1.14, 1.2)),
   M2: framed('M2', push(540, 860, 1.12, 1.2)),
-  E: framed('E', push(540, 860, 1.05, 1.09)),
-  M3: framed('M3', push(540, 830, 1.1, 1.17)),
+  E: framed('E', push(540, 880, 1.0, 1.04)),
+  M3: framed('M3', push(540, 890, 1.06, 1.1)),
   ...ROOM_SHOTS,
 };

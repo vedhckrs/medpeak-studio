@@ -176,6 +176,19 @@ script is in the repo now (`pipeline/tools/toon-v8-storyboard.py`). The owner th
 video's 15 are in `assets/toons-voice/rabies/` and the render puts them where the player reads them
 (`syncVoices` in `pipeline/lib/toon-audio.mjs`), so a new PC renders with sound straight from a clone. He also said: from now on no subagents, fixes are made directly.
 
+### Where the rabies v8 video stands (2026-11-20, session stopped at a usage limit)
+
+- ALL SEVEN SHOTS MOVE and are committed: the body shots (`scenes-body.tsx`), the kitchen and clinic shots
+  (`scenes-rooms.tsx`, with new additive poses in the rig), the player with a camera that never cuts a face
+  (`keepIn` in `video.tsx`) and a closer framing for the body shots (`rabies.tsx`).
+- A half-size draft was rendered and looked at as contact sheets (`npm run toon:v8 -- rabies --draft`).
+  After that look three things were changed and NOT yet re-rendered: the keep-faces-in camera, calmer
+  framing for shots E and M3, and the Kid listening with open eyes in the clinic.
+- **Next step: `npm run toon:v8 -- rabies --draft`, look at contact sheets again (the clinic at 26..30 s is
+  where the Kid's face was being cut), then the final `npm run toon:v8 -- rabies` (1080 x 1920, 60 fps) and
+  send `videos/rabies/renders/toon-v8.mp4` to the owner for his approval of the MOTION.** Nobody has
+  watched it with sound yet. Nothing is uploaded.
+
 ### Not done, and open
 
 - **APPROVED by the owner on 2026-11-20 ("Yes, approved").** The approved JPGs are committed in

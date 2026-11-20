@@ -10,13 +10,16 @@
  * FLOOR_Y; furniture stands in front of the wall and is seen straight from the front.
  *
  * Pieces built here (not in the kit): rr (a rounded rectangle path), Pipe (an outlined tube, for the
- * tap), handAt (where a pose puts a hand, in frame pixels, so props and marks sit on the hand or the
- * forearm instead of floating).
+ * tap). Props and marks sit on a hand or a forearm through the rig's own handAt.
+ *
+ * In the video (play.tsx) the two rooms are shots C (kitchen) and D (clinic): ROOM_SHOTS at the end. The
+ * six stills are the same shots drawn at one good moment.
  */
 import React from 'react';
 import {CLOTH, EDGE, EDGE_IN, INK, INLINE, OUTLINE, Shape, shade, tint} from './kit';
 import {Layer, Put, Scene, Tag} from './scene';
-import {castById, PersonAt, POSES, type Expr, type PersonSpec, type PoseName, type View} from './people-rig';
+import {castById, handAt, headAt, PersonAt, type Expr, type Facing, type HandPoint, type PoseIn, type PoseName, type View} from './people-rig';
+import {blink, EXPR_OF, feel, go, pop, since, speaking, sway, talk, type LineNow, type ShotDef, type ShotNow} from './play';
 import {Plaster, Soap, VaccineVial} from './props';
 
 // ------------------------------------------------------------------ helpers
@@ -42,40 +45,7 @@ export const FEET_Y = 1740;
 /** Pixels per rig unit for people in these rooms: Dr. Mira about 1197 px tall, Mom 1168, the Kid 789. */
 export const PEOPLE_SCALE = 3.2;
 
-// ------------------------------------------------------------------ where a pose puts a hand
 type P = [number, number];
-/**
- * The wrist and the forearm direction of one arm, in frame pixels, for a person placed with PersonAt
- * (the same arithmetic as the rig's arm, standing poses only). side: 1 = the far arm in a turned view
- * (the person's left, the arm pose `L`), -1 = the near arm (`R`).
- */
-export const handAt = (spec: PersonSpec, view: View, pose: PoseName, side: 1 | -1, x: number, y: number, scale: number, flip = false) => {
-  const b = spec.build, R = b.R;
-  const Ht = b.heads * 2.15 * R;
-  const headCY = -Ht + R, chinY = headCY + 1.18 * R, yS = chinY + b.neckLen * R, yC = -b.legFrac * Ht;
-  const S = b.shoulder * R, armR0 = 0.17 * R * b.limb;
-  const th = view === 'front' ? 0 : view === 'three-quarter' ? Math.PI / 4 : Math.PI / 2;
-  const c = Math.cos(th), s = Math.sin(th);
-  const proj = (p: [number, number, number]): P => [p[0] * c + p[2] * s, p[1] + 0.1 * (-p[0] * s + p[2] * c)];
-  const ap = side === -1 ? POSES[pose].R : POSES[pose].L;
-  const nb = (a: number[]): [number, number, number] => { const v = [a[0] * side, a[1], a[2]]; const l = Math.hypot(v[0], v[1], v[2]); return [v[0] / l, v[1] / l, v[2] / l]; };
-  const sh: [number, number, number] = [side * (S - armR0 * 1.05), yS + armR0 * 1.1, 0];
-  const armLen = (yC + 0.2 * R - (yS + armR0 * 1.1)) * (b.arm ?? 1);
-  const u = nb(ap.up), f = nb(ap.fore);
-  const e3: [number, number, number] = [sh[0] + u[0] * armLen * 0.52, sh[1] + u[1] * armLen * 0.52, sh[2] + u[2] * armLen * 0.52];
-  const w3: [number, number, number] = [e3[0] + f[0] * armLen * 0.5, e3[1] + f[1] * armLen * 0.5, e3[2] + f[2] * armLen * 0.5];
-  const m = flip ? -1 : 1;
-  const toPx = (p: P): P => [x + m * p[0] * scale, y + p[1] * scale];
-  const e = toPx(proj(e3)), w = toPx(proj(w3));
-  const handK = (R / 40) * (b.hand ?? 1) * scale;
-  const dir: P = [(w[0] - e[0]) / Math.hypot(w[0] - e[0], w[1] - e[1]), (w[1] - e[1]) / Math.hypot(w[0] - e[0], w[1] - e[1])];
-  const ang = (Math.atan2(dir[1], dir[0]) * 180) / Math.PI;
-  /** the middle of the palm */
-  const palm: P = [w[0] + dir[0] * 12 * handK, w[1] + dir[1] * 12 * handK];
-  /** a point a fraction t along the forearm, elbow (0) to wrist (1) */
-  const fore = (t: number): P => [e[0] + (w[0] - e[0]) * t, e[1] + (w[1] - e[1]) * t];
-  return {elbow: e, wrist: w, palm, dir, ang, fore, handK};
-};
 
 // ------------------------------------------------------------------ colours of the rooms (all from the kit palettes)
 const K = {
@@ -330,11 +300,36 @@ const ArchWindow: React.FC<{x: number; y: number; w: number; h: number}> = ({x, 
 };
 
 // ------------------------------------------------------------------ people in a room
-type Who = {id: string; view?: View; pose?: PoseName; expr?: Expr; look?: [number, number]; x: number; y?: number; flip?: boolean};
-const Person: React.FC<Who> = ({id, view = 'three-quarter', pose = 'rest', expr = 'neutral', look, x, y = FEET_Y, flip}) => (
-  <PersonAt spec={castById(id)} view={view} pose={pose} expr={expr} look={look} x={x} y={y} scale={PEOPLE_SCALE} flip={flip} />
+const VIEW: View = 'three-quarter';
+type Who = {id: string; pose: PoseIn; expr?: Expr; look?: [number, number]; x: number; y?: number; facing?: Facing; talk?: number; blink?: number; bob?: number};
+const Person: React.FC<Who> = (w) => (
+  <PersonAt spec={castById(w.id)} view={VIEW} pose={w.pose} expr={w.expr} look={w.look} x={w.x} y={w.y ?? FEET_Y} scale={PEOPLE_SCALE} facing={w.facing} talk={w.talk} blink={w.blink} bob={w.bob} />
 );
-const hand = (w: Who, side: 1 | -1) => handAt(castById(w.id), w.view ?? 'three-quarter', w.pose ?? 'rest', side, w.x, w.y ?? FEET_Y, PEOPLE_SCALE, w.flip);
+const place = (w: Who) => ({pose: w.pose, view: VIEW, facing: w.facing, x: w.x, y: w.y ?? FEET_Y, scale: PEOPLE_SCALE, bob: w.bob});
+const handsOf = (w: Who) => handAt(castById(w.id), place(w));
+const headOf = (w: Who) => headAt(castById(w.id), place(w));
+/** A point on the forearm, `px` pixels back from the wrist. */
+const onFore = (h: HandPoint, px: number): P => [h.wrist[0] - h.dir[0] * px, h.wrist[1] - h.dir[1] * px];
+const angOf = (h: HandPoint) => (Math.atan2(h.dir[1], h.dir[0]) * 180) / Math.PI;
+
+/**
+ * A pose over time: a list of [start second, pose, blend seconds]. Before the first step: the first pose.
+ * Each step blends from the pose before it (k eased with go, so the hand kind switches quickly).
+ */
+type Step = [number, PoseName, number?];
+const poseAt = (t: number, steps: Step[]): PoseIn => {
+  let i = -1;
+  for (let j = 0; j < steps.length; j++) if (t >= steps[j][0]) i = j;
+  if (i <= 0) return steps[0][1];
+  const [t0, b, d = 0.35] = steps[i];
+  const k = go(t, t0, d);
+  return k >= 1 ? b : {a: steps[i - 1][1], b, k};
+};
+/** A short dip of the head and chest: a nod (bob goes down and back). */
+const nod = (t: number, t0: number, d = 0.36) => { const u = (t - t0) / d; return u <= 0 || u >= 1 ? 0 : -Math.sin(Math.PI * u); };
+const clampBob = (v: number) => Math.max(-1, Math.min(1, v));
+/** Breathing, a little more while speaking, plus any extra (a nod). */
+const breath = (s: ShotNow, who: string, seed: number, extra = 0) => clampBob(0.3 * sway(s.t, 3.4, seed) + (speaking(s, who) ? 0.22 * sway(s.t, 0.9, seed + 2) : 0) + extra);
 
 /** A small red scratch: three short red strokes along the forearm (no outline: a mark on the skin). */
 const Scratch: React.FC<{at: P; ang: number}> = ({at, ang}) => (
@@ -353,90 +348,168 @@ const StepStool: React.FC<{x: number; top: number}> = ({x, top}) => (
   </Layer>
 );
 
-// ------------------------------------------------------------------ the stills
-// Staging (owner, round 2): the ADULT on the LEFT in the real three-quarter view (never flipped), the
-// KID on the RIGHT, flipped to face left (he has no one-sided detail). The Kid's hurt arm is always his
-// far arm (side 1): held out in C1, under the tap in C2, with the plaster in D1 and D3.
-export const V8RoomKitchen: React.FC = () => <Scene bg={K.wall}><KitchenRoom /></Scene>;
-export const V8RoomClinic: React.FC = () => <Scene bg={C.wall}><ClinicRoom /></Scene>;
+/** Running water in motion: it grows down from the spout (len 0..1), a flat highlight runs down it. */
+const Stream: React.FC<{x: number; y0: number; y1: number; t: number}> = ({x, y0, y1, t}) => {
+  if (y1 <= y0 + 2) return null;
+  const w = 10;
+  const d = `M ${x - w} ${y0} C ${x - w - 2} ${y0 + 30} ${x - w + 3} ${y1 - 20} ${x - w - 2} ${y1} H ${x + w + 2} C ${x + w - 3} ${y1 - 20} ${x + w + 2} ${y0 + 30} ${x + w} ${y0} Z`;
+  const span = y1 - y0;
+  const hy = y0 + 4 + ((t * 220) % Math.max(1, span));
+  const h2 = y0 + 4 + ((t * 220 + span * 0.5) % Math.max(1, span));
+  return (
+    <g>
+      <path d={d} fill={K.water} {...EDGE_IN} />
+      {[hy, h2].map((yy, i) => yy + 14 < y1 - 4 && <path key={i} d={`M ${x - 3 + i * 4} ${yy} V ${yy + 14}`} stroke="#ffffff" strokeWidth={3} strokeLinecap="round" />)}
+    </g>
+  );
+};
 
-/** C1: "It's just a little scratch, Mum." The Kid holds up his forearm, relaxed; Mom, worried, points at the scratch without touching. */
-export const V8SceneC1: React.FC = () => {
-  const kid: Who = {id: 'kid', pose: 'showArmUp', expr: 'talking', look: [0.6, -0.2], x: 880, y: 1700, flip: true};
-  const mom: Who = {id: 'mom', pose: 'worriedPoint', expr: 'worried', look: [0.7, 0.5], x: 296};
-  const h = hand(kid, 1);
+// ------------------------------------------------------------------ shot C: the kitchen
+const C_MOM_X = 230, C_KID_X = 858, C_STOOL = 1600;
+const kitchenCast = (s: ShotNow) => {
+  const t = s.t;
+  const little = since(s, 'C1', 'little'), wash = since(s, 'C2', 'wash'), soap = since(s, 'C2', 'soap'), c3 = since(s, 'C3'), scratchC3 = since(s, 'C3', 'scratch');
+  const T = (d: number) => t - d; // the shot second when "since" was d ago
+  // the Kid: forearm up, a shrug at "little", then the hand under the tap at "Wash"
+  const kidPose = poseAt(t, [[-9, 'showArmUpR'], [T(little), 'shrugR', 0.25], [T(little) + 0.5, 'showArmUpR', 0.35], [T(wash) + 0.15, 'tapHandR', 0.45]]);
+  const kidFeel = feel(s, 'kid');
+  const kidExpr: Expr = wash >= 0.05 ? 'surprised' : EXPR_OF[kidFeel] ?? 'neutral';
+  const kidLook: [number, number] = c3 >= 0.1 ? [0.75, -0.45] : wash >= 0.1 ? [0.45, 0.55] : [0.7, -0.35];
+  const kid: Who = {id: 'kid', pose: kidPose, expr: kidExpr, look: kidLook, x: C_KID_X, y: C_STOOL, facing: 'left', talk: talk(s, 'kid'), blink: blink(t, 1.3), bob: breath(s, 'kid', 1)};
+  // Mom: looks at the arm, her face falls and her hand goes to her chest; points at the tap; brings the soap
+  const momPose = poseAt(t, [[-9, 'rest'], [T(little) - 0.1, 'worried', 0.45], [T(wash), 'worriedPointTap', 0.32], [T(soap) - 0.05, 'pointTapSoap', 0.45]]);
+  const momExpr: Expr = little >= 0.05 ? 'worried' : 'neutral';
+  const momLook: [number, number] = c3 >= 0.2 ? [0.8, 0.15] : wash >= 0 ? [0.8, 0.45] : [0.8, 0.35];
+  const mom: Who = {id: 'mom', pose: momPose, expr: momExpr, look: momLook, x: C_MOM_X, facing: 'right', talk: talk(s, 'mom'), blink: blink(t, 4.1), bob: breath(s, 'mom', 3, 0.9 * nod(t, T(scratchC3)))};
+  return {kid, mom, wash, soap, t};
+};
+const KitchenShot: React.FC<{s: ShotNow}> = ({s}) => {
+  const {kid, mom, wash, soap, t} = kitchenCast(s);
+  const hk = handsOf(kid).R; // his right arm: the scratch, the tap
+  const hm = handsOf(mom).R; // her right (near) hand brings the soap
+  const sx = KITCHEN.spout[0], sy = KITCHEN.spout[1] + 2;
+  // the water starts once his hand is under the spout, grows down, then keeps running
+  const grow = go(t, t - wash + 0.62, 0.22);
+  const bottom = KITCHEN.top + 4;
+  const yEnd = sy + (bottom - sy) * grow;
+  const handTop = hk.palm[1] - 6;
+  const onHand = grow > 0 && Math.abs(hk.palm[0] - sx) < 40;
+  const soapK = soap < 0 ? 0 : pop(t, t - soap + 0.12, 0.35);
   return (
     <Scene bg={K.wall}>
       <KitchenRoom />
+      <Layer><Stream x={sx} y0={sy} y1={yEnd} t={t} /></Layer>
+      <StepStool x={C_KID_X} top={C_STOOL} />
       <Person {...kid} />
-      <Layer><Scratch at={h.fore(0.42)} ang={h.ang} /></Layer>
-      <Person {...mom} />
-    </Scene>
-  );
-};
-
-/** C2: "Wash it now. Soap and water, fifteen minutes." The Kid's hand under the running tap; Mom brings the soap. */
-export const V8SceneC2: React.FC = () => {
-  const stoolTop = 1600;
-  const kid: Who = {id: 'kid', pose: 'tapHand', expr: 'surprised', look: [0.7, 0.5], x: 858, y: stoolTop, flip: true};
-  const mom: Who = {id: 'mom', pose: 'offer', expr: 'talking', look: [0.6, 0.6], x: 198};
-  const hm = hand(mom, 1);
-  const hk = hand(kid, 1);
-  return (
-    <Scene bg={K.wall}>
-      <KitchenRoom tapOn />
-      <StepStool x={858} top={stoolTop} />
-      <Person {...kid} />
-      {/* the stream lands ON the Kid's hand: drawn again over the hand, with a few splashes */}
       <Layer>
-        <Water x={KITCHEN.spout[0]} y0={KITCHEN.spout[1] + 2} y1={hk.palm[1] - 6} />
-        {[[-34, -2, 7], [30, -8, 6], [38, 16, 5], [-26, 20, 5]].map(([dx, dy, r], i) => <circle key={i} cx={hk.palm[0] + dx} cy={hk.palm[1] + dy} r={r} fill={K.water} {...EDGE_IN} />)}
+        <Scratch at={onFore(hk, 58)} ang={angOf(hk)} />
+        {onHand && <Stream x={sx} y0={sy} y1={Math.min(yEnd, handTop)} t={t} />}
+        {onHand && yEnd > handTop && [0, 1, 2, 3].map((i) => {
+          // drops thrown off the hand, falling into the sink
+          const ph = (t * 1.7 + i * 0.27) % 1;
+          const dx = (i % 2 ? 1 : -1) * (22 + i * 7) * (0.6 + ph * 0.6);
+          return <circle key={i} cx={hk.palm[0] + dx} cy={hk.palm[1] + 4 + ph * 70} r={6 - i * 0.6 - ph * 2} fill={K.water} {...EDGE_IN} />;
+        })}
       </Layer>
       <Person {...mom} />
-      <Put x={hm.palm[0]} y={hm.palm[1] - 30} size={104}><Soap /></Put>
-      <Tag x={540} y={330} text="15 minutes" />
+      {soapK > 0 && (
+        <>
+          <Put x={hm.palm[0]} y={hm.palm[1] - 30 * soapK} size={104 * soapK}><Soap /></Put>
+          <Layer>
+            {[[34, -70, 9, 0.35], [58, -96, 7, 0.55], [12, -104, 6, 0.75]].map(([dx, dy, r, d0], i) => {
+              // bubbles pop out of the soap and burst one after another
+              const k = pop(t, t - soap + d0, 0.3) * (1 - go(t, t - soap + d0 + 0.9 + i * 0.2, 0.12));
+              const rise = go(t, t - soap + d0, 1.2) * 26;
+              return k > 0.02 && <circle key={i} cx={hm.palm[0] + dx} cy={hm.palm[1] + dy - rise} r={r * k} fill={tint(CLOTH.sky, 0.45)} {...EDGE_IN} />;
+            })}
+          </Layer>
+        </>
+      )}
     </Scene>
   );
 };
+/** The yellow tag rides on the screen, not in the room: it pops in at "fifteen" and stays. */
+const KitchenScreen: React.FC<{s: ShotNow}> = ({s}) => {
+  const f = since(s, 'C2', 'fifteen');
+  if (f < 0) return null;
+  const k = pop(s.t, s.t - f, 0.32);
+  return (
+    <div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, transform: `scale(${k})`, transformOrigin: '560px 330px'}}>
+      <Tag x={560} y={330} text="15 minutes" />
+    </div>
+  );
+};
 
-/** D1: "Your mum was right. Washing first, then a doctor, today." Dr. Mira explains; the Kid shows his plaster, a little scared. */
-export const V8SceneD1: React.FC = () => {
-  const kid: Who = {id: 'kid', pose: 'showArm', expr: 'worried', look: [0.6, -0.6], x: 860, y: 1720, flip: true};
-  const doc: Who = {id: 'doctor', pose: 'youSee', expr: 'talking', look: [0.6, 0.4], x: 280};
-  const h = hand(kid, 1);
-  const at = h.fore(0.5);
+// ------------------------------------------------------------------ shot D: the clinic
+const D_DOC_X = 280, D_KID_X = 860, D_KID_Y = 1730;
+const clinicCast = (s: ShotNow) => {
+  const t = s.t;
+  const T = (d: number) => t - d;
+  const right = since(s, 'D1', 'right'), doctorW = since(s, 'D1', 'doctor');
+  const d2 = since(s, 'D2'), one = since(s, 'D2', 'one'), fatal = since(s, 'D2', 'fatal');
+  const d3 = since(s, 'D3'), treat = since(s, 'D3', 'treatment'), works = since(s, 'D3', 'works'), every = since(s, 'D3', 'every');
+  // Dr. Mira: "you see", a nod, "me, the doctor"; one finger up, lowered slowly on "fatal"; the vial, thumbs up
+  const docPose = poseAt(t, [[-9, 'youSee'], [T(doctorW) - 0.12, 'meDoctor', 0.35], [T(doctorW) + 0.75, 'youSee', 0.4], [T(one) - 0.22, 'oneFinger', 0.3], [T(fatal), 'rest', 0.9], [T(treat) - 0.2, 'holdVial', 0.4], [T(works), 'thumbsHold', 0.32]]);
+  const docExpr: Expr = works >= 0.1 ? 'happy' : d3 >= 0 ? 'talking' : d2 >= 0.05 ? 'neutral' : 'talking';
+  const doc: Who = {id: 'doctor', pose: docPose, expr: docExpr, look: [0.7, 0.4], x: D_DOC_X, facing: 'right', talk: talk(s, 'doctor'), blink: blink(t, 2.2), bob: breath(s, 'doctor', 2, 0.9 * nod(t, T(right)))};
+  // the Kid: shows his plaster, pulls the arm in at the hard truth, thumbs up at "every"
+  const kidPose = poseAt(t, [[-9, 'showArmR'], [T(one) + 0.3, 'armInR', 0.55], [T(every), 'thumbsUpR', 0.35]]);
+  const kidExpr: Expr = every >= 0 ? 'happy' : treat >= 0.2 ? 'neutral' : d2 >= 0.4 ? 'worried' : right >= 0.3 ? 'neutral' : 'neutral'; // a listener smiles with open eyes; the shut-eye smile is kept for the thumbs up
+  const kidLook: [number, number] = d2 >= 0.4 && treat < 0 ? [0.5, 0.1] : [0.75, -0.6];
+  const kid: Who = {id: 'kid', pose: kidPose, expr: kidExpr, look: kidLook, x: D_KID_X, y: D_KID_Y, facing: 'left', talk: talk(s, 'kid'), blink: blink(t, 0.7), bob: breath(s, 'kid', 5)};
+  return {doc, kid, treat, t};
+};
+const ClinicShot: React.FC<{s: ShotNow}> = ({s}) => {
+  const {doc, kid, treat, t} = clinicCast(s);
+  const hk = handsOf(kid).R;
+  const hd = handsOf(doc).R;
+  const vialK = treat < 0 ? 0 : pop(t, t - treat + 0.0, 0.35);
   return (
     <Scene bg={C.wall}>
       <ClinicRoom />
       <Person {...kid} />
-      <Put x={at[0]} y={at[1]} size={66} rot={h.ang + 28}><Plaster /></Put>
+      <Put x={onFore(hk, 50)[0]} y={onFore(hk, 50)[1]} size={66} rot={angOf(hk) + 28}><Plaster /></Put>
       <Person {...doc} />
+      {vialK > 0 && <Put x={hd.palm[0]} y={hd.palm[1] - 38 * vialK} size={110 * vialK}><VaccineVial /></Put>}
     </Scene>
   );
 };
 
-/** D3: "Act in time and treatment works almost every time." Dr. Mira, thumbs up, holds the vaccine; the Kid, happy, thumbs up. */
-export const V8SceneD3: React.FC = () => {
-  const kid: Who = {id: 'kid', pose: 'thumbsUp', expr: 'happy', x: 820, flip: true};
-  const doc: Who = {id: 'doctor', pose: 'thumbsHold', expr: 'happy', x: 300};
-  const hk = hand(kid, 1);
-  const hd = hand(doc, -1);
-  const at = hk.fore(0.45);
-  return (
-    <Scene bg={C.wall}>
-      <ClinicRoom />
-      <Person {...kid} />
-      <Put x={at[0]} y={at[1]} size={66} rot={hk.ang + 28}><Plaster /></Put>
-      <Person {...doc} />
-      <Put x={hd.palm[0]} y={hd.palm[1] - 38} size={110}><VaccineVial /></Put>
-    </Scene>
-  );
-};
-
-// ================================================================== the shots as the video plays them (play.tsx)
-// First version: the approved frames standing still. Each is replaced by a moving shot.
-import type {ShotDef} from './play';
+// ------------------------------------------------------------------ the shots, as the video plays them
+const faceOf = (w: Who) => { const h = headOf(w); return {x: h.x, y: h.y, r: h.r}; };
 export const ROOM_SHOTS: Record<string, ShotDef> = {
-  C: {Scene: ({s}) => (s.cur && s.cur.id !== 'C1' ? <V8SceneC2 /> : <V8SceneC1 />), focus: (who) => (who === 'kid' ? {x: 860, y: 1060, r: 130} : {x: 320, y: 720, r: 150})},
-  D: {Scene: ({s}) => (s.cur?.id === 'D3' ? <V8SceneD3 /> : <V8SceneD1 />), focus: (who) => (who === 'kid' ? {x: 860, y: 1080, r: 130} : {x: 300, y: 700, r: 150})},
+  C: {Scene: KitchenShot, Screen: KitchenScreen, focus: (who, s) => { const c = kitchenCast(s); return faceOf(who === 'kid' ? c.kid : c.mom); }},
+  D: {Scene: ClinicShot, focus: (who, s) => { const c = clinicCast(s); return faceOf(who === 'kid' ? c.kid : c.doc); }},
 };
+
+// ------------------------------------------------------------------ the stills: the same shots at one good moment
+/** A stand-in "now" for a still, with the voice's word timings as recorded (seconds from each line's start). */
+const line = (id: string, who: string, from: number, to: number, emotion: string, words: [string, number][], react?: Record<string, string>): LineNow => ({
+  id, who, text: words.map((w) => w[0]).join(' '), from, to, emotion, react,
+  voice: words[words.length - 1][1] + 0.45,
+  words: words.map(([w, start], i) => ({w, start, end: (words[i + 1]?.[1] ?? start + 0.42) - 0.02})),
+});
+const C_LINES: LineNow[] = [
+  line('C1', 'kid', 0, 1.9, 'neutral', [["It's", 0], ['just', 0.27], ['a', 0.48], ['little', 0.55], ['scratch,', 0.79], ['Mum.', 1.2]]),
+  line('C2', 'mom', 1.9, 4.57, 'scared', [['Wash', 0], ['it', 0.4], ['now.', 0.52], ['Soap', 0.8], ['and', 1.04], ['water,', 1.16], ['fifteen', 1.49], ['minutes.', 1.85]], {kid: 'shocked'}),
+  line('C3', 'kid', 4.57, 6.77, 'shocked', [['Fifteen', 0], ['minutes?', 0.41], ['For', 0.81], ['a', 1], ['scratch?', 1.07]]),
+];
+const D_LINES: LineNow[] = [
+  line('D1', 'doctor', 0, 3.87, 'happy', [['Your', 0], ['mum', 0.24], ['was', 0.44], ['right.', 0.61], ['Washing', 1.16], ['first,', 1.63], ['then', 1.97], ['a', 2.17], ['doctor,', 2.24], ['today.', 2.83]], {kid: 'happy'}),
+  line('D2', 'doctor', 3.87, 8.47, 'neutral', [['One', 0], ['hard', 0.24], ['truth:', 0.48], ['once', 1.39], ['symptoms', 1.71], ['start,', 2.14], ['it', 2.73], ['is', 2.89], ['almost', 3.02], ['always', 3.37], ['fatal.', 3.75]], {kid: 'scared'}),
+  line('D3', 'doctor', 8.47, 12.07, 'happy', [['But', 0], ['act', 0.24], ['in', 0.48], ['time', 0.59], ['and', 0.87], ['treatment', 0.97], ['works', 1.51], ['almost', 1.83], ['every', 2.23], ['time.', 2.5]], {kid: 'happy'}),
+];
+const nowAt = (id: string, dur: number, lines: LineNow[], t: number): ShotNow => {
+  const past = lines.filter((l) => l.from <= t);
+  return {id, t, dur, lines, cur: past.length ? past[past.length - 1] : null};
+};
+export const V8RoomKitchen: React.FC = () => <Scene bg={K.wall}><KitchenRoom /></Scene>;
+export const V8RoomClinic: React.FC = () => <Scene bg={C.wall}><ClinicRoom /></Scene>;
+/** C1: "It's just a little scratch, Mum." (just after the shrug: Mom's face has fallen) */
+export const V8SceneC1: React.FC = () => <KitchenShot s={nowAt('C', 6.77, C_LINES, 1.55)} />;
+/** C2: "Wash it now. Soap and water, fifteen minutes." (the water runs, the soap is up, the tag is on) */
+export const V8SceneC2: React.FC = () => { const s = nowAt('C', 6.77, C_LINES, 4.2); return <><KitchenShot s={s} /><KitchenScreen s={s} /></>; };
+/** D1: "Your mum was right..." */
+export const V8SceneD1: React.FC = () => <ClinicShot s={nowAt('D', 12.07, D_LINES, 1.3)} />;
+/** D3: "...treatment works almost every time." (both thumbs up) */
+export const V8SceneD3: React.FC = () => <ClinicShot s={nowAt('D', 12.07, D_LINES, 11.4)} />;

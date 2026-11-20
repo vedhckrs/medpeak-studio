@@ -478,7 +478,7 @@ export type PoseName = 'rest' | 'explain' | 'point' | 'thumbs' | 'think' | 'worr
   // scene poses (added for the rooms scenes, 2026-11-20)
   | 'showArm' | 'tapHand' | 'offer' | 'thumbsHold' | 'thumbsUp' | 'worriedHold' | 'explainLow' | 'worriedPoint' | 'youSee' | 'showArmUp'
   // the rooms shots in motion (2026-11-20): the Kid acts with his RIGHT arm (the far arm when he faces left)
-  | 'showArmUpR' | 'shrugR' | 'tapHandR' | 'showArmR' | 'armInR' | 'thumbsUpR' | 'worriedPointTap' | 'soapUp' | 'meDoctor' | 'oneFinger' | 'holdVial';
+  | 'showArmUpR' | 'shrugR' | 'tapHandR' | 'showArmR' | 'armInR' | 'thumbsUpR' | 'worriedPointTap' | 'soapUp' | 'meDoctor' | 'oneFinger' | 'holdVial' | 'pointTapSoap';
 /** Arm: directions in the ARM frame: x = outwards from the body, y = down, z = forwards. */
 type ArmPose = {up: V3; fore: V3; hand: HandKind; thumb?: V3; bend?: number; ang?: number; front?: boolean; prop?: 'clipboard'};
 type LegPose = {thigh: V3; shin: V3; foot: V3};
@@ -534,11 +534,13 @@ export const POSES: Record<PoseName, Pose> = {
   armInR: {R: {up: [0.16, 0.97, 0.22], fore: [0.05, -0.35, 0.9], hand: 'relaxed', thumb: [0, -1, 0.2]}, L: REST_L, legR: STAND_R, legL: STAND_L, tilt: -6},
   thumbsUpR: {R: {up: [0.35, 0.9, 0.3], fore: [0.15, -0.95, 0.3], hand: 'thumbs', thumb: [0, -1, 0], ang: -90}, L: REST_L, legR: STAND_R, legL: STAND_L, tilt: 4},
   /** worried: the near hand on the chest, the far index finger points down-forward (at the tap) */
-  worriedPointTap: {R: {up: [0.12, 1, 0.34], fore: [-0.85, -0.62, 0.4], hand: 'rest', thumb: [0, -1, 0], front: true, bend: -48}, L: {up: [0.35, 0.9, 0.25], fore: [0.55, -0.45, 0.6], hand: 'point', thumb: [0, -1, 0]}, legR: STAND_R, legL: STAND_L, tilt: -3},
+  worriedPointTap: {R: {up: [0.12, 1, 0.34], fore: [-0.85, -0.62, 0.4], hand: 'rest', thumb: [0, -1, 0], front: true, bend: -48}, L: {up: [0.3, 0.95, 0.2], fore: [0.55, -0.25, 0.5], hand: 'point', thumb: [0, -1, 0]}, legR: STAND_R, legL: STAND_L, tilt: -3},
   /** the near hand held up in front, palm up (a bar of soap on it) */
   soapUp: {R: {up: [0.05, 1, 0.4], fore: [-0.15, -0.35, 0.95], hand: 'open', thumb: [0, -1, 0.2], front: true}, L: REST_L, legR: STAND_R, legL: STAND_L, tilt: -2},
+  /** keeps pointing at the tap with the far hand, the near hand holds up the soap */
+  pointTapSoap: {R: {up: [0.05, 1, 0.4], fore: [-0.15, -0.35, 0.95], hand: 'open', thumb: [0, -1, 0.2], front: true}, L: {up: [0.3, 0.95, 0.2], fore: [0.55, -0.25, 0.5], hand: 'point', thumb: [0, -1, 0]}, legR: STAND_R, legL: STAND_L, tilt: -2},
   /** the near index finger points at her own chest ("me, the doctor") */
-  meDoctor: {R: {up: [0.12, 1, 0.34], fore: [-0.85, -0.62, 0.4], hand: 'point', thumb: [0, -1, 0], front: true, bend: -40}, L: REST_L, legR: STAND_R, legL: STAND_L, tilt: 2},
+  meDoctor: {R: {up: [0.12, 1, 0.34], fore: [-0.85, -0.62, 0.4], hand: 'point', thumb: [0, -1, 0], front: true, ang: 170}, L: {up: [0.25, 1, 0.1], fore: [0.3, -0.5, 0.6], hand: 'open', thumb: [0, -1, 0.2], bend: -10}, legR: STAND_R, legL: STAND_L, tilt: 2},
   /** one finger raised, straight up ("one hard truth") */
   oneFinger: {R: REST_R, L: {up: [0.35, 0.9, 0.3], fore: [0.15, -0.95, 0.3], hand: 'point', thumb: [0, -1, 0], ang: -90}, legR: STAND_R, legL: STAND_L, tilt: 0},
   /** the near hand holds a small thing (the vial) up in front */

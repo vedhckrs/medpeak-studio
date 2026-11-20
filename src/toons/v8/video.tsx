@@ -55,6 +55,17 @@ const clampCam = (c: Cam): Cam => {
   const hw = 540 / c.z, hh = 960 / c.z;
   return {z: c.z, x: Math.min(1080 - hw, Math.max(hw, c.x)), y: Math.min(1920 - hh, Math.max(hh, c.y))};
 };
+/** No lean or zoom may cut a face: keep every person of the shot inside the picture (zoom out if they do not fit). */
+const keepIn = (c: Cam, faces: Focus[]): Cam => {
+  if (!faces.length) return clampCam(c);
+  const x0 = Math.min(...faces.map((f) => f.x - f.r * 1.3)), x1 = Math.max(...faces.map((f) => f.x + f.r * 1.3));
+  const top = Math.min(...faces.map((f) => f.y - f.r * 1.6));
+  const z = Math.max(1, Math.min(c.z, 1080 / Math.max(1, x1 - x0)));
+  const hw = 540 / z, hh = 960 / z;
+  const lo = x1 - hw, hi = x0 + hw; // the camera's middle must lie between these to show both ends
+  const x = lo > hi ? (x0 + x1) / 2 : Math.min(hi, Math.max(lo, c.x));
+  return clampCam({z, x, y: Math.min(c.y, top + hh)});
+};
 const cameraAt = (L: Layout, def: ShotDef | undefined, s: ShotNow, si: number, sec: number): Cam => {
   if (def?.view) return clampCam(def.view(s));
   const f = sec * TOON_FPS;
@@ -65,11 +76,12 @@ const cameraAt = (L: Layout, def: ShotDef | undefined, s: ShotNow, si: number, s
     if (!g || !def) return {z: 1, x: 540, y: 960};
     return clampCam(camFor(g.shot, def.focus(g.who, s), clamp01((f - g.from) / Math.max(1, g.to - g.from))));
   };
-  const now = of(i);
+  const people = def ? L.shots[si].shot.cast.filter((p) => !p.stage).map((p) => def.focus(p.who, s)) : [];
+  const now = keepIn(of(i), people);
   if (i === 0) return now;
   const k = go(sec, segs[i].from / TOON_FPS, 0.22); // a quick glide from the picture before, not a jump
   const was = of(i - 1);
-  return clampCam({z: lerp(was.z, now.z, k), x: lerp(was.x, now.x, k), y: lerp(was.y, now.y, k)});
+  return keepIn({z: lerp(was.z, now.z, k), x: lerp(was.x, now.x, k), y: lerp(was.y, now.y, k)}, people);
 };
 
 const Missing: React.FC<{id: string}> = ({id}) => (
