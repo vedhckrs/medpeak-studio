@@ -6,6 +6,34 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-20 (night) - Cloud session (claude.ai/code) - branch `claude/stoic-pascal-7dmpzh`
+
+Short session. It started v4 and stopped at the API-key check. **No v4 work is done.** This branch = `claude/github-repo-check-handoff-as1kql`
+(pull request #6) + this entry only.
+
+### What was run
+
+- Start-of-session steps; `npm ci` ok.
+- Key check: **`ANTHROPIC_API_KEY` is NOT visible inside the session**, although `get_environment` lists it as a
+  variable of `medpeak-studio`. The cloud runtime most likely strips that exact name (it would clash with the
+  session's own login). The `api.anthropic.com` check was not run.
+- ElevenLabs balance (start of video): 763 used of 40,000 = **39,237 left** (no change; resets 2026-12-09).
+  Anthropic: $0 spent.
+
+### The owner's decision
+
+He will save the key again under another name (for example `MEDPEAK_ANTHROPIC_KEY`) in the environment
+settings and start a new session. The work split stays as planned (his key writes the code).
+
+### Next step for the new session
+
+1. Check `test -n "$MEDPEAK_ANTHROPIC_KEY"` (or the name he chose). Run headless Claude with it:
+   `ANTHROPIC_API_KEY="$MEDPEAK_ANTHROPIC_KEY" claude -p "<task>" --model claude-opus-5-5 --effort medium --output-format json`.
+   If it is still missing, ask him; do not look for it in other processes.
+2. Then v4 step 1 (look sheets) as in the entry below. Base the work on this branch or on PR #6's branch.
+
+---
+
 ## 2026-11-20 (evening) - Cloud session (claude.ai/code) - branch `claude/github-repo-check-handoff-as1kql`, pull request #6
 
 The owner works from cloud sessions now. This branch = `feat/toons-engage` (Windows PC) + today's cloud work.
