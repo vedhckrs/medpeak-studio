@@ -32,8 +32,8 @@ import {Brain} from './organs-a';
 import {blink, bodyFace, talk, clamp01, go, lerp, pop, since, sway, type Focus, type LineNow, type ShotDef, type ShotNow, type Word} from './play';
 
 // ------------------------------------------------------------------ geometry helpers
-type P = [number, number];
-const f = (n: number) => Math.round(n * 10) / 10;
+export type P = [number, number];
+export const f = (n: number) => Math.round(n * 10) / 10;
 
 /** Smooth curve segments (Catmull-Rom as cubics) through the points, without the opening M. */
 const curve = (p: P[]): string => {
@@ -46,9 +46,9 @@ const curve = (p: P[]): string => {
   }
   return d;
 };
-const open = (p: P[]) => `M ${f(p[0][0])} ${f(p[0][1])}${curve(p)}`;
+export const open = (p: P[]) => `M ${f(p[0][0])} ${f(p[0][1])}${curve(p)}`;
 /** A closed smooth outline through the points. */
-const loop = (p: P[]): string => {
+export const loop = (p: P[]): string => {
   const n = p.length;
   let d = `M ${f(p[0][0])} ${f(p[0][1])}`;
   for (let i = 0; i < n; i++) {
@@ -60,9 +60,9 @@ const loop = (p: P[]): string => {
   return d + ' Z';
 };
 /** A repeatable pseudo-random number 0..1. */
-const rnd = (i: number, seed: number) => { const x = Math.sin(i * 127.1 + seed * 311.7) * 43758.5453; return x - Math.floor(x); };
+export const rnd = (i: number, seed: number) => { const x = Math.sin(i * 127.1 + seed * 311.7) * 43758.5453; return x - Math.floor(x); };
 /** A slightly uneven round lobe (a cell, a nucleus), optionally turned by rot degrees. */
-const lobe = (cx: number, cy: number, rx: number, ry: number, seed: number, n = 9, rot = 0): string => {
+export const lobe = (cx: number, cy: number, rx: number, ry: number, seed: number, n = 9, rot = 0): string => {
   const r = (rot * Math.PI) / 180;
   return loop(Array.from({length: n}, (_, i): P => {
     const a = (i * 2 * Math.PI) / n;
@@ -90,7 +90,7 @@ type Tube = {d: string; c: P[]; L: P[]; R: P[]; w: number[]; t: P[]};
  * A closed tube along a smooth centre line; full widths per control point, interpolated.
  * ends: 'round' | 'cut' (straight across, for ends outside the frame) | 'torn' (ragged), per end.
  */
-const tube = (pts: P[], widths: number[], ends: [string, string] = ['round', 'round'], steps = 14, seed = 1): Tube => {
+export const tube = (pts: P[], widths: number[], ends: [string, string] = ['round', 'round'], steps = 14, seed = 1): Tube => {
   const c = sample(pts, steps);
   const n = c.length;
   const w = c.map((_, i) => {
