@@ -599,6 +599,21 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
         {cuffA && cuffB && <path d={`M ${pt(cuffA)} L ${pt(cuffB)}`} {...INLINE} />}
       </Union>,
     );
+    // The shoulder: the round top of the sleeve must not draw an arc ON the body (it read as the arm
+    // sitting on top of the shoulder; owner, 2026-11-20). Where the top half of that round end lies over
+    // the garment, it is filled with the garment's colour, so the shoulder line runs from the neck
+    // straight into the outside of the arm and the arm's inner line starts at the armpit.
+    {
+      const rb = armR0 + t;
+      const m = (OUT / px) * 1.6; // the outline lies outside the shape
+      const body = shoulderPath();
+      const top = poly([[s[0] - rb - m - 2, s[1] - rb - m - 2], [s[0] + rb + m + 2, s[1] - rb - m - 2], [s[0] + rb + m + 2, s[1] + rb * 0.45], [s[0] - rb - m - 2, s[1] + rb * 0.45]]);
+      parts.push(
+        <Clip key="shoulder" d={body}>
+          <Clip d={top}><circle cx={f1(s[0])} cy={f1(s[1])} r={f1(rb + m)} fill={col} /></Clip>
+        </Clip>,
+      );
+    }
     // the prop held in this hand (drawn under the hand)
     if (ap.prop === 'clipboard') parts.push(<Clipboard key="prop" at={w} R={R} ang={view === 'front' ? -8 : -14} />);
     // the hand
@@ -734,6 +749,12 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
     );
   };
 
+  /** The outline of the outermost garment on the upper body (the coat or cardigan, else the top). */
+  function shoulderPath(): string {
+    if (spec.over) return secShape(cam, overSecs(), 'shoulder', R);
+    if (spec.top.kind === 'onesie') return secShape(cam, inflate(secs, topT), 'shoulder', R);
+    return secShape(cam, topSecs, 'shoulder', R);
+  }
   const drawTorso = () => {
     const out: React.ReactNode[] = [];
     const k = spec.top.kind;

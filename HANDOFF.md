@@ -51,6 +51,11 @@ sheets side by side (a common layout, a more anatomical heart, the nail's face m
 redrawn as smoke, the dog's close-up head matched to the body dog, a "glasses" fault on small people fixed
 by thinning eye lines on small figures, and so on).
 
+After the owner's first look ("the arm coming up on shoulder why?"): the round top of each sleeve drew an arc
+on top of the body. `people-rig.tsx` now fills the upper half of that round end with the garment's colour
+where it lies over the garment (`shoulderPath()`), so the shoulder line runs from the neck into the outside
+of the arm and the arm's inner line starts at the armpit.
+
 ### What was run
 
 - All 17 sheets rendered and looked at; `00-overview.jpg` (a contact sheet of them) made with PIL.
