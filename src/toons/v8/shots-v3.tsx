@@ -169,11 +169,12 @@ const ScreenA: React.FC<{s: ShotNow}> = ({s}) => { const v = posA(s); return <Ta
 const ScreenB: React.FC<{s: ShotNow}> = ({s}) => {
   const dog = since(s, 'B1', 'dog');
   const nerve = since(s, 'B2', 'jump') - 0.5;
-  const [x, y, k] = inPlane(s, 560, 700, 0.35);
+  // the bulb's left shoulder: room for the tag above it all through the dive, far from the Virus
+  const [x, y, k] = inPlane(s, 330, 640, 0.35);
   return (
     <>
       {dog >= 0 && <IconBadge icon="dog" t={dog} x={790} y={420} size={300} out={1.9} />}
-      {nerve >= 0 && <TagAt s={s} id="B" label="NERVE ENDING" x={x} y={y} r={250 * k} t={nerve} />}
+      {nerve >= 0 && <TagAt s={s} id="B" label="NERVE ENDING" x={x} y={y} r={105 * k} t={nerve} />}
     </>
   );
 };
@@ -189,8 +190,9 @@ const ScreenE: React.FC<{s: ShotNow}> = ({s}) => {
   );
 };
 const ScreenM3: React.FC<{s: ShotNow}> = ({s}) => {
+  // the LEFT police cell (the big one rises under the Virus: its tag would cover his face); after the zoom-in
   const grab = go(since(s, 'X1', 'freeze'), -0.2, 0.4);
-  return <TagAt s={s} id="M3" label="WHITE BLOOD CELL" x={560} y={lerp(1300, 1090, grab)} r={400 * 0.4} t={s.t - 0.2} />;
+  return <TagAt s={s} id="M3" label="WHITE BLOOD CELL" x={lerp(140, 360, grab)} y={lerp(620, 760, grab) + sway(s.t, 1.2, 0) * 6} r={330 * 0.4} t={s.t - 0.55} />;
 };
 
 // =================================================================== M3: the white-cell police
