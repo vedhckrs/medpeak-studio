@@ -465,11 +465,11 @@ export type PersonSpec = {
   id: string; name: string; role: string;
   skin: string;
   hair: {style: HairStyle; color: string};
-  top: {kind: TopKind; color: string; sleeve: 'short' | 'elbow' | 'long'; under?: string};
+  top: {kind: TopKind; color: string; sleeve: 'short' | 'elbow' | 'long'; under?: string; trim?: string};
   over?: {kind: 'coat' | 'cardigan'; color: string};
   bottom: {kind: 'trousers' | 'skirt' | 'shorts' | 'onesie'; color: string; hem?: number};
   shoes: {kind: 'trainer' | 'shoe' | 'flat' | 'bare'; color: string};
-  extras?: {glasses?: 'round' | 'square'; stethoscope?: boolean; moustache?: boolean; earrings?: boolean; cap?: string; stubble?: boolean; belt?: string};
+  extras?: {glasses?: 'round' | 'square'; stethoscope?: boolean; moustache?: boolean; earrings?: boolean; cap?: string; stubble?: boolean; belt?: string; sash?: string; elbowPatch?: string};
   build: Build;
 };
 
@@ -770,7 +770,7 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
       const rc = armR2 + t + (spec.over?.kind === 'coat' ? 0.06 * R : 0.02 * R);
       sl = [capsule(s, armR0 + t, e, armR1 + t), capsule(e, armR1 + t, cuff, rc, 'flat')];
       const n = perp(fdir);
-      if (spec.over?.kind === 'coat' || spec.top.kind === 'hoodie' || spec.over?.kind === 'cardigan') { const c2 = sub(cuff, mul(fdir, 0.16 * R)); cuffA = add(c2, mul(n, rc * 0.98)); cuffB = add(c2, mul(n, -rc * 0.98)); }
+      if (spec.over?.kind === 'coat' || spec.top.kind === 'hoodie' || spec.over?.kind === 'cardigan' || (!spec.over && spec.top.kind === 'shirt')) { const c2 = sub(cuff, mul(fdir, (spec.over?.kind === 'coat' ? 0.22 : 0.18) * R)); cuffA = add(c2, mul(n, rc * 0.98)); cuffB = add(c2, mul(n, -rc * 0.98)); }
     } else if (sleeve === 'elbow') {
       const cuff = add(e, mul(fdir, 0.3 * foreL));
       sl = [capsule(s, armR0 + t, e, armR1 + t), capsule(e, armR1 + t, cuff, armR1 + t + 0.04 * R, 'flat')];
@@ -787,10 +787,27 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
       folds.push(<path key="f1" d={openSmooth([add(sub(e, mul(ud, 0.06 * R)), mul(un, r1 * 1.05)), add(sub(e, mul(ud, 0.16 * R)), mul(un, r1 * 0.45)), add(sub(e, mul(ud, 0.2 * R)), mul(un, r1 * 0.1))])} {...INLINE} />);
       folds.push(<path key="f2" d={openSmooth([add(add(e, mul(fdir, 0.1 * R)), mul(fn, r1 * 1.05)), add(add(e, mul(fdir, 0.03 * R)), mul(fn, r1 * 0.5))])} {...INLINE} />);
       folds.push(<path key="f3" d={openSmooth([add(sub(s, mul(ud, -0.42 * R)), mul(un, -(armR0 + t) * 1.05)), add(sub(s, mul(ud, -0.3 * R)), mul(un, -(armR0 + t) * 0.5))])} {...INLINE} />);
+      // the cuff band (v4, visible at phone size): ribbed on knits, a plain band on the coat and the shirt
+      if (cuffA && cuffB) {
+        const ex = mul(fdir, 0.5 * R);
+        const knit = spec.top.kind === 'hoodie' || spec.over?.kind === 'cardigan';
+        folds.push(<path key="cuff" d={poly([cuffA, cuffB, add(cuffB, ex), add(cuffA, ex)])} fill={shade(col, spec.over?.kind === 'coat' ? 0.06 : 0.12)} />);
+        if (knit) for (const q of [0.25, 0.5, 0.75]) { const a = lerpP(cuffA, cuffB, q); folds.push(<path key={'rib' + q} d={`M ${pt(a)} L ${pt(add(a, mul(fdir, 0.16 * R)))}`} {...INLINE} />); }
+        if (!knit) { const bt = add(lerpP(cuffA, cuffB, 0.3), mul(fdir, 0.09 * R)); folds.push(<circle key="cbtn" cx={bt[0]} cy={bt[1]} r={0.045 * R} fill={tint(col, 0.5)} {...EDGE_IN} />); }
+      }
+      // elbow patches (Grandpa's cardigan)
+      if (spec.extras?.elbowPatch && spec.over) {
+        const ang = (Math.atan2(ud[1], ud[0]) * 180) / Math.PI;
+        folds.push(<ellipse key="patch" cx={e[0]} cy={e[1]} rx={0.2 * R} ry={0.12 * R} transform={`rotate(${f1(ang)} ${f1(e[0])} ${f1(e[1])})`} fill={spec.extras.elbowPatch} {...EDGE_IN} />);
+      }
     } else {
       const end = sleeve === 'elbow' ? add(e, mul(fdir, 0.3 * foreL)) : add(s, mul(ud, Math.min(len(sub(e, s)) * 0.5, 0.75 * R)));
       const dir = sleeve === 'elbow' ? fdir : ud, n2 = perp(dir), r2 = (sleeve === 'elbow' ? armR1 : armR0) + t + 0.03 * R;
-      const c = sub(end, mul(dir, 0.13 * R));
+      const c = sub(end, mul(dir, spec.top.trim && !spec.over ? 0.17 * R : 0.13 * R));
+      // a trimmed sleeve band (the Kid's ringer tee, the Baby's onesie)
+      if (spec.top.trim && !spec.over) folds.push(<path key="trim" d={poly([add(c, mul(n2, r2 * 1.5)), add(c, mul(n2, -r2 * 1.5)), add(add(end, mul(dir, 0.2 * R)), mul(n2, -r2 * 1.5)), add(add(end, mul(dir, 0.2 * R)), mul(n2, r2 * 1.5))])} fill={spec.top.trim} />);
+      // Mom's elbow sleeve: a turned-up cuff band
+      if (sleeve === 'elbow') folds.push(<path key="turn" d={poly([add(c, mul(n2, r2 * 1.5)), add(c, mul(n2, -r2 * 1.5)), add(add(end, mul(dir, 0.2 * R)), mul(n2, -r2 * 1.5)), add(add(end, mul(dir, 0.2 * R)), mul(n2, r2 * 1.5))])} fill={shade(col, 0.1)} />);
       folds.push(<path key="hem" d={`M ${pt(add(c, mul(n2, r2 * 1.1)))} L ${pt(add(c, mul(n2, -r2 * 1.1)))}`} {...INLINE} />);
       if (sleeve === 'short') folds.push(<path key="f1" d={openSmooth([add(add(s, mul(ud, 0.12 * R)), mul(un, (armR0 + t) * 1.05)), add(add(s, mul(ud, 0.28 * R)), mul(un, (armR0 + t) * 0.45))])} {...INLINE} />);
     }
@@ -928,7 +945,7 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
   // ---------------------------------------------------------------- torso, skirt, coat
   const topT = 0.05 * R;
   const topHemY = spec.top.kind === 'shirt' ? yS + 0.66 * T0 : yS + 0.95 * T0;
-  const topSecs: Sec[] = inflate(secs.filter((s) => s.y < topHemY - 0.5).concat([secAt(secs, topHemY)]), topT);
+  const topSecs: Sec[] = inflate(secs.filter((s) => s.y < topHemY - 0.5).concat([secAt(secs, topHemY)]), topT).map((q, i, all) => (spec.top.kind === 'blouse' && i === all.length - 1 ? {...q, w: q.w * 1.1} : q)); // v4: the blouse flares a little at the hem
   const nw = b.neck * R; // neck half-width
 
   const drawSkirt = () => {
@@ -972,7 +989,22 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
       out.push(<path key={'wf' + sd} d={openSmooth([sp(sd * 0.92 * S, y0 - 0.12 * R), sp(sd * 0.62 * S, y0 + 0.06 * R), sp(sd * 0.45 * S, y0 + 0.1 * R)])} {...INLINE} />);
       if (k !== 'shirt') out.push(<path key={'wg' + sd} d={openSmooth([sp(sd * 0.9 * S, y0 + 0.3 * R), sp(sd * 0.66 * S, y0 + 0.4 * R)])} {...INLINE} />);
     }
+    if (k === 'hoodie') {
+      // the ribbed hem band
+      const yb = topHemY - 0.22 * R;
+      const band = [-1.3, -0.65, 0, 0.65, 1.3].map((q) => sp(q * S, yb));
+      out.push(<path key="rib" d={openSmooth(band) + ` L ${pt([band[4][0], band[4][1] + 0.8 * R])} L ${pt([band[0][0], band[0][1] + 0.8 * R])} Z`} fill={shade(spec.top.color, 0.1)} />);
+      for (let i = -5; i <= 5; i++) { const q = i * 0.17 * S; if (!seen(q, yb + 0.1 * R)) continue; out.push(<path key={'rb' + i} d={openSmooth([sp(q, yb + 0.03 * R), sp(q, yb + 0.2 * R)])} {...INLINE} />); }
+    }
+    if (spec.extras?.sash) {
+      // a sash at the waist (Mom)
+      const yw = yS + 0.6 * T0;
+      const up = [-1.3, -0.65, 0, 0.65, 1.3].map((q) => sp(q * S, yw - 0.1 * R)), dn = [1.3, 0.65, 0, -0.65, -1.3].map((q) => sp(q * S, yw + 0.1 * R));
+      out.push(<path key="sash" d={openSmooth(up) + ' L ' + pt(dn[0]) + openSmooth(dn).slice(openSmooth(dn).indexOf(' C')) + ' Z'} fill={spec.extras.sash} {...EDGE_IN} />);
+      if (seen(ms * -0.5 * R, yw)) { const kx = sp(ms * -0.5 * R, yw); out.push(<path key="knot" d={`M ${f1(kx[0])} ${f1(kx[1])} l ${-0.1 * R} ${0.34 * R} l ${0.12 * R} ${-0.04 * R} Z M ${f1(kx[0])} ${f1(kx[1])} l ${0.12 * R} ${0.32 * R} l ${0.1 * R} ${-0.06 * R} Z`} fill={spec.extras.sash} {...EDGE_IN} />); out.push(<circle key="kn" cx={kx[0]} cy={kx[1]} r={0.07 * R} fill={spec.extras.sash} {...EDGE_IN} />); }
+    }
     if (k === 'shirt') {
+      out.push(<path key="yoke" d={openSmooth([-0.95, -0.5, 0, 0.5, 0.95].map((q) => sp(q * S, yS + 0.3 * R + Math.abs(q) * 0.04 * R)))} {...INLINE} />);
       out.push(<path key="plk" d={openSmooth([sp(ms * 0.2 * R, yS + 0.32 * R), sp(ms * 0.2 * R, topHemY)])} {...INLINE} />);
       const x0 = ms * -0.85 * R, x1 = ms * -0.4 * R, y0 = yS + 0.62 * R, y1 = yS + 1.08 * R;
       if (seen((x0 + x1) / 2, y0)) {
@@ -998,6 +1030,7 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
       out.push(<Union key="torso" d={[secShape(cam, inflate(secs, topT), 'shoulder', R)]} fill={spec.top.color} />);
       const sn = (x: number, y: number) => proj(cam, surf(secs, x, y, topT));
       out.push(<path key="snap" d={openSmooth([sn(0, yS + 0.3 * R), sn(0, yC)])} {...INLINE} />);
+      for (const q of [0.25, 0.55, 0.85]) { const p = sn(0.08 * R, lerp(yS + 0.4 * R, yC, q)); out.push(<circle key={'sn' + q} cx={p[0]} cy={p[1]} r={0.06 * R} fill="#ffffff" {...EDGE_IN} />); }
       return out;
     }
     const d = secShape(cam, topSecs, 'shoulder', R);
@@ -1032,10 +1065,11 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
   const overSecs = (): Sec[] => {
     const isCoat = spec.over?.kind === 'coat';
     const t = isCoat ? 0.1 * R : 0.08 * R;
-    const hemY = isCoat ? (P0.sit ? yC + 0.25 * R : yC + 0.55 * (-yC) * 0.62) : yS + 1.0 * T0;
-    const base = inflate(secs.slice(0, 4), t);
+    // v4 coat (the owner, 2026-11-20: "fit"): close at the waist, longer, flaring to the hem
+    const hemY = isCoat ? (P0.sit ? yC + 0.25 * R : yC + 0.7 * (-yC) * 0.62) : yS + 1.0 * T0;
+    const base = secs.slice(0, 4).map((q, i) => ({...q, w: q.w + (isCoat && i === 2 ? t * 0.45 : t), d: q.d + t}));
     const out: Sec[] = [...base];
-    if (isCoat) { out.push({y: yC + 0.1 * R, w: b.hip * R + t * 1.4, d: 0.6 * R + t, c: 0}); out.push({y: hemY, w: b.hip * R * 1.16 + t * 1.6, d: 0.7 * R + t, c: 0}); }
+    if (isCoat) { out.push({y: yC + 0.1 * R, w: b.hip * R + t * 1.5, d: 0.62 * R + t, c: 0}); out.push({y: hemY, w: b.hip * R * 1.26 + t * 1.6, d: 0.76 * R + t, c: 0}); }
     else out.push({...secAt(inflate(secs, t), hemY), w: b.hip * R + t});
     return out;
   };
@@ -1086,8 +1120,8 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
     const panel = (clip: string, key: string, side: 1 | -1) => (
       <Clip key={key} d={clip}>
         <Union d={[coatD]} fill={col} shadeBy={0.1}>
-          {isCoat && side === -1 && pocket(-0.95 * R, -0.35 * R, yC - 0.25 * R, yC + 0.3 * R, 'p1')}
-          {isCoat && side === 1 && pocket(0.35 * R, 0.95 * R, yC - 0.25 * R, yC + 0.3 * R, 'p2')}
+          {isCoat && side === -1 && pocket(-1.02 * R, -0.3 * R, yC - 0.28 * R, yC + 0.4 * R, 'p1')}
+          {isCoat && side === 1 && pocket(0.3 * R, 1.02 * R, yC - 0.28 * R, yC + 0.4 * R, 'p2')}
           {!isCoat && side === -1 && pocket(-0.85 * R, -0.35 * R, hemY - 0.6 * R, hemY - 0.2 * R, 'p3')}
           {!isCoat && side === 1 && pocket(0.35 * R, 0.85 * R, hemY - 0.6 * R, hemY - 0.2 * R, 'p4')}
           {drape(side)}
@@ -1155,7 +1189,9 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
         <path d={openSmooth([[lx, yTop], [lx - 0.02 * R, yS - 0.25 * R], L0])} {...OUTLINE} />
         <path d={openSmooth([R0, [rx + 0.02 * R, yS - 0.25 * R], [rx, yTop]])} {...OUTLINE} />
         <path d={openSmooth(nl)} {...OUTLINE} />
-        {k === 'tee' || k === 'onesie' || k === 'hoodie' ? <path d={openSmooth(nl.map((p) => [p[0], p[1] + 0.09 * R] as P))} {...INLINE} /> : null}
+        {spec.top.trim && (k === 'tee' || k === 'onesie') && <path d={openSmooth(nl.map((p) => [p[0], p[1] + 0.05 * R] as P))} stroke={spec.top.trim} strokeWidth={0.11 * R} fill="none" />}
+        {k === 'scrub' && <path d={openSmooth(nl.map((p) => [p[0], p[1] + 0.06 * R] as P))} stroke={shade(spec.top.color, 0.22)} strokeWidth={0.1 * R} fill="none" />}
+        {k === 'tee' || k === 'onesie' || k === 'hoodie' || k === 'scrub' ? <path d={openSmooth(nl.map((p) => [p[0], p[1] + (k === 'scrub' ? 0.11 : 0.1) * R] as P))} {...INLINE} /> : null}
       </g>
     );
   };
@@ -1182,9 +1218,17 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
       for (const sd of [1, -1] as const) {
         const z = depth(cam, surf(os, sd * nw * 1.4, yS + 0.3 * R));
         if (z < -0.1 * R) continue;
-        const pts = isCoat
-          ? [sp(sd * nw * 1.12, yS - 0.18 * R), sp(sd * (nw * 1.6 + 0.12 * R), yS + 0.08 * R), sp(sd * (nw * 1.25 + 0.2 * R), yS + 0.28 * R), sp(sd * (gap(yL) + 0.02 * R), yL), sp(sd * gap(yS + 0.5 * R), yS + 0.5 * R), sp(sd * gap(yS + 0.1 * R), yS + 0.1 * R)]
-          : [sp(sd * nw * 1.15, yS - 0.15 * R), sp(sd * (nw * 1.15 + 0.16 * R), yS + 0.2 * R), sp(sd * (gap(yL) + 0.1 * R), yL), sp(sd * gap(yL), yL), sp(sd * gap(yS + 0.3 * R), yS + 0.3 * R)];
+        if (isCoat) {
+          // v4: a real notched lapel: the collar piece on top, a notch, the wide lapel rolling down to the top button
+          const yB = yS + 1.05 * R;
+          const collar = [sp(sd * nw * 1.1, yS - 0.2 * R), sp(sd * (nw * 1.75 + 0.16 * R), yS + 0.02 * R), sp(sd * (nw * 1.5 + 0.26 * R), yS + 0.2 * R), sp(sd * nw * 1.2, yS + 0.1 * R)];
+          const lapel = [sp(sd * (nw * 1.6 + 0.36 * R), yS + 0.24 * R), sp(sd * (nw * 1.5 + 0.62 * R), yS + 0.42 * R), sp(sd * (gap(yB) + 0.03 * R), yB), sp(sd * gap(yS + 0.55 * R), yS + 0.55 * R), sp(sd * nw * 1.22, yS + 0.18 * R)];
+          out.push(<path key={'lapc' + sd} d={poly(collar)} fill={shade(col, 0.16)} {...EDGE} />);
+          out.push(<path key={'lap' + sd} d={poly(lapel)} fill={shade(col, 0.11)} {...EDGE} />);
+          out.push(<path key={'roll' + sd} d={openSmooth([lerpP(lapel[1], lapel[4], 0.35), lerpP(lapel[2], lapel[3], 0.4)])} {...INLINE} />);
+          continue;
+        }
+        const pts = [sp(sd * nw * 1.15, yS - 0.15 * R), sp(sd * (nw * 1.15 + 0.16 * R), yS + 0.2 * R), sp(sd * (gap(yL) + 0.1 * R), yL), sp(sd * gap(yL), yL), sp(sd * gap(yS + 0.3 * R), yS + 0.3 * R)];
         out.push(<path key={'lap' + sd} d={poly(pts)} fill={isCoat ? shade(col, 0.05) : col} {...EDGE} />);
         if (isCoat) out.push(<path key={'lapl' + sd} d={`M ${pt(pts[1])} L ${pt(sp(sd * (nw * 1.3 + 0.05 * R), yS + 0.16 * R))}`} {...INLINE} />);
       }
@@ -1230,7 +1274,7 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
     if (spec.over?.kind !== 'coat') return null;
     const os = overSecs();
     const sp = (x: number, y: number) => proj(cam, surf(os, x, y, 0.02 * R));
-    const x0 = ms * 0.42 * R, x1 = ms * 0.85 * R, y0 = yS + 0.95 * R, y1 = yS + 1.32 * R;
+    const x0 = ms * 0.38 * R, x1 = ms * 0.92 * R, y0 = yS + 0.92 * R, y1 = yS + 1.4 * R;
     if (depth(cam, surf(os, x0, y0)) < 0.05 * R) return null;
     const pen = (x: number, colr: string) => { const a = sp(x, y0 + 0.02 * R), b2 = sp(x, y0 - 0.22 * R); return <path key={colr} d={capsule(a, 0.045 * R, b2, 0.045 * R)} fill={colr} {...EDGE_IN} />; };
     return (
@@ -1238,6 +1282,7 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
         {pen(x0 + ms * 0.12 * R, CLOTH.red)}
         {pen(x0 + ms * 0.22 * R, CLOTH.blue)}
         <path d={poly([sp(x0, y0), sp(x1, y0), sp(x1, y1), sp(x0, y1)])} fill={spec.over.color} {...EDGE_IN} />
+        <path d={poly([sp(x0, y0), sp(x1, y0), sp(x1, y0 + 0.12 * R), sp(x0, y0 + 0.12 * R)])} fill={shade(spec.over.color, 0.06)} {...EDGE_IN} />
       </g>
     );
   };
@@ -1676,7 +1721,7 @@ export const CAST: PersonSpec[] = [
     skin: SKIN.tan, hair: {style: 'long', color: '#4f3324'},
     top: {kind: 'blouse', color: '#f08a76', sleeve: 'elbow'},
     bottom: {kind: 'skirt', color: '#4b4f96', hem: 0.2}, shoes: {kind: 'flat', color: CLOTH.brown},
-    extras: {earrings: true},
+    extras: {earrings: true, sash: '#b8564a'},
     build: {heads: 4.3, R: 39.5, shoulder: 0.97, chest: 0.62, waist: 0.74, hip: 1.0, belly: 0, limb: 0.97, neck: 0.27, neckLen: 0.34, legFrac: 0.45, jaw: 0.93, tilt: 4},
   },
   {
@@ -1690,7 +1735,7 @@ export const CAST: PersonSpec[] = [
   {
     id: 'kid', name: 'Kid', role: 'the son, about 7: lively',
     skin: SKIN.warm, hair: {style: 'kid', color: '#2e2420'},
-    top: {kind: 'tee', color: CLOTH.green, sleeve: 'short'},
+    top: {kind: 'tee', color: CLOTH.green, sleeve: 'short', trim: CLOTH.yellow},
     bottom: {kind: 'shorts', color: CLOTH.navy}, shoes: {kind: 'trainer', color: CLOTH.red},
     extras: {cap: CLOTH.teal},
     build: {heads: 3.1, R: 37, shoulder: 0.8, chest: 0.56, waist: 0.72, hip: 0.74, belly: 0.04, limb: 0.95, neck: 0.25, neckLen: 0.2, legFrac: 0.37, hand: 0.9, tilt: -5, nose: 0.85},
@@ -1700,7 +1745,7 @@ export const CAST: PersonSpec[] = [
     skin: SKIN.warm, hair: {style: 'balding', color: '#f1ede4'},
     top: {kind: 'shirt', color: '#f4ead2', sleeve: 'long'}, over: {kind: 'cardigan', color: '#7d6cc0'},
     bottom: {kind: 'trousers', color: CLOTH.brown}, shoes: {kind: 'shoe', color: '#3a2a22'},
-    extras: {glasses: 'square', moustache: true},
+    extras: {glasses: 'square', moustache: true, elbowPatch: '#5b4c99'},
     build: {heads: 4.15, R: 41, shoulder: 1.12, chest: 0.66, waist: 1.1, hip: 1.04, belly: 0.28, limb: 1.05, neck: 0.34, neckLen: 0.26, legFrac: 0.41, jaw: 1.08, tilt: 2, nose: 1.15},
   },
   {
@@ -1714,7 +1759,7 @@ export const CAST: PersonSpec[] = [
   {
     id: 'baby', name: 'Baby', role: 'the toddler: curious about everything',
     skin: SKIN.light, hair: {style: 'tuft', color: '#a8794e'},
-    top: {kind: 'onesie', color: CLOTH.sky, sleeve: 'short'},
+    top: {kind: 'onesie', color: CLOTH.sky, sleeve: 'short', trim: '#ffffff'},
     bottom: {kind: 'onesie', color: CLOTH.sky}, shoes: {kind: 'bare', color: SKIN.light},
     build: {heads: 2.45, R: 35, shoulder: 0.9, chest: 0.68, waist: 0.95, hip: 0.92, belly: 0.3, limb: 1.38, neck: 0.3, neckLen: 0.04, legFrac: 0.25, hand: 0.82, arm: 0.92, jaw: 1.06, tilt: 5, nose: 0.7},
   },
