@@ -28,6 +28,7 @@ import {Bubble, Label, Layer, Put, Scene, SCENE_H, SCENE_W, Tag} from './scene';
 import {Vaccine, Virus} from './germs';
 import {Antibody, RedCell, WhiteCell} from './cells';
 import {Brain} from './organs-a';
+import {blink, bodyFace, clamp01, go, lerp, pop, since, sway, type Focus, type LineNow, type ShotDef, type ShotNow, type Word} from './play';
 
 // ------------------------------------------------------------------ geometry helpers
 type P = [number, number];
@@ -247,13 +248,13 @@ const Axon: React.FC<{pts: P[]; w: number; seg?: number; stopAt?: number}> = ({p
   );
 };
 /** A receptor socket on the nerve ending: a little gold lock with a keyhole. */
-const Lock: React.FC<{x: number; y: number; s: number}> = ({x, y, s}) => {
+const Lock: React.FC<{x: number; y: number; s: number; glint?: boolean}> = ({x, y, s, glint}) => {
   const h = s * 1.1;
   const body = `M ${x - s / 2 + 6} ${y - h / 2} L ${x + s / 2 - 6} ${y - h / 2} Q ${x + s / 2} ${y - h / 2} ${x + s / 2} ${y - h / 2 + 6} L ${x + s / 2 - 2} ${y + h / 2 - 6} Q ${x + s / 2 - 2} ${y + h / 2} ${x + s / 2 - 8} ${y + h / 2} L ${x - s / 2 + 8} ${y + h / 2} Q ${x - s / 2 + 2} ${y + h / 2} ${x - s / 2 + 2} ${y + h / 2 - 6} L ${x - s / 2} ${y - h / 2 + 6} Q ${x - s / 2} ${y - h / 2} ${x - s / 2 + 6} ${y - h / 2} Z`;
   const r = s * 0.15;
   return (
     <g>
-      <Shape d={body} fill={LOCK} shadow={0.8} />
+      <Shape d={body} fill={glint ? tint(LOCK, 0.6) : LOCK} shadow={0.8} />
       <path d={`M ${x - r} ${y - h * 0.1} A ${r} ${r} 0 1 1 ${x + r} ${y - h * 0.1} L ${x + r * 0.7} ${y + h * 0.28} L ${x - r * 0.7} ${y + h * 0.28} Z`} fill={FLESH.deep} {...EDGE_IN} />
     </g>
   );
@@ -282,36 +283,50 @@ const SpitRaft: React.FC<{x: number; y: number; w: number; rot?: number}> = ({x,
   return <g transform={`translate(${x} ${y}) rotate(${rot})`}><Shape d={d} fill={SPIT} shadow={2} /></g>;
 };
 
-// =================================================================== the places
+// =================================================================== the places (each split into its depth planes)
 export type MicroView = 'wound' | 'junction' | 'axon' | 'tissue';
 
-// ---- junction: the nerve ending on a muscle fibre, its locks in a row
-export const JUNCTION = {
-  foot: [650, 920, 250, 128] as C,
-  locks: [548, 618, 688, 758] as number[],
-  lockY: 978,
+/** One depth plane: everything inside moves together by (dx, dy) frame pixels. */
+const Plane: React.FC<{d: P; children: React.ReactNode}> = ({d, children}) => (
+  <div style={{position: 'absolute', left: 0, top: 0, width: SCENE_W, height: SCENE_H, transform: `translate(${f(d[0])}px, ${f(d[1])}px)`}}>{children}</div>
+);
+/** The slow float of the three planes (a camera drifting in fluid): back a little, front more. */
+const drift = (t: number) => {
+  const x = sway(t, 9, 1), y = sway(t, 11.5, 2);
+  return {back: [x * 3, y * 2] as P, mid: [x * 6, y * 4] as P, front: [x * 13, y * 9] as P};
 };
-const Junction: React.FC = () => {
+/** Small red cells (the cast figure) drifting along a capillary: y(x) follows the vessel's line. */
+const RedCells: React.FC<{t: number; xs: number[]; y: (x: number) => number; speed?: number}> = ({t, xs, y, speed = 46}) => (
+  <>
+    {xs.map((x0, i) => {
+      const x = ((x0 + t * speed + 160) % 1400) - 160;
+      return <Put key={i} x={x} y={y(x) + sway(t, 1.7, i) * 3} size={96} rot={sway(t, 2.3, i + 4) * 6}><RedCell mood="open" mouth="flat" look={[0.8, 0]} /></Put>;
+    })}
+  </>
+);
+
+// ---- junction: the nerve ending on a muscle fibre, its locks in a row
+export const JUNCTION = {foot: [650, 920, 250, 128] as C, locks: [548, 618, 688, 758] as number[], lockY: 978};
+const JunctionBack: React.FC = () => (
+  <Layer>
+    <rect x={-40} y={-40} width={SCENE_W + 80} height={SCENE_H + 80} fill={FLUID} />
+    <BackCells seed={3} cells={[[560, 230, 120, 95], [790, 260, 110, 90], [1010, 330, 100, 110], [470, 470, 95, 80], [690, 470, 80, 70], [60, 700, 100, 120], [990, 620, 90, 80], [-10, 1060, 90, 100], [1060, 1340, 80, 90], [140, 1880, 150, 110], [520, 1900, 160, 100], [920, 1860, 150, 110]]} />
+    <BackCells seed={13} cells={[[100, 1420, 110, 85], [330, 1450, 100, 80], [560, 1430, 115, 85], [790, 1460, 105, 80], [1010, 1430, 100, 90], [230, 1640, 105, 80], [460, 1660, 100, 78], [700, 1640, 110, 82], [930, 1660, 100, 80]]} />
+  </Layer>
+);
+/** glint: which lock flicks lighter now (-1 = none). */
+const JunctionMid: React.FC<{glint?: number}> = ({glint = -1}) => {
   const [fx, fy, frx, fry] = JUNCTION.foot;
   return (
-    <>
-      <Layer>
-        <rect x={0} y={0} width={SCENE_W} height={SCENE_H} fill={FLUID} />
-        {/* back plane: small cells and a far muscle fibre */}
-        <BackCells seed={3} cells={[[560, 230, 120, 95], [790, 260, 110, 90], [1010, 330, 100, 110], [470, 470, 95, 80], [690, 470, 80, 70], [60, 700, 100, 120], [990, 620, 90, 80], [-10, 1060, 90, 100], [1060, 1340, 80, 90], [140, 1880, 150, 110], [520, 1900, 160, 100], [920, 1860, 150, 110]]} />
-        <BackCells seed={13} cells={[[100, 1420, 110, 85], [330, 1450, 100, 80], [560, 1430, 115, 85], [790, 1460, 105, 80], [1010, 1430, 100, 90], [230, 1640, 105, 80], [460, 1660, 100, 78], [700, 1640, 110, 82], [930, 1660, 100, 80]]} />
-        {/* mid plane: the muscle fibre the nerve sits on, and a big neighbour cell */}
-        <MidCell c={[1060, 700, 200, 230]} seed={21} nuc={[30, -20, 80]} />
-        <Fibre pts={[[-80, 1150], [320, 1110], [720, 1130], [1160, 1090]]} w={330} seed={4} />
-        {/* the axon comes in from the far top right, in its myelin sleeve, and ends in a rounded foot */}
-        <Axon pts={[[930, -80], [900, 240], [830, 520], [740, 740], [670, 860]]} w={132} />
-        <Shape d={lobe(fx, fy, frx, fry, 33, 10)} fill={NERVE} shadow={3}>
-          {/* tiny vesicles of messenger inside the foot */}
-          {[[-120, -30, 13], [-60, -50, 11], [10, -40, 14], [80, -55, 10], [140, -20, 12]].map(([dx, dy, r]) => <path key={dx} d={lobe(fx + dx, fy + dy, r, r, dx, 7)} fill={tint(NERVE, 0.5)} {...EDGE_IN} />)}
-        </Shape>
-        {JUNCTION.locks.map((x) => <Lock key={x} x={x} y={JUNCTION.lockY} s={54} />)}
-      </Layer>
-    </>
+    <Layer>
+      <MidCell c={[1060, 700, 200, 230]} seed={21} nuc={[30, -20, 80]} />
+      <Fibre pts={[[-80, 1150], [320, 1110], [720, 1130], [1160, 1090]]} w={330} seed={4} />
+      <Axon pts={[[930, -80], [900, 240], [830, 520], [740, 740], [670, 860]]} w={132} />
+      <Shape d={lobe(fx, fy, frx, fry, 33, 10)} fill={NERVE} shadow={3}>
+        {[[-120, -30, 13], [-60, -50, 11], [10, -40, 14], [80, -55, 10], [140, -20, 12]].map(([dx, dy, r]) => <path key={dx} d={lobe(fx + dx, fy + dy, r, r, dx, 7)} fill={tint(NERVE, 0.5)} {...EDGE_IN} />)}
+      </Shape>
+      {JUNCTION.locks.map((x, i) => <Lock key={x} x={x} y={JUNCTION.lockY} s={54} glint={i === glint} />)}
+    </Layer>
   );
 };
 const JunctionFront: React.FC = () => (
@@ -323,21 +338,21 @@ const JunctionFront: React.FC = () => (
 
 // ---- wound: just under a tooth puncture; the fang tip through torn skin, saliva, torn muscle fibres
 const SKIN_TOP = 300;
-const Wound: React.FC = () => {
-  return (
+const woundVessel = (x: number) => 1236 + ((x + 60) / 1200) * 118 + Math.sin((x + 60) / 380) * 18;
+const WoundBack: React.FC<{t: number}> = ({t}) => (
+  <>
     <Layer>
-      <rect x={0} y={0} width={SCENE_W} height={SCENE_H} fill={FLUID} />
-      <rect x={0} y={0} width={SCENE_W} height={SKIN_TOP + 20} fill={AIR} />
-      {/* back plane: small cells and far fibres, a capillary crossing behind */}
+      <rect x={-40} y={-40} width={SCENE_W + 80} height={SCENE_H + 80} fill={FLUID} />
+      <rect x={-40} y={-40} width={SCENE_W + 80} height={SKIN_TOP + 60} fill={AIR} />
       <BackCells seed={9} cells={[[100, 640, 110, 80], [860, 620, 120, 85], [300, 1520, 130, 90], [760, 1560, 140, 95], [1030, 1420, 90, 100], [60, 1300, 80, 90]]} />
       <Fibre back pts={[[-60, 690], [500, 672], [1140, 700]]} w={120} />
       <BackCells seed={19} cells={[[120, 1460, 105, 80], [350, 1500, 100, 78], [580, 1470, 110, 82], [820, 1500, 105, 80], [1040, 1470, 95, 82], [240, 1690, 105, 80], [480, 1700, 100, 76], [720, 1690, 108, 80]]} />
       <Capillary pts={[[-60, 1230], [400, 1290], [760, 1300], [1140, 1360]]} w={120} />
     </Layer>
-  );
-};
-/** The middle plane of the wound: the skin bricks, the torn fibres, the fang tip and the saliva. */
-const WoundMid: React.FC = () => {
+    <RedCells t={t} xs={[200, 640, 1060]} y={woundVessel} />
+  </>
+);
+const SKIN_CELLS = (() => {
   const rows: [number, number, number][] = [[SKIN_TOP, 40, 150], [SKIN_TOP + 44, 82, 170], [SKIN_TOP + 130, 92, 160]];
   const cells: {d: string; n?: string}[] = [];
   rows.forEach(([y, h, w], r) => {
@@ -348,27 +363,30 @@ const WoundMid: React.FC = () => {
       cells.push({d: lobe(cx, y + h / 2, w / 2 - 3, h / 2 - 2, r * 50 + x, 10), n: r ? lobe(cx + 12, y + h / 2, 17, 12, x + r, 7) : undefined});
     }
   });
-  return (
-    <Layer>
-      {/* torn muscle fibres: one whole above, one torn across the middle, one whole below */}
-      <Fibre pts={[[-80, 830], [380, 810], [760, 850], [1160, 820]]} w={200} seed={11} />
-      <Fibre pts={[[-80, 1080], [180, 1060], [395, 1075]]} w={210} ends={['cut', 'torn']} seed={12} />
-      <Fibre pts={[[700, 1090], [920, 1110], [1160, 1080]]} w={210} ends={['torn', 'cut']} seed={13} />
-      {/* the skin's brick cells, torn open */}
-      {cells.map((c, i) => (
-        <Shape key={i} d={c.d} fill={SKINCELL} shadow={1.2}>
-          {c.n && <path d={c.n} fill={tint(NUC, 0.25)} {...EDGE_IN} />}
-        </Shape>
-      ))}
-      {/* saliva clinging round the fang tip (drawn behind the tooth) and pouring off it into the tissue */}
-      <Shape d={loop([[452, 300], [520, 330], [640, 300], [662, 420], [628, 540], [600, 640], [584, 720], [560, 800], [536, 730], [510, 650], [470, 560], [436, 430]])} fill={SPIT} shadow={2.5} />
-      {/* the TIP of the dog's fang, enormous at this scale */}
-      <Shape d="M 330 -40 C 350 140 420 360 520 590 C 530 610 552 612 560 592 C 640 400 720 170 770 -40 Z" fill={FANG} shadow={5}>
-        <path d="M 420 -40 C 436 120 474 280 520 420" {...INLINE} />
+  return cells;
+})();
+/** The fang tip and the saliva clinging to it, moved down by `dy` (0 = in the wound). */
+const Fang: React.FC<{dy: number}> = ({dy}) => (
+  <g transform={`translate(0 ${f(dy)})`}>
+    <Shape d={loop([[452, 300], [520, 330], [640, 300], [662, 420], [628, 540], [600, 640], [584, 720], [560, 800], [536, 730], [510, 650], [470, 560], [436, 430]])} fill={SPIT} shadow={2.5} />
+    <Shape d="M 330 -400 C 330 -200 350 140 420 360 C 450 450 490 520 520 590 C 530 610 552 612 560 592 C 640 400 720 170 770 -400 Z" fill={FANG} shadow={5}>
+      <path d="M 420 -400 C 420 -100 440 140 474 280 C 490 340 505 380 520 420" {...INLINE} />
+    </Shape>
+  </g>
+);
+/** The middle plane of the wound: torn fibres and skin bricks. The fang is drawn by the shot (it moves). */
+const WoundMid: React.FC = () => (
+  <Layer>
+    <Fibre pts={[[-80, 830], [380, 810], [760, 850], [1160, 820]]} w={200} seed={11} />
+    <Fibre pts={[[-80, 1080], [180, 1060], [395, 1075]]} w={210} ends={['cut', 'torn']} seed={12} />
+    <Fibre pts={[[700, 1090], [920, 1110], [1160, 1080]]} w={210} ends={['torn', 'cut']} seed={13} />
+    {SKIN_CELLS.map((c, i) => (
+      <Shape key={i} d={c.d} fill={SKINCELL} shadow={1.2}>
+        {c.n && <path d={c.n} fill={tint(NUC, 0.25)} {...EDGE_IN} />}
       </Shape>
-    </Layer>
-  );
-};
+    ))}
+  </Layer>
+);
 const WoundFront: React.FC = () => (
   <Layer>
     <FrontCell c={[-140, 1900, 420, 320]} seed={61} nuc={[170, -110, 80]} />
@@ -387,32 +405,45 @@ const mix = (a: string, b: string, t: number) => {
 const TUNNEL_NEAR = tint(NERVE, 0.25); // the near wall: light nerve cream
 const TUNNEL_FAR = '#8a5a55'; // the far end: deep brown-rose
 const RAIL_TAN = '#b8845e'; // the rails: a mid tan, clearly visible on every step
-const AxonInside: React.FC = () => {
+const RINGS = 7; // depth steps from the far end (0) to the nearest ring (7)
+/** A ring of the tunnel at depth u (0 = far end, RINGS = near): its centre, radii and flat tone. */
+const ringAt = (u: number) => {
   const [vx, vy] = AXON.vp;
-  // the tube's wall as nested hoops: small, far and dark at the vanishing point; big, near and light at
-  // the bottom. Each hoop one flat step darker and warmer than the one before it.
-  const N = 7;
-  const hoops = Array.from({length: N}, (_, k) => {
-    const t = k / (N - 1);
-    const r = [46, 82, 145, 245, 380, 560, 1000][k]; // sized so no ring edge crosses the tag zone (y 290..370)
-    const cx = vx + (540 - vx) * t, cy = vy + (1230 - vy) * Math.pow(t, 1.4);
-    return {cx, cy, rx: r, ry: r * 1.18, k, fill: mix(TUNNEL_NEAR, TUNNEL_FAR, (N - 1 - k) / (N - 1))};
-  }).reverse();
+  const k = Math.max(0, u) / (RINGS - 1);
+  const r = 46 * Math.pow(1.78, u);
+  const cx = vx + (540 - vx) * Math.min(1, k), cy = vy + (1230 - vy) * Math.pow(Math.min(1.25, k), 1.4);
+  const tone = mix(TUNNEL_NEAR, TUNNEL_FAR, Math.max(0, Math.min(1, 1 - u / (RINGS - 1))));
+  return {cx, cy, rx: r, ry: r * 1.18, tone};
+};
+/** The tunnel at time t: the rings slowly grow toward us and new ones open at the far end (a seamless loop). */
+const AxonTunnel: React.FC<{t: number; speed?: number}> = ({t, speed = 0.28}) => {
+  const [vx, vy] = AXON.vp;
+  const ph = (t * speed) % 1;
+  const us = Array.from({length: RINGS + 1}, (_, k) => k + ph).reverse();
+  // things drifting past: [angle, depth offset, kind (0 vesicle, 1 mitochondrion), size, turn]
+  const items: [number, number, number, number, number][] = [
+    [200, 0.3, 1, 1, 40], [-30, 1.4, 1, 0.9, -50], [140, 2.6, 0, 1, 0], [20, 3.2, 1, 1.1, 60], [250, 4.1, 0, 1.2, 0],
+    [100, 4.9, 0, 0.8, 0], [-60, 5.6, 1, 1, -62], [170, 6.3, 0, 1, 0], [300, 2.0, 0, 0.9, 0],
+  ];
   return (
     <Layer>
-      {/* outside the last hoop: the near wall, with the myelin wraps hinted at the corners */}
-      <rect x={0} y={0} width={SCENE_W} height={SCENE_H} fill={tint(TUNNEL_NEAR, 0.3)} />
-      {[1.3, 1.2].map((s2, i) => <path key={s2} d={lobe(540, 1230, 1380 * s2 * 0.62, 1380 * s2 * 0.73, 70 + i, 12)} {...INLINE} />)}
-      {hoops.map(({cx, cy, rx, ry, k, fill}) => <path key={k} d={lobe(cx, cy, rx, ry, 80 + k, 12)} fill={fill} {...EDGE_IN} />)}
-      {/* the far cell body, small, at the vanishing point */}
+      <rect x={-40} y={-40} width={SCENE_W + 80} height={SCENE_H + 80} fill={ringAt(RINGS).tone} />
+      {us.map((u) => {
+        const g = ringAt(u);
+        const id = (((Math.round(u - ph) - Math.floor(t * speed)) % 8) + 8) % 8; // the same ring keeps its shape as it grows
+        return <path key={u.toFixed(3)} d={lobe(g.cx, g.cy, g.rx, g.ry, 80 + id, 12)} fill={g.tone} {...EDGE_IN} />;
+      })}
       <path d={lobe(vx, vy, 26, 30, 99, 8)} fill={shade(TUNNEL_FAR, 0.25)} {...EDGE_IN} />
-      {/* small vesicles and mitochondria along the way, smaller further off */}
-      {[[640, 640, 7], [470, 700, 9], [700, 820, 12], [380, 900, 14], [880, 1300, 22], [180, 1180, 20], [760, 1640, 28]].map(([x, y, r], i) => <path key={i} d={lobe(x, y, r, r, i + 3, 7)} fill={tint(TUNNEL_NEAR, 0.5)} {...EDGE_IN} />)}
-      <Mito x={660} y={700} rx={30} ry={12} rot={40} seed={2} />
-      <Mito x={440} y={760} rx={44} ry={17} rot={-50} seed={3} />
-      <Mito x={850} y={1000} rx={92} ry={36} rot={60} seed={4} />
-      <Mito x={190} y={1420} rx={130} ry={50} rot={-62} seed={5} />
-      {/* the rails (microtubules) running from near to far, thinner into the distance */}
+      {items.map(([ang, u0, kind, size, turn], i) => {
+        const u = (u0 + t * speed) % RINGS;
+        const g = ringAt(u);
+        const a = (ang * Math.PI) / 180;
+        if (u > 5.8) return null; // by then it has drifted out of the frame
+        const x = g.cx + Math.cos(a) * g.rx * 0.8, y = g.cy + Math.sin(a) * g.ry * 0.8;
+        const s = Math.min(2.2, (g.rx / 240) * size);
+        if (kind === 1) return <Mito key={i} x={x} y={y} rx={60 * s} ry={24 * s} rot={turn} seed={i + 2} />;
+        return <path key={i} d={lobe(x, y, 14 * s, 14 * s, i + 3, 7)} fill={tint(TUNNEL_NEAR, 0.5)} {...EDGE_IN} />;
+      })}
       {AXON.rails.map((end, i) => {
         const pts: P[] = [end, [end[0] + (vx - end[0]) * 0.45, 2000 + (vy - 2000) * 0.45], [vx + (end[0] - vx) * 0.1, vy + 50]];
         const tb = tube(pts, [40, 20, 7], ['cut', 'round'], 20);
@@ -432,23 +463,43 @@ const AxonFront: React.FC = () => (
     <Mito x={1020} y={1880} rx={260} ry={110} rot={-30} seed={7} fill={shade(MITO, 0.14)} />
   </Layer>
 );
-/** The little motor that walks the rail, carrying the Virus (frame pixels; x, y = where its feet stand). */
-const Carrier: React.FC<{x: number; y: number}> = ({x, y}) => (
-  <g>
-    {/* two little legs walking up the rail: the back foot at (x, y), the front foot a step further up it */}
-    <TinyLeg from={[x - 34, y - 112]} to={[x - 10, y - 4]} fill={CARRIER} w={13} foot={-1} />
-    <TinyLeg from={[x + 34, y - 112]} to={[x + 12, y - 62]} fill={CARRIER} w={13} />
-    <Shape d={lobe(x, y - 142, 92, 40, 5, 10)} fill={CARRIER} shadow={1.6} />
-  </g>
-);
+/**
+ * The little motor that walks the rail, carrying the Virus. (x, y) = where it stands on the rail; `step`
+ * counts steps (fractional): its two feet take turns, each lifting and moving a step up the rail.
+ */
+const Carrier: React.FC<{x: number; y: number; step: number}> = ({x, y, step}) => {
+  const ph = step % 1;
+  const foot = (lead: boolean): P => {
+    // lead foot: from the back (0) to the front (-60) during the first half; the other during the second half
+    const k = lead ? Math.min(1, ph * 2) : Math.max(0, ph * 2 - 1);
+    const s = k * k * (3 - 2 * k);
+    const startY = lead ? 0 : -60, endY = lead ? -60 : 0;
+    const lift = Math.sin(Math.PI * s) * 16;
+    return [x + (lead ? -8 : 10) + lift * 0.6, y + startY + (endY - startY) * s - lift];
+  };
+  const even = Math.floor(step) % 2 === 0;
+  const a = foot(even), b = foot(!even);
+  const bob = -Math.abs(Math.sin(Math.PI * ph * 2)) * 5;
+  return (
+    <g>
+      <TinyLeg from={[x - 32, y - 112 + bob]} to={a} fill={CARRIER} w={13} foot={-1} />
+      <TinyLeg from={[x + 32, y - 112 + bob]} to={b} fill={CARRIER} w={13} />
+      <Shape d={lobe(x, y - 142 + bob, 92, 40, 5, 10)} fill={CARRIER} shadow={1.6} />
+    </g>
+  );
+};
 
 // ---- tissue: the fluid-filled space between cells, a capillary passing behind
-const Tissue: React.FC = () => (
-  <Layer>
-    <rect x={0} y={0} width={SCENE_W} height={SCENE_H} fill={FLUID} />
-    <BackCells seed={30} cells={[[140, 260, 120, 90], [420, 230, 110, 80], [700, 250, 120, 90], [960, 230, 110, 95], [300, 1360, 110, 90], [780, 1380, 120, 90], [540, 1600, 130, 90], [100, 1700, 100, 90], [1000, 1700, 110, 90]]} />
-    <Capillary pts={[[-60, 520], [300, 470], [700, 500], [1140, 450]]} w={170} />
-  </Layer>
+const tissueVessel = (x: number) => 500 - ((x + 60) / 1200) * 40 + Math.sin((x + 60) / 300) * 14;
+const TissueBack: React.FC<{t: number}> = ({t}) => (
+  <>
+    <Layer>
+      <rect x={-40} y={-40} width={SCENE_W + 80} height={SCENE_H + 80} fill={FLUID} />
+      <BackCells seed={30} cells={[[140, 260, 120, 90], [420, 230, 110, 80], [700, 250, 120, 90], [960, 230, 110, 95], [300, 1360, 110, 90], [780, 1380, 120, 90], [540, 1600, 130, 90], [100, 1700, 100, 90], [1000, 1700, 110, 90]]} />
+      <Capillary pts={[[-60, 520], [300, 470], [700, 500], [1140, 450]]} w={170} />
+    </Layer>
+    <RedCells t={t} xs={[180, 560, 930]} y={tissueVessel} speed={52} />
+  </>
 );
 const TissueMid: React.FC = () => (
   <Layer>
@@ -465,119 +516,254 @@ const TissueFront: React.FC = () => (
   </Layer>
 );
 
-/** The background of a micro place (everything behind the characters). */
-export const MicroPlace: React.FC<{view: MicroView}> = ({view}) => {
-  if (view === 'junction') return <Junction />;
-  if (view === 'axon') return <AxonInside />;
-  if (view === 'tissue') return <><Tissue /><RedCells at={[[180, 492, -4], [560, 486, 2], [930, 470, -6]]} /><TissueMid /></>;
-  return <><Wound /><RedCells at={[[200, 1268, 6], [620, 1300, 2]]} /><WoundMid /></>;
+/** A whole empty place at a moment (for the place sheets). */
+const PlaceAt: React.FC<{view: MicroView; t: number}> = ({view, t}) => {
+  const d = drift(t);
+  if (view === 'junction') return <><Plane d={d.back}><JunctionBack /></Plane><Plane d={d.mid}><JunctionMid /></Plane><Plane d={d.front}><JunctionFront /></Plane></>;
+  if (view === 'axon') return <><Plane d={d.back}><AxonTunnel t={t} /></Plane><Plane d={d.front}><AxonFront /></Plane></>;
+  if (view === 'tissue') return <><Plane d={d.back}><TissueBack t={t} /></Plane><Plane d={d.mid}><TissueMid /></Plane><Plane d={d.front}><TissueFront /></Plane></>;
+  return <><Plane d={d.back}><WoundBack t={t} /></Plane><Plane d={d.mid}><WoundMid /><Layer><Fang dy={0} /></Layer></Plane><Plane d={d.front}><WoundFront /></Plane></>;
 };
-/** The near plane of a micro place: big cell edges cropped by the corners (draw after the characters). */
-export const MicroFront: React.FC<{view: MicroView}> = ({view}) =>
-  view === 'junction' ? <JunctionFront /> : view === 'axon' ? <AxonFront /> : view === 'tissue' ? <TissueFront /> : <WoundFront />;
-/** Small red cells (the cast figure) passing along a capillary. */
-const RedCells: React.FC<{at: [number, number, number][]}> = ({at}) => (
-  <>{at.map(([x, y, r]) => <Put key={x} x={x} y={y} size={96} rot={r}><RedCell mood="open" mouth="flat" look={[0.8, 0]} /></Put>)}</>
+
+// =================================================================== the shots (play.tsx): a pure function of `s`
+const breathe = (t: number, seed: number, px = 3) => sway(t, 2.6 + (seed % 3) * 0.3, seed) * px;
+/** Where a spike ball of a Virus (centre x, y; figure size `size`) is, at angle `deg`. */
+const spikeBall = (x: number, y: number, size: number, deg: number): P => {
+  const k = size / 200, r = (deg * Math.PI) / 180;
+  return [x + Math.cos(r) * 65 * k, y + (-4 + Math.sin(r) * 65) * k];
+};
+/** A lighter, quick label pop on the screen (labels never move with the camera). */
+const ScreenLabel: React.FC<{s: ShotNow; text: string}> = ({s, text}) => (
+  <div style={{position: 'absolute', inset: 0, opacity: go(s.t, 0.05, 0.25)}}><Label x={250} y={250} text={text} /></div>
+);
+/** Scale a group about a point (frame pixels). */
+const Scaled: React.FC<{k: number; ox: number; oy: number; children: React.ReactNode}> = ({k, ox, oy, children}) => (
+  <div style={{position: 'absolute', left: 0, top: 0, width: SCENE_W, height: SCENE_H, transform: `scale(${f(k * 1000) / 1000})`, transformOrigin: `${ox}px ${oy}px`}}>{children}</div>
 );
 
-// =================================================================== the five storyboard frames
-/** A: the hook. The Virus, big and angry, key raised before the nerve ending's locks; it dreams of the brain. */
-export const V8SceneA: React.FC = () => (
-  <Scene bg={FLUID}>
-    <MicroPlace view="junction" />
-    <Put x={330} y={800} size={440}><Virus mood="angry" mouth="grit" look={[0.6, 0.3]} /></Put>
-    <MicroFront view="junction" />
-    <Layer><Bubble x={300} y={400} w={330} h={250} tx={300} ty={598} /></Layer>
-    <Put x={296} y={398} size={200}><Brain mood="scared" mouth="wavy" look={[0.2, 0.8]} /></Put>
-  </Scene>
-);
-
-/** B: that morning. The fang tip through the skin, a pour of saliva; the Virus surfs in between torn fibres. */
-export const V8SceneB: React.FC = () => (
-  <Scene bg={FLUID}>
-    <MicroPlace view="wound" />
-    <Layer>
-      <SpitDrop x={630} y={850} r={15} rot={20} />
-      <SpitDrop x={452} y={900} r={18} rot={-20} />
-      <SpitDrop x={700} y={980} r={22} rot={25} />
-      <SpitRaft x={548} y={1092} w={260} rot={-8} />
-    </Layer>
-    <Put x={548} y={986} size={250} rot={-4}><Virus mood="wink" mouth="smile" look={[0.6, 0.5]} /></Put>
-    <MicroFront view="wound" />
-    <Label x={230} y={236} text="That morning" />
-  </Scene>
-);
-
-/** M2: the long way. Inside the axon; the Virus, smug, rides a little carrier up a rail into the distance. */
-export const V8SceneM2: React.FC = () => (
-  <Scene bg={AXO}>
-    <MicroPlace view="axon" />
-    <Layer><Carrier x={552} y={1340} /></Layer>
-    <Put x={552} y={1064} size={280}><Virus mood="bored" look={[0.1, -0.8]} /></Put>
-    <MicroFront view="axon" />
-    <Tag x={540} y={330} text="2-3 months" />
-  </Scene>
-);
-
-/** E: after the vaccine. Antibodies stand before the locks; two have grabbed the Virus by its spikes. */
-export const V8SceneE: React.FC = () => {
-  const vx = 300, vy = 700, k = 1.7; // the Virus (size 340)
-  const ball = (deg: number): P => { const r = (deg * Math.PI) / 180; return [vx + Math.cos(r) * 65 * k, vy + (-4 + Math.sin(r) * 65) * k]; };
-  const [rbx, rby] = ball(54), [lbx, lby] = ball(128);
+// ---- A: the hook (junction)
+const posA = (s: ShotNow) => {
+  const t = s.t;
+  const k = go(t, 0, 0.36);
+  const u = since(s, 'A1', 'rabies');
+  const shake = u >= 0 && u < 0.6 ? Math.sin(u * Math.PI * 7) * 8 * (1 - u / 0.6) : 0;
+  const tapping = since(s, 'A2') >= 0 && since(s, 'A2', 'brain') < 0;
+  const tap = tapping ? -Math.abs(Math.sin(s.t * Math.PI * 3.2)) * 7 : 0;
+  return {x: lerp(236, 330, k), y: 800 - Math.sin(Math.PI * k) * 70 + breathe(t, 1) + tap, rot: shake + (1 - k) * -8};
+};
+const ShotA: React.FC<{s: ShotNow}> = ({s}) => {
+  const t = s.t, d = drift(t), v = posA(s);
+  const face = bodyFace(s, 'virus', 1, 'angry');
+  const ub = since(s, 'A2', 'brain');
+  const g = (t * 1.6) % 5;
+  const glint = g % 1 < 0.22 ? Math.floor(g) : -1;
   return (
     <Scene bg={FLUID}>
-      <MicroPlace view="junction" />
-      <Put x={985} y={620} size={250}><Vaccine mood="happy" mouth="smile" /></Put>
-      <Put x={vx} y={vy} size={340}><Virus mood="dizzy" mouth="o" /></Put>
-      {/* the wall in front of the locks */}
-      {[585, 715, 845].map((x, i) => <Put key={x} x={x} y={1010 + (i % 2) * 10} size={190}><Antibody color={CLOTH.teal} mood="angry" mouth={i === 1 ? 'grit' : 'flat'} look={[-0.7, -0.2]} /></Put>)}
-      {/* two have grabbed its lower spikes with their Y hands (hand tips sit on the spike balls) */}
-      <Put x={rbx + 78} y={rby + 70} size={200}><Antibody color={CLOTH.teal} mood="angry" mouth="grit" look={[-0.6, -0.6]} /></Put>
-      <Put x={lbx - 78} y={lby + 70} size={200}><Antibody color={CLOTH.teal} mood="angry" mouth="flat" look={[0.6, -0.6]} /></Put>
-      <Put x={170} y={1190} size={240}><Vaccine mood="open" mouth="big" look={[0.6, -0.4]} /></Put>
-      <MicroFront view="junction" />
-      <Label x={250} y={250} text="After the vaccine" />
+      <Plane d={d.back}><JunctionBack /></Plane>
+      <Plane d={d.mid}>
+        <JunctionMid glint={glint} />
+        <Put x={v.x} y={v.y} size={440} rot={v.rot}><Virus mood={face.mood} mouth={face.mouth} look={ub >= 0 ? [-0.3, -0.7] : [0.35, 0.15]} /></Put>
+        {ub >= 0 && (
+          <Scaled k={pop(ub, 0, 0.32)} ox={300} oy={600}>
+            <Layer><Bubble x={300} y={400} w={330} h={250} tx={300} ty={598} /></Layer>
+            <Put x={296 + Math.sin(t * 38) * 2} y={398 + Math.sin(t * 31 + 1) * 1.5} size={200}><Brain mood={blink(t, 7) > 0.5 ? 'closed' : 'scared'} mouth="wavy" look={[0.2, 0.8]} /></Put>
+          </Scaled>
+        )}
+      </Plane>
+      <Plane d={d.front}><JunctionFront /></Plane>
     </Scene>
   );
 };
 
-/** M3: caught. Two White cells hold the Virus by its top spikes, Antibodies stuck on it; one angry in front. */
-export const V8SceneM3: React.FC = () => {
-  const vx = 540, vy = 820, k = 1.5; // the Virus (size 300)
-  const ball = (deg: number): P => { const r = (deg * Math.PI) / 180; return [vx + Math.cos(r) * 65 * k, vy + (-4 + Math.sin(r) * 65) * k]; };
-  const [ax, ay] = ball(-166), [bx, by] = ball(54);
+// ---- B: that morning (wound)
+const posB = (s: ShotNow) => {
+  const t = s.t;
+  const tn = since(s, 'B1', 'nip');
+  let fang = lerp(-470 + sway(t, 1.6, 2) * 10, 0, go(tn, -0.1, 0.16));
+  fang = lerp(fang, -250, go(since(s, 'B1', 'scratch'), 0.5, 0.7));
+  const ub = since(s, 'B2');
+  const kr = go(ub, 0, 1.1);
+  const rx = 548 + Math.sin(kr * Math.PI) * 30, ry = lerp(560, 1092, kr) + (ub > 1.1 ? breathe(t, 3, 3) : 0);
+  const point = go(since(s, 'B2', 'nerve'), -0.1, 0.3);
+  return {fang, tn, ub, rx, ry, raftRot: lerp(-26, -8, kr) + sway(t, 2.2, 5) * 2, vx: rx, vy: ry - 106, vrot: lerp(-4, -16, point) + sway(t, 2.4, 6) * 2, point};
+};
+const ShotB: React.FC<{s: ShotNow}> = ({s}) => {
+  const t = s.t, d = drift(t), b = posB(s);
+  const face = bodyFace(s, 'virus', 2, 'happy');
+  const tip = 600 + b.fang;
+  // drips falling off the fang tip after the bite
+  const drips = b.tn > 0.25 ? [0, 1, 2].map((i) => {
+    const ph = ((b.tn - 0.25) * 0.8 + i / 3) % 1;
+    return {x: 556 + (i - 1) * 16 + Math.sin(ph * 3 + i) * 6, y: tip + 220 + ph * 260, r: 8 + ph * 7, on: ph < 0.9};
+  }) : [];
+  // the splash when the raft lands
+  const us = b.ub - 1.05;
+  const splash = us >= 0 && us < 0.6 ? [[-1, -0.4], [1, -0.5], [0.4, -1]].map(([dx, dy]) => ({x: b.rx + dx * (100 + us * 160), y: b.ry + dy * (30 + us * 110), r: 13 * (1 - us / 0.6) + 2})) : [];
   return (
     <Scene bg={FLUID}>
-      <MicroPlace view="tissue" />
-      <Put x={vx} y={vy} size={300}><Virus mood="sad" mouth="frown" look={[0, 0.5]} /></Put>
-      {/* two Antibodies stuck on its spikes (their hand tips on the spike balls) */}
-      <Put x={ax - 47} y={ay + 42} size={120}><Antibody color={CLOTH.teal} mood="open" mouth="flat" look={[0.6, -0.4]} /></Put>
-      <Put x={bx + 47} y={by + 42} size={120}><Antibody color={CLOTH.teal} mood="open" mouth="flat" look={[-0.6, -0.4]} /></Put>
-      <Put x={341} y={645} size={340} flip><WhiteCell mood="angry" mouth="flat" look={[0.5, 0.6]} /></Put>
-      <Put x={739} y={645} size={340}><WhiteCell mood="angry" mouth="flat" look={[-0.5, 0.6]} /></Put>
-      <Put x={540} y={1170} size={400}><WhiteCell mood="angry" mouth="grit" look={[0, -0.2]} /></Put>
-      <MicroFront view="tissue" />
+      <Plane d={d.back}><WoundBack t={t} /></Plane>
+      <Plane d={d.mid}>
+        <WoundMid />
+        <Layer>
+          {drips.filter((p) => p.on).map((p, i) => <SpitDrop key={i} x={p.x} y={p.y} r={p.r} />)}
+          <Fang dy={b.fang} />
+          {b.ub >= 0 && <SpitRaft x={b.rx} y={b.ry} w={260} rot={b.raftRot} />}
+          {splash.map((p, i) => <SpitDrop key={'s' + i} x={p.x} y={p.y} r={p.r} rot={i ? 30 : -30} />)}
+        </Layer>
+        {b.ub >= 0 && <Put x={b.vx} y={b.vy} size={250} rot={b.vrot}><Virus mood={face.mood} mouth={face.mouth} look={b.point > 0.5 ? [0.9, -0.6] : [0.5, 0.5]} /></Put>}
+      </Plane>
+      <Plane d={d.front}><WoundFront /></Plane>
     </Scene>
   );
 };
 
-// =================================================================== the empty places, for checking
-const Empty: React.FC<{view: MicroView}> = ({view}) => (
-  <Scene bg={view === 'axon' ? AXO : FLUID}><MicroPlace view={view} /><MicroFront view={view} /></Scene>
-);
+// ---- M2: the long way (axon)
+const posM2 = (s: ShotNow) => {
+  const step = s.t * 0.95;
+  const ph = step % 1;
+  const bob = -Math.abs(Math.sin(Math.PI * ph * 2)) * 5;
+  return {cx: 552, cy: 1340, step, vx: 552, vy: 1064 + bob, vrot: Math.sin(Math.PI * 2 * ph) * 4};
+};
+const ShotM2: React.FC<{s: ShotNow}> = ({s}) => {
+  const t = s.t, d = drift(t), m = posM2(s);
+  const face = bodyFace(s, 'virus', 3, 'smug');
+  return (
+    <Scene bg={AXO}>
+      <Plane d={d.back}><AxonTunnel t={t} /></Plane>
+      <Plane d={d.mid}>
+        <Layer><Carrier x={m.cx} y={m.cy} step={m.step} /></Layer>
+        <Put x={m.vx} y={m.vy} size={280} rot={m.vrot}><Virus mood={face.mood} mouth={face.mouth} look={[0.1, -0.8]} /></Put>
+      </Plane>
+      <Plane d={d.front}><AxonFront /></Plane>
+    </Scene>
+  );
+};
+const ScreenM2: React.FC<{s: ShotNow}> = ({s}) => {
+  const u = since(s, 'B3', 'two');
+  if (u < 0) return null;
+  return <Scaled k={pop(u, 0, 0.3)} ox={540} oy={330}><Tag x={540} y={330} text="2-3 months" /></Scaled>;
+};
+
+// ---- E: after the vaccine (junction)
+const WALL = [585, 715, 845];
+const posE = (s: ShotNow) => {
+  const t = s.t;
+  const k = go(t, 0, 0.42);
+  const strut = (1 - k) * -Math.abs(Math.sin(t * Math.PI * 5)) * 10;
+  const jolt = Math.sin(clamp01((t - 0.42) / 0.3) * Math.PI) * 7;
+  const dizzy = since(s, 'E2', 'stopped') >= 0;
+  return {x: lerp(170, 300, k), y: 700 + strut + breathe(t, 4), rot: (1 - k) * 6 - jolt + (dizzy ? Math.sin(t * 6.5) * 3 : 0), dizzy};
+};
+const ShotE: React.FC<{s: ShotNow}> = ({s}) => {
+  const t = s.t, d = drift(t), v = posE(s);
+  const f0 = bodyFace(s, 'virus', 4, 'shocked');
+  const face = v.dizzy ? {mood: 'dizzy' as const, mouth: f0.mouth === 'open' ? ('open' as const) : ('o' as const)} : f0;
+  const [rbx, rby] = spikeBall(v.x, v.y, 340, 54), [lbx, lby] = spikeBall(v.x, v.y, 340, 128);
+  const uw = since(s, 'E2', 'wall');
+  const kg = go(uw, -0.7, 0.7);
+  const hop = (u: number, k: number) => -Math.abs(Math.sin(u * Math.PI * 3)) * 14 * (1 - k);
+  return (
+    <Scene bg={FLUID}>
+      <Plane d={d.back}><JunctionBack /></Plane>
+      <Plane d={d.mid}>
+        <JunctionMid />
+        <Put x={985} y={620 - Math.abs(Math.sin(t * Math.PI * 1.3)) * 12} size={250}><Vaccine mood={blink(t, 8) > 0.5 ? 'closed' : 'happy'} mouth="smile" /></Put>
+        <Put x={v.x} y={v.y} size={340} rot={v.rot}><Virus mood={face.mood} mouth={face.mouth} look={[0.8, 0.1]} /></Put>
+        {/* the wall marches in from the right during "Who are all of you?" */}
+        {WALL.map((x, i) => {
+          const u = since(s, 'E1', 'who') - i * 0.32;
+          const k = go(u, 0, 0.8);
+          if (k <= 0) return null;
+          return <Put key={x} x={lerp(1250, x, k)} y={1010 + (i % 2) * 10 + hop(u, k) + breathe(t, 10 + i, 2)} size={190}><Antibody color={CLOTH.teal} mood={blink(t, 11 + i) > 0.5 ? 'closed' : 'angry'} mouth={i === 1 ? 'grit' : 'flat'} look={[-0.7, -0.2]} /></Put>;
+        })}
+        {/* two grab its lower spikes on "A wall?" */}
+        {kg > 0 && <Put x={lerp(1260, rbx + 78, kg)} y={rby + 70 + hop(uw, kg)} size={200}><Antibody color={CLOTH.teal} mood="angry" mouth="grit" look={[-0.6, -0.6]} /></Put>}
+        {kg > 0 && <Put x={lerp(-180, lbx - 78, kg)} y={lby + 70 + hop(uw + 0.2, kg)} size={200}><Antibody color={CLOTH.teal} mood="angry" mouth="flat" look={[0.6, -0.6]} /></Put>}
+        <Put x={170} y={1190 - Math.abs(Math.sin(t * Math.PI * 1.3 + 1.2)) * 12} size={240}><Vaccine mood={blink(t, 9) > 0.5 ? 'closed' : 'open'} mouth="big" look={[0.6, -0.4]} /></Put>
+      </Plane>
+      <Plane d={d.front}><JunctionFront /></Plane>
+    </Scene>
+  );
+};
+
+// ---- M3: caught (tissue)
+const posM3 = (s: ShotNow) => {
+  const t = s.t;
+  const k = go(t, 0, 0.4);
+  const fight = since(s, 'X1', 'got') >= 0.3 && since(s, 'E3') < 0 ? Math.sin(t * 26) * 4 * clamp01(-since(s, 'E3') / 0.4) : 0;
+  const sag = go(since(s, 'E3'), 0, 0.8);
+  const nodU = since(s, 'E3', 'time');
+  const nod = nodU >= 0 && nodU < 0.55 ? Math.sin((nodU / 0.55) * Math.PI) * 16 : 0;
+  return {k, vx: 540 + fight, vy: 820 + sag * 16 + breathe(t, 6, 2), vrot: -sag * 4 + fight * 0.6, sag, nod, front: {x: 540, y: 1170 + nod + breathe(t, 7)}};
+};
+const ShotM3: React.FC<{s: ShotNow}> = ({s}) => {
+  const t = s.t, d = drift(t), m = posM3(s);
+  const vf = bodyFace(s, 'virus', 5, 'sad');
+  const wf = bodyFace(s, 'whitecell', 6, 'angry');
+  const [ax, ay] = spikeBall(m.vx, m.vy, 300, -166), [bx, by] = spikeBall(m.vx, m.vy, 300, 54);
+  const hold = m.sag * 12;
+  return (
+    <Scene bg={FLUID}>
+      <Plane d={d.back}><TissueBack t={t} /></Plane>
+      <Plane d={d.mid}>
+        <TissueMid />
+        <Put x={m.vx} y={m.vy} size={300} rot={m.vrot}><Virus mood={vf.mood} mouth={vf.mouth} look={[0, 0.5]} /></Put>
+        <Put x={ax - 47} y={ay + 42 + sway(t, 1.9, 3) * 2} size={120}><Antibody color={CLOTH.teal} mood={blink(t, 12) > 0.5 ? 'closed' : 'open'} mouth="flat" look={[0.6, -0.4]} /></Put>
+        <Put x={bx + 47} y={by + 42 + sway(t, 2.1, 4) * 2} size={120}><Antibody color={CLOTH.teal} mood={blink(t, 13) > 0.5 ? 'closed' : 'open'} mouth="flat" look={[-0.6, -0.4]} /></Put>
+        <Put x={lerp(130, 341, m.k)} y={645 + hold + breathe(t, 8, 2)} size={340} flip><WhiteCell mood={blink(t, 14) > 0.5 ? 'closed' : 'angry'} mouth="flat" look={[0.5, 0.6]} /></Put>
+        <Put x={lerp(950, 739, m.k)} y={645 + hold + breathe(t, 9, 2)} size={340}><WhiteCell mood={blink(t, 15) > 0.5 ? 'closed' : 'angry'} mouth="flat" look={[-0.5, 0.6]} /></Put>
+        <Put x={m.front.x} y={m.front.y} size={400}><WhiteCell mood={wf.mood} mouth={wf.mouth === 'smile' ? 'grit' : wf.mouth} look={[0, -0.2]} /></Put>
+      </Plane>
+      <Plane d={d.front}><TissueFront /></Plane>
+    </Scene>
+  );
+};
+
+const virusFocus = (x: number, y: number, size: number): Focus => ({x, y: y - size * 0.08, r: size * 0.3});
+export const BODY_SHOTS: Record<string, ShotDef> = {
+  A: {Scene: ShotA, focus: (who, s) => { if (who === 'brain' && since(s, 'A2', 'brain') >= 0) return {x: 300, y: 400, r: 120}; const v = posA(s); return virusFocus(v.x, v.y, 440); }},
+  B: {Scene: ShotB, Screen: ({s}) => <ScreenLabel s={s} text="That morning" />, focus: (_who, s) => { const b = posB(s); return b.ub >= 0 ? virusFocus(b.vx, b.vy, 250) : {x: 548, y: Math.max(400, 560 + b.fang), r: 140}; }},
+  M2: {Scene: ShotM2, Screen: ScreenM2, focus: (_who, s) => { const m = posM2(s); return virusFocus(m.vx, m.vy, 280); }},
+  E: {Scene: ShotE, Screen: ({s}) => <ScreenLabel s={s} text="After the vaccine" />, focus: (_who, s) => { const v = posE(s); return virusFocus(v.x, v.y, 340); }},
+  M3: {Scene: ShotM3, focus: (who, s) => { const m = posM3(s); return who === 'whitecell' ? {x: m.front.x, y: m.front.y - 30, r: 130} : virusFocus(m.vx, m.vy, 300); }},
+};
+
+// =================================================================== stills: the shots at a good moment (for the sheets)
+/** The script's lines with their word timings (for stills only; the video uses the real voice timings). */
+const lineSpec = (id: string, who: string, from: number, emotion: string, words: string, next: number): LineNow => {
+  let last = 0;
+  const ws: Word[] = words.split(' ').map((tok) => {
+    const m = tok.match(/^(.*)\(([\d.]+)\)$/);
+    last = m ? parseFloat(m[2]) : last + 0.25;
+    return {w: m ? m[1] : tok, start: last, end: last + 0.2};
+  });
+  ws.forEach((w, i) => { w.end = i + 1 < ws.length ? ws[i + 1].start - 0.02 : w.start + 0.4; });
+  return {id, who, text: ws.map((w) => w.w).join(' '), from, to: next, voice: ws[ws.length - 1].end, emotion, words: ws};
+};
+const STILL_LINES: Record<string, {dur: number; lines: LineNow[]}> = {
+  A: {dur: 4.73, lines: [lineSpec('A1', 'virus', 0, 'angry', 'You(0) get(.23) rabies.(.41) Time(.93) runs(1.18) out.(1.43)', 2.07), lineSpec('A2', 'virus', 2.07, 'angry', 'Can(0) you(.23) stop(.37) me(.66) before(.79) the(1.09) brain?(1.2)', 4.73)]},
+  B: {dur: 6.83, lines: [lineSpec('B1', 'virus', 0, 'smug', 'A(0) stray(.16) dog.(.48) A(1.02) little(1.16) nip.(1.38) A(1.92) tiny(2.04) scratch.(2.32)', 3.63), lineSpec('B2', 'virus', 3.63, 'happy', 'I(0) ride(.2) in(.44) on(.57) its(.69) spit.(.84) Now,(1.39) up(1.74) this(1.94) nerve!(2.17)', 6.83)]},
+  M2: {dur: 3.77, lines: [lineSpec('B3', 'virus', 0, 'smug', 'Slowly.(0) Usually(.94) two(1.41) to(1.61) three(1.71) months(1.93) to(2.21) the(2.35) brain.(2.44)', 3.77)]},
+  E: {dur: 5.4, lines: [lineSpec('E1', 'virus', 0, 'shocked', 'Wait.(0) Who(.44) are(.64) all(.77) of(.91) you?(1) What(1.53) is(1.78) this?(1.95)', 2.5), lineSpec('E2', 'virus', 2.5, 'angry', 'A(0) wall?(.16) They(.77) stopped(.97) me(1.32) before(1.45) the(1.73) brain!(1.83)', 5.4)]},
+  M3: {dur: 5.93, lines: [lineSpec('X1', 'whitecell', 0, 'angry', 'Got(0) you!(.35) You(.5) go(.66) no(.82) further.(.99)', 1.77), lineSpec('E3', 'virus', 1.77, 'sad', 'One(0) bite,(.24) but(.63) you(.81) did(.94) not(1.13) get(1.26) rabies.(1.46) The(2.21) vaccine(2.37) came(2.81) in(3.03) time!', 5.93)]},
+};
+const nowAt = (id: string, t: number): ShotNow => {
+  const {dur, lines} = STILL_LINES[id];
+  const cur = [...lines].reverse().find((l) => l.from <= t) ?? null;
+  return {id, t, dur, lines, cur};
+};
+const StillOf: React.FC<{id: string; t: number}> = ({id, t}) => {
+  const def = BODY_SHOTS[id];
+  const s = nowAt(id, t);
+  return <><def.Scene s={s} />{def.Screen && <def.Screen s={s} />}</>;
+};
+export const V8SceneA: React.FC = () => <StillOf id="A" t={4.2} />;
+export const V8SceneB: React.FC = () => <StillOf id="B" t={6.6} />;
+export const V8SceneM2: React.FC = () => <StillOf id="M2" t={3.2} />;
+export const V8SceneE: React.FC = () => <StillOf id="E" t={4.9} />;
+export const V8SceneM3: React.FC = () => <StillOf id="M3" t={2.4} />;
+const Empty: React.FC<{view: MicroView}> = ({view}) => <Scene bg={view === 'axon' ? AXO : FLUID}><PlaceAt view={view} t={0} /></Scene>;
 export const V8PlaceWound: React.FC = () => <Empty view="wound" />;
 export const V8PlaceJunction: React.FC = () => <Empty view="junction" />;
 export const V8PlaceAxon: React.FC = () => <Empty view="axon" />;
 export const V8PlaceTissue: React.FC = () => <Empty view="tissue" />;
-
-// ================================================================== the shots as the video plays them (play.tsx)
-// First version: the approved frames standing still. Each is replaced by a moving shot.
-import type {ShotDef} from './play';
-const still = (C: React.FC, x: number, y: number, r = 110): ShotDef => ({Scene: () => <C />, focus: () => ({x, y, r})});
-export const BODY_SHOTS: Record<string, ShotDef> = {
-  A: still(V8SceneA, 330, 790),
-  B: still(V8SceneB, 545, 980),
-  M2: still(V8SceneM2, 552, 1060),
-  E: still(V8SceneE, 300, 690),
-  M3: still(V8SceneM3, 540, 810),
-};

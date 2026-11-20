@@ -1,5 +1,6 @@
 import React from 'react';
 import {registerRoot, Still} from 'remotion';
+import {TalkTest, BlinkTest, BlendRestPoint, BlendExplainThumbs, FacingTest} from './people-motion-test';
 import {DoctorTest, PeopleCloseTest, PeopleHandTest, PeopleLineup, PersonSheet, PeopleHands} from './people-sheets';
 
 const sheet = (id: string) => {
@@ -12,6 +13,11 @@ const Kid = sheet('kid'), Grandpa = sheet('grandpa'), Grandma = sheet('grandma')
 registerRoot(() => (
   <>
     <Still id="V8PeopleTest" component={DoctorTest} width={1920} height={1080} />
+    <Still id="V8MotionTalk" component={TalkTest} width={1920} height={1080} />
+    <Still id="V8MotionBlink" component={BlinkTest} width={1920} height={1080} />
+    <Still id="V8MotionBlendA" component={BlendRestPoint} width={1920} height={1080} />
+    <Still id="V8MotionBlendB" component={BlendExplainThumbs} width={1920} height={1080} />
+    <Still id="V8MotionFacing" component={FacingTest} width={1920} height={1080} />
     <Still id="V8PeopleClose" component={PeopleCloseTest} width={1920} height={1080} />
     <Still id="V8PeopleHandTest" component={PeopleHandTest} width={1920} height={1080} />
     <Still id="V8PeopleLineup" component={PeopleLineup} width={1920} height={1080} />

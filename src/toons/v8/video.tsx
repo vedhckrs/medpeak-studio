@@ -56,6 +56,7 @@ const clampCam = (c: Cam): Cam => {
   return {z: c.z, x: Math.min(1080 - hw, Math.max(hw, c.x)), y: Math.min(1920 - hh, Math.max(hh, c.y))};
 };
 const cameraAt = (L: Layout, def: ShotDef | undefined, s: ShotNow, si: number, sec: number): Cam => {
+  if (def?.view) return clampCam(def.view(s));
   const f = sec * TOON_FPS;
   const segs = L.segs.filter((g) => g.si === si);
   const i = Math.max(0, segs.findIndex((g) => f >= g.from && f < g.to));

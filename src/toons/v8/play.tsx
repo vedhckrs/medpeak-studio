@@ -48,6 +48,12 @@ export type ShotDef = {
   Screen?: React.FC<{s: ShotNow}>;
   /** Where that character's face is at this moment, for the camera. Unknown name: the middle of the action. */
   focus: (who: string, s: ShotNow) => Focus;
+  /**
+   * The shot's own framing, if it has one: the point of the picture (frame pixels) that sits in the middle of
+   * the screen and the zoom (1 = the whole frame). When given, the player uses it instead of leaning toward
+   * the speaker. For shots whose action is small in the frame (inside the body).
+   */
+  view?: (s: ShotNow) => {x: number; y: number; z: number};
 };
 
 // ------------------------------------------------------------------ small pure helpers for shots

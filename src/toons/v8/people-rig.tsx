@@ -8,6 +8,32 @@
  *
  * Units: person units, y down, the ground at y = 0. A woman's head radius is about 40 units.
  * <PersonAt> places a person on a board: x = the middle, y = the ground line, scale = px per unit.
+ *
+ * ANIMATING A PERSON (all optional; with none of them given a person draws exactly as on the sheets)
+ *   <PersonAt spec x y scale view pose expr look  talk blink facing bob />
+ *   talk?: number    0..1, how far the mouth is open (from play.tsx `talk(s, who)`). 0 = the expression's own
+ *                    mouth; the shape opens continuously (dark inside, a tongue when wide), on every
+ *                    expression and in every view. Undefined = the still mouth of the sheets.
+ *   blink?: number   0..1, 1 = shut (from play.tsx `blink(t, seed)`). Skin lids come down with the INK lash
+ *                    line, behind glasses too. Ignored on eyes that are already shut arcs (happy).
+ *   pose?: PoseName | {a: PoseName; b: PoseName; k: number}
+ *                    a blend: k = 0 is pose a, 1 is pose b. Every number blends (arm and leg directions
+ *                    on an arc, wrist bend, hand angle, head tilt); the hand KIND, the thumb side, the prop
+ *                    and the arm's in-front-of-body layer switch at k = 0.5, so ease k quickly through the
+ *                    middle (e.g. k = go(t, t0, 0.35) from play.tsx). 'sit' <-> standing does not blend
+ *                    (it jumps at 0.5): cut, or switch while the body is hidden.
+ *   facing?: 'right' | 'left'   default 'right'. 'left' is a real left-facing three-quarter / side view
+ *                    (drawn as the person's mirror twin, then flipped): one-sided details stay on the
+ *                    person's OWN side (pocket and pens, stethoscope chest piece, hair parting, buttons,
+ *                    the hand that holds the clipboard, folds). A pose's R / L arm stays the person's own
+ *                    right / left arm. The front view ignores `facing`.
+ *   bob?: number     -1..1, a small breathing / speaking lift of the chest and the head; feet stay planted.
+ *   (flip?: boolean on <PersonAt> is the old blind mirror; do not use it for characters, use facing.)
+ *
+ * WHERE THINGS ARE (frame pixels, same arithmetic as the drawing; pass the same options as <PersonAt>):
+ *   handAt(spec, {pose, view, facing, x, y, scale, bob}) -> {R, L: {wrist, palm, dir}}  (the person's own
+ *     right / left hand: wrist point, palm centre, forearm direction as a unit vector)
+ *   headAt(spec, {pose, view, facing, x, y, scale, bob}) -> {x, y, r}  (the face centre and a radius)
  */
 import React, {useId} from 'react';
 import {INK, OUT, IN, OUTLINE, INLINE, EDGE, EDGE_IN, shade, tint, SKIN, CLOTH, FLESH, Eyes, Mouth, type Mood, type MouthKind} from './kit';
@@ -450,7 +476,9 @@ export type PersonSpec = {
 // ================================================================== poses
 export type PoseName = 'rest' | 'explain' | 'point' | 'thumbs' | 'think' | 'worried' | 'clipboard' | 'sit' | 'wave'
   // scene poses (added for the rooms scenes, 2026-11-20)
-  | 'showArm' | 'tapHand' | 'offer' | 'thumbsHold' | 'thumbsUp' | 'worriedHold' | 'explainLow' | 'worriedPoint' | 'youSee' | 'showArmUp';
+  | 'showArm' | 'tapHand' | 'offer' | 'thumbsHold' | 'thumbsUp' | 'worriedHold' | 'explainLow' | 'worriedPoint' | 'youSee' | 'showArmUp'
+  // the rooms shots in motion (2026-11-20): the Kid acts with his RIGHT arm (the far arm when he faces left)
+  | 'showArmUpR' | 'shrugR' | 'tapHandR' | 'showArmR' | 'armInR' | 'thumbsUpR' | 'worriedPointTap' | 'soapUp' | 'meDoctor' | 'oneFinger' | 'holdVial';
 /** Arm: directions in the ARM frame: x = outwards from the body, y = down, z = forwards. */
 type ArmPose = {up: V3; fore: V3; hand: HandKind; thumb?: V3; bend?: number; ang?: number; front?: boolean; prop?: 'clipboard'};
 type LegPose = {thigh: V3; shin: V3; foot: V3};
@@ -496,6 +524,25 @@ export const POSES: Record<PoseName, Pose> = {
   /** holds the far forearm up in front, nearly upright, palm toward the face (shows a mark on the forearm) */
   showArmUp: {R: REST_R, L: {up: [0.3, 0.15, 0.95], fore: [0.0, -1, 0.15], hand: 'open', thumb: [0, -1, 0.2]}, legR: STAND_R, legL: STAND_L, tilt: -3},
   explainLow: {R: REST_R, L: {up: [0.35, 0.9, 0.3], fore: [0.4, 0.35, 0.85], hand: 'open', thumb: [0, -1, 0.2], bend: -10}, legR: STAND_R, legL: STAND_L, tilt: 3},
+  // ---- the rooms shots in motion: the R-arm twins of the Kid's poses (his right arm is the far arm when facing left)
+  showArmUpR: {R: {up: [0.3, 0.15, 0.95], fore: [0.0, -1, 0.15], hand: 'open', thumb: [0, -1, 0.2]}, L: REST_L, legR: STAND_R, legL: STAND_L, tilt: -3},
+  /** a small shrug while the forearm is up: the hand tips outwards, the head tilts */
+  shrugR: {R: {up: [0.38, 0.05, 0.92], fore: [0.38, -0.92, 0.1], hand: 'open', thumb: [0, -1, 0.2]}, L: {up: [0.26, 1, -0.02], fore: [0.3, 0.9, 0.3], hand: 'relaxed', thumb: [-0.4, 0, 1]}, legR: STAND_R, legL: STAND_L, tilt: 7},
+  tapHandR: {R: {up: [0.25, 0.2, 0.95], fore: [0.05, -0.25, 1], hand: 'open', thumb: [0, -1, 0]}, L: REST_L, legR: STAND_R, legL: STAND_L, tilt: 3},
+  showArmR: {R: {up: [0.3, 0.6, 0.75], fore: [0.08, -0.62, 0.8], hand: 'open', thumb: [0, -1, 0.2]}, L: REST_L, legR: STAND_R, legL: STAND_L, tilt: -3},
+  /** the plastered forearm pulled in, low and close to the body */
+  armInR: {R: {up: [0.16, 0.97, 0.22], fore: [0.05, -0.35, 0.9], hand: 'relaxed', thumb: [0, -1, 0.2]}, L: REST_L, legR: STAND_R, legL: STAND_L, tilt: -6},
+  thumbsUpR: {R: {up: [0.35, 0.9, 0.3], fore: [0.15, -0.95, 0.3], hand: 'thumbs', thumb: [0, -1, 0], ang: -90}, L: REST_L, legR: STAND_R, legL: STAND_L, tilt: 4},
+  /** worried: the near hand on the chest, the far index finger points down-forward (at the tap) */
+  worriedPointTap: {R: {up: [0.12, 1, 0.34], fore: [-0.85, -0.62, 0.4], hand: 'rest', thumb: [0, -1, 0], front: true, bend: -48}, L: {up: [0.35, 0.9, 0.25], fore: [0.55, -0.45, 0.6], hand: 'point', thumb: [0, -1, 0]}, legR: STAND_R, legL: STAND_L, tilt: -3},
+  /** the near hand held up in front, palm up (a bar of soap on it) */
+  soapUp: {R: {up: [0.05, 1, 0.4], fore: [-0.15, -0.35, 0.95], hand: 'open', thumb: [0, -1, 0.2], front: true}, L: REST_L, legR: STAND_R, legL: STAND_L, tilt: -2},
+  /** the near index finger points at her own chest ("me, the doctor") */
+  meDoctor: {R: {up: [0.12, 1, 0.34], fore: [-0.85, -0.62, 0.4], hand: 'point', thumb: [0, -1, 0], front: true, bend: -40}, L: REST_L, legR: STAND_R, legL: STAND_L, tilt: 2},
+  /** one finger raised, straight up ("one hard truth") */
+  oneFinger: {R: REST_R, L: {up: [0.35, 0.9, 0.3], fore: [0.15, -0.95, 0.3], hand: 'point', thumb: [0, -1, 0], ang: -90}, legR: STAND_R, legL: STAND_L, tilt: 0},
+  /** the near hand holds a small thing (the vial) up in front */
+  holdVial: {R: {up: [0.08, 1, 0.3], fore: [-0.4, -0.4, 0.85], hand: 'hold', thumb: [0, -1, 0], front: true}, L: REST_L, legR: STAND_R, legL: STAND_L, tilt: 2},
 };
 
 // ================================================================== the person
@@ -548,24 +595,43 @@ const secShape = (cam: Cam, secs: Sec[], top: 'shoulder' | 'line', R: number, bo
 };
 const inflate = (secs: Sec[], t: number, td = t): Sec[] => secs.map((s) => ({...s, w: s.w + t, d: s.d + td}));
 
-export type PersonProps = {spec: PersonSpec; view?: View; pose?: PoseName; expr?: Expr; look?: [number, number]; headOnly?: boolean; px?: number};
 
-export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'rest', expr = 'neutral', look, headOnly, px = 1.5}) => {
+// ================================================================== layout (shared by Person, handAt, headAt)
+/** A blend of two poses: k = 0 is pose a, k = 1 is pose b. */
+export type PoseBlend = {a: PoseName; b: PoseName; k: number};
+export type PoseIn = PoseName | PoseBlend;
+export type Facing = 'right' | 'left';
+const nlerp3 = (a: V3, b: V3, k: number): V3 => { const p = v3norm(a), q = v3norm(b); return v3norm([lerp(p[0], q[0], k), lerp(p[1], q[1], k), lerp(p[2], q[2], k)]); };
+const lerpAng = (a: number, b: number, k: number) => a + (((((b - a + 540) % 360) + 360) % 360) - 180) * k;
+const swapPose = (p: Pose): Pose => ({...p, R: p.L, L: p.R, legR: p.legL, legL: p.legR});
+const blendArm = (a: ArmPose, b: ArmPose, k: number): ArmPose => {
+  const pk = k < 0.5 ? a : b;
+  return {up: nlerp3(a.up, b.up, k), fore: nlerp3(a.fore, b.fore, k), hand: pk.hand, thumb: pk.thumb, front: pk.front, prop: pk.prop, bend: pk.bend, ang: pk.ang};
+};
+const blendLeg = (a: LegPose, b: LegPose, k: number): LegPose => ({thigh: nlerp3(a.thigh, b.thigh, k), shin: nlerp3(a.shin, b.shin, k), foot: nlerp3(a.foot, b.foot, k)});
+/** The pose to draw: a named pose, or a blend of two (every number blended; the hand kind switches at k = 0.5). */
+const resolvePose = (pose: PoseIn, mir: boolean, buildTilt: number) => {
+  const fix = (q: Pose) => (mir ? swapPose(q) : q);
+  if (typeof pose === 'string') { const P = fix(POSES[pose]); return {P, A: P, B: P, k: 0, blend: false}; }
+  const A = fix(POSES[pose.a]), B = fix(POSES[pose.b]);
+  const k = Math.max(0, Math.min(1, pose.k));
+  const pk = k < 0.5 ? A : B;
+  const P: Pose = {
+    R: blendArm(A.R, B.R, k), L: blendArm(A.L, B.L, k), legR: blendLeg(A.legR, B.legR, k), legL: blendLeg(A.legL, B.legL, k),
+    sit: pk.sit, tilt: lerp(A.tilt ?? buildTilt, B.tilt ?? buildTilt, k), lean: lerp(A.lean ?? 0, B.lean ?? 0, k),
+  };
+  return {P, A, B, k, blend: true};
+};
+
+/** Where a person's parts are (no drawing): the SAME arithmetic for drawing and for handAt / headAt. */
+const layoutOf = (spec: PersonSpec, view: View, pose: PoseIn, mir: boolean, bob?: number) => {
   const b = spec.build;
   const R = b.R;
-  // Small figures: the eye ring, glasses and inner lines thin down with the eye (an eye stays an eye).
-  const uid = 'p' + useId().replace(/[^a-zA-Z0-9]/g, '');
-  const pcls = uid + 'b', fcls = uid + 'f';
-  const eyePx = 10.2 * (R / 40) * px;
-  const eyeW = Math.min(OUT, eyePx * 0.28), inW = Math.min(IN, eyePx * 0.2);
-  const lineCss = (eyeW < OUT ? `.${fcls} [stroke-width="${OUT}"]{stroke-width:${f1(eyeW)}px}` : '')
-    + (inW < IN ? `.${pcls} [stroke-width="${IN}"]{stroke-width:${f1(inW)}px} .${pcls} [stroke-width="${IN * 2}"]{stroke-width:${f1(inW * 2)}px}` : '');
-  SH = [-0.06 * R, -0.07 * R];
   const theta = view === 'front' ? 0 : view === 'three-quarter' ? Math.PI / 4 : Math.PI / 2;
   const cam: Cam = {c: Math.cos(theta), s: Math.sin(theta)};
   const v = vk(view);
-  const P0 = POSES[pose];
-  const skin = spec.skin;
+  const rp = resolvePose(pose, mir, b.tilt ?? 0);
+  const P0 = rp.P;
   const hU = 2.15 * R;
   const Ht = b.heads * hU;
 
@@ -589,6 +655,8 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
     dy = -ankleH - ankleY;
   }
   top += dy; headCY += dy; chinY += dy; yS += dy; yC += dy; yHip += dy;
+  // breathing / speaking: the chest and the head lift a little, the feet stay planted
+  if (bob) { const lift = bob * 0.035 * R; top -= lift * 1.3; headCY -= lift * 1.3; chinY -= lift * 1.3; yS -= lift; }
 
   const S = b.shoulder * R;
   const secs: Sec[] = [
@@ -605,14 +673,71 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
   const armLen = (yC + 0.2 * R - (yS + armR0 * 1.1)) * (b.arm ?? 1);
   const upL = armLen * 0.52, foreL = armLen * 0.5;
   const handK = (R / 40) * (b.hand ?? 1);
-  const armGeom = (side: 1 | -1) => {
-    const ap = side === -1 ? P0.R : P0.L;
+  const armGeomOf = (ap: ArmPose, side: 1 | -1) => {
     const toBody = (a: V3): V3 => v3norm([a[0] * side, a[1], a[2]]);
     const s3 = shJ(side);
     const e3 = v3add(s3, v3mul(toBody(ap.up), upL));
     const w3 = v3add(e3, v3mul(toBody(ap.fore), foreL));
     return {ap, s3, e3, w3, s: proj(cam, s3), e: proj(cam, e3), w: proj(cam, w3), z: depth(cam, s3), toBody};
   };
+  const armGeom = (side: 1 | -1) => armGeomOf(side === -1 ? P0.R : P0.L, side);
+  type AG = ReturnType<typeof armGeomOf>;
+  // which side of the hand the thumb is on (the hand drawing's +y side, or mirrored)
+  const thumbSign = (g: AG) => {
+    const fdir = nrm(sub(g.w, g.e));
+    let m = 1;
+    const thumb = g.ap.thumb ? g.toBody(g.ap.thumb) : null;
+    const lp = perp(fdir);
+    if (thumb) {
+      const tp = sub(proj(cam, v3add(g.w3, thumb)), g.w);
+      const dd = tp[0] * lp[0] + tp[1] * lp[1];
+      if (Math.abs(dd) > 0.25 * len(tp)) m = Math.sign(dd);
+      else m = Math.sign((-g.w[0]) * lp[0] + 0.0001) || 1; // tie: thumb on the inner side
+    }
+    return m;
+  };
+  // a resting hand turns in screen space (fingers follow the body up), whichever side its thumb is on
+  const bendOf = (ap: ArmPose, m: number) => (ap.hand === 'rest' ? (ap.bend ?? 0) : (ap.bend ?? 0) * m);
+  /** The hand on the arm of `side`: its angle, wrist bend and thumb side (a blend turns the hand smoothly). */
+  const handFrame = (side: 1 | -1, g: AG) => {
+    const fdir = nrm(sub(g.w, g.e));
+    if (!rp.blend) {
+      const ap = g.ap;
+      const ang = ap.ang ?? deg(fdir);
+      const m = thumbSign(g);
+      return {ang, bend: bendOf(ap, m), m};
+    }
+    const aA = side === -1 ? rp.A.R : rp.A.L, aB = side === -1 ? rp.B.R : rp.B.L;
+    const mA = thumbSign(armGeomOf(aA, side)), mB = thumbSign(armGeomOf(aB, side));
+    const cur = deg(fdir);
+    const ang = lerpAng(aA.ang ?? cur, aB.ang ?? cur, rp.k);
+    return {ang, bend: lerp(bendOf(aA, mA), bendOf(aB, mB), rp.k), m: rp.k < 0.5 ? mA : mB};
+  };
+  const headX = 0.12 * R * cam.s; // the head sits a little forward when turned
+  const neckX = headX + NECK_AT[v][0] * (R / 40);
+  return {R, cam, v, P0, Ht, top, headCY, chinY, yS, yC, yHip, T0, thighR, ankleH, thighL, shinL, dy, S, secs, armR0, armR1, armR2, armLen, upL, foreL, handK, armGeom, handFrame, headX, neckX};
+};
+
+export type PersonProps = {spec: PersonSpec; view?: View; pose?: PoseIn; expr?: Expr; look?: [number, number]; headOnly?: boolean; px?: number; talk?: number; blink?: number; facing?: Facing; bob?: number};
+
+export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'rest', expr = 'neutral', look, headOnly, px = 1.5, talk, blink, facing = 'right', bob}) => {
+  const b = spec.build;
+  const R = b.R;
+  // Small figures: the eye ring, glasses and inner lines thin down with the eye (an eye stays an eye).
+  const uid = 'p' + useId().replace(/[^a-zA-Z0-9]/g, '');
+  const pcls = uid + 'b', fcls = uid + 'f';
+  const eyePx = 10.2 * (R / 40) * px;
+  const eyeW = Math.min(OUT, eyePx * 0.28), inW = Math.min(IN, eyePx * 0.2);
+  const lineCss = (eyeW < OUT ? `.${fcls} [stroke-width="${OUT}"]{stroke-width:${f1(eyeW)}px}` : '')
+    + (inW < IN ? `.${pcls} [stroke-width="${IN}"]{stroke-width:${f1(inW)}px} .${pcls} [stroke-width="${IN * 2}"]{stroke-width:${f1(inW * 2)}px}` : '');
+  SH = [-0.06 * R, -0.07 * R];
+  const mir = facing === 'left' && view !== 'front'; // a real left-facing view: the mirror twin, drawn and flipped
+  const ms = mir ? -1 : 1; // multiplies the body-frame x of one-sided details (pocket, pens, buttons, folds)
+  const Lo = layoutOf(spec, view, pose, mir, bob);
+  const {cam, v, P0, Ht, dy, headCY, chinY, yS, yC, yHip, T0, thighR, ankleH, thighL, shinL, S, secs, armR0, armR1, armR2, upL, foreL, handK, armGeom, handFrame} = Lo;
+  void upL;
+  const skin = spec.skin;
+
   const sleeveT = 0.05 * R + (spec.over ? 0.03 * R : 0);
   const drawArm = (side: 1 | -1) => {
     const g = armGeom(side);
@@ -622,18 +747,7 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
     const fdir = nrm(sub(w, e));
     const parts: React.ReactNode[] = [];
     // the hand's place: at the wrist, along the forearm (or the pose's own angle), thumb side by the pose
-    const ang = ap.ang ?? deg(fdir);
-    let m = 1;
-    const thumb = ap.thumb ? g.toBody(ap.thumb) : null;
-    const lp = perp(fdir);
-    if (thumb) {
-      const tp = sub(proj(cam, v3add(g.w3, thumb)), w);
-      const dd = tp[0] * lp[0] + tp[1] * lp[1];
-      if (Math.abs(dd) > 0.25 * len(tp)) m = Math.sign(dd);
-      else m = Math.sign((-w[0]) * lp[0] + 0.0001) || 1; // tie: thumb on the inner side
-    }
-    // a resting hand turns in screen space (fingers follow the body up), whichever side its thumb is on
-    const bend = ap.hand === 'rest' ? (ap.bend ?? 0) : (ap.bend ?? 0) * m;
+    const {ang, bend, m} = handFrame(side, g);
     const ht = `translate(${f1(w[0])} ${f1(w[1])}) rotate(${f1(ang + bend)}) scale(${f1(handK)} ${f1(handK * m)})`;
     const hg = handGeom(ap.hand, false);
     // the prop held in this hand sits behind the arm and the hand
@@ -795,8 +909,8 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
     const mid = (y: number, x: number) => proj(cam, surf(sk, x, y));
     return (
       <Union key="skirt" d={[d]} fill={spec.bottom.color}>
-        <path d={openSmooth([mid(yC + 0.1 * R, -0.35 * R), mid(hemY - 0.05 * R, -0.55 * R)])} {...INLINE} />
-        <path d={openSmooth([mid(yC + 0.3 * R, 0.4 * R), mid(hemY - 0.05 * R, 0.62 * R)])} {...INLINE} />
+        <path d={openSmooth([mid(yC + 0.1 * R, ms * -0.35 * R), mid(hemY - 0.05 * R, ms * -0.55 * R)])} {...INLINE} />
+        <path d={openSmooth([mid(yC + 0.3 * R, ms * 0.4 * R), mid(hemY - 0.05 * R, ms * 0.62 * R)])} {...INLINE} />
       </Union>
     );
   };
@@ -822,10 +936,10 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
     out.push(
       <Union key="torso" d={[d]} fill={spec.top.color}>
         {k === 'hoodie' && <path d={openSmooth([sp(-S * 0.92, topHemY - 0.22 * R), sp(0, topHemY - 0.2 * R), sp(S * 0.92, topHemY - 0.22 * R)])} {...INLINE} />}
-        {k === 'blouse' && <path d={openSmooth([sp(-0.25 * R, yS + 0.9 * R), sp(-0.15 * R, yS + 1.3 * R)])} {...INLINE} />}
-        {k === 'tee' && <path d={openSmooth([sp(0.25 * R, yS + 1.0 * R), sp(0.1 * R, yS + 1.35 * R)])} {...INLINE} />}
+        {k === 'blouse' && <path d={openSmooth([sp(ms * -0.25 * R, yS + 0.9 * R), sp(ms * -0.15 * R, yS + 1.3 * R)])} {...INLINE} />}
+        {k === 'tee' && <path d={openSmooth([sp(ms * 0.25 * R, yS + 1.0 * R), sp(ms * 0.1 * R, yS + 1.35 * R)])} {...INLINE} />}
         {k === 'shirt' && <path d={openSmooth([sp(0, yS + 0.2 * R), sp(0, topHemY)])} {...INLINE} />}
-        {k === 'shirt' && [0.55, 0.95, 1.35].map((f, i) => { const p = sp(0.1 * R, yS + f * R); return <circle key={i} cx={p[0]} cy={p[1]} r={0.045 * R} fill={INK} />; })}
+        {k === 'shirt' && [0.55, 0.95, 1.35].map((f, i) => { const p = sp(ms * 0.1 * R, yS + f * R); return <circle key={i} cx={p[0]} cy={p[1]} r={0.045 * R} fill={INK} />; })}
       </Union>,
     );
     if (k === 'hoodie') {
@@ -897,7 +1011,7 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
         <Clip d={coatD}>
           <path d={openSmooth(nearE)} {...OUTLINE} />
           <path d={openSmooth(farE)} {...OUTLINE} />
-          {!isCoat && [0.35, 0.65, 0.92].map((f, i) => { const y = lerp(yS + 0.6 * R, hemY - 0.15 * R, f); const p = sp(-gap(y) - 0.09 * R, y, 0.02 * R); return <circle key={i} cx={p[0]} cy={p[1]} r={0.06 * R} fill={tint(col, 0.5)} {...EDGE_IN} />; })}
+          {!isCoat && [0.35, 0.65, 0.92].map((f, i) => { const y = lerp(yS + 0.6 * R, hemY - 0.15 * R, f); const p = sp(ms * (-gap(y) - 0.09 * R), y, 0.02 * R); return <circle key={i} cx={p[0]} cy={p[1]} r={0.06 * R} fill={tint(col, 0.5)} {...EDGE_IN} />; })}
         </Clip>
       </g>
     );
@@ -1003,11 +1117,11 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
     const w = 0.055 * R;
     const out: React.ReactNode[] = [];
     // the tube round the neck, hanging on both sides
-    const lt = [sp(-nw * 1.05, yS - 0.2 * R), sp(-nw * 1.3, yS + 0.3 * R), sp(-nw * 1.1, yS + 0.9 * R), sp(-nw * 0.7, yS + 1.25 * R)];
-    const rt = [sp(nw * 1.05, yS - 0.2 * R), sp(nw * 1.3, yS + 0.3 * R), sp(nw * 1.25, yS + 0.75 * R)];
+    const lt = [sp(ms * -nw * 1.05, yS - 0.2 * R), sp(ms * -nw * 1.3, yS + 0.3 * R), sp(ms * -nw * 1.1, yS + 0.9 * R), sp(ms * -nw * 0.7, yS + 1.25 * R)];
+    const rt = [sp(ms * nw * 1.05, yS - 0.2 * R), sp(ms * nw * 1.3, yS + 0.3 * R), sp(ms * nw * 1.25, yS + 0.75 * R)];
     const c = lt[lt.length - 1];
-    const visL = depth(cam, surf(os, -nw * 1.2, yS + 0.5 * R)) > -0.1 * R;
-    const visR = depth(cam, surf(os, nw * 1.2, yS + 0.5 * R)) > -0.05 * R;
+    const visL = depth(cam, surf(os, ms * -nw * 1.2, yS + 0.5 * R)) > (mir ? -0.05 : -0.1) * R;
+    const visR = depth(cam, surf(os, ms * nw * 1.2, yS + 0.5 * R)) > (mir ? -0.1 : -0.05) * R;
     if (visR) {
       const e = rt[rt.length - 1];
       out.push(<path key="tr" d={ribbon(rt, w)} fill={CLOTH.charcoal} {...EDGE_IN} />);
@@ -1025,13 +1139,13 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
     if (spec.over?.kind !== 'coat') return null;
     const os = overSecs();
     const sp = (x: number, y: number) => proj(cam, surf(os, x, y, 0.02 * R));
-    const x0 = 0.42 * R, x1 = 0.85 * R, y0 = yS + 0.95 * R, y1 = yS + 1.32 * R;
+    const x0 = ms * 0.42 * R, x1 = ms * 0.85 * R, y0 = yS + 0.95 * R, y1 = yS + 1.32 * R;
     if (depth(cam, surf(os, x0, y0)) < 0.05 * R) return null;
     const pen = (x: number, colr: string) => { const a = sp(x, y0 + 0.02 * R), b2 = sp(x, y0 - 0.22 * R); return <path key={colr} d={capsule(a, 0.045 * R, b2, 0.045 * R)} fill={colr} {...EDGE_IN} />; };
     return (
       <g key="cpocket">
-        {pen(x0 + 0.12 * R, CLOTH.red)}
-        {pen(x0 + 0.22 * R, CLOTH.blue)}
+        {pen(x0 + ms * 0.12 * R, CLOTH.red)}
+        {pen(x0 + ms * 0.22 * R, CLOTH.blue)}
         <path d={poly([sp(x0, y0), sp(x1, y0), sp(x1, y1), sp(x0, y1)])} fill={spec.over.color} {...EDGE_IN} />
       </g>
     );
@@ -1041,7 +1155,7 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
   const ex = EXPR[expr];
   const drawHead = () => {
     const sc = R / 40;
-    const hair = HAIR[spec.hair.style][v];
+    const hair = (mir && v === 'q' && HAIR_QM[spec.hair.style]) || HAIR[spec.hair.style][v];
     const hc = spec.hair.color;
     const fc = FACE[v];
     const eyeR = 10.2;
@@ -1086,6 +1200,9 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
     if (spec.extras?.cap) parts.push(<CapHat key="cap" v={v} col={spec.extras.cap} />);
     if (fc.ear) parts.push(earSide(fc.ear));
     const face: React.ReactNode[] = [];
+    // blinking: lids over the eyes (not on eyes that are already shut arcs)
+    const lidsOn = !!blink && blink > 0 && ex.mood !== 'happy' && ex.mood !== 'closed' && ex.mood !== 'wink';
+    const lidCover = (eyeW * 0.5 + 0.8) / (px * sc); // covers the eye ring, in head units
     // the face
     const [ex0, ey0] = fc.eye;
     if (v === 's') {
@@ -1093,9 +1210,13 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
       face.push(
         <Clip key="eyes" d={`M ${ex0 - eyeR - 1.6} -60 L 80 -60 L 80 60 L ${ex0 - eyeR - 1.6} 60 Z`}>
           <Eyes x={cx} y={ey0} r={eyeR} gap={gapE} look={lk} mood={ex.mood} brows />
+          {lidsOn && <Lids xs={[cx - eyeR - gapE / 2, cx + eyeR + gapE / 2]} y={ey0} r={eyeR} cover={lidCover} skin={skin} k={blink!} />}
         </Clip>,
       );
-    } else face.push(<Eyes key="eyes" x={ex0} y={ey0} r={eyeR} gap={gapE} look={lk} mood={ex.mood} brows />);
+    } else {
+      face.push(<Eyes key="eyes" x={ex0} y={ey0} r={eyeR} gap={gapE} look={lk} mood={ex.mood} brows />);
+      if (lidsOn) face.push(<Lids key="lids" xs={[ex0 - eyeR - gapE / 2, ex0 + eyeR + gapE / 2]} y={ey0} r={eyeR} cover={lidCover} skin={skin} k={blink!} />);
+    }
     // nose
     // the nose: one family in every view, scaled with the person (b.nose)
     if (v === 'f') face.push(<path key="nose" transform={`translate(0 17) scale(${nk}) translate(0 -17)`} d="M -1.6 12.8 Q 5.6 16.2 2 20.8 Q -0.2 22.4 -3.2 21" {...INLINE} />);
@@ -1113,9 +1234,9 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
       const w = v === 's' ? 7 : v === 'q' ? 11 : 13;
       const dM = v === 's' ? `M ${mx - 8} ${my - 2} Q ${mx} ${my - 6} ${mx + 7} ${my - 3} Q ${mx + 6} ${my + 4} ${mx - 1} ${my + 3} Q ${mx - 6} ${my + 4} ${mx - 8} ${my - 2} Z`
         : `M ${mx - w} ${my + 2} Q ${mx - w * 0.5} ${my - 5} ${mx} ${my - 2.5} Q ${mx + w * 0.5} ${my - 5} ${mx + w} ${my + 2} Q ${mx + w * 0.5} ${my + 4.5} ${mx} ${my + 1.5} Q ${mx - w * 0.5} ${my + 4.5} ${mx - w} ${my + 2} Z`;
-      face.push(<Mouth key="mouth" x={fc.mouth[0]} y={fc.mouth[1] + 2.5} w={11 * fc.mw * (ex.mw ?? 1)} kind={ex.mouth} />);
+      face.push(talk === undefined ? <Mouth key="mouth" x={fc.mouth[0]} y={fc.mouth[1] + 2.5} w={11 * fc.mw * (ex.mw ?? 1)} kind={ex.mouth} /> : <TalkMouth key="mouth" x={fc.mouth[0]} y={fc.mouth[1] + 2.5} w={11 * fc.mw * (ex.mw ?? 1)} kind={ex.mouth} open={talk} />);
       face.push(<path key="mst" d={dM} fill={spec.hair.color} {...EDGE_IN} />);
-    } else face.push(<Mouth key="mouth" x={fc.mouth[0]} y={fc.mouth[1]} w={11 * fc.mw * (ex.mw ?? 1)} kind={ex.mouth} />);
+    } else face.push(talk === undefined ? <Mouth key="mouth" x={fc.mouth[0]} y={fc.mouth[1]} w={11 * fc.mw * (ex.mw ?? 1)} kind={ex.mouth} /> : <TalkMouth key="mouth" x={fc.mouth[0]} y={fc.mouth[1]} w={11 * fc.mw * (ex.mw ?? 1)} kind={ex.mouth} open={talk} />);
     // glasses
     if (spec.extras?.glasses) face.push(<Glasses key="gl" v={v} eye={fc.eye} r={eyeR} gap={gapE} kind={spec.extras.glasses} />);
     parts.push(<g key="face" className={fcls}>{face}</g>);
@@ -1127,7 +1248,7 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
     );
   };
 
-  if (headOnly) return <g className={pcls}>{lineCss && <style>{lineCss}</style>}{drawHead()}</g>;
+  if (headOnly) return <g className={pcls} transform={mir ? 'scale(-1 1)' : undefined}>{lineCss && <style>{lineCss}</style>}{drawHead()}</g>;
 
   // ---------------------------------------------------------------- assemble, back to front
   const out: React.ReactNode[] = [];
@@ -1154,7 +1275,7 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
   const head = drawHead();
   after.forEach((sd) => out.push(drawArm(sd)));
   return (
-    <g className={pcls}>
+    <g className={pcls} transform={mir ? 'scale(-1 1)' : undefined}>
       {lineCss && <style>{lineCss}</style>}
       <BackHairOnly spec={spec} v={v} headX={headX} headCY={headCY} R={R} tilt={P0.tilt ?? b.tilt ?? 0} neckPt={[neckX, chinY - 0.1 * R]} />
       {out.slice(0, out.length - after.length)}
@@ -1162,6 +1283,146 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
       {out.slice(out.length - after.length)}
     </g>
   );
+};
+
+// ================================================================== animation pieces
+const clamp01 = (v: number) => Math.max(0, Math.min(1, v));
+const circlePath = (cx: number, cy: number, r: number) => `M ${f1(cx + r)} ${f1(cy)} A ${f1(r)} ${f1(r)} 0 1 0 ${f1(cx - r)} ${f1(cy)} A ${f1(r)} ${f1(r)} 0 1 0 ${f1(cx + r)} ${f1(cy)} Z`;
+
+/**
+ * A talking mouth: the expression's own mouth at open = 0, opening smoothly as `open` rises (the shape
+ * changes continuously, so it can be sampled every frame). Dark inside and a tongue that grow with it.
+ */
+const TalkMouth: React.FC<{x: number; y: number; w: number; kind: MouthKind; open: number}> = ({x, y, w, kind, open}) => {
+  const t0 = clamp01(open);
+  const h = (w / 2) * (1 + 0.12 * t0); // a little wider as it opens
+  if (kind === 'o') {
+    const rx = h * 0.5 * (1 + 0.15 * t0), ry = h * 0.62 + t0 * h * 0.8, cy = y + t0 * h * 0.45;
+    const d = `M ${f1(x - rx)} ${f1(cy)} A ${f1(rx)} ${f1(ry)} 0 1 0 ${f1(x + rx)} ${f1(cy)} A ${f1(rx)} ${f1(ry)} 0 1 0 ${f1(x - rx)} ${f1(cy)} Z`;
+    return (
+      <g>
+        <path d={d} fill={FLESH.deep} />
+        {t0 > 0 && <Clip d={d}><ellipse cx={x} cy={cy + ry * 0.75} rx={rx * 0.75} ry={ry * 0.45 * t0} fill={FLESH.salmon} /></Clip>}
+        <path d={d} {...OUTLINE} />
+      </g>
+    );
+  }
+  let yc = y, bow = 0, H0 = 0, wave = 0, pw = 1;
+  if (kind === 'smile') { yc = y - 0.2 * h; bow = 0.475 * h; }
+  else if (kind === 'frown') { yc = y + 0.35 * h; bow = -0.525 * h; }
+  else if (kind === 'wavy') { wave = 0.25 * h; }
+  else if (kind === 'open') { yc = y - 0.3 * h; H0 = 0.9 * h; }
+  else if (kind === 'big') { yc = y - 0.5 * h; H0 = 1.75 * h; pw = 0.7; }
+  else if (kind === 'grit' || kind === 'tongue') { yc = y - 0.1 * h; bow = 0.2 * h; }
+  const H = H0 + (Math.max(2.0 * h, H0 * 1.35) - H0) * t0;
+  const bowU = bow * (1 - 0.45 * t0); // a smile or frown flattens a little as the mouth opens
+  const wav = wave * Math.max(0, 1 - t0 * 2.5); // the worried wave smooths out as it opens
+  const N = 16;
+  const up: P[] = [], lo: P[] = [];
+  for (let i = 0; i <= N; i++) {
+    const tt = -1 + (2 * i) / N;
+    const yu = yc + bowU * (1 - tt * tt) - wav * Math.sin(Math.PI * 2 * (tt + 1));
+    up.push([x + h * tt, yu]);
+    lo.push([x + h * tt, yu + H * Math.pow(Math.max(0, 1 - tt * tt), pw)]);
+  }
+  const d = 'M ' + [...up, ...lo.reverse()].map(pt).join(' L ') + ' Z';
+  const midLow = yc + bowU + H;
+  return (
+    <g>
+      {H > 0.01 && <path d={d} fill={FLESH.deep} />}
+      {H > 0.01 && <Clip d={d}><ellipse cx={x} cy={midLow - H * 0.05} rx={h * 0.6} ry={H * 0.42} fill={FLESH.salmon} /></Clip>}
+      <path d={d} {...OUTLINE} />
+    </g>
+  );
+};
+
+/** Eyelids for a blink: a skin lid comes down over each eye with the INK lash line on its edge (k: 0 open .. 1 shut). */
+const Lids: React.FC<{xs: number[]; y: number; r: number; cover: number; skin: string; k: number}> = ({xs, y, r, cover, skin, k}) => {
+  const b = clamp01(k);
+  if (b <= 0) return null;
+  const ye = lerp(y - r * 1.15, y - 0.1 * r, b);
+  const ym = lerp(y - r * 1.15, y + 0.6 * r, b);
+  const ctrl = 2 * ym - ye; // the quadratic passes through ym in the middle
+  const s2 = (() => { const q = clamp01((b - 0.6) / 0.4); return q * q * (3 - 2 * q); })();
+  const w = 1.4 * r;
+  return (
+    <g>
+      {xs.map((c, i) => {
+        const upD = `M ${f1(c - w)} ${f1(y - 1.7 * r)} L ${f1(c + w)} ${f1(y - 1.7 * r)} L ${f1(c + w)} ${f1(ye)} Q ${f1(c)} ${f1(ctrl)} ${f1(c - w)} ${f1(ye)} Z`;
+        const yb = lerp(y + 1.7 * r, ye, s2), cb = lerp(y + 1.7 * r, ctrl, s2);
+        const loD = `M ${f1(c - w)} ${f1(y + 1.7 * r)} L ${f1(c + w)} ${f1(y + 1.7 * r)} L ${f1(c + w)} ${f1(yb)} Q ${f1(c)} ${f1(cb)} ${f1(c - w)} ${f1(yb)} Z`;
+        const lash = `M ${f1(c - w)} ${f1(ye)} Q ${f1(c)} ${f1(ctrl)} ${f1(c + w)} ${f1(ye)}`;
+        return (
+          <g key={i}>
+            <Clip d={circlePath(c, y, r + cover)}>
+              <path d={upD} fill={skin} />
+              {s2 > 0 && <path d={loD} fill={skin} />}
+            </Clip>
+            <Clip d={circlePath(c, y, r + cover * 0.3)}><path d={lash} {...OUTLINE} /></Clip>
+          </g>
+        );
+      })}
+    </g>
+  );
+};
+
+/**
+ * Hair seen in three-quarter by a person facing LEFT (drawn as her mirror twin facing right, then flipped):
+ * the parting moves to the twin's far side, so after the flip it is on the character's own side again.
+ */
+const HAIR_QM: Partial<Record<HairStyle, HairDraw>> = {
+  long: {
+    back: HAIR.long.q.back,
+    front: [[[-30, 30], [-44, 12], [-47, -14], [-40, -36], [-22, -49], [2, -52], [24, -47], [39, -34], [44, -16], [42, -6], [40, -16], [34, -26], [28, -30], [20, -24], [8, -22], [-2, -20], [-10, -14], [-14, -2], [-16, 10], [-20, 22]]],
+    lines: ['M 28 -30 Q 24 -42 16 -50', 'M 12 -42 Q -4 -44 -20 -38', 'M -36 -20 Q -30 0 -34 14'],
+  },
+  neat: {
+    front: [[[-27, 26], [-40, 14], [-45, -10], [-40, -34], [-24, -50], [0, -55], [22, -51], [38, -38], [44, -20], [42, -8], [38, -18], [32, -30], [24, -26], [12, -24], [0, -24], [-8, -20], [-12, -14], [-14, 0], [-17, 14], [-21, 22]]],
+    lines: ['M 32 -30 Q 28 -42 20 -52', 'M 18 -38 Q 4 -42 -12 -42', 'M -30 -40 Q -38 -24 -38 -8'],
+  },
+  curlyBob: {
+    back: HAIR.curlyBob.q.back,
+    backLines: HAIR.curlyBob.q.backLines,
+    front: [[[-34, 30], [-46, 14], [-50, -10], [-43, -35], [-25, -52], [2, -57], [26, -52], [42, -39], [47, -21], [45, -5], ...lobes([45, -5], [32, -27], 1, 6, [0.3, 1]).slice(1), ...lobes([31, -28], [-6, -24], 3, 8.5, [0, 1]), [-12, -16], [-15, -4], [-17, 8], [-21, 20], [-27, 28]]],
+    lines: ['M 31 -28 Q 28 -42 20 -52', 'M -30 -36 q -6 -6 0 -10 q 5 -2 6 3', 'M -42 2 q -6 5 -2 10 q 4 2 6 -2', 'M 8 -44 q 6 -6 11 -1 q 2 5 -3 6'],
+  },
+};
+
+// ================================================================== hand and face positions for scenes
+export type HandPoint = {wrist: [number, number]; palm: [number, number]; dir: [number, number]};
+type PlaceOpts = {pose?: PoseIn; view?: View; facing?: Facing; x: number; y: number; scale: number; bob?: number};
+/**
+ * Where both hands are, in frame pixels, for a person placed like <PersonAt x y scale ...>: the wrist, the
+ * palm centre and the forearm direction (a unit vector). R / L are the character's OWN right and left arm.
+ */
+export const handAt = (spec: PersonSpec, o: PlaceOpts): {R: HandPoint; L: HandPoint} => {
+  const view = o.view ?? 'front';
+  const mir = (o.facing ?? 'right') === 'left' && view !== 'front';
+  const Lo = layoutOf(spec, view, o.pose ?? 'rest', mir, o.bob);
+  const X = (p: P): [number, number] => [o.x + o.scale * (mir ? -p[0] : p[0]), o.y + o.scale * p[1]];
+  const one = (side: 1 | -1): HandPoint => {
+    const g = Lo.armGeom(side);
+    const f = Lo.handFrame(side, g);
+    const a = ((f.ang + f.bend) * Math.PI) / 180;
+    const palm = add(g.w, [Math.cos(a) * 11 * Lo.handK, Math.sin(a) * 11 * Lo.handK]);
+    const d = nrm(sub(g.w, g.e));
+    return {wrist: X(g.w), palm: X(palm), dir: [mir ? -d[0] : d[0], d[1]]};
+  };
+  // the mirror twin's left arm is the character's own right arm
+  return mir ? {R: one(1), L: one(-1)} : {R: one(-1), L: one(1)};
+};
+/** The face of a person placed like <PersonAt>: its centre and a radius, in frame pixels (for the camera). */
+export const headAt = (spec: PersonSpec, o: PlaceOpts): {x: number; y: number; r: number} => {
+  const view = o.view ?? 'front';
+  const mir = (o.facing ?? 'right') === 'left' && view !== 'front';
+  const Lo = layoutOf(spec, view, o.pose ?? 'rest', mir, o.bob);
+  const sc = Lo.R / 40;
+  const tilt = ((Lo.P0.tilt ?? spec.build.tilt ?? 0) * Math.PI) / 180;
+  const c: P = [Lo.headX + FACE[Lo.v].eye[0] * sc, Lo.headCY + 12 * sc];
+  const n: P = [Lo.neckX, Lo.chinY - 0.1 * Lo.R];
+  const dx = c[0] - n[0], dy = c[1] - n[1];
+  const fx = n[0] + dx * Math.cos(tilt) - dy * Math.sin(tilt), fy = n[1] + dx * Math.sin(tilt) + dy * Math.cos(tilt);
+  return {x: o.x + o.scale * (mir ? -fx : fx), y: o.y + o.scale * fy, r: 1.3 * Lo.R * o.scale};
 };
 
 /** The back hair, drawn behind the whole body (long hair hangs behind the shoulders). */
@@ -1278,7 +1539,7 @@ export const PersonAt: React.FC<PersonProps & {x: number; y: number; scale: numb
   </svg>
 );
 /** Just the head, centred on (x, y), for expression rows. size = px of the head radius. */
-export const HeadAt: React.FC<{spec: PersonSpec; x: number; y: number; px: number; expr?: Expr; view?: View; look?: [number, number]}> = ({spec, x, y, px, expr, view = 'front', look}) => {
+export const HeadAt: React.FC<{spec: PersonSpec; x: number; y: number; px: number; expr?: Expr; view?: View; look?: [number, number]; talk?: number; blink?: number; facing?: Facing}> = ({spec, x, y, px, expr, view = 'front', look, talk, blink, facing}) => {
   const k = px / spec.build.R;
   const Ht = spec.build.heads * 2.15 * spec.build.R;
   return (
@@ -1286,7 +1547,7 @@ export const HeadAt: React.FC<{spec: PersonSpec; x: number; y: number; px: numbe
       <defs><clipPath id={`hc-${spec.id}-${expr}-${view}`}><rect x={-3 * px} y={-3 * px} width={6 * px} height={3 * px + 1.72 * px} rx={0} /></clipPath></defs>
       <g clipPath={`url(#hc-${spec.id}-${expr}-${view})`}>
         <g transform={`scale(${k}) translate(0 ${Ht - spec.build.R - 0.15 * spec.build.R})`}>
-          <Person spec={spec} expr={expr} view={view} look={look} px={k} />
+          <Person spec={spec} expr={expr} view={view} look={look} px={k} talk={talk} blink={blink} facing={facing} />
         </g>
       </g>
     </svg>

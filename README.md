@@ -8,6 +8,30 @@ topic → research (PubMed, WHO) → Retention 7 script → check → stills →
       → music + sound design → render (Remotion, 60 fps) → master -14 LUFS → QC → package → upload
 ```
 
+> **Starting on a new PC or with a new Claude account?** Read [`CLAUDE.md`](CLAUDE.md) first: it has the
+> full setup, step by step, the owner's standing rules, and a map of the code. Then read the top entry of
+> [`HANDOFF.md`](HANDOFF.md) for what happened last and what is open. Everything the studio needs is in
+> this repo except keys, logins, renders and the voice clips (see `CLAUDE.md`, step 6).
+
+## MedPeak Toons, look v8 (the cartoon Shorts)
+
+Health Shorts drawn entirely in code (React + SVG, rendered with Remotion): one shared drawing kit, 8
+people, 67 body characters and 30 props as one family, rooms and microscopic inside-the-body scenes, and
+a 60 fps player that plays a script (`videos/<slug>/toon.json`) with its voices, captions, sound and music.
+
+| What | Command | Result |
+|---|---|---|
+| Character and prop sheets | `node pipeline/toon-v8-sheets.mjs [name]` | `out/toons/sheets-v8/*.jpg` (16:9) |
+| Scene frames | `node pipeline/toon-v8-sheets.mjs --scenes` | `out/toons/scenes-v8/*.jpg` (9:16) |
+| Storyboard sheets | `python pipeline/tools/toon-v8-storyboard.py out/toons/scenes-v8 out/toons/scenes-v8/boards` | 16:9 sheets for approval |
+| One still of a video | `npm run toon:v8 -- rabies --at 12.4` | `videos/rabies/renders/toon-v8-stills/` |
+| Draft of a video | `npm run toon:v8 -- rabies --draft` | half size, fast |
+| Final video | `npm run toon:v8 -- rabies` | `videos/rabies/renders/toon-v8.mp4`, 1080 x 1920, 60 fps, -14 LUFS |
+
+The drawing rules are in `skill/medpeak-health/references/toons-v8-style.md`; the sheets and the storyboard
+the owner approved are in `skill/medpeak-health/references/toons-boards/v8/`. All of it is free and local;
+only making new voices costs ElevenLabs credits.
+
 ## Setup (once)
 
 ```bash

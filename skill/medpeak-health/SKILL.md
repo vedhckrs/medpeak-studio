@@ -95,6 +95,7 @@ the first 15 made first. Mark a topic `taken` there before starting it.
 - `references/medical-accuracy.md` - sourcing rules, wording that is not allowed, how to cite.
 - `references/scene-types.md` - every visual type with its fields.
 - `references/toons.md` - MedPeak Toons: the cartoon talking-organ Shorts format, our own look, roadmap.
+- `references/toons-v8-style.md` - **the Toons look in use since 2026-11-20 (look v8): everything drawn in code in `src/toons/v8/`.** The ten drawing rules, the cast identities, the scene rules, what the owner approved. Read this FIRST for any Toons drawing or video; the older look files below describe the old engine, which still plays the older videos. The approved sheets and storyboard are in `references/toons-boards/v8/`. The repo's `CLAUDE.md` holds the owner's standing rules and the setup for a new machine.
 - `references/toons-style.md` - the Toons look (v6): volume paint, materials, coloured eyes, real anatomy, body acting; thin coloured lines, clean hands, jointed arms and legs on people, no wobble.
 - `references/toons-blueprint.md` - the character blueprint: how to add an organ, cell, germ or person so it matches the cast. Read before designing any new Toons character.
 - `references/toons-camera.md` - shot sizes, lenses, camera moves and what the director does on its own. Read before writing a Toon script.
