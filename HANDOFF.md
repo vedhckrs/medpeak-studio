@@ -6,6 +6,47 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-20 (late, 3) - Cloud session (claude.ai/code) - branch `claude/bold-hopper-dqvjfr`, rabies v4 DONE
+
+The owner chose: **this session writes the code itself** (his Anthropic key unused since the cap; ledger $2.59 of $5).
+His answers: name-tag halo = flat white rings, **no glow**; watermark stays as transparent as it is; the PR is left
+to the session (a new PR from this branch to `main`, which contains all of PR #6's branch; PR #6 can be closed).
+
+### What is done (all pushed)
+
+- **Rabies v4 video**: `videos/rabies/renders/toon-v8.mp4` (render, not in git), 1080 x 1920, 60 fps, **59.6 s**,
+  -13.9 LUFS, peak -1.0 dB. Storyboard: `node --import tsx pipeline/toon-v8-board.mjs rabies` -> `renders/storyboard/`.
+  Sent to the owner with the storyboard and the 0:12-0:22 pull-back clip. NOT uploaded.
+- All 11 points of the v4 plan: narrator end card (Joey, `narrator` in `toons-cast.json`; `assets/toons-voice/rabies/cta.mp3`
+  at 1.1x, the original take `cta-raw.mp3`; word times `videos/rabies/cta-timings.json`), `CtaCardV4` with the logo,
+  the transparent Inter Regular watermark, no punch zoom, one smooth room move, the dive through depth planes (also in
+  the highway), dive/pull/whip transitions (`ShotDef.portal`), calm Virus, icons by the words, name tags, the detailed
+  micro world, the **clothes rework** (shapes and colour bands that read at phone size; before/after sheet
+  `out/toons/sheets-v8/v4-clothes-before-after.jpg`), the skill and `CLAUDE.md` (v4 rules in
+  `references/toons-v8-style.md`).
+- Bugs fixed after the owner's notes: the flicker at the dive (the leaving shot now uses the same smoothed camera),
+  icons fade over transitions, no tag covers a face, the camera never jumps in a shot's tail, the flash rises over
+  3 frames, looping bits fade at their wrap. Check used: a frame-difference scan of the whole render
+  (`ffmpeg ... tblend=all_mode=difference,signalstats`): **0 isolated one-frame jumps**.
+- `toon-check` now counts the end card in the 60 s rule (test added). `--from/--to` slices in `toon-v8-render.mjs`.
+
+### What was run
+
+`npm run typecheck` clean; `npm test` 49/49; `node pipeline/toon-check.mjs --all` ALL PASS (rabies 59.6 s =
+story 46.6 + card 13.0); full render 7 min; storyboard; frame scan.
+
+### Balances (end of video)
+
+ElevenLabs: 39,006 left of 40,000 (this video: 42 auditions + 189 narrator = 231; resets 2026-12-09).
+Anthropic: $2.59 spent of the $5 cap for rabies (no new spend; the session wrote all the code).
+
+### Open
+
+- The owner's OK on the final video, then upload (private/scheduled, his word) and merge the PR.
+- A bigger logo file (PNG or SVG) from the owner; the current one is 176 x 176.
+
+---
+
 ## 2026-11-20 (late, 2) - Cloud session (claude.ai/code) - branch `claude/bold-hopper-dqvjfr`
 
 **The owner's decision: this session writes the v4 code itself; his Anthropic key is not used.** (The rabies v4
