@@ -6,6 +6,34 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-20 (late, 4) - Cloud session (claude.ai/code) - branch `claude/bold-hopper-dqvjfr`, PR #7
+
+The owner's notes on the v4 video and what was done:
+- "The narrator's last words are cut and missing; going past one minute is fine." Cause: `syncVoices` copied a
+  stale `public/` clip over the committed one (sizes differed); now the NEWER file wins. Joey's take is back at
+  normal speed (the 1.1x copy is gone); the card holds 1.2 s after his last word; `toon-check` fails only the STORY
+  over 60 s and reports the length with the card. Rules updated in `CLAUDE.md` and the skill.
+- "The first 3-4 s are poor, I want a strong visual." He chose plan A: shot A now opens with a stray dog lunging at
+  the lens, CHOMP, a saliva drop with the Virus growing on the fang, a dive into it, the Virus bursting out in the
+  nerve tunnel; then "Get rabies? I get your brain!" (new script field `"lead": 1.3` on shot A; no new voice).
+  Plus the RACE BAR (bite -> brain) through the body shots. Rules added to `references/toons-v8-style.md`.
+
+### Run
+
+typecheck clean; `npm test` 49/49; `toon-check --all` ALL PASS (rabies: story 47.9 s, 62.8 s with the card);
+full render 62.8 s, -13.9 LUFS, peak -1.0 dB; frame scan: only the two deliberate hook cuts (0.43 s chomp, 1.25 s
+pop); storyboard rebuilt. The video, the storyboard and the 0-6 s hook clip were sent. NOT uploaded.
+
+### Balances
+
+ElevenLabs 39,006 left (nothing spent since). Anthropic: $2.59 of $5 for rabies (no new spend).
+
+### Next
+
+The owner's OK on the video -> upload (his word) -> merge PR #7, close PR #6.
+
+---
+
 ## 2026-11-20 (late, 3) - Cloud session (claude.ai/code) - branch `claude/bold-hopper-dqvjfr`, rabies v4 DONE
 
 The owner chose: **this session writes the code itself** (his Anthropic key unused since the cap; ledger $2.59 of $5).

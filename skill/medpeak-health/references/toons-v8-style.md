@@ -153,6 +153,15 @@ Everyone has hems, cuffs, folds and a flat shade band; each person has one clear
 tee, Mom's sash, Dad's yoke and cuffs, Sam's ribbed hoodie, Grandpa's elbow patches, the Baby's trim and snaps).
 Show a BEFORE/AFTER sheet and a frame at video size for any clothes change.
 
+**The hook (first 4 s)** (the owner, 2026-11-20: "the first 3-4 s are poor, I want a strong visual"): open on the
+danger itself, with a big visual event every half second before anyone talks (rabies: a stray dog lunges at the lens,
+CHOMP, a saliva drop with the Virus grows on the fang, the camera dives into it, the Virus bursts out at the lens).
+A shot may hold its first line back with `"lead": <seconds>` (0-3) in the script, so the picture plays first.
+
+**The race bar** (`RaceBar` in `hud.tsx`): the hook's question as a picture on the screen in the body shots: a nerve
+from the bite to the brain, the Virus riding it; it creeps, jumps, hits the antibody wall and is crossed out when
+caught. A video with a chase question gets one.
+
 **Approval steps for a video**: 16:9 look sheets -> narrator clip (cost first) -> a 10 s motion test
 (`toon-v8-render --from A --to B`) -> the full video + the storyboard from the finished render
 (`node --import tsx pipeline/toon-v8-board.mjs <slug>`).
