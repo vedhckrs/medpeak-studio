@@ -178,12 +178,12 @@ const ScreenB: React.FC<{s: ShotNow}> = ({s}) => {
 };
 const ScreenE: React.FC<{s: ShotNow}> = ({s}) => {
   const [fx, fy, fk] = inPlane(s, 220, 1240, 0.35);
-  // the antibodies are tagged where they stand still: the wall over the locks (the middle one)
+  // the antibodies are tagged where they stand still: the wall over the locks (the right one, clear of the Virus)
   const wall = since(s, 'E2', 'wall');
   return (
     <>
       <TagAt s={s} id="E" label="DEFENCE CELL" x={fx} y={fy} r={190 * fk} t={s.t - 0.85} />
-      {wall > -900 && <TagAt s={s} id="E" label="ANTIBODY" x={DOOR.locks[2]} y={DOOR.lockY - 90} r={60} t={wall - 0.55} />}
+      {wall > -900 && <TagAt s={s} id="E" label="ANTIBODY" x={DOOR.locks[4]} y={DOOR.lockY - 90} r={60} t={wall - 0.55} />}
     </>
   );
 };

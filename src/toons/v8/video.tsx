@@ -92,6 +92,26 @@ const cameraAt = (L: Layout, def: ShotDef | undefined, s: ShotNow, si: number, s
   return keepIn({z: lerp(was.z, now.z, k), x: lerp(was.x, now.x, k), y: lerp(was.y, now.y, k)}, people);
 };
 
+/**
+ * v4: rooms get one smooth, eased move per shot: the lean toward the speaker is averaged over 2.4 s (inside
+ * the shot), so the camera glides instead of stepping from one speaker to the next. Body shots keep their view.
+ * Used for the shot on screen AND for the shot a transition leaves, so the picture never jumps between them.
+ */
+const smoothCam = (L: Layout, toon: Toon, timings: ToonTimings | null, def: ShotDef | undefined, si: number, sec: number): Cam => {
+  const n0 = shotNow(L, toon, timings, sec);
+  if (!def || def.view) return cameraAt(L, def, n0.s, si, sec);
+  // b: the shot's LAST frame (a sample past it would fall outside every camera segment and jump)
+  const a = L.shots[si].from / TOON_FPS, b = (L.shots[si].from + L.shots[si].frames - 1) / TOON_FPS;
+  let wx = 0, x = 0, y = 0, z = 0;
+  for (let i = -6; i <= 6; i++) {
+    const at = Math.min(b, Math.max(a, sec + i * 0.2)), w = 7 - Math.abs(i);
+    const n = shotNow(L, toon, timings, at);
+    const c = cameraAt(L, def, n.s, si, at);
+    wx += w; x += c.x * w; y += c.y * w; z += c.z * w;
+  }
+  return {x: x / wx, y: y / wx, z: z / wx};
+};
+
 /** The streaks of a whip pan: flat white bars with the kit's outline, fast and gone. */
 const SpeedLines: React.FC<{u: number}> = ({u}) => {
   const a = Math.sin(Math.PI * u);
@@ -116,20 +136,7 @@ export const ToonV8: React.FC<V8VideoProps> = ({toon, timings, sfx, music, bare 
   const L = useMemo(() => layoutToon(toon, timings), [toon, timings]);
   const {s, si} = shotNow(L, toon, timings, sec);
   const def = V8_VIDEOS[toon.slug]?.[s.id];
-  // v4: rooms get one smooth, eased move per shot: the lean toward the speaker is averaged over 2.4 s
-  // (inside the shot), so the camera glides instead of stepping from one speaker to the next.
-  const cam0 = useMemo(() => {
-    if (!def || def.view) return cameraAt(L, def, s, si, sec);
-    const a = L.shots[si].from / TOON_FPS, b = (L.shots[si].from + L.shots[si].frames) / TOON_FPS - 0.001;
-    let wx = 0, x = 0, y = 0, z = 0;
-    for (let i = -6; i <= 6; i++) {
-      const at = Math.min(b, Math.max(a, sec + i * 0.2)), w = 7 - Math.abs(i);
-      const n = shotNow(L, toon, timings, at);
-      const c = cameraAt(L, def, n.s, si, at);
-      wx += w; x += c.x * w; y += c.y * w; z += c.z * w;
-    }
-    return {x: x / wx, y: y / wx, z: z / wx};
-  }, [L, def, si, sec, toon, timings, s]);
+  const cam0 = useMemo(() => smoothCam(L, toon, timings, def, si, sec), [L, def, si, sec, toon, timings]);
 
   // the caption: the phrase being spoken (the old player's box, the owner's choice)
   const f30 = sec * TOON_FPS;
@@ -168,7 +175,7 @@ export const ToonV8: React.FC<V8VideoProps> = ({toon, timings, sfx, music, bare 
     const pdef = V8_VIDEOS[toon.slug]?.[p.s.id];
     if (!pdef) return null;
     const ps = {...p.s, t: p.s.t + into};
-    const pcam = cameraAt(L, pdef, p.s, p.si, pf);
+    const pcam = smoothCam(L, toon, timings, pdef, p.si, pf);
     const room = (id: string) => ['home', 'clinic'].includes(L.shots.find((x) => x.shot.id === id)?.shot.set ?? '');
     const toScreen = (q: [number, number], c: {x: number; y: number; z: number}): [number, number] => [540 + (q[0] - c.x) * c.z, 960 + (q[1] - c.y) * c.z];
     const kind: 'whip' | 'zoom' | 'dive' | 'pull' = room(p.s.id) && room(s.id) ? 'whip' : room(p.s.id) && pdef.portal ? 'dive' : room(s.id) && def.portal ? 'pull' : 'zoom';
@@ -238,6 +245,10 @@ export const ToonV8: React.FC<V8VideoProps> = ({toon, timings, sfx, music, bare 
       {trans && trans.kind === 'whip' && <SpeedLines u={trans.u} />}
       {trans && trans.kind === 'zoom' && <AbsoluteFill style={{background: '#ffffff', opacity: Math.max(0, 0.35 - Math.abs(trans.u - 0.5)) * 1.2}} />}
       {grave > 0 && <AbsoluteFill style={{background: '#1b2238', opacity: grave * 0.34}} />}
+      {trans && trans.pdef.Screen && clamp01(trans.u / 0.35) < 1 && (
+        // the shot before keeps its icons for a moment and fades them out (no icon may blink off)
+        <div style={{position: 'absolute', inset: 0, opacity: 1 - clamp01(trans.u / 0.35)}}><trans.pdef.Screen s={{...trans.ps, t: trans.ps.t - into}} /></div>
+      )}
       {def?.Screen && <def.Screen s={s} />}
       {flash > 0 && <AbsoluteFill style={{background: '#ffffff', opacity: flash * 0.3}} />}
       {cur && wi >= 0 && !bare && !inCta && (() => {
