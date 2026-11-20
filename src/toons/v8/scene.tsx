@@ -32,9 +32,9 @@ export const Layer: React.FC<{children: React.ReactNode}> = ({children}) => (
  * A v8 figure (anything drawn in the 200-unit figure space: an organ, a cell, a germ, a prop, an animal)
  * standing in a scene. (x, y) is where its centre goes, size its box in frame pixels.
  */
-export const Put: React.FC<{x: number; y: number; size: number; rot?: number; flip?: boolean; children: React.ReactNode}> = ({x, y, size, rot = 0, flip, children}) => (
+export const Put: React.FC<{x: number; y: number; size: number; rot?: number; flip?: boolean; sq?: number; children: React.ReactNode}> = ({x, y, size, rot = 0, flip, sq = 0, children}) => (
   <svg style={{position: 'absolute', left: x - size / 2, top: y - size / 2, overflow: 'visible'}} width={size} height={size} viewBox="-100 -100 200 200">
-    <g transform={`rotate(${rot}) ${flip ? 'scale(-1 1)' : ''}`}>{children}</g>
+    <g transform={`rotate(${rot}) ${flip ? 'scale(-1 1)' : ''} ${sq ? `translate(0 90) scale(${(1 + sq).toFixed(3)} ${(1 - sq).toFixed(3)}) translate(0 -90)` : ''}`}>{children}</g>
   </svg>
 );
 

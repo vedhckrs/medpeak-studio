@@ -84,6 +84,20 @@ const cameraAt = (L: Layout, def: ShotDef | undefined, s: ShotNow, si: number, s
   return keepIn({z: lerp(was.z, now.z, k), x: lerp(was.x, now.x, k), y: lerp(was.y, now.y, k)}, people);
 };
 
+/** The streaks of a whip pan: flat white bars with the kit's outline, fast and gone. */
+const SpeedLines: React.FC<{u: number}> = ({u}) => {
+  const a = Math.sin(Math.PI * u);
+  if (a < 0.05) return null;
+  return (
+    <svg style={{position: 'absolute', left: 0, top: 0}} width={1080} height={1920} viewBox="0 0 1080 1920" opacity={a}>
+      {Array.from({length: 14}, (_, i) => {
+        const y = 120 + ((i * 137) % 1700), w = 260 + ((i * 89) % 420), x = ((i * 211 + u * 3000) % 1600) - 400;
+        return <rect key={i} x={x} y={y} width={w} height={10 + (i % 3) * 6} rx={8} fill="#ffffff" stroke="#2b1a17" strokeWidth={3} />;
+      })}
+    </svg>
+  );
+};
+
 const Missing: React.FC<{id: string}> = ({id}) => (
   <AbsoluteFill style={{background: '#2b1a17', color: '#ffffff', fontFamily: FONT, fontSize: 60, fontWeight: 800, alignItems: 'center', justifyContent: 'center'}}>shot {id}: not drawn yet</AbsoluteFill>
 );
@@ -94,7 +108,7 @@ export const ToonV8: React.FC<V8VideoProps> = ({toon, timings, sfx, music, bare 
   const L = useMemo(() => layoutToon(toon, timings), [toon, timings]);
   const {s, si} = shotNow(L, toon, timings, sec);
   const def = V8_VIDEOS[toon.slug]?.[s.id];
-  const cam = cameraAt(L, def, s, si, sec);
+  const cam0 = cameraAt(L, def, s, si, sec);
 
   // the caption: the phrase being spoken (the old player's box, the owner's choice)
   const f30 = sec * TOON_FPS;
@@ -108,25 +122,69 @@ export const ToonV8: React.FC<V8VideoProps> = ({toon, timings, sfx, music, bare 
   const shot = L.shots[si].shot;
   const flash = (shot.events ?? []).reduce((m, e) => { const n = f30 - frameOf(L, si, e.at, e.word, e.delay); return e.fx && n >= 0 && n < 9 ? Math.max(m, 1 - n / 9) : m; }, 0);
 
+  // the camera's punch on the line's key word, and a shake on every bite or hit (a flash event)
+  const ki = cur ? cur.words.findIndex((w) => clean(w.w).toLowerCase().replace(/[!?'’]/g, '') === keyWord.replace(/[!?'’]/g, '')) : -1;
+  const kt = ki >= 0 && cur ? tl - cur.words[ki].start : -1;
+  const punch = kt >= 0 && kt < 0.55 ? 0.075 * Math.pow(1 - kt / 0.55, 2) * Math.min(1, kt / 0.06) : 0;
+  const shake = flash > 0 ? Math.sin(sec * 90) * 14 * flash : 0;
+  // the serious beat (a line marked "serious"): the picture darkens and the camera creeps in
+  const grave = L.lines.filter((l) => (l.line as {serious?: boolean}).serious).reduce((m, l) => {
+    const a = (f30 - l.from) / TOON_FPS, b = (l.from + l.frames - f30) / TOON_FPS;
+    return Math.max(m, clamp01(a / 0.5) * clamp01((b + 0.4) / 0.5));
+  }, 0);
+  const cam = {x: cam0.x + shake, y: cam0.y + shake * 0.4, z: cam0.z * (1 + punch + grave * 0.06)};
+
+  // the transition from the shot before: a zoom-through between places, a whip pan between two rooms
+  const TR = 0.42;
+  const into = sec - L.shots[si].from / TOON_FPS;
+  const trans = (() => {
+    if (si === 0 || into >= TR || !def) return null;
+    const pf = L.shots[si].from / TOON_FPS - 1 / V8_FPS;
+    const p = shotNow(L, toon, timings, pf);
+    const pdef = V8_VIDEOS[toon.slug]?.[p.s.id];
+    if (!pdef) return null;
+    const ps = {...p.s, t: p.s.t + into};
+    const pcam = cameraAt(L, pdef, p.s, p.si, pf);
+    const room = (id: string) => ['home', 'clinic'].includes(L.shots.find((x) => x.shot.id === id)?.shot.set ?? '');
+    const kind = room(p.s.id) && room(s.id) ? 'whip' : 'zoom';
+    const u = clamp01(into / TR), e = u < 0.5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2;
+    return {pdef, ps, pcam, kind, u, e};
+  })();
+  const view = (c: {x: number; y: number; z: number}, extra = '') => `${extra} translate(${(540 - c.x * c.z).toFixed(2)}px, ${(960 - c.y * c.z).toFixed(2)}px) scale(${c.z.toFixed(4)})`;
+  const newT = !trans ? '' : trans.kind === 'whip' ? `translateX(${((1 - trans.e) * 1080).toFixed(1)}px)` : `translate(540px, 960px) scale(${lerp(0.78, 1, trans.e).toFixed(4)}) translate(-540px, -960px)`;
+
   const has = (n: string | undefined): n is string => !!n && sfx.includes(n);
   const events = soundPlan(L);
+  // extra story sounds of the player: a heartbeat under the serious beat
+  const extra = L.lines.filter((l) => (l.line as {serious?: boolean}).serious).map((l) => ({at: l.from, name: 'heartbeat', vol: 0.5}));
 
   return (
     <AbsoluteFill style={{background: '#2b1a17'}}>
       {def ? (
-        <div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, transformOrigin: '0 0', transform: `translate(${(540 - cam.x * cam.z).toFixed(2)}px, ${(960 - cam.y * cam.z).toFixed(2)}px) scale(${cam.z.toFixed(4)})`}}>
+        <div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, transformOrigin: '0 0', transform: view(cam, newT)}}>
           <def.Scene s={s} />
         </div>
       ) : <Missing id={s.id} />}
+      {trans && (
+        <div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, overflow: 'hidden',
+          opacity: trans.kind === 'zoom' ? 1 - clamp01((trans.u - 0.35) / 0.5) : 1,
+          transform: trans.kind === 'whip' ? `translateX(${(-trans.e * 1080).toFixed(1)}px)` : `translate(540px, 960px) scale(${(1 + trans.e * 1.6).toFixed(4)}) translate(-540px, -960px)`}}>
+          <div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, transformOrigin: '0 0', transform: view(trans.pcam)}}><trans.pdef.Scene s={trans.ps} /></div>
+        </div>
+      )}
+      {trans && trans.kind === 'whip' && <SpeedLines u={trans.u} />}
+      {trans && trans.kind === 'zoom' && <AbsoluteFill style={{background: '#ffffff', opacity: Math.max(0, 0.35 - Math.abs(trans.u - 0.5)) * 1.2}} />}
+      {grave > 0 && <AbsoluteFill style={{background: '#1b2238', opacity: grave * 0.34}} />}
       {def?.Screen && <def.Screen s={s} />}
       {flash > 0 && <AbsoluteFill style={{background: '#ffffff', opacity: flash * 0.3}} />}
       {cur && wi >= 0 && !bare && (() => {
         // one word at a time, no box (the owner, 2026-11-20); the line's key word is yellow and bigger
         const w = clean(cur.words[wi].w);
-        return <WordCaption key={cur.line.id + wi} word={w} t={tl - cur.words[wi].start} isKey={w.toLowerCase() === keyWord} />;
+        return <WordCaption key={cur.line.id + wi} word={w} t={tl - cur.words[wi].start} isKey={w.toLowerCase().replace(/[!?'’]/g, '') === keyWord.replace(/[!?'’]/g, '')} />;
       })()}
       {L.lines.map((l) => l.file && <Sequence key={l.line.id} from={Math.round(l.from * K)} durationInFrames={Math.round((l.frames + 12) * K)}><Audio src={staticFile(l.file)} /></Sequence>)}
       {events.filter((e) => has(e.name)).map((e, i) => <Sequence key={i} from={Math.round(e.at * K)} durationInFrames={90 * K}><Audio src={staticFile(`toons/sfx/${e.name}.mp3`)} volume={e.vol} /></Sequence>)}
+      {extra.filter((e) => has(e.name)).map((e, i) => <Sequence key={'x' + i} from={Math.round(e.at * K)} durationInFrames={240 * K}><Audio src={staticFile(`toons/sfx/${e.name}.mp3`)} volume={e.vol} /></Sequence>)}
       {music && <Audio src={staticFile(`toons/music/${music}.mp3`)} loop volume={(fr) => bedAt(L, fr / K)} />}
     </AbsoluteFill>
   );

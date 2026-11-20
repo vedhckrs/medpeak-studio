@@ -29,7 +29,7 @@ import {IconBadge} from './hud';
 import {Vaccine, Virus} from './germs';
 import {Antibody, RedCell, WhiteCell} from './cells';
 import {Brain} from './organs-a';
-import {blink, bodyFace, clamp01, go, lerp, pop, since, sway, type Focus, type LineNow, type ShotDef, type ShotNow, type Word} from './play';
+import {blink, bodyFace, talk, clamp01, go, lerp, pop, since, sway, type Focus, type LineNow, type ShotDef, type ShotNow, type Word} from './play';
 
 // ------------------------------------------------------------------ geometry helpers
 type P = [number, number];
@@ -287,10 +287,41 @@ const SpitRaft: React.FC<{x: number; y: number; w: number; rot?: number}> = ({x,
 // =================================================================== the places (each split into its depth planes)
 export type MicroView = 'wound' | 'junction' | 'axon' | 'tissue';
 
-/** One depth plane: everything inside moves together by (dx, dy) frame pixels. */
-const Plane: React.FC<{d: P; children: React.ReactNode}> = ({d, children}) => (
-  <div style={{position: 'absolute', left: 0, top: 0, width: SCENE_W, height: SCENE_H, transform: `translate(${f(d[0])}px, ${f(d[1])}px)`}}>{children}</div>
+/** The body's heartbeat, 0..1: a double thump (lub-dub) about 75 times a minute. */
+const beat = (t: number) => {
+  const u = (t * 1.25) % 1;
+  const thump = (c: number, w: number) => Math.max(0, 1 - Math.abs(u - c) / w);
+  return Math.max(thump(0.06, 0.07), thump(0.24, 0.06) * 0.6);
+};
+/** One depth plane: everything inside moves together by (dx, dy) frame pixels. With `pulse` (the shot's
+ * time) the plane swells a hair on every heartbeat, so the tissue looks alive. */
+const Plane: React.FC<{d: P; pulse?: number; children: React.ReactNode}> = ({d, pulse, children}) => (
+  <div style={{position: 'absolute', left: 0, top: 0, width: SCENE_W, height: SCENE_H, transformOrigin: '540px 960px', transform: `translate(${f(d[0])}px, ${f(d[1])}px)${pulse === undefined ? '' : ` scale(${(1 + beat(pulse) * 0.012).toFixed(4)})`}`}}>{children}</div>
 );
+
+/**
+ * The life of the fluid between cells: specks, little protein strands and tiny bubbles drifting with the
+ * current at their own speeds, a few big soft ones close to the lens (`near`). Flat colour, kit outline.
+ */
+export const MicroLife: React.FC<{t: number; seed?: number; near?: boolean; flow?: P}> = ({t, seed = 1, near, flow = [18, -26]}) => {
+  const n = near ? 6 : 26;
+  return (
+    <Layer>
+      {Array.from({length: n}, (_, i) => {
+        const r0 = rnd(i, seed), r1 = rnd(i + 40, seed), r2 = rnd(i + 80, seed);
+        const sp = (near ? 2.2 : 0.6 + r2 * 0.9);
+        const x = (((r0 * 1300 + t * flow[0] * sp + sway(t, 3 + r1 * 3, i) * 14) % 1300) + 1300) % 1300 - 110;
+        const y = (((r1 * 2100 + t * flow[1] * sp) % 2100) + 2100) % 2100 - 90;
+        const k = near ? 30 + r2 * 26 : 4 + r2 * 9;
+        const kind = i % 4;
+        const fill = kind === 1 ? tint(FLESH.butter, 0.5) : kind === 2 ? tint(FLESH.coral, 0.45) : tint(FLUID, 0.45);
+        const rot = t * (20 + r0 * 40) * (i % 2 ? 1 : -1);
+        if (kind === 3 && !near) return <path key={i} transform={`translate(${f(x)} ${f(y)}) rotate(${f(rot)})`} d={`M ${-k * 1.6} 0 Q ${-k * 0.5} ${-k} 0 0 T ${k * 1.6} 0`} stroke={shade(FLUID, 0.1)} strokeWidth={3} strokeLinecap="round" fill="none" />;
+        return <ellipse key={i} cx={f(x)} cy={f(y)} rx={f(k)} ry={f(k * (0.75 + r1 * 0.25))} transform={`rotate(${f(rot)} ${f(x)} ${f(y)})`} fill={fill} opacity={near ? 0.55 : 0.9} {...(near ? {} : EDGE_IN)} />;
+      })}
+    </Layer>
+  );
+};
 /** The slow float of the three planes (a camera drifting in fluid): back a little, front more. */
 const drift = (t: number) => {
   const x = sway(t, 9, 1), y = sway(t, 11.5, 2);
@@ -527,6 +558,8 @@ const PlaceAt: React.FC<{view: MicroView; t: number}> = ({view, t}) => {
 };
 
 // =================================================================== the shots (play.tsx): a pure function of `s`
+/** The Virus squashes and stretches with its own voice (bouncy, cartoon-alive). */
+const squash = (s: ShotNow) => { const k = talk(s, 'virus'); return k > 0 ? (k - 0.35) * 0.12 : Math.sin(s.t * 5.2) * 0.018; };
 const breathe = (t: number, seed: number, px = 3) => sway(t, 2.6 + (seed % 3) * 0.3, seed) * px;
 /** Where a spike ball of a Virus (centre x, y; figure size `size`) is, at angle `deg`. */
 const spikeBall = (x: number, y: number, size: number, deg: number): P => {
@@ -548,22 +581,22 @@ const posA = (s: ShotNow) => {
   const k = go(t, 0, 0.36);
   const u = since(s, 'A1', 'rabies');
   const shake = u >= 0 && u < 0.6 ? Math.sin(u * Math.PI * 7) * 8 * (1 - u / 0.6) : 0;
-  const tapping = since(s, 'A2') >= 0 && since(s, 'A2', 'brain') < 0;
+  const tapping = since(s, 'A2') >= 0 && since(s, 'A2', 'can') < 0;
   const tap = tapping ? -Math.abs(Math.sin(s.t * Math.PI * 3.2)) * 7 : 0;
   return {x: lerp(236, 330, k), y: 800 - Math.sin(Math.PI * k) * 70 + breathe(t, 1) + tap, rot: shake + (1 - k) * -8};
 };
 const ShotA: React.FC<{s: ShotNow}> = ({s}) => {
   const t = s.t, d = drift(t), v = posA(s);
   const face = bodyFace(s, 'virus', 1, 'angry');
-  const ub = since(s, 'A2', 'brain');
+  const ub = since(s, 'A2', 'can');
   const g = (t * 1.6) % 5;
   const glint = g % 1 < 0.22 ? Math.floor(g) : -1;
   return (
     <Scene bg={FLUID}>
-      <Plane d={d.back}><JunctionBack /></Plane>
+      <Plane d={d.back} pulse={t}><JunctionBack /></Plane>
       <Plane d={d.mid}>
         <JunctionMid glint={glint} />
-        <Put x={v.x} y={v.y} size={440} rot={v.rot}><Virus mood={face.mood} mouth={face.mouth} look={ub >= 0 ? [-0.3, -0.7] : [0.35, 0.15]} /></Put>
+        <Put x={v.x} y={v.y} size={440} rot={v.rot} sq={squash(s)}><Virus mood={face.mood} mouth={face.mouth} look={ub >= 0 ? [-0.3, -0.7] : [0.35, 0.15]} /></Put>
         {ub >= 0 && (
           <Scaled k={pop(ub, 0, 0.32)} ox={300} oy={600}>
             <Layer><Bubble x={300} y={400} w={330} h={250} tx={300} ty={598} /></Layer>
@@ -571,7 +604,9 @@ const ShotA: React.FC<{s: ShotNow}> = ({s}) => {
           </Scaled>
         )}
       </Plane>
+      <Plane d={d.mid}><MicroLife t={t} seed={1} /></Plane>
       <Plane d={d.front}><JunctionFront /></Plane>
+      <Plane d={d.front}><MicroLife t={t} seed={11} near /></Plane>
     </Scene>
   );
 };
@@ -579,7 +614,7 @@ const ShotA: React.FC<{s: ShotNow}> = ({s}) => {
 // ---- B: that morning (wound)
 const posB = (s: ShotNow) => {
   const t = s.t;
-  const tn = since(s, 'B1', 'nip');
+  const tn = since(s, 'B1', 'dog');
   let fang = lerp(-470 + sway(t, 1.6, 2) * 10, 0, go(tn, -0.1, 0.16));
   fang = lerp(fang, -250, go(since(s, 'B1', 'scratch'), 0.5, 0.7));
   const ub = since(s, 'B2');
@@ -602,7 +637,7 @@ const ShotB: React.FC<{s: ShotNow}> = ({s}) => {
   const splash = us >= 0 && us < 0.6 ? [[-1, -0.4], [1, -0.5], [0.4, -1]].map(([dx, dy]) => ({x: b.rx + dx * (100 + us * 160), y: b.ry + dy * (30 + us * 110), r: 13 * (1 - us / 0.6) + 2})) : [];
   return (
     <Scene bg={FLUID}>
-      <Plane d={d.back}><WoundBack t={t} /></Plane>
+      <Plane d={d.back} pulse={t}><WoundBack t={t} /></Plane>
       <Plane d={d.mid}>
         <WoundMid />
         <Layer>
@@ -611,9 +646,11 @@ const ShotB: React.FC<{s: ShotNow}> = ({s}) => {
           {b.ub >= 0 && <SpitRaft x={b.rx} y={b.ry} w={260} rot={b.raftRot} />}
           {splash.map((p, i) => <SpitDrop key={'s' + i} x={p.x} y={p.y} r={p.r} rot={i ? 30 : -30} />)}
         </Layer>
-        {b.ub >= 0 && <Put x={b.vx} y={b.vy} size={250} rot={b.vrot}><Virus mood={face.mood} mouth={face.mouth} look={b.point > 0.5 ? [0.9, -0.6] : [0.5, 0.5]} /></Put>}
+        {b.ub >= 0 && <Put x={b.vx} y={b.vy} size={250} rot={b.vrot} sq={squash(s)}><Virus mood={face.mood} mouth={face.mouth} look={b.point > 0.5 ? [0.9, -0.6] : [0.5, 0.5]} /></Put>}
       </Plane>
+      <Plane d={d.mid}><MicroLife t={t} seed={2} /></Plane>
       <Plane d={d.front}><WoundFront /></Plane>
+      <Plane d={d.front}><MicroLife t={t} seed={12} near /></Plane>
     </Scene>
   );
 };
@@ -630,12 +667,14 @@ const ShotM2: React.FC<{s: ShotNow}> = ({s}) => {
   const face = bodyFace(s, 'virus', 3, 'smug');
   return (
     <Scene bg={AXO}>
-      <Plane d={d.back}><AxonTunnel t={t} /></Plane>
+      <Plane d={d.back} pulse={t}><AxonTunnel t={t} /></Plane>
       <Plane d={d.mid}>
         <Layer><Carrier x={m.cx} y={m.cy} step={m.step} /></Layer>
-        <Put x={m.vx} y={m.vy} size={280} rot={m.vrot}><Virus mood={face.mood} mouth={face.mouth} look={[0.1, -0.8]} /></Put>
+        <Put x={m.vx} y={m.vy} size={280} rot={m.vrot} sq={squash(s)}><Virus mood={face.mood} mouth={face.mouth} look={[0.1, -0.8]} /></Put>
       </Plane>
+      <Plane d={d.mid}><MicroLife t={t} seed={3} /></Plane>
       <Plane d={d.front}><AxonFront /></Plane>
+      <Plane d={d.front}><MicroLife t={t} seed={13} near /></Plane>
     </Scene>
   );
 };
@@ -652,7 +691,7 @@ const posE = (s: ShotNow) => {
   const k = go(t, 0, 0.42);
   const strut = (1 - k) * -Math.abs(Math.sin(t * Math.PI * 5)) * 10;
   const jolt = Math.sin(clamp01((t - 0.42) / 0.3) * Math.PI) * 7;
-  const dizzy = since(s, 'E2', 'stopped') >= 0;
+  const dizzy = since(s, 'E2', 'no') >= 0;
   return {x: lerp(170, 300, k), y: 700 + strut + breathe(t, 4), rot: (1 - k) * 6 - jolt + (dizzy ? Math.sin(t * 6.5) * 3 : 0), dizzy};
 };
 const ShotE: React.FC<{s: ShotNow}> = ({s}) => {
@@ -665,11 +704,11 @@ const ShotE: React.FC<{s: ShotNow}> = ({s}) => {
   const hop = (u: number, k: number) => -Math.abs(Math.sin(u * Math.PI * 3)) * 14 * (1 - k);
   return (
     <Scene bg={FLUID}>
-      <Plane d={d.back}><JunctionBack /></Plane>
+      <Plane d={d.back} pulse={t}><JunctionBack /></Plane>
       <Plane d={d.mid}>
         <JunctionMid />
         <Put x={985} y={620 - Math.abs(Math.sin(t * Math.PI * 1.3)) * 12} size={250}><Vaccine mood={blink(t, 8) > 0.5 ? 'closed' : 'happy'} mouth="smile" /></Put>
-        <Put x={v.x} y={v.y} size={340} rot={v.rot}><Virus mood={face.mood} mouth={face.mouth} look={[0.8, 0.1]} /></Put>
+        <Put x={v.x} y={v.y} size={340} rot={v.rot} sq={squash(s)}><Virus mood={face.mood} mouth={face.mouth} look={[0.8, 0.1]} /></Put>
         {/* the wall marches in from the right during "Who are all of you?" */}
         {WALL.map((x, i) => {
           const u = since(s, 'E1', 'who') - i * 0.32;
@@ -682,7 +721,9 @@ const ShotE: React.FC<{s: ShotNow}> = ({s}) => {
         {kg > 0 && <Put x={lerp(-180, lbx - 78, kg)} y={lby + 70 + hop(uw + 0.2, kg)} size={200}><Antibody color={CLOTH.teal} mood="angry" mouth="flat" look={[0.6, -0.6]} /></Put>}
         <Put x={170} y={1190 - Math.abs(Math.sin(t * Math.PI * 1.3 + 1.2)) * 12} size={240}><Vaccine mood={blink(t, 9) > 0.5 ? 'closed' : 'open'} mouth="big" look={[0.6, -0.4]} /></Put>
       </Plane>
+      <Plane d={d.mid}><MicroLife t={t} seed={4} /></Plane>
       <Plane d={d.front}><JunctionFront /></Plane>
+      <Plane d={d.front}><MicroLife t={t} seed={14} near /></Plane>
     </Scene>
   );
 };
@@ -691,9 +732,9 @@ const ShotE: React.FC<{s: ShotNow}> = ({s}) => {
 const posM3 = (s: ShotNow) => {
   const t = s.t;
   const k = go(t, 0, 0.4);
-  const fight = since(s, 'X1', 'got') >= 0.3 && since(s, 'E3') < 0 ? Math.sin(t * 26) * 4 * clamp01(-since(s, 'E3') / 0.4) : 0;
+  const fight = since(s, 'X1', 'freeze') >= 0.3 && since(s, 'E3') < 0 ? Math.sin(t * 26) * 4 * clamp01(-since(s, 'E3') / 0.4) : 0;
   const sag = go(since(s, 'E3'), 0, 0.8);
-  const nodU = since(s, 'E3', 'time');
+  const nodU = since(s, 'E3', 'fair');
   const nod = nodU >= 0 && nodU < 0.55 ? Math.sin((nodU / 0.55) * Math.PI) * 16 : 0;
   return {k, vx: 540 + fight, vy: 820 + sag * 16 + breathe(t, 6, 2), vrot: -sag * 4 + fight * 0.6, sag, nod, front: {x: 540, y: 1170 + nod + breathe(t, 7)}};
 };
@@ -705,24 +746,26 @@ const ShotM3: React.FC<{s: ShotNow}> = ({s}) => {
   const hold = m.sag * 12;
   return (
     <Scene bg={FLUID}>
-      <Plane d={d.back}><TissueBack t={t} /></Plane>
+      <Plane d={d.back} pulse={t}><TissueBack t={t} /></Plane>
       <Plane d={d.mid}>
         <TissueMid />
-        <Put x={m.vx} y={m.vy} size={300} rot={m.vrot}><Virus mood={vf.mood} mouth={vf.mouth} look={[0, 0.5]} /></Put>
+        <Put x={m.vx} y={m.vy} size={300} rot={m.vrot} sq={squash(s)}><Virus mood={vf.mood} mouth={vf.mouth} look={[0, 0.5]} /></Put>
         <Put x={ax - 47} y={ay + 42 + sway(t, 1.9, 3) * 2} size={120}><Antibody color={CLOTH.teal} mood={blink(t, 12) > 0.5 ? 'closed' : 'open'} mouth="flat" look={[0.6, -0.4]} /></Put>
         <Put x={bx + 47} y={by + 42 + sway(t, 2.1, 4) * 2} size={120}><Antibody color={CLOTH.teal} mood={blink(t, 13) > 0.5 ? 'closed' : 'open'} mouth="flat" look={[-0.6, -0.4]} /></Put>
         <Put x={lerp(130, 341, m.k)} y={645 + hold + breathe(t, 8, 2)} size={340} flip><WhiteCell mood={blink(t, 14) > 0.5 ? 'closed' : 'angry'} mouth="flat" look={[0.5, 0.6]} /></Put>
         <Put x={lerp(950, 739, m.k)} y={645 + hold + breathe(t, 9, 2)} size={340}><WhiteCell mood={blink(t, 15) > 0.5 ? 'closed' : 'angry'} mouth="flat" look={[-0.5, 0.6]} /></Put>
         <Put x={m.front.x} y={m.front.y} size={400}><WhiteCell mood={wf.mood} mouth={wf.mouth === 'smile' ? 'grit' : wf.mouth} look={[0, -0.2]} /></Put>
       </Plane>
+      <Plane d={d.mid}><MicroLife t={t} seed={5} /></Plane>
       <Plane d={d.front}><TissueFront /></Plane>
+      <Plane d={d.front}><MicroLife t={t} seed={15} near /></Plane>
     </Scene>
   );
 };
 
 const virusFocus = (x: number, y: number, size: number): Focus => ({x, y: y - size * 0.08, r: size * 0.3});
 export const BODY_SHOTS: Record<string, ShotDef> = {
-  A: {Scene: ShotA, focus: (who, s) => { if (who === 'brain' && since(s, 'A2', 'brain') >= 0) return {x: 300, y: 400, r: 120}; const v = posA(s); return virusFocus(v.x, v.y, 440); }},
+  A: {Scene: ShotA, focus: (who, s) => { if (who === 'brain' && since(s, 'A2', 'can') >= 0) return {x: 300, y: 400, r: 120}; const v = posA(s); return virusFocus(v.x, v.y, 440); }},
   B: {Scene: ShotB, Screen: ({s}) => <IconBadge icon="sunrise" t={s.t - 0.05} x={830} y={330} out={2.4} />, focus: (_who, s) => { const b = posB(s); return b.ub >= 0 ? virusFocus(b.vx, b.vy, 250) : {x: 548, y: Math.max(400, 560 + b.fang), r: 140}; }},
   M2: {Scene: ShotM2, Screen: ScreenM2, focus: (_who, s) => { const m = posM2(s); return virusFocus(m.vx, m.vy, 280); }},
   E: {Scene: ShotE, Screen: ({s}) => <IconBadge icon="vaccine" t={s.t - 0.05} x={540} y={300} />, focus: (_who, s) => { const v = posE(s); return virusFocus(v.x, v.y, 340); }},

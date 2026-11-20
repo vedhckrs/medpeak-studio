@@ -369,14 +369,16 @@ const Stream: React.FC<{x: number; y0: number; y1: number; t: number}> = ({x, y0
 const C_MOM_X = 230, C_KID_X = 858, C_STOOL = 1600;
 const kitchenCast = (s: ShotNow) => {
   const t = s.t;
-  const little = since(s, 'C1', 'little'), wash = since(s, 'C2', 'wash'), soap = since(s, 'C2', 'soap'), c3 = since(s, 'C3'), scratchC3 = since(s, 'C3', 'scratch');
+  const little = since(s, 'C1', 'just'), wash = since(s, 'C2', 'soap'), soap = since(s, 'C2', 'soap'), c3 = since(s, 'C3'), scratchC3 = since(s, 'C3', 'minutes');
   const T = (d: number) => t - d; // the shot second when "since" was d ago
   // the Kid: forearm up, a shrug at "little", then the hand under the tap at "Wash"
   const kidPose = poseAt(t, [[-9, 'showArmUpR'], [T(little), 'shrugR', 0.25], [T(little) + 0.5, 'showArmUpR', 0.35], [T(wash) + 0.15, 'tapHandR', 0.45]]);
   const kidFeel = feel(s, 'kid');
   const kidExpr: Expr = wash >= 0.05 ? 'surprised' : EXPR_OF[kidFeel] ?? 'neutral';
   const kidLook: [number, number] = c3 >= 0.1 ? [0.75, -0.45] : wash >= 0.1 ? [0.45, 0.55] : [0.7, -0.35];
-  const kid: Who = {id: 'kid', pose: kidPose, expr: kidExpr, look: kidLook, x: C_KID_X, y: C_STOOL, facing: 'left', talk: talk(s, 'kid'), blink: blink(t, 1.3), bob: breath(s, 'kid', 1)};
+  // "Fifteen MINUTES?!": the Kid jumps on his stool (anticipation dip, up, land, settle)
+  const jump = c3 < 0 ? 0 : c3 < 0.12 ? -Math.sin((c3 / 0.12) * Math.PI) * 14 : c3 < 0.62 ? Math.sin(((c3 - 0.12) / 0.5) * Math.PI) * 95 : c3 < 0.8 ? -Math.sin(((c3 - 0.62) / 0.18) * Math.PI) * 10 : 0;
+  const kid: Who = {id: 'kid', pose: kidPose, expr: c3 >= 0 && c3 < 1.4 ? 'surprised' : kidExpr, look: kidLook, x: C_KID_X, y: C_STOOL - jump, facing: 'left', talk: talk(s, 'kid'), blink: blink(t, 1.3), bob: breath(s, 'kid', 1)};
   // Mom: looks at the arm, her face falls and her hand goes to her chest; points at the tap; brings the soap
   const momPose = poseAt(t, [[-9, 'rest'], [T(little) - 0.1, 'worried', 0.45], [T(wash), 'worriedPointTap', 0.32], [T(soap) - 0.05, 'pointTapSoap', 0.45]]);
   const momExpr: Expr = little >= 0.05 ? 'worried' : 'neutral';
@@ -448,8 +450,8 @@ const clinicCast = (s: ShotNow) => {
   const t = s.t;
   const T = (d: number) => t - d;
   const right = since(s, 'D1', 'right'), doctorW = since(s, 'D1', 'doctor');
-  const d2 = since(s, 'D2'), one = since(s, 'D2', 'one'), fatal = since(s, 'D2', 'fatal');
-  const d3 = since(s, 'D3'), treat = since(s, 'D3', 'treatment'), works = since(s, 'D3', 'works'), every = since(s, 'D3', 'every');
+  const d2 = since(s, 'D2'), one = since(s, 'D2', 'hard'), fatal = since(s, 'D2', 'fatal');
+  const d3 = since(s, 'D3'), treat = since(s, 'D3', 'shots'), works = since(s, 'D3', 'work'), every = since(s, 'D3', 'every');
   // Dr. Mira: "you see", a nod, "me, the doctor"; one finger up, lowered slowly on "fatal"; the vial, thumbs up
   const docPose = poseAt(t, [[-9, 'youSee'], [T(doctorW) - 0.12, 'meDoctor', 0.35], [T(doctorW) + 0.75, 'youSee', 0.4], [T(one) - 0.22, 'oneFinger', 0.3], [T(fatal), 'rest', 0.9], [T(treat) - 0.2, 'holdVial', 0.4], [T(works), 'thumbsHold', 0.32]]);
   const docExpr: Expr = works >= 0.1 ? 'happy' : d3 >= 0 ? 'talking' : d2 >= 0.05 ? 'neutral' : 'talking';

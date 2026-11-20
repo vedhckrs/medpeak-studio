@@ -159,7 +159,7 @@
     },
     {
      "at": "A1",
-     "word": "Time",
+     "word": "going",
      "set": {
       "snap": 1
      },
@@ -168,7 +168,7 @@
     },
     {
      "at": "A1",
-     "word": "runs",
+     "word": "your",
      "set": {
       "slide": 0.74
      },
@@ -176,7 +176,7 @@
     },
     {
      "at": "A1",
-     "word": "out.",
+     "word": "brain.",
      "set": {
       "slide": 0.84
      },
@@ -191,7 +191,7 @@
     },
     {
      "at": "A2",
-     "word": "brain?",
+     "word": "can!",
      "set": {
       "slide": 1
      },
@@ -202,10 +202,10 @@
     {
      "id": "A1",
      "who": "virus",
-     "text": "You get rabies. Time runs out.",
+     "text": "Hi! I'm rabies. And I'm going for your brain.",
      "emotion": "angry",
      "pose": "rest",
-     "key": "time",
+     "key": "brain",
      "src": [
       "who-rabies",
       "cdc-rabies"
@@ -214,10 +214,10 @@
     {
      "id": "A2",
      "who": "virus",
-     "text": "Can you stop me before the brain?",
+     "text": "Catch me if you can!",
      "emotion": "angry",
      "pose": "rest",
-     "key": "brain",
+     "key": "catch",
      "chat": true,
      "beat": 0.4
     }
@@ -251,7 +251,7 @@
     },
     {
      "at": "B1",
-     "word": "nip.",
+     "word": "dog.",
      "set": {
       "bite": 0.62
      },
@@ -277,7 +277,7 @@
     },
     {
      "at": "B2",
-     "word": "spit.",
+     "word": "spit,",
      "set": {
       "bite": 1
      },
@@ -285,7 +285,7 @@
     },
     {
      "at": "B2",
-     "word": "Now,",
+     "word": "jump",
      "set": {
       "climb": 0.03
      },
@@ -293,7 +293,7 @@
     },
     {
      "at": "B2",
-     "word": "nerve!",
+     "word": "nerve...",
      "set": {
       "days": 0.02
      },
@@ -301,7 +301,7 @@
     },
     {
      "at": "B2",
-     "word": "nerve!",
+     "word": "nerve...",
      "set": {
       "climb": 0.08
      },
@@ -312,7 +312,7 @@
     {
      "id": "B1",
      "who": "virus",
-     "text": "A stray dog. A little nip. A tiny scratch.",
+     "text": "One stray dog. One tiny scratch. That's all I need.",
      "emotion": "smug",
      "pose": "rest",
      "key": "scratch",
@@ -322,7 +322,7 @@
     {
      "id": "B2",
      "who": "virus",
-     "text": "I ride in on its spit. Now, up this nerve!",
+     "text": "I ride in on the spit, jump onto a nerve... next stop, the brain!",
      "emotion": "happy",
      "pose": "rest",
      "key": "nerve",
@@ -376,7 +376,7 @@
     },
     {
      "at": "B3",
-     "word": "brain.",
+     "word": "faster.",
      "set": {
       "speed": 1.8
      },
@@ -399,7 +399,7 @@
     {
      "id": "B3",
      "who": "virus",
-     "text": "Slowly. Usually two to three months to the brain.",
+     "text": "Usually two to three months. Sometimes faster.",
      "emotion": "smug",
      "pose": "rest",
      "key": "months",
@@ -440,7 +440,7 @@
      "y": 1240,
      "size": 120,
      "from": "C1",
-     "word": "scratch,",
+     "word": "scratch!",
      "to": "C1",
      "on": "kid"
     },
@@ -469,7 +469,7 @@
     {
      "id": "C1",
      "who": "kid",
-     "text": "It's just a little scratch, Mum.",
+     "text": "Mom, it's just a scratch!",
      "emotion": "neutral",
      "pose": "shrug",
      "key": "scratch",
@@ -478,7 +478,7 @@
     {
      "id": "C2",
      "who": "mom",
-     "text": "Wash it now. Soap and water, fifteen minutes.",
+     "text": "Soap and water. Fifteen minutes. Right now.",
      "emotion": "scared",
      "pose": "point",
      "key": "fifteen",
@@ -493,11 +493,11 @@
     {
      "id": "C3",
      "who": "kid",
-     "text": "Fifteen minutes? For a scratch?",
+     "text": "Fifteen MINUTES?!",
      "cam": "mcu push",
      "emotion": "shocked",
      "pose": "think",
-     "key": "scratch",
+     "key": "minutes",
      "chat": true
     }
    ]
@@ -526,7 +526,7 @@
      "kind": "glass",
      "size": 300,
      "from": "D1",
-     "word": "Washing",
+     "word": "Wash",
      "to": "D1",
      "bubble": true,
      "of": "doctor"
@@ -547,7 +547,7 @@
      "y": 1190,
      "size": 200,
      "from": "D3",
-     "word": "treatment",
+     "word": "shots",
      "halo": true
     }
    ],
@@ -555,7 +555,7 @@
     {
      "id": "D1",
      "who": "doctor",
-     "text": "Your mum was right. Washing first, then a doctor, today.",
+     "text": "Mom is right. Wash first, then see a doctor today.",
      "emotion": "happy",
      "pose": "explain",
      "key": "today",
@@ -570,26 +570,27 @@
     {
      "id": "D2",
      "who": "doctor",
-     "text": "One hard truth: once symptoms start, it is almost always fatal.",
+     "text": "Here is the hard truth. Once symptoms start, rabies is almost always fatal.",
      "cam": "mcu push",
-     "emotion": "neutral",
+     "emotion": "sad",
      "pose": "present",
-     "key": "symptoms",
+     "key": "fatal",
      "react": {
       "kid": "scared"
      },
      "src": [
       "who-rabies",
       "cdc-rabies"
-     ]
+     ],
+     "serious": true
     },
     {
      "id": "D3",
      "who": "doctor",
-     "text": "But act in time and treatment works almost every time.",
+     "text": "But get the shots in time, and they work almost every time.",
      "emotion": "happy",
      "pose": "thumb",
-     "key": "time",
+     "key": "work",
      "react": {
       "kid": "happy"
      },
@@ -630,7 +631,7 @@
     },
     {
      "at": "E1",
-     "word": "this?",
+     "word": "guys?",
      "set": {
       "wall": 1
      },
@@ -655,7 +656,7 @@
     },
     {
      "at": "E2",
-     "word": "stopped",
+     "word": "No,",
      "set": {
       "climb": 0.23
      },
@@ -666,19 +667,19 @@
     {
      "id": "E1",
      "who": "virus",
-     "text": "Wait. Who are all of you? What is this?",
+     "text": "Huh? Who are you guys?",
      "emotion": "shocked",
      "pose": "rest",
-     "key": "this",
+     "key": "who",
      "chat": true
     },
     {
      "id": "E2",
      "who": "virus",
-     "text": "A wall? They stopped me before the brain!",
+     "text": "A wall?! No, no, no! The brain is right there!",
      "emotion": "angry",
      "pose": "rest",
-     "key": "stopped",
+     "key": "wall",
      "src": [
       "who-rabies"
      ]
@@ -720,7 +721,7 @@
     },
     {
      "at": "X1",
-     "word": "further.",
+     "word": "nowhere.",
      "set": {
       "grip": 0.7
      },
@@ -735,7 +736,7 @@
     },
     {
      "at": "E3",
-     "word": "rabies.",
+     "word": "vaccine?",
      "set": {
       "grip": 1
      },
@@ -746,20 +747,20 @@
     {
      "id": "X1",
      "who": "whitecell",
-     "text": "Got you! You go no further.",
+     "text": "Freeze! You're going nowhere.",
      "cam": "cu",
      "emotion": "angry",
      "pose": "rest",
-     "key": "further",
+     "key": "freeze",
      "chat": true
     },
     {
      "id": "E3",
      "who": "virus",
-     "text": "One bite, but you did not get rabies. The vaccine came in time!",
+     "text": "Beaten by soap, water and a vaccine? Not fair!",
      "emotion": "sad",
      "pose": "rest",
-     "key": "time",
+     "key": "vaccine",
      "src": [
       "who-rabies",
       "cdc-rabies"
