@@ -639,52 +639,42 @@
     },
     "A1": {
       "who": "virus",
-      "text": "Get rabies, and I'm going for your brain!",
+      "text": "Get rabies? I get your brain!",
       "voiceId": "IKne3meq5aSn9XLyUdCD",
       "pitch": 3,
       "tempo": 1,
       "file": "toons/rabies/voice/A1.mp3",
-      "duration": 2.297,
+      "duration": 1.8,
       "words": [
         {
           "w": "Get",
           "start": 0,
-          "end": 0.232
+          "end": 0.209
         },
         {
-          "w": "rabies,",
-          "start": 0.29,
-          "end": 0.708
+          "w": "rabies?",
+          "start": 0.255,
+          "end": 0.639
         },
         {
-          "w": "and",
-          "start": 0.743,
-          "end": 0.882
+          "w": "I",
+          "start": 0.708,
+          "end": 0.766
         },
         {
-          "w": "I'm",
-          "start": 0.917,
-          "end": 1.022
-        },
-        {
-          "w": "going",
-          "start": 1.068,
-          "end": 1.277
-        },
-        {
-          "w": "for",
-          "start": 1.324,
-          "end": 1.405
+          "w": "get",
+          "start": 0.871,
+          "end": 0.987
         },
         {
           "w": "your",
-          "start": 1.44,
-          "end": 1.533
+          "start": 1.033,
+          "end": 1.126
         },
         {
           "w": "brain!",
-          "start": 1.567,
-          "end": 2.229
+          "start": 1.161,
+          "end": 1.718
         }
       ]
     },

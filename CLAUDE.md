@@ -97,11 +97,16 @@ Do these once on a new machine. None of it needs the old machine except step 6.
 - **Inside the body means microscopic**: among cells, with foreground, middle and background planes for
   depth. Not a far-away diagram of an organ.
 - **Text on the picture is laid on the screen after the camera**, so a zoom never cuts it. Captions are
-  the boxed three-word phrase at the bottom.
+  one word at a time, no box, the key word bigger and yellow (2026-11-20).
 - **Final videos are 1080 x 1920, 60 frames a second.**
 - **Work directly, deliver fast** (2026-11-20): do fixes yourself in the main session and give him the
   render; do not hand the work to subagents unless he asks for them.
 - **Paid generation**: one recommended option, and the cost shown before any spend.
+- **Watermark `@MedPeakHealth` on every video, the whole video** (2026-11-20). Small, clean, inside the
+  YouTube Shorts safe area (clear of the top bar, the right-hand buttons and the bottom title band). It moves
+  three times, once per act: act 1 top right, act 2 bottom left, act 3 top middle. In look v8 it is
+  `Watermark` in `src/toons/v8/hud.tsx`, drawn by the player.
+- **End every video with a CTA card: three strong points, each a big icon with short bold text** (2026-11-20).
 - **Show the credit balance before and after every paid step** (2026-11-20). Every time anything spends
   credits (ElevenLabs voice or sound, Magnific, any other paid tool), tell him the balance right before
   (with the expected cost) and right after (with what was actually used). For ElevenLabs read it with the

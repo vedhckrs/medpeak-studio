@@ -7,18 +7,20 @@
 import React, {useMemo} from 'react';
 import {AbsoluteFill, Audio, Sequence, staticFile, useCurrentFrame} from 'remotion';
 import {bedAt, frameOf, layoutToon, lineSeconds, soundPlan, TOON_FPS, type Layout, type Toon, type ToonTimings} from '../director';
-import {WordCaption} from './hud';
+import {CTA_SECONDS, CtaCard, Watermark, WordCaption, type CtaPoint} from './hud';
 import {FONT} from './kit';
 import {clamp01, go, lerp, V8_FPS, type Focus, type LineNow, type ShotDef, type ShotNow} from './play';
-import {RABIES_SHOTS} from './rabies';
+import {RABIES_CTA, RABIES_SHOTS} from './rabies';
 
 export type V8VideoProps = {toon: Toon; timings: ToonTimings | null; sfx: string[]; music: string | null; bare?: boolean};
 
 /** The shots of each video, by the video's slug and the shot's id. */
 export const V8_VIDEOS: Record<string, Record<string, ShotDef>> = {rabies: RABIES_SHOTS};
+/** The CTA end card of each video (three strong points). */
+export const V8_CTA: Record<string, {title: string; points: CtaPoint[]}> = {rabies: RABIES_CTA};
 
 const K = V8_FPS / TOON_FPS; // the layout counts 30 frames a second; the video runs at 60
-export const v8Frames = (toon: Toon, timings: ToonTimings | null) => Math.round(layoutToon(toon, timings).total * K);
+export const v8Frames = (toon: Toon, timings: ToonTimings | null) => Math.round((layoutToon(toon, timings).total / TOON_FPS + (V8_CTA[toon.slug] ? CTA_SECONDS : 0)) * V8_FPS);
 
 /** A shot's "now" (play.tsx) at second `sec` of the video. */
 export const shotNow = (L: Layout, toon: Toon, timings: ToonTimings | null, sec: number): {s: ShotNow; si: number} => {
@@ -153,6 +155,15 @@ export const ToonV8: React.FC<V8VideoProps> = ({toon, timings, sfx, music, bare 
   const view = (c: {x: number; y: number; z: number}, extra = '') => `${extra} translate(${(540 - c.x * c.z).toFixed(2)}px, ${(960 - c.y * c.z).toFixed(2)}px) scale(${c.z.toFixed(4)})`;
   const newT = !trans ? '' : trans.kind === 'whip' ? `translateX(${((1 - trans.e) * 1080).toFixed(1)}px)` : `translate(540px, 960px) scale(${lerp(0.78, 1, trans.e).toFixed(4)}) translate(-540px, -960px)`;
 
+  // the three acts (watermark position): groups of shots by place, body / rooms / body; else thirds of the time
+  const isRoom = (i: number) => ['home', 'clinic'].includes(L.shots[i].shot.set ?? '');
+  const actStarts = L.shots.map((_, i) => i).filter((i) => i === 0 || isRoom(i) !== isRoom(i - 1)).map((i) => L.shots[i].from / TOON_FPS);
+  const ends = L.total / TOON_FPS;
+  const acts = actStarts.length === 3 ? actStarts : [0, ends / 3, (2 * ends) / 3];
+  const act = sec >= ends ? 2 : acts.filter((a) => sec >= a).length - 1;
+  const cta = V8_CTA[toon.slug];
+  const inCta = !!cta && sec >= ends;
+
   const has = (n: string | undefined): n is string => !!n && sfx.includes(n);
   const events = soundPlan(L);
   // extra story sounds of the player: a heartbeat under the serious beat
@@ -177,11 +188,20 @@ export const ToonV8: React.FC<V8VideoProps> = ({toon, timings, sfx, music, bare 
       {grave > 0 && <AbsoluteFill style={{background: '#1b2238', opacity: grave * 0.34}} />}
       {def?.Screen && <def.Screen s={s} />}
       {flash > 0 && <AbsoluteFill style={{background: '#ffffff', opacity: flash * 0.3}} />}
-      {cur && wi >= 0 && !bare && (() => {
+      {cur && wi >= 0 && !bare && !inCta && (() => {
         // one word at a time, no box (the owner, 2026-11-20); the line's key word is yellow and bigger
         const w = clean(cur.words[wi].w);
         return <WordCaption key={cur.line.id + wi} word={w} t={tl - cur.words[wi].start} isKey={w.toLowerCase().replace(/[!?'’]/g, '') === keyWord.replace(/[!?'’]/g, '')} />;
       })()}
+      {inCta && (
+        <div style={{position: 'absolute', inset: 0, transform: `translateY(${((1 - clamp01((sec - ends) / 0.35)) ** 3 * 1920).toFixed(1)}px)`}}>
+          <CtaCard t={sec - ends} title={cta!.title} points={cta!.points} />
+        </div>
+      )}
+      <Watermark act={act} t={sec - (inCta ? 0 : acts[act]) + (inCta ? 9 : 0)} />
+      {cta && [0, 1, 2].map((i) => <Sequence key={'cta' + i} from={Math.round((ends + 0.45 + i * 0.55) * V8_FPS)} durationInFrames={60 * K}><Audio src={staticFile('toons/sfx/pop.mp3')} volume={0.5} /></Sequence>)}
+      {cta && <Sequence from={Math.round((ends + 2.3) * V8_FPS)} durationInFrames={90 * K}><Audio src={staticFile('toons/sfx/success-chime.mp3')} volume={0.45} /></Sequence>}
+      {cta && <Sequence from={Math.round(ends * V8_FPS)} durationInFrames={40 * K}><Audio src={staticFile('toons/sfx/whoosh-air.mp3')} volume={0.4} /></Sequence>}
       {L.lines.map((l) => l.file && <Sequence key={l.line.id} from={Math.round(l.from * K)} durationInFrames={Math.round((l.frames + 12) * K)}><Audio src={staticFile(l.file)} /></Sequence>)}
       {events.filter((e) => has(e.name)).map((e, i) => <Sequence key={i} from={Math.round(e.at * K)} durationInFrames={90 * K}><Audio src={staticFile(`toons/sfx/${e.name}.mp3`)} volume={e.vol} /></Sequence>)}
       {extra.filter((e) => has(e.name)).map((e, i) => <Sequence key={'x' + i} from={Math.round(e.at * K)} durationInFrames={240 * K}><Audio src={staticFile(`toons/sfx/${e.name}.mp3`)} volume={e.vol} /></Sequence>)}

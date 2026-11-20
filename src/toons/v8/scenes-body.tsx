@@ -681,7 +681,7 @@ const ShotM2: React.FC<{s: ShotNow}> = ({s}) => {
 const ScreenM2: React.FC<{s: ShotNow}> = ({s}) => {
   const u = since(s, 'B3', 'two');
   if (u < 0) return null;
-  return <IconBadge icon="calendar" t={u} x={540} y={330} />;
+  return <IconBadge icon="calendar" t={u} x={540} y={420} />;
 };
 
 // ---- E: after the vaccine (junction)
@@ -766,9 +766,9 @@ const ShotM3: React.FC<{s: ShotNow}> = ({s}) => {
 const virusFocus = (x: number, y: number, size: number): Focus => ({x, y: y - size * 0.08, r: size * 0.3});
 export const BODY_SHOTS: Record<string, ShotDef> = {
   A: {Scene: ShotA, focus: (who, s) => { if (who === 'brain' && since(s, 'A2', 'brain') >= 0) return {x: 300, y: 400, r: 120}; const v = posA(s); return virusFocus(v.x, v.y, 440); }},
-  B: {Scene: ShotB, Screen: ({s}) => <IconBadge icon="sunrise" t={s.t - 0.05} x={830} y={330} out={2.4} />, focus: (_who, s) => { const b = posB(s); return b.ub >= 0 ? virusFocus(b.vx, b.vy, 250) : {x: 548, y: Math.max(400, 560 + b.fang), r: 140}; }},
+  B: {Scene: ShotB, Screen: ({s}) => <IconBadge icon="sunrise" t={s.t - 0.05} x={250} y={420} out={2.4} />, focus: (_who, s) => { const b = posB(s); return b.ub >= 0 ? virusFocus(b.vx, b.vy, 250) : {x: 548, y: Math.max(400, 560 + b.fang), r: 140}; }},
   M2: {Scene: ShotM2, Screen: ScreenM2, focus: (_who, s) => { const m = posM2(s); return virusFocus(m.vx, m.vy, 280); }},
-  E: {Scene: ShotE, Screen: ({s}) => <IconBadge icon="vaccine" t={s.t - 0.05} x={540} y={300} />, focus: (_who, s) => { const v = posE(s); return virusFocus(v.x, v.y, 340); }},
+  E: {Scene: ShotE, Screen: ({s}) => <IconBadge icon="vaccine" t={s.t - 0.05} x={540} y={430} />, focus: (_who, s) => { const v = posE(s); return virusFocus(v.x, v.y, 340); }},
   M3: {Scene: ShotM3, focus: (who, s) => { const m = posM3(s); return who === 'whitecell' ? {x: m.front.x, y: m.front.y - 30, r: 130} : virusFocus(m.vx, m.vy, 300); }},
 };
 

@@ -1,5 +1,9 @@
+import React from 'react';
 /** The rabies video's shots in look v8, by shot id (videos/rabies/toon.json). */
 import {lerp, type ShotDef, type ShotNow} from './play';
+import {Stopwatch, VaccineShield, type CtaPoint} from './hud';
+import {Soap, Stethoscope} from './props';
+
 import {BODY_SHOTS} from './scenes-body';
 import {ROOM_SHOTS} from './scenes-rooms';
 
@@ -15,4 +19,14 @@ export const RABIES_SHOTS: Record<string, ShotDef> = {
   E: framed('E', push(540, 880, 1.0, 1.04)),
   M3: framed('M3', push(540, 890, 1.06, 1.1)),
   ...ROOM_SHOTS,
+};
+
+// ------------------------------------------------------------------ the CTA end card: three strong points
+export const RABIES_CTA: {title: string; points: CtaPoint[]} = {
+  title: 'BITTEN OR SCRATCHED?',
+  points: [
+    {icon: <g><g transform="translate(-28 0) scale(0.78)"><Stopwatch t={2} /></g><g transform="translate(46 44) scale(0.5)"><Soap /></g></g>, big: 'WASH 15 MIN', small: 'soap and running water'},
+    {icon: <g transform="scale(0.95)"><Stethoscope /></g>, big: 'SEE A DOCTOR', small: 'the same day'},
+    {icon: <VaccineShield t={2} />, big: 'GET EVERY SHOT', small: 'finish the vaccine course'},
+  ],
 };

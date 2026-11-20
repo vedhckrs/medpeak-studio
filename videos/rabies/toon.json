@@ -8,16 +8,16 @@
  "episode": 9,
  "hooks": [
   {
-   "line": "Get rabies, and I'm going for your brain!",
-   "why": "the title words, to the viewer, a villain with a goal"
+   "line": "Get rabies? I get your brain!",
+   "why": "7 words, to the viewer, the title words, a villain with a goal"
   },
   {
    "line": "Get rabies, and your brain is next.",
    "why": "more frightening"
   },
   {
-   "line": "You got rabies? I am going for your brain!",
-   "why": "the search words first"
+   "line": "You get rabies, your brain is next.",
+   "why": "the search words, a threat"
   }
  ],
  "rooms": {
@@ -75,7 +75,7 @@
  "retention": {
   "noIntro": {
    "scene": "A1",
-   "line": "Get rabies, and I'm going for your brain!"
+   "line": "Get rabies? I get your brain!"
   },
   "promise": {
    "scene": "A2",
@@ -159,7 +159,7 @@
     },
     {
      "at": "A1",
-     "word": "going",
+     "word": "get",
      "set": {
       "snap": 1
      },
@@ -168,7 +168,7 @@
     },
     {
      "at": "A1",
-     "word": "your",
+     "word": "get",
      "set": {
       "slide": 0.74
      },
@@ -202,7 +202,7 @@
     {
      "id": "A1",
      "who": "virus",
-     "text": "Get rabies, and I'm going for your brain!",
+     "text": "Get rabies? I get your brain!",
      "emotion": "angry",
      "pose": "rest",
      "key": "brain",

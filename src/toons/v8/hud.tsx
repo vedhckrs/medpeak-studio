@@ -161,3 +161,63 @@ export const IconBadge: React.FC<{icon: IconName; t: number; x?: number; y?: num
     </svg>
   );
 };
+
+// ------------------------------------------------------------------ the watermark (the owner, 2026-11-20)
+/**
+ * "@MedPeakHealth", small and clean, on the whole video, inside the YouTube Shorts safe area. It moves once
+ * per act: act 1 top right, act 2 bottom left, act 3 top middle. `act` is 0, 1 or 2; `t` the seconds since
+ * that act began (it fades in at each move).
+ */
+export const WATERMARK = '@MedPeakHealth';
+const WM_AT: {x: number; y: number; align: 'left' | 'right' | 'center'}[] = [
+  {x: 960, y: 178, align: 'right'}, // act 1: top right, under the Shorts top bar, left of nothing
+  {x: 96, y: 1330, align: 'left'}, // act 2: bottom left, above the caption and the Shorts title band
+  {x: 540, y: 178, align: 'center'}, // act 3: top middle
+];
+export const Watermark: React.FC<{act: number; t: number}> = ({act, t}) => {
+  const p = WM_AT[Math.max(0, Math.min(2, act))];
+  const k = clamp01(t / 0.35);
+  const tx = p.align === 'right' ? '-100%' : p.align === 'center' ? '-50%' : '0';
+  return (
+    <div style={{position: 'absolute', left: p.x, top: p.y, transform: `translate(${tx}, -50%)`, opacity: 0.88 * k, pointerEvents: 'none',
+      fontFamily: FONT, fontWeight: 800, fontSize: 34, letterSpacing: 0.5, color: '#ffffff', whiteSpace: 'nowrap',
+      WebkitTextStroke: `6px ${INK}`, paintOrder: 'stroke fill'}}>{WATERMARK}</div>
+  );
+};
+
+// ------------------------------------------------------------------ the CTA end card (the owner, 2026-11-20)
+/** The CTA card: three strong points, each a big icon with short bold text, then "Follow". */
+export type CtaPoint = {icon: React.ReactNode; big: string; small: string};
+export const CTA_SECONDS = 4.2;
+export const CtaCard: React.FC<{t: number; title: string; points: CtaPoint[]}> = ({t, title, points}) => {
+  const head = popIn(t - 0.05, 0.3);
+  const follow = popIn(t - 2.3, 0.3);
+  const pulse = 1 + Math.max(0, Math.sin((t - 2.6) * Math.PI * 2.2)) * 0.05 * (t > 2.6 ? 1 : 0);
+  return (
+    <div style={{position: 'absolute', inset: 0, background: '#fbf7f0', overflow: 'hidden', fontFamily: FONT}}>
+      <div style={{position: 'absolute', left: 0, right: 0, top: 0, height: 22, background: '#33b7a5'}} />
+      <div style={{position: 'absolute', left: 0, right: 0, top: 300, textAlign: 'center', transform: `scale(${(0.6 + 0.4 * head).toFixed(3)})`, opacity: clamp01(head * 2),
+        fontWeight: 900, fontSize: 62, color: INK, lineHeight: 1.1}}>{title}</div>
+      {points.map((p, i) => {
+        const k = popIn(t - 0.45 - i * 0.55, 0.32);
+        const y = 520 + i * 270;
+        return (
+          <div key={i} style={{position: 'absolute', left: 80, right: 80, top: y, height: 230, opacity: clamp01(k * 2),
+            transform: `translateX(${((1 - Math.min(1, k)) * -260).toFixed(1)}px)`, display: 'flex', alignItems: 'center', gap: 34,
+            background: '#ffffff', border: `5px solid ${INK}`, borderRadius: 36, padding: '0 34px', boxShadow: `0 10px 0 ${INK}`}}>
+            <div style={{width: 64, height: 64, borderRadius: 32, background: '#33b7a5', border: `4px solid ${INK}`, color: '#ffffff', fontWeight: 900, fontSize: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 'none'}}>{i + 1}</div>
+            <svg width={190} height={190} viewBox="-100 -100 200 200" style={{flex: 'none', overflow: 'visible'}}>{p.icon}</svg>
+            <div style={{display: 'flex', flexDirection: 'column'}}>
+              <div style={{fontWeight: 900, fontSize: 64, color: INK, lineHeight: 1.02}}>{p.big}</div>
+              <div style={{fontWeight: 700, fontSize: 38, color: '#6e645f', marginTop: 8}}>{p.small}</div>
+            </div>
+          </div>
+        );
+      })}
+      <div style={{position: 'absolute', left: 0, right: 0, top: 1360, display: 'flex', justifyContent: 'center', opacity: clamp01(follow * 2)}}>
+        <div style={{transform: `scale(${((0.6 + 0.4 * follow) * pulse).toFixed(3)})`, background: '#ef5b5b', border: `5px solid ${INK}`, borderRadius: 60, padding: '22px 56px', boxShadow: `0 10px 0 ${INK}`,
+          color: '#ffffff', fontWeight: 900, fontSize: 56, WebkitTextStroke: `0px`}}>FOLLOW FOR MORE</div>
+      </div>
+    </div>
+  );
+};
