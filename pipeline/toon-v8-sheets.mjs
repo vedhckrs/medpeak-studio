@@ -6,6 +6,8 @@
  *
  *   node pipeline/toon-v8-sheets.mjs            all sheets
  *   node pipeline/toon-v8-sheets.mjs cells      only the sheets whose name contains "cells"
+ *   node pipeline/toon-v8-sheets.mjs --scenes   the scene frames (1080 x 1920) into out/toons/scenes-v8/
+ *   node pipeline/toon-v8-sheets.mjs --scenes c1   only the scene frames whose name contains "c1"
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -33,18 +35,41 @@ export const SHEETS = [
   ['entry-demo.tsx', 'V8Kit', '_kit'],
 ];
 
-export const renderSheets = (only = []) => {
-  const out = path.join(ROOT, 'out', 'toons', 'sheets-v8');
+// The scene frames of the rabies video (rooms, the arm, inside the body): [entry file, still id, output name]
+export const SCENES = [
+  ['entry-scenes-body.tsx', 'V8SceneA', 'a'],
+  ['entry-scenes-body.tsx', 'V8SceneB', 'b'],
+  ['entry-scenes-body.tsx', 'V8SceneM2', 'm2'],
+  ['entry-scenes-rooms.tsx', 'V8SceneC1', 'c1'],
+  ['entry-scenes-rooms.tsx', 'V8SceneC2', 'c2'],
+  ['entry-scenes-rooms.tsx', 'V8SceneD1', 'd1'],
+  ['entry-scenes-rooms.tsx', 'V8SceneD3', 'd3'],
+  ['entry-scenes-body.tsx', 'V8SceneE', 'e'],
+  ['entry-scenes-body.tsx', 'V8SceneM3', 'm3'],
+  ['entry-scenes-rooms.tsx', 'V8RoomKitchen', 'room-kitchen'],
+  ['entry-scenes-rooms.tsx', 'V8RoomClinic', 'room-clinic'],
+  ['entry-scenes-body.tsx', 'V8PlaceArm', 'place-arm'],
+  ['entry-scenes-body.tsx', 'V8PlaceNerve', 'place-nerve-road'],
+];
+
+const renderList = (all, dir, only) => {
+  const out = path.join(ROOT, 'out', 'toons', dir);
   fs.mkdirSync(out, {recursive: true});
-  const list = SHEETS.filter(([, , name]) => !only.length || only.some((o) => name.includes(o)));
+  const list = all.filter(([, , name]) => !only.length || only.some((o) => name.includes(o)));
   for (const [entry, id, name] of list) {
     remotion(['still', path.join('src', 'toons', 'v8', entry), id, path.join(out, `${name}.jpg`), '--log=error']);
-    console.log(`sheet ${name}.jpg`);
+    console.log(`${dir}/${name}.jpg`);
   }
   return list.length;
 };
 
+export const renderSheets = (only = []) => renderList(SHEETS, 'sheets-v8', only);
+export const renderScenes = (only = []) => renderList(SCENES, 'scenes-v8', only);
+
 if (isMain(import.meta.url)) {
-  const n = renderSheets(args()._);
-  console.log(`${n} sheet${n === 1 ? '' : 's'} in out/toons/sheets-v8`);
+  const a = args();
+  // `--scenes c1` parses as {scenes: 'c1'}: take that word as a filter too
+  const only = typeof a.scenes === 'string' ? [a.scenes, ...a._] : a._;
+  const n = a.scenes ? renderScenes(only) : renderSheets(only);
+  console.log(`${n} file${n === 1 ? '' : 's'} in out/toons/${a.scenes ? 'scenes-v8' : 'sheets-v8'}`);
 }

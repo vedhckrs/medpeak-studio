@@ -62,6 +62,48 @@ of the arm and the arm's inner line starts at the armpit.
 - `tsc --noEmit`: no errors. `pipeline/test/toons.test.mjs`: 36 of 36 pass (the old engine is unchanged).
 - A check of every v8 file: no hard-coded stroke colours, no gradients, no blur or filters.
 
+### Later the same day: scenes and the rabies storyboard (wait for the owner's approval)
+
+After the owner approved the cast and props, the next piece was drawn in the same look: the places of the
+rabies video and nine storyboard frames (1080 x 1920 stills). **Nothing is in the engine or in a video yet.**
+
+- `src/toons/v8/scene.tsx`: the shared scene pieces (`Scene`, `Layer` = a full-frame SVG in frame pixels,
+  `Put` = place a 200-unit cast figure, `Label`, `Tag`, `Bubble`, `CAPTION_BAND`).
+- `src/toons/v8/scenes-rooms.tsx` (+ `entry-scenes-rooms.tsx`): `KitchenRoom`, `ClinicRoom` and the frames
+  C1, C2 (kitchen: Mom and the Kid, the scratch, washing under the tap, tag "15 minutes") and D1, D3
+  (clinic: Dr. Mira and the Kid, the plaster, the vaccine vial). People at `PEOPLE_SCALE = 3.2`, feet near
+  y 1740. It has its own `handAt` (wrist and palm of a pose in frame pixels, so props sit on a hand); it
+  copies the rig's arm arithmetic, so it drifts if the rig's arm math changes: export it from the rig when
+  v8 goes into the engine.
+- `src/toons/v8/scenes-body.tsx` (+ `entry-scenes-body.tsx`): `ArmPlace {bite, wall, air, punctures}` (a cut
+  through the bitten forearm: skin, deeper skin, fat, nerve, muscle) and `NervePlace {view: entry | road |
+  caught, far}`, and the frames A (hook, the virus on the nerve road, the brain far away), B (the dog's
+  teeth at the bite, the virus rides in on spit), M2 (the long road, tag "2-3 months"), E (the wall of
+  antibodies after the vaccine), M3 (white cells hold the virus).
+- **No mirrored adults.** The owner rejects flipped characters and Dr. Mira's pocket, pens and stethoscope
+  swap sides when mirrored. In every room frame the adult stands on the left in the real three-quarter
+  view; only the Kid (no one-sided detail) is mirrored to face left. A real left-facing view in the rig is
+  the proper fix before animation.
+- New poses in `people-rig.tsx`, additive only (no approved pose changed): `showArm`, `showArmUp`,
+  `tapHand`, `offer`, `thumbsHold`, `thumbsUp`, `worriedHold`, `worriedPoint`, `explainLow`, `youSee`.
+- `Antibody` got an optional `color` prop (default unchanged). **Open question for the owner:** the
+  antibody (#9d90d8) and the virus (#9d8cc2) are almost the same purple, so in frame E the wall looked like
+  the virus's friends. Frame E uses teal antibodies. If he agrees, make teal the antibody's own colour and
+  re-render the cells sheet (that changes an approved sheet, so only on his word).
+- `node pipeline/toon-v8-sheets.mjs --scenes [name]` renders the frames to `out/toons/scenes-v8/`. The three
+  16:9 approval sheets (`storyboard-rabies-1.jpg`, `storyboard-rabies-2.jpg`, `places-rabies.jpg`, 3840 x
+  2160) are in `out/toons/scenes-v8/boards/`; they were laid out with a small PIL script that is not in the
+  repo (a contact sheet of the frames with the script lines under them).
+- How: two Opus 5.5 subagents (rooms; body), three review rounds each by the main session.
+- Run: `tsc --noEmit` clean; `pipeline/test/toons.test.mjs` 36 of 36; all 17 approved sheets re-rendered
+  from the current code and compared with the approved copies in `toons-boards/v8/`: 0 pixels differ.
+- Weak spots, told to the owner: the Kid has no real shrug in C1 (face only); in M3 the white cells rest a
+  hand on the virus rather than clasp it; in B the first spit drops sit inside the dog's mouth next to its
+  teeth; the cast virus carries its gold key in every frame; the upper wall of both rooms is plain on
+  purpose (the tag sits there).
+- Next, after his OK on the storyboard: bring v8 into the engine (cast, places, poses, a left-facing view),
+  animate, and re-render rabies. Not started.
+
 ### Not done, and open
 
 - **APPROVED by the owner on 2026-11-20 ("Yes, approved").** The approved JPGs are committed in

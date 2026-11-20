@@ -423,7 +423,9 @@ export type PersonSpec = {
 };
 
 // ================================================================== poses
-export type PoseName = 'rest' | 'explain' | 'point' | 'thumbs' | 'think' | 'worried' | 'clipboard' | 'sit' | 'wave';
+export type PoseName = 'rest' | 'explain' | 'point' | 'thumbs' | 'think' | 'worried' | 'clipboard' | 'sit' | 'wave'
+  // scene poses (added for the rooms scenes, 2026-11-20)
+  | 'showArm' | 'tapHand' | 'offer' | 'thumbsHold' | 'thumbsUp' | 'worriedHold' | 'explainLow' | 'worriedPoint' | 'youSee' | 'showArmUp';
 /** Arm: directions in the ARM frame: x = outwards from the body, y = down, z = forwards. */
 type ArmPose = {up: V3; fore: V3; hand: HandKind; thumb?: V3; bend?: number; ang?: number; front?: boolean; prop?: 'clipboard'};
 type LegPose = {thigh: V3; shin: V3; foot: V3};
@@ -448,6 +450,27 @@ export const POSES: Record<PoseName, Pose> = {
     sit: true,
   },
   wave: {R: REST_R, L: {up: [0.75, 0.62, 0.1], fore: [0.18, -1, 0.1], hand: 'open', thumb: [-1, 0, 0.2]}, legR: STAND_R, legL: STAND_L},
+  // ---- scene poses (rooms scenes): additive, the poses above are unchanged
+  /** holds the far forearm out in front, palm up, to show it */
+  showArm: {R: REST_R, L: {up: [0.3, 0.6, 0.75], fore: [0.08, -0.62, 0.8], hand: 'open', thumb: [0, -1, 0.2]}, legR: STAND_R, legL: STAND_L, tilt: -3},
+  /** reaches the far hand forward at shoulder height (a hand under a tap) */
+  tapHand: {R: REST_R, L: {up: [0.25, 0.2, 0.95], fore: [0.05, -0.25, 1], hand: 'open', thumb: [0, -1, 0]}, legR: STAND_R, legL: STAND_L, tilt: 3},
+  /** offers something on the far open hand, forward at waist height */
+  offer: {R: REST_R, L: {up: [0.15, 1, 0.15], fore: [0.05, 0.1, 1], hand: 'open', thumb: [0, -1, 0.2]}, legR: STAND_R, legL: STAND_L, tilt: -4},
+  /** thumbs up with the far hand, the near hand holds a small thing in front */
+  thumbsHold: {R: {up: [0.08, 1, 0.3], fore: [-0.4, -0.4, 0.85], hand: 'hold', thumb: [0, -1, 0], front: true}, L: {up: [0.35, 0.9, 0.3], fore: [0.15, -0.95, 0.3], hand: 'thumbs', thumb: [0, -1, 0], ang: -90}, legR: STAND_R, legL: STAND_L, tilt: 4},
+  /** thumbs up with the far hand, the thumb straight up over a level fist */
+  thumbsUp: {R: REST_R, L: {up: [0.35, 0.9, 0.3], fore: [0.15, -0.95, 0.3], hand: 'thumbs', thumb: [0, -1, 0], ang: -90}, legR: STAND_R, legL: STAND_L, tilt: 4},
+  /** worried: the near hand on the chest, the far hand held out, palm up, under someone's arm */
+  worriedHold: {R: {up: [0.12, 1, 0.34], fore: [-0.85, -0.62, 0.4], hand: 'open', thumb: [0, -1, 0], front: true, bend: -20}, L: {up: [0.2, 0.98, 0.3], fore: [0.12, 0.8, 0.6], hand: 'open', thumb: [0, -1, 0.2]}, legR: STAND_R, legL: STAND_L, tilt: -5},
+  /** explains with the far open hand low, at waist height (toward a child) */
+  /** worried: the near hand on the chest, the far index finger points down-forward at something (a scratch) */
+  worriedPoint: {R: {up: [0.12, 1, 0.34], fore: [-0.85, -0.62, 0.4], hand: 'open', thumb: [0, -1, 0], front: true, bend: -20}, L: {up: [0.25, 0.95, 0.35], fore: [0.3, 0.3, 0.95], hand: 'point', thumb: [0, -1, 0]}, legR: STAND_R, legL: STAND_L, tilt: -5},
+  /** a palm-up "you see" gesture with the far hand, at chest height, close to the body */
+  youSee: {R: REST_R, L: {up: [0.25, 1, 0.1], fore: [0.3, -0.5, 0.6], hand: 'open', thumb: [0, -1, 0.2], bend: -10}, legR: STAND_R, legL: STAND_L, tilt: 3},
+  /** holds the far forearm up in front, nearly upright, palm toward the face (shows a mark on the forearm) */
+  showArmUp: {R: REST_R, L: {up: [0.3, 0.15, 0.95], fore: [0.0, -1, 0.15], hand: 'open', thumb: [0, -1, 0.2]}, legR: STAND_R, legL: STAND_L, tilt: -3},
+  explainLow: {R: REST_R, L: {up: [0.35, 0.9, 0.3], fore: [0.4, 0.35, 0.85], hand: 'open', thumb: [0, -1, 0.2], bend: -10}, legR: STAND_R, legL: STAND_L, tilt: 3},
 };
 
 // ================================================================== the person

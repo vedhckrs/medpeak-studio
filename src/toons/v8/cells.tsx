@@ -259,7 +259,8 @@ export const FatCell: React.FC<V8Props> = ({mood = 'open', mouth = 'smile', look
 };
 
 // ================================================================== 7 antibody: the trained hunter
-export const Antibody: React.FC<V8Props> = ({mood = 'open', mouth = 'smile', look = [0.2, -0.4]}) => {
+/** `color`: another body colour for a scene (the default is the sheet's own). */
+export const Antibody: React.FC<V8Props & {color?: string}> = ({mood = 'open', mouth = 'smile', look = [0.2, -0.4], color = C.antibody}) => {
   const body = [
     'M -20 70',
     'C -22 52 -22 34 -22 22',
@@ -276,12 +277,12 @@ export const Antibody: React.FC<V8Props> = ({mood = 'open', mouth = 'smile', loo
   ].join(' ');
   return (
     <g transform="translate(0 6)">
-      <TinyLeg from={[-11, 70]} to={[-13, 86]} fill={C.antibody} foot={-1} />
-      <TinyLeg from={[11, 70]} to={[13, 86]} fill={C.antibody} />
+      <TinyLeg from={[-11, 70]} to={[-13, 86]} fill={color} foot={-1} />
+      <TinyLeg from={[11, 70]} to={[13, 86]} fill={color} />
       {/* the two tips of the Y are its grabbing hands */}
-      <TinyArm from={[-60, -54]} to={[-78, -76]} fill={C.antibody} w={9} hand="open" />
-      <TinyArm from={[60, -54]} to={[78, -76]} fill={C.antibody} w={9} hand="open" />
-      <Shape d={body} fill={C.antibody}>
+      <TinyArm from={[-60, -54]} to={[-78, -76]} fill={color} w={9} hand="open" />
+      <TinyArm from={[60, -54]} to={[78, -76]} fill={color} w={9} hand="open" />
+      <Shape d={body} fill={color}>
         <path d="M -38 -22 Q -52 -36 -62 -54 M 38 -22 Q 52 -36 62 -54" {...INLINE} />
       </Shape>
       <Eyes x={0} y={-2} r={ER - 0.5} mood={mood} look={look} />

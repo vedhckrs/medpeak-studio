@@ -73,3 +73,18 @@ mistake never breaks another's render:
 
     node pipeline/toon-v8-sheets.mjs            (all sheets; or: npm run toon:sheets)
     node pipeline/toon-v8-sheets.mjs cells      (only the sheets whose name contains "cells")
+
+## Scenes (full video frames, 1080 x 1920; NOT yet approved)
+
+Built with `src/toons/v8/scene.tsx` in `scenes-rooms.tsx` (kitchen, clinic) and `scenes-body.tsx` (the bitten
+arm, the nerve road). Rules on top of the ten above:
+
+- A place is QUIETER than the cast: big flat fields, tone-on-tone patterns, few lines. Objects keep the cast
+  outline. No faces on a background.
+- Rooms are flat, front-on stages (a wall, a floor line near y 1380). People stand with feet near y 1740.
+- Keep the top 190 px and the bottom 330 px free of anything important; no face, hand action or label in
+  the caption band (y 1380..1560). The yellow tag sits around y 330 on plain wall.
+- Never mirror a character that has a one-sided detail (Dr. Mira, Mom). Hands never overlap hands.
+- A cast figure is placed as approved (`<Put>`); a scene may pass a figure's own props, never redraw it.
+
+    node pipeline/toon-v8-sheets.mjs --scenes        (all scene frames, to out/toons/scenes-v8/)
