@@ -1223,7 +1223,7 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
     // the nose: one family in every view, scaled with the person (b.nose)
     if (v === 'f') face.push(<path key="nose" transform={`translate(0 17) scale(${nk}) translate(0 -17)`} d="M -1.6 12.8 Q 5.6 16.2 2 20.8 Q -0.2 22.4 -3.2 21" {...INLINE} />);
     if (v === 'q') face.push(
-      <g key="nose" transform={`translate(31.5 21.3) scale(${f1(nk * 1.12)}) translate(-31 -19)`}>
+      <g key="nose" transform={`translate(21.5 18.6) scale(${f1(nk * 1.2)}) translate(-31 -19)`}>
         <path d="M 27.6 14.2 C 32.6 14.2 38 17.2 37.8 20.6 C 37.6 23.8 33 24.8 29.2 23.5 C 27.2 21 26.8 17 27.6 14.2 Z" fill={skin} />
         <path d="M 32.4 15.2 C 35.8 16.4 38 18.6 37.8 20.6 C 37.6 23.8 33 24.8 29.2 23.5" {...INLINE} />
         <path d="M 31.2 21.3 Q 32.9 20.5 34.2 21.9" {...INLINE} />

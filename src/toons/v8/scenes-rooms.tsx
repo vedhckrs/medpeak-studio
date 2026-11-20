@@ -18,6 +18,7 @@
 import React from 'react';
 import {CLOTH, EDGE, EDGE_IN, INK, INLINE, OUTLINE, Shape, shade, tint} from './kit';
 import {Layer, Put, Scene, Tag} from './scene';
+import {IconBadge} from './hud';
 import {castById, handAt, headAt, PersonAt, type Expr, type Facing, type HandPoint, type PoseIn, type PoseName, type View} from './people-rig';
 import {blink, EXPR_OF, feel, go, pop, since, speaking, sway, talk, type LineNow, type ShotDef, type ShotNow} from './play';
 import {Plaster, Soap, VaccineVial} from './props';
@@ -428,16 +429,17 @@ const KitchenShot: React.FC<{s: ShotNow}> = ({s}) => {
     </Scene>
   );
 };
-/** The yellow tag rides on the screen, not in the room: it pops in at "fifteen" and stays. */
+/** The stopwatch icon rides on the screen, not in the room: it pops in at "fifteen" and stays. */
 const KitchenScreen: React.FC<{s: ShotNow}> = ({s}) => {
   const f = since(s, 'C2', 'fifteen');
+  return f < 0 ? null : <IconBadge icon="stopwatch" t={f} x={540} y={330} />;
+};
+/** The warning icon on the hard truth: it appears at "fatal" and leaves when the good news starts. */
+const ClinicScreen: React.FC<{s: ShotNow}> = ({s}) => {
+  const f = since(s, 'D2', 'fatal');
   if (f < 0) return null;
-  const k = pop(s.t, s.t - f, 0.32);
-  return (
-    <div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, transform: `scale(${k})`, transformOrigin: '560px 330px'}}>
-      <Tag x={560} y={330} text="15 minutes" />
-    </div>
-  );
+  const d3 = since(s, 'D3');
+  return <IconBadge icon="warning" t={f} x={540} y={330} out={d3 > -900 ? f - d3 : undefined} />;
 };
 
 // ------------------------------------------------------------------ shot D: the clinic
@@ -479,7 +481,7 @@ const ClinicShot: React.FC<{s: ShotNow}> = ({s}) => {
 const faceOf = (w: Who) => { const h = headOf(w); return {x: h.x, y: h.y, r: h.r}; };
 export const ROOM_SHOTS: Record<string, ShotDef> = {
   C: {Scene: KitchenShot, Screen: KitchenScreen, focus: (who, s) => { const c = kitchenCast(s); return faceOf(who === 'kid' ? c.kid : c.mom); }},
-  D: {Scene: ClinicShot, focus: (who, s) => { const c = clinicCast(s); return faceOf(who === 'kid' ? c.kid : c.doc); }},
+  D: {Scene: ClinicShot, Screen: ClinicScreen, focus: (who, s) => { const c = clinicCast(s); return faceOf(who === 'kid' ? c.kid : c.doc); }},
 };
 
 // ------------------------------------------------------------------ the stills: the same shots at one good moment

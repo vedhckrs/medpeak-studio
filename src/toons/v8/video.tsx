@@ -6,8 +6,8 @@
  */
 import React, {useMemo} from 'react';
 import {AbsoluteFill, Audio, Sequence, staticFile, useCurrentFrame} from 'remotion';
-import {bedAt, captionBox, frameOf, layoutToon, lineSeconds, soundPlan, TOON_FPS, type Layout, type Toon, type ToonTimings} from '../director';
-import {captionGroups, PhraseCaption} from '../scenes';
+import {bedAt, frameOf, layoutToon, lineSeconds, soundPlan, TOON_FPS, type Layout, type Toon, type ToonTimings} from '../director';
+import {WordCaption} from './hud';
 import {FONT} from './kit';
 import {clamp01, go, lerp, V8_FPS, type Focus, type LineNow, type ShotDef, type ShotNow} from './play';
 import {RABIES_SHOTS} from './rabies';
@@ -121,8 +121,9 @@ export const ToonV8: React.FC<V8VideoProps> = ({toon, timings, sfx, music, bare 
       {def?.Screen && <def.Screen s={s} />}
       {flash > 0 && <AbsoluteFill style={{background: '#ffffff', opacity: flash * 0.3}} />}
       {cur && wi >= 0 && !bare && (() => {
-        const group = captionGroups(cur.words.map((w) => w.w)).find((g) => g.includes(wi)) ?? [wi];
-        return <PhraseCaption words={group.map((i) => clean(cur.words[i].w))} keyWord={keyWord} y={captionBox(true).y} />;
+        // one word at a time, no box (the owner, 2026-11-20); the line's key word is yellow and bigger
+        const w = clean(cur.words[wi].w);
+        return <WordCaption key={cur.line.id + wi} word={w} t={tl - cur.words[wi].start} isKey={w.toLowerCase() === keyWord} />;
       })()}
       {L.lines.map((l) => l.file && <Sequence key={l.line.id} from={Math.round(l.from * K)} durationInFrames={Math.round((l.frames + 12) * K)}><Audio src={staticFile(l.file)} /></Sequence>)}
       {events.filter((e) => has(e.name)).map((e, i) => <Sequence key={i} from={Math.round(e.at * K)} durationInFrames={90 * K}><Audio src={staticFile(`toons/sfx/${e.name}.mp3`)} volume={e.vol} /></Sequence>)}
