@@ -121,6 +121,10 @@ Do these once on a new machine. None of it needs the old machine except step 6.
   (with the expected cost) and right after (with what was actually used). For ElevenLabs read it with the
   connector's `account_get_usage` (credits left = `character_limit - character_count`) or the API's
   `/v1/user/subscription`. If the balance cannot be read, say so and do not spend until he says go.
+- **$5 hard cap of Anthropic spend per video** (2026-11-20). Headless Claude Code on the owner's key runs only through
+  `node pipeline/claude-run.mjs <slug> --task <file> --label "<what>"` (ledger in `videos/<slug>/claude-spend.json`,
+  one run at a time, `--max-budget-usd` from what is left). Never `claude -p` on his key directly, never in
+  parallel. At the cap: stop and ask him.
 
 ## Where things are
 

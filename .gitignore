@@ -27,3 +27,4 @@ stock/
 pipeline/animate/*.log
 pipeline/animate/an-args.json
 pipeline/animate/an-rig.json
+videos/*/.claude-run.lock

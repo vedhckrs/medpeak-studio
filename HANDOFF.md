@@ -6,6 +6,40 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-20 (late) - Cloud session (claude.ai/code) - branch `claude/bold-hopper-dqvjfr`
+
+This branch = `claude/stoic-pascal-7dmpzh` (= PR #6's branch + handoff) + this session's work.
+
+### What changed
+
+- **New hard rule from the owner: at most $5 of Anthropic spend per video.** `pipeline/claude-run.mjs` enforces it:
+  ledger `videos/<slug>/claude-spend.json`, one run at a time (lock file), each run gets `--max-budget-usd` =
+  left - $0.75, no run under $1.50 left. Tests in `pipeline/test/claude-run.test.mjs`. Rule written in `CLAUDE.md`
+  and the skill (hard rule 6). Never run `claude -p` on his key any other way.
+- Key: `MEDPEAK_ANTHROPIC_KEY` is visible in cloud sessions and works (`/v1/models` 200; headless smoke test ok).
+
+### What was run
+
+- `npm ci`, `npm test` 48/48, `npm run typecheck` clean.
+- v4 step 1 was started as 3 PARALLEL uncapped headless runs (HUD, micro world, clothes). The owner then set the
+  $5 cap; they had spent ~$2.19 (transcripts) in about a minute, so they were stopped. **No code from them was kept.**
+  Booked $2.50 (rounded up for cut-off turns). Lesson: one run reads a lot of code first; a big task costs $2+.
+
+### Balances
+
+- ElevenLabs: 39,237 left of 40,000 (no change; resets 2026-12-09).
+- Anthropic, rabies v4: **$2.59 of $5 spent, $2.41 left** (`node pipeline/claude-run.mjs rabies --status`).
+
+### Open / next step
+
+- With $2.41 left only one capped run (~$1.66) can start for rabies v4, which is not enough for all of v4.
+  **Waiting for the owner:** raise the rabies v4 cap, or let this session write v4 code itself (no cost to his key),
+  or cut v4's scope. Then v4 step 1 (look sheets), one task at a time through `claude-run.mjs`.
+- The step 1 task texts (A: HUD, B: micro world, C: clothes) were written in this session's scratchpad; rewrite
+  them smaller (one sheet per run) to fit the cap.
+
+---
+
 ## 2026-11-20 (night) - Cloud session (claude.ai/code) - branch `claude/stoic-pascal-7dmpzh`
 
 Short session. It started v4 and stopped at the API-key check. **No v4 work is done.** This branch = `claude/github-repo-check-handoff-as1kql`

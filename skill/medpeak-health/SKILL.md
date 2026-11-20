@@ -30,6 +30,14 @@ The owner is not technical: run everything yourself, explain in plain words, nev
 5. **Git hygiene.** New work on a branch (`feat/...`, `video/<slug>`, `fix/...`), small commits, push,
    open a PR, merge after the owner's OK. Renders, audio and clips never go in git (see `.gitignore`).
 
+6. **$5 hard cap of Anthropic spend per video** (owner, 2026-11-20). Coding runs on the owner's Anthropic
+   key go ONLY through `node pipeline/claude-run.mjs <slug> --task <file> --label "<what>"`: it books every
+   run's cost in `videos/<slug>/claude-spend.json`, allows one run at a time, gives each run
+   `--max-budget-usd` = what is left minus a $0.75 margin, and refuses to start under $1.50 left. Never call
+   `claude -p` on his key directly, never run two at once. Spend made any other way is booked with
+   `--book`. When the cap is reached, stop and ask the owner; only he can raise it for a video. Report
+   `--status` at the start and end of each video and after every run.
+
 ## The workflow (one video)
 
 ```
