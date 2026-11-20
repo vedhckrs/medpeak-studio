@@ -569,3 +569,15 @@ export const V8PlaceWound: React.FC = () => <Empty view="wound" />;
 export const V8PlaceJunction: React.FC = () => <Empty view="junction" />;
 export const V8PlaceAxon: React.FC = () => <Empty view="axon" />;
 export const V8PlaceTissue: React.FC = () => <Empty view="tissue" />;
+
+// ================================================================== the shots as the video plays them (play.tsx)
+// First version: the approved frames standing still. Each is replaced by a moving shot.
+import type {ShotDef} from './play';
+const still = (C: React.FC, x: number, y: number, r = 110): ShotDef => ({Scene: () => <C />, focus: () => ({x, y, r})});
+export const BODY_SHOTS: Record<string, ShotDef> = {
+  A: still(V8SceneA, 330, 790),
+  B: still(V8SceneB, 545, 980),
+  M2: still(V8SceneM2, 552, 1060),
+  E: still(V8SceneE, 300, 690),
+  M3: still(V8SceneM3, 540, 810),
+};

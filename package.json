@@ -30,7 +30,8 @@
     "toon:music:scan": "node pipeline/toon-music-scan.mjs",
     "toon:package": "node pipeline/toon-package.mjs",
     "toon:look": "node pipeline/toon-look.mjs",
-    "toon:sheets": "node pipeline/toon-v8-sheets.mjs"
+    "toon:sheets": "node pipeline/toon-v8-sheets.mjs",
+    "toon:v8": "node --import tsx pipeline/toon-v8-render.mjs"
   },
   "dependencies": {
     "@remotion/cli": "4.0.543",

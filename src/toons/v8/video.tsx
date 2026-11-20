@@ -1,0 +1,119 @@
+/**
+ * MedPeak Toons, look v8: the video player (1080 x 1920, 60 frames a second).
+ * It reads the same toon.json and voice timings as the old player (director.ts lays the lines out), and
+ * plays each shot with the v8 scene registered for it (a `ShotDef`, see play.tsx). The player owns the
+ * camera, the caption, the voices, the sound effects and the music; a shot owns its picture and its motion.
+ */
+import React, {useMemo} from 'react';
+import {AbsoluteFill, Audio, Sequence, staticFile, useCurrentFrame} from 'remotion';
+import {bedAt, captionBox, frameOf, layoutToon, lineSeconds, soundPlan, TOON_FPS, type Layout, type Toon, type ToonTimings} from '../director';
+import {captionGroups, PhraseCaption} from '../scenes';
+import {FONT} from './kit';
+import {clamp01, go, lerp, V8_FPS, type Focus, type LineNow, type ShotDef, type ShotNow} from './play';
+import {RABIES_SHOTS} from './rabies';
+
+export type V8VideoProps = {toon: Toon; timings: ToonTimings | null; sfx: string[]; music: string | null; bare?: boolean};
+
+/** The shots of each video, by the video's slug and the shot's id. */
+export const V8_VIDEOS: Record<string, Record<string, ShotDef>> = {rabies: RABIES_SHOTS};
+
+const K = V8_FPS / TOON_FPS; // the layout counts 30 frames a second; the video runs at 60
+export const v8Frames = (toon: Toon, timings: ToonTimings | null) => Math.round(layoutToon(toon, timings).total * K);
+
+/** A shot's "now" (play.tsx) at second `sec` of the video. */
+export const shotNow = (L: Layout, toon: Toon, timings: ToonTimings | null, sec: number): {s: ShotNow; si: number} => {
+  const f = sec * TOON_FPS;
+  const at = [...L.shots].reverse().find((x) => f >= x.from) ?? L.shots[0];
+  const si = L.shots.indexOf(at);
+  const t0 = at.from / TOON_FPS;
+  const mine = L.lines.filter((l) => l.si === si);
+  const lines: LineNow[] = mine.map((l, i) => ({
+    id: l.line.id, who: l.line.who, text: l.line.text,
+    from: l.from / TOON_FPS - t0,
+    to: (mine[i + 1]?.from ?? at.from + at.frames) / TOON_FPS - t0,
+    voice: lineSeconds(l.line, timings),
+    emotion: l.line.emotion, pose: l.line.pose, react: (l.line as {react?: Record<string, string>}).react,
+    words: l.words,
+  }));
+  const t = sec - t0;
+  const past = lines.filter((l) => l.from <= t);
+  return {s: {id: at.shot.id, t, dur: at.frames / TOON_FPS, lines, cur: past.length ? past[past.length - 1] : null}, si};
+};
+
+// ------------------------------------------------------------------ the camera
+// A calm camera (the script says `camera: steady`): it leans a little toward whoever speaks and creeps in;
+// it never crops a shot so far that a room stops reading. Sizes are the director's shot names.
+const ZOOM: Record<string, number> = {ews: 1, wide: 1, full: 1.02, two: 1.03, ms: 1.06, mcu: 1.1, cu: 1.14, ecu: 1.18, ots: 1.08, low: 1.06};
+type Cam = {z: number; x: number; y: number};
+const camFor = (size: string, face: Focus | null, k: number): Cam => {
+  const z = (ZOOM[size] ?? 1.08) * (1 + 0.025 * k);
+  if (!face) return {z, x: 540, y: 960};
+  // put the face a little above the middle of the screen, as far as the frame allows
+  return {z, x: lerp(540, face.x, 0.5), y: lerp(960, face.y + 250 / z, 0.5)};
+};
+const clampCam = (c: Cam): Cam => {
+  const hw = 540 / c.z, hh = 960 / c.z;
+  return {z: c.z, x: Math.min(1080 - hw, Math.max(hw, c.x)), y: Math.min(1920 - hh, Math.max(hh, c.y))};
+};
+const cameraAt = (L: Layout, def: ShotDef | undefined, s: ShotNow, si: number, sec: number): Cam => {
+  const f = sec * TOON_FPS;
+  const segs = L.segs.filter((g) => g.si === si);
+  const i = Math.max(0, segs.findIndex((g) => f >= g.from && f < g.to));
+  const of = (j: number): Cam => {
+    const g = segs[j];
+    if (!g || !def) return {z: 1, x: 540, y: 960};
+    return clampCam(camFor(g.shot, def.focus(g.who, s), clamp01((f - g.from) / Math.max(1, g.to - g.from))));
+  };
+  const now = of(i);
+  if (i === 0) return now;
+  const k = go(sec, segs[i].from / TOON_FPS, 0.22); // a quick glide from the picture before, not a jump
+  const was = of(i - 1);
+  return clampCam({z: lerp(was.z, now.z, k), x: lerp(was.x, now.x, k), y: lerp(was.y, now.y, k)});
+};
+
+const Missing: React.FC<{id: string}> = ({id}) => (
+  <AbsoluteFill style={{background: '#2b1a17', color: '#ffffff', fontFamily: FONT, fontSize: 60, fontWeight: 800, alignItems: 'center', justifyContent: 'center'}}>shot {id}: not drawn yet</AbsoluteFill>
+);
+
+export const ToonV8: React.FC<V8VideoProps> = ({toon, timings, sfx, music, bare = false}) => {
+  const frame = useCurrentFrame();
+  const sec = frame / V8_FPS;
+  const L = useMemo(() => layoutToon(toon, timings), [toon, timings]);
+  const {s, si} = shotNow(L, toon, timings, sec);
+  const def = V8_VIDEOS[toon.slug]?.[s.id];
+  const cam = cameraAt(L, def, s, si, sec);
+
+  // the caption: the phrase being spoken (the old player's box, the owner's choice)
+  const f30 = sec * TOON_FPS;
+  const cur = L.lines.find((l) => l.si === si && f30 >= l.from && f30 < l.from + l.frames);
+  const tl = cur ? (f30 - cur.from) / TOON_FPS : 0;
+  const wi = cur ? cur.words.findIndex((w, i) => tl >= w.start && tl < (cur.words[i + 1]?.start ?? w.end + 0.25)) : -1;
+  const clean = (w: string) => w.replace(/[^\p{L}\p{N}'’!?-]/gu, '');
+  const keyWord = cur ? (cur.line.key ?? clean(cur.words[cur.words.length - 1]?.w ?? '')).toLowerCase() : '';
+
+  // a short white flash where the script asks for one
+  const shot = L.shots[si].shot;
+  const flash = (shot.events ?? []).reduce((m, e) => { const n = f30 - frameOf(L, si, e.at, e.word, e.delay); return e.fx && n >= 0 && n < 9 ? Math.max(m, 1 - n / 9) : m; }, 0);
+
+  const has = (n: string | undefined): n is string => !!n && sfx.includes(n);
+  const events = soundPlan(L);
+
+  return (
+    <AbsoluteFill style={{background: '#2b1a17'}}>
+      {def ? (
+        <div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, transformOrigin: '0 0', transform: `translate(${(540 - cam.x * cam.z).toFixed(2)}px, ${(960 - cam.y * cam.z).toFixed(2)}px) scale(${cam.z.toFixed(4)})`}}>
+          <def.Scene s={s} />
+        </div>
+      ) : <Missing id={s.id} />}
+      {def?.Screen && <def.Screen s={s} />}
+      {flash > 0 && <AbsoluteFill style={{background: '#ffffff', opacity: flash * 0.3}} />}
+      {cur && wi >= 0 && !bare && (() => {
+        const group = captionGroups(cur.words.map((w) => w.w)).find((g) => g.includes(wi)) ?? [wi];
+        return <PhraseCaption words={group.map((i) => clean(cur.words[i].w))} keyWord={keyWord} y={captionBox(true).y} />;
+      })()}
+      {L.lines.map((l) => l.file && <Sequence key={l.line.id} from={Math.round(l.from * K)} durationInFrames={Math.round((l.frames + 12) * K)}><Audio src={staticFile(l.file)} /></Sequence>)}
+      {events.filter((e) => has(e.name)).map((e, i) => <Sequence key={i} from={Math.round(e.at * K)} durationInFrames={90 * K}><Audio src={staticFile(`toons/sfx/${e.name}.mp3`)} volume={e.vol} /></Sequence>)}
+      {music && <Audio src={staticFile(`toons/music/${music}.mp3`)} loop volume={(fr) => bedAt(L, fr / K)} />}
+    </AbsoluteFill>
+  );
+};

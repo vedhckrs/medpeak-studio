@@ -154,6 +154,19 @@ He approved the new noses and hands, the microscopic body frames and the rabies 
   voice timings, blinks, and pose-to-pose arm moves; `handAt` should move from `scenes-rooms.tsx` into the
   rig. The rabies voice, sfx and music are already on this PC in `public/toons/` (not in git).
 
+### Late night: the owner said "start the full video" (in progress, not finished)
+
+- Committed: the v8 video PLAYER. `src/toons/v8/play.tsx` (the contract: a shot is a `ShotDef {Scene, Screen,
+  focus}` and a pure function of `ShotNow`, time in seconds; helpers for talking mouths, blinks, feelings),
+  `video.tsx` (60 fps; it reuses the old director's layout, captions, sound plan and music bed; its own calm
+  camera), `rabies.tsx` (the video's shots by id), `entry-video.tsx`, and `pipeline/toon-v8-render.mjs`
+  (`npm run toon:v8 -- rabies [--draft | --stills | --at <seconds>]` -> `videos/rabies/renders/toon-v8.mp4`).
+  In this commit every shot is still its approved frame STANDING STILL; the whole 45.5 s plays with voice,
+  captions, sound and music.
+- NOT committed yet, being worked on by subagents on this PC: the people rig's animation inputs (talk,
+  blink, pose blending, a real left-facing view, `handAt`), the five moving body shots, then the moving
+  kitchen and clinic shots. They are committed after they render cleanly, with the finished video.
+
 ### Not done, and open
 
 - **APPROVED by the owner on 2026-11-20 ("Yes, approved").** The approved JPGs are committed in

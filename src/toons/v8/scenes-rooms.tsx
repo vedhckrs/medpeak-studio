@@ -432,3 +432,11 @@ export const V8SceneD3: React.FC = () => {
     </Scene>
   );
 };
+
+// ================================================================== the shots as the video plays them (play.tsx)
+// First version: the approved frames standing still. Each is replaced by a moving shot.
+import type {ShotDef} from './play';
+export const ROOM_SHOTS: Record<string, ShotDef> = {
+  C: {Scene: ({s}) => (s.cur && s.cur.id !== 'C1' ? <V8SceneC2 /> : <V8SceneC1 />), focus: (who) => (who === 'kid' ? {x: 860, y: 1060, r: 130} : {x: 320, y: 720, r: 150})},
+  D: {Scene: ({s}) => (s.cur?.id === 'D3' ? <V8SceneD3 /> : <V8SceneD1 />), focus: (who) => (who === 'kid' ? {x: 860, y: 1080, r: 130} : {x: 300, y: 700, r: 150})},
+};
