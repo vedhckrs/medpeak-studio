@@ -102,6 +102,11 @@ Do these once on a new machine. None of it needs the old machine except step 6.
 - **Work directly, deliver fast** (2026-11-20): do fixes yourself in the main session and give him the
   render; do not hand the work to subagents unless he asks for them.
 - **Paid generation**: one recommended option, and the cost shown before any spend.
+- **Show the credit balance before and after every paid step** (2026-11-20). Every time anything spends
+  credits (ElevenLabs voice or sound, Magnific, any other paid tool), tell him the balance right before
+  (with the expected cost) and right after (with what was actually used). For ElevenLabs read it with the
+  connector's `account_get_usage` (credits left = `character_limit - character_count`) or the API's
+  `/v1/user/subscription`. If the balance cannot be read, say so and do not spend until he says go.
 
 ## Where things are
 
