@@ -1,5 +1,9 @@
 # MedPeak Toons, look v8: the drawing rules (2026-11-20)
 
+**Status: the cast and prop sheets were APPROVED by the owner on 2026-11-20** (after one fix: the sleeve must not
+draw an arc on top of the shoulder). The approved sheets are in `toons-boards/v8/`. Scenes (rooms and the inside
+of the body) come next, built with `src/toons/v8/scene.tsx`, and need their own approval.
+
 Owner's decision, 2026-11-20: everything is drawn by code again (no AI art, no stock art), in the drawing
 language of the reference Shorts, as one consistent family. Character sheets and props are shown to him as
 16:9 JPGs for approval before anything goes into a video.

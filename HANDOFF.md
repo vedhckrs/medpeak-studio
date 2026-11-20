@@ -64,7 +64,8 @@ of the arm and the arm's inner line starts at the armpit.
 
 ### Not done, and open
 
-- **The sheets wait for the owner's approval.** Nothing of v8 is used in a video yet: `Player.tsx`,
+- **APPROVED by the owner on 2026-11-20 ("Yes, approved").** The approved JPGs are committed in
+  `skill/medpeak-health/references/toons-boards/v8/`. (Written before the approval:) **The sheets wait for the owner's approval.** Nothing of v8 is used in a video yet: `Player.tsx`,
   `characters.tsx`, `humans.tsx`, the stages and rooms still draw the old cast. After his OK the next step is
   to bring v8 into the engine (cast first, then rooms and body stages in the same language), then rabies.
 - No rooms, body stages or backgrounds are drawn in v8 yet; no animation of the v8 figures (arms, mouths
