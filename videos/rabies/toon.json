@@ -8,16 +8,16 @@
  "episode": 9,
  "hooks": [
   {
-   "line": "You get rabies. Time runs out.",
-   "why": "six words, said in two seconds; the stakes are a clock, and the last line answers it (\"in time\")"
+   "line": "Get rabies, and I'm going for your brain!",
+   "why": "the title words, to the viewer, a villain with a goal"
   },
   {
    "line": "Get rabies, and your brain is next.",
-   "why": "more frightening; the brain is where the race ends"
+   "why": "more frightening"
   },
   {
-   "line": "What happens if you get rabies? A race.",
-   "why": "the search question itself, with a promise of a story"
+   "line": "You got rabies? I am going for your brain!",
+   "why": "the search words first"
   }
  ],
  "rooms": {
@@ -75,19 +75,19 @@
  "retention": {
   "noIntro": {
    "scene": "A1",
-   "line": "You get rabies. Time runs out."
+   "line": "Get rabies, and I'm going for your brain!"
   },
   "promise": {
    "scene": "A2",
-   "line": "Can you stop me before the brain?"
+   "line": "Can you catch me before the brain?"
   },
   "question": {
    "scene": "A2",
-   "line": "Can you stop me before the brain?"
+   "line": "Can you catch me before the brain?"
   },
   "answer": {
    "scene": "E2",
-   "line": "A wall? They stopped me before the brain!"
+   "line": "A wall?! No, no, no! Caught before the brain!"
   },
   "change3s": {
    "scene": "all",
@@ -95,15 +95,15 @@
   },
   "twist": {
    "scene": "D2",
-   "line": "One hard truth: once symptoms start, it is almost always fatal."
+   "line": "Here is the hard truth. Once symptoms start, rabies is almost always fatal."
   },
   "bestLast": {
    "scene": "E3",
-   "line": "One bite, but you did not get rabies. The vaccine came in time!"
+   "line": "Not fair! I was going for your brain... and you didn't get rabies!"
   },
   "loop": {
    "scene": "E3",
-   "line": "One bite, but you did not get rabies. The vaccine came in time!"
+   "line": "Not fair! I was going for your brain... and you didn't get rabies!"
   }
  },
  "sources": [
@@ -176,7 +176,7 @@
     },
     {
      "at": "A1",
-     "word": "brain.",
+     "word": "brain!",
      "set": {
       "slide": 0.84
      },
@@ -191,7 +191,7 @@
     },
     {
      "at": "A2",
-     "word": "can!",
+     "word": "brain?",
      "set": {
       "slide": 1
      },
@@ -202,7 +202,7 @@
     {
      "id": "A1",
      "who": "virus",
-     "text": "Hi! I'm rabies. And I'm going for your brain.",
+     "text": "Get rabies, and I'm going for your brain!",
      "emotion": "angry",
      "pose": "rest",
      "key": "brain",
@@ -214,7 +214,7 @@
     {
      "id": "A2",
      "who": "virus",
-     "text": "Catch me if you can!",
+     "text": "Can you catch me before the brain?",
      "emotion": "angry",
      "pose": "rest",
      "key": "catch",
@@ -676,7 +676,7 @@
     {
      "id": "E2",
      "who": "virus",
-     "text": "A wall?! No, no, no! The brain is right there!",
+     "text": "A wall?! No, no, no! Caught before the brain!",
      "emotion": "angry",
      "pose": "rest",
      "key": "wall",
@@ -736,7 +736,7 @@
     },
     {
      "at": "E3",
-     "word": "vaccine?",
+     "word": "rabies!",
      "set": {
       "grip": 1
      },
@@ -757,10 +757,10 @@
     {
      "id": "E3",
      "who": "virus",
-     "text": "Beaten by soap, water and a vaccine? Not fair!",
+     "text": "Not fair! I was going for your brain... and you didn't get rabies!",
      "emotion": "sad",
      "pose": "rest",
-     "key": "vaccine",
+     "key": "fair",
      "src": [
       "who-rabies",
       "cdc-rabies"

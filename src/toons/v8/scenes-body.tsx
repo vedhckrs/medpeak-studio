@@ -581,14 +581,14 @@ const posA = (s: ShotNow) => {
   const k = go(t, 0, 0.36);
   const u = since(s, 'A1', 'rabies');
   const shake = u >= 0 && u < 0.6 ? Math.sin(u * Math.PI * 7) * 8 * (1 - u / 0.6) : 0;
-  const tapping = since(s, 'A2') >= 0 && since(s, 'A2', 'can') < 0;
+  const tapping = since(s, 'A2') >= 0 && since(s, 'A2', 'brain') < 0;
   const tap = tapping ? -Math.abs(Math.sin(s.t * Math.PI * 3.2)) * 7 : 0;
   return {x: lerp(236, 330, k), y: 800 - Math.sin(Math.PI * k) * 70 + breathe(t, 1) + tap, rot: shake + (1 - k) * -8};
 };
 const ShotA: React.FC<{s: ShotNow}> = ({s}) => {
   const t = s.t, d = drift(t), v = posA(s);
   const face = bodyFace(s, 'virus', 1, 'angry');
-  const ub = since(s, 'A2', 'can');
+  const ub = since(s, 'A2', 'brain');
   const g = (t * 1.6) % 5;
   const glint = g % 1 < 0.22 ? Math.floor(g) : -1;
   return (
@@ -734,7 +734,7 @@ const posM3 = (s: ShotNow) => {
   const k = go(t, 0, 0.4);
   const fight = since(s, 'X1', 'freeze') >= 0.3 && since(s, 'E3') < 0 ? Math.sin(t * 26) * 4 * clamp01(-since(s, 'E3') / 0.4) : 0;
   const sag = go(since(s, 'E3'), 0, 0.8);
-  const nodU = since(s, 'E3', 'fair');
+  const nodU = since(s, 'E3', 'rabies');
   const nod = nodU >= 0 && nodU < 0.55 ? Math.sin((nodU / 0.55) * Math.PI) * 16 : 0;
   return {k, vx: 540 + fight, vy: 820 + sag * 16 + breathe(t, 6, 2), vrot: -sag * 4 + fight * 0.6, sag, nod, front: {x: 540, y: 1170 + nod + breathe(t, 7)}};
 };
@@ -765,7 +765,7 @@ const ShotM3: React.FC<{s: ShotNow}> = ({s}) => {
 
 const virusFocus = (x: number, y: number, size: number): Focus => ({x, y: y - size * 0.08, r: size * 0.3});
 export const BODY_SHOTS: Record<string, ShotDef> = {
-  A: {Scene: ShotA, focus: (who, s) => { if (who === 'brain' && since(s, 'A2', 'can') >= 0) return {x: 300, y: 400, r: 120}; const v = posA(s); return virusFocus(v.x, v.y, 440); }},
+  A: {Scene: ShotA, focus: (who, s) => { if (who === 'brain' && since(s, 'A2', 'brain') >= 0) return {x: 300, y: 400, r: 120}; const v = posA(s); return virusFocus(v.x, v.y, 440); }},
   B: {Scene: ShotB, Screen: ({s}) => <IconBadge icon="sunrise" t={s.t - 0.05} x={830} y={330} out={2.4} />, focus: (_who, s) => { const b = posB(s); return b.ub >= 0 ? virusFocus(b.vx, b.vy, 250) : {x: 548, y: Math.max(400, 560 + b.fang), r: 140}; }},
   M2: {Scene: ShotM2, Screen: ScreenM2, focus: (_who, s) => { const m = posM2(s); return virusFocus(m.vx, m.vy, 280); }},
   E: {Scene: ShotE, Screen: ({s}) => <IconBadge icon="vaccine" t={s.t - 0.05} x={540} y={300} />, focus: (_who, s) => { const v = posE(s); return virusFocus(v.x, v.y, 340); }},
