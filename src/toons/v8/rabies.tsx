@@ -6,6 +6,7 @@ import {Soap, Stethoscope} from './props';
 
 import {BODY_SHOTS} from './scenes-body';
 import {ROOM_SHOTS} from './scenes-rooms';
+import {V3_SHOTS} from './shots-v3';
 
 // Inside the body the action is small in the frame: each of those shots gets its own framing, a slow push in.
 const push = (x: number, y: number, z0: number, z1: number) => (s: ShotNow) => ({x, y, z: lerp(z0, z1, Math.min(1, s.t / s.dur))});
@@ -19,6 +20,7 @@ export const RABIES_SHOTS: Record<string, ShotDef> = {
   E: framed('E', push(540, 880, 1.0, 1.04)),
   M3: framed('M3', push(540, 890, 1.06, 1.1)),
   ...ROOM_SHOTS,
+  ...V3_SHOTS, // version 3: the new microscopic world (2026-11-20)
 };
 
 // ------------------------------------------------------------------ the CTA end card: three strong points
