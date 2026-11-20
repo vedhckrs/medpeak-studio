@@ -1221,8 +1221,9 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
         if (isCoat) {
           // v4: a real notched lapel: the collar piece on top, a notch, the wide lapel rolling down to the top button
           const yB = yS + 1.05 * R;
-          const collar = [sp(sd * nw * 1.1, yS - 0.2 * R), sp(sd * (nw * 1.75 + 0.16 * R), yS + 0.02 * R), sp(sd * (nw * 1.5 + 0.26 * R), yS + 0.2 * R), sp(sd * nw * 1.2, yS + 0.1 * R)];
-          const lapel = [sp(sd * (nw * 1.6 + 0.36 * R), yS + 0.24 * R), sp(sd * (nw * 1.5 + 0.62 * R), yS + 0.42 * R), sp(sd * (gap(yB) + 0.03 * R), yB), sp(sd * gap(yS + 0.55 * R), yS + 0.55 * R), sp(sd * nw * 1.22, yS + 0.18 * R)];
+          // narrower than at first: in the three-quarter view a wide collar read as a little cape (the owner's check)
+          const collar = [sp(sd * nw * 1.1, yS - 0.2 * R), sp(sd * (nw * 1.5 + 0.08 * R), yS + 0.0 * R), sp(sd * (nw * 1.35 + 0.16 * R), yS + 0.18 * R), sp(sd * nw * 1.15, yS + 0.1 * R)];
+          const lapel = [sp(sd * (nw * 1.42 + 0.22 * R), yS + 0.22 * R), sp(sd * (nw * 1.4 + 0.44 * R), yS + 0.4 * R), sp(sd * (gap(yB) + 0.03 * R), yB), sp(sd * gap(yS + 0.55 * R), yS + 0.55 * R), sp(sd * nw * 1.22, yS + 0.18 * R)];
           out.push(<path key={'lapc' + sd} d={poly(collar)} fill={shade(col, 0.16)} {...EDGE} />);
           out.push(<path key={'lap' + sd} d={poly(lapel)} fill={shade(col, 0.11)} {...EDGE} />);
           out.push(<path key={'roll' + sd} d={openSmooth([lerpP(lapel[1], lapel[4], 0.35), lerpP(lapel[2], lapel[3], 0.4)])} {...INLINE} />);
