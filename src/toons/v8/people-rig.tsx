@@ -779,8 +779,24 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
       const cuff = add(s, mul(ud, Math.min(len(sub(e, s)) * 0.5, 0.75 * R)));
       sl = [capsule(s, armR0 + t, cuff, armR0 + t + 0.02 * R, 'flat')];
     }
+    // v4 clothes (the owner, 2026-11-20: seams and folds): elbow creases, a stitched hem on short sleeves
+    const ud = nrm(sub(e, s)), un = perp(ud), fn = perp(fdir);
+    const folds: React.ReactNode[] = [];
+    if (sleeve === 'long') {
+      const r1 = armR1 + t;
+      folds.push(<path key="f1" d={openSmooth([add(sub(e, mul(ud, 0.06 * R)), mul(un, r1 * 1.05)), add(sub(e, mul(ud, 0.16 * R)), mul(un, r1 * 0.45)), add(sub(e, mul(ud, 0.2 * R)), mul(un, r1 * 0.1))])} {...INLINE} />);
+      folds.push(<path key="f2" d={openSmooth([add(add(e, mul(fdir, 0.1 * R)), mul(fn, r1 * 1.05)), add(add(e, mul(fdir, 0.03 * R)), mul(fn, r1 * 0.5))])} {...INLINE} />);
+      folds.push(<path key="f3" d={openSmooth([add(sub(s, mul(ud, -0.42 * R)), mul(un, -(armR0 + t) * 1.05)), add(sub(s, mul(ud, -0.3 * R)), mul(un, -(armR0 + t) * 0.5))])} {...INLINE} />);
+    } else {
+      const end = sleeve === 'elbow' ? add(e, mul(fdir, 0.3 * foreL)) : add(s, mul(ud, Math.min(len(sub(e, s)) * 0.5, 0.75 * R)));
+      const dir = sleeve === 'elbow' ? fdir : ud, n2 = perp(dir), r2 = (sleeve === 'elbow' ? armR1 : armR0) + t + 0.03 * R;
+      const c = sub(end, mul(dir, 0.13 * R));
+      folds.push(<path key="hem" d={`M ${pt(add(c, mul(n2, r2 * 1.1)))} L ${pt(add(c, mul(n2, -r2 * 1.1)))}`} {...INLINE} />);
+      if (sleeve === 'short') folds.push(<path key="f1" d={openSmooth([add(add(s, mul(ud, 0.12 * R)), mul(un, (armR0 + t) * 1.05)), add(add(s, mul(ud, 0.28 * R)), mul(un, (armR0 + t) * 0.45))])} {...INLINE} />);
+    }
     parts.push(
       <Union key="sleeve" d={sl} fill={col}>
+        {folds}
         {cuffA && cuffB && <path d={`M ${pt(cuffA)} L ${pt(cuffB)}`} {...INLINE} />}
       </Union>,
     );
@@ -871,6 +887,18 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
         out.push(
           <Union key={'tr' + i} d={[pel, capsule(g.h, thighR + t, g.k, kneeR + t + 0.02 * R), capsule(g.k, kneeR + t + 0.02 * R, hem, hemR, 'flat')]} fill={spec.bottom.color}>
             {bk === 'trousers' && <path d={openSmooth([lerpP(g.h, g.k, 0.55), lerpP(g.h, g.k, 0.75)])} {...INLINE} />}
+            {bk === 'trousers' && (() => {
+              // v4: two knee folds and the stitched hem
+              const td = nrm(sub(g.k, g.h)), tn = perp(td), kr = kneeR + t + 0.02 * R;
+              const hc = sub(hem, mul(fd, 0.14 * R)), hn = perp(fd);
+              return (
+                <>
+                  <path d={openSmooth([add(sub(g.k, mul(td, 0.14 * R)), mul(tn, kr * 1.05)), add(sub(g.k, mul(td, 0.06 * R)), mul(tn, kr * 0.4))])} {...INLINE} />
+                  <path d={openSmooth([add(add(g.k, mul(fd, 0.1 * R)), mul(tn, -kr * 1.05)), add(add(g.k, mul(fd, 0.16 * R)), mul(tn, -kr * 0.45))])} {...INLINE} />
+                  <path d={`M ${pt(add(hc, mul(hn, hemR * 1.1)))} L ${pt(add(hc, mul(hn, -hemR * 1.1)))}`} {...INLINE} />
+                </>
+              );
+            })()}
           </Union>,
         );
       }
@@ -885,7 +913,13 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
         const g = gs[i];
         const fd = nrm(sub(g.k, g.h));
         const hem = add(g.h, mul(fd, len(sub(g.k, g.h)) * 0.62));
-        out.push(<Union key={'sh' + i} d={[pel, capsule(g.h, thighR + t, hem, thighR + t + 0.03 * R, 'flat')]} fill={spec.bottom.color} />);
+        const hc = sub(hem, mul(fd, 0.12 * R)), hn = perp(fd), hr = thighR + t + 0.03 * R;
+        out.push(
+          <Union key={'sh' + i} d={[pel, capsule(g.h, thighR + t, hem, hr, 'flat')]} fill={spec.bottom.color}>
+            <path d={`M ${pt(add(hc, mul(hn, hr * 1.1)))} L ${pt(add(hc, mul(hn, -hr * 1.1)))}`} {...INLINE} />
+            <path d={openSmooth([add(g.h, mul(hn, (i === 0 ? -1 : 1) * hr * 0.2)), add(add(g.h, mul(fd, len(sub(hem, g.h)) * 0.5)), mul(hn, (i === 0 ? -1 : 1) * hr * 0.55))])} {...INLINE} />
+          </Union>,
+        );
       }
     }
     return out;
@@ -913,6 +947,7 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
       <Union key="skirt" d={[d]} fill={spec.bottom.color}>
         <path d={openSmooth([mid(yC + 0.1 * R, ms * -0.35 * R), mid(hemY - 0.05 * R, ms * -0.55 * R)])} {...INLINE} />
         <path d={openSmooth([mid(yC + 0.3 * R, ms * 0.4 * R), mid(hemY - 0.05 * R, ms * 0.62 * R)])} {...INLINE} />
+        <path d={openSmooth([-1.4, -0.9, -0.3, 0.3, 0.9, 1.4].map((k) => mid(hemY - 0.15 * R, k * b.hip * R)))} {...INLINE} />
       </Union>
     );
   };
@@ -923,6 +958,38 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
     if (spec.top.kind === 'onesie') return secShape(cam, inflate(secs, topT), 'shoulder', R);
     return secShape(cam, topSecs, 'shoulder', R);
   }
+  /** v4 clothes (the owner, 2026-11-20): hem stitch, waist folds, the shirt's placket and pocket, the tee's
+   * print, the blouse's gathers. Drawn in the body frame, so every view and pose gets them. */
+  const torsoDetail = () => {
+    const k = spec.top.kind;
+    const sp = (x: number, y: number, lift = topT) => proj(cam, surf(secs, x, y, lift));
+    const seen = (x: number, y: number) => depth(cam, surf(secs, x, y, topT)) > 0.05 * R;
+    const out: React.ReactNode[] = [];
+    if (k !== 'shirt' && k !== 'hoodie') out.push(<path key="hem" d={openSmooth([-0.98, -0.6, -0.2, 0.2, 0.6, 0.98].map((q) => sp(q * S, topHemY - 0.14 * R)))} {...INLINE} />);
+    for (const sd of [-1, 1] as const) {
+      const y0 = yS + 0.5 * T0;
+      if (!seen(sd * 0.6 * R, y0)) continue;
+      out.push(<path key={'wf' + sd} d={openSmooth([sp(sd * 0.92 * S, y0 - 0.12 * R), sp(sd * 0.62 * S, y0 + 0.06 * R), sp(sd * 0.45 * S, y0 + 0.1 * R)])} {...INLINE} />);
+      if (k !== 'shirt') out.push(<path key={'wg' + sd} d={openSmooth([sp(sd * 0.9 * S, y0 + 0.3 * R), sp(sd * 0.66 * S, y0 + 0.4 * R)])} {...INLINE} />);
+    }
+    if (k === 'shirt') {
+      out.push(<path key="plk" d={openSmooth([sp(ms * 0.2 * R, yS + 0.32 * R), sp(ms * 0.2 * R, topHemY)])} {...INLINE} />);
+      const x0 = ms * -0.85 * R, x1 = ms * -0.4 * R, y0 = yS + 0.62 * R, y1 = yS + 1.08 * R;
+      if (seen((x0 + x1) / 2, y0)) {
+        out.push(<path key="pk" d={poly([sp(x0, y0), sp(x1, y0), sp(x1, y1 - 0.08 * R), sp((x0 + x1) / 2, y1), sp(x0, y1 - 0.08 * R)])} fill={shade(spec.top.color, 0.05)} {...EDGE_IN} />);
+        out.push(<path key="pkf" d={openSmooth([sp(x0, y0 + 0.13 * R), sp(x1, y0 + 0.13 * R)])} {...INLINE} />);
+      }
+    }
+    if (k === 'tee' && seen(ms * -0.35 * R, yS + 0.9 * R)) {
+      const c = sp(ms * -0.38 * R, yS + 0.95 * R), r = 0.24 * R;
+      const star = Array.from({length: 10}, (_, i) => { const a = -Math.PI / 2 + (i * Math.PI) / 5, rr = i % 2 ? r * 0.42 : r * 0.92; return [c[0] + Math.cos(a) * rr * Math.max(0.35, cam.c), c[1] + Math.sin(a) * rr] as P; });
+      out.push(<path key="print" d={poly(star)} fill={CLOTH.yellow} {...EDGE_IN} />);
+    }
+    if (k === 'blouse') {
+      for (const q of [-0.3, 0, 0.3]) if (seen(q * R, yS + 0.5 * R)) out.push(<path key={'g' + q} d={openSmooth([sp(q * R, yS + 0.42 * R), sp(q * R * 1.15, yS + 0.62 * R)])} {...INLINE} />);
+    }
+    return out;
+  };
   const drawTorso = () => {
     const out: React.ReactNode[] = [];
     const k = spec.top.kind;
@@ -942,6 +1009,7 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
         {k === 'tee' && <path d={openSmooth([sp(ms * 0.25 * R, yS + 1.0 * R), sp(ms * 0.1 * R, yS + 1.35 * R)])} {...INLINE} />}
         {k === 'shirt' && <path d={openSmooth([sp(0, yS + 0.2 * R), sp(0, topHemY)])} {...INLINE} />}
         {k === 'shirt' && [0.55, 0.95, 1.35].map((f, i) => { const p = sp(ms * 0.1 * R, yS + f * R); return <circle key={i} cx={p[0]} cy={p[1]} r={0.045 * R} fill={INK} />; })}
+        {torsoDetail()}
       </Union>,
     );
     if (k === 'hoodie') {
@@ -967,7 +1035,7 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
     const hemY = isCoat ? (P0.sit ? yC + 0.25 * R : yC + 0.55 * (-yC) * 0.62) : yS + 1.0 * T0;
     const base = inflate(secs.slice(0, 4), t);
     const out: Sec[] = [...base];
-    if (isCoat) { out.push({y: yC + 0.1 * R, w: b.hip * R + t * 1.4, d: 0.6 * R + t, c: 0}); out.push({y: hemY, w: b.hip * R * 1.08 + t * 1.6, d: 0.66 * R + t, c: 0}); }
+    if (isCoat) { out.push({y: yC + 0.1 * R, w: b.hip * R + t * 1.4, d: 0.6 * R + t, c: 0}); out.push({y: hemY, w: b.hip * R * 1.16 + t * 1.6, d: 0.7 * R + t, c: 0}); }
     else out.push({...secAt(inflate(secs, t), hemY), w: b.hip * R + t});
     return out;
   };
@@ -993,7 +1061,26 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
     const pocket = (x0: number, x1: number, y0: number, y1: number, key: string) => {
       const pts = [sp(x0, y0), sp(x1, y0), sp(x1, y1), sp(x0, y1)];
       const vis = depth(cam, surf(os, (x0 + x1) / 2, (y0 + y1) / 2)) > -0.05 * R && (x0 + x1) / 2 * cam.s < 0.8 * R;
-      return vis ? <path key={key} d={poly(pts)} fill={col} {...EDGE_IN} /> : null;
+      if (!vis) return null;
+      const fy = y0 + (isCoat ? 0.12 : 0.1) * R;
+      return (
+        <g key={key}>
+          <path d={poly(pts)} fill={col} {...EDGE_IN} />
+          <path d={openSmooth([sp(x0, fy), sp(x1, fy)])} {...INLINE} />
+        </g>
+      );
+    };
+    /** Drape folds and the stitched hem of one panel (the v4 rework). */
+    const drape = (side: 1 | -1) => {
+      const out: React.ReactNode[] = [];
+      const seen = (x: number, y: number) => depth(cam, surf(os, x, y)) > 0.02 * R;
+      if (isCoat) {
+        if (seen(side * 0.7 * R, yC + 0.5 * R)) out.push(<path key="d1" d={openSmooth([sp(side * 0.62 * R, yC + 0.4 * R), sp(side * 0.7 * R, (yC + hemY) / 2 + 0.2 * R), sp(side * 0.82 * R, hemY - 0.04 * R)])} {...INLINE} />);
+        if (seen(side * 1.0 * R, yS + 0.6 * T0)) out.push(<path key="d2" d={openSmooth([sp(side * 1.08 * R, yS + 0.52 * T0), sp(side * 0.86 * R, yS + 0.64 * T0), sp(side * 0.72 * R, yS + 0.68 * T0)])} {...INLINE} />);
+        if (seen(side * 0.35 * R, yS + 0.75 * R)) out.push(<path key="d3" d={openSmooth([sp(side * (gap(yS + 0.9 * R) + 0.42 * R), yS + 0.85 * R), sp(side * (gap(yS + 1.3 * R) + 0.3 * R), yS + 1.35 * R)])} {...INLINE} />);
+      }
+      out.push(<path key="hem" d={openSmooth([0.05, 0.4, 0.8, 1.2, 1.6].map((q) => sp(side * q * R, hemY - (isCoat ? 0.16 : 0.22) * R)))} {...INLINE} />);
+      return out;
     };
     const hemY = os[os.length - 1].y;
     const panel = (clip: string, key: string, side: 1 | -1) => (
@@ -1003,6 +1090,7 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
           {isCoat && side === 1 && pocket(0.35 * R, 0.95 * R, yC - 0.25 * R, yC + 0.3 * R, 'p2')}
           {!isCoat && side === -1 && pocket(-0.85 * R, -0.35 * R, hemY - 0.6 * R, hemY - 0.2 * R, 'p3')}
           {!isCoat && side === 1 && pocket(0.35 * R, 0.85 * R, hemY - 0.6 * R, hemY - 0.2 * R, 'p4')}
+          {drape(side)}
         </Union>
       </Clip>
     );
@@ -1013,6 +1101,7 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
         <Clip d={coatD}>
           <path d={openSmooth(nearE)} {...OUTLINE} />
           <path d={openSmooth(farE)} {...OUTLINE} />
+          {isCoat && [0.0, 0.45, 0.9].map((f, i) => { const y = lerp(yS + 1.1 * R, yC + 0.3 * R, f); if (depth(cam, surf(os, ms * (gap(y) + 0.14 * R), y)) < 0.05 * R) return null; const p = sp(ms * (gap(y) + 0.14 * R), y, 0.02 * R); return <circle key={'cb' + i} cx={p[0]} cy={p[1]} r={0.055 * R} fill="#e9ecf1" {...EDGE_IN} />; })}
           {!isCoat && [0.35, 0.65, 0.92].map((f, i) => { const y = lerp(yS + 0.6 * R, hemY - 0.15 * R, f); const p = sp(ms * (-gap(y) - 0.09 * R), y, 0.02 * R); return <circle key={i} cx={p[0]} cy={p[1]} r={0.06 * R} fill={tint(col, 0.5)} {...EDGE_IN} />; })}
         </Clip>
       </g>
@@ -1096,7 +1185,7 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
         const pts = isCoat
           ? [sp(sd * nw * 1.12, yS - 0.18 * R), sp(sd * (nw * 1.6 + 0.12 * R), yS + 0.08 * R), sp(sd * (nw * 1.25 + 0.2 * R), yS + 0.28 * R), sp(sd * (gap(yL) + 0.02 * R), yL), sp(sd * gap(yS + 0.5 * R), yS + 0.5 * R), sp(sd * gap(yS + 0.1 * R), yS + 0.1 * R)]
           : [sp(sd * nw * 1.15, yS - 0.15 * R), sp(sd * (nw * 1.15 + 0.16 * R), yS + 0.2 * R), sp(sd * (gap(yL) + 0.1 * R), yL), sp(sd * gap(yL), yL), sp(sd * gap(yS + 0.3 * R), yS + 0.3 * R)];
-        out.push(<path key={'lap' + sd} d={poly(pts)} fill={col} {...EDGE} />);
+        out.push(<path key={'lap' + sd} d={poly(pts)} fill={isCoat ? shade(col, 0.05) : col} {...EDGE} />);
         if (isCoat) out.push(<path key={'lapl' + sd} d={`M ${pt(pts[1])} L ${pt(sp(sd * (nw * 1.3 + 0.05 * R), yS + 0.16 * R))}`} {...INLINE} />);
       }
     }

@@ -78,7 +78,7 @@ const Tags: React.FC = () => (
   <Board kicker="Rabies v4 · look sheet 6" title="Name tags: 1 second, the first time each body character appears" page="v4 tags"
     note="A white tag above the head (to the side when there is no room), an arrow that draws itself to the head, and a flat halo: two thin white rings, no blur. No tags on people. A true glow would break the v8 'no glow' rule: say if you want one.">
     <TagMini i={0} label="RABIES VIRUS"><HighwayV /><CharTag label="RABIES VIRUS" x={540} y={1330} r={175} t={0.55} /></TagMini>
-    <TagMini i={1} label="NERVE ENDING"><DoorPlace t={1.6} /><CharTag label="NERVE ENDING" x={560} y={760} r={330} t={0.55} /></TagMini>
+    <TagMini i={1} label="NERVE ENDING"><DoorPlace t={1.6} /><CharTag label="NERVE ENDING" x={560} y={700} r={250} t={0.55} /></TagMini>
     <TagMini i={2} label="DEFENCE CELL"><BattlePlace t={1.4} fire={false} /><CharTag label="DEFENCE CELL" x={220} y={1240} r={200} t={0.55} /></TagMini>
     <TagMini i={3} label="ANTIBODY">
       <DoorPlace t={1.6} />

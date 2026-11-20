@@ -6,6 +6,40 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-20 (late, 2) - Cloud session (claude.ai/code) - branch `claude/bold-hopper-dqvjfr`
+
+**The owner's decision: this session writes the v4 code itself; his Anthropic key is not used.** (The rabies v4
+ledger stays at $2.59 of $5.)
+
+### v4 step 1 done: the look sheets (sent to the owner, waiting for his OK)
+
+`node pipeline/toon-v8-sheets.mjs v4-` writes them to `out/toons/sheets-v8/`:
+- `v4-micro-1`, `v4-micro-2`: all five micro places redrawn in `micro3.tsx` (haze, cells with nuclei/ER/mitochondria
+  via `CellBody`, fibre `Bundle`s, `Bits` of small life, near `Frame` shapes, myelin lamellae and nodes, microtubule
+  tracks, junctional folds, the factory's ER and Golgi). Exports and key object places unchanged, so v3 shots still line up.
+- `v4-cta`: `CtaCardV4` in `hud.tsx` (logo circle, royal blue #214ba1 rings, one-line yellow headline, white cards,
+  follow pill; `at` times each beat to the narrator). The logo is copied to `public/brand/` by `syncBrand()`.
+- `v4-watermark`: `Watermark` is now Inter Regular 26 px at 0.44 opacity, 1 px flat drop (`WatermarkV3` kept for the sheet).
+  On light places it is faint, as asked; say so if he wants it a bit stronger.
+- `v4-icons`: `dog`, `dogWarning` icons; `IconBadge` uses `settleIn` (eased, one 3% settle, no turn), eased fade out.
+- `v4-tags`: `CharTag` (1 s, tag box above the head or to the side, arrow draws itself, two flat white halo rings).
+- `v4-clothes`: seams, hems and folds in `people-rig.tsx` for every view/pose: sleeve elbow creases and hems,
+  waist folds, hem stitches, shirt placket and pocket, Kid's star print, blouse gathers, knee folds, coat buttons,
+  pocket flaps, drape folds, flared hem, shaded lapels.
+
+### Not yet changed in the video
+
+The shots still use the sunrise icon, the old camera punch and transitions; no name tags placed; the CTA in the
+video is still `CtaCard`. Those are steps 3-4 after his OK on the looks.
+
+### Next step
+
+1. His OK (or fixes) on the 7 sheets.
+2. Narrator auditions: 3 male voices, about 100 credits (balance before/after).
+3. 10-second motion test (dive, transitions, a tag, an icon), then the full video.
+
+---
+
 ## 2026-11-20 (late) - Cloud session (claude.ai/code) - branch `claude/bold-hopper-dqvjfr`
 
 This branch = `claude/stoic-pascal-7dmpzh` (= PR #6's branch + handoff) + this session's work.

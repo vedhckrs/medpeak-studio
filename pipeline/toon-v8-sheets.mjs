@@ -33,6 +33,14 @@ export const SHEETS = [
   ['entry-props.tsx', 'V8PropsClinic', 'props-clinic'],
   ['entry-props.tsx', 'V8PropsHome', 'props-home'],
   ['entry-demo.tsx', 'V8Kit', '_kit'],
+  // rabies v4 look sheets (2026-11-20)
+  ['entry-micro-v4.tsx', 'V4Micro1', 'v4-micro-1'],
+  ['entry-micro-v4.tsx', 'V4Micro2', 'v4-micro-2'],
+  ['entry-hud-v4.tsx', 'V4HudCta', 'v4-cta'],
+  ['entry-hud-v4.tsx', 'V4HudWatermark', 'v4-watermark'],
+  ['entry-hud-v4.tsx', 'V4HudIcons', 'v4-icons'],
+  ['entry-hud-v4.tsx', 'V4HudTags', 'v4-tags'],
+  ['entry-people-v4.tsx', 'V4PeopleClothes', 'v4-clothes'],
 ];
 
 // The scene frames of the rabies video (rooms, the arm, inside the body): [entry file, still id, output name]
