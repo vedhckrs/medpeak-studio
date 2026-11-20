@@ -128,7 +128,7 @@ export const ToonV8: React.FC<V8VideoProps> = ({toon, timings, sfx, music, bare 
   const ki = cur ? cur.words.findIndex((w) => clean(w.w).toLowerCase().replace(/[!?'’]/g, '') === keyWord.replace(/[!?'’]/g, '')) : -1;
   const kt = ki >= 0 && cur ? tl - cur.words[ki].start : -1;
   const punch = kt >= 0 && kt < 0.55 ? 0.075 * Math.pow(1 - kt / 0.55, 2) * Math.min(1, kt / 0.06) : 0;
-  const shake = flash > 0 ? Math.sin(sec * 90) * 14 * flash : 0;
+  const shake = flash > 0 && !['home', 'clinic'].includes(shot.set ?? '') ? Math.sin(sec * 90) * 14 * flash : 0; // a bite shakes; a good-news flash in a room does not
   // the serious beat (a line marked "serious"): the picture darkens and the camera creeps in
   const grave = L.lines.filter((l) => (l.line as {serious?: boolean}).serious).reduce((m, l) => {
     const a = (f30 - l.from) / TOON_FPS, b = (l.from + l.frames - f30) / TOON_FPS;

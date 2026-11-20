@@ -329,7 +329,8 @@
      "src": [
       "who-rabies",
       "cdc-rabies"
-     ]
+     ],
+     "cam": "cu"
     }
    ]
   },
@@ -600,6 +601,14 @@
      ],
      "cam": "ms push"
     }
+   ],
+   "events": [
+    {
+     "at": "D3",
+     "word": "every",
+     "fx": "flash",
+     "sfx": "ding"
+    }
    ]
   },
   {
@@ -661,6 +670,14 @@
       "climb": 0.23
      },
      "over": 20
+    },
+    {
+     "at": "E2",
+     "word": "Caught",
+     "set": {
+      "dizzy": 1
+     },
+     "over": 8
     }
    ],
    "lines": [
@@ -741,6 +758,14 @@
       "grip": 1
      },
      "over": 16
+    },
+    {
+     "at": "E3",
+     "word": "brain...",
+     "set": {
+      "grip": 0.9
+     },
+     "over": 10
     }
    ],
    "lines": [
