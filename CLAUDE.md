@@ -102,11 +102,20 @@ Do these once on a new machine. None of it needs the old machine except step 6.
 - **Work directly, deliver fast** (2026-11-20): do fixes yourself in the main session and give him the
   render; do not hand the work to subagents unless he asks for them.
 - **Paid generation**: one recommended option, and the cost shown before any spend.
-- **Watermark `@MedPeakHealth` on every video, the whole video** (2026-11-20). Small, clean, inside the
+- **Watermark `@MedPeakHealth` on every video, the whole video** (2026-11-20). Small, clean, Inter Regular, about half transparent, inside the
   YouTube Shorts safe area (clear of the top bar, the right-hand buttons and the bottom title band). It moves
   three times, once per act: act 1 top right, act 2 bottom left, act 3 top middle. In look v8 it is
   `Watermark` in `src/toons/v8/hud.tsx`, drawn by the player.
 - **End every video with a CTA card: three strong points, each a big icon with short bold text** (2026-11-20).
+  The headline on one line; the channel logo (`assets/brand/logo.png`) top centre in a circle with "MedPeak Health"
+  typed below; the background in the logo's royal blue. A **professional male narrator, the same voice in every video**,
+  speaks the CTA and ends with: "Follow MedPeak Health for more health tips that keep you safe."
+- **Icons only when the words say it**; non-human characters get a 1-second name tag (arrow + tag box above the head)
+  the first time they appear; no tags on humans. The camera moves smoothly (one eased move per shot, a continuous dive
+  inside the body); transitions follow the story (dive into the skin, pull back out). (2026-11-20)
+- **Work split** (2026-11-20): the owner's own Anthropic API key (env var `ANTHROPIC_API_KEY` of the `medpeak-studio`
+  cloud environment; Claude Code headless, Opus 5.5, medium effort) writes code; the session checks, renders, commits,
+  pushes and reports. Show the ElevenLabs balance and the Anthropic cost at the START and END of each video only.
 - **Show the credit balance before and after every paid step** (2026-11-20). Every time anything spends
   credits (ElevenLabs voice or sound, Magnific, any other paid tool), tell him the balance right before
   (with the expected cost) and right after (with what was actually used). For ElevenLabs read it with the

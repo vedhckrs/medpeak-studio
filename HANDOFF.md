@@ -6,6 +6,71 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-20 (evening) - Cloud session (claude.ai/code) - branch `claude/github-repo-check-handoff-as1kql`, pull request #6
+
+The owner works from cloud sessions now. This branch = `feat/toons-engage` (Windows PC) + today's cloud work.
+Pull request #6 (this branch -> `main`) is open, CI green, no conflicts. **Merge only on the owner's word**, after he
+approves the final rabies video.
+
+### What is done (all pushed)
+
+- Rendering works in the cloud: `export REMOTION_BROWSER_EXECUTABLE=/opt/pw-browsers/chromium-1243/chrome-linux64/chrome`
+  (the full Chromium; the headless shell does not trust the proxy CA). Run `npm ci` first in a new session.
+- Voice in the cloud: `NODE_USE_ENV_PROXY=1 ELEVENLABS_API_KEY=proxy-injected node pipeline/toon-voice.mjs ...`
+  (the real ElevenLabs key is a network secret of the `medpeak-studio` environment; the proxy injects it).
+- Rabies v2 and v3 (rendered, sent, storyboards sent): one-word captions, icons, new punchier voice (all 15 lines +
+  hook re-voiced), watermark `@MedPeakHealth` per act, CTA end card, transitions, serious beat, the NEW micro world
+  (`src/toons/v8/micro3.tsx`: bite, muscle, door, highway, battle; approved as places) used by `src/toons/v8/shots-v3.tsx`.
+- Script checks: `npm test` 44/44, `toon-check --all` ALL PASS, CI green on PR #6 at `f1d5e38`.
+- `assets/brand/logo.png`: the owner's channel logo (176 x 176; ask him for a bigger PNG or SVG for sharp use).
+
+### Credits
+
+- ElevenLabs: 39,237 left of 40,000 (resets 2026-12-09). Today: 255 + 74 + 12 = 341 used.
+- Anthropic: the owner added `ANTHROPIC_API_KEY` as an ENVIRONMENT VARIABLE of the `medpeak-studio` cloud environment
+  (network secrets cannot hold Anthropic keys). Only NEW sessions see it. Not used yet: $0 spent.
+
+### The owner's feedback on v3 and the approved v4 plan (NOT started)
+
+Work split he asked for: **his API key (Claude Code headless on Opus 5.5, medium effort) writes the code; the session
+drives it, checks (typecheck, tests, toon-check), renders, looks at frames, commits and pushes, and reports.**
+Run it like: `claude -p "<task>" --model claude-opus-5-5 --effort medium --output-format json` (the JSON has the run's
+cost). Show both balances at the START and END of each video only (ElevenLabs balance; Anthropic: the dollar cost of
+each run and the video total, since a normal key cannot read the remaining balance; that is on the Console's Billing page).
+
+v4 changes (all approved as a plan; show 16:9 sheets before building, motion test before the full video):
+1. CTA spoken by a **professional male narrator, the same voice in every video**: 3 auditions first (about 100
+   credits, balance before/after), he picks one. The narrator reads the headline, the 3 points and the follow line,
+   added AFTER the story so the script rules (loop, answer in the last quarter) still pass.
+   Follow line (his pick): **"Follow MedPeak Health for more health tips that keep you safe."**
+2. CTA card: headline on ONE line; **his logo top centre in a circle, "MedPeak Health" typed below it**; background
+   in the logo's royal blue with lighter blue rings; stronger, bigger icons on white cards.
+3. Watermark: smaller, 50% more transparent, **Inter Regular**, no heavy outline.
+4. Camera: remove the key-word punch zoom (looks jerky). One smooth eased continuous move per shot. Inside the body:
+   a continuous DIVE from first frame to last through the depth layers.
+5. Transitions that make sense: into the body = dive into the skin; body -> kitchen = pull back out of the arm;
+   whip pan only room -> room. No sudden jumps.
+6. Virus much calmer at the start (too much jiggle); it moves when it acts or speaks.
+7. Icons ONLY when the words say it: remove the sunrise at 0:05; a DOG icon on "stray dog"; a DOG + warning badge when
+   the doctor says rabies is fatal; calendar and stopwatch stay; shield only where the vaccine is named. Smoother icon
+   animation (eased pop, settle, fade; no wobble).
+8. Name tags: 1 second, the FIRST time each non-human character appears (RABIES VIRUS, ANTIBODY, WHITE BLOOD CELL,
+   DEFENCE CELL, NERVE ENDING): a smart arrow and a tag box above the head with a soft FLAT halo (v8 has no real glow;
+   ask him if he wants a true glow). No tags on humans.
+9. The micro world backgrounds are "poor, not detailed": redraw all 5 places with much more detail (textured
+   membranes and organelles, textured fibres, more layers, flat light/shade bands, denser life).
+10. Clothes of all people (the doctor's coat first) need rework: lapels, pockets, fit, scrubs; seams and folds for
+    Mom, the Kid and the others. Same kit and line.
+11. Upgrade the skill (`skill/medpeak-health/`) and `CLAUDE.md` with all of these rules for every future video.
+
+### Next step for the new session
+
+1. Start-of-session steps (CLAUDE.md). `npm ci`. Check the key: `test -n "$ANTHROPIC_API_KEY"` and a free
+   `GET https://api.anthropic.com/v1/models`. Show both balances (start of video).
+2. Step 1 of v4: the look sheets (clothes, detailed micro world, name tags, new icons, watermark, CTA card with logo).
+
+---
+
 ## 2026-11-20 (afternoon) - Cloud session (claude.ai/code) - branch `claude/github-repo-check-handoff-as1kql`
 
 The owner now works from a Claude **cloud** session, not the Mac or the Windows PC. This branch starts from
