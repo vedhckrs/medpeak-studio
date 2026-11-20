@@ -24,8 +24,11 @@ export const RABIES_SHOTS: Record<string, ShotDef> = {
 };
 
 // ------------------------------------------------------------------ the CTA end card: three strong points
-export const RABIES_CTA: {title: string; points: CtaPoint[]} = {
+export const RABIES_CTA: {title: string; points: CtaPoint[]; voice: string; seconds: number; at: {head: number; points: [number, number, number]; follow: number}} = {
   title: 'BITTEN OR SCRATCHED?',
+  // read by the narrator (Joey), assets/toons-voice/rabies/cta.mp3; word times from videos/rabies/cta-timings.json
+  voice: 'toons/rabies/voice/cta.mp3', seconds: 13.32,
+  at: {head: 0, points: [2.07, 5.11, 6.86], follow: 9.74},
   points: [
     {icon: <g><g transform="translate(-28 0) scale(0.78)"><Stopwatch t={2} /></g><g transform="translate(46 44) scale(0.5)"><Soap /></g></g>, big: 'WASH 15 MIN', small: 'soap and running water'},
     {icon: <g transform="scale(0.95)"><Stethoscope /></g>, big: 'SEE A DOCTOR', small: 'the same day'},

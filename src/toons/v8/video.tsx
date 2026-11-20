@@ -6,8 +6,8 @@
  */
 import React, {useMemo} from 'react';
 import {AbsoluteFill, Audio, Sequence, staticFile, useCurrentFrame} from 'remotion';
-import {bedAt, frameOf, layoutToon, lineSeconds, soundPlan, TOON_FPS, type Layout, type Toon, type ToonTimings} from '../director';
-import {CTA_SECONDS, CtaCard, Watermark, WordCaption, type CtaPoint} from './hud';
+import {bedAt, SOUND, frameOf, layoutToon, lineSeconds, soundPlan, TOON_FPS, type Layout, type Toon, type ToonTimings} from '../director';
+import {CtaCardV4, Watermark, WordCaption, type CtaAt, type CtaPoint} from './hud';
 import {FONT} from './kit';
 import {clamp01, go, lerp, V8_FPS, type Focus, type LineNow, type ShotDef, type ShotNow} from './play';
 import {RABIES_CTA, RABIES_SHOTS} from './rabies';
@@ -17,10 +17,16 @@ export type V8VideoProps = {toon: Toon; timings: ToonTimings | null; sfx: string
 /** The shots of each video, by the video's slug and the shot's id. */
 export const V8_VIDEOS: Record<string, Record<string, ShotDef>> = {rabies: RABIES_SHOTS};
 /** The CTA end card of each video (three strong points). */
-export const V8_CTA: Record<string, {title: string; points: CtaPoint[]}> = {rabies: RABIES_CTA};
+/** v4 (2026-11-20): the narrator (Joey, the same voice in every video) reads the card; `at` holds the second
+ * of each beat in his clip (headline, the three points, the follow line), `voice` the clip, `seconds` its length. */
+export type V8Cta = {title: string; points: CtaPoint[]; voice?: string; seconds?: number; at?: CtaAt};
+export const V8_CTA: Record<string, V8Cta> = {rabies: RABIES_CTA};
+/** The narrator starts after the card has slid in; the card holds a moment after his last word. */
+export const CTA_LEAD = 0.45, CTA_TAIL = 0.9;
+export const ctaSeconds = (c: V8Cta | undefined) => (!c ? 0 : CTA_LEAD + (c.seconds ?? 4) + CTA_TAIL);
 
 const K = V8_FPS / TOON_FPS; // the layout counts 30 frames a second; the video runs at 60
-export const v8Frames = (toon: Toon, timings: ToonTimings | null) => Math.round((layoutToon(toon, timings).total / TOON_FPS + (V8_CTA[toon.slug] ? CTA_SECONDS : 0)) * V8_FPS);
+export const v8Frames = (toon: Toon, timings: ToonTimings | null) => Math.round((layoutToon(toon, timings).total / TOON_FPS + ctaSeconds(V8_CTA[toon.slug])) * V8_FPS);
 
 /** A shot's "now" (play.tsx) at second `sec` of the video. */
 export const shotNow = (L: Layout, toon: Toon, timings: ToonTimings | null, sec: number): {s: ShotNow; si: number} => {
@@ -163,6 +169,8 @@ export const ToonV8: React.FC<V8VideoProps> = ({toon, timings, sfx, music, bare 
   const act = sec >= ends ? 2 : acts.filter((a) => sec >= a).length - 1;
   const cta = V8_CTA[toon.slug];
   const inCta = !!cta && sec >= ends;
+  // the card's beats, in seconds from the card's start (the narrator begins at CTA_LEAD)
+  const ctaAt: CtaAt | undefined = cta?.at && {head: CTA_LEAD + cta.at.head, points: cta.at.points.map((p) => CTA_LEAD + p) as [number, number, number], follow: CTA_LEAD + cta.at.follow};
 
   const has = (n: string | undefined): n is string => !!n && sfx.includes(n);
   const events = soundPlan(L);
@@ -195,17 +203,25 @@ export const ToonV8: React.FC<V8VideoProps> = ({toon, timings, sfx, music, bare 
       })()}
       {inCta && (
         <div style={{position: 'absolute', inset: 0, transform: `translateY(${((1 - clamp01((sec - ends) / 0.35)) ** 3 * 1920).toFixed(1)}px)`}}>
-          <CtaCard t={sec - ends} title={cta!.title} points={cta!.points} />
+          <CtaCardV4 t={sec - ends} title={cta!.title} points={cta!.points} at={ctaAt} />
         </div>
       )}
-      <Watermark act={act} t={sec - (inCta ? 0 : acts[act]) + (inCta ? 9 : 0)} />
-      {cta && [0, 1, 2].map((i) => <Sequence key={'cta' + i} from={Math.round((ends + 0.45 + i * 0.55) * V8_FPS)} durationInFrames={60 * K}><Audio src={staticFile('toons/sfx/pop.mp3')} volume={0.5} /></Sequence>)}
-      {cta && <Sequence from={Math.round((ends + 2.3) * V8_FPS)} durationInFrames={90 * K}><Audio src={staticFile('toons/sfx/success-chime.mp3')} volume={0.45} /></Sequence>}
+      {/* on the end card the watermark sits top right (act 1's place), clear of the logo */}
+      <Watermark act={inCta ? 0 : act} t={inCta ? sec - ends : sec - acts[act]} />
+      {cta && [0, 1, 2].map((i) => <Sequence key={'cta' + i} from={Math.round((ends + (ctaAt ? ctaAt.points[i] : 0.45 + i * 0.55)) * V8_FPS)} durationInFrames={60 * K}><Audio src={staticFile('toons/sfx/pop.mp3')} volume={0.35} /></Sequence>)}
+      {cta && <Sequence from={Math.round((ends + (ctaAt ? ctaAt.follow : 2.3)) * V8_FPS)} durationInFrames={90 * K}><Audio src={staticFile('toons/sfx/success-chime.mp3')} volume={0.3} /></Sequence>}
+      {cta?.voice && <Sequence from={Math.round((ends + CTA_LEAD) * V8_FPS)} durationInFrames={Math.round(((cta.seconds ?? 4) + 0.5) * V8_FPS)}><Audio src={staticFile(cta.voice)} /></Sequence>}
       {cta && <Sequence from={Math.round(ends * V8_FPS)} durationInFrames={40 * K}><Audio src={staticFile('toons/sfx/whoosh-air.mp3')} volume={0.4} /></Sequence>}
       {L.lines.map((l) => l.file && <Sequence key={l.line.id} from={Math.round(l.from * K)} durationInFrames={Math.round((l.frames + 12) * K)}><Audio src={staticFile(l.file)} /></Sequence>)}
       {events.filter((e) => has(e.name)).map((e, i) => <Sequence key={i} from={Math.round(e.at * K)} durationInFrames={90 * K}><Audio src={staticFile(`toons/sfx/${e.name}.mp3`)} volume={e.vol} /></Sequence>)}
       {extra.filter((e) => has(e.name)).map((e, i) => <Sequence key={'x' + i} from={Math.round(e.at * K)} durationInFrames={240 * K}><Audio src={staticFile(`toons/sfx/${e.name}.mp3`)} volume={e.vol} /></Sequence>)}
-      {music && <Audio src={staticFile(`toons/music/${music}.mp3`)} loop volume={(fr) => bedAt(L, fr / K)} />}
+      {music && <Audio src={staticFile(`toons/music/${music}.mp3`)} loop volume={(fr) => {
+        // v4: the bed stays low under the narrator on the end card, then fades out with it
+        const t = fr / K;
+        if (!cta || t < L.total - 24) return bedAt(L, t);
+        const end = L.total + ctaSeconds(cta) * TOON_FPS;
+        return Math.max(Math.min(bedAt(L, L.total - 24), SOUND.bedUnderVoice * 1.2), 0) * clamp01((end - t) / 40);
+      }} />}
     </AbsoluteFill>
   );
 };
