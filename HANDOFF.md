@@ -6,6 +6,19 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-20 (late, 5) - Cloud session (claude.ai/code) - branch `claude/bold-hopper-dqvjfr`, PR #7
+
+- The owner: "start the video with One stray dog". The Virus's line B1 is now a COLD OPEN in shot A (new script
+  field `"cold": true`: first line only, at most 4 s; the hook rules judge the next line). The hook's beats ride its
+  words (`hookT()` in `shots-v3.tsx`). Shot B opens on the bite already made. No new voice. Test added.
+- The owner asked for a zoom check of every person's clothes and face in the video: found the coat's collar and
+  lapels too wide in the three-quarter view (a "cape"); made narrower. Sheet: `out/toons/sheets-v8/v4-people-zoom-check.jpg`.
+- Run: typecheck clean, `npm test` 50/50, `toon-check --all` ALL PASS; final render 61.6 s; frame scan: only the two
+  deliberate hook cuts; storyboard rebuilt. Sent: the video, the first 9 s, the zoom sheet. NOT uploaded.
+- Balances unchanged: ElevenLabs 39,006; Anthropic $2.59 of $5.
+
+---
+
 ## 2026-11-20 (late, 4) - Cloud session (claude.ai/code) - branch `claude/bold-hopper-dqvjfr`, PR #7
 
 The owner's notes on the v4 video and what was done:
