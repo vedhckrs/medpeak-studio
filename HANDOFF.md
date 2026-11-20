@@ -138,6 +138,22 @@ waiting for his look:
   wallpaper (the caption covers most of it); the carrier in M2 reads as a walker only at a second look;
   white cells and antibodies rest a hand on the virus rather than clasp it.
 
+### Night: APPROVED by the owner ("Yes, approved")
+
+He approved the new noses and hands, the microscopic body frames and the rabies storyboard. Recorded:
+
+- `skill/medpeak-health/references/toons-boards/v8/` now holds the approved state: the ten people sheets with
+  the new nose and hands, the cells sheet with the teal antibody, and in `storyboard/` the two storyboard
+  sheets, the two places sheets and the thirteen scene frames (9 frames + 4 empty places) at full size.
+- The antibody's own colour is now teal (`cells.tsx`, `C.antibody`), so the sheet matches the approved
+  frames (it was a purple almost like the virus). The scenes still pass `color={CLOTH.teal}`; harmless.
+- **Next (not started): the animation phase.** A plan was put to the owner: first a short motion test in
+  1080 x 1920 at 60 fps (one kitchen shot and one inside-the-body shot, with the existing rabies voice) for
+  his approval of how things MOVE, then the whole rabies video. The rig still needs, before that: a real
+  left-facing three-quarter view (today only the Kid may be mirrored), talking mouth shapes driven by the
+  voice timings, blinks, and pose-to-pose arm moves; `handAt` should move from `scenes-rooms.tsx` into the
+  rig. The rabies voice, sfx and music are already on this PC in `public/toons/` (not in git).
+
 ### Not done, and open
 
 - **APPROVED by the owner on 2026-11-20 ("Yes, approved").** The approved JPGs are committed in

@@ -1,8 +1,10 @@
 # MedPeak Toons, look v8: the drawing rules (2026-11-20)
 
-**Status: the cast and prop sheets were APPROVED by the owner on 2026-11-20** (after one fix: the sleeve must not
-draw an arc on top of the shoulder). The approved sheets are in `toons-boards/v8/`. Scenes (rooms and the inside
-of the body) come next, built with `src/toons/v8/scene.tsx`, and need their own approval.
+**Status: APPROVED by the owner on 2026-11-20**, in three steps the same day: the cast and prop sheets (after a
+sleeve fix); then, after his feedback on the first storyboard, the new noses and one-piece hands, the
+microscopic inside-the-body frames and the rabies storyboard. The approved sheets are in `toons-boards/v8/`,
+the approved storyboard and frames in `toons-boards/v8/storyboard/`. Motion is NOT approved yet: nothing is
+animated or in the engine.
 
 Owner's decision, 2026-11-20: everything is drawn by code again (no AI art, no stock art), in the drawing
 language of the reference Shorts, as one consistent family. Character sheets and props are shown to him as
@@ -74,7 +76,7 @@ mistake never breaks another's render:
     node pipeline/toon-v8-sheets.mjs            (all sheets; or: npm run toon:sheets)
     node pipeline/toon-v8-sheets.mjs cells      (only the sheets whose name contains "cells")
 
-## Scenes (full video frames, 1080 x 1920; NOT yet approved)
+## Scenes (full video frames, 1080 x 1920; the rabies frames are approved)
 
 Built with `src/toons/v8/scene.tsx` in `scenes-rooms.tsx` (kitchen, clinic) and `scenes-body.tsx` (inside the
 body at the scale of cells: the wound, the nerve ending, inside the nerve fibre, between the cells). Rules on

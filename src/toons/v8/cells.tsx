@@ -103,7 +103,7 @@ const C = {
   halo: '#f8d8d6',
   sperm: CLOTH.offwhite,
   fat: '#efc96c',
-  antibody: '#9d90d8',
+  antibody: '#2fb5a6', // teal (CLOTH.teal): it was a purple almost like the virus; changed with the owner's approval of the storyboard, 2026-11-20
   sugar: '#fbf8f2',
   insulin: CLOTH.sky,
   melatonin: '#5d6f9e',
