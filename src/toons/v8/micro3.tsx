@@ -32,10 +32,10 @@ const beat = (t: number) => { const u = (t * 1.25) % 1; const k = (c: number, w:
 export const DiveCtx = React.createContext(0);
 export const DIVE = {far: 0.06, near: 0.42};
 /** A depth plane: moves by (dx, dy) and scales about the frame centre (camera dolly); `d` its depth (0 far .. 1 near). */
-export const Depth: React.FC<{dx?: number; dy?: number; k?: number; d?: number; children: React.ReactNode}> = ({dx = 0, dy = 0, k = 1, d = 0, children}) => {
+export const Depth: React.FC<{dx?: number; dy?: number; k?: number; d?: number; o?: P; children: React.ReactNode}> = ({dx = 0, dy = 0, k = 1, d = 0, o = [540, 960], children}) => {
   const dive = React.useContext(DiveCtx);
   const kk = k * (1 + dive * (DIVE.far + d * (DIVE.near - DIVE.far)));
-  return <div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, transformOrigin: '540px 960px', transform: `translate(${f(dx)}px, ${f(dy)}px) scale(${kk.toFixed(4)})`}}>{children}</div>;
+  return <div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, transformOrigin: `${o[0]}px ${o[1]}px`, transform: `translate(${f(dx)}px, ${f(dy)}px) scale(${kk.toFixed(4)})`}}>{children}</div>;
 };
 /** The slow float of the camera in fluid, per plane depth (0 far .. 1 near). */
 const float = (t: number, depth: number): {dx: number; dy: number; d: number} => ({dx: sway(t, 9, 1) * (3 + depth * 16), dy: sway(t, 11.5, 2) * (2 + depth * 11), d: depth});
@@ -524,6 +524,8 @@ export const HighwayPlace: React.FC<{t: number; speed?: number}> = ({t, speed = 
   const run = t * 0.55 * speed;
   return (
     <Scene bg={TUBE_FAR}>
+      {/* v4: the tunnel walls and the brain are a far plane that dives about the vanishing point */}
+      <Depth d={0.2} o={[vx, vy]}>
       <Layer>
         {/* rings from far to near, sliding toward the lens */}
         {Array.from({length: N}, (_, i) => {
@@ -560,6 +562,8 @@ export const HighwayPlace: React.FC<{t: number; speed?: number}> = ({t, speed = 
         {/* the brain, far away at the end of the tunnel */}
       </Layer>
       <Put x={vx} y={vy - 10} size={120}><Brain mood="scared" mouth="wavy" look={[0, 0.6]} /></Put>
+      </Depth>
+      {/* the rails stay on the ground plane (the Virus stands on them) */}
       <Layer>
         {/* three rails in perspective, with sleepers rushing past */}
         {[-1, 0, 1].map((k) => (
@@ -586,6 +590,10 @@ export const HighwayPlace: React.FC<{t: number; speed?: number}> = ({t, speed = 
           return <path key={i} d={`M ${f(vx + Math.cos(a) * r0)} ${f(vy + Math.sin(a) * r0 * 1.5)} L ${f(vx + Math.cos(a) * r1)} ${f(vy + Math.sin(a) * r1 * 1.5)}`} stroke="#ffffff" strokeWidth={8} strokeLinecap="round" opacity={0.7 * (1 - u)} />;
         })}
       </Layer>
+      {/* near plane: floating bits close to the lens, they rush past fastest */}
+      <Depth d={1} o={[vx, vy]}>
+        <Layer><Bits t={t} n={10} seed={461} col={tint(TUBE_NEAR, 0.3)} size={16} flow={[0, 30 * speed]} area={[0, 200, 1080, 1100]} /></Layer>
+      </Depth>
     </Scene>
   );
 };

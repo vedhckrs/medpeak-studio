@@ -119,7 +119,8 @@ const ShotM2: React.FC<{s: ShotNow}> = ({s}) => {
 };
 const ScreenM2: React.FC<{s: ShotNow}> = ({s}) => {
   const u = since(s, 'B3', 'two');
-  return u < 0 ? null : <IconBadge icon="calendar" t={u} x={540} y={420} />;
+  // v4: the calendar leaves when the picture switches to the highway ("faster")
+  return u < 0 ? null : <IconBadge icon="calendar" t={u} x={540} y={420} out={u - since(s, 'B3', 'faster')} />;
 };
 
 // =================================================================== E: the battle -> the door with the wall
