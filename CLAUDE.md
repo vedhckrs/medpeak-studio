@@ -111,11 +111,15 @@ Do these once on a new machine. None of it needs the old machine except step 6.
   typed below; the background in the logo's royal blue. A **professional male narrator, the same voice in every video** (Joey, `narrator` in `skill/medpeak-health/toons-cast.json`, the owner's pick 2026-11-20),
   speaks the CTA and ends with: "Follow MedPeak Health for more health tips that keep you safe."
 - **Icons only when the words say it**; non-human characters get a 1-second name tag (arrow + tag box above the head)
-  the first time they appear; no tags on humans. The camera moves smoothly (one eased move per shot, a continuous dive
-  inside the body); transitions follow the story (dive into the skin, pull back out). (2026-11-20)
-- **Work split** (2026-11-20): the owner's own Anthropic API key (env var `ANTHROPIC_API_KEY` of the `medpeak-studio`
-  cloud environment; Claude Code headless, Opus 5.5, medium effort) writes code; the session checks, renders, commits,
-  pushes and reports. Show the ElevenLabs balance and the Anthropic cost at the START and END of each video only.
+  the first time they appear; no tags on humans; the tag's halo is two flat white rings, **no glow** (his answer,
+  2026-11-20); a tag never covers a face. The camera moves smoothly (one eased move per shot, a continuous dive
+  inside the body); transitions follow the story (dive into the skin, pull back out). No flicker: nothing appears or
+  vanishes in one frame. The whole Short, end card included, stays under 60 s. Clothes changes must read at phone
+  size. All the version 4 rules, with the code: `skill/medpeak-health/references/toons-v8-style.md`. (2026-11-20)
+- **Work split** (updated 2026-11-20): **the session writes the code itself**; the owner's Anthropic key (env var
+  `MEDPEAK_ANTHROPIC_KEY` of the `medpeak-studio` cloud environment; `ANTHROPIC_API_KEY` is not passed into cloud
+  sessions) is used only where he asks for it, and then only through `pipeline/claude-run.mjs` (the $5 cap below).
+  Show the ElevenLabs balance and the Anthropic cost at the START and END of each video.
 - **Show the credit balance before and after every paid step** (2026-11-20). Every time anything spends
   credits (ElevenLabs voice or sound, Magnific, any other paid tool), tell him the balance right before
   (with the expected cost) and right after (with what was actually used). For ElevenLabs read it with the
@@ -150,8 +154,11 @@ Do these once on a new machine. None of it needs the old machine except step 6.
 - Scenes: `scene.tsx` (shared scene pieces), `scenes-rooms.tsx` (kitchen, clinic), `scenes-body.tsx`
   (inside the body, microscopic).
 - Video: `play.tsx` (the contract: a shot is a pure function of `ShotNow`, time in seconds), `video.tsx`
-  (the 60 fps player: camera, captions, voices, sound, music), `rabies.tsx` (one video's shots by id),
-  `entry-video.tsx`.
+  (the 60 fps player: camera, captions, voices, sound, music, transitions, the end card), `rabies.tsx` (one video's
+  shots by id and its end card), `entry-video.tsx`.
+- Version 4 (2026-11-20): `hud.tsx` (captions, icons, watermark, `CharTag` name tags, `CtaCardV4`), `micro3.tsx`
+  (the five micro places in depth planes, `DiveCtx`), `shots-v3.tsx` (the body shots, tags, icons), `sheets-v4.tsx`
+  and `entry-*-v4.tsx` (the v4 look sheets).
 
 ### Commands (all free, all local)
 
@@ -163,6 +170,10 @@ Do these once on a new machine. None of it needs the old machine except step 6.
     npm run toon:v8 -- rabies --at 12.4             one still of the video at that second
     npm run toon:v8 -- rabies --draft               the whole video at half size (fast, to review motion)
     npm run toon:v8 -- rabies                       the final video -> videos/rabies/renders/toon-v8.mp4
+    npm run toon:v8 -- rabies --from 30 --to 40     a slice (a motion test) -> renders/toon-v8-30-40.mp4
+    node --import tsx pipeline/toon-v8-board.mjs rabies   the storyboard from the finished video -> renders/storyboard/
+    node pipeline/toon-v8-sheets.mjs v4-            the version 4 look sheets
+    node pipeline/claude-run.mjs rabies --status    the Anthropic spend of a video (the $5 cap)
 
 Before showing the owner a frame, look at it yourself at full size, and at close crops of every face and
 hand.

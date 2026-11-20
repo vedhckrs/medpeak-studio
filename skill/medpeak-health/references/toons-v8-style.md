@@ -99,3 +99,60 @@ top of the ten above:
 - A cast figure is placed as approved (`<Put>`); a scene may pass a figure's own props, never redraw it.
 
     node pipeline/toon-v8-sheets.mjs --scenes        (all scene frames, to out/toons/scenes-v8/)
+
+## Version 4 rules (the owner, 2026-11-20; rabies v4 is the first video made to them)
+
+Every Toon follows these from now on. Code: `src/toons/v8/hud.tsx`, `video.tsx`, `micro3.tsx`, `shots-v3.tsx`,
+`people-rig.tsx`.
+
+**End card (CTA)**
+- Read by the channel narrator, **Joey** (`narrator` in `skill/medpeak-health/toons-cast.json`), the SAME voice in
+  every video. He reads the headline, the three points and always ends with: "Follow MedPeak Health for more health
+  tips that keep you safe." The clip lives in `assets/toons-voice/<slug>/cta.mp3`, its word times in
+  `videos/<slug>/cta-timings.json`; the card's beats (`at` in the video's CTA) are his word times.
+- `CtaCardV4`: the logo's royal blue `#214ba1` with lighter flat rings; the logo (`assets/brand/logo.png`) top centre
+  in a white circle, "MedPeak Health" typed below; the headline on ONE line (yellow, auto-sized); three white cards
+  with big bold icons; the follow line in a yellow pill.
+- **The whole Short, story plus end card, stays under 60 s.** `toon-check` counts the card. If it runs over, speed the
+  narrator's clip up a little (`atempo`, at most 1.1x, pitch kept) and keep the original as `cta-raw.mp3`.
+- The narrator's clip is added AFTER the story, so the script rules (loop, the answer in the last quarter) still pass.
+
+**Watermark**: `@MedPeakHealth`, Inter Regular (400), 26 px, opacity 0.44 (half transparent), no outline (a 1 px
+flat drop only). Act 1 top right, act 2 bottom left, act 3 top middle; on the end card top right (clear of the logo).
+
+**Icons only when the words say it**: a dog on "stray dog", a dog with a warning badge on "fatal", the stopwatch on
+"fifteen minutes", the calendar on "months", the shield ONLY where the vaccine is named ("shots"). No icon the words
+do not say (the old sunrise is gone). `IconBadge`: eased pop, ONE soft settle (3%), hold still, eased fade out; no
+wobble, no turn. An icon leaves before the picture changes (`out`), and a transition fades the last shot's icons.
+
+**Name tags**: `CharTag`, 1 second, the FIRST time each non-human character appears (RABIES VIRUS, NERVE ENDING,
+DEFENCE CELL, ANTIBODY, WHITE BLOOD CELL). A white tag box above the head (to the side when there is no room), an
+arrow that draws itself, a flat halo of two thin white rings: **no glow, no blur** (the owner, 2026-11-20). Never on
+people. The box and the halo must never cover a face: point at a part of the character away from the others, and
+start a tag after a transition has finished.
+
+**Camera and transitions**
+- No punch zoom on key words. Rooms: one smooth move per shot (the lean is averaged over 2.4 s). Inside the body:
+  a continuous dive from the first frame to the last; every depth plane (`Depth d=0..1`) grows at its own rate,
+  the near planes most (`DiveCtx`). Every new micro place is built in depth planes so it can dive.
+- Transitions follow the story: room -> body DIVES into the scratch (a round window opens from it, `portal`);
+  body -> room PULLS back out of the arm; a whip pan only room -> room; body -> body a zoom-through.
+- No flicker: nothing may appear or vanish in one frame (fade in and out; looping things fade at their wrap).
+  Check a render with the frame-difference scan (see `HANDOFF.md`, rabies v4): zero isolated one-frame jumps.
+
+**Characters**: the Virus keeps still unless it speaks or acts (`active()`), only a slow breath at rest.
+
+**Micro world**: detailed places, never "poor": at least four depth planes (haze, mid, near, a framing plane),
+cells with double membranes, nuclei, ER, mitochondria; textured fibres; flat light and shade bands; small life
+(`Bits`) that drifts.
+
+**Clothes** (the owner, 2026-11-20: "rework, the doctor's coat first"): changes must read at phone size, as shapes
+and colour bands, not only thin lines. The coat is fitted at the waist, long, flared, with real notched lapels in a
+darker grey, a breast pocket with pens, big lower pockets, cuff bands and buttons, scrubs with a trimmed V-neck.
+Everyone has hems, cuffs, folds and a flat shade band; each person has one clear clothing detail (the Kid's ringer
+tee, Mom's sash, Dad's yoke and cuffs, Sam's ribbed hoodie, Grandpa's elbow patches, the Baby's trim and snaps).
+Show a BEFORE/AFTER sheet and a frame at video size for any clothes change.
+
+**Approval steps for a video**: 16:9 look sheets -> narrator clip (cost first) -> a 10 s motion test
+(`toon-v8-render --from A --to B`) -> the full video + the storyboard from the finished render
+(`node --import tsx pipeline/toon-v8-board.mjs <slug>`).
