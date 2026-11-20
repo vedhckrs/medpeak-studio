@@ -1,6 +1,6 @@
 import React from 'react';
 import {registerRoot, Still} from 'remotion';
-import {DoctorTest, PeopleLineup, PersonSheet, PeopleHands} from './people-sheets';
+import {DoctorTest, PeopleCloseTest, PeopleHandTest, PeopleLineup, PersonSheet, PeopleHands} from './people-sheets';
 
 const sheet = (id: string) => {
   const C: React.FC = () => <PersonSheet id={id} />;
@@ -12,6 +12,8 @@ const Kid = sheet('kid'), Grandpa = sheet('grandpa'), Grandma = sheet('grandma')
 registerRoot(() => (
   <>
     <Still id="V8PeopleTest" component={DoctorTest} width={1920} height={1080} />
+    <Still id="V8PeopleClose" component={PeopleCloseTest} width={1920} height={1080} />
+    <Still id="V8PeopleHandTest" component={PeopleHandTest} width={1920} height={1080} />
     <Still id="V8PeopleLineup" component={PeopleLineup} width={1920} height={1080} />
     <Still id="V8PersonDoctor" component={Doctor} width={1920} height={1080} />
     <Still id="V8PersonPatient" component={Patient} width={1920} height={1080} />

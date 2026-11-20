@@ -76,8 +76,9 @@ mistake never breaks another's render:
 
 ## Scenes (full video frames, 1080 x 1920; NOT yet approved)
 
-Built with `src/toons/v8/scene.tsx` in `scenes-rooms.tsx` (kitchen, clinic) and `scenes-body.tsx` (the bitten
-arm, the nerve road). Rules on top of the ten above:
+Built with `src/toons/v8/scene.tsx` in `scenes-rooms.tsx` (kitchen, clinic) and `scenes-body.tsx` (inside the
+body at the scale of cells: the wound, the nerve ending, inside the nerve fibre, between the cells). Rules on
+top of the ten above:
 
 - A place is QUIETER than the cast: big flat fields, tone-on-tone patterns, few lines. Objects keep the cast
   outline. No faces on a background.
@@ -85,6 +86,14 @@ arm, the nerve road). Rules on top of the ten above:
 - Keep the top 190 px and the bottom 330 px free of anything important; no face, hand action or label in
   the caption band (y 1380..1560). The yellow tag sits around y 330 on plain wall.
 - Never mirror a character that has a one-sided detail (Dr. Mira, Mom). Hands never overlap hands.
+  A hand that lies on the body or on a thing uses the hand kind `rest` (fingers together), never the
+  splayed open hand.
+- Inside the body means MICROSCOPIC (the owner's word): we are among cells, not looking at a diagram of an
+  organ. Cells are bigger than the virus (a nucleus about its size). Every place has three flat planes for
+  depth: small darker cells behind with thin lines, the action in the middle with the full outline, one or
+  two big dark cell edges cropped by the frame corners in front. No blur, no gradient.
+- People have a real nose in every view (side: it sticks out of the profile; three-quarter: a small rounded
+  shape below the eyes), never a bare line on an eye.
 - A cast figure is placed as approved (`<Put>`); a scene may pass a figure's own props, never redraw it.
 
     node pipeline/toon-v8-sheets.mjs --scenes        (all scene frames, to out/toons/scenes-v8/)

@@ -108,7 +108,7 @@ const C = {
  * The adult stands on the LEFT (in front of the stove), the Kid on the RIGHT at the sink. Worktop at an
  * adult's hip (y 1140); the units stand forward of the wall, their bases at y 1610.
  */
-const KITCHEN = {top: 1140, base: 1610, stoveX0: -10, stoveX1: 300, sinkX: 450, sinkW: 230, tapX: 640, spout: [562, 1052] as P};
+const KITCHEN = {top: 1140, base: 1610, stoveX0: -10, stoveX1: 300, sinkX: 486, sinkW: 230, tapX: 690, spout: [600, 1052] as P};
 export const KitchenRoom: React.FC<{tapOn?: boolean}> = ({tapOn}) => {
   const k = KITCHEN;
   const tileY = 860;
@@ -362,8 +362,8 @@ export const V8RoomClinic: React.FC = () => <Scene bg={C.wall}><ClinicRoom /></S
 
 /** C1: "It's just a little scratch, Mum." The Kid holds up his forearm, relaxed; Mom, worried, points at the scratch without touching. */
 export const V8SceneC1: React.FC = () => {
-  const kid: Who = {id: 'kid', pose: 'showArmUp', expr: 'talking', look: [0.6, -0.2], x: 840, y: 1700, flip: true};
-  const mom: Who = {id: 'mom', pose: 'worriedPoint', expr: 'worried', look: [0.7, 0.5], x: 256};
+  const kid: Who = {id: 'kid', pose: 'showArmUp', expr: 'talking', look: [0.6, -0.2], x: 880, y: 1700, flip: true};
+  const mom: Who = {id: 'mom', pose: 'worriedPoint', expr: 'worried', look: [0.7, 0.5], x: 296};
   const h = hand(kid, 1);
   return (
     <Scene bg={K.wall}>
@@ -378,14 +378,14 @@ export const V8SceneC1: React.FC = () => {
 /** C2: "Wash it now. Soap and water, fifteen minutes." The Kid's hand under the running tap; Mom brings the soap. */
 export const V8SceneC2: React.FC = () => {
   const stoolTop = 1600;
-  const kid: Who = {id: 'kid', pose: 'tapHand', expr: 'surprised', look: [0.7, 0.5], x: 820, y: stoolTop, flip: true};
-  const mom: Who = {id: 'mom', pose: 'offer', expr: 'talking', look: [0.6, 0.6], x: 228};
+  const kid: Who = {id: 'kid', pose: 'tapHand', expr: 'surprised', look: [0.7, 0.5], x: 858, y: stoolTop, flip: true};
+  const mom: Who = {id: 'mom', pose: 'offer', expr: 'talking', look: [0.6, 0.6], x: 198};
   const hm = hand(mom, 1);
   const hk = hand(kid, 1);
   return (
     <Scene bg={K.wall}>
       <KitchenRoom tapOn />
-      <StepStool x={820} top={stoolTop} />
+      <StepStool x={858} top={stoolTop} />
       <Person {...kid} />
       {/* the stream lands ON the Kid's hand: drawn again over the hand, with a few splashes */}
       <Layer>

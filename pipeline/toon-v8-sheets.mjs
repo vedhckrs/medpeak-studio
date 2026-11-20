@@ -48,8 +48,10 @@ export const SCENES = [
   ['entry-scenes-body.tsx', 'V8SceneM3', 'm3'],
   ['entry-scenes-rooms.tsx', 'V8RoomKitchen', 'room-kitchen'],
   ['entry-scenes-rooms.tsx', 'V8RoomClinic', 'room-clinic'],
-  ['entry-scenes-body.tsx', 'V8PlaceArm', 'place-arm'],
-  ['entry-scenes-body.tsx', 'V8PlaceNerve', 'place-nerve-road'],
+  ['entry-scenes-body.tsx', 'V8PlaceWound', 'place-wound'],
+  ['entry-scenes-body.tsx', 'V8PlaceJunction', 'place-junction'],
+  ['entry-scenes-body.tsx', 'V8PlaceAxon', 'place-axon'],
+  ['entry-scenes-body.tsx', 'V8PlaceTissue', 'place-tissue'],
 ];
 
 const renderList = (all, dir, only) => {

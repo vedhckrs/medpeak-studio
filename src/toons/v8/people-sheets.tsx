@@ -21,6 +21,26 @@ export const DoctorTest: React.FC = () => {
   );
 };
 
+
+// ------------------------------------------------------------------ test: close-ups of noses and hands
+export const PeopleCloseTest: React.FC = () => {
+  const ids = ['mom', 'doctor', 'kid', 'dad', 'grandpa'];
+  const views = ['front', 'three-quarter', 'side'] as const;
+  return (
+    <Board kicker="Test" title="Noses, three views">
+      {ids.map((id, i) => views.map((v, j) => <HeadAt key={id + v} spec={castById(id)} x={190 + i * 370} y={300 + j * 270} px={62} view={v} />))}
+    </Board>
+  );
+};
+export const PeopleHandTest: React.FC = () => {
+  const items: [string, PoseName, 'front' | 'three-quarter'][] = [['mom', 'worried', 'three-quarter'], ['mom', 'worriedPoint', 'front'], ['doctor', 'point', 'three-quarter'], ['doctor', 'thumbs', 'front'], ['kid', 'explain', 'front'], ['doctor', 'clipboard', 'three-quarter']];
+  return (
+    <Board kicker="Test" title="Hands on arms">
+      {items.map(([id, p, v], i) => <PersonAt key={i} spec={castById(id)} pose={p} view={v} x={200 + i * 300} y={1330} scale={2.3} />)}
+    </Board>
+  );
+};
+
 // ------------------------------------------------------------------ A: the lineup
 const ROLE: Record<string, string> = {};
 export const PeopleLineup: React.FC = () => {
@@ -136,17 +156,17 @@ export const PeopleHands: React.FC = () => {
   const hy = 330;
   const exprs: Expr[] = ['neutral', 'happy', 'talking', 'worried', 'angry', 'surprised', 'sleepy'];
   return (
-    <Board kicker="People · shared pieces" title="Hands and faces, the same for all 8" note="Six hand shapes (each also mirrored for the other side) and seven expressions, drawn once and shared by every person.">
+    <Board kicker="People · shared pieces" title="Hands and faces, the same for all 8" note="Seven hand shapes (each also mirrored for the other side) and seven expressions, drawn once and shared by every person.">
       <Panel x={56} y={168} w={1808} h={400} label="Hands: palm, thumb, finger lines" />
       {HAND_KINDS.map((k: HandKind, i) => {
-        const cx = 56 + 150 + i * 301;
+        const cx = 56 + 129 + i * 258;
         const rot = k === 'relaxed' ? 90 : k === 'open' ? -80 : -90;
         const y0 = k === 'relaxed' ? 352 : 350;
         return (
           <React.Fragment key={k}>
-            <HandAt x={cx - 72} y={y0} px={136} kind={k} skin={SKIN.light} rot={rot} />
-            <HandAt x={cx + 72} y={y0} px={136} kind={k} skin={SKIN.tan} rot={rot} mirror />
-            <Caption x={cx} y={498} name={k} note="left · right" size={20} w={280} />
+            <HandAt x={cx - 58} y={y0} px={118} kind={k} skin={SKIN.light} rot={rot} />
+            <HandAt x={cx + 58} y={y0} px={118} kind={k} skin={SKIN.tan} rot={rot} mirror />
+            <Caption x={cx} y={498} name={k} note="left · right" size={20} w={240} />
           </React.Fragment>
         );
       })}

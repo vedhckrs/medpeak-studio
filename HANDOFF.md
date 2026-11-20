@@ -104,6 +104,40 @@ rabies video and nine storyboard frames (1080 x 1920 stills). **Nothing is in th
 - Next, after his OK on the storyboard: bring v8 into the engine (cast, places, poses, a left-facing view),
   animate, and re-render rabies. Not started.
 
+### Evening: the owner's feedback on the storyboard, and what changed
+
+He looked at the storyboard and said: "all characters nose not proper side view and hand also overlap
+like patch" and "i want deeper macro view inside human body, microscopic level". Three changes, all
+waiting for his look:
+
+- **Nose and hands, in `people-rig.tsx` (this changes the people sheets he approved, on his word).**
+  The three-quarter nose was a thin angle line lying on the far eye; the side view had almost no nose. Now
+  every person has one nose family in all three views (side: the profile carries a rounded nose that
+  sticks out; three-quarter: a small skin-filled rounded nose below the eyes; front: a small "c"), scaled
+  by a new build field `nose`. Forearm and hand are one outlined shape (no ring at the wrist). New hand
+  kind `rest` (fingers together) for a hand lying on the body; the chest poses use it. Arm, wrist and palm
+  positions did not move. The copies in `toons-boards/v8/` are still the OLD approved people sheets:
+  replace them with the new ones only after he approves the new look. The organ, cell, germ, animal and
+  prop sheets are unchanged (0 pixels differ).
+- **The inside-the-body frames were redrawn at the scale of cells** (`scenes-body.tsx` rewritten; the
+  forearm cut and the nerve "road" are gone). `MicroPlace {view: wound | junction | axon | tissue}` plus
+  `MicroFront` (foreground cell edges drawn over the characters), each place in three flat planes for
+  depth. Frames: A = the virus with its key at the nerve ending's keyhole locks, the brain in a thought
+  bubble; B = a fang tip through the skin cells, the virus surfing in on saliva between torn muscle
+  fibres; M2 = inside the nerve fibre, a tunnel that darkens into the distance, the virus carried along a
+  rail; E = teal antibodies at the locks and on the virus's spikes; M3 = white cells hold the virus
+  between the cells. The biology is true to rabies (bite, muscle, nerve ending, slow travel inside the
+  nerve, antibodies stop it before the nerve).
+- **Room frames:** re-checked with the new rig; in C2 the two hands no longer touch (the sink moved 36 px
+  right); no hand overlaps a hand or lies flat on a body.
+- The approval sheets are now four: `storyboard-rabies-1.jpg`, `storyboard-rabies-2.jpg`,
+  `places-rabies-rooms.jpg`, `places-rabies-body.jpg` in `out/toons/scenes-v8/boards/`.
+- Run: `tsc --noEmit` clean; `toons.test.mjs` 36 of 36; all scene frames re-rendered from scratch.
+- Still open: his OK on the new noses and hands, on the storyboard, and on teal antibodies. Weak spots:
+  the three-quarter nose is small; the back-plane cells in the lower half of A and E repeat like
+  wallpaper (the caption covers most of it); the carrier in M2 reads as a walker only at a second look;
+  white cells and antibodies rest a hand on the virus rather than clasp it.
+
 ### Not done, and open
 
 - **APPROVED by the owner on 2026-11-20 ("Yes, approved").** The approved JPGs are committed in

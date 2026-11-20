@@ -125,21 +125,24 @@ let SH: P = [-2.2, -2.6]; // the shadow offset of the current person (set per pe
  * One flat-coloured piece made of several overlapping paths, drawn with ONE outer outline (a fat
  * outline pass, then the fills), and the one darker tone as a crescent on the lower right.
  */
-const Union: React.FC<{d: string[]; fill: string; shadow?: number; line?: 'out' | 'in'; children?: React.ReactNode; shadeBy?: number; holes?: boolean}> = ({d, fill, shadow = 1, line = 'out', children, shadeBy = 0.14, holes}) => {
+type UPart = string | {d: string; t: string};
+const Union: React.FC<{d: UPart[]; fill: string; shadow?: number; line?: 'out' | 'in'; children?: React.ReactNode; shadeBy?: number; holes?: boolean}> = ({d: parts, fill, shadow = 1, line = 'out', children, shadeBy = 0.14, holes}) => {
   const id = 'u' + useId().replace(/:/g, '');
   const sw = (line === 'out' ? OUT : IN) * 2;
   const fr = holes ? 'evenodd' : undefined;
+  const d = parts.map((q) => (typeof q === 'string' ? {d: q, t: ''} : q));
+  const off = `translate(${f1(SH[0] * shadow)} ${f1(SH[1] * shadow)})`;
   return (
     <g>
-      {d.map((p, i) => <path key={'o' + i} d={p} fill={fill} fillRule={fr} stroke={INK} strokeWidth={sw} strokeLinejoin="round" vectorEffect="non-scaling-stroke" />)}
-      <defs><clipPath id={id}>{d.map((p, i) => <path key={i} d={p} clipRule={fr} />)}</clipPath></defs>
+      {d.map((p, i) => <path key={'o' + i} d={p.d} transform={p.t || undefined} fill={fill} fillRule={fr} stroke={INK} strokeWidth={sw} strokeLinejoin="round" vectorEffect="non-scaling-stroke" />)}
+      <defs><clipPath id={id}>{d.map((p, i) => <path key={i} d={p.d} transform={p.t || undefined} clipRule={fr} />)}</clipPath></defs>
       <g clipPath={`url(#${id})`}>
         {shadow > 0 ? (
           <>
             <rect x={-5000} y={-5000} width={10000} height={10000} fill={shade(fill, shadeBy)} />
-            {d.map((p, i) => <path key={'f' + i} d={p} fill={fill} fillRule={fr} transform={`translate(${f1(SH[0] * shadow)} ${f1(SH[1] * shadow)})`} />)}
+            {d.map((p, i) => <path key={'f' + i} d={p.d} fill={fill} fillRule={fr} transform={`${off} ${p.t}`} />)}
           </>
-        ) : d.map((p, i) => <path key={'f' + i} d={p} fill={fill} fillRule={fr} />)}
+        ) : d.map((p, i) => <path key={'f' + i} d={p.d} fill={fill} fillRule={fr} transform={p.t || undefined} />)}
         {children}
       </g>
     </g>
@@ -152,8 +155,8 @@ const Clip: React.FC<{d: string; children: React.ReactNode}> = ({d, children}) =
 };
 
 // ================================================================== the hands
-export type HandKind = 'relaxed' | 'open' | 'point' | 'thumbs' | 'fist' | 'hold';
-export const HAND_KINDS: HandKind[] = ['relaxed', 'open', 'point', 'thumbs', 'fist', 'hold'];
+export type HandKind = 'relaxed' | 'open' | 'point' | 'thumbs' | 'fist' | 'hold' | 'rest';
+export const HAND_KINDS: HandKind[] = ['relaxed', 'open', 'point', 'thumbs', 'fist', 'hold', 'rest'];
 /** A finger: a slightly tapered capsule from its base at angle a (degrees) for length l. */
 const finger = (x: number, y: number, a: number, l: number, r = 1.85): string => {
   const t = (a * Math.PI) / 180;
@@ -164,8 +167,8 @@ const finger = (x: number, y: number, a: number, l: number, r = 1.85): string =>
  * thumb on the +y side, about 30 units long. `wristR` adds a wrist stub so the hand merges into a bare
  * forearm without a seam.
  */
-export const Hand: React.FC<{kind: HandKind; skin: string; wristR?: number}> = ({kind, skin, wristR}) => {
-  const stub = wristR ? [capsule([-9, 0], wristR, [1, 0], wristR)] : [];
+/** The geometry of one hand shape (hand space), shared by the free hand and the arm-merged hand. */
+const handGeom = (kind: HandKind, free = true) => {
   const lines: string[] = [];
   let parts: string[] = [];
   let over: string[] = []; // a thumb lying over the fist, outlined on its own
@@ -173,16 +176,25 @@ export const Hand: React.FC<{kind: HandKind; skin: string; wristR?: number}> = (
   switch (kind) {
     case 'relaxed': {
       parts = [
-        closedSmooth([[-1, -5.2], [7, -6.4], [14, -6.2], [17.4, -2.4], [17, 3.6], [11, 5.8], [2, 5.4]]),
+        closedSmooth([[-3, -4.2], [3, -5.4], [8, -6.4], [14, -6.2], [17.4, -2.4], [17, 3.6], [11, 5.8], [4, 5.2], [-3, 4.2]]),
         finger(14.6, -4.0, 16, 10.4, 1.95), finger(15.4, -0.8, 20, 11.0, 2.0), finger(14.8, 2.4, 26, 9.6, 1.95),
         capsule([4, 4.2], 2.6, [12.6, 8.6], 2.15),
       ];
       lines.push('M 24.4 -0.6 Q 21.5 -1.8 19 -1.6', 'M 23 3.4 Q 20.5 2.2 18.4 2.2');
       break;
     }
+    case 'rest': {
+      // a hand lying on the body or on a thing: fingers together (a soft mitten), finger lines, a clear thumb
+      parts = [
+        closedSmooth([[-3, -4.2], [3, -5.8], [9, -6.8], [16, -6.8], [23, -6.4], [27.6, -4.6], [29.4, -1.2], [28.8, 2.4], [25.6, 4.6], [17, 5.6], [9, 5.6], [3, 5.2], [-3, 4.2]]),
+        capsule([5, 4.6], 2.7, [13.6, 9.6], 2.2),
+      ];
+      lines.push('M 28.6 -3.2 L 20.4 -3.6', 'M 29.2 0 L 20.8 0', 'M 27.4 3.2 L 20.6 3.0');
+      break;
+    }
     case 'open': {
       parts = [
-        closedSmooth([[-1, -6.2], [6, -7.8], [13.5, -7.6], [16.6, -3.5], [16.8, 3], [13.6, 7], [6, 7.6], [-1, 5.8]]),
+        closedSmooth([[-3, -4.2], [3, -6.2], [8, -7.8], [13.5, -7.6], [16.6, -3.5], [16.8, 3], [13.6, 7], [7, 7.4], [3, 6], [-3, 4.2]]),
         finger(13.6, -5.6, -20, 9.5, 1.85), finger(15.4, -2.1, -7, 12, 1.95), finger(15.8, 1.4, 4, 12.6, 1.95), finger(14.8, 4.8, 16, 11.2, 1.9),
         capsule([5, 5.2], 2.7, [13.2, 13.6], 2.15),
       ];
@@ -191,7 +203,7 @@ export const Hand: React.FC<{kind: HandKind; skin: string; wristR?: number}> = (
     }
     case 'point': {
       parts = [
-        closedSmooth([[-1, -6.2], [7, -7.6], [13.4, -7], [16.8, -3.6], [17, 2], [14, 5.4], [6, 6.6], [-1, 5.6]]),
+        closedSmooth([[-3, -4.2], [3, -6], [8, -7.4], [13.4, -7], [16.8, -3.6], [17, 2], [14, 5.4], [7, 6.4], [3, 5.4], [-3, 4.2]]),
         finger(14.4, 3.2, -2, 14.5, 1.9),
       ];
       lines.push('M 13.4 -4.2 Q 16.4 -4.4 16.9 -2.6', 'M 13.2 -0.8 Q 16.4 -1 17 0.8');
@@ -200,7 +212,7 @@ export const Hand: React.FC<{kind: HandKind; skin: string; wristR?: number}> = (
     }
     case 'thumbs': {
       parts = [
-        closedSmooth([[-1, -6.6], [6, -8.2], [12.6, -8], [15.6, -5], [15.8, 1.5], [13, 6.8], [6, 7.6], [-1, 6]]),
+        closedSmooth([[-3, -4.2], [3, -6.4], [7, -8.2], [12.6, -8], [15.6, -5], [15.8, 1.5], [13, 6.8], [7, 7.4], [3, 6], [-3, 4.2]]),
         capsule([9.5, 4.2], 3.1, [23, 4.6], 2.8),
       ];
       lines.push('M 3.5 -7.6 Q 2.6 -2 4.6 1.6', 'M 7.4 -8 Q 6.4 -2.4 8.4 1.8', 'M 11.2 -7.8 Q 10.4 -2.6 12 2', 'M 21.6 2.6 Q 20.4 4.4 21.4 6.2');
@@ -209,7 +221,7 @@ export const Hand: React.FC<{kind: HandKind; skin: string; wristR?: number}> = (
     case 'fist': {
       // a rounded block, four knuckle bumps at the top, finger lines across, the thumb folded over the front
       parts = [
-        closedSmooth([[-1, -6.6], [6, -8.4], [12, -8.2], [14.6, -6], [15, 2], [14, 6.2], [6.5, 7.6], [-1, 6]]),
+        closedSmooth([[-3, -4.2], [3, -6.4], [7, -8.4], [12, -8.2], [14.6, -6], [15, 2], [14, 6.2], [7, 7.4], [3, 6], [-3, 4.2]]),
         capsule([14.4, -5.7], 2.35, [14.4, -5.7], 2.35), capsule([15.4, -2.1], 2.4, [15.4, -2.1], 2.4),
         capsule([15.4, 1.5], 2.4, [15.4, 1.5], 2.4), capsule([14.4, 4.9], 2.25, [14.4, 4.9], 2.25),
       ];
@@ -220,16 +232,26 @@ export const Hand: React.FC<{kind: HandKind; skin: string; wristR?: number}> = (
     case 'hold': {
       // fingers curled round a bar (the hole is the bar), the thumb along the near side
       const hc: P = [13.2, -0.6], hr = 3.7;
-      parts = [
-        closedSmooth([[-1, -6.4], [6, -8], [13, -8.4], [18.4, -5.6], [20, -0.4], [18.6, 4.8], [13.6, 7.6], [6, 7.4], [-1, 5.8]])
-          + ` M ${hc[0] + hr} ${hc[1]} A ${hr} ${hr} 0 1 0 ${hc[0] - hr} ${hc[1]} A ${hr} ${hr} 0 1 0 ${hc[0] + hr} ${hc[1]} Z`,
-      ];
+      const block = closedSmooth([[-3, -4.2], [3, -6.2], [7, -8], [13, -8.4], [18.4, -5.6], [20, -0.4], [18.6, 4.8], [13.6, 7.6], [7, 7.4], [3, 6], [-3, 4.2]]);
+      if (!free) {
+        // on an arm the hand grips a real object (the object shows the gap): curled fingers, no hole
+        parts = [block];
+        lines.push('M 19.4 -3.4 L 13.6 -3.6', 'M 19.9 -0.2 L 13.8 -0.2', 'M 19.2 3 L 13.6 3.2', 'M 12.8 -7.6 Q 11.6 -1.2 12.8 5.6');
+        over = [capsule([5, 6.0], 2.4, [15.4, 6.2], 2.1)];
+        break;
+      }
+      parts = [block + ` M ${hc[0] + hr} ${hc[1]} A ${hr} ${hr} 0 1 0 ${hc[0] - hr} ${hc[1]} A ${hr} ${hr} 0 1 0 ${hc[0] + hr} ${hc[1]} Z`];
       for (const a of [-58, -18, 22]) { const t = (a * Math.PI) / 180; lines.push(`M ${f1(hc[0] + Math.cos(t) * (hr + 0.8))} ${f1(hc[1] + Math.sin(t) * (hr + 0.8))} L ${f1(hc[0] + Math.cos(t) * (hr + 3.6))} ${f1(hc[1] + Math.sin(t) * (hr + 3.6))}`); }
       over = [capsule([5, 6.0], 2.4, [15.4, 6.2], 2.1)];
       holes = true;
       break;
     }
   }
+  return {parts, lines, over, holes};
+};
+export const Hand: React.FC<{kind: HandKind; skin: string; wristR?: number}> = ({kind, skin, wristR}) => {
+  const stub = wristR ? [capsule([-9, 0], wristR, [1, 0], wristR)] : [];
+  const {parts, lines, over, holes} = handGeom(kind);
   return (
     <g>
       <Union d={[...stub, ...parts]} fill={skin} shadow={0.55} holes={holes}>
@@ -259,10 +281,12 @@ type VK = 'f' | 'q' | 's';
 const vk = (v: View): VK => (v === 'front' ? 'f' : v === 'three-quarter' ? 'q' : 's');
 
 // The head outline in head space (cranium radius 40, centre at 0, y down, facing right for q and s).
+/** The nose in the profile (side view), scaled by k: a dip at the eye, a rounded nose, then the lip. */
+const SIDE_NOSE = (k: number): P[] => [[41 + 3 * k, 7.6], [41 + 8.6 * k, 11.8], [41 + 11 * k, 15.6], [41 + 9.4 * k, 19], [41 + 3.6 * k, 20.4]];
 const HEAD: Record<VK, P[]> = {
   f: [[0, -40], [23, -36.5], [37, -23], [40.5, -4], [39.5, 13], [35, 28], [25.5, 39.5], [13, 46], [0, 48], [-13, 46], [-25.5, 39.5], [-35, 28], [-39.5, 13], [-40.5, -4], [-37, -23], [-23, -36.5]],
   q: [[-2, -40.5], [21, -37.5], [36, -25], [41.5, -7], [42, 9], [38.5, 24], [31, 36], [21, 44.5], [10, 47.5], [-1, 45.5], [-13, 40], [-25, 32], [-35, 20], [-40.5, 4], [-40.5, -14], [-32.5, -30], [-18, -38.5]],
-  s: [[-4, -41], [18, -38.5], [33, -28], [40, -13], [41.5, 1], [44.5, 8.5], [47.5, 14.5], [43, 18.5], [42.5, 24], [40.5, 30.5], [37.5, 38.5], [31.5, 45], [19, 46.5], [6, 41.5], [-6, 34], [-22, 30], [-36, 20], [-43.5, 2], [-41.5, -18], [-28.5, -35]],
+  s: [[-4, -41], [18, -38.5], [33, -28], [40, -13], [41.2, -3], [40.4, 4], ...SIDE_NOSE(1), [43.2, 23.6], [42, 29.4], [42.4, 33.4], [38.5, 39.5], [31.5, 45], [19, 46.5], [6, 41.5], [-6, 34], [-22, 30], [-36, 20], [-43.5, 2], [-41.5, -18], [-28.5, -35]],
 };
 const FACE: Record<VK, {eye: P; mouth: P; mw: number; ear: P | null}> = {
   f: {eye: [0, 5], mouth: [0, 28.5], mw: 1, ear: null},
@@ -408,6 +432,7 @@ export type Build = {
   hand?: number; // hand size factor
   arm?: number; // arm length factor
   jaw?: number; // jaw width factor (1 = the standard head)
+  nose?: number; // nose size factor (1 = the standard nose)
   tilt?: number; // a little head tilt at rest, in degrees
 };
 export type PersonSpec = {
@@ -440,7 +465,7 @@ export const POSES: Record<PoseName, Pose> = {
   point: {R: REST_R, L: {up: [0.62, 0.28, 0.66], fore: [0.62, -0.06, 0.78], hand: 'point', thumb: [0, -1, 0]}, legR: STAND_R, legL: STAND_L},
   thumbs: {R: REST_R, L: {up: [0.3, 0.9, 0.45], fore: [0.35, -0.7, 0.7], hand: 'thumbs', thumb: [0, -1, 0]}, legR: STAND_R, legL: STAND_L, tilt: 4},
   think: {R: {up: [0.0, 1, 0.8], fore: [-0.28, -1, 0.25], hand: 'fist', thumb: [0, -1, 0.5], front: true}, L: REST_L, legR: STAND_R, legL: STAND_L, tilt: 7},
-  worried: {R: {up: [0.12, 1, 0.34], fore: [-0.85, -0.62, 0.4], hand: 'open', thumb: [0, -1, 0], front: true, bend: -20}, L: REST_L, legR: STAND_R, legL: STAND_L, tilt: -5},
+  worried: {R: {up: [0.12, 1, 0.34], fore: [-0.85, -0.62, 0.4], hand: 'rest', thumb: [0, -1, 0], front: true, bend: -48}, L: REST_L, legR: STAND_R, legL: STAND_L, tilt: -5},
   clipboard: {R: {up: [0.06, 1, 0.3], fore: [-0.55, -0.2, 0.8], hand: 'hold', thumb: [0, -1, 0], front: true, prop: 'clipboard'}, L: REST_L, legR: STAND_R, legL: STAND_L},
   sit: {
     R: {up: [0.06, 1, 0.32], fore: [-0.5, -0.5, 0.75], hand: 'hold', thumb: [0, -1, 0], front: true, prop: 'clipboard'},
@@ -462,10 +487,10 @@ export const POSES: Record<PoseName, Pose> = {
   /** thumbs up with the far hand, the thumb straight up over a level fist */
   thumbsUp: {R: REST_R, L: {up: [0.35, 0.9, 0.3], fore: [0.15, -0.95, 0.3], hand: 'thumbs', thumb: [0, -1, 0], ang: -90}, legR: STAND_R, legL: STAND_L, tilt: 4},
   /** worried: the near hand on the chest, the far hand held out, palm up, under someone's arm */
-  worriedHold: {R: {up: [0.12, 1, 0.34], fore: [-0.85, -0.62, 0.4], hand: 'open', thumb: [0, -1, 0], front: true, bend: -20}, L: {up: [0.2, 0.98, 0.3], fore: [0.12, 0.8, 0.6], hand: 'open', thumb: [0, -1, 0.2]}, legR: STAND_R, legL: STAND_L, tilt: -5},
+  worriedHold: {R: {up: [0.12, 1, 0.34], fore: [-0.85, -0.62, 0.4], hand: 'rest', thumb: [0, -1, 0], front: true, bend: -48}, L: {up: [0.2, 0.98, 0.3], fore: [0.12, 0.8, 0.6], hand: 'open', thumb: [0, -1, 0.2]}, legR: STAND_R, legL: STAND_L, tilt: -5},
   /** explains with the far open hand low, at waist height (toward a child) */
   /** worried: the near hand on the chest, the far index finger points down-forward at something (a scratch) */
-  worriedPoint: {R: {up: [0.12, 1, 0.34], fore: [-0.85, -0.62, 0.4], hand: 'open', thumb: [0, -1, 0], front: true, bend: -20}, L: {up: [0.25, 0.95, 0.35], fore: [0.3, 0.3, 0.95], hand: 'point', thumb: [0, -1, 0]}, legR: STAND_R, legL: STAND_L, tilt: -5},
+  worriedPoint: {R: {up: [0.12, 1, 0.34], fore: [-0.85, -0.62, 0.4], hand: 'rest', thumb: [0, -1, 0], front: true, bend: -48}, L: {up: [0.25, 0.95, 0.35], fore: [0.3, 0.3, 0.95], hand: 'point', thumb: [0, -1, 0]}, legR: STAND_R, legL: STAND_L, tilt: -5},
   /** a palm-up "you see" gesture with the far hand, at chest height, close to the body */
   youSee: {R: REST_R, L: {up: [0.25, 1, 0.1], fore: [0.3, -0.5, 0.6], hand: 'open', thumb: [0, -1, 0.2], bend: -10}, legR: STAND_R, legL: STAND_L, tilt: 3},
   /** holds the far forearm up in front, nearly upright, palm toward the face (shows a mark on the forearm) */
@@ -596,9 +621,30 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
     const col = spec.over ? spec.over.color : spec.top.color;
     const fdir = nrm(sub(w, e));
     const parts: React.ReactNode[] = [];
-    // bare skin first
-    const skinD = [capsule(s, armR0, e, armR1), capsule(e, armR1, w, armR2)];
-    parts.push(<Union key="skin" d={skinD} fill={skin} shadow={0.7} />);
+    // the hand's place: at the wrist, along the forearm (or the pose's own angle), thumb side by the pose
+    const ang = ap.ang ?? deg(fdir);
+    let m = 1;
+    const thumb = ap.thumb ? g.toBody(ap.thumb) : null;
+    const lp = perp(fdir);
+    if (thumb) {
+      const tp = sub(proj(cam, v3add(g.w3, thumb)), w);
+      const dd = tp[0] * lp[0] + tp[1] * lp[1];
+      if (Math.abs(dd) > 0.25 * len(tp)) m = Math.sign(dd);
+      else m = Math.sign((-w[0]) * lp[0] + 0.0001) || 1; // tie: thumb on the inner side
+    }
+    // a resting hand turns in screen space (fingers follow the body up), whichever side its thumb is on
+    const bend = ap.hand === 'rest' ? (ap.bend ?? 0) : (ap.bend ?? 0) * m;
+    const ht = `translate(${f1(w[0])} ${f1(w[1])}) rotate(${f1(ang + bend)}) scale(${f1(handK)} ${f1(handK * m)})`;
+    const hg = handGeom(ap.hand, false);
+    // the prop held in this hand sits behind the arm and the hand
+    if (ap.prop === 'clipboard') parts.push(<Clipboard key="prop" at={w} R={R} ang={view === 'front' ? -8 : -14} />);
+    // bare skin: upper arm, forearm and hand are ONE outlined form (no ring at the wrist)
+    const skinD: UPart[] = [capsule(s, armR0, e, armR1), capsule(e, armR1, w, armR2), ...hg.parts.map((d) => ({d, t: ht}))];
+    parts.push(
+      <Union key="skin" d={skinD} fill={skin} shadow={0.6} holes={hg.holes}>
+        <g transform={ht}>{hg.lines.map((l, i) => <path key={i} d={l} {...INLINE} />)}</g>
+      </Union>,
+    );
     // the sleeve
     const t = sleeveT;
     let sl: string[] = [];
@@ -637,25 +683,8 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
         </Clip>,
       );
     }
-    // the prop held in this hand (drawn under the hand)
-    if (ap.prop === 'clipboard') parts.push(<Clipboard key="prop" at={w} R={R} ang={view === 'front' ? -8 : -14} />);
-    // the hand
-    const ang = ap.ang ?? deg(fdir);
-    let m = 1;
-    const thumb = ap.thumb ? g.toBody(ap.thumb) : null;
-    const lp = perp(fdir);
-    if (thumb) {
-      const tp = sub(proj(cam, v3add(g.w3, thumb)), w);
-      const dd = tp[0] * lp[0] + tp[1] * lp[1];
-      if (Math.abs(dd) > 0.25 * len(tp)) m = Math.sign(dd);
-      else m = Math.sign((-w[0]) * lp[0] + 0.0001) || 1; // tie: thumb on the inner side
-    }
-    const bend = (ap.bend ?? 0) * m;
-    parts.push(
-      <g key="hand" transform={`translate(${f1(w[0])} ${f1(w[1])}) rotate(${f1(ang + bend)}) scale(${f1(handK)} ${f1(handK * m)})`}>
-        <Hand kind={ap.hand} skin={skin} wristR={sleeve === 'long' ? undefined : armR2 / handK} />
-      </g>,
-    );
+    // a thumb lying over the fingers is drawn last, on its own thin outline
+    if (hg.over.length) parts.push(<g key="thumb" transform={ht}><Union d={hg.over} fill={skin} shadow={0} line="in" /></g>);
     return <g key={'arm' + side}>{parts}</g>;
   };
 
@@ -1019,7 +1048,9 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
     const gapE = eyeR * 0.5;
     const lk: [number, number] = look ?? (v === 'f' ? [0, 0.05] : [0.45, 0.05]);
     const jaw = b.jaw ?? 1;
-    const outline = closedSmooth(HEAD[v].map(([x, y]) => [x * (y > 0 ? lerp(1, jaw, Math.min(1, y / 40)) : 1), y] as P));
+    const nk = b.nose ?? 1;
+    const headPts = v === 's' ? HEAD.s.map((p, i) => (i >= 6 && i <= 10 ? SIDE_NOSE(nk)[i - 6] : p)) : HEAD[v];
+    const outline = closedSmooth(headPts.map(([x, y]) => [x * (y > 0 && !(v === 's' && x > 41 && y < 21) ? lerp(1, jaw, Math.min(1, y / 40)) : 1), y] as P));
     const tilt = P0.tilt ?? b.tilt ?? 0;
     const g = (k: string, n: React.ReactNode) => <g key={k}>{n}</g>;
     const parts: React.ReactNode[] = [];
@@ -1045,7 +1076,7 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
     // the head itself
     parts.push(
       <Union key="head" d={[outline]} fill={skin} shadow={0.8}>
-        {spec.extras?.stubble && <path d={v === 'f' ? 'M -38 16 Q -34 38 -14 46 Q 0 50 14 46 Q 34 38 38 16 Q 32 32 18 34 Q 14 25 0 24 Q -14 25 -18 34 Q -32 32 -38 16 Z' : v === 'q' ? 'M -22 30 Q -6 42 10 48 Q 30 44 40 22 Q 36 28 28 24 Q 18 20 6 24 Q -8 28 -22 30 Z' : 'M -4 34 Q 10 44 30 46 Q 40 38 44 22 Q 38 26 32 24 Q 22 22 10 28 Q 2 32 -4 34 Z'} fill={shade(skin, 0.08)} />}
+        {spec.extras?.stubble && <path d={v === 'f' ? 'M -38 16 Q -34 38 -14 46 Q 0 50 14 46 Q 34 38 38 16 Q 32 32 18 34 Q 14 25 0 24 Q -14 25 -18 34 Q -32 32 -38 16 Z' : v === 'q' ? 'M -22 31 Q -6 42 10 48 Q 30 44 40 25 Q 36 31 29 29.5 Q 19 26.5 6 27.5 Q -8 29 -22 31 Z' : 'M -4 34 Q 10 44 30 46 Q 40 38 44 22 Q 38 26 32 24 Q 22 22 10 28 Q 2 32 -4 34 Z'} fill={shade(skin, 0.08)} />}
       </Union>,
     );
     // the front hair
@@ -1066,8 +1097,16 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
       );
     } else face.push(<Eyes key="eyes" x={ex0} y={ey0} r={eyeR} gap={gapE} look={lk} mood={ex.mood} brows />);
     // nose
-    if (v === 'f') face.push(<path key="nose" d="M -1.5 14.5 Q 3.2 17.5 -0.5 20.5" {...INLINE} />);
-    if (v === 'q') face.push(<path key="nose" d="M 34.5 11 L 38.6 18.4 L 34 19.6" {...INLINE} />);
+    // the nose: one family in every view, scaled with the person (b.nose)
+    if (v === 'f') face.push(<path key="nose" transform={`translate(0 17) scale(${nk}) translate(0 -17)`} d="M -1.6 12.8 Q 5.6 16.2 2 20.8 Q -0.2 22.4 -3.2 21" {...INLINE} />);
+    if (v === 'q') face.push(
+      <g key="nose" transform={`translate(31.5 21.3) scale(${f1(nk * 1.12)}) translate(-31 -19)`}>
+        <path d="M 27.6 14.2 C 32.6 14.2 38 17.2 37.8 20.6 C 37.6 23.8 33 24.8 29.2 23.5 C 27.2 21 26.8 17 27.6 14.2 Z" fill={skin} />
+        <path d="M 32.4 15.2 C 35.8 16.4 38 18.6 37.8 20.6 C 37.6 23.8 33 24.8 29.2 23.5" {...INLINE} />
+        <path d="M 31.2 21.3 Q 32.9 20.5 34.2 21.9" {...INLINE} />
+      </g>,
+    );
+    if (v === 's') face.push(<path key="nose" d={`M ${f1(41 + 6.4 * nk)} 17.6 Q ${f1(41 + 3.8 * nk)} 17.2 ${f1(41 + 4 * nk)} 19.6`} {...INLINE} />);
     // moustache
     if (spec.extras?.moustache) {
       const mx = fc.mouth[0], my = fc.mouth[1] - 5;
@@ -1294,7 +1333,7 @@ export const CAST: PersonSpec[] = [
     top: {kind: 'shirt', color: CLOTH.blue, sleeve: 'long'},
     bottom: {kind: 'trousers', color: CLOTH.charcoal}, shoes: {kind: 'shoe', color: '#4a3226'},
     extras: {stubble: true, belt: '#4a3226'},
-    build: {heads: 4.6, R: 41, shoulder: 1.28, chest: 0.72, waist: 1.08, hip: 1.04, belly: 0.16, limb: 1.15, neck: 0.37, neckLen: 0.34, legFrac: 0.43, jaw: 1.1},
+    build: {heads: 4.6, R: 41, shoulder: 1.28, chest: 0.72, waist: 1.08, hip: 1.04, belly: 0.16, limb: 1.15, neck: 0.37, neckLen: 0.34, legFrac: 0.43, jaw: 1.1, nose: 1.15},
   },
   {
     id: 'kid', name: 'Kid', role: 'the son, about 7: lively',
@@ -1302,7 +1341,7 @@ export const CAST: PersonSpec[] = [
     top: {kind: 'tee', color: CLOTH.green, sleeve: 'short'},
     bottom: {kind: 'shorts', color: CLOTH.navy}, shoes: {kind: 'trainer', color: CLOTH.red},
     extras: {cap: CLOTH.teal},
-    build: {heads: 3.1, R: 37, shoulder: 0.8, chest: 0.56, waist: 0.72, hip: 0.74, belly: 0.04, limb: 0.95, neck: 0.25, neckLen: 0.2, legFrac: 0.37, hand: 0.9, tilt: -5},
+    build: {heads: 3.1, R: 37, shoulder: 0.8, chest: 0.56, waist: 0.72, hip: 0.74, belly: 0.04, limb: 0.95, neck: 0.25, neckLen: 0.2, legFrac: 0.37, hand: 0.9, tilt: -5, nose: 0.85},
   },
   {
     id: 'grandpa', name: 'Grandpa', role: 'the grandfather: gentle, stubborn',
@@ -1310,7 +1349,7 @@ export const CAST: PersonSpec[] = [
     top: {kind: 'shirt', color: '#f4ead2', sleeve: 'long'}, over: {kind: 'cardigan', color: '#7d6cc0'},
     bottom: {kind: 'trousers', color: CLOTH.brown}, shoes: {kind: 'shoe', color: '#3a2a22'},
     extras: {glasses: 'square', moustache: true},
-    build: {heads: 4.15, R: 41, shoulder: 1.12, chest: 0.66, waist: 1.1, hip: 1.04, belly: 0.28, limb: 1.05, neck: 0.34, neckLen: 0.26, legFrac: 0.41, jaw: 1.08, tilt: 2},
+    build: {heads: 4.15, R: 41, shoulder: 1.12, chest: 0.66, waist: 1.1, hip: 1.04, belly: 0.28, limb: 1.05, neck: 0.34, neckLen: 0.26, legFrac: 0.41, jaw: 1.08, tilt: 2, nose: 1.15},
   },
   {
     id: 'grandma', name: 'Grandma', role: 'the grandmother: wise, a little worried',
@@ -1325,7 +1364,7 @@ export const CAST: PersonSpec[] = [
     skin: SKIN.light, hair: {style: 'tuft', color: '#a8794e'},
     top: {kind: 'onesie', color: CLOTH.sky, sleeve: 'short'},
     bottom: {kind: 'onesie', color: CLOTH.sky}, shoes: {kind: 'bare', color: SKIN.light},
-    build: {heads: 2.45, R: 35, shoulder: 0.9, chest: 0.68, waist: 0.95, hip: 0.92, belly: 0.3, limb: 1.38, neck: 0.3, neckLen: 0.04, legFrac: 0.25, hand: 0.82, arm: 0.92, jaw: 1.06, tilt: 5},
+    build: {heads: 2.45, R: 35, shoulder: 0.9, chest: 0.68, waist: 0.95, hip: 0.92, belly: 0.3, limb: 1.38, neck: 0.3, neckLen: 0.04, legFrac: 0.25, hand: 0.82, arm: 0.92, jaw: 1.06, tilt: 5, nose: 0.7},
   },
 ];
 export const castById = (id: string) => CAST.find((c) => c.id === id)!;
