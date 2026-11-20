@@ -2,6 +2,7 @@
   "note": "MedPeak Toons voice cast: every character has ONE fixed voice, so it sounds the same in every video. All voices are ElevenLabs default voices (on every account, no voice slots needed, so the key pool can switch freely). `pitch` is in semitones, applied after generation with ffmpeg (free): small characters go up, big ones go down. `speed` is the ElevenLabs speaking speed (0.7-1.2). Organs talk fast (about 2.8 words a second); Dr. Mira is calmer.",
   "model": "eleven_multilingual_v2",
   "cast": {
+    "narrator": {"voice": "Joey - Upbeat Popular News Host", "voiceId": "mUfWEBhcigm8YlCDbmGP", "publicOwnerId": "19ce68b7b5adbf25e601d51a3b985ff64e420a831b7b3957d0c5603adeb22133", "pitch": 0, "speed": 1, "why": "the CTA narrator, the SAME voice in every video (owner pick 2026-11-20): young, energetic, professional"},
     "doctor": {"voice": "Matilda", "voiceId": "XrExE9yKIg1WjnnlVkGX", "pitch": 0, "speed": 0.98, "why": "knowledgeable, professional, warm"},
     "patient": {"voice": "Liam", "voiceId": "TX3LPaxmHKxFdv7VOQHJ", "pitch": 0, "speed": 1.05, "why": "ordinary young man"},
     "mom": {"voice": "Sarah", "voiceId": "EXAVITQu4vr4xnSDxMaL", "pitch": 0, "speed": 1.05, "why": "mature, reassuring, worried"},

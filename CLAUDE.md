@@ -108,7 +108,7 @@ Do these once on a new machine. None of it needs the old machine except step 6.
   `Watermark` in `src/toons/v8/hud.tsx`, drawn by the player.
 - **End every video with a CTA card: three strong points, each a big icon with short bold text** (2026-11-20).
   The headline on one line; the channel logo (`assets/brand/logo.png`) top centre in a circle with "MedPeak Health"
-  typed below; the background in the logo's royal blue. A **professional male narrator, the same voice in every video**,
+  typed below; the background in the logo's royal blue. A **professional male narrator, the same voice in every video** (Joey, `narrator` in `skill/medpeak-health/toons-cast.json`, the owner's pick 2026-11-20),
   speaks the CTA and ends with: "Follow MedPeak Health for more health tips that keep you safe."
 - **Icons only when the words say it**; non-human characters get a 1-second name tag (arrow + tag box above the head)
   the first time they appear; no tags on humans. The camera moves smoothly (one eased move per shot, a continuous dive
