@@ -22,7 +22,7 @@ export const V8_VIDEOS: Record<string, Record<string, ShotDef>> = {rabies: RABIE
 export type V8Cta = {title: string; points: CtaPoint[]; voice?: string; seconds?: number; at?: CtaAt};
 export const V8_CTA: Record<string, V8Cta> = {rabies: RABIES_CTA};
 /** The narrator starts after the card has slid in; the card holds a moment after his last word. */
-export const CTA_LEAD = 0.45, CTA_TAIL = 0.9;
+export const CTA_LEAD = 0.3, CTA_TAIL = 0.6; // keep the sum in step with CTA_PAD in pipeline/toon-check.mjs
 export const ctaSeconds = (c: V8Cta | undefined) => (!c ? 0 : CTA_LEAD + (c.seconds ?? 4) + CTA_TAIL);
 
 const K = V8_FPS / TOON_FPS; // the layout counts 30 frames a second; the video runs at 60
@@ -78,7 +78,9 @@ const cameraAt = (L: Layout, def: ShotDef | undefined, s: ShotNow, si: number, s
   if (def?.view) return clampCam(def.view(s));
   const f = sec * TOON_FPS;
   const segs = L.segs.filter((g) => g.si === si);
-  const i = Math.max(0, segs.findIndex((g) => f >= g.from && f < g.to));
+  // past the last segment (the shot's tail) keep the LAST framing, never jump back to the first one
+  const found = segs.findIndex((g) => f >= g.from && f < g.to);
+  const i = found >= 0 ? found : segs.length && f >= segs[segs.length - 1].from ? segs.length - 1 : 0;
   const of = (j: number): Cam => {
     const g = segs[j];
     if (!g || !def) return {z: 1, x: 540, y: 960};
@@ -148,14 +150,15 @@ export const ToonV8: React.FC<V8VideoProps> = ({toon, timings, sfx, music, bare 
 
   // a short white flash where the script asks for one
   const shot = L.shots[si].shot;
-  const flash = (shot.events ?? []).reduce((m, e) => { const n = f30 - frameOf(L, si, e.at, e.word, e.delay); return e.fx && n >= 0 && n < 9 ? Math.max(m, 1 - n / 9) : m; }, 0);
+  // v4: the flash rises over 3 frames and fades over 12, softer (no one-frame white blink)
+  const flash = (shot.events ?? []).reduce((m, e) => { const n = f30 - frameOf(L, si, e.at, e.word, e.delay); return e.fx && n >= 0 && n < 15 ? Math.max(m, 0.6 * Math.min(n / 3, 1) * (1 - Math.max(0, n - 3) / 12)) : m; }, 0);
 
   // the camera's punch on the line's key word, and a shake on every bite or hit (a flash event)
   const ki = cur ? cur.words.findIndex((w) => clean(w.w).toLowerCase().replace(/[!?'’]/g, '') === keyWord.replace(/[!?'’]/g, '')) : -1;
   const kt = ki >= 0 && cur ? tl - cur.words[ki].start : -1;
   // v4 (the owner, 2026-11-20): no punch zoom on the key word (it looked jerky)
   const punch = 0 * kt;
-  const shake = flash > 0 && !['home', 'clinic'].includes(shot.set ?? '') ? Math.sin(sec * 90) * 14 * flash : 0; // a bite shakes; a good-news flash in a room does not
+  const shake = flash > 0 && !['home', 'clinic'].includes(shot.set ?? '') ? Math.sin(sec * 40) * 9 * flash : 0; // v4: slower, smaller (no jitter) // a bite shakes; a good-news flash in a room does not
   // the serious beat (a line marked "serious"): the picture darkens and the camera creeps in
   const grave = L.lines.filter((l) => (l.line as {serious?: boolean}).serious).reduce((m, l) => {
     const a = (f30 - l.from) / TOON_FPS, b = (l.from + l.frames - f30) / TOON_FPS;

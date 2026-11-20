@@ -5,188 +5,190 @@
   "words": [
     {
       "w": "Bitten",
-      "start": 0,
-      "end": 0.406
+      "start": 0.0,
+      "end": 0.369
     },
     {
       "w": "or",
-      "start": 0.522,
-      "end": 0.708
+      "start": 0.475,
+      "end": 0.644
     },
     {
       "w": "scratched?",
-      "start": 0.824,
-      "end": 1.625
+      "start": 0.749,
+      "end": 1.477
     },
     {
       "w": "Wash",
-      "start": 2.067,
-      "end": 2.403
+      "start": 1.879,
+      "end": 2.185
     },
     {
       "w": "for",
-      "start": 2.461,
-      "end": 2.577
+      "start": 2.237,
+      "end": 2.343
     },
     {
       "w": "fifteen",
-      "start": 2.635,
-      "end": 3.007
+      "start": 2.395,
+      "end": 2.734
     },
     {
       "w": "minutes",
-      "start": 3.065,
-      "end": 3.32
+      "start": 2.786,
+      "end": 3.018
     },
     {
       "w": "with",
-      "start": 3.355,
-      "end": 3.483
+      "start": 3.05,
+      "end": 3.166
     },
     {
       "w": "soap",
-      "start": 3.541,
-      "end": 3.808
+      "start": 3.219,
+      "end": 3.462
     },
     {
       "w": "and",
-      "start": 3.889,
-      "end": 3.994
+      "start": 3.535,
+      "end": 3.631
     },
     {
       "w": "running",
-      "start": 4.063,
-      "end": 4.307
+      "start": 3.694,
+      "end": 3.915
     },
     {
       "w": "water.",
-      "start": 4.365,
-      "end": 4.865
+      "start": 3.968,
+      "end": 4.423
     },
     {
       "w": "See",
-      "start": 5.108,
-      "end": 5.306
+      "start": 4.644,
+      "end": 4.824
     },
     {
       "w": "a",
-      "start": 5.341,
-      "end": 5.364
+      "start": 4.855,
+      "end": 4.876
     },
     {
       "w": "doctor",
-      "start": 5.422,
-      "end": 5.724
+      "start": 4.929,
+      "end": 5.204
     },
     {
       "w": "the",
-      "start": 5.782,
-      "end": 5.851
+      "start": 5.256,
+      "end": 5.319
     },
     {
       "w": "same",
-      "start": 5.898,
-      "end": 6.13
+      "start": 5.362,
+      "end": 5.573
     },
     {
       "w": "day.",
-      "start": 6.165,
-      "end": 6.618
+      "start": 5.605,
+      "end": 6.016
     },
     {
       "w": "Get",
-      "start": 6.861,
-      "end": 7.07
+      "start": 6.237,
+      "end": 6.427
     },
     {
       "w": "every",
-      "start": 7.14,
-      "end": 7.419
+      "start": 6.491,
+      "end": 6.745
     },
     {
       "w": "shot,",
-      "start": 7.488,
-      "end": 7.86
+      "start": 6.807,
+      "end": 7.145
     },
     {
       "w": "and",
-      "start": 7.883,
-      "end": 8.034
+      "start": 7.166,
+      "end": 7.304
     },
     {
       "w": "finish",
-      "start": 8.104,
-      "end": 8.382
+      "start": 7.367,
+      "end": 7.62
     },
     {
       "w": "the",
-      "start": 8.429,
-      "end": 8.498
+      "start": 7.663,
+      "end": 7.725
     },
     {
       "w": "vaccine",
-      "start": 8.533,
-      "end": 9.009
+      "start": 7.757,
+      "end": 8.19
     },
     {
       "w": "course.",
-      "start": 9.056,
-      "end": 9.532
+      "start": 8.233,
+      "end": 8.665
     },
     {
       "w": "Follow",
-      "start": 9.741,
-      "end": 10.089
+      "start": 8.855,
+      "end": 9.172
     },
     {
       "w": "MedPeak",
-      "start": 10.159,
-      "end": 10.577
+      "start": 9.235,
+      "end": 9.615
     },
     {
       "w": "Health",
-      "start": 10.635,
-      "end": 10.89
+      "start": 9.668,
+      "end": 9.9
     },
     {
       "w": "for",
-      "start": 10.96,
-      "end": 11.122
+      "start": 9.964,
+      "end": 10.111
     },
     {
       "w": "more",
-      "start": 11.192,
-      "end": 11.378
+      "start": 10.175,
+      "end": 10.344
     },
     {
       "w": "health",
-      "start": 11.436,
-      "end": 11.656
+      "start": 10.396,
+      "end": 10.596
     },
     {
       "w": "tips",
-      "start": 11.714,
-      "end": 11.981
+      "start": 10.649,
+      "end": 10.892
     },
     {
       "w": "that",
-      "start": 12.028,
-      "end": 12.156
+      "start": 10.935,
+      "end": 11.051
     },
     {
       "w": "keep",
-      "start": 12.202,
-      "end": 12.388
+      "start": 11.093,
+      "end": 11.262
     },
     {
       "w": "you",
-      "start": 12.434,
-      "end": 12.516
+      "start": 11.304,
+      "end": 11.378
     },
     {
       "w": "safe.",
-      "start": 12.597,
-      "end": 13.282
+      "start": 11.452,
+      "end": 12.075
     }
-  ]
+  ],
+  "tempo": 1.1,
+  "raw": "assets/toons-voice/rabies/cta-raw.mp3 (the original take; cta.mp3 = it at 1.1x speed, same pitch, so the video stays under 60 s)"
 }

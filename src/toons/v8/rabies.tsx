@@ -27,8 +27,8 @@ export const RABIES_SHOTS: Record<string, ShotDef> = {
 export const RABIES_CTA: {title: string; points: CtaPoint[]; voice: string; seconds: number; at: {head: number; points: [number, number, number]; follow: number}} = {
   title: 'BITTEN OR SCRATCHED?',
   // read by the narrator (Joey), assets/toons-voice/rabies/cta.mp3; word times from videos/rabies/cta-timings.json
-  voice: 'toons/rabies/voice/cta.mp3', seconds: 13.32,
-  at: {head: 0, points: [2.07, 5.11, 6.86], follow: 9.74},
+  voice: 'toons/rabies/voice/cta.mp3', seconds: 12.12, // the take at 1.1x (cta-raw.mp3 is the original), so the Short stays under 60 s
+  at: {head: 0, points: [1.88, 4.64, 6.24], follow: 8.86},
   points: [
     {icon: <g><g transform="translate(-28 0) scale(0.78)"><Stopwatch t={2} /></g><g transform="translate(46 44) scale(0.5)"><Soap /></g></g>, big: 'WASH 15 MIN', small: 'soap and running water'},
     {icon: <g transform="scale(0.95)"><Stethoscope /></g>, big: 'SEE A DOCTOR', small: 'the same day'},

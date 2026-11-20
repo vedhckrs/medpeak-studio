@@ -171,12 +171,16 @@ export const Bits: React.FC<{t: number; n: number; seed: number; col: string; si
   return (
     <>
       {Array.from({length: n}, (_, i) => {
-        const x = ax + (((rnd(i, seed) * aw + t * flow[0] * (0.5 + rnd(i, seed + 1))) % aw) + aw) % aw + sway(t, 4 + rnd(i, seed + 4) * 3, i) * 10;
-        const y = ay + (((rnd(i, seed + 2) * ah + t * flow[1] * (0.5 + rnd(i, seed + 3))) % ah) + ah) % ah;
+        const ux = ((((rnd(i, seed) * aw + t * flow[0] * (0.5 + rnd(i, seed + 1))) % aw) + aw) % aw) / aw;
+        const uy = ((((rnd(i, seed + 2) * ah + t * flow[1] * (0.5 + rnd(i, seed + 3))) % ah) + ah) % ah) / ah;
+        const x = ax + ux * aw + sway(t, 4 + rnd(i, seed + 4) * 3, i) * 10;
+        const y = ay + uy * ah;
+        // v4: fade out near the edges of the area, so a bit that wraps around never blinks
+        const op = Math.min(1, 6 * Math.min(ux, 1 - ux), 6 * Math.min(uy, 1 - uy));
         const s = size * (0.7 + rnd(i, seed + 5) * 0.8), r = rnd(i, seed + 6) * 360 + t * 20 * (rnd(i, seed + 7) - 0.5);
         const kind = i % 4;
         return (
-          <g key={i} transform={`translate(${f(x)} ${f(y)}) rotate(${f(r)})`}>
+          <g key={i} opacity={op} transform={`translate(${f(x)} ${f(y)}) rotate(${f(r)})`}>
             {kind === 0 && [0, 1, 2].map((j) => <circle key={j} cx={(j - 1) * s * 0.9} cy={j === 1 ? -s * 0.3 : 0} r={s * 0.5} fill={col} {...EDGE_IN} />)}
             {kind === 1 && <path d={`M 0 ${-s} L ${s * 0.9} ${s * 0.6} L ${-s * 0.9} ${s * 0.6} Z`} fill={col} {...EDGE_IN} strokeLinejoin="round" />}
             {kind === 2 && <><ellipse rx={s * 0.9} ry={s * 0.6} fill={tint(col, 0.3)} {...EDGE_IN} /><ellipse cx={-s * 0.2} cy={-s * 0.15} rx={s * 0.3} ry={s * 0.18} fill="#ffffff" /></>}
@@ -313,7 +317,7 @@ export const BitePlace: React.FC<{t: number; fang?: number; drops?: number}> = (
             const u = ((t * 0.5 + i / 6) % 1);
             const x = 540 + (i - 2.5) * 46 + Math.sin(u * 4 + i) * 20, y = fangY + 30 + u * 520;
             return (
-              <g key={i} opacity={1 - u * 0.6}>
+              <g key={i} opacity={Math.min(1, u * 8) * (1 - u * 0.6)}>
                 <path d={`M ${f(x)} ${f(y - 34)} Q ${f(x + 26)} ${f(y)} ${f(x)} ${f(y + 22)} Q ${f(x - 26)} ${f(y)} ${f(x)} ${f(y - 34)} Z`} fill="#e9f1f2" {...EDGE_IN} />
                 <circle cx={f(x)} cy={f(y + 4)} r={7} fill="#9d8cc2" {...EDGE_IN} />
               </g>
@@ -466,7 +470,7 @@ export const DoorPlace: React.FC<{t: number; open?: number}> = ({t, open: unlock
             return popped ? (
               <g key={i}>{[0, 1, 2, 3, 4].map((j) => { const a = (j / 5) * Math.PI + Math.PI * 0.05; const r = 20 + (cyc - 0.9) * 600; return <circle key={j} cx={f(x + Math.cos(a) * r * 0.6)} cy={f(1080 + Math.sin(a) * r)} r={6} fill="#ffe27a" {...EDGE_IN} />; })}</g>
             ) : (
-              <g key={i}><circle cx={f(x)} cy={f(y)} r={30} fill={VES} {...EDGE_IN} /><circle cx={f(x + 6)} cy={f(y + 8)} r={22} fill={shade(VES, 0.05)} />{[0, 1, 2].map((j) => <circle key={j} cx={f(x - 9 + j * 9)} cy={f(y + (j === 1 ? -6 : 5))} r={4.5} fill="#ffe27a" />)}</g>
+              <g key={i} opacity={Math.min(1, cyc * 10)}><circle cx={f(x)} cy={f(y)} r={30} fill={VES} {...EDGE_IN} /><circle cx={f(x + 6)} cy={f(y + 8)} r={22} fill={shade(VES, 0.05)} />{[0, 1, 2].map((j) => <circle key={j} cx={f(x - 9 + j * 9)} cy={f(y + (j === 1 ? -6 : 5))} r={4.5} fill="#ffe27a" />)}</g>
             );
           })}
           {/* active zones: dark bars on the inside of the bulb membrane, over the locks */}
@@ -587,7 +591,7 @@ export const HighwayPlace: React.FC<{t: number; speed?: number}> = ({t, speed = 
         {Array.from({length: 12}, (_, i) => {
           const a = (i / 12) * Math.PI * 2 + 0.2, u = (t * 1.6 + rnd(i, 2)) % 1;
           const r0 = 380 + u * 700, r1 = r0 + 160 * speed;
-          return <path key={i} d={`M ${f(vx + Math.cos(a) * r0)} ${f(vy + Math.sin(a) * r0 * 1.5)} L ${f(vx + Math.cos(a) * r1)} ${f(vy + Math.sin(a) * r1 * 1.5)}`} stroke="#ffffff" strokeWidth={8} strokeLinecap="round" opacity={0.7 * (1 - u)} />;
+          return <path key={i} d={`M ${f(vx + Math.cos(a) * r0)} ${f(vy + Math.sin(a) * r0 * 1.5)} L ${f(vx + Math.cos(a) * r1)} ${f(vy + Math.sin(a) * r1 * 1.5)}`} stroke="#ffffff" strokeWidth={8} strokeLinecap="round" opacity={0.6 * Math.sin(Math.PI * u)} />; // v4: fades in and out (no pop)
         })}
       </Layer>
       {/* near plane: floating bits close to the lens, they rush past fastest */}
