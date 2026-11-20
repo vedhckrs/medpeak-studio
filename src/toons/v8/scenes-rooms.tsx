@@ -436,12 +436,18 @@ const KitchenScreen: React.FC<{s: ShotNow}> = ({s}) => {
   const f = since(s, 'C2', 'fifteen');
   return f < 0 ? null : <IconBadge icon="stopwatch" t={f} x={540} y={330} />;
 };
-/** The warning icon on the hard truth: it appears at "fatal" and leaves when the good news starts. */
+/** v4: the dog with a warning badge on the hard truth ("fatal"), gone when the good news starts; the shield
+ * only where the vaccine is named ("shots"). */
 const ClinicScreen: React.FC<{s: ShotNow}> = ({s}) => {
   const f = since(s, 'D2', 'fatal');
-  if (f < 0) return null;
   const d3 = since(s, 'D3');
-  return <IconBadge icon="warning" t={f} x={540} y={330} out={d3 > -900 ? f - d3 : undefined} />;
+  const shots = since(s, 'D3', 'shots');
+  return (
+    <>
+      {f >= 0 && <IconBadge icon="dogWarning" t={f} x={540} y={330} out={d3 > -900 ? f - d3 : undefined} />}
+      {shots >= 0 && <IconBadge icon="vaccine" t={shots} x={540} y={330} />}
+    </>
+  );
 };
 
 // ------------------------------------------------------------------ shot D: the clinic
@@ -482,8 +488,8 @@ const ClinicShot: React.FC<{s: ShotNow}> = ({s}) => {
 // ------------------------------------------------------------------ the shots, as the video plays them
 const faceOf = (w: Who) => { const h = headOf(w); return {x: h.x, y: h.y, r: h.r}; };
 export const ROOM_SHOTS: Record<string, ShotDef> = {
-  C: {Scene: KitchenShot, Screen: KitchenScreen, focus: (who, s) => { const c = kitchenCast(s); return faceOf(who === 'kid' ? c.kid : c.mom); }},
-  D: {Scene: ClinicShot, Screen: ClinicScreen, focus: (who, s) => { const c = clinicCast(s); return faceOf(who === 'kid' ? c.kid : c.doc); }},
+  C: {Scene: KitchenShot, Screen: KitchenScreen, focus: (who, s) => { const c = kitchenCast(s); return faceOf(who === 'kid' ? c.kid : c.mom); }, portal: (s) => onFore(handsOf(kitchenCast(s).kid).R, 58)},
+  D: {Scene: ClinicShot, Screen: ClinicScreen, focus: (who, s) => { const c = clinicCast(s); return faceOf(who === 'kid' ? c.kid : c.doc); }, portal: (s) => onFore(handsOf(clinicCast(s).kid).R, 58)},
 };
 
 // ------------------------------------------------------------------ the stills: the same shots at one good moment

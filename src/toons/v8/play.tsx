@@ -54,6 +54,8 @@ export type ShotDef = {
    * the speaker. For shots whose action is small in the frame (inside the body).
    */
   view?: (s: ShotNow) => {x: number; y: number; z: number};
+  /** v4: the point (frame pixels) a transition dives into or pulls back out of: the Kid's scratch in a room. */
+  portal?: (s: ShotNow) => [number, number];
 };
 
 // ------------------------------------------------------------------ small pure helpers for shots
@@ -77,6 +79,13 @@ export const since = (s: ShotNow, id: string, word?: string) => {
   return s.t - l.from - (w ? w.start : 0);
 };
 /** Is `who` speaking right now (voice on, not the gap)? */
+/** v4: 1 while `who` speaks (with a 0.3 s eased ramp either side), 0 otherwise: lets a character keep still
+ * unless it speaks (the owner, 2026-11-20: "the virus moves when it acts or speaks"). */
+export const active = (s: ShotNow, who: string, ramp = 0.3) => s.lines.filter((l) => l.who === who).reduce((m, l) => {
+  const a = clamp01((s.t - l.from + ramp) / ramp), b = clamp01((l.from + l.voice - s.t + ramp) / ramp);
+  const k = Math.min(a, b);
+  return Math.max(m, k * k * (3 - 2 * k));
+}, 0);
 export const speaking = (s: ShotNow, who: string) => !!s.cur && s.cur.who === who && s.t >= s.cur.from && s.t < s.cur.from + s.cur.voice;
 
 const VOWEL: Record<string, number> = {a: 1, o: 0.9, e: 0.7, u: 0.62, i: 0.56, y: 0.5};

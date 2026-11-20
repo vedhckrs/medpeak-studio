@@ -14,9 +14,9 @@ import React from 'react';
 import {Put} from './scene';
 import {Virus} from './germs';
 import {Antibody, WhiteCell} from './cells';
-import {BattlePlace, BitePlace, DOOR, DoorPlace, HighwayPlace, MusclePlace} from './micro3';
-import {IconBadge} from './hud';
-import {blink, bodyFace, clamp01, go, lerp, pop, since, sway, talk, type Focus, type ShotDef, type ShotNow} from './play';
+import {BattlePlace, BitePlace, DIVE, DiveCtx, DOOR, DoorPlace, HighwayPlace, MusclePlace} from './micro3';
+import {CharTag, IconBadge} from './hud';
+import {active, blink, bodyFace, clamp01, go, lerp, pop, since, sway, talk, type Focus, type ShotDef, type ShotNow} from './play';
 
 // ------------------------------------------------------------------ helpers
 /** Inside a shot, pass from one place to the next with a zoom-through over `d` seconds starting at u = 0. */
@@ -41,20 +41,24 @@ const hop = (u: number, h = 120, d = 0.55) => {
   const k = (u - d) / 0.25; return {dy: 0, sq: 0.12 * Math.sin(k * Math.PI) * (1 - k)}; // land
 };
 /** The Virus squashes with its own voice; a slow idle wobble otherwise. */
-const voiceSq = (s: ShotNow) => { const k = talk(s, 'virus'); return k > 0 ? (k - 0.35) * 0.12 : Math.sin(s.t * 5.2) * 0.018; };
+const voiceSq = (s: ShotNow) => { const k = talk(s, 'virus'); return k > 0 ? (k - 0.35) * 0.12 : 0; };
+/** v4: how much the Virus moves: a little breath at rest, full while it speaks. */
+const calm = (s: ShotNow) => 0.15 + 0.85 * active(s, 'virus');
 const VirusAt: React.FC<{s: ShotNow; x: number; y: number; size: number; rot?: number; sq?: number; look?: [number, number]; rest?: string; seed?: number}> = ({s, x, y, size, rot = 0, sq = 0, look = [0.4, 0.2], rest = 'happy', seed = 1}) => {
   const face = bodyFace(s, 'virus', seed, rest);
   return <Put x={x} y={y} size={size} rot={rot} sq={sq + voiceSq(s)}><Virus mood={face.mood} mouth={face.mouth} look={look} /></Put>;
 };
 const virusFocus = (x: number, y: number, size: number): Focus => ({x, y: y - size * 0.05, r: size * 0.36});
-const slowPush = (x: number, y: number, z0: number, z1: number) => (s: ShotNow) => ({x, y, z: lerp(z0, z1, clamp01(s.t / s.dur))});
+/** v4: one smooth, eased, continuous push per shot (no punch). */
+const slowPush = (x: number, y: number, z0: number, z1: number) => (s: ShotNow) => { const u = clamp01(s.t / s.dur); return {x, y, z: lerp(z0, z1, u * u * (3 - 2 * u))}; };
 
 // =================================================================== A: the highway hook
 const posA = (s: ShotNow) => {
   const t = s.t;
   const turn = go(since(s, 'A1', 'brain'), -0.1, 0.3); // turns to the viewer on "brain", then taunts
   const h = hop(since(s, 'A2', 'catch'), 90);
-  return {x: 540 + sway(t, 2.2, 1) * 14, y: 1330 + h.dy + Math.abs(Math.sin(t * 7)) * -10, sq: h.sq, rot: lerp(0, -10, turn) + sway(t, 1.1, 2) * 4, turn};
+  const c = calm(s);
+  return {x: 540 + sway(t, 2.2, 1) * 14 * c, y: 1330 + h.dy + Math.abs(Math.sin(t * 7)) * -10 * c, sq: h.sq, rot: lerp(0, -10, turn) + sway(t, 1.1, 2) * 4 * c, turn};
 };
 const ShotA: React.FC<{s: ShotNow}> = ({s}) => {
   const v = posA(s);
@@ -80,13 +84,13 @@ const ShotB: React.FC<{s: ShotNow}> = ({s}) => {
   const door = (
     <>
       <DoorPlace t={s.t} open={since(s, 'B2', 'nerve') > 0.25 ? 2 : -1} />
-      <VirusAt s={s} x={lerp(240, DOOR.locks[2] - 10, go(jump, 0.4, 0.6))} y={DOOR.lockY - 190 + j.dy} size={250} sq={j.sq} rot={sway(s.t, 1.2, 4) * 5} look={[0.6, 0.8]} />
+      <VirusAt s={s} x={lerp(240, DOOR.locks[2] - 10, go(jump, 0.4, 0.6))} y={DOOR.lockY - 190 + j.dy} size={250} sq={j.sq} rot={sway(s.t, 1.2, 4) * 5 * calm(s)} look={[0.6, 0.8]} />
     </>
   );
   const bite = (
     <>
       <BitePlace t={s.t} fang={b.fang} drops={b.drops} />
-      {since(s, 'B1', 'scratch') > 0 && <VirusAt s={s} x={b.vx} y={b.vy} size={200} rot={sway(s.t, 1.6, 5) * 8} look={[0.2, 0.8]} />}
+      {since(s, 'B1', 'scratch') > 0 && <VirusAt s={s} x={b.vx} y={b.vy} size={200} rot={sway(s.t, 1.6, 5) * 8 * calm(s)} look={[0.2, 0.8]} />}
     </>
   );
   return <Swap u={jump} from={bite} to={door} />;
@@ -108,7 +112,7 @@ const ShotM2: React.FC<{s: ShotNow}> = ({s}) => {
   const highway = (
     <>
       <HighwayPlace t={s.t} speed={2.6} />
-      <VirusAt s={s} x={540 + sway(s.t, 0.6, 2) * 20} y={1330 + Math.abs(Math.sin(s.t * 9)) * -14} size={380} rot={sway(s.t, 0.5, 1) * 6} rest="happy" look={[0, -0.9]} />
+      <VirusAt s={s} x={540 + sway(s.t, 0.6, 2) * 20 * calm(s)} y={1330 + Math.abs(Math.sin(s.t * 9)) * -14 * calm(s)} size={380} rot={sway(s.t, 0.5, 1) * 6 * calm(s)} rest="happy" look={[0, -0.9]} />
     </>
   );
   return <Swap u={fast} from={muscle} to={highway} />;
@@ -125,7 +129,7 @@ const ShotE: React.FC<{s: ShotNow}> = ({s}) => {
   const battle = (
     <>
       <BattlePlace t={s.t} />
-      <VirusAt s={s} x={760 + sway(s.t, 1.1, 1) * 20} y={560} size={250} rot={sway(s.t, 0.8, 2) * 10} rest="scared" look={[-0.8, 0.6]} />
+      <VirusAt s={s} x={760 + sway(s.t, 1.1, 1) * 20 * calm(s)} y={560} size={250} rot={sway(s.t, 0.8, 2) * 10 * calm(s)} rest="scared" look={[-0.8, 0.6]} />
     </>
   );
   const door = (
@@ -140,7 +144,53 @@ const ShotE: React.FC<{s: ShotNow}> = ({s}) => {
   );
   return <Swap u={wall} from={battle} to={door} />;
 };
-const ScreenE: React.FC<{s: ShotNow}> = ({s}) => <IconBadge icon="vaccine" t={s.t - 0.05} x={540} y={430} out={2.2} />;
+// v4: no shield here (the vaccine is not named in these lines; it pops on "shots" in the clinic)
+
+// =================================================================== v4: name tags and the dive
+/** How far the camera has dived into the shot (0..1, eased in and out over the whole shot). */
+const diveOf = (s: ShotNow) => { const u = clamp01(s.t / Math.max(0.1, s.dur)); return u * u * (3 - 2 * u); };
+/** The Scene with the dive set for its depth planes. */
+const dived = (Scene: React.FC<{s: ShotNow}>): React.FC<{s: ShotNow}> => {
+  const D: React.FC<{s: ShotNow}> = ({s}) => <DiveCtx.Provider value={diveOf(s)}><Scene s={s} /></DiveCtx.Provider>;
+  return D;
+};
+/** A point in a depth plane (depth d) after the dive grows it about the frame centre. */
+const inPlane = (s: ShotNow, x: number, y: number, d: number): [number, number, number] => {
+  const k = 1 + diveOf(s) * (DIVE.far + d * (DIVE.near - DIVE.far));
+  return [540 + (x - 540) * k, 960 + (y - 960) * k, k];
+};
+/** A name tag for a character at frame point (x, y), radius r, placed on the SCREEN through the shot's camera. */
+const TagAt: React.FC<{s: ShotNow; id: string; label: string; x: number; y: number; r: number; t: number}> = ({s, id, label, x, y, r, t}) => {
+  const c = V3_SHOTS[id].view!(s);
+  return <CharTag label={label} x={540 + (x - c.x) * c.z} y={960 + (y - c.y) * c.z} r={r * c.z} t={t} />;
+};
+const ScreenA: React.FC<{s: ShotNow}> = ({s}) => { const v = posA(s); return <TagAt s={s} id="A" label="RABIES VIRUS" x={v.x} y={v.y} r={430 * 0.36} t={s.t - 0.35} />; };
+const ScreenB: React.FC<{s: ShotNow}> = ({s}) => {
+  const dog = since(s, 'B1', 'dog');
+  const nerve = since(s, 'B2', 'jump') - 0.5;
+  const [x, y, k] = inPlane(s, 560, 700, 0.35);
+  return (
+    <>
+      {dog >= 0 && <IconBadge icon="dog" t={dog} x={790} y={420} size={300} out={1.9} />}
+      {nerve >= 0 && <TagAt s={s} id="B" label="NERVE ENDING" x={x} y={y} r={250 * k} t={nerve} />}
+    </>
+  );
+};
+const ScreenE: React.FC<{s: ShotNow}> = ({s}) => {
+  const [fx, fy, fk] = inPlane(s, 220, 1240, 0.35);
+  // the antibodies are tagged where they stand still: the wall over the locks (the middle one)
+  const wall = since(s, 'E2', 'wall');
+  return (
+    <>
+      <TagAt s={s} id="E" label="DEFENCE CELL" x={fx} y={fy} r={190 * fk} t={s.t - 0.85} />
+      {wall > -900 && <TagAt s={s} id="E" label="ANTIBODY" x={DOOR.locks[2]} y={DOOR.lockY - 90} r={60} t={wall - 0.55} />}
+    </>
+  );
+};
+const ScreenM3: React.FC<{s: ShotNow}> = ({s}) => {
+  const grab = go(since(s, 'X1', 'freeze'), -0.2, 0.4);
+  return <TagAt s={s} id="M3" label="WHITE BLOOD CELL" x={560} y={lerp(1300, 1090, grab)} r={400 * 0.4} t={s.t - 0.2} />;
+};
 
 // =================================================================== M3: the white-cell police
 const ShotM3: React.FC<{s: ShotNow}> = ({s}) => {
@@ -162,9 +212,9 @@ const ShotM3: React.FC<{s: ShotNow}> = ({s}) => {
 };
 
 export const V3_SHOTS: Record<string, ShotDef> = {
-  A: {Scene: ShotA, focus: (_w, s) => { const v = posA(s); return virusFocus(v.x, v.y, 430); }, view: slowPush(540, 1050, 1.0, 1.08)},
-  B: {Scene: ShotB, Screen: ({s}) => <IconBadge icon="sunrise" t={s.t - 0.05} x={250} y={420} out={2.4} />, focus: () => ({x: 540, y: 800, r: 200}), view: slowPush(540, 900, 1.0, 1.06)},
-  M2: {Scene: ShotM2, Screen: ScreenM2, focus: () => ({x: 540, y: 830, r: 200}), view: slowPush(540, 960, 1.0, 1.05)},
-  E: {Scene: ShotE, Screen: ScreenE, focus: () => ({x: 600, y: 800, r: 200}), view: slowPush(540, 900, 1.0, 1.05)},
-  M3: {Scene: ShotM3, focus: () => ({x: 560, y: 820, r: 200}), view: slowPush(560, 900, 1.06, 1.14)},
+  A: {Scene: dived(ShotA), Screen: ScreenA, focus: (_w, s) => { const v = posA(s); return virusFocus(v.x, v.y, 430); }, view: slowPush(540, 1050, 1.0, 1.1)},
+  B: {Scene: dived(ShotB), Screen: ScreenB, focus: () => ({x: 540, y: 800, r: 200}), view: slowPush(540, 900, 1.0, 1.08)},
+  M2: {Scene: dived(ShotM2), Screen: ScreenM2, focus: () => ({x: 540, y: 830, r: 200}), view: slowPush(540, 960, 1.0, 1.07)},
+  E: {Scene: dived(ShotE), Screen: ScreenE, focus: () => ({x: 600, y: 800, r: 200}), view: slowPush(540, 900, 1.0, 1.07)},
+  M3: {Scene: dived(ShotM3), Screen: ScreenM3, focus: () => ({x: 560, y: 820, r: 200}), view: slowPush(560, 900, 1.04, 1.14)},
 };

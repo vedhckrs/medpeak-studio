@@ -24,12 +24,21 @@ const sway = (t: number, period: number, seed = 0) => Math.sin((t / period) * Ma
 const clamp01 = (v: number) => Math.max(0, Math.min(1, v));
 const beat = (t: number) => { const u = (t * 1.25) % 1; const k = (c: number, w: number) => Math.max(0, 1 - Math.abs(u - c) / w); return Math.max(k(0.06, 0.07), k(0.24, 0.06) * 0.6); };
 
-/** A depth plane: moves by (dx, dy) and scales about the frame centre (camera dolly). */
-export const Depth: React.FC<{dx?: number; dy?: number; k?: number; children: React.ReactNode}> = ({dx = 0, dy = 0, k = 1, children}) => (
-  <div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, transformOrigin: '540px 960px', transform: `translate(${f(dx)}px, ${f(dy)}px) scale(${k.toFixed(4)})`}}>{children}</div>
-);
+/**
+ * v4 (the owner, 2026-11-20: "inside the body a continuous dive from the first frame to the last, through the
+ * depth layers"): a shot sets how far the camera has dived (0..1, eased over the whole shot) with DiveCtx;
+ * every depth plane then grows by its own amount, the near planes most, so the camera floats IN between them.
+ */
+export const DiveCtx = React.createContext(0);
+export const DIVE = {far: 0.06, near: 0.42};
+/** A depth plane: moves by (dx, dy) and scales about the frame centre (camera dolly); `d` its depth (0 far .. 1 near). */
+export const Depth: React.FC<{dx?: number; dy?: number; k?: number; d?: number; children: React.ReactNode}> = ({dx = 0, dy = 0, k = 1, d = 0, children}) => {
+  const dive = React.useContext(DiveCtx);
+  const kk = k * (1 + dive * (DIVE.far + d * (DIVE.near - DIVE.far)));
+  return <div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, transformOrigin: '540px 960px', transform: `translate(${f(dx)}px, ${f(dy)}px) scale(${kk.toFixed(4)})`}}>{children}</div>;
+};
 /** The slow float of the camera in fluid, per plane depth (0 far .. 1 near). */
-const float = (t: number, depth: number): {dx: number; dy: number} => ({dx: sway(t, 9, 1) * (3 + depth * 16), dy: sway(t, 11.5, 2) * (2 + depth * 11)});
+const float = (t: number, depth: number): {dx: number; dy: number; d: number} => ({dx: sway(t, 9, 1) * (3 + depth * 16), dy: sway(t, 11.5, 2) * (2 + depth * 11), d: depth});
 
 // ------------------------------------------------------------------ shared pieces
 const RED = FLESH.artery;

@@ -9,6 +9,7 @@
  *   node pipeline/toon-v8-render.mjs <slug> --stills     two stills a line -> renders/toon-v8-stills/
  *   node pipeline/toon-v8-render.mjs <slug> --at 12.4    one full-size still at that second -> renders/toon-v8-stills/at-12.40.jpg
  *   node pipeline/toon-v8-render.mjs <slug> --silent     picture only, estimated timing
+ *   node pipeline/toon-v8-render.mjs <slug> --from 30 --to 40   a slice (a motion test) -> renders/toon-v8-30-40.mp4
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -93,8 +94,10 @@ const main = () => {
   }
 
   const raw = path.join(ROOT, 'out', `toon-v8-${slug}-raw.mp4`);
-  const final = path.join(outDir, a.draft ? 'toon-v8-draft.mp4' : 'toon-v8.mp4');
-  remotion(['render', ...base, raw, ...(a.draft ? ['--scale=0.5'] : ['--crf=16']), ...common]);
+  const slice = a.from !== undefined && a.to !== undefined ? [Number(a.from), Number(a.to)] : null;
+  const final = path.join(outDir, slice ? `toon-v8-${slice[0]}-${slice[1]}.mp4` : a.draft ? 'toon-v8-draft.mp4' : 'toon-v8.mp4');
+  const frames = slice ? [`--frames=${Math.round(slice[0] * FPS)}-${Math.round(slice[1] * FPS) - 1}`] : [];
+  remotion(['render', ...base, raw, ...(a.draft ? ['--scale=0.5'] : ['--crf=16']), ...frames, ...common]);
   if (voiced) master(raw, final);
   else fs.copyFileSync(raw, final);
   fs.rmSync(raw);

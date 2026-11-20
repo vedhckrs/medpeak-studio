@@ -116,7 +116,20 @@ export const ToonV8: React.FC<V8VideoProps> = ({toon, timings, sfx, music, bare 
   const L = useMemo(() => layoutToon(toon, timings), [toon, timings]);
   const {s, si} = shotNow(L, toon, timings, sec);
   const def = V8_VIDEOS[toon.slug]?.[s.id];
-  const cam0 = cameraAt(L, def, s, si, sec);
+  // v4: rooms get one smooth, eased move per shot: the lean toward the speaker is averaged over 2.4 s
+  // (inside the shot), so the camera glides instead of stepping from one speaker to the next.
+  const cam0 = useMemo(() => {
+    if (!def || def.view) return cameraAt(L, def, s, si, sec);
+    const a = L.shots[si].from / TOON_FPS, b = (L.shots[si].from + L.shots[si].frames) / TOON_FPS - 0.001;
+    let wx = 0, x = 0, y = 0, z = 0;
+    for (let i = -6; i <= 6; i++) {
+      const at = Math.min(b, Math.max(a, sec + i * 0.2)), w = 7 - Math.abs(i);
+      const n = shotNow(L, toon, timings, at);
+      const c = cameraAt(L, def, n.s, si, at);
+      wx += w; x += c.x * w; y += c.y * w; z += c.z * w;
+    }
+    return {x: x / wx, y: y / wx, z: z / wx};
+  }, [L, def, si, sec, toon, timings, s]);
 
   // the caption: the phrase being spoken (the old player's box, the owner's choice)
   const f30 = sec * TOON_FPS;
@@ -133,7 +146,8 @@ export const ToonV8: React.FC<V8VideoProps> = ({toon, timings, sfx, music, bare 
   // the camera's punch on the line's key word, and a shake on every bite or hit (a flash event)
   const ki = cur ? cur.words.findIndex((w) => clean(w.w).toLowerCase().replace(/[!?'’]/g, '') === keyWord.replace(/[!?'’]/g, '')) : -1;
   const kt = ki >= 0 && cur ? tl - cur.words[ki].start : -1;
-  const punch = kt >= 0 && kt < 0.55 ? 0.075 * Math.pow(1 - kt / 0.55, 2) * Math.min(1, kt / 0.06) : 0;
+  // v4 (the owner, 2026-11-20): no punch zoom on the key word (it looked jerky)
+  const punch = 0 * kt;
   const shake = flash > 0 && !['home', 'clinic'].includes(shot.set ?? '') ? Math.sin(sec * 90) * 14 * flash : 0; // a bite shakes; a good-news flash in a room does not
   // the serious beat (a line marked "serious"): the picture darkens and the camera creeps in
   const grave = L.lines.filter((l) => (l.line as {serious?: boolean}).serious).reduce((m, l) => {
@@ -143,10 +157,12 @@ export const ToonV8: React.FC<V8VideoProps> = ({toon, timings, sfx, music, bare 
   const cam = {x: cam0.x + shake, y: cam0.y + shake * 0.4, z: cam0.z * (1 + punch + grave * 0.06)};
 
   // the transition from the shot before: a zoom-through between places, a whip pan between two rooms
-  const TR = 0.42;
+  // v4: transitions follow the story: from a room into the body the camera DIVES into the Kid's scratch; from
+  // the body back to a room it PULLS back out of his arm; a whip pan only from room to room; else a zoom-through.
+  const TR = {whip: 0.42, zoom: 0.5, dive: 0.8, pull: 0.8};
   const into = sec - L.shots[si].from / TOON_FPS;
   const trans = (() => {
-    if (si === 0 || into >= TR || !def) return null;
+    if (si === 0 || into >= 0.8 || !def) return null;
     const pf = L.shots[si].from / TOON_FPS - 1 / V8_FPS;
     const p = shotNow(L, toon, timings, pf);
     const pdef = V8_VIDEOS[toon.slug]?.[p.s.id];
@@ -154,12 +170,22 @@ export const ToonV8: React.FC<V8VideoProps> = ({toon, timings, sfx, music, bare 
     const ps = {...p.s, t: p.s.t + into};
     const pcam = cameraAt(L, pdef, p.s, p.si, pf);
     const room = (id: string) => ['home', 'clinic'].includes(L.shots.find((x) => x.shot.id === id)?.shot.set ?? '');
-    const kind = room(p.s.id) && room(s.id) ? 'whip' : 'zoom';
-    const u = clamp01(into / TR), e = u < 0.5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2;
-    return {pdef, ps, pcam, kind, u, e};
+    const toScreen = (q: [number, number], c: {x: number; y: number; z: number}): [number, number] => [540 + (q[0] - c.x) * c.z, 960 + (q[1] - c.y) * c.z];
+    const kind: 'whip' | 'zoom' | 'dive' | 'pull' = room(p.s.id) && room(s.id) ? 'whip' : room(p.s.id) && pdef.portal ? 'dive' : room(s.id) && def.portal ? 'pull' : 'zoom';
+    if (into >= TR[kind]) return null;
+    const portal = kind === 'dive' ? toScreen(pdef.portal!(ps), pcam) : kind === 'pull' ? toScreen(def.portal!(s), cam0) : null;
+    const u = clamp01(into / TR[kind]), e = u < 0.5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2;
+    return {pdef, ps, pcam, kind, u, e, portal};
   })();
   const view = (c: {x: number; y: number; z: number}, extra = '') => `${extra} translate(${(540 - c.x * c.z).toFixed(2)}px, ${(960 - c.y * c.z).toFixed(2)}px) scale(${c.z.toFixed(4)})`;
-  const newT = !trans ? '' : trans.kind === 'whip' ? `translateX(${((1 - trans.e) * 1080).toFixed(1)}px)` : `translate(540px, 960px) scale(${lerp(0.78, 1, trans.e).toFixed(4)}) translate(-540px, -960px)`;
+  const about = (q: [number, number], k: number) => `translate(${q[0].toFixed(1)}px, ${q[1].toFixed(1)}px) scale(${k.toFixed(4)}) translate(${(-q[0]).toFixed(1)}px, ${(-q[1]).toFixed(1)}px)`;
+  const newT = !trans ? '' : trans.kind === 'whip' ? `translateX(${((1 - trans.e) * 1080).toFixed(1)}px)`
+    : trans.kind === 'pull' ? about(trans.portal!, lerp(4.5, 1, 1 - Math.pow(1 - trans.u, 3)))
+    : trans.kind === 'dive' ? about(trans.portal!, lerp(0.7, 1, trans.e))
+    : `translate(540px, 960px) scale(${lerp(0.78, 1, trans.e).toFixed(4)}) translate(-540px, -960px)`;
+  // the round window of the body: it opens from the scratch (dive) or closes into it (pull)
+  const farCorner = !trans?.portal ? 0 : Math.max(...[[0, 0], [1080, 0], [0, 1920], [1080, 1920]].map(([x, y]) => Math.hypot(x - trans.portal![0], y - trans.portal![1])));
+  const ringR = !trans || !trans.portal ? 0 : trans.kind === 'dive' ? farCorner * Math.pow(trans.u, 2.2) : farCorner * 0.92 * Math.pow(1 - trans.u, 1.6);
 
   // the three acts (watermark position): groups of shots by place, body / rooms / body; else thirds of the time
   const isRoom = (i: number) => ['home', 'clinic'].includes(L.shots[i].shot.set ?? '');
@@ -179,17 +205,35 @@ export const ToonV8: React.FC<V8VideoProps> = ({toon, timings, sfx, music, bare 
 
   return (
     <AbsoluteFill style={{background: '#2b1a17'}}>
-      {def ? (
-        <div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, transformOrigin: '0 0', transform: view(cam, newT)}}>
-          <def.Scene s={s} />
-        </div>
-      ) : <Missing id={s.id} />}
-      {trans && (
-        <div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, overflow: 'hidden',
-          opacity: trans.kind === 'zoom' ? 1 - clamp01((trans.u - 0.35) / 0.5) : 1,
-          transform: trans.kind === 'whip' ? `translateX(${(-trans.e * 1080).toFixed(1)}px)` : `translate(540px, 960px) scale(${(1 + trans.e * 1.6).toFixed(4)}) translate(-540px, -960px)`}}>
+      {trans && trans.kind === 'dive' && (
+        // the room under the opening window: the camera rushes in at the scratch
+        <div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, overflow: 'hidden', transformOrigin: '0 0', transform: about(trans.portal!, 1 + Math.pow(trans.u, 2) * 5)}}>
           <div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, transformOrigin: '0 0', transform: view(trans.pcam)}}><trans.pdef.Scene s={trans.ps} /></div>
         </div>
+      )}
+      {def ? (
+        <div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, overflow: 'hidden',
+          clipPath: trans?.kind === 'dive' ? `circle(${ringR.toFixed(1)}px at ${trans.portal![0].toFixed(1)}px ${trans.portal![1].toFixed(1)}px)` : undefined}}>
+          <div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, transformOrigin: '0 0', transform: view(cam, newT)}}>
+            <def.Scene s={s} />
+          </div>
+        </div>
+      ) : <Missing id={s.id} />}
+      {trans && trans.kind !== 'dive' && (
+        <div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, overflow: 'hidden',
+          opacity: trans.kind === 'zoom' ? 1 - clamp01((trans.u - 0.35) / 0.5) : 1,
+          clipPath: trans.kind === 'pull' ? `circle(${ringR.toFixed(1)}px at ${trans.portal![0].toFixed(1)}px ${trans.portal![1].toFixed(1)}px)` : undefined,
+          transformOrigin: trans.kind === 'pull' ? '0 0' : undefined,
+          transform: trans.kind === 'whip' ? `translateX(${(-trans.e * 1080).toFixed(1)}px)` : trans.kind === 'pull' ? about(trans.portal!, lerp(1, 0.8, trans.e)) : `translate(540px, 960px) scale(${(1 + trans.e * 1.6).toFixed(4)}) translate(-540px, -960px)`}}>
+          <div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, transformOrigin: '0 0', transform: view(trans.pcam)}}><trans.pdef.Scene s={trans.ps} /></div>
+        </div>
+      )}
+      {trans && trans.portal && ringR > 2 && ringR < farCorner * 0.98 && (
+        // the window's rim: the kit's outline and a skin-coloured band, flat
+        <svg style={{position: 'absolute', left: 0, top: 0, pointerEvents: 'none'}} width={1080} height={1920} viewBox="0 0 1080 1920">
+          <circle cx={trans.portal[0]} cy={trans.portal[1]} r={ringR * (trans.kind === 'pull' ? lerp(1, 0.8, trans.e) : 1)} fill="none" stroke="#f0c39d" strokeWidth={14} />
+          <circle cx={trans.portal[0]} cy={trans.portal[1]} r={ringR * (trans.kind === 'pull' ? lerp(1, 0.8, trans.e) : 1)} fill="none" stroke="#2b1a17" strokeWidth={4} />
+        </svg>
       )}
       {trans && trans.kind === 'whip' && <SpeedLines u={trans.u} />}
       {trans && trans.kind === 'zoom' && <AbsoluteFill style={{background: '#ffffff', opacity: Math.max(0, 0.35 - Math.abs(trans.u - 0.5)) * 1.2}} />}
