@@ -9,6 +9,27 @@ export const SFX_DIR = path.join(ROOT, 'assets', 'toons-sfx');
 export const MUSIC_DIR = path.join(ROOT, 'assets', 'toons-music');
 export const loadCast = () => readJson(CAST_FILE);
 
+/**
+ * A Toon's voice clips are paid for once, so they are kept in git in assets/toons-voice/<slug>/ (owner,
+ * 2026-11-20), next to the sound effects and music beds. The players read them from public/toons/<slug>/voice/
+ * (never in git). This keeps the two folders the same: a clip made on this machine is saved into assets,
+ * and a clip that came with the repo is put where the player looks. Returns how many files it copied.
+ */
+export const VOICE_DIR = path.join(ROOT, 'assets', 'toons-voice');
+export const syncVoices = (slug) => {
+  const kept = path.join(VOICE_DIR, slug);
+  const live = path.join(ROOT, 'public', 'toons', slug, 'voice');
+  const mp3s = (dir) => (fs.existsSync(dir) ? fs.readdirSync(dir).filter((f) => f.endsWith('.mp3')) : []);
+  let n = 0;
+  const copy = (from, to, f) => { fs.mkdirSync(to, {recursive: true}); fs.copyFileSync(path.join(from, f), path.join(to, f)); n++; };
+  for (const f of mp3s(live)) {
+    // a clip made again here (another size) replaces the kept one
+    if (!fs.existsSync(path.join(kept, f)) || fs.statSync(path.join(kept, f)).size !== fs.statSync(path.join(live, f)).size) copy(live, kept, f);
+  }
+  for (const f of mp3s(kept)) if (!fs.existsSync(path.join(live, f))) copy(kept, live, f);
+  return n;
+};
+
 export const seconds = (file) => Number(execFileSync('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', file]).toString().trim());
 const run = (input, filters, out) => execFileSync('ffmpeg', ['-y', '-hide_banner', '-loglevel', 'error', '-i', input, '-af', filters, '-ar', '44100', '-b:a', '160k', out]);
 // ffmpeg prints its measurements on stderr. No shell here: `sh` does not exist on Windows.

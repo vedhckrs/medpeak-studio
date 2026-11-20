@@ -11,7 +11,7 @@ topic → research (PubMed, WHO) → Retention 7 script → check → stills →
 > **Starting on a new PC or with a new Claude account?** Read [`CLAUDE.md`](CLAUDE.md) first: it has the
 > full setup, step by step, the owner's standing rules, and a map of the code. Then read the top entry of
 > [`HANDOFF.md`](HANDOFF.md) for what happened last and what is open. Everything the studio needs is in
-> this repo except keys, logins, renders and the voice clips (see `CLAUDE.md`, step 6).
+> this repo except keys, logins and renders (the Toons' voice clips, sound effects and music are included).
 
 ## MedPeak Toons, look v8 (the cartoon Shorts)
 

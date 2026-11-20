@@ -39,7 +39,10 @@ make him read code.
   - Build paths with `node:path`; split path lists with `path.delimiter`.
 - Machine setup (Node, ffmpeg, keys, YouTube login) is per machine and never in git. Note in
   `HANDOFF.md` what a machine has and what it is missing.
-- Never commit keys, `.env`, YouTube logins, renders, voice, music or clips. The repo is public.
+- Never commit keys, `.env`, YouTube logins, renders, clips, or the long videos' voice and music. The repo
+  is public. The one exception, on the owner's word (2026-11-20): the Toons' voice clips, sound effects and
+  music beds are paid for once, so they ARE committed, in `assets/toons-voice/<slug>/`, `assets/toons-sfx/`
+  and `assets/toons-music/`.
 
 ## New PC or new Claude account: full setup
 
@@ -62,12 +65,11 @@ Do these once on a new machine. None of it needs the old machine except step 6.
    an ElevenLabs key in a file `.env` in the repo folder (`ELEVENLABS_API_KEY=...`), or point
    `MEDPEAK_ENV_FILES` at an existing key file. Every paid step refuses to run without `--approve` and a
    cap, and you show the owner the cost first.
-6. **Voices are not in git** (the owner's rule above). The rabies voice clips are 15 small files in
-   `public/toons/rabies/voice/` on the machine that made them. On a new machine either copy that folder
-   across (USB or the owner's Drive), or make them again: `node pipeline/toon-voice.mjs rabies --dry-run`
-   (free: shows the cost), then `--approve --max-characters N` (spends ElevenLabs credits; ask first).
-   Without the clips the video still renders, silent, with estimated timing (`--silent`). The sound
-   effects and music beds ARE in git (`assets/toons-sfx`, `assets/toons-music`).
+6. **Voices come with the repo.** A Toon's voice clips are kept in `assets/toons-voice/<slug>/` (the rabies
+   video has its 15). The render copies them to where the player reads them (`public/toons/<slug>/voice/`)
+   on its own, and saves any clip you make on this machine back into `assets/`, so commit that folder
+   after making voices. Making NEW voices costs ElevenLabs credits: `node pipeline/toon-voice.mjs <slug>
+   --dry-run` (free: shows the cost), then `--approve --max-characters N` after the owner's OK.
 7. **Claude itself**: this file is read automatically in this folder. The skill for this channel is in
    `skill/medpeak-health/`; link or copy it into the account's skills folder
    (`~/.claude/skills/medpeak-health`). The owner's personal toolkit notes (which apps and key files a PC

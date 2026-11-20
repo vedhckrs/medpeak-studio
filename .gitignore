@@ -17,6 +17,8 @@ __pycache__/
 # Toons: the sound-effect library and music beds are paid for once, so they ARE committed
 !assets/toons-sfx/*.mp3
 !assets/toons-music/*.mp3
+# Toons voice clips: paid for once too, so they are committed as well (owner, 2026-11-20)
+!assets/toons-voice/*/*.mp3
 
 # licensed stock source files (Magnific): never committed, the repo is public
 stock/

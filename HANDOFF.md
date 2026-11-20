@@ -172,10 +172,9 @@ He approved the new noses and hands, the microscopic body frames and the rabies 
 The owner is connecting this repo to a new Claude account on a new PC. `CLAUDE.md` now has the full setup
 (install, clone, check, keys, voices, the skill), all his standing rules (they used to live only in one
 account's memory) and a map of the look v8 code; `README.md` has a look v8 section. The storyboard layout
-script is in the repo now (`pipeline/tools/toon-v8-storyboard.py`). **The one thing a new PC does not get
-from git is the rabies voice clips** (`public/toons/rabies/voice/`, 15 files, under 1 MB): copy them across
-or make them again (`CLAUDE.md`, step 6); the owner was asked whether Toons voices may be committed like
-the sound effects and music beds are. He also said: from now on no subagents, fixes are made directly.
+script is in the repo now (`pipeline/tools/toon-v8-storyboard.py`). The owner then said yes to committing the Toons voice clips: the rabies
+video's 15 are in `assets/toons-voice/rabies/` and the render puts them where the player reads them
+(`syncVoices` in `pipeline/lib/toon-audio.mjs`), so a new PC renders with sound straight from a clone. He also said: from now on no subagents, fixes are made directly.
 
 ### Not done, and open
 
