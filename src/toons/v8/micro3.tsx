@@ -521,11 +521,12 @@ const mixC = (a: string, b: string, k: number) => {
   return '#' + A.map((v, i) => Math.round(v + (B[i] - v) * k).toString(16).padStart(2, '0')).join('');
 };
 export const HIGHWAY = {vp: [540, 700] as P};
-export const HighwayPlace: React.FC<{t: number; speed?: number}> = ({t, speed = 1}) => {
+/** `run`: the distance travelled (for a speed that changes: integrate it, or the rings jump); default t * 0.55 * speed. */
+export const HighwayPlace: React.FC<{t: number; speed?: number; run?: number}> = ({t, speed = 1, run: runIn}) => {
   const [vx, vy] = HIGHWAY.vp;
   const N = 12;
   const ring = (u: number) => { const s = Math.pow(u, 1.6); return {rx: 50 + s * 1150, ry: 70 + s * 1700, cy: vy + s * 420}; };
-  const run = t * 0.55 * speed;
+  const run = runIn ?? t * 0.55 * speed;
   return (
     <Scene bg={TUBE_FAR}>
       {/* v4: the tunnel walls and the brain are a far plane that dives about the vanishing point */}

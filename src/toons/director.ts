@@ -199,7 +199,8 @@ export type ToonEvent = {at: string; word?: string; delay?: number; set?: Record
  * A shot is one place. `card` makes it a time card instead ("LATER THAT NIGHT..."), lasting
  * `seconds`. `state` is where the stage's dials start; `events` change them.
  */
-export type ToonShot = {id: string; set: SetName; cast: ToonActor[]; lines: ToonLine[]; desk?: boolean; props?: ToonProp[]; card?: string; seconds?: number; label?: string; state?: Record<string, number>; events?: ToonEvent[]};
+/** `lead`: seconds of picture before the shot's first line (0 to 3): a silent visual hook (rabies v4). */
+export type ToonShot = {id: string; set: SetName; cast: ToonActor[]; lines: ToonLine[]; lead?: number; desk?: boolean; props?: ToonProp[]; card?: string; seconds?: number; label?: string; state?: Record<string, number>; events?: ToonEvent[]};
 /** The owner's Retention 7 plan: which line carries each point (see retention-7.md). */
 export type ToonRetention = Record<'noIntro' | 'promise' | 'counting' | 'change3s' | 'twist' | 'bestLast' | 'loop', {scene: string; line: string}>;
 export type ToonSource = {id: string; label: string; url: string; note: string};
@@ -288,6 +289,7 @@ export const layoutToon = (toon: Toon, timings: ToonTimings | null) => {
   let at = 0;
   toon.shots.forEach((shot, si) => {
     const from = at;
+    at += Math.round(Math.max(0, Math.min(3, shot.lead ?? 0)) * TOON_FPS); // `lead`: a silent picture before the first line
     (shot.lines ?? []).forEach((line, li) => {
       const tm = timings?.lines[line.id];
       const sec = lineSeconds(line, timings);

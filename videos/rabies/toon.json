@@ -124,6 +124,7 @@
   {
    "id": "A",
    "set": "macro",
+   "lead": 1.3,
    "cast": [
     {
      "who": "virus",
@@ -140,15 +141,11 @@
     "snap": 0
    },
    "events": [
-    {
-     "at": "start",
-     "set": {
-      "snap": 0.5
-     },
-     "over": 6,
-     "sfx": "bonk",
-     "fx": "flash"
-    },
+    {"at": "start", "set": {"snap": 0.5}, "over": 6, "sfx": "whoosh-fast"},
+   {"at": "start", "delay": 0.42, "sfx": "thud-soft", "fx": "flash"},
+   {"at": "start", "delay": 0.48, "sfx": "squelch"},
+   {"at": "start", "delay": 0.95, "sfx": "bubble-pop"},
+   {"at": "A1", "word": "brain!", "sfx": "whoosh-air"},
     {
      "at": "A1",
      "word": "rabies.",

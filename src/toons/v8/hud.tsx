@@ -12,6 +12,8 @@ import React, {useId} from 'react';
 import {Img, staticFile} from 'remotion';
 import {CLOTH, EDGE, EDGE_IN, FONT, INK, INLINE, OUTLINE, shade, tint} from './kit';
 import {Dog} from './animals';
+import {Brain} from './organs-a';
+import {Virus} from './germs';
 
 const clamp01 = (v: number) => Math.max(0, Math.min(1, v));
 /** 0 -> 1 with a small overshoot: the pop of a word or an icon. */
@@ -286,7 +288,7 @@ export const CtaCard: React.FC<{t: number; title: string; points: CtaPoint[]}> =
  * character (no blur, no glow: the v8 rule; ask the owner before a true glow).
  */
 export const TAG_SECONDS = 1;
-export const TAG_SAFE = {x0: 70, x1: 1010, y0: 220, y1: 1360};
+export const TAG_SAFE = {x0: 70, x1: 1010, y0: 330, y1: 1360}; // y0 below the race bar (v4)
 export const tagBox = (label: string, x: number, y: number, r: number) => {
   const fs = 40, w = Math.round(label.length * fs * 0.66 + 60), h = 76;
   const gap = 150;
@@ -391,5 +393,49 @@ export const CtaCardV4: React.FC<{t: number; title: string; points: CtaPoint[]; 
           color: INK, fontWeight: 900, fontSize: 44, lineHeight: 1.15, textAlign: 'center'}}>{follow}</div>
       </div>
     </div>
+  );
+};
+
+// ------------------------------------------------------------------ v4: the race bar (the hook's question, made visible)
+/**
+ * "Can you catch me before the brain?" as a picture that comes back through the video: a nerve from the BITE to
+ * the BRAIN across the top of the screen, the Virus riding along it (p = 0 at the bite, 1 at the brain). It creeps
+ * during the months, jumps on "faster", and stops at the antibody wall (`wall` 0..1); `caught` greys it. `op` fades
+ * the whole bar. Laid on the screen after the camera, in the safe area (y 205-300), clear of the watermark.
+ */
+export const RACE = {x0: 170, x1: 900, y: 252, wallAt: 0.82};
+export const RaceBar: React.FC<{p: number; t: number; op?: number; wall?: number; caught?: number}> = ({p, t, op = 1, wall = 0, caught = 0}) => {
+  if (op <= 0.01) return null;
+  const {x0, x1, y, wallAt} = RACE;
+  const x = x0 + (x1 - x0) * clamp01(p);
+  const yOn = (u: number) => y - 2 * 22 * u * (1 - u); // the line's height at u (the quadratic's curve)
+  const path = `M ${x0} ${y} Q ${(x0 + x1) / 2} ${y - 22} ${x1} ${y}`;
+  const wx = x0 + (x1 - x0) * wallAt;
+  const bob = Math.sin(t * 9) * 4 * (1 - caught);
+  return (
+    <svg style={{position: 'absolute', left: 0, top: 0, opacity: op, pointerEvents: 'none'}} width={1080} height={1920} viewBox="0 0 1080 1920">
+      <rect x={x0 - 90} y={y - 52} width={x1 - x0 + 180} height={104} rx={52} fill="#2b1a17" opacity={0.32} />
+      <path d={path} stroke={INK} strokeWidth={24} strokeLinecap="round" fill="none" />
+      <path d={path} stroke="#f2d07a" strokeWidth={14} strokeLinecap="round" fill="none" />
+      <path d={path} stroke="#fff3c4" strokeWidth={4} strokeLinecap="round" fill="none" strokeDasharray="18 22" strokeDashoffset={-t * 60} />
+      {/* the bite (start) and the brain (finish) */}
+      <g transform={`translate(${x0 - 46} ${y})`}>
+        <circle r={30} fill="#ffffff" {...EDGE} />
+        {[[-12, -8, 10, -12], [-10, 2, 14, -2], [-6, 12, 12, 8]].map(([a, b, c, d], i) => <path key={i} d={`M ${a} ${b} L ${c} ${d}`} stroke="#ef5b5b" strokeWidth={4.5} strokeLinecap="round" />)}
+      </g>
+      <g transform={`translate(${x1 + 52} ${y - 6}) scale(0.46)`}><Brain mood={p > 0.6 && caught < 0.5 ? 'scared' : 'open'} mouth={p > 0.6 && caught < 0.5 ? 'wavy' : 'smile'} look={[-0.8, 0]} /></g>
+      {/* the antibody wall */}
+      {wall > 0.01 && (
+        <g transform={`translate(${wx} ${yOn(wallAt)}) scale(${(0.4 + 0.6 * settleIn(wall, 1)).toFixed(3)})`}>
+          <rect x={-11} y={-44} width={22} height={88} rx={9} fill="#35b59b" {...EDGE} />
+          {[-28, 0, 28].map((dy) => <path key={dy} d={`M -8 ${dy} L 0 ${dy + 8} L 8 ${dy} M 0 ${dy + 8} L 0 ${dy + 14}`} stroke="#ffffff" strokeWidth={3} strokeLinecap="round" fill="none" />)}
+        </g>
+      )}
+      {/* the Virus riding the nerve */}
+      <g transform={`translate(${x.toFixed(1)} ${(yOn(clamp01(p)) - 36 + bob).toFixed(1)}) scale(0.46)`} opacity={1 - 0.45 * caught}>
+        <Virus mood={caught > 0.5 ? 'sad' : 'happy'} mouth={caught > 0.5 ? 'wavy' : 'big'} look={[0.8, 0]} />
+      </g>
+      {caught > 0.01 && <path d={`M ${x - 30} ${yOn(clamp01(p)) - 66} L ${x + 30} ${yOn(clamp01(p)) - 6} M ${x + 30} ${yOn(clamp01(p)) - 66} L ${x - 30} ${yOn(clamp01(p)) - 6}`} stroke="#ef5b5b" strokeWidth={9 * caught} strokeLinecap="round" />}
+    </svg>
   );
 };
