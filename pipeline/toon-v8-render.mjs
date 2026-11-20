@@ -13,7 +13,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {execFileSync} from 'node:child_process';
-import {args, isMain, PUBLIC, remotion, ROOT, readJson, videoDir, writeJson} from './lib/util.mjs';
+import {args, isMain, PUBLIC, remotion, ROOT, readJson, syncBrand, videoDir, writeJson} from './lib/util.mjs';
 import {MUSIC_DIR, SFX_DIR, syncVoices} from './lib/toon-audio.mjs';
 import {bedStart, layoutToon} from '../src/toons/director.ts';
 import {master} from './render.mjs';
@@ -30,6 +30,7 @@ const copyDir = (from, to) => {
 /** The player's props for a video (and the audio it needs, copied into public/). */
 export const v8Props = (slug, {silent = false, music: other} = {}) => {
   const toon = readJson(path.join(videoDir(slug), 'toon.json'));
+  syncBrand(); // the channel logo for the CTA card
   if (!silent) syncVoices(slug); // the voice clips kept in git (assets/toons-voice) <-> where the player reads them
   const stored = silent ? null : readJson(path.join(videoDir(slug), 'toon-timings.json'), null);
   // a voice clip is only used while its words still match the script

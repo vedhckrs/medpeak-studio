@@ -8,8 +8,10 @@
  *   Each is drawn with the kit (one outline, flat colour plus one darker tone) in the 200-unit figure space
  *   and moves with `t`, the seconds since it appeared. `IconBadge` places one on the screen with a pop.
  */
-import React from 'react';
-import {CLOTH, EDGE, EDGE_IN, FONT, INK, INLINE, OUTLINE, shade} from './kit';
+import React, {useId} from 'react';
+import {Img, staticFile} from 'remotion';
+import {CLOTH, EDGE, EDGE_IN, FONT, INK, INLINE, OUTLINE, shade, tint} from './kit';
+import {Dog} from './animals';
 
 const clamp01 = (v: number) => Math.max(0, Math.min(1, v));
 /** 0 -> 1 with a small overshoot: the pop of a word or an icon. */
@@ -121,7 +123,7 @@ export const VaccineShield: React.FC<{t?: number}> = ({t = 0}) => {
       <path d="M 0 -88 Q 46 -64 80 -64 Q 82 20 0 90 Q -82 20 -80 -64 Q -46 -64 0 -88 Z" fill="#4cc3b5" {...EDGE} />
       <path d="M 0 -70 Q 36 -52 62 -50 Q 62 12 0 70 Z" fill={shade('#4cc3b5', 0.14)} />
       {shine > 0 && shine < 1 && <path transform={`translate(${(-60 + shine * 120).toFixed(1)} 0) rotate(20)`} d="M -6 -80 L 6 -80 L 6 80 L -6 80 Z" fill="#ffffff" opacity={0.55} />}
-      <g transform={`scale(${k.toFixed(3)}) rotate(-35)`}>
+      {k > 0.05 && <g transform={`scale(${k.toFixed(3)}) rotate(-35)`}>
         <rect x={-14} y={-46} width={28} height={70} rx={4} fill="#ffffff" {...EDGE} />
         <rect x={-14} y={-6} width={28} height={30} rx={3} fill="#9ad8f0" {...EDGE_IN} />
         <path d="M -14 -26 L -4 -26 M -14 -12 L -4 -12" {...INLINE} />
@@ -130,7 +132,7 @@ export const VaccineShield: React.FC<{t?: number}> = ({t = 0}) => {
         <rect x={-14} y={-80} width={28} height={8} rx={3} fill="#c9ccd3" {...EDGE_IN} />
         <path d="M 0 24 L 0 50" stroke={INK} strokeWidth={6} strokeLinecap="round" />
         <path d="M 0 24 L 0 50" stroke="#c9ccd3" strokeWidth={2.5} strokeLinecap="round" />
-      </g>
+      </g>}
     </g>
   );
 };
@@ -147,17 +149,53 @@ export const Warning: React.FC<{t?: number}> = ({t = 0}) => {
   );
 };
 
-export type IconName = 'sunrise' | 'stopwatch' | 'calendar' | 'vaccine' | 'warning';
-export const ICONS: Record<IconName, React.FC<{t?: number}>> = {sunrise: Sunrise, stopwatch: Stopwatch, calendar: Calendar, vaccine: VaccineShield, warning: Warning};
+/** A stray dog (v4: on the words "stray dog"): the cast's dog head in a round badge. */
+export const DogIcon: React.FC<{t?: number}> = () => {
+  const id = 'dg' + useId().replace(/:/g, '');
+  return (
+    <g>
+      <circle cx={0} cy={0} r={90} fill="#f6e3c4" {...EDGE} />
+      <path d="M -90 30 Q -40 14 0 26 Q 50 40 90 22 L 90 100 L -90 100 Z" fill={shade('#f6e3c4', 0.1)} clipPath={`url(#${id})`} />
+      <clipPath id={id}><circle cx={0} cy={0} r={88} /></clipPath>
+      <g clipPath={`url(#${id})`}><g transform="translate(-6 14) scale(0.8)"><Dog pose="head" /></g></g>
+      <circle cx={0} cy={0} r={90} {...OUTLINE} />
+    </g>
+  );
+};
+/** The dog with a warning badge (v4: when the doctor says rabies is fatal). */
+export const DogWarning: React.FC<{t?: number}> = ({t = 0}) => (
+  <g>
+    <g transform="translate(-12 -8) scale(0.9)"><DogIcon t={t} /></g>
+    <g transform="translate(58 56) scale(0.46)"><Warning t={t} /></g>
+  </g>
+);
 
-/** One icon on the screen: (x, y) its centre in frame pixels, size its box; it pops in at t = 0. */
+export type IconName = 'sunrise' | 'stopwatch' | 'calendar' | 'vaccine' | 'warning' | 'dog' | 'dogWarning';
+export const ICONS: Record<IconName, React.FC<{t?: number}>> = {sunrise: Sunrise, stopwatch: Stopwatch, calendar: Calendar, vaccine: VaccineShield, warning: Warning, dog: DogIcon, dogWarning: DogWarning};
+
+/**
+ * v4 entrance (the owner, 2026-11-20: "smoother icon animation, no wobble"): ease-out to full size with ONE
+ * soft settle (at most 3% over, back to 1 by the end), no turn. 0 -> 1 over `dur` seconds.
+ */
+export const settleIn = (t: number, dur = 0.3) => {
+  const u = clamp01(t / dur);
+  if (u <= 0) return 0;
+  if (u >= 1) return 1;
+  return 1 - Math.pow(1 - u, 3) + Math.sin(u * Math.PI) * 0.06 * u;
+};
+/** One icon on the screen: (x, y) its centre in frame pixels, size its box; it pops in at t = 0, settles, holds,
+ * and fades out over 0.25 s from `out`. */
 export const IconBadge: React.FC<{icon: IconName; t: number; x?: number; y?: number; size?: number; out?: number}> = ({icon, t, x = 540, y = 300, size = 330, out}) => {
   const I = ICONS[icon];
-  const k = popIn(t, 0.28) * (out === undefined ? 1 : 1 - clamp01((t - out) / 0.2));
-  if (k <= 0.001) return null;
+  if (t < 0) return null;
+  const fade = out === undefined ? 0 : clamp01((t - out) / 0.25);
+  const ease = fade * fade * (3 - 2 * fade);
+  const k = settleIn(t, 0.3) * (1 - ease * 0.12);
+  const op = clamp01(t / 0.12) * (1 - ease);
+  if (op <= 0.001) return null;
   return (
-    <svg style={{position: 'absolute', left: x - size / 2, top: y - size / 2, overflow: 'visible', pointerEvents: 'none'}} width={size} height={size} viewBox="-100 -100 200 200">
-      <g transform={`scale(${k.toFixed(3)}) rotate(${((1 - Math.min(1, k)) * -14).toFixed(1)})`}><I t={t} /></g>
+    <svg style={{position: 'absolute', left: x - size / 2, top: y - size / 2, overflow: 'visible', pointerEvents: 'none', opacity: op}} width={size} height={size} viewBox="-100 -100 200 200">
+      <g transform={`scale(${(0.55 + 0.45 * k).toFixed(4)})`}><I t={t} /></g>
     </svg>
   );
 };
@@ -174,7 +212,8 @@ const WM_AT: {x: number; y: number; align: 'left' | 'right' | 'center'}[] = [
   {x: 96, y: 1330, align: 'left'}, // act 2: bottom left, above the caption and the Shorts title band
   {x: 540, y: 178, align: 'center'}, // act 3: top middle
 ];
-export const Watermark: React.FC<{act: number; t: number}> = ({act, t}) => {
+/** The v3 watermark (bold, heavy outline): kept only for the v4 look sheet's before/after. */
+export const WatermarkV3: React.FC<{act: number; t: number}> = ({act, t}) => {
   const p = WM_AT[Math.max(0, Math.min(2, act))];
   const k = clamp01(t / 0.35);
   const tx = p.align === 'right' ? '-100%' : p.align === 'center' ? '-50%' : '0';
@@ -182,6 +221,22 @@ export const Watermark: React.FC<{act: number; t: number}> = ({act, t}) => {
     <div style={{position: 'absolute', left: p.x, top: p.y, transform: `translate(${tx}, -50%)`, opacity: 0.88 * k, pointerEvents: 'none',
       fontFamily: FONT, fontWeight: 800, fontSize: 34, letterSpacing: 0.5, color: '#ffffff', whiteSpace: 'nowrap',
       WebkitTextStroke: `6px ${INK}`, paintOrder: 'stroke fill'}}>{WATERMARK}</div>
+  );
+};
+/**
+ * v4 (the owner, 2026-11-20): smaller, half as opaque, Inter Regular, no heavy outline. A thin flat dark
+ * drop (1 px, no blur) keeps it readable on light places.
+ */
+export const WM_SIZE = 26;
+export const WM_OPACITY = 0.44;
+export const Watermark: React.FC<{act: number; t: number}> = ({act, t}) => {
+  const p = WM_AT[Math.max(0, Math.min(2, act))];
+  const k = clamp01(t / 0.35);
+  const tx = p.align === 'right' ? '-100%' : p.align === 'center' ? '-50%' : '0';
+  return (
+    <div style={{position: 'absolute', left: p.x, top: p.y, transform: `translate(${tx}, -50%)`, opacity: WM_OPACITY * k, pointerEvents: 'none',
+      fontFamily: FONT, fontWeight: 400, fontSize: WM_SIZE, letterSpacing: 0.4, color: '#ffffff', whiteSpace: 'nowrap',
+      textShadow: '0 1px 0 rgba(43, 26, 23, 0.55)'}}>{WATERMARK}</div>
   );
 };
 
@@ -217,6 +272,123 @@ export const CtaCard: React.FC<{t: number; title: string; points: CtaPoint[]}> =
       <div style={{position: 'absolute', left: 0, right: 0, top: 1360, display: 'flex', justifyContent: 'center', opacity: clamp01(follow * 2)}}>
         <div style={{transform: `scale(${((0.6 + 0.4 * follow) * pulse).toFixed(3)})`, background: '#ef5b5b', border: `5px solid ${INK}`, borderRadius: 60, padding: '22px 56px', boxShadow: `0 10px 0 ${INK}`,
           color: '#ffffff', fontWeight: 900, fontSize: 56, WebkitTextStroke: `0px`}}>FOLLOW FOR MORE</div>
+      </div>
+    </div>
+  );
+};
+
+// ------------------------------------------------------------------ v4: the name tag (the owner, 2026-11-20)
+/**
+ * A 1-second name tag the FIRST time a non-human character appears (RABIES VIRUS, ANTIBODY, WHITE BLOOD CELL,
+ * DEFENCE CELL, NERVE ENDING). Never on humans. (x, y) is the character's centre and r its radius in frame
+ * pixels; `t` the seconds since the tag began. A white tag box above the head (to the side when there is no
+ * room above), a smart arrow from the box to the head, and a flat halo: two thin white rings around the
+ * character (no blur, no glow: the v8 rule; ask the owner before a true glow).
+ */
+export const TAG_SECONDS = 1;
+export const TAG_SAFE = {x0: 70, x1: 1010, y0: 220, y1: 1360};
+export const tagBox = (label: string, x: number, y: number, r: number) => {
+  const fs = 40, w = Math.round(label.length * fs * 0.66 + 60), h = 76;
+  const gap = 150;
+  // above the head if it fits, else to the side with more room
+  let side: 'up' | 'left' | 'right' | 'down' = 'up';
+  let bx = x, by = y - r - gap - h / 2;
+  if (by - h / 2 < TAG_SAFE.y0) {
+    side = x > 540 ? 'left' : 'right';
+    bx = side === 'left' ? x - r - gap * 0.6 - w / 2 : x + r + gap * 0.6 + w / 2;
+    by = Math.max(TAG_SAFE.y0 + h / 2, y - r * 0.6);
+    if (bx - w / 2 < TAG_SAFE.x0 || bx + w / 2 > TAG_SAFE.x1) { side = 'down'; bx = x; by = Math.min(TAG_SAFE.y1 - h / 2, y + r + gap + h / 2); }
+  }
+  bx = Math.max(TAG_SAFE.x0 + w / 2, Math.min(TAG_SAFE.x1 - w / 2, bx));
+  return {side, bx, by, w, h, fs};
+};
+export const CharTag: React.FC<{label: string; x: number; y: number; r: number; t: number; dur?: number}> = ({label, x, y, r, t, dur = TAG_SECONDS}) => {
+  if (t < 0 || t > dur) return null;
+  const {side, bx, by, w, h, fs} = tagBox(label, x, y, r);
+  const op = clamp01(t / 0.15) * (1 - clamp01((t - (dur - 0.2)) / 0.2));
+  const k = settleIn(t, 0.25);
+  // the arrow: from the box edge toward the head, ending short of it, a gentle curve
+  const from: [number, number] = side === 'up' ? [bx, by + h / 2] : side === 'down' ? [bx, by - h / 2] : side === 'left' ? [bx + w / 2, by] : [bx - w / 2, by];
+  const ang = Math.atan2(y - from[1], x - from[0]);
+  const to: [number, number] = [x - Math.cos(ang) * (r + 18), y - Math.sin(ang) * (r + 18)];
+  const draw = settleIn(t - 0.08, 0.22);
+  const tip: [number, number] = [from[0] + (to[0] - from[0]) * Math.min(1, draw), from[1] + (to[1] - from[1]) * Math.min(1, draw)];
+  const mid: [number, number] = [(from[0] + tip[0]) / 2 + Math.sin(ang) * 24, (from[1] + tip[1]) / 2 - Math.cos(ang) * 24];
+  const a2 = Math.atan2(tip[1] - mid[1], tip[0] - mid[0]);
+  const head = (s: number) => `M ${tip[0] + Math.cos(a2) * 4} ${tip[1] + Math.sin(a2) * 4} L ${tip[0] - Math.cos(a2 - 0.5) * s} ${tip[1] - Math.sin(a2 - 0.5) * s} L ${tip[0] - Math.cos(a2 + 0.5) * s} ${tip[1] - Math.sin(a2 + 0.5) * s} Z`;
+  const arc = `M ${from[0]} ${from[1]} Q ${mid[0]} ${mid[1]} ${tip[0]} ${tip[1]}`;
+  const ring = settleIn(t - 0.05, 0.35);
+  return (
+    <div style={{position: 'absolute', inset: 0, opacity: op, pointerEvents: 'none'}}>
+      <svg style={{position: 'absolute', left: 0, top: 0, overflow: 'visible'}} width={1080} height={1920} viewBox="0 0 1080 1920">
+        {/* the flat halo: two thin white rings around the character */}
+        <circle cx={x} cy={y} r={r * (1.02 + 0.1 * ring)} fill="none" stroke="#ffffff" strokeWidth={9} opacity={0.7} />
+        <circle cx={x} cy={y} r={r * (1.1 + 0.16 * ring)} fill="none" stroke="#ffffff" strokeWidth={5} opacity={0.38} />
+        {draw > 0.02 && <>
+          <path d={arc} stroke={INK} strokeWidth={14} strokeLinecap="round" fill="none" />
+          <path d={arc} stroke="#ffffff" strokeWidth={7} strokeLinecap="round" fill="none" />
+          {draw > 0.6 && <><path d={head(38)} fill="#ffffff" stroke={INK} strokeWidth={4} strokeLinejoin="round" /></>}
+        </>}
+      </svg>
+      <div style={{position: 'absolute', left: bx, top: by, transform: `translate(-50%, -50%) scale(${(0.6 + 0.4 * k).toFixed(4)})`, width: w, height: h, boxSizing: 'border-box',
+        background: '#ffffff', border: `5px solid ${INK}`, borderRadius: 18, boxShadow: `0 7px 0 ${INK}`,
+        display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: FONT, fontWeight: 900, fontSize: fs, letterSpacing: 1, color: INK, whiteSpace: 'nowrap'}}>{label.toUpperCase()}</div>
+    </div>
+  );
+};
+
+// ------------------------------------------------------------------ v4: the CTA card with the channel logo
+/**
+ * The v4 end card (the owner, 2026-11-20): the logo's royal blue with lighter blue rings; the channel logo top
+ * centre in a white-ringed circle with "MedPeak Health" typed below; the headline on ONE line; three white
+ * cards with big bold icons; the follow line in a yellow pill. The narrator reads it, so the beats can be
+ * timed to his voice with `at` (seconds from the card's start).
+ * The logo is public/brand/logo.png (copied from assets/brand by the render and sheet scripts).
+ */
+export const BRAND_BLUE = '#214ba1';
+export const FOLLOW_LINE = 'Follow MedPeak Health for more health tips that keep you safe.';
+export type CtaAt = {head: number; points: [number, number, number]; follow: number};
+export const CTA_AT_DEFAULT: CtaAt = {head: 0.3, points: [0.9, 1.6, 2.3], follow: 3.0};
+export const CtaCardV4: React.FC<{t: number; title: string; points: CtaPoint[]; at?: CtaAt; follow?: string}> = ({t, title, points, at = CTA_AT_DEFAULT, follow = FOLLOW_LINE}) => {
+  const logo = settleIn(t, 0.35);
+  const name = settleIn(t - 0.15, 0.3);
+  const head = settleIn(t - at.head, 0.3);
+  const fol = settleIn(t - at.follow, 0.32);
+  const headFs = Math.min(84, Math.floor(960 / (title.length * 0.64)));
+  const ringT = t * 6; // the rings breathe outward very slowly
+  return (
+    <div style={{position: 'absolute', inset: 0, background: BRAND_BLUE, overflow: 'hidden', fontFamily: FONT}}>
+      <svg style={{position: 'absolute', left: 0, top: 0}} width={1080} height={1920} viewBox="0 0 1080 1920">
+        {[1180, 960, 760, 580, 420].map((r, i) => <circle key={i} cx={540} cy={300} r={r + ringT} fill={i % 2 ? tint(BRAND_BLUE, 0.07) : tint(BRAND_BLUE, 0.03)} />)}
+        {[1180, 960, 760, 580, 420, 290].map((r, i) => <circle key={'l' + i} cx={540} cy={300} r={r + ringT} fill="none" stroke={tint(BRAND_BLUE, 0.22)} strokeWidth={3} />)}
+      </svg>
+      {/* the logo in its circle */}
+      <div style={{position: 'absolute', left: 540, top: 290, width: 240, height: 240, transform: `translate(-50%, -50%) scale(${(0.5 + 0.5 * logo).toFixed(4)})`, opacity: clamp01(logo * 3),
+        borderRadius: '50%', background: '#ffffff', boxShadow: `0 8px 0 ${shade(BRAND_BLUE, 0.3)}`, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+        <div style={{width: 212, height: 212, borderRadius: '50%', overflow: 'hidden'}}><Img src={staticFile('brand/logo.png')} style={{width: 212, height: 212, display: 'block'}} /></div>
+      </div>
+      <div style={{position: 'absolute', left: 0, right: 0, top: 432, textAlign: 'center', opacity: clamp01(name * 2), transform: `translateY(${((1 - name) * 20).toFixed(1)}px)`,
+        fontWeight: 800, fontSize: 52, color: '#ffffff', letterSpacing: 0.5}}>MedPeak Health</div>
+      <div style={{position: 'absolute', left: 40, right: 40, top: 540, textAlign: 'center', whiteSpace: 'nowrap', opacity: clamp01(head * 2), transform: `scale(${(0.7 + 0.3 * head).toFixed(4)})`,
+        fontWeight: 900, fontSize: headFs, color: CAPTION_KEY, lineHeight: 1.05, letterSpacing: 0.5, WebkitTextStroke: `8px ${INK}`, paintOrder: 'stroke fill', textShadow: `0 7px 0 ${INK}`}}>{title}</div>
+      {points.map((p, i) => {
+        const k = settleIn(t - at.points[i], 0.32);
+        const y = 680 + i * 246;
+        return (
+          <div key={i} style={{position: 'absolute', left: 70, right: 70, top: y, height: 220, opacity: clamp01(k * 2.5),
+            transform: `translateY(${((1 - k) * 60).toFixed(1)}px) scale(${(0.92 + 0.08 * k).toFixed(4)})`, display: 'flex', alignItems: 'center', gap: 26,
+            background: '#ffffff', border: `5px solid ${INK}`, borderRadius: 34, padding: '0 30px 0 18px', boxShadow: `0 10px 0 ${shade(BRAND_BLUE, 0.35)}`}}>
+            <svg width={210} height={210} viewBox="-100 -100 200 200" style={{flex: 'none', overflow: 'visible'}}><g transform="scale(1.04)">{p.icon}</g></svg>
+            <div style={{display: 'flex', flexDirection: 'column'}}>
+              <div style={{fontWeight: 900, fontSize: 64, color: INK, lineHeight: 1.0}}>{p.big}</div>
+              <div style={{fontWeight: 700, fontSize: 36, color: '#5f6676', marginTop: 10}}>{p.small}</div>
+            </div>
+          </div>
+        );
+      })}
+      <div style={{position: 'absolute', left: 70, right: 70, top: 1440, display: 'flex', justifyContent: 'center', opacity: clamp01(fol * 2.5)}}>
+        <div style={{transform: `scale(${(0.75 + 0.25 * fol).toFixed(4)})`, background: CAPTION_KEY, border: `5px solid ${INK}`, borderRadius: 40, padding: '20px 40px', boxShadow: `0 10px 0 ${INK}`,
+          color: INK, fontWeight: 900, fontSize: 44, lineHeight: 1.15, textAlign: 'center'}}>{follow}</div>
       </div>
     </div>
   );

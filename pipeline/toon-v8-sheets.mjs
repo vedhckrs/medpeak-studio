@@ -11,7 +11,7 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
-import {args, isMain, remotion, ROOT} from './lib/util.mjs';
+import {args, isMain, remotion, ROOT, syncBrand} from './lib/util.mjs';
 
 // [entry file, still id, output name]
 export const SHEETS = [
@@ -55,6 +55,7 @@ export const SCENES = [
 ];
 
 const renderList = (all, dir, only) => {
+  syncBrand();
   const out = path.join(ROOT, 'out', 'toons', dir);
   fs.mkdirSync(out, {recursive: true});
   const list = all.filter(([, , name]) => !only.length || only.some((o) => name.includes(o)));

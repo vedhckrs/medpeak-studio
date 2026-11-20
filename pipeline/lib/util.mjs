@@ -42,6 +42,13 @@ export const args = (argv = process.argv.slice(2)) => {
   return out;
 };
 
+/** The channel logo where the player reads it (public/ is not in git): assets/brand -> public/brand. */
+export const syncBrand = () => {
+  const from = path.join(ROOT, 'assets', 'brand'), to = path.join(PUBLIC, 'brand');
+  fs.mkdirSync(to, {recursive: true});
+  for (const f of fs.readdirSync(from)) fs.copyFileSync(path.join(from, f), path.join(to, f));
+};
+
 export const videoDir = (slug) => path.join(VIDEOS, slug);
 export const readJson = (p, fallback) => {
   if (!fs.existsSync(p)) {
