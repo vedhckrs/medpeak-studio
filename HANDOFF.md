@@ -6,6 +6,20 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-21 - Cloud session (claude.ai/code) - rabies v4 APPROVED, PR #7 merged
+
+- The owner approved the final rabies video and said "merge + package, private".
+- Package: `node --import tsx pipeline/toon-package.mjs rabies` -> READY, private, not made for kids, AI label yes;
+  it now uses the v8 render and a v8 cover (`ToonV8Cover`), and stores repo-relative paths (upload.py resolves them).
+- **To upload (on the owner's PC; the cloud has no YouTube login):** `git switch main`, `git pull`, `npm ci`, then
+  either render it there (`npm run toon:v8 -- rabies`, about 7 min, makes `videos/rabies/renders/toon-v8.mp4`) or save
+  the video file sent in the chat as `videos/rabies/renders/toon-v8.mp4`; then
+  `node --import tsx pipeline/toon-package.mjs rabies` (makes the cover) and `python publish/upload.py rabies toon --approve`
+  (private). Renders and the cover are not in git.
+- PR #7 merged into `main`; PR #6 closed (all of its work is in #7).
+
+---
+
 ## 2026-11-20 (late, 5) - Cloud session (claude.ai/code) - branch `claude/bold-hopper-dqvjfr`, PR #7
 
 - The owner: "start the video with One stray dog". The Virus's line B1 is now a COLD OPEN in shot A (new script
