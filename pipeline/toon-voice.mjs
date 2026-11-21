@@ -9,6 +9,7 @@
  *   node pipeline/toon-voice.mjs <slug> --remix                         # free: pitch and level again from the raw downloads
  *   node pipeline/toon-voice.mjs --audition --dry-run                   # one short line per character
  *   node pipeline/toon-voice.mjs --audition --approve --max-characters N   # -> out/toons/auditions/<who>.mp3
+ *   node pipeline/toon-voice.mjs --audition --who gunk,crew --dry-run   # only these characters
  *
  * Lines already voiced with the same text, voice and pitch are skipped (no double spend).
  * Writes public/toons/<slug>/voice/<id>.mp3 and videos/<slug>/toon-timings.json.
@@ -44,7 +45,10 @@ const main = async () => {
   const cap = Number(a['max-characters'] || 0);
 
   if (a.audition) {
-    const names = Object.keys(cast.cast);
+    const only = typeof a.who === 'string' ? a.who.split(',').map((w) => w.trim()).filter(Boolean) : [];
+    const unknown = only.filter((w) => !cast.cast[w]);
+    if (unknown.length) { console.error(`Not in the cast: ${unknown.join(', ')}`); process.exit(2); }
+    const names = only.length ? only : Object.keys(cast.cast);
     const chars = names.length * AUDITION.length;
     const bal = await balance();
     console.log(`Voice audition: ${names.length} characters x ${AUDITION.length} characters = ${chars} credits on ${cast.model}`);
