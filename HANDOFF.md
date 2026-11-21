@@ -6,7 +6,7 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
-## 2026-11-21 (4) - MacBook (local Claude Code) - branch `video/no-sleep` - no sleep: FINISHED, waiting for the owner's OK to upload
+## 2026-11-21 (4) - MacBook (local Claude Code) - branch `video/no-sleep` - no sleep: UPLOADED private (rbiXOjOD8SQ)
 
 - The owner picked topic 2, "What Happens If You Don't Sleep" (slug `no-sleep`); marked `taken (Mac, 2026-11-21)`
   in `topic-bank.md` and pushed.
@@ -85,7 +85,12 @@ you stop. The rules are in `CLAUDE.md`.
   **music 10% lower** (`MUSIC_LEVEL = 0.9`). Rules written into CLAUDE.md, SKILL.md and toons-v8-style.md (with the hook pattern).
 - Render: 66.7 s, -14.0 LUFS, the 3 one-frame jumps are exactly the scene cuts; 7 of 9 planned sounds heard (the splash where
   the wash starts stays under the voices and the running water).
-- NOT uploaded. Next: the owner watches the video; upload private only on his word (`python3 publish/upload.py no-sleep toon` with
+- **UPLOADED, private, on the owner's word: https://youtu.be/rbiXOjOD8SQ** (not made for kids, cover set; id in
+  `videos/no-sleep/package/toon.json`). AI label: the update call answered True but YouTube does not show the field on read
+  back (same as rabies): the owner checks it in YouTube Studio (Details, "Altered content").
+- `publish/upload.py` now writes the package paths back RELATIVE to the repo (they came back as full Mac paths twice).
+- Next: the owner checks the video in Studio and makes it public when he wants; the next video starts from topic 3.
+- (older) NOT uploaded. Next: the owner watches the video; upload private only on his word (`python3 publish/upload.py no-sleep toon` with
   the venv Python, dry run first; check `upload.py` keeps repo-relative paths).
 - Spent on this video in all: 75 + 280 + 12 + 202 + 500 = **1,069 ElevenLabs credits** (56,825 -> 55,755). Anthropic key: not used ($0).
 - Before that: the owner's OK on the silent video, then the voice auditions for gunk / melatonin / crew with the cost, then
