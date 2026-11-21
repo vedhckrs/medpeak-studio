@@ -55,8 +55,10 @@ you stop. The rules are in `CLAUDE.md`.
 - VOICED on the owner's yes: 16 lines, **280 credits** by the receipt (702 quoted); balance 56,750 -> 56,470. Clips in
   `assets/toons-voice/no-sleep/` (committed), timings `videos/no-sleep/toon-timings.json`. `toon:listen --words`: 140 words, 0 wrong;
   `--voices`: all at -14.4 to -15.1 LUFS, speech 76-89%, synthetic 0-56%, no clipping. Voiced length 48.8 s.
-- OPEN, the checker FAILS one rule: hook A1 takes 2.2 s (rule 2 s) even at "tempo" 1.15 (the most allowed; was 2.5 s). The owner
-  chooses: a new take of A1 (31 characters, paid) or accept 2.2 s. Until then `toon:check --all` (CI) fails on this branch.
+- Hook A1 was 2.2 s even at "tempo" 1.15; on the owner's word a NEW TAKE of A1 at ElevenLabs speed 1.2 (new per-line `"speed"` in
+  toon.json, read by `toon-voice.mjs`): **12 credits**, 1.9 s, PASS; words right, synthetic 29%. The old take is in
+  `out/toons/a1-backup/` (this Mac only). Balance after: about 56,458 (the counter lags). `toon:check --all` passes again.
+- Next: Joey's CTA line for the end card and the video's own music (both paid: quote, balance before and after), then the full render.
 - Before that: the owner's OK on the silent video, then the voice auditions for gunk / melatonin / crew with the cost, then
   voices, the narrator's CTA line and the video's own music (all paid: balance before and after).
 

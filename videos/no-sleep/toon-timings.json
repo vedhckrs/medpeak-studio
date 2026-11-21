@@ -7,37 +7,37 @@
       "pitch": -1,
       "tempo": 1.15,
       "file": "toons/no-sleep/voice/A1.mp3",
-      "duration": 2.209,
+      "duration": 1.867,
       "words": [
         {
           "w": "Don't",
           "start": 0,
-          "end": 0.252
+          "end": 0.212
         },
         {
           "w": "sleep?",
-          "start": 0.293,
-          "end": 0.697
+          "start": 0.252,
+          "end": 0.636
         },
         {
           "w": "I",
-          "start": 0.868,
-          "end": 0.929
+          "start": 0.697,
+          "end": 0.767
         },
         {
           "w": "clog",
-          "start": 1.01,
-          "end": 1.252
+          "start": 0.848,
+          "end": 1.121
         },
         {
           "w": "your",
-          "start": 1.303,
-          "end": 1.434
+          "start": 1.161,
+          "end": 1.272
         },
         {
           "w": "brain!",
-          "start": 1.494,
-          "end": 2.14
+          "start": 1.333,
+          "end": 1.817
         }
       ]
     },

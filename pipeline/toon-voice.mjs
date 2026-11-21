@@ -24,13 +24,13 @@ import {toWords} from './voice.mjs';
 const AUDITION = 'Hello! This is my voice. Wait, what was that? Oh no, not again!';
 
 let billed = 0;
-const speakLine = async (cast, who, text, emotion, rawFile) => {
+const speakLine = async (cast, who, text, emotion, rawFile, speed) => {
   const c = cast.cast[who];
   const act = cast.acting[emotion ?? 'neutral'] ?? cast.acting.neutral;
   const r = await post(`/text-to-speech/${c.voiceId}/with-timestamps?output_format=mp3_44100_128`, {
     text,
     model_id: cast.model,
-    voice_settings: {stability: act.stability, similarity_boost: 0.8, style: act.style, use_speaker_boost: true, speed: c.speed ?? 1},
+    voice_settings: {stability: act.stability, similarity_boost: 0.8, style: act.style, use_speaker_boost: true, speed: Math.max(0.7, Math.min(1.2, speed ?? c.speed ?? 1))},
   });
   billed += costOf(r) ?? text.length;
   const d = await r.json();
@@ -113,7 +113,7 @@ const main = async () => {
   for (const l of todo) {
     const c = cast.cast[l.who];
     const raw = path.join(ROOT, 'out', 'toons', 'raw', slug, `${l.id}.mp3`);
-    const words = await speakLine(cast, l.who, l.text, l.emotion, raw);
+    const words = await speakLine(cast, l.who, l.text, l.emotion, raw, l.speed); // a line's own speaking speed (toon.json: "speed", 0.7-1.2; paid: a new take)
     const file = path.join(outDir, `${l.id}.mp3`);
     const tempo = Math.max(0.9, Math.min(1.15, l.tempo ?? 1));
     voiceFx(raw, file, c.pitch, tempo, l.cut ?? null);

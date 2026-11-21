@@ -28,20 +28,20 @@ Toon script `no-sleep` · about 48 seconds · 16 pictures
 |---|---|---|
 | PASS | Script is valid | 5 scenes, 16 lines, 5 voices |
 | PASS | 1 No intro | hook: "Don't sleep? I clog your brain!" |
-| PASS | 2 Promise | starts at 2.3 s (limit 8 s) |
-| PASS | 4 3-sec change | something new HAPPENS 44 times in 48 s (a place, a cut, a thing arriving, a change of the stage; text stickers do not count); the longest wait is 2.9 s (from 7.6 s) |
+| PASS | 2 Promise | starts at 2.0 s (limit 8 s) |
+| PASS | 4 3-sec change | something new HAPPENS 44 times in 48 s (a place, a cut, a thing arriving, a change of the stage; text stickers do not count); the longest wait is 2.9 s (from 7.3 s) |
 | PASS | 5 Twist | twist starts at 62% |
 | PASS | 6 Best last | best point starts at 91% |
 | PASS | 7 Loop | last line shares 3 key word(s) with the first: sleep, clog, brain |
 | PASS | Sources on numbers | every number has a source |
 | PASS | Source ids exist | all source ids known |
 | PASS | No banned claims | no cure/miracle/detox claims |
-| PASS | 1 Hook: short, to the viewer, about the title | "Don't sleep? I clog your brain!" (6 words, 2.2 s, says "you", says the title's words) |
+| PASS | 1 Hook: short, to the viewer, about the title | "Don't sleep? I clog your brain!" (6 words, 1.9 s, says "you", says the title's words) |
 | PASS | 1 Hook: the first frame shows the consequence | the video opens on the macro with dirt already there |
 | PASS | 1 Hook: three choices for the owner | 3 choices, each short, to the viewer and about the title |
-| PASS | 3 Open question | asked at 2.3 s ("And who's going to wash me out now?"), answered at 91% ("You did sleep! Now they wash me out. I can't clog your brain!"; shared words: wash, out, now) |
+| PASS | 3 Open question | asked at 2.0 s ("And who's going to wash me out now?"), answered at 91% ("You did sleep! Now they wash me out. I can't clog your brain!"; shared words: wash, out, now) |
 | PASS | 3 No counting | the story is told as one chain of cause and effect, not as a numbered list |
-| PASS | Length | story 48.4 s (under 60 s; aim for 40-58) |
+| PASS | Length | story 48.1 s (under 60 s; aim for 40-58) |
 | PASS | Places | 2 set(s): macro, home (at least a body scene and the doctor's office) |
 | PASS | Own rooms | home: bedroom|nightblue|stripes|wood|wide@centre|night|bed-left|-|night |
 | PASS | Rooms are unique | no other video has this clinic or this home (compared with 9 other video(s)) |
@@ -57,10 +57,10 @@ Toon script `no-sleep` · about 48 seconds · 16 pictures
 | PASS | View changes | 16 pictures in 48 s: a new view every 3.0 s on average (6 or less), the longest held 4.4 s (7.5 or less) |
 | PASS | Text says what is spoken | every text on the picture uses words of its line, appears on its first spoken word, leaves with the line and sits straight |
 | PASS | Own music | its own track "no-sleep" (made from "musicPrompt" with: node pipeline/toon-music.mjs --slug no-sleep) |
-| FAIL | 1 Hook: said in 2 s | "Don't sleep? I clog your brain!" takes 2.2 s (at most 2) |
+| PASS | 1 Hook: said in 2 s | "Don't sleep? I clog your brain!" takes 1.9 s (at most 2) |
 | PASS | 1 Hook: something big moves at once | the first movement starts at 0.00 s (within 0.5 s) |
-| PASS | 1 Hook: no still opening | in the first 3 s the longest still is 0.6 s (at most 1), from 2.4 s |
-| PASS | Never still | the longest stretch with no movement, cut, camera move or new thing is 1.0 s (at most 2), from 4.6 s |
+| PASS | 1 Hook: no still opening | in the first 3 s the longest still is 0.8 s (at most 1), from 2.0 s |
+| PASS | Never still | the longest stretch with no movement, cut, camera move or new thing is 1.0 s (at most 2), from 4.2 s |
 | PASS | Body scene | body characters speak for 83% of the video (30% or more: they are the show) |
 | PASS | Short lines | the longest line is 13 words |
 | PASS | Banter | at most 3 lines in a row by one speaker (3 or fewer) |
@@ -77,7 +77,7 @@ Characters: gunk
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
 | 0.0 s | A1 | gunk | angry | Don't sleep? I clog your brain! | ecu 50 push | xie-2013, shokri-2018 |
-| 2.3 s | A2 | gunk | angry | And who's going to wash me out now? | ews 24 lock |  |
+| 2.0 s | A2 | gunk | angry | And who's going to wash me out now? | ews 24 lock |  |
 
 What happens in the picture:
 
@@ -95,9 +95,9 @@ Characters: patient, melatonin · props: tag, clock
 
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
-| 5.6 s | B1 | patient | happy | Just one more video... | ms 35 crash |  |
-| 7.3 s | B2 | melatonin | neutral | It's two a.m. My night crew needs you asleep! | mcu 50 push | xie-2013 |
-| 10.5 s | B3 | patient | happy | I'm fine on four hours. Watch me. | cu 85 push |  |
+| 5.2 s | B1 | patient | happy | Just one more video... | ms 35 crash |  |
+| 7.0 s | B2 | melatonin | neutral | It's two a.m. My night crew needs you asleep! | mcu 50 push | xie-2013 |
+| 10.2 s | B3 | patient | happy | I'm fine on four hours. Watch me. | cu 85 push |  |
 
 What happens in the picture:
 
@@ -115,10 +115,10 @@ Characters: crew, gunk · props: tag
 
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
-| 13.3 s | C1 | crew | happy | When you sleep, these gaps open up, and we wash the waste out. | whip to ews 18 lock | xie-2013 |
-| 17.2 s | C2 | crew | happy | In mice, they open sixty percent wider! | mcu 50 push | xie-2013 |
-| 19.8 s | C3 | gunk | happy | But he's still awake. No sleep, no wash. Party! | cu 85 lock |  |
-| 24.0 s | C4 | crew | scared | One night awake, and scans of people show more of it! | mcu 50 push | shokri-2018 |
+| 12.9 s | C1 | crew | happy | When you sleep, these gaps open up, and we wash the waste out. | whip to ews 18 lock | xie-2013 |
+| 16.9 s | C2 | crew | happy | In mice, they open sixty percent wider! | mcu 50 push | xie-2013 |
+| 19.5 s | C3 | gunk | happy | But he's still awake. No sleep, no wash. Party! | cu 85 lock |  |
+| 23.6 s | C4 | crew | scared | One night awake, and scans of people show more of it! | mcu 50 push | shokri-2018 |
 
 What happens in the picture:
 
@@ -138,10 +138,10 @@ Characters: patient, brain · props: tag, pain, pillow, pain
 
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
-| 27.4 s | D1 | patient | sleepy | I'm fine. Just a bit... slow. | ms 35 crash |  |
-| 29.9 s | D2 | brain | scared | Seventeen hours awake? Some tests go as badly as being drunk. | mcu 50 push | williamson-2000, nhlbi-effects |
-| 33.0 s | D3 | brain | scared | And you can fall asleep for seconds without knowing it. | ews 24 lock | nhlbi-effects |
-| 35.5 s | D4 | brain | sad | Lose sleep night after night, and it adds up. | mcu 50 push | nhlbi-hours |
+| 27.1 s | D1 | patient | sleepy | I'm fine. Just a bit... slow. | ms 35 crash |  |
+| 29.6 s | D2 | brain | scared | Seventeen hours awake? Some tests go as badly as being drunk. | mcu 50 push | williamson-2000, nhlbi-effects |
+| 32.7 s | D3 | brain | scared | And you can fall asleep for seconds without knowing it. | ews 24 lock | nhlbi-effects |
+| 35.2 s | D4 | brain | sad | Lose sleep night after night, and it adds up. | mcu 50 push | nhlbi-hours |
 
 What happens in the picture:
 
@@ -162,9 +162,9 @@ Characters: gunk, melatonin, crew · props: tag
 
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
-| 38.3 s | E1 | melatonin | happy | Tonight: phone down. Seven hours or more. | mcu 50 push | cdc-sleep, nhlbi-hours |
-| 41.0 s | E2 | gunk | scared | The gaps are opening? No, no, not the crew! | ews 18 lock |  |
-| 44.0 s | E3 | gunk | sad | You did sleep! Now they wash me out. I can't clog your brain! | cu 85 push | xie-2013 |
+| 38.0 s | E1 | melatonin | happy | Tonight: phone down. Seven hours or more. | mcu 50 push | cdc-sleep, nhlbi-hours |
+| 40.7 s | E2 | gunk | scared | The gaps are opening? No, no, not the crew! | ews 18 lock |  |
+| 43.7 s | E3 | gunk | sad | You did sleep! Now they wash me out. I can't clog your brain! | cu 85 push | xie-2013 |
 
 What happens in the picture:
 

@@ -225,7 +225,8 @@
       "shokri-2018"
      ],
      "cam": "ecu 50 push",
-     "tempo": 1.15
+     "tempo": 1.15,
+     "speed": 1.2
     },
     {
      "id": "A2",
