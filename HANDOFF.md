@@ -6,7 +6,7 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
-## 2026-11-21 (4) - MacBook (local Claude Code) - branch `video/no-sleep` - no sleep: silent video and storyboard sent
+## 2026-11-21 (4) - MacBook (local Claude Code) - branch `video/no-sleep` - no sleep: FINISHED, waiting for the owner's OK to upload
 
 - The owner picked topic 2, "What Happens If You Don't Sleep" (slug `no-sleep`); marked `taken (Mac, 2026-11-21)`
   in `topic-bank.md` and pushed.
@@ -62,6 +62,13 @@ you stop. The rules are in `CLAUDE.md`.
   16.72 s, `assets/toons-voice/no-sleep/cta.mp3`, word times `videos/no-sleep/cta-timings.json`; wired in `NO_SLEEP_CTA`. The music
   `assets/toons-music/no-sleep.mp3`: **500 credits**, 40.1 s, no rests. Balance 56,458 before, 55,755 after.
   Whole video 66.5 s (story 48.1 + card).
+- Final render: `videos/no-sleep/renders/toon-v8.mp4` 66.5 s, -14.0 LUFS, peak -1.0 dB; `toon:listen` 8 of 9 sounds heard (three
+  sounds moved off spoken words into pauses), no holes; frame scan 0 one-frame jumps; contact sheets read. Phone copy
+  `toon-v8-phone.mp4` (19 MB). Package READY (`videos/no-sleep/package/`), cover `renders/toon-cover.jpg`.
+- Bug fixed: the v8 cover came out as frame 0 under `<Freeze>`; `ToonV8` now takes `frameAt` (entry-video.tsx). The uploaded
+  rabies cover was probably frame 0 too (not changed: it is up).
+- NOT uploaded. Next: the owner watches the video; upload private only on his word (`python3 publish/upload.py no-sleep toon` with
+  the venv Python, dry run first; check `upload.py` keeps repo-relative paths).
 - Spent on this video in all: 75 + 280 + 12 + 202 + 500 = **1,069 ElevenLabs credits** (56,825 -> 55,755). Anthropic key: not used ($0).
 - Before that: the owner's OK on the silent video, then the voice auditions for gunk / melatonin / crew with the cost, then
   voices, the narrator's CTA line and the video's own music (all paid: balance before and after).

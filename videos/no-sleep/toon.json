@@ -275,8 +275,8 @@
     },
     {
      "at": "B2",
-     "word": "crew",
-     "sfx": "whoosh-soft"
+     "sfx": "whoosh-air",
+     "delay": -0.25
     },
     {
      "at": "B3",
@@ -716,8 +716,12 @@
      "set": {
       "gap": 0.5
      },
-     "over": 24,
-     "sfx": "whoosh-soft"
+     "over": 24
+    },
+    {
+     "at": "E1",
+     "sfx": "whoosh-air",
+     "delay": -0.25
     },
     {
      "at": "E1",
@@ -743,8 +747,13 @@
      "set": {
       "dirt": 0.5
      },
-     "over": 30,
-     "sfx": "gulp"
+     "over": 30
+    },
+    {
+     "at": "E2",
+     "word": "crew!",
+     "sfx": "gulp",
+     "delay": 0.5
     },
     {
      "at": "E3",

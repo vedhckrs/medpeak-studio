@@ -41,7 +41,7 @@ Toon script `no-sleep` · about 48 seconds · 16 pictures
 | PASS | 1 Hook: three choices for the owner | 3 choices, each short, to the viewer and about the title |
 | PASS | 3 Open question | asked at 2.0 s ("And who's going to wash me out now?"), answered at 91% ("You did sleep! Now they wash me out. I can't clog your brain!"; shared words: wash, out, now) |
 | PASS | 3 No counting | the story is told as one chain of cause and effect, not as a numbered list |
-| PASS | Length | story 48.1 s (under 60 s; aim for 40-58) |
+| PASS | Length | story 48.1 s (under 60 s; aim for 40-58); with the end card 66.5 s |
 | PASS | Places | 2 set(s): macro, home (at least a body scene and the doctor's office) |
 | PASS | Own rooms | home: bedroom|nightblue|stripes|wood|wide@centre|night|bed-left|-|night |
 | PASS | Rooms are unique | no other video has this clinic or this home (compared with 9 other video(s)) |
@@ -103,7 +103,7 @@ What happens in the picture:
 
 - at B1 ("one"): sound [caption-pop]
 - at B2 ("two"): sound [alarm-beep]
-- at B2 ("crew"): sound [whoosh-soft]
+- at B2: sound [whoosh-air]
 - at B3 ("four"): sound [boing]
 - at B3 ("Watch"): sound [swish]
 - at B2 ("two"): tag "2 a.m."
@@ -169,10 +169,12 @@ Characters: gunk, melatonin, crew · props: tag
 What happens in the picture:
 
 - at start: gap to 0.2 [sparkle]
-- at E1 ("down."): gap to 0.5 [whoosh-soft]
+- at E1 ("down."): gap to 0.5
+- at E1: sound [whoosh-air]
 - at E1 ("seven"): gap to 0.8
 - at E2 ("opening?"): gap to 1, wash to 1 [splash-small]
-- at E2 ("crew!"): dirt to 0.5 [gulp]
+- at E2 ("crew!"): dirt to 0.5
+- at E2 ("crew!"): sound [gulp]
 - at E3 ("sleep!"): dirt to 0.2 [zip-away]
 - at E3 ("wash"): dirt to 0 [success-chime]
 - at E3 ("clog"): gap to 0.9 [sparkle]

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Composition, Freeze, registerRoot, type CalculateMetadataFunction} from 'remotion';
+import {Composition, registerRoot, type CalculateMetadataFunction} from 'remotion';
 import {ToonV8, v8Frames, type V8VideoProps} from './video';
 import {V8_FPS} from './play';
 import {FONT, INK} from './kit';
@@ -21,7 +21,8 @@ const CoverV8: React.FC<CoverProps> = ({at, text, accent, ...video}) => {
   const clean = (w: string) => w.toLowerCase().replace(/[^a-z0-9']/g, '');
   return (
     <div style={{position: 'absolute', inset: 0}}>
-      <Freeze frame={Math.round(at * V8_FPS)}><ToonV8 {...video} bare /></Freeze>
+      {/* frameAt, not <Freeze>: the cover of 2026-11-21 (no-sleep) came out as frame 0 under Freeze */}
+      <ToonV8 {...video} bare frameAt={Math.round(at * V8_FPS)} />
       <div style={{position: 'absolute', left: 60, right: 60, top: 1180, display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '0 26px',
         fontFamily: FONT, fontWeight: 900, fontSize: 128, lineHeight: 1.05, letterSpacing: 1, textAlign: 'center'}}>
         {words.map((w, i) => (

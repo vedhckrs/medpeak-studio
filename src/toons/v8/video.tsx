@@ -13,7 +13,7 @@ import {clamp01, go, lerp, V8_FPS, type Focus, type LineNow, type ShotDef, type 
 import {RABIES_CTA, RABIES_SHOTS} from './rabies';
 import {NO_SLEEP_CTA, NO_SLEEP_SHOTS} from './no-sleep';
 
-export type V8VideoProps = {toon: Toon; timings: ToonTimings | null; sfx: string[]; music: string | null; bare?: boolean};
+export type V8VideoProps = {toon: Toon; timings: ToonTimings | null; sfx: string[]; music: string | null; bare?: boolean; /** a still (the cover): draw this frame, whatever frame is being rendered */ frameAt?: number};
 
 /** The shots of each video, by the video's slug and the shot's id. */
 export const V8_VIDEOS: Record<string, Record<string, ShotDef>> = {rabies: RABIES_SHOTS, 'no-sleep': NO_SLEEP_SHOTS};
@@ -133,8 +133,9 @@ const Missing: React.FC<{id: string}> = ({id}) => (
   <AbsoluteFill style={{background: '#2b1a17', color: '#ffffff', fontFamily: FONT, fontSize: 60, fontWeight: 800, alignItems: 'center', justifyContent: 'center'}}>shot {id}: not drawn yet</AbsoluteFill>
 );
 
-export const ToonV8: React.FC<V8VideoProps> = ({toon, timings, sfx, music, bare = false}) => {
-  const frame = useCurrentFrame();
+export const ToonV8: React.FC<V8VideoProps> = ({toon, timings, sfx, music, bare = false, frameAt}) => {
+  const now = useCurrentFrame();
+  const frame = frameAt ?? now;
   const sec = frame / V8_FPS;
   const L = useMemo(() => layoutToon(toon, timings), [toon, timings]);
   const {s, si} = shotNow(L, toon, timings, sec);

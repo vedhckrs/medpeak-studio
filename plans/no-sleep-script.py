@@ -50,7 +50,7 @@ shots = [
    "events": [
      E("B1", word="one", sfx="caption-pop"),
      E("B2", word="two", sfx="alarm-beep"),
-     E("B2", word="crew", sfx="whoosh-soft"),
+     E("B2", sfx="whoosh-air", delay=-0.25),  # in the pause before her line (on "crew" it was lost under the voice)
      E("B3", word="four", sfx="boing"),
      E("B3", word="Watch", sfx="swish"),
    ],
@@ -106,10 +106,12 @@ shots = [
    "state": {"view": 2, "gap": 0, "wash": 0, "dirt": 1},
    "events": [
      E("start", set={"gap": 0.2}, over=20, sfx="sparkle"),
-     E("E1", word="down.", set={"gap": 0.5}, over=24, sfx="whoosh-soft"),
+     E("E1", word="down.", set={"gap": 0.5}, over=24),
+     E("E1", sfx="whoosh-air", delay=-0.25),
      E("E1", word="seven", set={"gap": 0.8}, over=24),
      E("E2", word="opening?", set={"gap": 1, "wash": 1}, over=20, sfx="splash-small"),
-     E("E2", word="crew!", set={"dirt": 0.5}, over=30, sfx="gulp"),
+     E("E2", word="crew!", set={"dirt": 0.5}, over=30),
+     E("E2", word="crew!", sfx="gulp", delay=0.5),  # after his last word (on it, it was lost)
      E("E3", word="sleep!", set={"dirt": 0.2}, over=30, sfx="zip-away"),
      E("E3", word="wash", set={"dirt": 0}, over=24, sfx="success-chime", fx="flash"),
      E("E3", word="clog", set={"gap": 0.9}, over=20, sfx="sparkle"),
