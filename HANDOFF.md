@@ -19,7 +19,8 @@ you stop. The rules are in `CLAUDE.md`.
   point of the kidney twist. A stronger check was not possible here: whisper-large-v3 is only half downloaded (weights.npz missing),
   parakeet is not downloaded, faster-whisper is not installed. The word lasts 0.86 s against 0.52-0.62 s for "creatine" (fits one more
   syllable, not proof). E1 and G1 sent to the owner to judge by ear; a re-take of E1 with a clearer spelling costs about 45 characters.
-- Next: the owner's ear on E1 (and G1); then Joey's card (about 200) and the music (about 500), each on his yes; render; package.
+- The owner, after hearing G1 (and E1): "is good to go": the voices stay as made.
+- Next: Joey's card (214 characters quoted) and the music, on his yes; render; package.
 
 ---
 
