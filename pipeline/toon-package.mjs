@@ -27,6 +27,7 @@ import path from 'node:path';
 import {execFileSync} from 'node:child_process';
 import {args, readJson, remotion, ROOT, VIDEOS, videoDir, writeJson} from './lib/util.mjs';
 import {layoutToon, GAP, TOON_FPS} from '../src/toons/director.ts';
+import {v8Props} from './toon-v8-render.mjs';
 
 const SUBSCRIBE = '🔔 Subscribe to MedPeak Health for cartoons and 3D animations that show what really happens inside your body: @MedPeakHealth';
 const DISCLAIMER = '⚠️ For education only. This video is not medical advice, diagnosis or treatment. Always talk to a qualified doctor about your health.';
@@ -90,8 +91,11 @@ const one = (slug, a) => {
   const pkg = toon.package ?? {};
   const out = path.join(dir, 'package');
   fs.mkdirSync(out, {recursive: true});
-  const video = path.join(dir, 'renders', 'toon.mp4');
+  // look v8 (2026-11-21): the v8 render when there is one, else the old engine's
+  const v8 = fs.existsSync(path.join(dir, 'renders', 'toon-v8.mp4'));
+  const video = path.join(dir, 'renders', v8 ? 'toon-v8.mp4' : 'toon.mp4');
   const cover = path.join(dir, 'renders', 'toon-cover.jpg');
+  const rel = (p) => path.relative(ROOT, p).split(path.sep).join('/'); // the package is read on another machine: paths relative to the repo
 
   const used = new Set(lines.flatMap((l) => l.src ?? []));
   const sources = (toon.sources ?? []).filter((s) => used.has(s.id));
@@ -123,7 +127,12 @@ const one = (slug, a) => {
     !pkg.cover?.text && 'no cover text',
   ].filter(Boolean);
 
-  if (!a['no-cover'] && pkg.cover?.text) {
+  if (!a['no-cover'] && pkg.cover?.text && v8) {
+    // the cover from the v8 video itself: its frame at `cover.at`, the cover text in the caption style
+    const props = path.join(ROOT, 'out', `toon-v8-cover-${slug}.json`);
+    writeJson(props, {...v8Props(slug), at: pkg.cover.at ?? 1, text: pkg.cover.text, accent: pkg.cover.accent});
+    remotion(['still', path.join('src', 'toons', 'v8', 'entry-video.tsx'), 'ToonV8Cover', cover, `--props=${props}`, '--log=error', '--timeout=120000', '--jpeg-quality=92']);
+  } else if (!a['no-cover'] && pkg.cover?.text) {
     const props = path.join(ROOT, 'out', `toon-cover-${slug}.json`);
     writeJson(props, {toon, timings: voiced ? stored : null, sfx: [], music: null, text: pkg.cover.text, accent: pkg.cover.accent});
     const frame = Math.min(L.total - 1, Math.round((pkg.cover.at ?? 1) * TOON_FPS));
@@ -139,8 +148,8 @@ const one = (slug, a) => {
   const done = Object.fromEntries(['uploaded', 'stored', 'coverSet', 'labelSet', 'captionsUploaded', 'captionsRemoved', 'commentId', 'madePublic'].filter((k) => before[k] !== undefined).map((k) => [k, before[k]]));
   writeJson(path.join(out, 'toon.json'), {
     cut: 'toon',
-    file: video,
-    thumbnail: cover,
+    file: rel(video),
+    thumbnail: rel(cover),
     captions: wantCaptions ? srt : null,
     snippet: {title: pkg.title, description, tags, categoryId: '27', defaultLanguage: 'en', defaultAudioLanguage: 'en'},
     status: {privacyStatus: 'private', selfDeclaredMadeForKids: false, containsSyntheticMedia: true},
@@ -154,7 +163,7 @@ const one = (slug, a) => {
     '',
     issues.length ? `> **Not ready:** ${issues.join('; ')}` : '> Ready. Nothing is uploaded until the owner says so; an upload is always private first.',
     '',
-    `**Video:** \`videos/${slug}/renders/toon.mp4\` (${seconds.toFixed(1)} s, 1080 x 1920, a Short)`,
+    `**Video:** \`${rel(video)}\` (${seconds.toFixed(1)} s, 1080 x 1920, a Short)`,
     `**Cover:** \`videos/${slug}/renders/toon-cover.jpg\` (the frame at ${(pkg.cover?.at ?? 1).toFixed(1)} s; in the YouTube app a Short's cover is picked from the video's own frames, so choose that moment there if the picture is not accepted)`,
     wantCaptions ? `**Captions:** \`videos/${slug}/package/captions.srt\` (YouTube Studio > Subtitles > Upload file > With timing)` : '**Captions:** none. The words are already on screen; the owner does not want a caption track.',
     '',

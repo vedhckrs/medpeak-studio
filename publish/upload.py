@@ -23,6 +23,10 @@ TOKEN = os.path.expanduser("~/.config/youtube-analytics/token.json")
 
 def upload(yt, pkg_path, args):
     pkg = json.load(open(pkg_path))
+    # the package stores paths relative to the repo (it is made on one machine and uploaded from another)
+    for k in ("file", "thumbnail"):
+        if pkg.get(k) and not os.path.isabs(pkg[k]):
+            pkg[k] = os.path.join(ROOT, *pkg[k].split("/"))
     if pkg.get("uploaded"):
         print(f"{pkg['cut']}: already uploaded as {pkg['uploaded']}, skipped")
         return
