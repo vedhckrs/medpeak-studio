@@ -4,6 +4,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 def L(id, who, text, emo, key, src=None, chat=False, cam=None, beat=None, pose='rest', react=None):
     l = {"id": id, "who": who, "text": text, "emotion": emo, "pose": pose, "key": key}
+    if who == 'melatonin': l["tempo"] = 0.9  # the owner's pick, 2026-11-21: the slowed take (sleepy)
     if src: l["src"] = src
     if chat: l["chat"] = True
     if beat: l["beat"] = beat

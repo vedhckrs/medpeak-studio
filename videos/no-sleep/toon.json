@@ -308,6 +308,7 @@
      "emotion": "neutral",
      "pose": "rest",
      "key": "asleep",
+     "tempo": 0.9,
      "src": [
       "xie-2013"
      ],
@@ -780,6 +781,7 @@
      "emotion": "happy",
      "pose": "rest",
      "key": "seven",
+     "tempo": 0.9,
      "src": [
       "cdc-sleep",
       "nhlbi-hours"

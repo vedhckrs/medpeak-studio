@@ -31,9 +31,9 @@
     "sperm": {"voice": "Charlie", "voiceId": "IKne3meq5aSn9XLyUdCD", "pitch": 5, "speed": 1.15, "why": "energetic racer, pitched up"},
     "virus": {"voice": "Charlie", "voiceId": "IKne3meq5aSn9XLyUdCD", "pitch": 3, "speed": 1.08, "why": "cheeky gremlin: the owner picked audition C on 2026-11-18 (was Brian, deep and smug)"},
     "bacteria": {"voice": "Callum", "voiceId": "N2lVS1w4EtoT3dr4eOWO", "pitch": 5, "speed": 1.15, "why": "trickster, pitched up"},
-    "gunk": {"voice":  "Callum", "voiceId":  "N2lVS1w4EtoT3dr4eOWO", "pitch":  -3, "speed":  1.04, "why":  "no-sleep (2026-11-21): the brain's waste, a sticky smug villain; Callum pitched DOWN (the bacteria is Callum pitched up). Proposed, audition first"},
-    "melatonin": {"voice":  "Lily", "voiceId":  "pFZP5JQG7iQjIQuC4Bku", "pitch":  -1, "speed":  0.95, "why":  "no-sleep (2026-11-21): the night-shift sleep signal, calm and yawning. Proposed, audition first"},
-    "crew": {"voice":  "Harry", "voiceId":  "SOYHLrjzK2X1ezoPC6cr", "pitch":  2, "speed":  1.1, "why":  "no-sleep (2026-11-21): the night crew of brain fluid, busy and keen. Proposed, audition first"}
+    "gunk": {"voice": "Callum", "voiceId": "N2lVS1w4EtoT3dr4eOWO", "pitch": -1, "speed": 1.04, "why": "no-sleep (2026-11-21): the brain's waste, a sticky smug villain; Callum pitched down 1 (the bacteria is Callum pitched up); the owner picked -1 over -3 (less machine-like) on 2026-11-21"},
+    "melatonin": {"voice": "Lily", "voiceId": "pFZP5JQG7iQjIQuC4Bku", "pitch": -1, "speed": 0.95, "why": "no-sleep (2026-11-21): the night-shift sleep signal, calm and yawning; the owner picked the slowed take on 2026-11-21: her lines carry \"tempo\": 0.9"},
+    "crew": {"voice": "Harry", "voiceId": "SOYHLrjzK2X1ezoPC6cr", "pitch": 2, "speed": 1.1, "why": "no-sleep (2026-11-21): the night crew of brain fluid, busy and keen; the owner's pick on 2026-11-21"}
   },
   "acting": {
     "neutral": {"stability": 0.5, "style": 0.2},
