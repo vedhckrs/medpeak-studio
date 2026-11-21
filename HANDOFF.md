@@ -6,6 +6,20 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-21 (4) - MacBook (local Claude Code) - branch `video/no-sleep` - next video: no sleep, plan sent
+
+- The owner picked topic 2, "What Happens If You Don't Sleep" (slug `no-sleep`); marked `taken (Mac, 2026-11-21)`
+  in `topic-bank.md` and pushed.
+- Sources read word for word: NHLBI (3 pages), CDC About Sleep, PubMed 24136970 (Xie 2013), 29632177
+  (Shokri-Kojori 2018), 10984335 (Williamson 2000). The NIH news pages and CDC drowsy-driving page refuse
+  automated fetches (403/404); PubMed abstracts come through `eutils.ncbi.nlm.nih.gov`.
+- New: `plans/no-sleep-2026-11-21.md`: shape `crew` (no doctor), 17-line draft, 3 hook choices, cast, the
+  new drawings it needs (Gunk + night crew, brain micro place with opening gaps, bedroom night/morning), care notes.
+- Not done: no `toon.json` yet, `toon:check` not run, nothing drawn, nothing voiced, no credits spent.
+- Next: the owner's OK on the plan (and a hook choice), then the sheets.
+
+---
+
 ## 2026-11-21 (3) - MacBook (local Claude Code) - branch `video/rabies-upload` - rabies v4 UPLOADED, private
 
 - **Uploaded: https://youtu.be/zgK91fQhvU0** (private, not made for kids, cover set). Video id stored in
