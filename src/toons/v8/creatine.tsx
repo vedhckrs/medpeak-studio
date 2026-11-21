@@ -227,11 +227,12 @@ const ShotB: React.FC<{s: ShotNow}> = ({s}) => {
         <GymRoom needle={needle} />
         <div style={{position: 'absolute', inset: 0, transform: `translateY(${stomp.dy.toFixed(1)}px)`}}>
           <PersonAt spec={MOM} {...o} expr="angry" look={[0.8, -0.1]} talk={talkSmooth(s, 'mom')} blink={blink(t, 3)} />
-          <Put x={hand.palm[0]} y={hand.palm[1] - 50} size={240} rot={rock}><Shaker /></Put>
-          <HandAt x={hand.wrist[0]} y={hand.wrist[1]} px={PEOPLE_SCALE * 30} kind="hold" skin={MOM.skin} rot={rot} rod={false} />
+          {/* the bottle sits IN her fist (its lower half behind the fingers), and the gripping hand is drawn again over it: her LEFT
+              hand, so mirrored (2026-11-21, the owner: "what line in hand": unmirrored, its outline crossed the rig's own hand) */}
+          <Put x={hand.palm[0]} y={hand.palm[1] - 18} size={240} rot={rock}><Shaker /></Put>
+          <HandAt x={hand.wrist[0]} y={hand.wrist[1]} px={PEOPLE_SCALE * 30} kind="hold" skin={MOM.skin} rot={rot} rod={false} mirror />
         </div>
       </Scene>
-      {shaking && <SpeedLines x={hand.palm[0]} y={hand.palm[1] - 120} dir={[1, -0.2]} len={110} o={0.8} />}
       <Burst t={t} t0={k.week} x={momB.x + 60} y={FEET_Y - 10} r={110} />
     </div>
   );

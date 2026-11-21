@@ -29,6 +29,9 @@ you stop. The rules are in `CLAUDE.md`.
   It failed since the music was made (18:15); the tests were not run then. Needs a new steady track (about 500 credits, owner's yes).
   The branch cannot be merged until it passes.
 - Test clip: `videos/creatine/renders/toon-v8-0-10.mp4`, phone copy `hook-test-phone.mp4`. Sent to the owner.
+- The owner on the test: "what line in hand" (Mom's shaker hand). Root cause and rule in `toons-known-issues.md`: the gripping hand over
+  her LEFT hand was not mirrored, and the bottle sat 50 px above the palm. Fixed (mirror, bottle in the fist), speed lines dropped from
+  the shake (they crossed the dial and the bottle). Test re-rendered and re-sent.
 - Open (from the plan, after the owner's yes): bolder outlines sheet, a lighter gym wall, scenes C-G restaged (lift, spark throw, running,
   needle and lab sheet, clinic acting, the water-balloon cell with the Fat blob), the event-size check, no place reused, watermark off
   characters, Dr. Mira's finger, a new steady music bed. No credits spent since the review.

@@ -89,3 +89,11 @@ behind people as in any room.
 | i | The YouTube login expires about every 7 days | the Google app is in testing mode | the owner publishes the Google app, or signs in again each week |
 | j | The food-pipe and tooth stages do not report where their contents are, so the check cannot measure them. Looked at by eye on their boards: the tooth is clear in every state; on the food pipe the pill and the water pass over its face for about a second when the pill is washed down | only the stomach stage was rebuilt on a layout the check can read | rebuild the food pipe the same way before it is used again; ask the owner whether its face should move to the wall |
 | k | The AI-use answer cannot be confirmed from here. The upload does not store it; `after_upload.py --label` sends it and the update call answers "True", but a fresh read of the video's status shows no such field (seen 2026-11-17 on video 4 and on the night-brushing video). I reported video 4's answer as set on the strength of the update call alone | YouTube's API does not return the field on read-back | confirmed by eye on 2026-11-17, on the owner's yes, in YouTube Studio in the owner's Chrome: both videos show "AI use: Yes" as the saved value (Details, Show advanced settings, "AI use"). So the `--label` step works; only the read-back is blind. Opening the advanced settings marks the page as changed by itself: press "Undo changes" and read the value again, never "Save" |
+
+## A stray line across a hand that holds something (creatine, 2026-11-21)
+- **Seen:** the owner, on Mom's shaker hand: "what line in hand". An outline cut across her fist, and the bottle floated above it.
+- **Root cause:** a held prop is drawn with the rig's own hand, then a second gripping hand (`HandAt ... rod={false}`) is drawn over
+  the prop so the fingers wrap it. For the character's LEFT hand that second hand must be mirrored (`mirror`); unmirrored, its outline
+  crosses the rig's hand. The prop was also placed 50 px above the palm, so it sat above the fist instead of in it.
+- **Rule for every video:** a grip over the LEFT hand passes `mirror`; the prop's centre goes at the palm (a few px up at most) so
+  the fingers close over its lower part. Look at a close crop of every held prop before showing a render.
