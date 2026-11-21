@@ -6,6 +6,27 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-21 (3) - MacBook (local Claude Code) - branch `video/rabies-upload` - rabies v4 UPLOADED, private
+
+- **Uploaded: https://youtu.be/zgK91fQhvU0** (private, not made for kids, cover set). Video id stored in
+  `videos/rabies/package/toon.json`.
+- Run on the Mac: `main` pulled (b77b449), `npm ci`, typecheck clean, `npm test` 50/50, `npm run toon:v8 -- rabies`
+  (61.6 s, 1080 x 1920, 60 fps), `toon-package.mjs rabies` READY, `upload.py` dry run, then `--approve`.
+- The Mac's YouTube login was dead (`deleted_client`: the old OAuth client was deleted after its secret leaked in the
+  cloud chat). A new Desktop OAuth client "MedPeak Mac uploader" was made in project `gen-lang-client-0632588516` and
+  the vedv0987 account signed in again (all 5 scopes). The app is still in Testing mode, so the login expires after
+  about 7 days: re-run the sign-in (`yt_analytics.py auth`) when uploads fail with `invalid_grant`.
+- Mac setup notes: the render needs network to `remotion.media` (first run downloads the headless browser), so it
+  fails inside Claude's sandbox; the upload needs the Python in `~/.config/youtube-analytics/venv` (system Python
+  has no Google client).
+- **Open:** the "altered or synthetic content" label reads as NOT set after upload (same as the earlier Toons); set it
+  in YouTube Studio or with `publish/after_upload.py rabies toon --label --approve`. `upload.py` writes absolute paths
+  back into the package (fixed by hand here; the script should keep them repo-relative). The owner's earlier
+  uncommitted `feat/toons` edits (7 files) are in a git stash on this Mac only, not pushed.
+- Next: the owner checks the video in YouTube Studio and makes it public when he wants.
+
+---
+
 ## 2026-11-21 (2) - Cloud session -> the owner moves to his MacBook (local Claude Code)
 
 The owner will work on his MacBook from now on (local Claude Code, his own copy of the repo). The cloud could not
