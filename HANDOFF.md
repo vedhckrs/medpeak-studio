@@ -6,6 +6,20 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-21 (12) - MacBook (local Claude Code) - branch `video/creatine` - creatine: the owner rejected the look; review + plan sent, WAITING
+
+- The owner on the finished creatine video: animation, characters and visuals weak, not viral or engaging; asked for a
+  frame-by-frame analysis, a plan first, and the bugs. NOT uploaded.
+- Review and plan: `plans/creatine-review-2026-11-21.md`, picture sheet `plans/review-creatine/frames-1-10.jpg`.
+- Measured with `toon:look`: creatine and no-sleep both FAIL (still frames 31% vs 63% reference, small movement 60% vs 34%,
+  near-black outline 1.2% vs 3.0%). This check was not run before sending: a process miss (bug 2 in the plan).
+- Bug found in `toon-look.mjs`: reads 60 fps renders as 30 fps (133.6 s for 66.8 s). The 20 reference Shorts are no longer on this
+  Mac (the old scratchpad folder is empty); only the written numbers remain.
+- Nothing changed in code, nothing spent.
+- Next: the owner's answer on the plan (acting kit, bold outline sheet, +2 KG card and time card).
+
+---
+
 ## 2026-11-21 (11) - MacBook (local Claude Code) - branch `video/creatine` - creatine: FINISHED, waiting for the owner to watch (NOT uploaded)
 
 - The owner: "Yes, make both". Balance before: 50,424.
