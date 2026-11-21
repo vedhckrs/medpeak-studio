@@ -58,7 +58,11 @@ you stop. The rules are in `CLAUDE.md`.
 - Hook A1 was 2.2 s even at "tempo" 1.15; on the owner's word a NEW TAKE of A1 at ElevenLabs speed 1.2 (new per-line `"speed"` in
   toon.json, read by `toon-voice.mjs`): **12 credits**, 1.9 s, PASS; words right, synthetic 29%. The old take is in
   `out/toons/a1-backup/` (this Mac only). Balance after: about 56,458 (the counter lags). `toon:check --all` passes again.
-- Next: Joey's CTA line for the end card and the video's own music (both paid: quote, balance before and after), then the full render.
+- On the owner's yes: Joey's end card voiced with the new `toon-voice.mjs <slug> --cta` (text in toon.json "cta"): **202 credits**,
+  16.72 s, `assets/toons-voice/no-sleep/cta.mp3`, word times `videos/no-sleep/cta-timings.json`; wired in `NO_SLEEP_CTA`. The music
+  `assets/toons-music/no-sleep.mp3`: **500 credits**, 40.1 s, no rests. Balance 56,458 before, 55,755 after.
+  Whole video 66.5 s (story 48.1 + card).
+- Spent on this video in all: 75 + 280 + 12 + 202 + 500 = **1,069 ElevenLabs credits** (56,825 -> 55,755). Anthropic key: not used ($0).
 - Before that: the owner's OK on the silent video, then the voice auditions for gunk / melatonin / crew with the cost, then
   voices, the narrator's CTA line and the video's own music (all paid: balance before and after).
 

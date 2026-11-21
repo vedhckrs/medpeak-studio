@@ -271,8 +271,12 @@ export const NO_SLEEP_SHOTS: Record<string, ShotDef> = {
 };
 
 // ------------------------------------------------------------------ the CTA end card: three strong points (sources: CDC, NHLBI)
-export const NO_SLEEP_CTA: {title: string; points: CtaPoint[]} = {
+export const NO_SLEEP_CTA: {title: string; points: CtaPoint[]; voice: string; seconds: number; at: {head: number; points: [number, number, number]; follow: number}} = {
   title: 'SLEEP IS NOT OPTIONAL',
+  // read by the narrator (Joey), assets/toons-voice/no-sleep/cta.mp3 at his own pace; beats from videos/no-sleep/cta-timings.json
+  // ("Sleep" 0, "Adults" 1.82, "Lost" 4.89, "And" 7.77, "Follow" 12.57)
+  voice: 'toons/no-sleep/voice/cta.mp3', seconds: 16.72,
+  at: {head: 0, points: [1.82, 4.89, 7.77], follow: 12.57},
   points: [
     {icon: <Sunrise t={2} />, big: '7+ HOURS', small: 'every night, for adults'},
     {icon: <Calendar t={2} pages={3} />, big: 'IT ADDS UP', small: 'lost sleep builds a debt'},
