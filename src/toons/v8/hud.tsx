@@ -359,6 +359,9 @@ export const CtaCardV4: React.FC<{t: number; title: string; points: CtaPoint[]; 
   const head = settleIn(t - at.head, 0.3);
   const fol = settleIn(t - at.follow, 0.32);
   const headFs = Math.min(84, Math.floor(960 / (title.length * 0.64)));
+  // every point's bold line stays on ONE line (the owner, 2026-11-21: "DON'T DRIVE SLEEPY" wrapped): one size for all
+  // three, the longest one fitting the ~620 px beside the icon
+  const bigFs = Math.min(64, Math.floor(620 / (Math.max(...points.map((p) => p.big.length)) * 0.7)));
   const ringT = t * 6; // the rings breathe outward very slowly
   return (
     <div style={{position: 'absolute', inset: 0, background: BRAND_BLUE, overflow: 'hidden', fontFamily: FONT}}>
@@ -384,7 +387,7 @@ export const CtaCardV4: React.FC<{t: number; title: string; points: CtaPoint[]; 
             background: '#ffffff', border: `5px solid ${INK}`, borderRadius: 34, padding: '0 30px 0 18px', boxShadow: `0 10px 0 ${shade(BRAND_BLUE, 0.35)}`}}>
             <svg width={210} height={210} viewBox="-100 -100 200 200" style={{flex: 'none', overflow: 'visible'}}><g transform="scale(1.04)">{p.icon}</g></svg>
             <div style={{display: 'flex', flexDirection: 'column'}}>
-              <div style={{fontWeight: 900, fontSize: 64, color: INK, lineHeight: 1.0}}>{p.big}</div>
+              <div style={{fontWeight: 900, fontSize: bigFs, color: INK, lineHeight: 1.0, whiteSpace: 'nowrap'}}>{p.big}</div>
               <div style={{fontWeight: 700, fontSize: 36, color: '#5f6676', marginTop: 10}}>{p.small}</div>
             </div>
           </div>

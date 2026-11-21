@@ -67,6 +67,12 @@ you stop. The rules are in `CLAUDE.md`.
   `toon-v8-phone.mp4` (19 MB). Package READY (`videos/no-sleep/package/`), cover `renders/toon-cover.jpg`.
 - Bug fixed: the v8 cover came out as frame 0 under `<Freeze>`; `ToonV8` now takes `frameAt` (entry-video.tsx). The uploaded
   rabies cover was probably frame 0 too (not changed: it is up).
+- The owner's notes on the finished video, all fixed (2026-11-21): (1) end-card points must be ONE line each: `CtaCardV4` now sizes
+  every point's bold line together so the longest fits (all videos); (2) the calendar icon "looks cheap": replaced by a
+  night-sky badge with a draining battery (`SleepBattery` in no-sleep.tsx); (3) characters "flicker and jiggle" when they speak:
+  `bodyFace` now uses `talkSmooth` (the mouth averaged over 0.1 s, all videos), no squash on every syllable, slow sways instead
+  of fast hops/shakes; (4) Sam's phone "not proper": held out at chest height (`sitPhone` pose), seen from its back, his own
+  hand drawn again over it (`HandAt` with `rod={false}` -> `Hand grips`, a gripping hand with no hole). Re-rendered, 0 flicker.
 - NOT uploaded. Next: the owner watches the video; upload private only on his word (`python3 publish/upload.py no-sleep toon` with
   the venv Python, dry run first; check `upload.py` keeps repo-relative paths).
 - Spent on this video in all: 75 + 280 + 12 + 202 + 500 = **1,069 ElevenLabs credits** (56,825 -> 55,755). Anthropic key: not used ($0).

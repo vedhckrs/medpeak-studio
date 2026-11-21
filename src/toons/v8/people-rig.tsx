@@ -275,9 +275,10 @@ const handGeom = (kind: HandKind, free = true) => {
   }
   return {parts, lines, over, holes};
 };
-export const Hand: React.FC<{kind: HandKind; skin: string; wristR?: number}> = ({kind, skin, wristR}) => {
+/** `grips`: the hand holds a real object drawn under it (no hole in a 'hold' hand: the object shows). */
+export const Hand: React.FC<{kind: HandKind; skin: string; wristR?: number; grips?: boolean}> = ({kind, skin, wristR, grips}) => {
   const stub = wristR ? [capsule([-9, 0], wristR, [1, 0], wristR)] : [];
-  const {parts, lines, over, holes} = handGeom(kind);
+  const {parts, lines, over, holes} = handGeom(kind, !grips);
   return (
     <g>
       <Union d={[...stub, ...parts]} fill={skin} shadow={0.55} holes={holes}>
@@ -529,7 +530,7 @@ export const POSES: Record<PoseName, Pose> = {
   // ---- no-sleep (2026-11-21): additive, the poses above are unchanged
   /** sitting, the near hand holds a phone up in front of the face (no clipboard) */
   sitPhone: {
-    R: {up: [0.08, 0.75, 0.6], fore: [-0.35, -0.85, 0.4], hand: 'hold', thumb: [0, -1, 0], front: true},
+    R: {up: [0.1, 0.85, 0.5], fore: [-0.15, -0.5, 0.85], hand: 'hold', thumb: [0, -1, 0], front: true}, // held out in front of the chest (2026-11-21: not at the chin)
     L: {up: [0.12, 1, 0.12], fore: [0.0, 0.3, 1], hand: 'relaxed', thumb: [-0.5, -0.6, 0.5]},
     legR: {thigh: [0.02, 0.04, 1], shin: [0.0, 1, 0.08], foot: [0.12, 0, 1]},
     legL: {thigh: [0.12, 0.04, 1], shin: [0.04, 1, 0.12], foot: [0.3, 0, 1]},
@@ -1710,11 +1711,11 @@ export const HeadAt: React.FC<{spec: PersonSpec; x: number; y: number; px: numbe
   );
 };
 /** A hand drawn large on a board (for the hands sheet). */
-export const HandAt: React.FC<{x: number; y: number; px: number; kind: HandKind; skin: string; rot?: number; mirror?: boolean}> = ({x, y, px, kind, skin, rot = 0, mirror}) => (
+export const HandAt: React.FC<{x: number; y: number; px: number; kind: HandKind; skin: string; rot?: number; mirror?: boolean; rod?: boolean}> = ({x, y, px, kind, skin, rot = 0, mirror, rod = true}) => (
   <svg style={{position: 'absolute', left: x, top: y, overflow: 'visible'}} width={1} height={1}>
     <g transform={`rotate(${rot}) scale(${px / 30} ${(px / 30) * (mirror ? -1 : 1)}) translate(-14 0)`}>
-      {kind === 'hold' && <path d={capsule([13.2, -14.6], 3.6, [13.2, 13.4], 3.6, 'flat', 'flat')} fill={CLOTH.grey} {...EDGE_IN} />}
-      <Hand kind={kind} skin={skin} wristR={4.6} />
+      {kind === 'hold' && rod && <path d={capsule([13.2, -14.6], 3.6, [13.2, 13.4], 3.6, 'flat', 'flat')} fill={CLOTH.grey} {...EDGE_IN} />}
+      <Hand kind={kind} skin={skin} wristR={4.6} grips={!rod} />
     </g>
   </svg>
 );

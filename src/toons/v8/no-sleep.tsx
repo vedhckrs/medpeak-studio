@@ -14,17 +14,16 @@ import React from 'react';
 import {Put} from './scene';
 import {Brain} from './organs-a';
 import {Melatonin} from './cells';
-import {Phone} from './props';
-import {CharTag, Sunrise, Calendar, Warning, type CtaPoint} from './hud';
+import {CharTag, Sunrise, Warning, type CtaPoint} from './hud';
 import {DiveCtx, DIVE} from './micro3';
 import {BrainGapPlace} from './sleep-places';
 import {Gunk, NightCrew} from './sleep-cast';
 import {BedFront, BedroomRoom, Duvet} from './sleep-rooms';
 import {Scene} from './scene';
 import {PEOPLE_SCALE} from './scenes-rooms';
-import {castById, handAt, headAt, PersonAt} from './people-rig';
-import {FONT, INK, CLOTH} from './kit';
-import {active, blink, bodyFace, clamp01, EXPR_OF, feel, go, lerp, pop, since, sway, talk, type Focus, type ShotDef, type ShotNow} from './play';
+import {castById, handAt, HandAt, headAt, PersonAt} from './people-rig';
+import {FONT, INK, CLOTH, EDGE, EDGE_IN, OUTLINE, shade} from './kit';
+import {active, blink, bodyFace, clamp01, EXPR_OF, feel, go, lerp, pop, since, sway, talkSmooth, type Focus, type ShotDef, type ShotNow} from './play';
 
 // ------------------------------------------------------------------ helpers
 /** Shot-seconds of a word (or `dflt` when the line is not in this "now"). */
@@ -43,7 +42,7 @@ const inPlane = (s: ShotNow, x: number, y: number, d: number): [number, number, 
 };
 const slowPush = (x: number, y: number, z0: number, z1: number) => (s: ShotNow) => { const u = clamp01(s.t / s.dur); return {x, y, z: lerp(z0, z1, u * u * (3 - 2 * u))}; };
 /** A body character's squash with its own voice. */
-const voiceSq = (s: ShotNow, who: string) => { const k = talk(s, who); return k > 0 ? (k - 0.35) * 0.1 : 0; };
+const voiceSq = (s: ShotNow, who: string) => active(s, who) * sway(s.t, 0.9, who.length) * 0.025; // a slow small breath while speaking (2026-11-21: no squash on every syllable, it jiggled)
 /** How much a character moves: a breath at rest, full while it speaks (the owner: "moves when it acts or speaks"). */
 const calm = (s: ShotNow, who: string) => 0.15 + 0.85 * active(s, who);
 /** The yellow number tag, on the SCREEN (after the camera), on the grid (x 300 / 540 / 780), from its word to its line's end. */
@@ -108,6 +107,28 @@ const ScreenA: React.FC<{s: ShotNow}> = ({s}) => {
 };
 
 // =================================================================== B: the bedroom, 2 a.m.
+/**
+ * The phone in Sam's hand (2026-11-21, the owner: "holds the smartphone not proper"): seen from its BACK (the screen faces
+ * him), its long side across his curled fingers, and his own hand drawn again OVER it, so the fingers wrap the phone.
+ */
+const HeldPhone: React.FC<{h: ReturnType<typeof handAt>['R']; lift?: number}> = ({h, lift = 0}) => {
+  const rot = (Math.atan2(h.dir[1], h.dir[0]) * 180) / Math.PI;
+  const [px, py] = [h.palm[0], h.palm[1] - lift * 20];
+  return (
+    <>
+      <svg style={{position: 'absolute', left: 0, top: 0, overflow: 'visible'}} width={1080} height={1920} viewBox="0 0 1080 1920">
+        <g transform={`translate(${px.toFixed(1)} ${py.toFixed(1)}) rotate(${(rot + 90).toFixed(1)})`}>
+          <rect x={-34} y={-78} width={68} height={140} rx={14} fill={CLOTH.charcoal} stroke={INK} strokeWidth={4.5} />
+          <rect x={-26} y={-70} width={24} height={30} rx={8} fill="#2a2e38" stroke={INK} strokeWidth={2.5} />
+          <circle cx={-14} cy={-62} r={6} fill="#11141a" stroke="#5a6070" strokeWidth={2} />
+          <circle cx={-14} cy={-47} r={6} fill="#11141a" stroke="#5a6070" strokeWidth={2} />
+          <path d="M 22 -60 v 30" stroke="#5a6070" strokeWidth={4} strokeLinecap="round" />
+        </g>
+      </svg>
+      <HandAt x={h.wrist[0]} y={h.wrist[1] - lift * 20} px={PEOPLE_SCALE * 30} kind="hold" skin={SAM.skin} rot={rot} rod={false} />
+    </>
+  );
+};
 const SAM = castById('patient');
 const samB = {pose: 'sitPhone' as const, view: 'three-quarter' as const, facing: 'right' as const, x: 300, y: 1560, scale: PEOPLE_SCALE};
 const melB = (s: ShotNow) => {
@@ -128,10 +149,10 @@ const ShotB: React.FC<{s: ShotNow}> = ({s}) => {
     <Scene bg="#34406f">
       <BedroomRoom night />
       <svg style={{position: 'absolute', left: 0, top: 0}} width={1080} height={1920} viewBox="0 0 1080 1920">
-        <path d={`M ${h.palm[0] + 30} ${h.palm[1] - 70} L ${h.palm[0] - 150} ${h.palm[1] - 330} L ${h.palm[0] - 230} ${h.palm[1] - 120} Z`} fill="#d4e8f6" opacity={0.26 + sway(t, 0.7) * 0.04} />
+        <path d={`M ${h.palm[0] - 10} ${h.palm[1] - 60} L ${h.palm[0] - 120} ${h.palm[1] - 330} L ${h.palm[0] - 230} ${h.palm[1] - 140} Z`} fill="#d4e8f6" opacity={0.26 + sway(t, 0.7) * 0.04} />
       </svg>
-      <PersonAt spec={SAM} {...samB} expr={expr} look={[0.6, 0.3]} talk={talk(s, 'patient')} blink={blink(t, 2)} bob={sway(t, 3.2) * 0.4} />
-      <Put x={h.palm[0] + 10} y={h.palm[1] - 40 - bob * 30} size={120} rot={-24 + bob * 10}><Phone /></Put>
+      <PersonAt spec={SAM} {...samB} expr={expr} look={[0.6, 0.3]} talk={talkSmooth(s, 'patient')} blink={blink(t, 2)} bob={sway(t, 3.2) * 0.4} />
+      <HeldPhone h={h} lift={bob} />
       <BedFront night />
       <Duvet night />
       {m.come > 0 && <Put x={m.x} y={m.y} size={300} rot={m.rot} sq={voiceSq(s, 'melatonin')}><Melatonin mood={mf.mood} mouth={mf.mouth} look={[-0.6, 0.4]} /></Put>}
@@ -160,7 +181,7 @@ const ShotC: React.FC<{s: ShotNow}> = ({s}) => {
   const cf = bodyFace(s, 'crew', 7, 'happy');
   const gf = bodyFace(s, 'gunk', 3, 'happy');
   const party = go(t, tParty, 0.2);
-  const dance = party * Math.abs(Math.sin((t - tParty) * 7));
+  const dance = party * Math.abs(Math.sin((t - tParty) * 4));
   const scared = go(t, at(s, 'C4', undefined, 10), 0.3);
   // the two crew helpers rush along the cross channel while the wash runs
   const run = clamp01((t - tWash) / 2.4) * (1 - go(t, tAwake, 0.3));
@@ -168,7 +189,7 @@ const ShotC: React.FC<{s: ShotNow}> = ({s}) => {
     <>
       <BrainGapPlace t={t} gap={gap} wash={wash} dirt={dirt} />
       {run > 0 && [0, 1].map((i) => <Put key={i} x={lerp(-120, 1200, (run + i * 0.35) % 1)} y={i ? 1330 : 705} size={190} rot={8}><NightCrew job={i ? 'bucket' : 'brush'} mood="happy" look={[0.8, 0]} /></Put>)}
-      <Put x={540 + sway(t, 2, 2) * 10 * calm(s, 'crew') - scared * 30} y={1000 + Math.abs(Math.sin(t * 5)) * -14 * active(s, 'crew') + scared * 10} size={320} rot={sway(t, 1.4, 1) * 4} sq={voiceSq(s, 'crew') + scared * 0.06}>
+      <Put x={540 + sway(t, 2, 2) * 10 * calm(s, 'crew') - scared * 30} y={1000 + sway(t, 1.6, 3) * 8 * active(s, 'crew') + scared * 10} size={320} rot={sway(t, 1.4, 1) * 4} sq={voiceSq(s, 'crew') + scared * 0.06}>
         <NightCrew job="mop" mood={scared > 0.5 ? 'scared' : cf.mood} mouth={cf.mouth} look={scared > 0.5 ? [0.6, 0] : [0, 0.3]} />
       </Put>
       <Put x={820 + sway(t, 2.2, 4) * 8} y={1170 - dance * 60} size={lerp(300, 360, go(t, tParty, 0.5))} rot={sway(t, 0.35, 2) * 10 * party} sq={voiceSq(s, 'gunk') + dance * 0.08}>
@@ -209,7 +230,7 @@ const ShotD: React.FC<{s: ShotNow}> = ({s}) => {
     <Scene bg="#fbe9b0">
       <BedroomRoom night={false} />
       <Duvet night={false} thrown />
-      <PersonAt spec={SAM} {...samD} expr={expr} look={[0.3, 0.6]} talk={talk(s, 'patient')} blink={nod > 0.5 ? 1 : blink(t, 4)} bob={nod * 3 - jerk * 1.5 + sway(t, 4) * 0.4} />
+      <PersonAt spec={SAM} {...samD} expr={expr} look={[0.3, 0.6]} talk={talkSmooth(s, 'patient')} blink={nod > 0.5 ? 1 : blink(t, 4)} bob={nod * 3 - jerk * 1.5 + sway(t, 4) * 0.4} />
       {b.come > 0 && (
         <div style={{position: 'absolute', inset: 0, opacity: b.come}}>
           <svg style={{position: 'absolute', left: 0, top: 0}} width={1080} height={1920} viewBox="0 0 1080 1920">
@@ -251,8 +272,8 @@ const ShotE: React.FC<{s: ShotNow}> = ({s}) => {
     <>
       <BrainGapPlace t={t} gap={gap} wash={wash} dirt={dirt} />
       <Put x={300 + sway(t, 2.6, 1) * 12} y={700 + sway(t, 3, 2) * 14} size={260} rot={-6 + sway(t, 1.8) * 5 * calm(s, 'melatonin')} sq={voiceSq(s, 'melatonin')}><Melatonin mood={mf.mood} mouth={mf.mouth} look={[0.6, 0.5]} /></Put>
-      {crewIn > 0 && <Put x={lerp(1250, 800, crewIn)} y={1330 + Math.abs(Math.sin(t * 6)) * -12} size={260} rot={-6}><NightCrew job="mop" mood="happy" look={[-0.7, 0]} /></Put>}
-      <Put x={545 + Math.sin(t * 9) * 8 * go(t, tOpen, 0.3) * (1 - out)} y={lerp(1010, 1300, out)} size={lerp(460, 200, out)} rot={lerp(0, 30, out)} sq={voiceSq(s, 'gunk')}>
+      {crewIn > 0 && <Put x={lerp(1250, 800, crewIn)} y={1330 + sway(t, 1.4, 2) * 8} size={260} rot={-6}><NightCrew job="mop" mood="happy" look={[-0.7, 0]} /></Put>}
+      <Put x={545 + sway(t, 0.8, 1) * 10 * go(t, tOpen, 0.3) * (1 - out)} y={lerp(1010, 1300, out)} size={lerp(460, 200, out)} rot={lerp(0, 30, out)} sq={voiceSq(s, 'gunk')}>
         <Gunk stage={stage} mood={gf.mood} mouth={gf.mouth} look={[0, -0.4]} />
       </Put>
     </>
@@ -270,6 +291,44 @@ export const NO_SLEEP_SHOTS: Record<string, ShotDef> = {
   E: {Scene: dived(ShotE), Screen: ScreenE, focus: () => ({x: 545, y: 1000, r: 180}), view: viewE},
 };
 
+// ------------------------------------------------------------------ the end card's "IT ADDS UP" icon
+/**
+ * A night-sky badge (the same round badge as the sunrise beside it) with a battery running low: the green charge drains to one
+ * red bar as the card comes in, a sleepy moon above it (2026-11-21, the owner: the calendar "looks cheap").
+ */
+const SleepBattery: React.FC<{t?: number}> = ({t = 0}) => {
+  const drain = clamp01(t / 0.9);
+  const charge = 1 - 0.78 * (1 - Math.pow(1 - drain, 3)); // 1 -> 0.22
+  const red = charge < 0.4;
+  const fill = red ? '#ef5b5b' : '#5cc98a';
+  const W = 104, H = 58, x0 = -60, y0 = -6;
+  return (
+    <g>
+      <circle cx={0} cy={0} r={92} fill="#33406f" {...EDGE} />
+      <clipPath id="sb-clip"><circle cx={0} cy={0} r={90} /></clipPath>
+      <g clipPath="url(#sb-clip)">
+        <circle cx={0} cy={110} r={120} fill={shade('#33406f', 0.14)} />
+        {[[-58, -52, 5], [52, -60, 4], [66, -18, 3], [-70, -14, 3], [20, -74, 3]].map(([x, y, r], i) => (
+          <path key={i} d={`M ${x} ${y - r * 2} L ${x + r * 0.6} ${y - r * 0.6} L ${x + r * 2} ${y} L ${x + r * 0.6} ${y + r * 0.6} L ${x} ${y + r * 2} L ${x - r * 0.6} ${y + r * 0.6} L ${x - r * 2} ${y} L ${x - r * 0.6} ${y - r * 0.6} Z`} fill="#ffe08a" />
+        ))}
+        {/* the moon, eyes shut */}
+        <path d="M 8 -70 a 26 26 0 1 0 30 34 a 20 20 0 1 1 -30 -34 Z" fill="#ffe08a" {...EDGE_IN} />
+      </g>
+      {/* the battery: white case, the nub, the charge */}
+      <g transform="translate(0 8) rotate(-8) scale(1.22)">
+        <rect x={x0 + W} y={y0 + H / 2 - 13} width={14} height={26} rx={5} fill="#ffffff" {...EDGE} />
+        <rect x={x0} y={y0} width={W} height={H} rx={14} fill="#ffffff" {...EDGE} />
+        <rect x={x0 + 9} y={y0 + 9} width={(W - 18) * charge} height={H - 18} rx={7} fill={fill} />
+        <rect x={x0 + 9} y={y0 + 9} width={(W - 18) * charge} height={(H - 18) * 0.35} rx={5} fill="#ffffff" opacity={0.35} />
+        <rect x={x0 + 9} y={y0 + 9} width={W - 18} height={H - 18} rx={7} fill="none" {...EDGE_IN} />
+        {[1, 2, 3].map((k) => <path key={k} d={`M ${x0 + 9 + ((W - 18) * k) / 4} ${y0 + 12} V ${y0 + H - 12}`} stroke="#d9dde6" strokeWidth={3} strokeLinecap="round" />)}
+        {red && <path d={`M ${x0 + W / 2 + 6} ${y0 + 14} L ${x0 + W / 2 - 8} ${y0 + H / 2 + 2} L ${x0 + W / 2 + 2} ${y0 + H / 2 + 2} L ${x0 + W / 2 - 6} ${y0 + H - 12}`} stroke={INK} strokeWidth={4} strokeLinejoin="round" strokeLinecap="round" fill="none" />}
+      </g>
+      <circle cx={0} cy={0} r={92} {...OUTLINE} />
+    </g>
+  );
+};
+
 // ------------------------------------------------------------------ the CTA end card: three strong points (sources: CDC, NHLBI)
 export const NO_SLEEP_CTA: {title: string; points: CtaPoint[]; voice: string; seconds: number; at: {head: number; points: [number, number, number]; follow: number}} = {
   title: 'SLEEP IS NOT OPTIONAL',
@@ -279,7 +338,7 @@ export const NO_SLEEP_CTA: {title: string; points: CtaPoint[]; voice: string; se
   at: {head: 0, points: [1.82, 4.89, 7.77], follow: 12.57},
   points: [
     {icon: <Sunrise t={2} />, big: '7+ HOURS', small: 'every night, for adults'},
-    {icon: <Calendar t={2} pages={3} />, big: 'IT ADDS UP', small: 'lost sleep builds a debt'},
+    {icon: <SleepBattery t={2} />, big: 'IT ADDS UP', small: 'lost sleep builds a debt'},
     {icon: <Warning t={2} />, big: "DON'T DRIVE SLEEPY", small: 'it is as bad as drunk'},
   ],
 };
