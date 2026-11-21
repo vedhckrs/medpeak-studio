@@ -1,0 +1,869 @@
+{
+ "slug": "no-sleep",
+ "title": "What Happens If You Don't Sleep",
+ "format": 5,
+ "shape": "crew",
+ "music": "no-sleep",
+ "camera": "steady",
+ "episode": 10,
+ "hooks": [
+  {
+   "line": "Don't sleep? I clog your brain!",
+   "why": "the owner's pick (2026-11-21): A cut to fit the 2-second hook rule (A was 9 words, about 3 s)"
+  },
+  {
+   "line": "Don't sleep? Your brain fills with gunk!",
+   "why": "says the villain's name"
+  },
+  {
+   "line": "Don't sleep? I pile up in your head!",
+   "why": "closest to A, 8 words"
+  }
+ ],
+ "rooms": {
+  "home": {
+   "kind": "bedroom",
+   "palette": "nightblue",
+   "wall": "stripes",
+   "floor": "wood",
+   "window": {
+    "style": "wide",
+    "side": "centre",
+    "view": "night"
+   },
+   "layout": "bed-left",
+   "time": "night"
+  }
+ },
+ "package": {
+  "title": "What Happens If You Don't Sleep",
+  "phrase": "what happens if you don't sleep",
+  "opener": "What happens if you don't sleep? While you sleep, the spaces between brain cells open up and fluid washes waste away (shown in mice). After one night without sleep, brain scans of healthy people showed more beta-amyloid, a waste protein. After 17 to 19 hours awake, people did some tests as badly as at a blood alcohol level of 0.05%. Adults need 7 or more hours of sleep, says the CDC.",
+  "question": "How many hours did you sleep last night?",
+  "tags": [
+   "what happens if you don't sleep",
+   "sleep deprivation",
+   "no sleep",
+   "all nighter",
+   "why we need sleep",
+   "brain cleaning during sleep",
+   "microsleep",
+   "how much sleep do I need",
+   "sleep health",
+   "health cartoon"
+  ],
+  "hashtags": "#sleep #brain #shorts",
+  "cover": {
+   "at": 2.4,
+   "text": "Don't sleep?",
+   "accent": "sleep"
+  }
+ },
+ "retention": {
+  "noIntro": {
+   "scene": "A1",
+   "line": "Don't sleep? I clog your brain!"
+  },
+  "promise": {
+   "scene": "A2",
+   "line": "And who's going to wash me out now?"
+  },
+  "question": {
+   "scene": "A2",
+   "line": "And who's going to wash me out now?"
+  },
+  "answer": {
+   "scene": "E3",
+   "line": "You did sleep! Now they wash me out. I can't clog your brain!"
+  },
+  "change3s": {
+   "scene": "all",
+   "line": "steady camera: something happens in the picture at least every 3 s (stickers do not count)"
+  },
+  "twist": {
+   "scene": "D2",
+   "line": "Seventeen hours awake? Some tests go as badly as being drunk."
+  },
+  "bestLast": {
+   "scene": "E3",
+   "line": "You did sleep! Now they wash me out. I can't clog your brain!"
+  },
+  "loop": {
+   "scene": "E3",
+   "line": "You did sleep! Now they wash me out. I can't clog your brain!"
+  }
+ },
+ "sources": [
+  {
+   "id": "xie-2013",
+   "label": "Xie L et al. Sleep drives metabolite clearance from the adult brain. Science 2013;342:373-7",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/24136970/",
+   "note": "In live mice, 'natural sleep or anesthesia are associated with a 60% increase in the interstitial space', with a 'striking increase in convective exchange of cerebrospinal fluid with interstitial fluid', which 'increased the rate of β-amyloid clearance during sleep'."
+  },
+  {
+   "id": "shokri-2018",
+   "label": "Shokri-Kojori E et al. (NIH). β-Amyloid accumulation in the human brain after one night of sleep deprivation. PNAS 2018;115:4483-8",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/29632177/",
+   "note": "In 20 healthy people, 'one night of sleep deprivation, relative to baseline, resulted in a significant increase in Aβ burden in the right hippocampus and thalamus' (PET scans). It does not show disease."
+  },
+  {
+   "id": "williamson-2000",
+   "label": "Williamson AM, Feyer AM. Moderate sleep deprivation produces impairments ... equivalent to legally prescribed levels of alcohol intoxication. Occup Environ Med 2000;57:649-55",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/10984335/",
+   "note": "'After 17-19 hours without sleep ... performance on some tests was equivalent or worse than that at a BAC of 0.05%.' 39 subjects."
+  },
+  {
+   "id": "nhlbi-effects",
+   "label": "NHLBI (NIH). Sleep Deprivation and Deficiency: How Sleep Affects Your Health (updated 15 June 2022)",
+   "url": "https://www.nhlbi.nih.gov/health/sleep-deprivation/health-effects",
+   "note": "Microsleep is 'brief moments of sleep that happen when you're normally awake'; 'You can't control microsleep, and you might not be aware of it'; sleep deficiency 'harms your driving ability as much or more than being drunk'."
+  },
+  {
+   "id": "nhlbi-hours",
+   "label": "NHLBI (NIH). Sleep Deprivation and Deficiency: How Much Sleep Is Enough (updated 24 March 2022)",
+   "url": "https://www.nhlbi.nih.gov/health/sleep-deprivation/how-much-sleep",
+   "note": "Adults 18 or older: '7 to 8 hours a day'. 'If you regularly lose sleep or choose to sleep less than needed, the sleep loss adds up.'"
+  },
+  {
+   "id": "cdc-sleep",
+   "label": "CDC. About Sleep (15 May 2024)",
+   "url": "https://www.cdc.gov/sleep/about/index.html",
+   "note": "Recommended sleep for adults 18-60 years: '7 or more hours'; 61-64 years: 7-9 hours; 65 and older: 7-8 hours."
+  }
+ ],
+ "shots": [
+  {
+   "id": "A",
+   "set": "macro",
+   "cast": [
+    {
+     "who": "gunk",
+     "x": 540,
+     "size": 420,
+     "stage": true,
+     "emotion": "angry",
+     "pose": "rest"
+    },
+    {
+     "who": "patient",
+     "x": 540,
+     "size": 960,
+     "emotion": "happy",
+     "pose": "rest",
+     "y": 979
+    }
+   ],
+   "state": {
+    "view": 0,
+    "gap": 0.6,
+    "dirt": 0.6
+   },
+   "events": [
+    {
+     "at": "start",
+     "set": {
+      "dirt": 0.65
+     },
+     "over": 6,
+     "sfx": "alarm-beep"
+    },
+    {
+     "at": "B1",
+     "word": "video...",
+     "set": {
+      "dirt": 0.7
+     },
+     "over": 12,
+     "sfx": "whoosh-fast"
+    },
+    {
+     "at": "A1",
+     "set": {
+      "dirt": 0.75
+     },
+     "over": 8,
+     "sfx": "squelch",
+     "fx": "flash"
+    },
+    {
+     "at": "A1",
+     "word": "sleep?",
+     "set": {
+      "dirt": 0.8
+     },
+     "over": 10
+    },
+    {
+     "at": "A1",
+     "word": "clog",
+     "set": {
+      "gap": 0,
+      "dirt": 0.9
+     },
+     "over": 8,
+     "sfx": "thud-soft"
+    },
+    {
+     "at": "A1",
+     "word": "brain!",
+     "set": {
+      "dirt": 0.95
+     },
+     "over": 12
+    },
+    {
+     "at": "A2",
+     "word": "wash",
+     "set": {
+      "dirt": 1
+     },
+     "over": 14,
+     "sfx": "drip"
+    },
+    {
+     "at": "A2",
+     "word": "now?",
+     "set": {
+      "gap": 0.05
+     },
+     "over": 16
+    }
+   ],
+   "lines": [
+    {
+     "id": "B1",
+     "who": "patient",
+     "text": "Just one more video...",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "video",
+     "chat": true,
+     "beat": 0.15,
+     "cam": "ecu 50 push",
+     "cold": true
+    },
+    {
+     "id": "A1",
+     "who": "gunk",
+     "text": "Don't sleep? I clog your brain!",
+     "emotion": "angry",
+     "pose": "rest",
+     "key": "clog",
+     "src": [
+      "xie-2013",
+      "shokri-2018"
+     ],
+     "cam": "ecu 50 push",
+     "tempo": 1.15,
+     "speed": 1.2
+    },
+    {
+     "id": "A2",
+     "who": "gunk",
+     "text": "And who's going to wash me out now?",
+     "emotion": "angry",
+     "pose": "rest",
+     "key": "wash",
+     "chat": true,
+     "beat": 0.4
+    }
+   ],
+   "props": []
+  },
+  {
+   "id": "B",
+   "set": "home",
+   "cast": [
+    {
+     "who": "patient",
+     "x": 300,
+     "size": 960,
+     "emotion": "happy",
+     "pose": "rest",
+     "y": 979
+    },
+    {
+     "who": "melatonin",
+     "x": 760,
+     "size": 300,
+     "emotion": "neutral",
+     "pose": "rest",
+     "y": 640
+    }
+   ],
+   "events": [
+    {
+     "at": "B2",
+     "word": "two",
+     "sfx": "alarm-beep"
+    },
+    {
+     "at": "B2",
+     "sfx": "whoosh-air",
+     "delay": 0.05
+    },
+    {
+     "at": "B3",
+     "word": "four",
+     "sfx": "boing"
+    },
+    {
+     "at": "B3",
+     "word": "Watch",
+     "sfx": "swish"
+    }
+   ],
+   "lines": [
+    {
+     "id": "B2",
+     "who": "melatonin",
+     "text": "It's two a.m. My night crew needs you asleep!",
+     "emotion": "neutral",
+     "pose": "rest",
+     "key": "asleep",
+     "tempo": 0.9,
+     "src": [
+      "xie-2013"
+     ],
+     "cam": "mcu push"
+    },
+    {
+     "id": "B3",
+     "who": "patient",
+     "text": "I'm fine on four hours. Watch me.",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "four",
+     "chat": true,
+     "cam": "cu push",
+     "react": {
+      "melatonin": "angry"
+     }
+    }
+   ],
+   "props": [
+    {
+     "kind": "tag",
+     "text": "2 a.m.",
+     "x": 780,
+     "y": 330,
+     "size": 300,
+     "from": "B2",
+     "to": "B2",
+     "word": "two"
+    },
+    {
+     "kind": "clock",
+     "x": 860,
+     "y": 1000,
+     "size": 200,
+     "from": "B2",
+     "word": "two",
+     "to": "B2"
+    }
+   ]
+  },
+  {
+   "id": "C",
+   "set": "macro",
+   "cast": [
+    {
+     "who": "crew",
+     "x": 540,
+     "size": 300,
+     "stage": true,
+     "emotion": "happy",
+     "pose": "rest"
+    },
+    {
+     "who": "gunk",
+     "x": 780,
+     "size": 360,
+     "emotion": "happy",
+     "pose": "rest"
+    }
+   ],
+   "state": {
+    "view": 1,
+    "gap": 0,
+    "wash": 0,
+    "dirt": 0.5
+   },
+   "events": [
+    {
+     "at": "start",
+     "set": {
+      "gap": 0.3
+     },
+     "over": 20,
+     "sfx": "whoosh-air"
+    },
+    {
+     "at": "C1",
+     "word": "gaps",
+     "set": {
+      "gap": 0.8
+     },
+     "over": 30,
+     "sfx": "slide-whistle-up"
+    },
+    {
+     "at": "C1",
+     "word": "wash",
+     "set": {
+      "wash": 1,
+      "dirt": 0.2
+     },
+     "over": 30,
+     "sfx": "splash-small"
+    },
+    {
+     "at": "C2",
+     "word": "sixty",
+     "set": {
+      "gap": 1
+     },
+     "over": 20,
+     "sfx": "ding"
+    },
+    {
+     "at": "C3",
+     "word": "awake.",
+     "set": {
+      "gap": 0,
+      "wash": 0
+     },
+     "over": 14,
+     "sfx": "record-scratch",
+     "fx": "flash"
+    },
+    {
+     "at": "C3",
+     "word": "Party!",
+     "set": {
+      "dirt": 0.8
+     },
+     "over": 20,
+     "sfx": "tada"
+    },
+    {
+     "at": "C4",
+     "word": "night",
+     "set": {
+      "dirt": 0.9
+     },
+     "over": 20,
+     "sfx": "squelch"
+    },
+    {
+     "at": "C4",
+     "word": "more",
+     "set": {
+      "dirt": 1
+     },
+     "over": 14,
+     "sfx": "alarm-beep"
+    }
+   ],
+   "lines": [
+    {
+     "id": "C1",
+     "who": "crew",
+     "text": "When you sleep, these gaps open up, and we wash the waste out.",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "wash",
+     "src": [
+      "xie-2013"
+     ],
+     "cam": "ews whip"
+    },
+    {
+     "id": "C2",
+     "who": "crew",
+     "text": "In mice, they open sixty percent wider!",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "sixty",
+     "src": [
+      "xie-2013"
+     ],
+     "cam": "mcu push"
+    },
+    {
+     "id": "C3",
+     "who": "gunk",
+     "text": "But he's still awake. No sleep, no wash. Party!",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "party",
+     "chat": true,
+     "cam": "cu"
+    },
+    {
+     "id": "C4",
+     "who": "crew",
+     "text": "One night awake, and scans of people show more of it!",
+     "emotion": "scared",
+     "pose": "rest",
+     "key": "night",
+     "src": [
+      "shokri-2018"
+     ],
+     "cam": "mcu push"
+    }
+   ],
+   "props": [
+    {
+     "kind": "tag",
+     "text": "60% wider",
+     "x": 780,
+     "y": 330,
+     "size": 300,
+     "from": "C2",
+     "to": "C2",
+     "word": "sixty"
+    }
+   ]
+  },
+  {
+   "id": "D",
+   "set": "home",
+   "cast": [
+    {
+     "who": "patient",
+     "x": 420,
+     "size": 960,
+     "emotion": "sleepy",
+     "pose": "rest",
+     "y": 979
+    },
+    {
+     "who": "brain",
+     "x": 780,
+     "size": 300,
+     "emotion": "scared",
+     "pose": "rest",
+     "y": 560
+    }
+   ],
+   "events": [
+    {
+     "at": "start",
+     "sfx": "whoosh-fast"
+    },
+    {
+     "at": "D1",
+     "word": "slow.",
+     "sfx": "slide-whistle-down"
+    },
+    {
+     "at": "D2",
+     "word": "Seventeen",
+     "sfx": "ding"
+    },
+    {
+     "at": "D2",
+     "word": "drunk.",
+     "sfx": "wobble"
+    },
+    {
+     "at": "D3",
+     "word": "seconds",
+     "sfx": "thud-soft",
+     "fx": "flash"
+    },
+    {
+     "at": "D4",
+     "word": "adds",
+     "sfx": "sad-trombone"
+    }
+   ],
+   "lines": [
+    {
+     "id": "D1",
+     "who": "patient",
+     "text": "I'm fine. Just a bit... slow.",
+     "emotion": "sleepy",
+     "pose": "rest",
+     "key": "slow",
+     "chat": true,
+     "cam": "ms crash"
+    },
+    {
+     "id": "D2",
+     "who": "brain",
+     "text": "Seventeen hours awake? Some tests go as badly as being drunk.",
+     "emotion": "scared",
+     "pose": "rest",
+     "key": "drunk",
+     "src": [
+      "williamson-2000",
+      "nhlbi-effects"
+     ],
+     "cam": "mcu push",
+     "react": {
+      "patient": "shocked"
+     }
+    },
+    {
+     "id": "D3",
+     "who": "brain",
+     "text": "And you can fall asleep for seconds without knowing it.",
+     "emotion": "scared",
+     "pose": "rest",
+     "key": "seconds",
+     "src": [
+      "nhlbi-effects"
+     ],
+     "cam": "ews 24 lock",
+     "react": {
+      "patient": "sleepy"
+     }
+    },
+    {
+     "id": "D4",
+     "who": "brain",
+     "text": "Lose sleep night after night, and it adds up.",
+     "emotion": "sad",
+     "pose": "rest",
+     "key": "adds",
+     "src": [
+      "nhlbi-hours"
+     ],
+     "cam": "mcu push",
+     "react": {
+      "patient": "sad"
+     }
+    }
+   ],
+   "props": [
+    {
+     "kind": "tag",
+     "text": "17 hours",
+     "x": 780,
+     "y": 330,
+     "size": 300,
+     "from": "D2",
+     "to": "D2",
+     "word": "Seventeen"
+    },
+    {
+     "kind": "pain",
+     "x": 420,
+     "y": 600,
+     "size": 120,
+     "from": "D2",
+     "word": "tests",
+     "to": "D2",
+     "on": "patient"
+    },
+    {
+     "kind": "pillow",
+     "x": 420,
+     "y": 1100,
+     "size": 220,
+     "from": "D3",
+     "word": "seconds",
+     "to": "D3"
+    },
+    {
+     "kind": "pain",
+     "x": 420,
+     "y": 600,
+     "size": 120,
+     "from": "D4",
+     "word": "night",
+     "to": "D4",
+     "on": "patient"
+    }
+   ]
+  },
+  {
+   "id": "E",
+   "set": "macro",
+   "cast": [
+    {
+     "who": "gunk",
+     "x": 540,
+     "size": 460,
+     "stage": true,
+     "emotion": "scared",
+     "pose": "rest"
+    },
+    {
+     "who": "melatonin",
+     "x": 300,
+     "size": 260,
+     "emotion": "happy",
+     "pose": "rest"
+    },
+    {
+     "who": "crew",
+     "x": 800,
+     "size": 260,
+     "emotion": "happy",
+     "pose": "rest"
+    }
+   ],
+   "state": {
+    "view": 2,
+    "gap": 0,
+    "wash": 0,
+    "dirt": 1
+   },
+   "events": [
+    {
+     "at": "start",
+     "set": {
+      "gap": 0.2
+     },
+     "over": 20,
+     "sfx": "sparkle"
+    },
+    {
+     "at": "E1",
+     "word": "down.",
+     "set": {
+      "gap": 0.5
+     },
+     "over": 24
+    },
+    {
+     "at": "E1",
+     "sfx": "whoosh-air",
+     "delay": -0.25
+    },
+    {
+     "at": "E1",
+     "word": "seven",
+     "set": {
+      "gap": 0.8
+     },
+     "over": 24
+    },
+    {
+     "at": "E2",
+     "word": "opening?",
+     "set": {
+      "gap": 1,
+      "wash": 1
+     },
+     "over": 20
+    },
+    {
+     "at": "E2",
+     "word": "opening?",
+     "sfx": "splash-small",
+     "delay": 0.45
+    },
+    {
+     "at": "E2",
+     "word": "crew!",
+     "set": {
+      "dirt": 0.5
+     },
+     "over": 30
+    },
+    {
+     "at": "E2",
+     "word": "crew!",
+     "sfx": "gulp",
+     "delay": 0.5
+    },
+    {
+     "at": "E3",
+     "word": "sleep!",
+     "set": {
+      "dirt": 0.2
+     },
+     "over": 30,
+     "sfx": "zip-away"
+    },
+    {
+     "at": "E3",
+     "word": "wash",
+     "set": {
+      "dirt": 0
+     },
+     "over": 24,
+     "sfx": "success-chime",
+     "fx": "flash"
+    },
+    {
+     "at": "E3",
+     "word": "clog",
+     "set": {
+      "gap": 0.9
+     },
+     "over": 20
+    },
+    {
+     "at": "E3",
+     "word": "brain!",
+     "sfx": "sparkle",
+     "delay": 0.55
+    }
+   ],
+   "lines": [
+    {
+     "id": "E1",
+     "who": "melatonin",
+     "text": "Tonight: phone down. Seven hours or more.",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "seven",
+     "tempo": 0.9,
+     "src": [
+      "cdc-sleep",
+      "nhlbi-hours"
+     ],
+     "cam": "mcu push"
+    },
+    {
+     "id": "E2",
+     "who": "gunk",
+     "text": "The gaps are opening? No, no, not the crew!",
+     "emotion": "scared",
+     "pose": "rest",
+     "key": "crew",
+     "chat": true,
+     "cam": "ews"
+    },
+    {
+     "id": "E3",
+     "who": "gunk",
+     "text": "You did sleep! Now they wash me out. I can't clog your brain!",
+     "emotion": "sad",
+     "pose": "rest",
+     "key": "wash",
+     "src": [
+      "xie-2013"
+     ],
+     "cam": "push"
+    }
+   ],
+   "props": [
+    {
+     "kind": "tag",
+     "text": "7+ hours",
+     "x": 780,
+     "y": 330,
+     "size": 300,
+     "from": "E1",
+     "to": "E1",
+     "word": "seven"
+    }
+   ]
+  }
+ ],
+ "cta": {
+  "text": "Sleep is not optional. Adults need seven or more hours a night. Lost sleep adds up, night after night. And never drive sleepy: it can be as bad as driving drunk. Follow MedPeak Health for more health tips that keep you safe.",
+  "src": [
+   "cdc-sleep",
+   "nhlbi-hours",
+   "nhlbi-effects"
+  ]
+ },
+ "musicPrompt": "Soft dreamy night lullaby on celesta and muted pizzicato strings, 96 BPM, a sneaky bassoon creeping in for the villain; it turns clumsy and off-beat when the hero stays awake, then resolves into a warm calm sunrise with gentle harp and a bright glockenspiel finish."
+}

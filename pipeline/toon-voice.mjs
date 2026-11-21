@@ -9,6 +9,9 @@
  *   node pipeline/toon-voice.mjs <slug> --remix                         # free: pitch and level again from the raw downloads
  *   node pipeline/toon-voice.mjs --audition --dry-run                   # one short line per character
  *   node pipeline/toon-voice.mjs --audition --approve --max-characters N   # -> out/toons/auditions/<who>.mp3
+ *   node pipeline/toon-voice.mjs --audition --who gunk,crew --dry-run   # only these characters
+ *   node pipeline/toon-voice.mjs <slug> --cta --dry-run                 # the narrator's end card (toon.json "cta".text)
+ *   node pipeline/toon-voice.mjs <slug> --cta --approve --max-characters N   # -> public/toons/<slug>/voice/cta.mp3 + videos/<slug>/cta-timings.json
  *
  * Lines already voiced with the same text, voice and pitch are skipped (no double spend).
  * Writes public/toons/<slug>/voice/<id>.mp3 and videos/<slug>/toon-timings.json.
@@ -23,13 +26,13 @@ import {toWords} from './voice.mjs';
 const AUDITION = 'Hello! This is my voice. Wait, what was that? Oh no, not again!';
 
 let billed = 0;
-const speakLine = async (cast, who, text, emotion, rawFile) => {
+const speakLine = async (cast, who, text, emotion, rawFile, speed) => {
   const c = cast.cast[who];
   const act = cast.acting[emotion ?? 'neutral'] ?? cast.acting.neutral;
   const r = await post(`/text-to-speech/${c.voiceId}/with-timestamps?output_format=mp3_44100_128`, {
     text,
     model_id: cast.model,
-    voice_settings: {stability: act.stability, similarity_boost: 0.8, style: act.style, use_speaker_boost: true, speed: c.speed ?? 1},
+    voice_settings: {stability: act.stability, similarity_boost: 0.8, style: act.style, use_speaker_boost: true, speed: Math.max(0.7, Math.min(1.2, speed ?? c.speed ?? 1))},
   });
   billed += costOf(r) ?? text.length;
   const d = await r.json();
@@ -44,7 +47,10 @@ const main = async () => {
   const cap = Number(a['max-characters'] || 0);
 
   if (a.audition) {
-    const names = Object.keys(cast.cast);
+    const only = typeof a.who === 'string' ? a.who.split(',').map((w) => w.trim()).filter(Boolean) : [];
+    const unknown = only.filter((w) => !cast.cast[w]);
+    if (unknown.length) { console.error(`Not in the cast: ${unknown.join(', ')}`); process.exit(2); }
+    const names = only.length ? only : Object.keys(cast.cast);
     const chars = names.length * AUDITION.length;
     const bal = await balance();
     console.log(`Voice audition: ${names.length} characters x ${AUDITION.length} characters = ${chars} credits on ${cast.model}`);
@@ -65,6 +71,24 @@ const main = async () => {
 
   const slug = a._[0];
   const toon = readJson(path.join(videoDir(slug), 'toon.json'));
+  if (a.cta) { // the narrator (Joey, the same voice in every video) reads the end card at his own pace: never sped up or cut
+    const text = toon.cta?.text;
+    if (!text) { console.error('No "cta": {"text": ...} in toon.json.'); process.exit(2); }
+    const bal = await balance();
+    console.log(`End card: ${cast.cast.narrator.voice}, ${text.length} characters -> about ${text.length} credits on ${cast.model}`);
+    console.log(`  "${text}"`);
+    printPool(bal);
+    if (a['dry-run']) return;
+    if (!approved()) needApproval(`the end card voice (${text.length} characters)`);
+    if (!cap || text.length > cap) { console.error(`Stopped: ${text.length} characters is over the approved cap (--max-characters ${cap || 'missing'}).`); process.exit(5); }
+    const raw = path.join(ROOT, 'out', 'toons', 'raw', slug, 'cta.mp3');
+    const words = await speakLine(cast, 'narrator', text, 'neutral', raw);
+    const file = path.join(PUBLIC, 'toons', slug, 'voice', 'cta.mp3');
+    voiceFx(raw, file, 0);
+    writeJson(path.join(videoDir(slug), 'cta-timings.json'), {voice: cast.cast.narrator.voice, voiceId: cast.cast.narrator.voiceId, text, seconds: +seconds(file).toFixed(2), words});
+    console.log(`voiced the end card: ${seconds(file).toFixed(2)} s. Spent ${billed} credits.`);
+    return;
+  }
   const tPath = path.join(videoDir(slug), 'toon-timings.json');
   const timings = readJson(tPath, {lines: {}});
   // forget lines the script no longer has (a removed scene used to stay in the file for good)
@@ -109,7 +133,7 @@ const main = async () => {
   for (const l of todo) {
     const c = cast.cast[l.who];
     const raw = path.join(ROOT, 'out', 'toons', 'raw', slug, `${l.id}.mp3`);
-    const words = await speakLine(cast, l.who, l.text, l.emotion, raw);
+    const words = await speakLine(cast, l.who, l.text, l.emotion, raw, l.speed); // a line's own speaking speed (toon.json: "speed", 0.7-1.2; paid: a new take)
     const file = path.join(outDir, `${l.id}.mp3`);
     const tempo = Math.max(0.9, Math.min(1.15, l.tempo ?? 1));
     voiceFx(raw, file, c.pitch, tempo, l.cut ?? null);

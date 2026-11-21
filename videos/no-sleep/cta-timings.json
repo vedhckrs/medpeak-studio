@@ -1,0 +1,218 @@
+{
+  "voice": "Joey - Upbeat Popular News Host",
+  "voiceId": "mUfWEBhcigm8YlCDbmGP",
+  "text": "Sleep is not optional. Adults need seven or more hours a night. Lost sleep adds up, night after night. And never drive sleepy: it can be as bad as driving drunk. Follow MedPeak Health for more health tips that keep you safe.",
+  "seconds": 16.72,
+  "words": [
+    {
+      "w": "Sleep",
+      "start": 0,
+      "end": 0.453
+    },
+    {
+      "w": "is",
+      "start": 0.534,
+      "end": 0.685
+    },
+    {
+      "w": "not",
+      "start": 0.778,
+      "end": 0.987
+    },
+    {
+      "w": "optional.",
+      "start": 1.057,
+      "end": 1.753
+    },
+    {
+      "w": "Adults",
+      "start": 1.823,
+      "end": 2.241
+    },
+    {
+      "w": "need",
+      "start": 2.287,
+      "end": 2.473
+    },
+    {
+      "w": "seven",
+      "start": 2.554,
+      "end": 2.902
+    },
+    {
+      "w": "or",
+      "start": 2.984,
+      "end": 3.111
+    },
+    {
+      "w": "more",
+      "start": 3.193,
+      "end": 3.413
+    },
+    {
+      "w": "hours",
+      "start": 3.46,
+      "end": 3.831
+    },
+    {
+      "w": "a",
+      "start": 3.878,
+      "end": 3.913
+    },
+    {
+      "w": "night.",
+      "start": 3.994,
+      "end": 4.505
+    },
+    {
+      "w": "Lost",
+      "start": 4.888,
+      "end": 5.201
+    },
+    {
+      "w": "sleep",
+      "start": 5.248,
+      "end": 5.538
+    },
+    {
+      "w": "adds",
+      "start": 5.631,
+      "end": 5.968
+    },
+    {
+      "w": "up,",
+      "start": 6.06,
+      "end": 6.316
+    },
+    {
+      "w": "night",
+      "start": 6.467,
+      "end": 6.745
+    },
+    {
+      "w": "after",
+      "start": 6.792,
+      "end": 7.024
+    },
+    {
+      "w": "night.",
+      "start": 7.105,
+      "end": 7.558
+    },
+    {
+      "w": "And",
+      "start": 7.767,
+      "end": 7.999
+    },
+    {
+      "w": "never",
+      "start": 8.15,
+      "end": 8.464
+    },
+    {
+      "w": "drive",
+      "start": 8.533,
+      "end": 8.905
+    },
+    {
+      "w": "sleepy:",
+      "start": 8.951,
+      "end": 9.567
+    },
+    {
+      "w": "it",
+      "start": 9.718,
+      "end": 9.834
+    },
+    {
+      "w": "can",
+      "start": 9.88,
+      "end": 9.996
+    },
+    {
+      "w": "be",
+      "start": 10.043,
+      "end": 10.136
+    },
+    {
+      "w": "as",
+      "start": 10.182,
+      "end": 10.263
+    },
+    {
+      "w": "bad",
+      "start": 10.356,
+      "end": 10.635
+    },
+    {
+      "w": "as",
+      "start": 10.716,
+      "end": 10.89
+    },
+    {
+      "w": "driving",
+      "start": 10.971,
+      "end": 11.401
+    },
+    {
+      "w": "drunk.",
+      "start": 11.471,
+      "end": 12.063
+    },
+    {
+      "w": "Follow",
+      "start": 12.574,
+      "end": 12.945
+    },
+    {
+      "w": "MedPeak",
+      "start": 13.026,
+      "end": 13.502
+    },
+    {
+      "w": "Health",
+      "start": 13.584,
+      "end": 13.862
+    },
+    {
+      "w": "for",
+      "start": 14.013,
+      "end": 14.187
+    },
+    {
+      "w": "more",
+      "start": 14.257,
+      "end": 14.478
+    },
+    {
+      "w": "health",
+      "start": 14.536,
+      "end": 14.768
+    },
+    {
+      "w": "tips",
+      "start": 14.826,
+      "end": 15.174
+    },
+    {
+      "w": "that",
+      "start": 15.29,
+      "end": 15.464
+    },
+    {
+      "w": "keep",
+      "start": 15.523,
+      "end": 15.72
+    },
+    {
+      "w": "you",
+      "start": 15.766,
+      "end": 15.859
+    },
+    {
+      "w": "safe.",
+      "start": 15.94,
+      "end": 16.718
+    }
+  ]
+}

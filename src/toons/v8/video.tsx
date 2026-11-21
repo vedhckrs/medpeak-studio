@@ -11,17 +11,20 @@ import {CtaCardV4, Watermark, WordCaption, type CtaAt, type CtaPoint} from './hu
 import {FONT} from './kit';
 import {clamp01, go, lerp, V8_FPS, type Focus, type LineNow, type ShotDef, type ShotNow} from './play';
 import {RABIES_CTA, RABIES_SHOTS} from './rabies';
+import {NO_SLEEP_CTA, NO_SLEEP_SHOTS} from './no-sleep';
 
-export type V8VideoProps = {toon: Toon; timings: ToonTimings | null; sfx: string[]; music: string | null; bare?: boolean};
+export type V8VideoProps = {toon: Toon; timings: ToonTimings | null; sfx: string[]; music: string | null; bare?: boolean; /** a still (the cover): draw this frame, whatever frame is being rendered */ frameAt?: number};
 
 /** The shots of each video, by the video's slug and the shot's id. */
-export const V8_VIDEOS: Record<string, Record<string, ShotDef>> = {rabies: RABIES_SHOTS};
+export const V8_VIDEOS: Record<string, Record<string, ShotDef>> = {rabies: RABIES_SHOTS, 'no-sleep': NO_SLEEP_SHOTS};
 /** The CTA end card of each video (three strong points). */
 /** v4 (2026-11-20): the narrator (Joey, the same voice in every video) reads the card; `at` holds the second
  * of each beat in his clip (headline, the three points, the follow line), `voice` the clip, `seconds` its length. */
 export type V8Cta = {title: string; points: CtaPoint[]; voice?: string; seconds?: number; at?: CtaAt};
-export const V8_CTA: Record<string, V8Cta> = {rabies: RABIES_CTA};
+export const V8_CTA: Record<string, V8Cta> = {rabies: RABIES_CTA, 'no-sleep': NO_SLEEP_CTA};
 /** The narrator starts after the card has slid in; the card holds a moment after his last word. */
+/** The music bed 10% lower than the director's levels (the owner, 2026-11-21: "background music 10% decrease"). */
+export const MUSIC_LEVEL = 0.9;
 export const CTA_LEAD = 0.4, CTA_TAIL = 1.2; // the narrator's last word is never cut; keep the sum in step with CTA_PAD in pipeline/toon-check.mjs
 export const ctaSeconds = (c: V8Cta | undefined) => (!c ? 0 : CTA_LEAD + (c.seconds ?? 4) + CTA_TAIL);
 
@@ -104,9 +107,16 @@ const smoothCam = (L: Layout, toon: Toon, timings: ToonTimings | null, def: Shot
   if (!def || def.view) return cameraAt(L, def, n0.s, si, sec);
   // b: the shot's LAST frame (a sample past it would fall outside every camera segment and jump)
   const a = L.shots[si].from / TOON_FPS, b = (L.shots[si].from + L.shots[si].frames - 1) / TOON_FPS;
+  // 2026-11-21 (the owner: "frame jiggle"): the samples sit on a FIXED time grid and each weighs by its distance from
+  // `sec` (a tent 1.4 s wide). Samples that moved with `sec` made the picture step every 0.2 s whenever one crossed a
+  // change of framing (a 5 Hz jitter in every room). On the grid every weight changes smoothly.
+  const STEP = 0.1, HALF = 1.4;
+  const g0 = Math.ceil((sec - HALF) / STEP);
   let wx = 0, x = 0, y = 0, z = 0;
-  for (let i = -6; i <= 6; i++) {
-    const at = Math.min(b, Math.max(a, sec + i * 0.2)), w = 7 - Math.abs(i);
+  for (let k = g0; k * STEP <= sec + HALF; k++) {
+    const g = k * STEP, w = HALF - Math.abs(g - sec);
+    if (w <= 0) continue;
+    const at = Math.min(b, Math.max(a, g));
     const n = shotNow(L, toon, timings, at);
     const c = cameraAt(L, def, n.s, si, at);
     wx += w; x += c.x * w; y += c.y * w; z += c.z * w;
@@ -132,8 +142,9 @@ const Missing: React.FC<{id: string}> = ({id}) => (
   <AbsoluteFill style={{background: '#2b1a17', color: '#ffffff', fontFamily: FONT, fontSize: 60, fontWeight: 800, alignItems: 'center', justifyContent: 'center'}}>shot {id}: not drawn yet</AbsoluteFill>
 );
 
-export const ToonV8: React.FC<V8VideoProps> = ({toon, timings, sfx, music, bare = false}) => {
-  const frame = useCurrentFrame();
+export const ToonV8: React.FC<V8VideoProps> = ({toon, timings, sfx, music, bare = false, frameAt}) => {
+  const now = useCurrentFrame();
+  const frame = frameAt ?? now;
   const sec = frame / V8_FPS;
   const L = useMemo(() => layoutToon(toon, timings), [toon, timings]);
   const {s, si} = shotNow(L, toon, timings, sec);
@@ -171,8 +182,11 @@ export const ToonV8: React.FC<V8VideoProps> = ({toon, timings, sfx, music, bare 
   // the body back to a room it PULLS back out of his arm; a whip pan only from room to room; else a zoom-through.
   const TR = {whip: 0.42, zoom: 0.5, dive: 0.8, pull: 0.8};
   const into = sec - L.shots[si].from / TOON_FPS;
+  // NO transitions between scenes (the owner, 2026-11-21: "I don't want transitions when the scene changes, it looks fake"):
+  // every change of scene is a clean cut. The code below stays only so an old render can be reproduced; it never runs.
+  const TRANSITIONS = false;
   const trans = (() => {
-    if (si === 0 || into >= 0.8 || !def) return null;
+    if (!TRANSITIONS || si === 0 || into >= 0.8 || !def) return null;
     const pf = L.shots[si].from / TOON_FPS - 1 / V8_FPS;
     const p = shotNow(L, toon, timings, pf);
     const pdef = V8_VIDEOS[toon.slug]?.[p.s.id];
@@ -276,9 +290,9 @@ export const ToonV8: React.FC<V8VideoProps> = ({toon, timings, sfx, music, bare 
       {music && <Audio src={staticFile(`toons/music/${music}.mp3`)} loop volume={(fr) => {
         // v4: the bed stays low under the narrator on the end card, then fades out with it
         const t = fr / K;
-        if (!cta || t < L.total - 24) return bedAt(L, t);
+        if (!cta || t < L.total - 24) return MUSIC_LEVEL * bedAt(L, t);
         const end = L.total + ctaSeconds(cta) * TOON_FPS;
-        return Math.max(Math.min(bedAt(L, L.total - 24), SOUND.bedUnderVoice * 1.2), 0) * clamp01((end - t) / 40);
+        return MUSIC_LEVEL * Math.max(Math.min(bedAt(L, L.total - 24), SOUND.bedUnderVoice * 1.2), 0) * clamp01((end - t) / 40);
       }} />}
     </AbsoluteFill>
   );

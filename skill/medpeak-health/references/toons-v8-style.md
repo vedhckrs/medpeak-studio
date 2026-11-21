@@ -128,18 +128,22 @@ wobble, no turn. An icon leaves before the picture changes (`out`), and a transi
 
 **Name tags**: `CharTag`, 1 second, the FIRST time each non-human character appears (RABIES VIRUS, NERVE ENDING,
 DEFENCE CELL, ANTIBODY, WHITE BLOOD CELL). A white tag box above the head (to the side when there is no room), an
-arrow that draws itself, a flat halo of two thin white rings: **no glow, no blur** (the owner, 2026-11-20). Never on
-people. The box and the halo must never cover a face: point at a part of the character away from the others, and
+arrow that draws itself. **No circle, no halo, no glow, no blur** around the character (the owner, 2026-11-21: "remove
+completely everywhere"; the two white rings of 2026-11-20 are gone). Never on people. The box must never cover a face: point at a part of the character away from the others, and
 start a tag after a transition has finished.
 
 **Camera and transitions**
 - No punch zoom on key words. Rooms: one smooth move per shot (the lean is averaged over 2.4 s). Inside the body:
   a continuous dive from the first frame to the last; every depth plane (`Depth d=0..1`) grows at its own rate,
   the near planes most (`DiveCtx`). Every new micro place is built in depth planes so it can dive.
-- Transitions follow the story: room -> body DIVES into the scratch (a round window opens from it, `portal`);
-  body -> room PULLS back out of the arm; a whip pan only room -> room; body -> body a zoom-through.
+- **NO transitions between scenes: every change of scene is a clean CUT** (the owner, 2026-11-21: "I don't want
+  transitions when the scene changes, it looks fake"). No dive, pull, whip pan or zoom-through at a scene change, and
+  no zoom-through inside a shot when it moves to another place (`TRANSITIONS = false` in video.tsx, `SWAP_CUT` in
+  shots-v3.tsx). A move INTO the body may happen inside ONE shot as part of its action (the no-sleep hook dives
+  through Sam's face), never as the join between two shots.
 - No flicker: nothing may appear or vanish in one frame (fade in and out; looping things fade at their wrap).
-  Check a render with the frame-difference scan (see `HANDOFF.md`, rabies v4): zero isolated one-frame jumps.
+  Check a render with the frame-difference scan (see `HANDOFF.md`, rabies v4): zero isolated one-frame jumps
+  EXCEPT at the scene cuts (each cut is one; check that every jump falls on a shot start).
 
 **Characters**: the Virus keeps still unless it speaks or acts (`active()`), only a slow breath at rest.
 
@@ -166,3 +170,26 @@ caught. A video with a chase question gets one.
 **Approval steps for a video**: 16:9 look sheets -> narrator clip (cost first) -> a 10 s motion test
 (`toon-v8-render --from A --to B`) -> the full video + the storyboard from the finished render
 (`node --import tsx pipeline/toon-v8-board.mjs <slug>`).
+
+
+## Owner's notes of 2026-11-21 (no-sleep), rules from now on
+
+- **No circle around a tagged character**, anywhere (see Name tags).
+- **The end card: every line on ONE line.** The headline and each point's bold text; `CtaCardV4` fits the three points
+  together at one size. An icon must look finished (the flat calendar was "cheap"): a round badge with a scene, as the sunrise.
+- **No jiggle or flicker when someone talks.** No squash per syllable (a slow small sway while speaking); mouths come from
+  `talkSmooth` (0.1 s average), never the raw per-frame opening; no fast hops or shakes (nothing faster than about 2 a second).
+- **The room camera** is smoothed on a fixed time grid (`smoothCam` in video.tsx). Check a room with a frame-difference
+  scan: a steady 5 Hz pulse means the camera steps.
+- **Scene changes are hard cuts** (later the same day the owner removed transitions everywhere; see Camera). Never a
+  zoom-through crossfade that ghosts a big face over a room.
+- **Music 10% lower** than the director's levels: `MUSIC_LEVEL = 0.9` in video.tsx (the owner: "background music 10% decrease").
+- **The hook (the owner chose this shape for no-sleep, after "there is no powerful hook")**: frame 0 is never an empty
+  place. Open on the PERSON and the topic's cue (Sam's face at 2 a.m., lit by the phone, a clock slamming onto 2:00 with a
+  beep), his line as a cold open, then inside the same first shot the camera dives through his face into the body place,
+  and the villain comes AT the lens (Gunk splats on the glass, goo runs down). The threat is shown on its word ("clog": the
+  gaps squeeze shut). No name tag, icon or number during the hook line: the tag comes after it. High contrast first frame.
+  What was wrong before, to avoid: an empty first frame, a place nobody recognises, nothing coming at the viewer, no person,
+  the threat said but not shown, three texts at once in the first two seconds, a soft first sound.
+- **A held phone**: out in front at chest height, seen from its back (the screen faces the person), the person's own hand
+  drawn again over it (`HandAt` with `rod={false}`: a gripping hand with no hole). Never pasted on the hand at the chin.

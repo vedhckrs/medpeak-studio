@@ -71,6 +71,10 @@ def upload(yt, pkg_path, args):
         print(f"  WARNING: asked for {status['privacyStatus']}, YouTube stored {stored.get('privacyStatus')}")
     if status.get("containsSyntheticMedia") and not stored.get("containsSyntheticMedia"):
         print("  WARNING: the AI-use answer was not stored by the upload; set it with: publish/after_upload.py <slug> <cut> --label --approve")
+    # write the paths back RELATIVE to the repo (2026-11-21: they came back as this Mac's full paths, twice)
+    for k in ("file", "thumbnail"):
+        if pkg.get(k) and os.path.isabs(pkg[k]) and pkg[k].startswith(ROOT):
+            pkg[k] = os.path.relpath(pkg[k], ROOT).replace(os.sep, "/")
     json.dump(pkg, open(pkg_path, "w"), indent=2, ensure_ascii=False)
     print(f"  uploaded: https://youtu.be/{vid}")
 

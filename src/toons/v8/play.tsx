@@ -137,9 +137,18 @@ export const FACE_OF: Record<string, {mood: Mood; mouth: MouthKind}> = {
  * A body character's face now: the eyes of its feeling (shut during a blink), and a mouth that talks:
  * the resting mouth while closed, 'o' half open, 'open' / 'big' wide.
  */
+/**
+ * The mouth opening averaged over a tenth of a second (2026-11-21, the owner: "characters flicker and jiggle when they
+ * speak"): the raw opening jumps every syllable, and a mouth that changes shape on single frames reads as flicker.
+ */
+export const talkSmooth = (s: ShotNow, who: string) => {
+  let sum = 0;
+  for (const dt of [-0.05, -0.025, 0, 0.025, 0.05]) sum += talk({...s, t: s.t + dt}, who);
+  return sum / 5;
+};
 export const bodyFace = (s: ShotNow, who: string, seed = 0, rest = 'neutral'): {mood: Mood; mouth: MouthKind} => {
   const f = FACE_OF[feel(s, who, rest)] ?? FACE_OF.neutral;
-  const open = talk(s, who);
+  const open = talkSmooth(s, who);
   const shut = blink(s.t, seed) > 0.5 && f.mood !== 'happy' && f.mood !== 'dizzy';
-  return {mood: shut ? 'closed' : f.mood, mouth: open > 0.62 ? 'open' : open > 0.22 ? 'o' : f.mouth};
+  return {mood: shut ? 'closed' : f.mood, mouth: open > 0.5 ? 'open' : open > 0.18 ? 'o' : f.mouth};
 };

@@ -6,6 +6,98 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-21 (4) - MacBook (local Claude Code) - branch `video/no-sleep` - no sleep: UPLOADED private (rbiXOjOD8SQ)
+
+- The owner picked topic 2, "What Happens If You Don't Sleep" (slug `no-sleep`); marked `taken (Mac, 2026-11-21)`
+  in `topic-bank.md` and pushed.
+- Sources read word for word: NHLBI (3 pages), CDC About Sleep, PubMed 24136970 (Xie 2013), 29632177
+  (Shokri-Kojori 2018), 10984335 (Williamson 2000). The NIH news pages and CDC drowsy-driving page refuse
+  automated fetches (403/404); PubMed abstracts come through `eutils.ncbi.nlm.nih.gov`.
+- New: `plans/no-sleep-2026-11-21.md`: shape `crew` (no doctor), 17-line draft, 3 hook choices, cast, the
+  new drawings it needs (Gunk + night crew, brain micro place with opening gaps, bedroom night/morning), care notes.
+- Not done: no `toon.json` yet, `toon:check` not run, nothing drawn, nothing voiced, no credits spent.
+- The owner picked hook A ("Don't sleep tonight? I pile up in your brain!").
+- Three look sheets drawn (free), WAITING for the owner's OK, copies in
+  `skill/medpeak-health/references/toons-boards/v8/no-sleep/` (`node pipeline/toon-v8-sheets.mjs sleep`):
+  1. `sleep-cast`: Gunk (grey-taupe sticky heap, stages 0/1/2) and the night crew (fluid droplets with mop,
+     bucket, brush and a headlamp band). Code `src/toons/v8/sleep-cast.tsx`.
+  2. `sleep-place`: inside the brain, microscopic, `BrainGapPlace` with dials `gap`, `wash`, `dirt`
+     (`src/toons/v8/sleep-places.tsx`).
+  3. `sleep-room`: Sam's bedroom at 2 a.m. and 7 a.m. (`src/toons/v8/sleep-rooms.tsx`; `BedFront` and `Duvet`
+     are drawn after Sam). New rig poses `sitPhone`, `sitSlump`, and a pose field `seat: false` (no rig chair).
+- Run: typecheck clean, `npm test` 50/50. Rendering stills needs the sandbox off on the Mac (Remotion's browser).
+- The owner approved all three sheets.
+- Script: `videos/no-sleep/toon.json`, written by `plans/no-sleep-script.py` (edit the .py, re-run it). 16 lines, 5 voices
+  (gunk, patient = Sam, melatonin, crew, brain), 5 scenes (macro A, home B, macro C, home D, macro E), episode 10.
+  `toon:check` ALL PASS (and `--all`), `toon:camera`, `toon:motion`, `toon:staging` pass. Sheet: `videos/no-sleep/SCRIPT.md`.
+- Changes to make it fit: hook A was 9 words / about 3 s, the format-5 rule is 2 s, so it is now
+  "Don't sleep? I clog your brain!" (WAITING for the owner's OK on that cut); the last line became
+  "You did sleep! Now they wash me out. I can't clog your brain!" (the loop needs 3 shared words); the night crew speaks C1, C2, C4
+  instead of the Brain (the Brain speaks in the morning scene).
+- New: macro dials `gap`, `wash`, `dirt` (`director.ts`; `wash` is a flow dial); cast entries `gunk` (Callum -3),
+  `melatonin` (Lily -1), `crew` (Harry +2) in `toons-cast.json`, proposed, not auditioned; old-engine blueprints for
+  them in `characters.tsx` (only so the layout checks can measure them); two test guards now follow the script's cast.
+- Not done: the v8 shots for this video (like `src/toons/v8/rabies.tsx`), storyboard, motion test, voices, music.
+- The owner OK'd the hook "Don't sleep? I clog your brain!".
+- Shots built: `src/toons/v8/no-sleep.tsx` (A-E, beats follow the script's events, name tags GUNK / MELATONIN / NIGHT CREW /
+  BRAIN, number tags on the grid) and the CTA card (SLEEP IS NOT OPTIONAL: 7+ hours, it adds up, don't drive sleepy),
+  registered in `video.tsx`. Silent render `npm run toon:v8 -- no-sleep --silent`: 56.8 s with the card (no narrator yet),
+  1080 x 1920, 60 fps, about 2.5 min on the Mac. Storyboard: 4 sheets in `videos/no-sleep/renders/storyboard/` (renders
+  are not in git). Sent to the owner with the silent video, WAITING for his OK on the motion.
+- Mac setup: the system Python has NO Pillow (the storyboard needs it). This session used a throwaway venv; for good,
+  run `python3 -m pip install --user pillow` in a normal terminal (pip fails inside Claude's sandbox: SSL through the proxy).
+- The owner OK'd the motion. Voice tests for gunk, melatonin, crew made (`toon-voice.mjs --audition --who ...`): **75 credits**
+  by the charge receipt (quoted 189); balance before 56,825 (the counter lags). Files in `out/toons/auditions/` (not in git), plus
+  free variants: `gunk-p1` (pitch -1 instead of -3: synthetic score 0.59 against 0.71) and `melatonin-slow` (tempo 0.9: 3.96 s
+  against 3.58 s). Speech-to-text: every word right in all three. The owner picked: Gunk pitch -1, Melatonin slowed (her lines
+  carry `"tempo": 0.9`), the crew as made. Balance after the tests: 56,750. All checks pass again. Next: voice the script (702
+  credits quoted), on the owner's yes.
+- VOICED on the owner's yes: 16 lines, **280 credits** by the receipt (702 quoted); balance 56,750 -> 56,470. Clips in
+  `assets/toons-voice/no-sleep/` (committed), timings `videos/no-sleep/toon-timings.json`. `toon:listen --words`: 140 words, 0 wrong;
+  `--voices`: all at -14.4 to -15.1 LUFS, speech 76-89%, synthetic 0-56%, no clipping. Voiced length 48.8 s.
+- Hook A1 was 2.2 s even at "tempo" 1.15; on the owner's word a NEW TAKE of A1 at ElevenLabs speed 1.2 (new per-line `"speed"` in
+  toon.json, read by `toon-voice.mjs`): **12 credits**, 1.9 s, PASS; words right, synthetic 29%. The old take is in
+  `out/toons/a1-backup/` (this Mac only). Balance after: about 56,458 (the counter lags). `toon:check --all` passes again.
+- On the owner's yes: Joey's end card voiced with the new `toon-voice.mjs <slug> --cta` (text in toon.json "cta"): **202 credits**,
+  16.72 s, `assets/toons-voice/no-sleep/cta.mp3`, word times `videos/no-sleep/cta-timings.json`; wired in `NO_SLEEP_CTA`. The music
+  `assets/toons-music/no-sleep.mp3`: **500 credits**, 40.1 s, no rests. Balance 56,458 before, 55,755 after.
+  Whole video 66.5 s (story 48.1 + card).
+- Final render: `videos/no-sleep/renders/toon-v8.mp4` 66.5 s, -14.0 LUFS, peak -1.0 dB; `toon:listen` 8 of 9 sounds heard (three
+  sounds moved off spoken words into pauses), no holes; frame scan 0 one-frame jumps; contact sheets read. Phone copy
+  `toon-v8-phone.mp4` (19 MB). Package READY (`videos/no-sleep/package/`), cover `renders/toon-cover.jpg`.
+- Bug fixed: the v8 cover came out as frame 0 under `<Freeze>`; `ToonV8` now takes `frameAt` (entry-video.tsx). The uploaded
+  rabies cover was probably frame 0 too (not changed: it is up).
+- The owner's notes on the finished video, all fixed (2026-11-21): (1) end-card points must be ONE line each: `CtaCardV4` now sizes
+  every point's bold line together so the longest fits (all videos); (2) the calendar icon "looks cheap": replaced by a
+  night-sky badge with a draining battery (`SleepBattery` in no-sleep.tsx); (3) characters "flicker and jiggle" when they speak:
+  `bodyFace` now uses `talkSmooth` (the mouth averaged over 0.1 s, all videos), no squash on every syllable, slow sways instead
+  of fast hops/shakes; (4) Sam's phone "not proper": held out at chest height (`sitPhone` pose), seen from its back, his own
+  hand drawn again over it (`HandAt` with `rod={false}` -> `Hand grips`, a gripping hand with no hole). Re-rendered, 0 flicker.
+- Second round of notes (2026-11-21), fixed: the name-tag circle removed everywhere (`CharTag`, rule in CLAUDE.md and the
+  skill); Sam's "Just one more video" jiggled: (a) the room camera stepped 5 times a second (`smoothCam` now samples a fixed
+  grid), (b) the cut from the brain was a zoom-through ghost: shots B and D now have a `portal` (Sam's head), so the camera
+  pulls out of his head / dives into it. Re-rendered: 0 one-frame jumps, no 5 Hz pulse on Sam.
+- Hook diagnosed (empty first frame, an unrecognisable place, nothing coming at the lens, no person, the threat not shown,
+  three texts at once, a soft first sound); the owner chose A. Built in shot A: Sam close up at 2 a.m. (phone, the clock
+  SLAMS onto 2:00), his "Just one more video..." is now a COLD OPEN (the same clip, no new voice), the camera dives through his
+  face into his brain, Gunk splats on the lens with goo, "clog" squeezes the gaps shut; the name tag after the hook. Cover at 2.4 s.
+- The owner: **no transitions anywhere** (hard cuts; `TRANSITIONS = false` in video.tsx, `SWAP_CUT` in shots-v3.tsx) and
+  **music 10% lower** (`MUSIC_LEVEL = 0.9`). Rules written into CLAUDE.md, SKILL.md and toons-v8-style.md (with the hook pattern).
+- Render: 66.7 s, -14.0 LUFS, the 3 one-frame jumps are exactly the scene cuts; 7 of 9 planned sounds heard (the splash where
+  the wash starts stays under the voices and the running water).
+- **UPLOADED, private, on the owner's word: https://youtu.be/rbiXOjOD8SQ** (not made for kids, cover set; id in
+  `videos/no-sleep/package/toon.json`). AI label: the update call answered True but YouTube does not show the field on read
+  back (same as rabies): the owner checks it in YouTube Studio (Details, "Altered content").
+- `publish/upload.py` now writes the package paths back RELATIVE to the repo (they came back as full Mac paths twice).
+- Next: the owner checks the video in Studio and makes it public when he wants; the next video starts from topic 3.
+- (older) NOT uploaded. Next: the owner watches the video; upload private only on his word (`python3 publish/upload.py no-sleep toon` with
+  the venv Python, dry run first; check `upload.py` keeps repo-relative paths).
+- Spent on this video in all: 75 + 280 + 12 + 202 + 500 = **1,069 ElevenLabs credits** (56,825 -> 55,755). Anthropic key: not used ($0).
+- Before that: the owner's OK on the silent video, then the voice auditions for gunk / melatonin / crew with the cost, then
+  voices, the narrator's CTA line and the video's own music (all paid: balance before and after).
+
+---
+
 ## 2026-11-21 (3) - MacBook (local Claude Code) - branch `video/rabies-upload` - rabies v4 UPLOADED, private
 
 - **Uploaded: https://youtu.be/zgK91fQhvU0** (private, not made for kids, cover set). Video id stored in

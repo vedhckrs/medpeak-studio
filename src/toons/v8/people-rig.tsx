@@ -275,9 +275,10 @@ const handGeom = (kind: HandKind, free = true) => {
   }
   return {parts, lines, over, holes};
 };
-export const Hand: React.FC<{kind: HandKind; skin: string; wristR?: number}> = ({kind, skin, wristR}) => {
+/** `grips`: the hand holds a real object drawn under it (no hole in a 'hold' hand: the object shows). */
+export const Hand: React.FC<{kind: HandKind; skin: string; wristR?: number; grips?: boolean}> = ({kind, skin, wristR, grips}) => {
   const stub = wristR ? [capsule([-9, 0], wristR, [1, 0], wristR)] : [];
-  const {parts, lines, over, holes} = handGeom(kind);
+  const {parts, lines, over, holes} = handGeom(kind, !grips);
   return (
     <g>
       <Union d={[...stub, ...parts]} fill={skin} shadow={0.55} holes={holes}>
@@ -478,11 +479,13 @@ export type PoseName = 'rest' | 'explain' | 'point' | 'thumbs' | 'think' | 'worr
   // scene poses (added for the rooms scenes, 2026-11-20)
   | 'showArm' | 'tapHand' | 'offer' | 'thumbsHold' | 'thumbsUp' | 'worriedHold' | 'explainLow' | 'worriedPoint' | 'youSee' | 'showArmUp'
   // the rooms shots in motion (2026-11-20): the Kid acts with his RIGHT arm (the far arm when he faces left)
-  | 'showArmUpR' | 'shrugR' | 'tapHandR' | 'showArmR' | 'armInR' | 'thumbsUpR' | 'worriedPointTap' | 'soapUp' | 'meDoctor' | 'oneFinger' | 'holdVial' | 'pointTapSoap';
+  | 'showArmUpR' | 'shrugR' | 'tapHandR' | 'showArmR' | 'armInR' | 'thumbsUpR' | 'worriedPointTap' | 'soapUp' | 'meDoctor' | 'oneFinger' | 'holdVial' | 'pointTapSoap'
+  // no-sleep (2026-11-21): in bed with a phone; slumped on the bed edge in the morning
+  | 'sitPhone' | 'sitSlump';
 /** Arm: directions in the ARM frame: x = outwards from the body, y = down, z = forwards. */
 type ArmPose = {up: V3; fore: V3; hand: HandKind; thumb?: V3; bend?: number; ang?: number; front?: boolean; prop?: 'clipboard'};
 type LegPose = {thigh: V3; shin: V3; foot: V3};
-type Pose = {R: ArmPose; L: ArmPose; legR: LegPose; legL: LegPose; sit?: boolean; tilt?: number; lean?: number};
+type Pose = {R: ArmPose; L: ArmPose; legR: LegPose; legL: LegPose; sit?: boolean; tilt?: number; lean?: number; /** false: sit on the scene's own furniture (a bed), the rig draws no chair */ seat?: boolean};
 const REST_R: ArmPose = {up: [0.14, 1, -0.06], fore: [0.02, 1, 0.3], hand: 'relaxed', thumb: [-0.4, 0, 1]};
 const REST_L: ArmPose = {up: [0.18, 1, -0.04], fore: [0.06, 1, 0.24], hand: 'relaxed', thumb: [-0.4, 0, 1]};
 const STAND_R: LegPose = {thigh: [0.04, 1, 0], shin: [0.02, 1, 0.0], foot: [0.28, 0, 1]};
@@ -524,6 +527,23 @@ export const POSES: Record<PoseName, Pose> = {
   /** holds the far forearm up in front, nearly upright, palm toward the face (shows a mark on the forearm) */
   showArmUp: {R: REST_R, L: {up: [0.3, 0.15, 0.95], fore: [0.0, -1, 0.15], hand: 'open', thumb: [0, -1, 0.2]}, legR: STAND_R, legL: STAND_L, tilt: -3},
   explainLow: {R: REST_R, L: {up: [0.35, 0.9, 0.3], fore: [0.4, 0.35, 0.85], hand: 'open', thumb: [0, -1, 0.2], bend: -10}, legR: STAND_R, legL: STAND_L, tilt: 3},
+  // ---- no-sleep (2026-11-21): additive, the poses above are unchanged
+  /** sitting, the near hand holds a phone up in front of the face (no clipboard) */
+  sitPhone: {
+    R: {up: [0.1, 0.85, 0.5], fore: [-0.15, -0.5, 0.85], hand: 'hold', thumb: [0, -1, 0], front: true}, // held out in front of the chest (2026-11-21: not at the chin)
+    L: {up: [0.12, 1, 0.12], fore: [0.0, 0.3, 1], hand: 'relaxed', thumb: [-0.5, -0.6, 0.5]},
+    legR: {thigh: [0.02, 0.04, 1], shin: [0.0, 1, 0.08], foot: [0.12, 0, 1]},
+    legL: {thigh: [0.12, 0.04, 1], shin: [0.04, 1, 0.12], foot: [0.3, 0, 1]},
+    sit: true, seat: false, tilt: -2,
+  },
+  /** sitting slumped: both hands rest on the thighs, the body leans forward, head down */
+  sitSlump: {
+    R: {up: [0.06, 1, 0.3], fore: [-0.1, 0.25, 1], hand: 'rest', thumb: [0, -1, 0], front: true},
+    L: {up: [0.12, 1, 0.3], fore: [0.05, 0.25, 1], hand: 'rest', thumb: [0, -1, 0]},
+    legR: {thigh: [0.02, 0.04, 1], shin: [0.0, 1, 0.08], foot: [0.12, 0, 1]},
+    legL: {thigh: [0.12, 0.04, 1], shin: [0.04, 1, 0.12], foot: [0.3, 0, 1]},
+    sit: true, seat: false, tilt: 6, lean: 6,
+  },
   // ---- the rooms shots in motion: the R-arm twins of the Kid's poses (his right arm is the far arm when facing left)
   showArmUpR: {R: {up: [0.3, 0.15, 0.95], fore: [0.0, -1, 0.15], hand: 'open', thumb: [0, -1, 0.2]}, L: REST_L, legR: STAND_R, legL: STAND_L, tilt: -3},
   /** a small shrug while the forearm is up: the hand tips outwards, the head tilts */
@@ -620,7 +640,7 @@ const resolvePose = (pose: PoseIn, mir: boolean, buildTilt: number) => {
   const pk = k < 0.5 ? A : B;
   const P: Pose = {
     R: blendArm(A.R, B.R, k), L: blendArm(A.L, B.L, k), legR: blendLeg(A.legR, B.legR, k), legL: blendLeg(A.legL, B.legL, k),
-    sit: pk.sit, tilt: lerp(A.tilt ?? buildTilt, B.tilt ?? buildTilt, k), lean: lerp(A.lean ?? 0, B.lean ?? 0, k),
+    sit: pk.sit, seat: pk.seat, tilt: lerp(A.tilt ?? buildTilt, B.tilt ?? buildTilt, k), lean: lerp(A.lean ?? 0, B.lean ?? 0, k),
   };
   return {P, A, B, k, blend: true};
 };
@@ -1389,7 +1409,7 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
 
   // ---------------------------------------------------------------- assemble, back to front
   const out: React.ReactNode[] = [];
-  if (P0.sit) out.push(<Chair key="chair" cam={cam} R={R} seatY={yC + 0.12 * R} hip={b.hip * R} depthF={thighL * 0.85} backTop={yS + 0.35 * T0} />);
+  if (P0.sit && P0.seat !== false) out.push(<Chair key="chair" cam={cam} R={R} seatY={yC + 0.12 * R} hip={b.hip * R} depthF={thighL * 0.85} backTop={yS + 0.35 * T0} />);
   const farSide: 1 | -1 = 1; // her left is the far side when she turns to the right
   const farBehind = cam.s > 0.3 && !(farSide === 1 ? P0.L : P0.R).front;
   if (farBehind) out.push(drawArm(farSide));
@@ -1691,11 +1711,11 @@ export const HeadAt: React.FC<{spec: PersonSpec; x: number; y: number; px: numbe
   );
 };
 /** A hand drawn large on a board (for the hands sheet). */
-export const HandAt: React.FC<{x: number; y: number; px: number; kind: HandKind; skin: string; rot?: number; mirror?: boolean}> = ({x, y, px, kind, skin, rot = 0, mirror}) => (
+export const HandAt: React.FC<{x: number; y: number; px: number; kind: HandKind; skin: string; rot?: number; mirror?: boolean; rod?: boolean}> = ({x, y, px, kind, skin, rot = 0, mirror, rod = true}) => (
   <svg style={{position: 'absolute', left: x, top: y, overflow: 'visible'}} width={1} height={1}>
     <g transform={`rotate(${rot}) scale(${px / 30} ${(px / 30) * (mirror ? -1 : 1)}) translate(-14 0)`}>
-      {kind === 'hold' && <path d={capsule([13.2, -14.6], 3.6, [13.2, 13.4], 3.6, 'flat', 'flat')} fill={CLOTH.grey} {...EDGE_IN} />}
-      <Hand kind={kind} skin={skin} wristR={4.6} />
+      {kind === 'hold' && rod && <path d={capsule([13.2, -14.6], 3.6, [13.2, 13.4], 3.6, 'flat', 'flat')} fill={CLOTH.grey} {...EDGE_IN} />}
+      <Hand kind={kind} skin={skin} wristR={4.6} grips={!rod} />
     </g>
   </svg>
 );

@@ -321,13 +321,10 @@ export const CharTag: React.FC<{label: string; x: number; y: number; r: number; 
   const a2 = Math.atan2(tip[1] - mid[1], tip[0] - mid[0]);
   const head = (s: number) => `M ${tip[0] + Math.cos(a2) * 4} ${tip[1] + Math.sin(a2) * 4} L ${tip[0] - Math.cos(a2 - 0.5) * s} ${tip[1] - Math.sin(a2 - 0.5) * s} L ${tip[0] - Math.cos(a2 + 0.5) * s} ${tip[1] - Math.sin(a2 + 0.5) * s} Z`;
   const arc = `M ${from[0]} ${from[1]} Q ${mid[0]} ${mid[1]} ${tip[0]} ${tip[1]}`;
-  const ring = settleIn(t - 0.05, 0.35);
   return (
     <div style={{position: 'absolute', inset: 0, opacity: op, pointerEvents: 'none'}}>
       <svg style={{position: 'absolute', left: 0, top: 0, overflow: 'visible'}} width={1080} height={1920} viewBox="0 0 1080 1920">
-        {/* the flat halo: two thin white rings around the character */}
-        <circle cx={x} cy={y} r={r * (1.02 + 0.1 * ring)} fill="none" stroke="#ffffff" strokeWidth={9} opacity={0.7} />
-        <circle cx={x} cy={y} r={r * (1.1 + 0.16 * ring)} fill="none" stroke="#ffffff" strokeWidth={5} opacity={0.38} />
+        {/* no halo (the owner, 2026-11-21: "this circle I don't want, remove completely everywhere"): the tag and its arrow only */}
         {draw > 0.02 && <>
           <path d={arc} stroke={INK} strokeWidth={14} strokeLinecap="round" fill="none" />
           <path d={arc} stroke="#ffffff" strokeWidth={7} strokeLinecap="round" fill="none" />
@@ -359,6 +356,9 @@ export const CtaCardV4: React.FC<{t: number; title: string; points: CtaPoint[]; 
   const head = settleIn(t - at.head, 0.3);
   const fol = settleIn(t - at.follow, 0.32);
   const headFs = Math.min(84, Math.floor(960 / (title.length * 0.64)));
+  // every point's bold line stays on ONE line (the owner, 2026-11-21: "DON'T DRIVE SLEEPY" wrapped): one size for all
+  // three, the longest one fitting the ~620 px beside the icon
+  const bigFs = Math.min(64, Math.floor(620 / (Math.max(...points.map((p) => p.big.length)) * 0.7)));
   const ringT = t * 6; // the rings breathe outward very slowly
   return (
     <div style={{position: 'absolute', inset: 0, background: BRAND_BLUE, overflow: 'hidden', fontFamily: FONT}}>
@@ -384,7 +384,7 @@ export const CtaCardV4: React.FC<{t: number; title: string; points: CtaPoint[]; 
             background: '#ffffff', border: `5px solid ${INK}`, borderRadius: 34, padding: '0 30px 0 18px', boxShadow: `0 10px 0 ${shade(BRAND_BLUE, 0.35)}`}}>
             <svg width={210} height={210} viewBox="-100 -100 200 200" style={{flex: 'none', overflow: 'visible'}}><g transform="scale(1.04)">{p.icon}</g></svg>
             <div style={{display: 'flex', flexDirection: 'column'}}>
-              <div style={{fontWeight: 900, fontSize: 64, color: INK, lineHeight: 1.0}}>{p.big}</div>
+              <div style={{fontWeight: 900, fontSize: bigFs, color: INK, lineHeight: 1.0, whiteSpace: 'nowrap'}}>{p.big}</div>
               <div style={{fontWeight: 700, fontSize: 36, color: '#5f6676', marginTop: 10}}>{p.small}</div>
             </div>
           </div>

@@ -266,7 +266,9 @@ test('every stage a script uses has its dials, and every steady script is a show
 test('no foot slides, no leg or arm jumps and no pops on any real script', async () => {
   for (const t of real) {
     const r = await scanMotion(t, null);
-    assert.ok(r.people.length >= 2, `${t.slug}: people were measured`);
+    // every person in the script is measured (no-sleep, 2026-11-21, has one person: Sam)
+    const cast = new Set(t.shots.flatMap((sh) => sh.cast.map((a) => a.who)).filter((w) => ['doctor', 'patient', 'mom', 'dad', 'kid', 'grandpa', 'grandma', 'baby'].includes(w)));
+    assert.ok(r.people.length >= Math.min(2, cast.size), `${t.slug}: people were measured`);
     assert.deepEqual(r.slides, [], `${t.slug}: a foot slides`);
     assert.deepEqual(r.legJumps, [], `${t.slug}: a leg jumps`);
     assert.deepEqual(r.armJumps, [], `${t.slug}: an arm jumps`);
@@ -407,7 +409,7 @@ test('in every room a recipe can make, the wall items hang above head height, in
 });
 
 test('nothing on a wall is behind a head on any real script, and the staging check catches the first rooms\' chart behind Dr. Mira', async () => {
-  for (const t of real) { const r = await scanStaging(t, null); assert.ok(r.wallItems >= 1, `${t.slug}: wall items were measured`); assert.deepEqual(r.hidden, [], `${t.slug}: a wall item behind a head`); }
+  for (const t of real) { const r = await scanStaging(t, null); if (t.shots.some((sh) => sh.set === 'clinic')) assert.ok(r.wallItems >= 1, `${t.slug}: wall items were measured`); /* a bedroom-only video (no-sleep) has no clinic chart */ assert.deepEqual(r.hidden, [], `${t.slug}: a wall item behind a head`); }
   const t = real.find((x) => x.slug === 'pill-without-water');
   const first = () => [{kind: 'chart', x: 400, y: 250, s: 1, box: [250, 250, 550, 680]}]; // where the room kit first hung it
   const r = await scanStaging(t, null, {wallItems: first});
