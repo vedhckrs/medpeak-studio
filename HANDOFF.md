@@ -6,6 +6,21 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-21 (9) - MacBook (local Claude Code) - branch `video/creatine` - creatine: voice tests made, WAITING for the owner's picks
+
+- The owner: "Yes, voice tests" (which also OKs the silent video's motion).
+- Balance before (live, sandbox off): 52,365 (4 keys). Lower than the 55,755 noted after no-sleep: about 3,400 were spent elsewhere
+  between the two sessions.
+- Voice tests `toon-voice.mjs creatine --audition --who crea,battery,muscle`: **75 credits** by the receipt (189 quoted). Files in
+  `out/toons/auditions/` (crea.mp3, battery.mp3, muscle.mp3; this Mac only) plus a free variant `battery-fast.mp3` (tempo 1.15: 4.76 s
+  against 5.46 s). Speech-to-text (mlx_whisper): every word right in all three. `earshot realness`: real/pro 0.97 / 0.89 / 0.92.
+  Loudness -17.5 / -18.0 / -17.6 LUFS.
+- Balance after: 51,880. That is 485 less, but this session's receipt says 75: about 410 more went from key 4 at the same time,
+  not from this session (another machine or account?). Told the owner.
+- Next: the owner picks the voices; then voice the script (711 quoted), Joey's card, the music (about 500).
+
+---
+
 ## 2026-11-21 (8) - MacBook (local Claude Code) - branch `video/creatine` - creatine: silent video sent, WAITING for the owner's OK on motion
 
 - Fixed: the doctor line F4 split in two (F4 "A trial over twelve weeks..." + F5 "found no hair loss.", tag "12 WEEKS"): the one-word
