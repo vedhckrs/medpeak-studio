@@ -25,7 +25,9 @@ make him read code.
 1. Commit all work on its branch (see `CONTRIBUTING.md`) and push it. Nothing may stay only on one machine.
 2. Add a new entry at the top of `HANDOFF.md`: date, machine, branch, what changed, what was run and its
    result, what was not run, what is open, the next step. Commit and push it with the work.
-3. Tell the owner what is pushed and what waits for his OK (for example a pull request to merge).
+3. Tell the owner what is pushed and merged. **Do not ask him before committing, pushing, opening or merging a
+   pull request** (his word, 2026-11-21): do it once CI passes. Uploads, making a video public, paid
+   generation and deleting things still need his word.
 
 ## Rules for every machine
 
