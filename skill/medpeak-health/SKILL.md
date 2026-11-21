@@ -40,7 +40,7 @@ The owner is not technical: run everything yourself, explain in plain words, nev
 
 7. **The version 4 rules for every Toon** (owner, 2026-11-20): the narrator Joey reads the end card (same voice
    every video, never cut or sped up; the story under 60 s, the card may run past it), the logo card in royal blue, the transparent Inter Regular watermark,
-   icons only when the words say it, 1-second name tags (no circle, no glow; 2026-11-21) the first time a body character
+   icons only when the words say it, name tags held 2.5 s (no circle, no glow; 2026-11-21) the first time a body character
    appears, one smooth camera move per shot, a continuous dive inside the body, HARD CUTS between scenes (no transitions,
    2026-11-21), music 10% lower (`MUSIC_LEVEL`), a hook that opens on the person and comes at the lens,
    no flicker, detailed micro places, clothes that read at phone size. All of it, with the code that does it, is in
