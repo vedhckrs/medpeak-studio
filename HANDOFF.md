@@ -6,6 +6,24 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-21 (11) - MacBook (local Claude Code) - branch `video/creatine` - creatine: FINISHED, waiting for the owner to watch (NOT uploaded)
+
+- The owner: "Yes, make both". Balance before: 50,424.
+- Joey's end card (`toon-voice.mjs creatine --cta`): **193 credits** by the receipt, 16.11 s, `assets/toons-voice/creatine/cta.mp3`,
+  beats wired in `CREATINE_CTA` (head 0, points 2.53 / 6.44 / 9.95, follow 12.59).
+- The music `assets/toons-music/creatine.mp3` (funk, 40 s): the tool reported 194 from the balance (the counter lags). Balance after
+  both: **49,730** (694 below the 50,424 before: matches 193 + about 500 for the music). `toon:music:scan`: 17 short rests (0.3-0.7 s).
+- Final render `videos/creatine/renders/toon-v8.mp4`: 66.8 s (story 49.1 s + card), -14.0 LUFS, true peak -0.8 dBTP; holes 0.3-0.4 s only
+  (none of 0.5 s). Sounds: first mix 5 of 9 heard; moved the splash into a pause, dropped the clinic thud and ding, tada later: now
+  8 of 9 (the tada under the card's whoosh). Contact sheets at 2 frames a second read. Phone copy `toon-v8-phone.mp4`.
+- Package READY (`node pipeline/toon-package.mjs creatine`): cover moved to 1.75 s (just after the needle swings into the red).
+- Spent on this video: 75 + 285 + 193 + about 500 = **about 1,050 ElevenLabs credits**. Anthropic key not used ($0).
+  Note: the balance also fell by about 2,000 more during the day from use outside this session.
+- Next: the owner watches with sound; upload private only on his word (`python3 publish/upload.py creatine toon`, dry run first; the
+  Mac's Python needs the venv as for no-sleep). Merge `video/creatine` after the upload (as no-sleep, PR #12).
+
+---
+
 ## 2026-11-21 (10) - MacBook (local Claude Code) - branch `video/creatine` - creatine: VOICED, one word to confirm by ear
 
 - The owner: "Yes, voice it". Balance right before: 51,340 (540 below the reading after the voice tests with nothing spent here:

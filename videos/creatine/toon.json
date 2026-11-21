@@ -67,7 +67,7 @@
   ],
   "hashtags": "#creatine #gym #shorts",
   "cover": {
-   "at": 1.2,
+   "at": 1.75,
    "text": "Take creatine?",
    "accent": "creatine"
   }
@@ -303,7 +303,8 @@
       "crea": 0.9
      },
      "over": 20,
-     "sfx": "splash-small"
+     "sfx": "splash-small",
+     "delay": 0.45
     },
     {
      "at": "C2",
@@ -651,19 +652,9 @@
      "sfx": "ding"
     },
     {
-     "at": "F2",
-     "word": "Kidney",
-     "sfx": "thud-soft"
-    },
-    {
      "at": "F3",
      "word": "hair?",
      "sfx": "boing"
-    },
-    {
-     "at": "F4",
-     "word": "twelve",
-     "sfx": "ding"
     },
     {
      "at": "F5",
@@ -805,7 +796,7 @@
      "at": "G1",
      "word": "fat!",
      "sfx": "tada",
-     "delay": 0.35
+     "delay": 0.6
     }
    ],
    "lines": [

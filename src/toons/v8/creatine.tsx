@@ -416,9 +416,10 @@ void roundPoly; void INK;
 // ------------------------------------------------------------------ the CTA end card: three strong points (source: Antonio 2021)
 export const CREATINE_CTA: {title: string; points: CtaPoint[]; voice?: string; seconds: number; at: {head: number; points: [number, number, number]; follow: number}} = {
   title: 'CREATINE: KNOW THIS',
-  // the narrator's clip is not made yet (paid, after the owner's OK); these beats are placeholders, replaced from cta-timings.json
-  seconds: 12.5,
-  at: {head: 0, points: [1.7, 4.4, 7.3], follow: 9.2},
+  // read by the narrator (Joey), assets/toons-voice/creatine/cta.mp3 at his own pace; beats from videos/creatine/cta-timings.json
+  // ("Creatine:" 0, "The" 2.53, "Taking" 6.44, "Kidney" 9.95, "Follow" 12.59)
+  voice: 'toons/creatine/voice/cta.mp3', seconds: 16.11,
+  at: {head: 0, points: [2.53, 6.44, 9.95], follow: 12.59},
   points: [
     {icon: <WaterBadge t={2} />, big: "IT'S WATER, NOT FAT", small: 'the first jump on the scale'},
     {icon: <TubeBadge t={2} />, big: 'TELL YOUR DOCTOR', small: 'before a blood test'},

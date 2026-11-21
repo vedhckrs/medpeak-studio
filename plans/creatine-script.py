@@ -59,7 +59,7 @@ shots = [
    "state": {"view": 0, "crea": 0.5},
    "events": [
      E("start", set={"crea": 0.7}, over=20, sfx="whoosh-fast"),
-     E("C1", word="blood.", set={"crea": 0.9}, over=20, sfx="splash-small"),
+     E("C1", word="blood.", set={"crea": 0.9}, over=20, sfx="splash-small", delay=0.45),  # in the pause after the word (on it, it was lost)
      E("C2", word="percent", sfx="ding"),
      E("C2", word="muscles.", set={"crea": 1}, over=16, sfx="zip-away"),
    ],
@@ -113,9 +113,7 @@ shots = [
             {"who": "mom", "x": 800, "size": 960, "emotion": "neutral", "pose": "rest", "y": 979}],
    "events": [
      E("F1", word="blood", sfx="ding"),
-     E("F2", word="Kidney", sfx="thud-soft"),
      E("F3", word="hair?", sfx="boing"),
-     E("F4", word="twelve", sfx="ding"),
      E("F5", word="no", sfx="success-chime"),
    ],
    "lines": [
@@ -134,7 +132,7 @@ shots = [
      E("G1", word="That's", set={"water": 0.8}, over=12),
      E("G1", word="water", set={"water": 1}, over=30, sfx="drip"),
      E("G1", word="creatine.", set={"flex": 0.5}, over=12),
-     E("G1", word="fat!", sfx="tada", delay=0.35),
+     E("G1", word="fat!", sfx="tada", delay=0.6),  # after his last word (at 0.35 s it was lost)
    ],
    "lines": [
      L("G1", "crea", "Your scale jumps? That's water in your muscles from creatine. Not fat!", "happy", "water", src=[AN], cam="push"),
@@ -163,7 +161,7 @@ toon = {
     "tags": ["what happens when you take creatine", "creatine", "creatine side effects", "creatine water weight",
              "creatine kidneys", "creatine hair loss", "does creatine work", "creatine explained", "muscle energy", "health cartoon"],
     "hashtags": "#creatine #gym #shorts",
-    "cover": {"at": 1.2, "text": "Take creatine?", "accent": "creatine"},
+    "cover": {"at": 1.75, "text": "Take creatine?", "accent": "creatine"},  # just after the needle swings into the red (on "jumps!", 1.3 s)
   },
   "retention": {
     "noIntro": {"scene": "A1", "line": "Take creatine? Your scale jumps!"},
