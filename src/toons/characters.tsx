@@ -727,7 +727,12 @@ const sperm: Blueprint = {
 const gunk: Blueprint = {...bacteria, name: 'gunk', role: 'The brain\'s waste (beta-amyloid): piles up when you do not sleep.', color: '#a89c8f', face: {...bacteria.face, x: 0, y: -2}, ground: {y: 90, w: 52}};
 const melatonin: Blueprint = {...egg, name: 'melatonin', role: 'The night-shift sleep signal.', color: '#5d6f9e', face: {...egg.face, x: -30, y: -20, size: 0.9}, ground: {y: 86, w: 40}};
 const crew: Blueprint = {...platelet, name: 'crew', role: 'The night crew: droplets of brain fluid that wash waste out during sleep.', color: '#bfe8e6', face: {...platelet.face, x: 0, y: 6}, ground: {y: 90, w: 40}};
-export const BLUEPRINTS = {stomach, intestine, liver, kidney, bladder, lungs, heart, brain, tooth, bone, pill, poop, redcell, whitecell, platelet, virus, bacteria, egg, sperm, gunk, melatonin, crew};
+// creatine (2026-11-21): Crea, the battery and Muscle are drawn in look v8 (src/toons/v8/crea-cast.tsx). As above, these entries
+// only give the layout checks a face and feet, borrowing an old drawing of about the same shape.
+const crea: Blueprint = {...pill, name: 'crea', role: 'One crystal grain of creatine: cheeky and proud.', color: '#eef4fb', ground: {y: 90, w: 46}};
+const battery: Blueprint = {...pill, name: 'battery', role: 'The muscle\'s tiny battery (ATP): drains in a hard lift.', color: '#5cc46a', ground: {y: 90, w: 40}};
+const muscle: Blueprint = {...heart, name: 'muscle', role: 'One muscle fibre: strong and honest.', color: '#d8666b', ground: {y: 90, w: 50}};
+export const BLUEPRINTS = {stomach, intestine, liver, kidney, bladder, lungs, heart, brain, tooth, bone, pill, poop, redcell, whitecell, platelet, virus, bacteria, egg, sperm, gunk, melatonin, crew, crea, battery, muscle};
 export type CastName = keyof typeof BLUEPRINTS;
 export const CAST = Object.fromEntries(Object.entries(BLUEPRINTS).map(([k, bp]) => [k, makeCharacter(bp)])) as Record<CastName, Character>;
 // `tone` stays exported from ink for older call sites; body characters use shade/lift (hue-shifted paint).

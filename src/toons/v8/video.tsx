@@ -12,16 +12,17 @@ import {FONT} from './kit';
 import {clamp01, go, lerp, V8_FPS, type Focus, type LineNow, type ShotDef, type ShotNow} from './play';
 import {RABIES_CTA, RABIES_SHOTS} from './rabies';
 import {NO_SLEEP_CTA, NO_SLEEP_SHOTS} from './no-sleep';
+import {CREATINE_CTA, CREATINE_SHOTS} from './creatine';
 
 export type V8VideoProps = {toon: Toon; timings: ToonTimings | null; sfx: string[]; music: string | null; bare?: boolean; /** a still (the cover): draw this frame, whatever frame is being rendered */ frameAt?: number};
 
 /** The shots of each video, by the video's slug and the shot's id. */
-export const V8_VIDEOS: Record<string, Record<string, ShotDef>> = {rabies: RABIES_SHOTS, 'no-sleep': NO_SLEEP_SHOTS};
+export const V8_VIDEOS: Record<string, Record<string, ShotDef>> = {rabies: RABIES_SHOTS, 'no-sleep': NO_SLEEP_SHOTS, creatine: CREATINE_SHOTS};
 /** The CTA end card of each video (three strong points). */
 /** v4 (2026-11-20): the narrator (Joey, the same voice in every video) reads the card; `at` holds the second
  * of each beat in his clip (headline, the three points, the follow line), `voice` the clip, `seconds` its length. */
 export type V8Cta = {title: string; points: CtaPoint[]; voice?: string; seconds?: number; at?: CtaAt};
-export const V8_CTA: Record<string, V8Cta> = {rabies: RABIES_CTA, 'no-sleep': NO_SLEEP_CTA};
+export const V8_CTA: Record<string, V8Cta> = {rabies: RABIES_CTA, 'no-sleep': NO_SLEEP_CTA, creatine: CREATINE_CTA};
 /** The narrator starts after the card has slid in; the card holds a moment after his last word. */
 /** The music bed 10% lower than the director's levels (the owner, 2026-11-21: "background music 10% decrease"). */
 export const MUSIC_LEVEL = 0.9;

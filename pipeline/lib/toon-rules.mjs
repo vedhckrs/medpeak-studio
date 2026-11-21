@@ -37,7 +37,7 @@ export const ENGAGE = {hookSeconds: 2, firstMotion: 0.5, openSeconds: 3, openSti
 /** A text on the picture may write a spoken number in digits ("15 minutes" for "fifteen minutes"). */
 const NUMBER_WORDS = {1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'five', 6: 'six', 7: 'seven', 8: 'eight', 9: 'nine', 10: 'ten', 11: 'eleven', 12: 'twelve', 13: 'thirteen', 14: 'fourteen', 15: 'fifteen', 16: 'sixteen', 17: 'seventeen', 18: 'eighteen', 19: 'nineteen', 20: 'twenty', 30: 'thirty', 40: 'forty', 50: 'fifty', 60: 'sixty', 70: 'seventy', 80: 'eighty', 90: 'ninety', 100: 'hundred'};
 /** Stage dials that mean "this keeps moving while it is above zero" (a ride, a flow). */
-const FLOW_DIALS = {macro: ['speed', 'wash']};
+const FLOW_DIALS = {macro: ['speed', 'wash', 'crea', 'bits']}; // crea, bits: the blood stream and the filter flow (creatine)
 /**
  * Every stretch of frames in which the picture changes: a cut, a camera move, a stage event while it
  * plays, a thing arriving, a stage that flows. People's talking mouths and arm beats do not count.

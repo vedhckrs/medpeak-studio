@@ -132,3 +132,57 @@ export const MomentShaker: React.FC = () => {
     </Scene>
   );
 };
+
+// ================================================================== the clinic of this video
+/**
+ * Dr. Mira's room in the creatine video (every video has a clinic of its own): a peach wall over white panelling,
+ * a checker floor, a round window high on the left with the city outside, a cabinet on the right with a body chart
+ * above it. Kept tidy (no clock, no certificates). The doctor stands left, Mom right.
+ */
+export const CLINIC = {wall: '#ffe3cf', wall2: '#fbd2b6', panel: '#fff8ee', floorA: '#efe7dc', floorB: '#d9cdbd', cab: tint(CLOTH.teal, 0.55), sky: tint(CLOTH.sky, 0.35)};
+export const CreaClinic: React.FC = () => {
+  const P = 1000; // the panelling's top
+  return (
+    <Layer>
+      <rect x={0} y={0} width={1080} height={FLOOR_Y} fill={CLINIC.wall} />
+      <rect x={0} y={P} width={1080} height={FLOOR_Y - P} fill={CLINIC.panel} />
+      {Array.from({length: 6}, (_, i) => <path key={i} d={rr(20 + i * 180, P + 50, 140, FLOOR_Y - P - 100, 10)} {...INLINE} />)}
+      <Shape d={rr(-10, P - 14, 1100, 24, 6)} fill={CLINIC.panel} shadow={0} line="in" />
+      {/* the checker floor */}
+      <rect x={0} y={FLOOR_Y} width={1080} height={1920 - FLOOR_Y} fill={CLINIC.floorB} />
+      {[0, 1, 2, 3, 4].map((row) => {
+        const ys = [FLOOR_Y, 1480, 1600, 1740, 1900, 2060];
+        return Array.from({length: 10}, (_, i) => ((i + row) % 2 === 0 ? <rect key={`f${row}-${i}`} x={i * 120 - 60} y={ys[row]} width={120} height={ys[row + 1] - ys[row]} fill={CLINIC.floorA} /> : null));
+      })}
+      <path d={`M 0 ${FLOOR_Y} H 1080`} {...INLINE} />
+      {/* the round window, high on the left: the city */}
+      <g>
+        <circle cx={230} cy={330} r={170} {...OUTLINE} fill={CLOTH.offwhite} />
+        <circle cx={230} cy={330} r={146} fill={CLINIC.sky} {...EDGE_IN} />
+        <path d="M 96 420 V 360 H 150 V 300 H 210 V 380 H 260 V 330 H 320 V 400 H 364 V 420 Q 230 500 96 420 Z" fill={tint(CLOTH.blue, 0.5)} {...EDGE_IN} />
+        {[[170, 320], [180, 345], [280, 350], [290, 375]].map(([x, y], i) => <rect key={i} x={x} y={y} width={12} height={12} fill={tint(CLOTH.yellow, 0.4)} />)}
+        <path d="M 120 250 q 14 -16 32 -6 q 16 -14 32 2 q 14 2 10 10 h -74 Z" fill="#ffffff" {...EDGE_IN} />
+        <path d="M 230 184 V 476 M 84 330 H 376" stroke={INK} strokeWidth={14} />
+        <path d="M 230 184 V 476 M 84 330 H 376" stroke={CLOTH.offwhite} strokeWidth={9} />
+        <circle cx={230} cy={330} r={146} {...INLINE} />
+      </g>
+      {/* the body chart, high on the right */}
+      <g>
+        <Shape d={rr(690, 200, 220, 300, 6)} fill="#ffffff" shadow={0.5} />
+        <circle cx={800} cy={196} r={8} fill={CLOTH.red} {...EDGE_IN} />
+        <circle cx={770} cy={250} r={22} fill={tint(CLOTH.teal, 0.4)} {...EDGE_IN} />
+        <path d="M 770 300 Q 742 302 738 332 L 732 398 Q 734 406 742 402 L 750 350 L 752 470 Q 760 476 766 470 L 770 412 L 774 470 Q 780 476 788 470 L 790 350 L 798 402 Q 806 406 808 398 L 802 332 Q 798 302 770 300 Z" fill={tint(CLOTH.teal, 0.4)} {...EDGE_IN} />
+        {[270, 310, 350, 390, 430].map((y, i) => <path key={y} d={`M 830 ${y} H ${i % 2 ? 880 : 896}`} {...INLINE} />)}
+      </g>
+      {/* the cabinet on the right, a plant-free top with one jar */}
+      <Shape d={rr(800, 1030, 300, FLOOR_Y - 1030 + 10, 10)} fill={CLINIC.cab} shadow={0.6}>
+        <path d="M 950 1050 V 1380 M 810 1200 H 1090" {...INLINE} />
+        <circle cx={930} cy={1120} r={8} fill={CLOTH.offwhite} {...EDGE_IN} />
+        <circle cx={970} cy={1120} r={8} fill={CLOTH.offwhite} {...EDGE_IN} />
+      </Shape>
+      <Shape d={rr(870, 960, 70, 72, 12)} fill={tint(CLOTH.sky, 0.6)} />
+      <Shape d={rr(862, 944, 86, 22, 6)} fill={CLOTH.offwhite} shadow={0} />
+    </Layer>
+  );
+};
+export const V8CreaClinic: React.FC = () => <Scene bg={CLINIC.wall}><CreaClinic /></Scene>;

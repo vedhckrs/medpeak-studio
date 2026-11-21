@@ -6,6 +6,24 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-21 (7) - MacBook (local Claude Code) - branch `video/creatine` - creatine: script + shots built, silent render NOT made yet
+
+- The owner OK'd the looks ("Yes, these looks").
+- Script `videos/creatine/toon.json` from `plans/creatine-script.py` (edit the .py, re-run): 7 shots A-G (macro hook with the gym
+  cold open, gym, blood, muscle cell, kidney filter, clinic, macro end), 17 lines, hook "Take creatine? Your scale jumps!" (A cut
+  for the hook rules: "your" + 2 title words; tell the owner). `toon:check` (and `--all`), `toon:camera`, `toon:motion`, `toon:staging`: ALL PASS.
+- New: room kind `gym` (director.ts), macro dials crea/flex/drain/charge/water/bits, flow dials crea/bits, proposed voices crea (Will +2),
+  battery (Jessica +3), muscle (George 0) NOT auditioned, layout stand-ins in characters.tsx, the video's own clinic `CreaClinic`
+  (crea-gym.tsx; NOT yet shown to the owner as a sheet), shots `src/toons/v8/creatine.tsx` registered in video.tsx, CTA card
+  (placeholder beats, no narrator clip yet).
+- Checked: silent stills of every line (two per line) read; fixed Dr. Mira's hand touching Mom (spacing 270/800, `youSee`), and the
+  thumbs-up hands touching (doctor now `youSee` on F4: re-check that still).
+- NOT done: `npm test` after these changes, the full silent render (`npm run toon:v8 -- creatine --silent`), storyboard, sending to owner.
+  No credits spent.
+- Next: npm test, silent render + storyboard, send to the owner with the clinic look and the hook wording change.
+
+---
+
 ## 2026-11-21 (6) - MacBook (local Claude Code) - branch `video/creatine` - creatine: look sheets drawn, WAITING for the owner
 
 - The owner: "Hook A, go ahead" (plan approved; my picks stand: Mom as the lifter).
