@@ -33,7 +33,7 @@ start with the first 15.
 |---|---|---|---|---|---|
 | 1 | What Happens If You Get Rabies | 25 | 37M | care: fatal disease; what to do after a bite word for word from WHO or CDC | taken (Mac, 2026-11-17) |
 | 2 | What Happens If You Don't Sleep | 17 | 40M | close to "All-Nighter" in the month plan; make one, not both | no-sleep (uploaded private 2026-11-21) |
-| 3 | What Happens When You Take Creatine | 17 | 31M | care: a supplement; no dose advice, no "you should take it" | taken (Mac, 2026-11-21) |
+| 3 | What Happens When You Take Creatine | 17 | 31M | care: a supplement; no dose advice, no "you should take it" | creatine (uploaded private 2026-11-21) |
 | 4 | What Happens If You Quit Sugar for 30 Days | 17 | 11M | no cure or detox claims | open |
 | 5 | What Happens to Your Body When You Fast | 15 | 12M | care: not safe for everyone; say so | open |
 | 6 | What Happens When a Snake Bites You | 13 | 34M | care: first aid word for word from WHO; no folk remedies | open |

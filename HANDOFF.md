@@ -6,6 +6,19 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-21 (16) - MacBook (local Claude Code) - branch `video/creatine` - creatine: UPLOADED private (dKQm2aRKyTs)
+
+- On the owner's word ("Yes, upload private"): **https://youtu.be/dKQm2aRKyTs**, private, not made for kids (id in
+  `videos/creatine/package/toon.json`). Dry run first, then `--approve`.
+- Python on this Mac: none had the YouTube client; a throwaway venv in this session's scratchpad (`pip install google-api-python-client
+  google-auth google-auth-oauthlib`). For good, set one up in a normal terminal.
+- AI label: `after_upload.py creatine toon --label --approve`: the update call answered True; YouTube does not show the field on read
+  back (same as rabies and no-sleep): the owner checks it in YouTube Studio (Details, "Altered content").
+- Topic bank: #3 marked `creatine (uploaded private 2026-11-21)`. Next video: topic 4 ("What Happens If You Quit Sugar for 30 Days").
+- Merged `video/creatine` into `main` after CI (the owner's standing word).
+
+---
+
 ## 2026-11-21 (15) - MacBook (local Claude Code) - branch `video/creatine` - creatine FINISHED (acted version), waiting for the owner to watch (NOT uploaded)
 
 - The owner: "Yes, finish it" (the bolder line and a new steady music track).
