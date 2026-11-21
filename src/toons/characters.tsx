@@ -721,7 +721,13 @@ const sperm: Blueprint = {
   ),
 };
 
-export const BLUEPRINTS = {stomach, intestine, liver, kidney, bladder, lungs, heart, brain, tooth, bone, pill, poop, redcell, whitecell, platelet, virus, bacteria, egg, sperm};
+// no-sleep (2026-11-21): Gunk, Melatonin and the night crew are drawn in look v8 (src/toons/v8/sleep-cast.tsx,
+// cells.tsx). The old player never draws them; these entries give the layout checks (camera, staging) their
+// face and feet, borrowing the old drawing of a body of about the same shape.
+const gunk: Blueprint = {...bacteria, name: 'gunk', role: 'The brain\'s waste (beta-amyloid): piles up when you do not sleep.', color: '#a89c8f', face: {...bacteria.face, x: 0, y: -2}, ground: {y: 90, w: 52}};
+const melatonin: Blueprint = {...egg, name: 'melatonin', role: 'The night-shift sleep signal.', color: '#5d6f9e', face: {...egg.face, x: -30, y: -20, size: 0.9}, ground: {y: 86, w: 40}};
+const crew: Blueprint = {...platelet, name: 'crew', role: 'The night crew: droplets of brain fluid that wash waste out during sleep.', color: '#bfe8e6', face: {...platelet.face, x: 0, y: 6}, ground: {y: 90, w: 40}};
+export const BLUEPRINTS = {stomach, intestine, liver, kidney, bladder, lungs, heart, brain, tooth, bone, pill, poop, redcell, whitecell, platelet, virus, bacteria, egg, sperm, gunk, melatonin, crew};
 export type CastName = keyof typeof BLUEPRINTS;
 export const CAST = Object.fromEntries(Object.entries(BLUEPRINTS).map(([k, bp]) => [k, makeCharacter(bp)])) as Record<CastName, Character>;
 // `tone` stays exported from ink for older call sites; body characters use shade/lift (hue-shifted paint).

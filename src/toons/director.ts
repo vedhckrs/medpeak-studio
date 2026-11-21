@@ -53,7 +53,9 @@ export const STAGE_KEYS: Partial<Record<SetName, string[]>> = {
   // vaccine: defenders arrive from both sides. wall: they line up across the nerve. wash: soap foam on the scratch.
   // dizzy: stars circle the virus's head after it hits the wall.
   // MACRO (the owner's hero visual): view picks the close-up (0 entry, 1 inside, 2 caught); slide, speed and grip play it.
-  macro: ['view', 'slide', 'speed', 'grip', 'snap'],
+  // no-sleep (2026-11-21): the brain among its cells (src/toons/v8/sleep-places.tsx). gap: 0 awake (cells close),
+  // 1 asleep (the channels open). wash: brain fluid streams through. dirt: waste stuck in the channels.
+  macro: ['view', 'slide', 'speed', 'grip', 'snap', 'gap', 'wash', 'dirt'],
   arm: ['bite', 'climb', 'days', 'vaccine', 'wall', 'wash', 'dizzy'],
   molar: ['night', 'guards', 'sleep', 'sugar', 'snack', 'wash', 'fight', 'party', 'acid', 'chalk', 'brush', 'shield'],
   // gum: a swallowed piece of gum comes down and floats with the food. pass: what is in the stomach

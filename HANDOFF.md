@@ -6,7 +6,7 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
-## 2026-11-21 (4) - MacBook (local Claude Code) - branch `video/no-sleep` - no sleep: plan, hook A, three look sheets sent
+## 2026-11-21 (4) - MacBook (local Claude Code) - branch `video/no-sleep` - no sleep: sheets approved, script passes the checks
 
 - The owner picked topic 2, "What Happens If You Don't Sleep" (slug `no-sleep`); marked `taken (Mac, 2026-11-21)`
   in `topic-bank.md` and pushed.
@@ -26,7 +26,19 @@ you stop. The rules are in `CLAUDE.md`.
   3. `sleep-room`: Sam's bedroom at 2 a.m. and 7 a.m. (`src/toons/v8/sleep-rooms.tsx`; `BedFront` and `Duvet`
      are drawn after Sam). New rig poses `sitPhone`, `sitSlump`, and a pose field `seat: false` (no rig chair).
 - Run: typecheck clean, `npm test` 50/50. Rendering stills needs the sandbox off on the Mac (Remotion's browser).
-- Next: the owner's OK on the three sheets, then `videos/no-sleep/toon.json` and `toon:check`.
+- The owner approved all three sheets.
+- Script: `videos/no-sleep/toon.json`, written by `plans/no-sleep-script.py` (edit the .py, re-run it). 16 lines, 5 voices
+  (gunk, patient = Sam, melatonin, crew, brain), 5 scenes (macro A, home B, macro C, home D, macro E), episode 10.
+  `toon:check` ALL PASS (and `--all`), `toon:camera`, `toon:motion`, `toon:staging` pass. Sheet: `videos/no-sleep/SCRIPT.md`.
+- Changes to make it fit: hook A was 9 words / about 3 s, the format-5 rule is 2 s, so it is now
+  "Don't sleep? I clog your brain!" (WAITING for the owner's OK on that cut); the last line became
+  "You did sleep! Now they wash me out. I can't clog your brain!" (the loop needs 3 shared words); the night crew speaks C1, C2, C4
+  instead of the Brain (the Brain speaks in the morning scene).
+- New: macro dials `gap`, `wash`, `dirt` (`director.ts`; `wash` is a flow dial); cast entries `gunk` (Callum -3),
+  `melatonin` (Lily -1), `crew` (Harry +2) in `toons-cast.json`, proposed, not auditioned; old-engine blueprints for
+  them in `characters.tsx` (only so the layout checks can measure them); two test guards now follow the script's cast.
+- Not done: the v8 shots for this video (like `src/toons/v8/rabies.tsx`), storyboard, motion test, voices, music.
+- Next: the owner's OK on the shortened hook, then build the shots and a silent storyboard.
 
 ---
 
