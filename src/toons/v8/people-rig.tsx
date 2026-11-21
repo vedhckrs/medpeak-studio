@@ -481,7 +481,9 @@ export type PoseName = 'rest' | 'explain' | 'point' | 'thumbs' | 'think' | 'worr
   // the rooms shots in motion (2026-11-20): the Kid acts with his RIGHT arm (the far arm when he faces left)
   | 'showArmUpR' | 'shrugR' | 'tapHandR' | 'showArmR' | 'armInR' | 'thumbsUpR' | 'worriedPointTap' | 'soapUp' | 'meDoctor' | 'oneFinger' | 'holdVial' | 'pointTapSoap'
   // no-sleep (2026-11-21): in bed with a phone; slumped on the bed edge in the morning
-  | 'sitPhone' | 'sitSlump';
+  | 'sitPhone' | 'sitSlump'
+  // creatine acting kit (2026-11-21): the big take (both hands on the cheeks), shaking a bottle at something, a real shrug
+  | 'cheeks' | 'shake' | 'shrug2';
 /** Arm: directions in the ARM frame: x = outwards from the body, y = down, z = forwards. */
 type ArmPose = {up: V3; fore: V3; hand: HandKind; thumb?: V3; bend?: number; ang?: number; front?: boolean; prop?: 'clipboard'};
 type LegPose = {thigh: V3; shin: V3; foot: V3};
@@ -535,6 +537,20 @@ export const POSES: Record<PoseName, Pose> = {
     legR: {thigh: [0.02, 0.04, 1], shin: [0.0, 1, 0.08], foot: [0.12, 0, 1]},
     legL: {thigh: [0.12, 0.04, 1], shin: [0.04, 1, 0.12], foot: [0.3, 0, 1]},
     sit: true, seat: false, tilt: -2,
+  },
+  /** the big take: both hands flat on the cheeks, elbows out (creatine hook, 2026-11-21) */
+  cheeks: {
+    R: {up: [0.5, 0.2, 0.6], fore: [-0.6, -1, 0.0], hand: 'open', thumb: [0, -1, 0.2], front: true},
+    L: {up: [0.5, 0.2, 0.6], fore: [-0.6, -1, 0.0], hand: 'open', thumb: [0, -1, 0.2], front: true},
+    legR: STAND_R, legL: STAND_L, tilt: -6, lean: -4,
+  },
+  /** the near arm (her left when she faces right) held up and forward, gripping a bottle, ready to shake it at something */
+  shake: {R: REST_R, L: {up: [0.35, 0.25, 0.95], fore: [0.25, -0.75, 0.6], hand: 'hold', thumb: [0, -1, 0]}, legR: STAND_R, legL: STAND_L, tilt: 5},
+  /** a real shrug: both forearms out to the sides, open palms up, shoulders up */
+  shrug2: {
+    R: {up: [0.45, 1, 0.2], fore: [0.95, -0.15, 0.35], hand: 'open', thumb: [0, -1, 0.2]},
+    L: {up: [0.45, 1, 0.2], fore: [0.95, -0.15, 0.35], hand: 'open', thumb: [0, -1, 0.2]},
+    legR: STAND_R, legL: STAND_L, tilt: 6,
   },
   /** sitting slumped: both hands rest on the thighs, the body leans forward, head down */
   sitSlump: {

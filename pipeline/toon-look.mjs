@@ -35,7 +35,12 @@ const dir = path.join(videoDir(slug), 'renders');
 const file = a.file ? path.resolve(String(a.file)) : [path.join(dir, 'toon.mp4'), path.join(dir, 'toon-draft.mp4')].find((f) => fs.existsSync(f));
 if (!file || !fs.existsSync(file)) { console.error('No render to read.'); process.exit(2); }
 const out = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'toon-look-')), 'look.json');
-execFileSync(PY, ['-I', path.join(ROOT, 'pipeline', 'lib', 'toon_look.py'), out, file], {stdio: ['ignore', 'ignore', 'inherit']});
+// measure the STORY only (2026-11-21): the end card is a still picture and made a restless story look calm.
+// The card's length is the narrator's clip plus the player's lead and tail (CTA_LEAD + CTA_TAIL = 1.6 s, src/toons/v8/video.tsx).
+const ctaT = readJson(path.join(videoDir(slug), 'cta-timings.json'), null);
+const total = Number(execFileSync('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', file]).toString().trim());
+const story = a.whole || !ctaT?.seconds ? null : +(total - (ctaT.seconds + 1.6)).toFixed(2);
+execFileSync(PY, ['-I', path.join(ROOT, 'pipeline', 'lib', 'toon_look.py'), out, ...(story ? [`--to=${story}`] : []), file], {stdio: ['ignore', 'ignore', 'inherit']});
 const m = Object.values(readJson(out))[0];
 const R = LOOK.reference;
 const rows = [

@@ -6,6 +6,35 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-21 (13) - MacBook (local Claude Code) - branch `video/creatine` - acting kit + hook test (0-10 s) sent, WAITING
+
+- The owner approved the review plan ("Yes, go ahead"). Built (free):
+  - `toon-look` fixed: resamples to 30 fps (it read 60 fps renders as 30: double length, half the cut rate) and measures the STORY
+    only (the still end card hid the problem: creatine's story holds still in 4% of frames, not 31%). `--whole` measures the whole file.
+    CLAUDE.md: the look check must pass before the owner sees a video.
+  - `src/toons/v8/act.tsx`, the acting kit: `keyed` (key poses with holds; ease/back/out/snap), `take`, `hop`, `shake`, `arc`,
+    `Burst`, `SpeedLines`, `Stamp`.
+  - New rig poses `cheeks` (the take; use the FRONT view, the three-quarter one covers the nose), `shake` (near arm up with a bottle;
+    for a figure facing right that is her LEFT arm), `shrug2`. Pose test: `src/toons/v8/entry-act.tsx` (`ActPoses`).
+  - Calm places: `crea-places.tsx` depth planes no longer drift; no floating specks, bobbing batteries or wavy membranes.
+  - Blood: one dark opening at the far end (the two holes read as a face).
+  - Hook (shots A, B in `creatine.tsx`): close on Mom's nervous face (eyes shut) as she steps on, Crea at her ear; cut to the dial filling
+    the screen, the needle SLAMS (shake, burst), Crea leaps at the lens; Mom's take (front, `cheeks`, jump back) with the +2 KG stamp
+    on the second "Your scale jumps..." (not during the hook line: the owner's rule); the dive into her upper arm with skin / fat / muscle
+    rims. B: medium (shot `view`), she shakes an orange shaker at the dial and stomps on "week!". Crea's eyes open while he talks (`openFace`).
+- Checks: toon:check, camera, motion, staging ALL PASS. Look on the 10 s slice (`--whole`): still frames 16% (was 4% for the whole story;
+  target 45-80), small movement 42% PASS, outlines 2.3% (target 2.5), brightness 116 (the dark gym wall; target 140), a cut every 1.4 s
+  (the hook cuts fast on purpose). Not yet passing.
+- **`npm test` 48/50: the creatine music breaks the steady-bed rule** (format-5 beds must never go quiet; the funk track stops 4 times).
+  It failed since the music was made (18:15); the tests were not run then. Needs a new steady track (about 500 credits, owner's yes).
+  The branch cannot be merged until it passes.
+- Test clip: `videos/creatine/renders/toon-v8-0-10.mp4`, phone copy `hook-test-phone.mp4`. Sent to the owner.
+- Open (from the plan, after the owner's yes): bolder outlines sheet, a lighter gym wall, scenes C-G restaged (lift, spark throw, running,
+  needle and lab sheet, clinic acting, the water-balloon cell with the Fat blob), the event-size check, no place reused, watermark off
+  characters, Dr. Mira's finger, a new steady music bed. No credits spent since the review.
+
+---
+
 ## 2026-11-21 (12) - MacBook (local Claude Code) - branch `video/creatine` - creatine: the owner rejected the look; review + plan sent, WAITING
 
 - The owner on the finished creatine video: animation, characters and visuals weak, not viral or engaging; asked for a

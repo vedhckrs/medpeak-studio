@@ -120,6 +120,9 @@ Do these once on a new machine. None of it needs the old machine except step 6.
   0.9 in video.tsx). **The hook opens on the person and comes at the lens** (no-sleep: Sam at 2 a.m., the dive into his
   brain inside the first shot, Gunk splats on the glass); no tag or number during the hook line. Details in
   `skill/medpeak-health/references/toons-v8-style.md`.
+- **The look check must pass before the owner sees a video** (2026-11-21, after the creatine video went out with it failing):
+  `npm run toon:look -- <slug> --file videos/<slug>/renders/toon-v8.mp4` measures the STORY (the end card is left out) at 30 fps
+  against the 20 viral Shorts: still frames 45-80%, small movement 15-55%, bold outlines, brightness. A failing look is not sent.
 - **Icons only when the words say it**; non-human characters get a name tag held **2.5 seconds** (2026-11-21; arrow + tag box above the head)
   the first time they appear; no tags on humans; **no circle or halo around the character at all** (2026-11-21: "this circle
   I don't want, remove completely everywhere"; it was two white rings), no glow; a tag never covers a face. The camera moves smoothly (one eased move per shot, a continuous dive

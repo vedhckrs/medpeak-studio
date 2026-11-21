@@ -27,7 +27,9 @@ import {Battery, Crea, CREA_COL, Grain, Muscle, roundPoly, Spark} from './crea-c
 import {Kidney} from './organs-a';
 
 const sway = (t: number, period: number, seed = 0) => Math.sin((t / period) * Math.PI * 2 + seed * 1.7);
-const float = (t: number, depth: number) => ({dx: sway(t, 9, 1) * (3 + depth * 16), dy: sway(t, 11.5, 2) * (2 + depth * 11), d: depth});
+// CALM (acting kit, 2026-11-21): the depth planes hold still. They used to drift all the time, so the picture never rested
+// (4% still frames against 63% in the viral Shorts). Motion now comes only from the story: the stream, the water, the chips.
+const float = (_t: number, depth: number) => ({dx: 0, dy: 0, d: depth});
 const clamp01 = (v: number) => Math.max(0, Math.min(1, v));
 
 /** Near framing: big dark shapes cut by the frame edge, no outline (out of focus). */
@@ -68,10 +70,8 @@ export const BloodPlace: React.FC<{t: number; crea?: number}> = ({t, crea = 0.6}
           ))}
           {/* the plasma: the open middle of the tube */}
           <ellipse cx={vx} cy={vy} rx={120} ry={136} fill={BLOOD.plasma} {...EDGE_IN} />
-          {/* the fork at the far end: two openings, the right one toward the muscles */}
-          <path d={lobe(vx - 44, vy + 4, 34, 46, 811, 8)} fill={BLOOD.deep} {...EDGE_IN} />
-          <path d={lobe(vx + 46, vy - 2, 40, 52, 812, 8)} fill={BLOOD.deep} {...EDGE_IN} />
-          <path d={`M ${vx + 2} ${vy - 60} Q ${vx} ${vy} ${vx + 4} ${vy + 64}`} stroke={tint(BLOOD.wall, 0.2)} strokeWidth={14} strokeLinecap="round" />
+          {/* the far end: ONE dark opening (2026-11-21: two holes with a line between read as a face or a skull) */}
+          <path d={lobe(vx + 6, vy, 78, 92, 811, 10)} fill={BLOOD.deep} {...EDGE_IN} />
         </Layer>
       </Depth>
       <Depth {...float(t, 0.5)}>
@@ -154,7 +154,7 @@ const Fibril: React.FC<{y0: number; y1: number; h: number; flex: number; seed: n
 const Membrane: React.FC<{top: boolean; bulge: number; t: number}> = ({top, bulge, t}) => {
   const s = top ? 1 : -1;
   const yb = top ? 70 - bulge * 46 : 1850 + bulge * 46;
-  const pts: P[] = Array.from({length: 7}, (_, i) => [-60 + i * 200, yb + Math.sin(i * 1.3 + t * 0.8) * 10 - s * Math.sin((i / 6) * Math.PI) * bulge * 30]);
+  const pts: P[] = Array.from({length: 7}, (_, i) => [-60 + i * 200, yb + Math.sin(i * 1.3) * 10 - s * Math.sin((i / 6) * Math.PI) * bulge * 30]); void t; // still unless the water bulges it
   const edge = top ? -200 : 2120;
   const d = `${open(pts)} L 1140 ${edge} L -60 ${edge} Z`;
   return (
@@ -181,13 +181,13 @@ export const MuscleCellPlace: React.FC<{t: number; flex?: number; drain?: number
           {/* mitochondria (the cell's power plants) between the docks */}
           {([[1, 280], [0, 770], [2, 520], [1, 1010]] as P[]).map(([g, x]) => [x, gapY(g, x)] as P).map(([x, y], i) => (
             <g key={i} transform={`rotate(${f(-12 + i * 9)} ${x} ${y})`}>
-              <path d={lobe(x, y + sway(t, 3, i) * 4, 54, 26, i + 910, 10)} fill={CELL.mito} {...EDGE_IN} />
+              <path d={lobe(x, y, 54, 26, i + 910, 10)} fill={CELL.mito} {...EDGE_IN} />
               <path d={open([[x - 38, y], [x - 24, y - 12], [x - 10, y + 12], [x + 4, y - 12], [x + 18, y + 12], [x + 32, y - 10], [x + 42, y]])} {...INLINE} />
             </g>
           ))}
           {/* the batteries in their docks (faceless crowd); the shot puts the speaking ones on top */}
           {DOCKS.map(([x, y], i) => (
-            <g key={i} transform={`translate(${f(x)} ${f(y + sway(t, 2.6, i) * 3)}) scale(0.5)`}>
+            <g key={i} transform={`translate(${f(x)} ${f(y)}) scale(0.5)`}>
               <Battery face={false} charge={level(i)} />
               {charge > 0.05 && charge < 0.98 && <g transform="translate(58 -40) rotate(12)" opacity={clamp01(charge * 3)}><Spark s={0.7} /></g>}
             </g>
@@ -207,7 +207,6 @@ export const MuscleCellPlace: React.FC<{t: number; flex?: number; drain?: number
             const s = 14 + rnd(i, 923) * 12;
             return <path key={i} d={`M ${f(x)} ${f(y - s * 1.4)} C ${f(x + s * 0.5)} ${f(y - s * 0.6)} ${f(x + s)} ${f(y)} ${f(x + s)} ${f(y + s * 0.3)} A ${f(s)} ${f(s)} 0 0 1 ${f(x - s)} ${f(y + s * 0.3)} C ${f(x - s)} ${f(y)} ${f(x - s * 0.5)} ${f(y - s * 0.6)} ${f(x)} ${f(y - s * 1.4)} Z`} fill={CELL.water} {...EDGE_IN} />;
           })}
-          <Bits t={t} n={12} seed={931} col={tint(CELL.cyto, 0.4)} size={9} />
         </Layer>
       </Depth>
       <Depth {...float(t, 1)}>
@@ -289,11 +288,6 @@ export const KidneyFilterPlace: React.FC<{t: number; bits?: number}> = ({t, bits
             );
           })}
           {chips.map((c) => <Chip key={c.i} x={c.x} y={c.y} s={16 + rnd(c.i, 975) * 6} rot={t * 40 + c.i * 30} />)}
-        </Layer>
-      </Depth>
-      <Depth {...float(t, 0.8)}>
-        <Layer>
-          <Bits t={t} n={12} seed={991} col={tint(FILTER.space, 0.5)} size={9} />
         </Layer>
       </Depth>
       <Depth {...float(t, 1)}>

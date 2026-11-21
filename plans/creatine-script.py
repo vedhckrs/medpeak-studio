@@ -47,11 +47,11 @@ shots = [
   {"id": "B", "set": "home",
    "cast": [{"who": "mom", "x": 400, "size": 960, "emotion": "shocked", "pose": "rest", "y": 979}],
    "events": [
-     E("B1", word="started", sfx="record-scratch"),
-     E("B1", word="week!", sfx="wobble"),
+     E("B1", sfx="whoosh-fast"),  # she spins to the dial and shakes the shaker at it
+     E("B1", word="week!", sfx="thud-soft", fx="flash"),  # she stomps: the needle wobbles
    ],
    "lines": [
-     L("B1", "mom", "What? I only started creatine this week!", "shocked", "week", chat=True, cam="mcu push"),
+     L("B1", "mom", "What? I only started creatine this week!", "shocked", "week", chat=True, cam="mcu lock"),  # acting kit: the camera holds, she acts
    ], "props": []},
   # C: the blood. Crea rides the stream with the red cells toward the fork.
   {"id": "C", "set": "macro",

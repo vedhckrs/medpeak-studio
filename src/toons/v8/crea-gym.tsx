@@ -96,9 +96,9 @@ export const GymRoom: React.FC<{needle?: number}> = ({needle = 0.3}) => (
 );
 
 /** The shaker bottle (creatine mixed in water): a tall cup with a cap, held by the hand drawn over it. */
-const Shaker: React.FC = () => (
+export const Shaker: React.FC = () => (
   <g>
-    <Shape d={rr(-28, -60, 56, 112, 12)} fill={tint(CLOTH.sky, 0.55)} shadow={0.6}>
+    <Shape d={rr(-28, -60, 56, 112, 12)} fill={CLOTH.orange} shadow={0.6}>
       <rect x={-28} y={-6} width={56} height={58} fill="#ffffff" opacity={0.75} />
       <path d="M -28 -6 H 28" {...INLINE} />
       {[-20, -30, -40].map((yy) => <path key={yy} d={`M 14 ${yy} H 24`} {...INLINE} />)}

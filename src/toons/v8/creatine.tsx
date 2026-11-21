@@ -19,9 +19,10 @@ import {CharTag, type CtaPoint} from './hud';
 import {DiveCtx, DIVE} from './micro3';
 import {BloodPlace, KidneyFilterPlace, MuscleCellPlace, gapY} from './crea-places';
 import {Battery, Crea, Muscle, Spark, roundPoly} from './crea-cast';
-import {CLINIC, CreaClinic, GYM, GymRoom, LIFTER, SCALE} from './crea-gym';
+import {CLINIC, CreaClinic, GYM, GymRoom, LIFTER, SCALE, Shaker} from './crea-gym';
+import {Burst, easeOut, keyed, shake, SpeedLines, Stamp, take} from './act';
 import {FEET_Y, PEOPLE_SCALE} from './scenes-rooms';
-import {castById, headAt, PersonAt, type Expr, type PoseIn, type PoseName} from './people-rig';
+import {castById, handAt, HandAt, headAt, PersonAt, type Expr, type PoseIn, type PoseName} from './people-rig';
 import {Kidney} from './organs-a';
 import {CLOTH, EDGE, EDGE_IN, INK, OUTLINE, Shape, shade, tint} from './kit';
 import {active, blink, bodyFace, clamp01, EXPR_OF, feel, go, lerp, pop, since, sway, talkSmooth, type Focus, type ShotDef, type ShotNow} from './play';
@@ -67,43 +68,88 @@ const poseAt = (t: number, steps: Step[]): PoseIn => {
 const breath = (s: ShotNow, who: string, seed: number, extra = 0) => Math.max(-1, Math.min(1, 0.3 * sway(s.t, 3.4, seed) + 0.2 * active(s, who) * sway(s.t, 0.9, seed + 2) + extra));
 const exprOf = (s: ShotNow, who: string, rest: string): Expr => EXPR_OF[feel(s, who, rest)] ?? 'neutral';
 
+/** A body character's face with its eyes OPEN while it talks (bug 12: 'happy' is closed-eye arcs, so Crea talked with his eyes shut). */
+const openFace = (s: ShotNow, who: string, seed: number, rest: string) => {
+  const f = bodyFace(s, who, seed, rest);
+  return f.mood === 'happy' && active(s, who) > 0.3 ? {...f, mood: 'open' as const} : f;
+};
 const MOM = LIFTER;
 const DOC = castById('doctor');
 
-// =================================================================== A: the hook
-// 0.00  she is on the scale (the platform dips: thud); Crea pops up on the dial and speaks
-// "jumps!"  the needle SLAMS into the red (flash, boing), she gasps
-// A2 "scale"  the camera dives into her upper arm: a round window opens on the muscle cell inside, swollen with water
-const GYM_K = 1.45, GYM_O: [number, number] = [540, 820]; // the cold open is the gym, closer
-const toGym = ([x, y]: [number, number]): [number, number] => [GYM_O[0] + (x - GYM_O[0]) * GYM_K, GYM_O[1] + (y - GYM_O[1]) * GYM_K];
-const momA = {pose: 'rest' as const, view: 'three-quarter' as const, facing: 'right' as const, x: 400, y: FEET_Y - 22, scale: PEOPLE_SCALE};
-const needleAt = (t: number, tSlam: number, from = 0.3) => {
-  const k = go(t, tSlam - 0.06, 0.12);
-  const u = t - tSlam - 0.06;
-  const wob = u > 0 ? Math.sin(u * 22) * Math.exp(-u * 5) * 0.06 : 0;
-  return lerp(from, 0.97, k) + wob;
-};
+// =================================================================== A: the hook (acting kit, 2026-11-21)
+// The owner's review: the old hook was a calm wide gym, a small needle and a small "o". Now, in three hard cuts and a dive:
+//   0.00  CLOSE on Mom's face, eyes squeezed shut, she steps onto the scale (a dip); Crea pops up at her ear: "Take creatine?"
+//   "Your" the DIAL fills the screen, the needle trembles; on "jumps!" it SLAMS into the red: a shake, a burst, and Crea
+//         leaps up AT the lens
+//   +0.45 Mom, medium, from the front: the big TAKE (a crouch, a jump back, both hands on her cheeks); the +2 KG stamp bangs
+//         on with the second "Your scale jumps..." (never during the hook line itself: the owner's rule)
+//   "is"  the camera dives into her UPPER ARM: the opening shows skin, then fat, then the muscle cell, swollen with water
+const momClose = {pose: 'rest' as const, view: 'three-quarter' as const, facing: 'right' as const, x: 400, y: FEET_Y - 22, scale: PEOPLE_SCALE};
+const momTake = {view: 'front' as const, facing: 'right' as const, x: 380, y: FEET_Y - 22, scale: PEOPLE_SCALE};
+const NEEDLE_LOW = 0.3;
 const hookA = (s: ShotNow) => {
-  const slam = at(s, 'A1', 'jumps', 1.2);
-  const dive0 = at(s, 'A2', 'scale', 2.4) - 0.15;
-  return {slam, dive0, dive1: dive0 + 0.55};
+  const your = at(s, 'A1', 'your', 0.85), slam = at(s, 'A1', 'jumps', 1.3);
+  const takeAt = slam + 0.45;
+  const dive0 = at(s, 'A2', 'is', 3.3) - 0.12;
+  return {your, slam, takeAt, dive0, dive1: dive0 + 0.5, stamp: at(s, 'A2', undefined, 2.03), stampOut: at(s, 'A2', 'is', 3.3)};
 };
-/** Where the dive goes in: her upper arm (frame pixels of the closer gym picture). */
-const diveAtA = (): [number, number] => { const h = headAt(MOM, momA); return toGym([h.x + h.r * 0.95, h.y + h.r * 2.3]); };
+/** A picture of the gym scaled by k so that frame point `at` sits at screen point `to`. */
+const frameOf = (k: number, at: [number, number], to: [number, number]) => `translate(${(to[0] - at[0] * k).toFixed(1)}px, ${(to[1] - at[1] * k).toFixed(1)}px) scale(${k})`;
+const DIAL_K = 2.75, DIAL_TO: [number, number] = [540, 860];
+const TAKE_K = 1.45, TAKE_AT: [number, number] = [540, 820], TAKE_TO: [number, number] = [700, 820]; // Mom left of centre, whole head in frame
+/** Where the dive goes in: her upper arm in the take picture (screen pixels). */
+const diveAtA = (): [number, number] => {
+  const h = headAt(MOM, {...momTake, pose: 'cheeks'});
+  const p: [number, number] = [h.x + h.r * 1.25, h.y + h.r * 2.25];
+  return [TAKE_TO[0] + (p[0] - TAKE_AT[0]) * TAKE_K, TAKE_TO[1] + (p[1] - TAKE_AT[1]) * TAKE_K];
+};
 const GymCold: React.FC<{s: ShotNow}> = ({s}) => {
   const t = s.t, h = hookA(s);
-  const step = t < 0.3 ? -Math.sin((t / 0.3) * Math.PI) * 0.8 : 0;
-  const shock = go(t, h.slam, 0.2);
-  const pose = poseAt(t, [[-9, 'rest'], [h.slam, 'worried', 0.3]]);
-  const cp = pop(t, 0.05, 0.3);
-  const cf = bodyFace(s, 'crea', 1, 'happy');
+  const tremble = t < h.slam ? Math.sin(t * 38) * 0.012 : 0;
+  const needle = keyed(t, NEEDLE_LOW, [[h.slam - 0.02, 0.97, 0.1, 'snap']]) + tremble + (t > h.slam + 0.08 ? Math.sin((t - h.slam) * 24) * Math.exp(-(t - h.slam) * 6) * 0.05 : 0);
+  const [sx, sy] = shake(t, h.slam, 22);
+  const phase = t < h.your ? 'face' : t < h.takeAt ? 'dial' : 'take';
+  const step = t < 0.32 ? -Math.sin((t / 0.32) * Math.PI) * 1.0 : 0; // the step onto the platform: a dip
+  const tk = take(t, h.takeAt);
+  const cp = pop(t, 0.18, 0.28);
+  const cf = openFace(s, 'crea', 1, 'happy');
+  if (phase === 'face') {
+    const hd = headAt(MOM, momClose);
+    return (
+      <div style={{position: 'absolute', inset: 0, background: GYM.wall, overflow: 'hidden'}}>
+        <div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, transformOrigin: '0 0', transform: frameOf(2.3, [hd.x, hd.y], [600, 820])}}>
+          <Scene bg={GYM.wall}>
+            <GymRoom needle={needle} />
+            <PersonAt spec={MOM} {...momClose} expr="worried" look={[0.6, 0.6]} blink={1} bob={step} />
+          </Scene>
+        </div>
+        {/* Crea pops up at her ear and leans in to whisper */}
+        {cp > 0.01 && <Put x={850} y={760} size={380 * cp} rot={-12} sq={voiceSq(s, 'crea')}><Crea mood={cf.mood} mouth={cf.mouth} look={[-0.8, 0.2]} /></Put>}
+      </div>
+    );
+  }
+  if (phase === 'dial') {
+    const leap = clamp01((t - h.slam) / 0.32);
+    return (
+      <div style={{position: 'absolute', inset: 0, background: GYM.wall, overflow: 'hidden'}}>
+        <div style={{position: 'absolute', left: sx, top: sy, width: 1080, height: 1920, transformOrigin: '0 0', transform: frameOf(DIAL_K, [SCALE.x, SCALE.y], DIAL_TO)}}>
+          <Scene bg={GYM.wall}><GymRoom needle={needle} /></Scene>
+        </div>
+        <Burst t={t} t0={h.slam} x={DIAL_TO[0] + Math.sin((-130 + 0.97 * 260) * Math.PI / 180) * 300} y={DIAL_TO[1] - Math.cos((-130 + 0.97 * 260) * Math.PI / 180) * 300} r={150} />
+        {/* Crea leaps up from below and comes AT the lens */}
+        {leap > 0 && <Put x={lerp(760, 560, leap)} y={lerp(2100, 1200, easeOut(leap))} size={lerp(300, 1150, leap * leap)} rot={lerp(-20, 6, leap)} sq={-0.1 * Math.sin(leap * Math.PI)}><Crea mood="happy" mouth="big" look={[0, 0.4]} /></Put>}
+      </div>
+    );
+  }
   return (
     <div style={{position: 'absolute', inset: 0, background: GYM.wall, overflow: 'hidden'}}>
-      <div style={{position: 'absolute', inset: 0, transformOrigin: `${GYM_O[0]}px ${GYM_O[1]}px`, transform: `scale(${GYM_K})`}}>
+      <div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, transformOrigin: '0 0', transform: frameOf(TAKE_K, TAKE_AT, TAKE_TO)}}>
         <Scene bg={GYM.wall}>
-          <GymRoom needle={needleAt(t, h.slam)} />
-          <PersonAt spec={MOM} {...momA} pose={pose} expr={shock > 0.5 ? 'surprised' : 'neutral'} look={shock > 0.5 ? [0.8, 0.1] : [0.6, 0.3]} blink={blink(t, 3)} bob={step + sway(t, 3, 1) * 0.3} />
-          {cp > 0.01 && <Put x={SCALE.x + 10} y={SCALE.y - SCALE.r - 110 - shock * 14} size={250 * cp} rot={4 + sway(t, 1.2) * 3 * calm(s, 'crea')} sq={voiceSq(s, 'crea')}><Crea mood={cf.mood} mouth={cf.mouth} look={[-0.6, 0.4]} /></Put>}
+          <GymRoom needle={needle} />
+          <div style={{position: 'absolute', inset: 0, transform: `translateY(${tk.dy.toFixed(1)}px) rotate(${tk.lean.toFixed(2)}deg)`, transformOrigin: `${momTake.x}px ${momTake.y}px`}}>
+            <PersonAt spec={MOM} {...momTake} pose={poseAt(t, [[-9, 'worried'], [h.takeAt + 0.06, 'cheeks', 0.14]])} expr="surprised" look={[0.4, 0.1]} blink={0} />
+          </div>
+          <Put x={SCALE.x + 10} y={SCALE.y - SCALE.r - 110} size={250} rot={4}><Crea mood={cf.mood} mouth={cf.mouth} look={[-0.6, 0.4]} /></Put>
         </Scene>
       </div>
     </div>
@@ -111,23 +157,31 @@ const GymCold: React.FC<{s: ShotNow}> = ({s}) => {
 };
 const posA = (s: ShotNow) => {
   const t = s.t, h = hookA(s);
-  const inside = go(t, h.dive1 - 0.1, 0.4);
-  const c = calm(s, 'crea');
-  return {x: 540 + sway(t, 2.4, 1) * 10 * c, y: 1010 + sway(t, 2, 3) * 8 * c, size: lerp(300, 420, inside), rot: sway(t, 1.4, 2) * 4 * c};
+  const lean = keyed(t, 0, [[at(s, 'A2', 'fat', 3.6) - 0.1, 1, 0.25, 'back']]);
+  return {x: 540, y: 1010 - lean * 40, size: 520 + lean * 60, rot: -lean * 6, inside: t >= h.dive1};
 };
+/** The rings of the opening as the camera goes in: skin, then fat, then muscle (the dive through her upper arm). */
+const DiveRim: React.FC<{x: number; y: number; r: number}> = ({x, y, r}) => r < 4 ? null : (
+  <svg style={{position: 'absolute', left: 0, top: 0, pointerEvents: 'none'}} width={1080} height={1920} viewBox="0 0 1080 1920">
+    <circle cx={x} cy={y} r={r + 46} fill="none" stroke={MOM.skin} strokeWidth={40} />
+    <circle cx={x} cy={y} r={r + 18} fill="none" stroke="#f6d27a" strokeWidth={30} />
+    <circle cx={x} cy={y} r={r + 3} fill="none" stroke="#c9505a" strokeWidth={10} />
+    {[r + 66, r + 33, r].map((rr, i) => <circle key={i} cx={x} cy={y} r={rr} fill="none" stroke={INK} strokeWidth={5} />)}
+  </svg>
+);
 const ShotA: React.FC<{s: ShotNow}> = ({s}) => {
   const t = s.t, h = hookA(s);
-  const water = dial(t, 0.8, [[0, 0.85, 0.2], [h.slam, 0.9, 0.3], [at(s, 'A2', undefined, 1.8), 0.95, 0.3], [at(s, 'A2', 'fat', 3.6), 1, 0.5]]);
+  const water = keyed(t, 0.85, [[h.dive1, 0.92, 0.3], [at(s, 'A2', 'fat', 3.65), 1, 0.35, 'back']]);
   const v = posA(s);
-  const f = bodyFace(s, 'crea', 1, 'happy');
+  const f = openFace(s, 'crea', 1, 'happy');
   const k = clamp01((t - h.dive0) / (h.dive1 - h.dive0)), e = k * k * (3 - 2 * k);
   const [px, py] = diveAtA();
-  const R = e * 2300, Z = 1 + e * e * 7;
+  const Z = 1 + e * e * 9, R = e * 2300;
   return (
     <>
       <div style={{position: 'absolute', inset: 0}}>
         <DiveCtx.Provider value={0}><MuscleCellPlace t={t} water={water} /></DiveCtx.Provider>
-        <Put x={v.x} y={v.y} size={v.size} rot={v.rot} sq={voiceSq(s, 'crea')}><Crea mood={f.mood} mouth={f.mouth} look={[0, 0.3]} /></Put>
+        <Put x={v.x} y={v.y} size={v.size} rot={v.rot} sq={voiceSq(s, 'crea')}><Crea mood={f.mood} mouth={f.mouth} look={[0, 0.4]} /></Put>
       </div>
       {e < 1 && (
         <div style={{position: 'absolute', inset: 0, transformOrigin: `${px}px ${py}px`, transform: `scale(${Z.toFixed(4)})`,
@@ -135,30 +189,54 @@ const ShotA: React.FC<{s: ShotNow}> = ({s}) => {
           <GymCold s={s} />
         </div>
       )}
+      {e > 0 && e < 1 && <DiveRim x={px} y={py} r={R} />}
     </>
   );
 };
-const viewA = slowPush(540, 990, 1.02, 1.1);
+const viewA = () => ({x: 540, y: 960, z: 1}); // the shot frames itself (three cuts and a dive): the camera holds
 const TagA = tagVia(viewA);
 const ScreenA: React.FC<{s: ShotNow}> = ({s}) => {
-  const v = posA(s);
-  // the name tag only after the hook, once we are inside (the owner, 2026-11-21: no text in the first seconds)
-  return <TagA s={s} label="CREA (CREATINE)" x={v.x} y={v.y} r={v.size * 0.32} t={since(s, 'A2', 'fat') - 0.1} />;
+  const v = posA(s), h = hookA(s);
+  return (
+    <>
+      <Stamp t={s.t} t0={h.stamp} t1={h.stampOut} x={720} y={300} text="+2 KG" size={150} rot={-6} />
+      <Burst t={s.t} t0={h.stamp} x={720} y={300} r={190} dur={0.28} col="#ffd23f" />
+      {v.inside && <TagA s={s} label="CREA (CREATINE)" x={v.x} y={v.y} r={v.size * 0.32} t={s.t - h.dive1 - 0.5} />}
+    </>
+  );
 };
 
 // =================================================================== B: the gym
+// "What?" she spins to the dial and shakes her shaker at it; "creatine" a second shake; "week!" she STOMPS: the needle wobbles
 const momB = {view: 'three-quarter' as const, facing: 'right' as const, x: 400, y: FEET_Y - 22, scale: PEOPLE_SCALE};
+const timesB = (s: ShotNow) => ({what: at(s, 'B1', undefined, 0), cre: at(s, 'B1', 'creatine', 0.97), week: at(s, 'B1', 'week', 1.68)});
 const ShotB: React.FC<{s: ShotNow}> = ({s}) => {
-  const t = s.t;
-  const pose = poseAt(t, [[-9, 'worried'], [at(s, 'B1', 'started', 0.4) - 0.15, 'shrugR', 0.35]]);
+  const t = s.t, k = timesB(s);
+  const pose = poseAt(t, [[-9, 'cheeks'], [k.what - 0.05, 'shake', 0.18]]);
+  const o = {...momB, pose};
+  const hand = handAt(MOM, o).L;
+  const shaking = (t > k.what + 0.1 && t < k.what + 0.6) || (t > k.cre && t < k.cre + 0.45);
+  const rock = shaking ? Math.sin(t * 44) * 16 : 0;
+  const stomp = take(t, k.week - 0.05, 0.4);
+  const needle = 0.97 + (t > k.week ? Math.sin((t - k.week) * 30) * Math.exp(-(t - k.week) * 5) * 0.04 : 0);
+  const [sx, sy] = shake(t, k.week, 12, 0.3);
+  const rot = (Math.atan2(hand.dir[1], hand.dir[0]) * 180) / Math.PI;
   return (
-    <Scene bg={GYM.wall}>
-      <GymRoom needle={0.97 + sway(t, 0.6) * 0.008} />
-      <PersonAt spec={MOM} {...momB} pose={pose} expr={exprOf(s, 'mom', 'shocked')} look={[0.7, 0.2]} talk={talkSmooth(s, 'mom')} blink={blink(t, 3)} bob={breath(s, 'mom', 1)} />
-    </Scene>
+    <div style={{position: 'absolute', inset: 0, transform: `translate(${sx}px, ${sy}px)`}}>
+      <Scene bg={GYM.wall}>
+        <GymRoom needle={needle} />
+        <div style={{position: 'absolute', inset: 0, transform: `translateY(${stomp.dy.toFixed(1)}px)`}}>
+          <PersonAt spec={MOM} {...o} expr="angry" look={[0.8, -0.1]} talk={talkSmooth(s, 'mom')} blink={blink(t, 3)} />
+          <Put x={hand.palm[0]} y={hand.palm[1] - 50} size={240} rot={rock}><Shaker /></Put>
+          <HandAt x={hand.wrist[0]} y={hand.wrist[1]} px={PEOPLE_SCALE * 30} kind="hold" skin={MOM.skin} rot={rot} rod={false} />
+        </div>
+      </Scene>
+      {shaking && <SpeedLines x={hand.palm[0]} y={hand.palm[1] - 120} dir={[1, -0.2]} len={110} o={0.8} />}
+      <Burst t={t} t0={k.week} x={momB.x + 60} y={FEET_Y - 10} r={110} />
+    </div>
   );
 };
-const momFocusB = (s: ShotNow): Focus => { const h = headAt(MOM, {...momB, pose: 'worried'}); void s; return {x: h.x, y: h.y, r: h.r}; };
+const momFocusB = (s: ShotNow): Focus => { const h = headAt(MOM, {...momB, pose: 'shake'}); void s; return {x: h.x, y: h.y, r: h.r}; };
 
 // =================================================================== C: the blood
 const posC = (s: ShotNow) => {
@@ -368,7 +446,7 @@ const viewG = slowPush(540, 990, 1.0, 1.1);
 // ------------------------------------------------------------------ the shots
 export const CREATINE_SHOTS: Record<string, ShotDef> = {
   A: {Scene: dived(ShotA), Screen: ScreenA, focus: (_w, s) => { const v = posA(s); return {x: v.x, y: v.y, r: v.size * 0.32}; }, view: viewA},
-  B: {Scene: ShotB, focus: (_w, s) => momFocusB(s)},
+  B: {Scene: ShotB, focus: (_w, s) => momFocusB(s), view: () => ({x: 520, y: 900, z: 1.5})}, // medium on Mom and the dial, held still
   C: {Scene: dived(ShotC), focus: (_w, s) => { const v = posC(s); return {x: v.x, y: v.y, r: v.size * 0.32}; }, view: viewC},
   D: {Scene: dived(ShotD), Screen: ScreenD, focus: () => ({x: 540, y: 820, r: 160}), view: viewD},
   E: {Scene: dived(ShotE), Screen: ScreenE, focus: () => ({x: 540, y: 1000, r: 180}), view: viewE},

@@ -247,13 +247,13 @@
    "events": [
     {
      "at": "B1",
-     "word": "started",
-     "sfx": "record-scratch"
+     "sfx": "whoosh-fast"
     },
     {
      "at": "B1",
      "word": "week!",
-     "sfx": "wobble"
+     "sfx": "thud-soft",
+     "fx": "flash"
     }
    ],
    "lines": [
@@ -265,7 +265,7 @@
      "pose": "rest",
      "key": "week",
      "chat": true,
-     "cam": "mcu push"
+     "cam": "mcu lock"
     }
    ],
    "props": []
