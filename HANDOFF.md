@@ -6,6 +6,25 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-21 (6) - MacBook (local Claude Code) - branch `video/creatine` - creatine: look sheets drawn, WAITING for the owner
+
+- The owner: "Hook A, go ahead" (plan approved; my picks stand: Mom as the lifter).
+- Four look sheets drawn (free), copies in `skill/medpeak-health/references/toons-boards/v8/creatine/`
+  (`node pipeline/toon-v8-sheets.mjs crea`, entry `src/toons/v8/entry-crea.tsx`):
+  1. `crea-cast`: Crea (white crystal grain, `carry` = a yellow spark), Battery (ATP; `charge` fills green/yellow/red,
+     `charging`, `face={false}` crowd), Muscle (striped fibre, `flex`). Code `src/toons/v8/crea-cast.tsx`.
+  2. `crea-place` + `crea-place-close`: `BloodPlace` (`crea`), `MuscleCellPlace` (`flex`, `drain`, `charge`, `water`;
+     `gapY`/`DOCKS` place things in the tilted gaps), `KidneyFilterPlace` (`bits`). Code `src/toons/v8/crea-places.tsx`.
+     The blood got a new place: `HighwayPlace` is the inside of a nerve.
+  3. `crea-gym`: `GymRoom` with the upright scale (`needle` 0..1, `SCALE`), Mom as `LIFTER` (tee, trousers, trainers),
+     the shaker held with `HandAt` over it. Code `src/toons/v8/crea-gym.tsx`.
+- Fixed before sending: Muscle's arms (were antennae on top; now a real flex / hanging at the sides), the muscle
+  fibres (flat blocks -> round rods: curved bands, light and shade, tilted).
+- Run: typecheck clean, `npm test` passes. No credits spent.
+- Next: the owner OKs the looks; then `videos/creatine/toon.json` (`toon:check` must pass), the shots file, silent render.
+
+---
+
 ## 2026-11-21 (5) - MacBook (local Claude Code) - branch `video/creatine` - creatine: plan sent, WAITING for the owner
 
 - The owner said "Start"; the next topic is #3 "What Happens When You Take Creatine" (slug `creatine`), marked

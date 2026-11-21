@@ -45,6 +45,11 @@ export const SHEETS = [
   ['entry-sleep.tsx', 'SleepCast', 'sleep-cast'],
   ['entry-sleep.tsx', 'SleepPlace', 'sleep-place'],
   ['entry-sleep.tsx', 'SleepRoom', 'sleep-room'],
+  // creatine (2026-11-21)
+  ['entry-crea.tsx', 'CreaCast', 'crea-cast'],
+  ['entry-crea.tsx', 'CreaPlace', 'crea-place'],
+  ['entry-crea.tsx', 'CreaPlace2', 'crea-place-close'],
+  ['entry-crea.tsx', 'CreaGym', 'crea-gym'],
 ];
 
 // The scene frames of the rabies video (rooms, the arm, inside the body): [entry file, still id, output name]
