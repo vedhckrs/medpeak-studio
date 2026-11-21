@@ -24,6 +24,11 @@ you stop. The rules are in `CLAUDE.md`.
   back into the package (fixed by hand here; the script should keep them repo-relative). The owner's earlier
   uncommitted `feat/toons` edits (7 files) are in a git stash on this Mac only, not pushed.
 - Next: the owner checks the video in YouTube Studio and makes it public when he wants.
+- Later the same session: **no watermark on the CTA end card** from now on (it fades out over 0.35 s as the card
+  comes in; `Watermark` `out` prop in `hud.tsx`, rule in `CLAUDE.md` and `toons-v8-style.md`). The uploaded rabies
+  video was NOT re-rendered (the owner: "it's already up, fix it for upcoming videos").
+- The owner's standing rule (in `CLAUDE.md`): commit, push and merge PRs without asking him once CI passes.
+- The owner will set the AI label on the rabies video in YouTube Studio himself. A new session starts the next video.
 
 ---
 
