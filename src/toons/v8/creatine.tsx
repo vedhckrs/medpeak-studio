@@ -220,17 +220,15 @@ const ShotB: React.FC<{s: ShotNow}> = ({s}) => {
   const stomp = take(t, k.week - 0.05, 0.4);
   const needle = 0.97 + (t > k.week ? Math.sin((t - k.week) * 30) * Math.exp(-(t - k.week) * 5) * 0.04 : 0);
   const [sx, sy] = shake(t, k.week, 12, 0.3);
-  const rot = (Math.atan2(hand.dir[1], hand.dir[0]) * 180) / Math.PI;
   return (
     <div style={{position: 'absolute', inset: 0, transform: `translate(${sx}px, ${sy}px)`}}>
       <Scene bg={GYM.wall}>
         <GymRoom needle={needle} />
         <div style={{position: 'absolute', inset: 0, transform: `translateY(${stomp.dy.toFixed(1)}px)`}}>
-          <PersonAt spec={MOM} {...o} expr="angry" look={[0.8, -0.1]} talk={talkSmooth(s, 'mom')} blink={blink(t, 3)} />
-          {/* the bottle sits IN her fist (its lower half behind the fingers), and the gripping hand is drawn again over it: her LEFT
-              hand, so mirrored (2026-11-21, the owner: "what line in hand": unmirrored, its outline crossed the rig's own hand) */}
+          {/* the bottle is drawn BEHIND her: her arm and hand are one outlined form and the curled fingers close over it
+              (2026-11-21, the owner: "you join hand with arm, why line come": a second hand drawn on top left a seam at the wrist) */}
           <Put x={hand.palm[0]} y={hand.palm[1] - 18} size={240} rot={rock}><Shaker /></Put>
-          <HandAt x={hand.wrist[0]} y={hand.wrist[1]} px={PEOPLE_SCALE * 30} kind="hold" skin={MOM.skin} rot={rot} rod={false} mirror />
+          <PersonAt spec={MOM} {...o} expr="angry" look={[0.8, -0.1]} talk={talkSmooth(s, 'mom')} blink={blink(t, 3)} />
         </div>
       </Scene>
       <Burst t={t} t0={k.week} x={momB.x + 60} y={FEET_Y - 10} r={110} />
