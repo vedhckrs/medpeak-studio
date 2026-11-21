@@ -126,7 +126,7 @@ fades out over 0.35 s as the card comes in.
 do not say (the old sunrise is gone). `IconBadge`: eased pop, ONE soft settle (3%), hold still, eased fade out; no
 wobble, no turn. An icon leaves before the picture changes (`out`), and a transition fades the last shot's icons.
 
-**Name tags**: `CharTag`, 1 second, the FIRST time each non-human character appears (RABIES VIRUS, NERVE ENDING,
+**Name tags**: `CharTag`, held **2.5 seconds** (`TAG_SECONDS`; the owner, 2026-11-21, was 1 s; start it at least 2.7 s before its shot cuts, so a hard cut never chops it), the FIRST time each non-human character appears (RABIES VIRUS, NERVE ENDING,
 DEFENCE CELL, ANTIBODY, WHITE BLOOD CELL). A white tag box above the head (to the side when there is no room), an
 arrow that draws itself. **No circle, no halo, no glow, no blur** around the character (the owner, 2026-11-21: "remove
 completely everywhere"; the two white rings of 2026-11-20 are gone). Never on people. The box must never cover a face: point at a part of the character away from the others, and

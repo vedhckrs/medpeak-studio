@@ -283,13 +283,13 @@ export const CtaCard: React.FC<{t: number; title: string; points: CtaPoint[]}> =
 
 // ------------------------------------------------------------------ v4: the name tag (the owner, 2026-11-20)
 /**
- * A 1-second name tag the FIRST time a non-human character appears (RABIES VIRUS, ANTIBODY, WHITE BLOOD CELL,
+ * A 2.5-second name tag (the owner, 2026-11-21: "hold 2.5 sec"; it was 1 s) the FIRST time a non-human character appears (RABIES VIRUS, ANTIBODY, WHITE BLOOD CELL,
  * DEFENCE CELL, NERVE ENDING). Never on humans. (x, y) is the character's centre and r its radius in frame
  * pixels; `t` the seconds since the tag began. A white tag box above the head (to the side when there is no
  * room above), a smart arrow from the box to the head, and a flat halo: two thin white rings around the
  * character (no blur, no glow: the v8 rule; ask the owner before a true glow).
  */
-export const TAG_SECONDS = 1;
+export const TAG_SECONDS = 2.5; // the owner, 2026-11-21 (was 1 s)
 export const TAG_SAFE = {x0: 70, x1: 1010, y0: 330, y1: 1360}; // y0 below the race bar (v4)
 export const tagBox = (label: string, x: number, y: number, r: number) => {
   const fs = 40, w = Math.round(label.length * fs * 0.66 + 60), h = 76;

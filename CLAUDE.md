@@ -120,7 +120,7 @@ Do these once on a new machine. None of it needs the old machine except step 6.
   0.9 in video.tsx). **The hook opens on the person and comes at the lens** (no-sleep: Sam at 2 a.m., the dive into his
   brain inside the first shot, Gunk splats on the glass); no tag or number during the hook line. Details in
   `skill/medpeak-health/references/toons-v8-style.md`.
-- **Icons only when the words say it**; non-human characters get a 1-second name tag (arrow + tag box above the head)
+- **Icons only when the words say it**; non-human characters get a name tag held **2.5 seconds** (2026-11-21; arrow + tag box above the head)
   the first time they appear; no tags on humans; **no circle or halo around the character at all** (2026-11-21: "this circle
   I don't want, remove completely everywhere"; it was two white rings), no glow; a tag never covers a face. The camera moves smoothly (one eased move per shot, a continuous dive
   inside the body); hard cuts between scenes (no transitions). No flicker: nothing appears or
