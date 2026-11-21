@@ -6,6 +6,23 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-21 (5) - MacBook (local Claude Code) - branch `video/creatine` - creatine: plan sent, WAITING for the owner
+
+- The owner said "Start"; the next topic is #3 "What Happens When You Take Creatine" (slug `creatine`), marked
+  `taken (Mac, 2026-11-21)` in `topic-bank.md` and pushed on `video/creatine`.
+- Sources read: PubMed 28615996 (ISSN 2017, full text PMC5469049), 33557850 (ISSN 2021 myths, PMC7871530), 12945830
+  (Branch 2003 meta-analysis), 43050022 (Raihan 2026 kidney meta-analysis), 42507286 (Almeida 2026 kidney meta-analysis),
+  40265319 (Lak 2025 hair RCT), 1327657 (Harris 1992, not used in the script). Abstracts saved in
+  `videos/creatine/research/abstracts.md`. The NIH ODS fact sheet shows a Cloudflare bot check (curl and the browser pane):
+  not clicked through; MedlinePlus no longer has the creatine page.
+- New: `plans/creatine-2026-11-21.md`: shape `journey` (gym -> blood -> muscle cell -> kidney filter -> clinic, Dr. Mira at
+  the end), 16-line draft, 3 hook choices, cast (new: Crea, the batteries, Muscle), new drawings (muscle cell inside,
+  gym, kidney filter), care notes (no dose; kidney wording "no harm was found", never "safe"; industry ties of the ISSN papers).
+- Not done: no `toon.json`, no sheets, nothing voiced, no credits spent. Anthropic key not used.
+- Next: the owner picks the hook, the lifter and OKs the plan; then the look sheets (free).
+
+---
+
 ## 2026-11-21 (4) - MacBook (local Claude Code) - branch `video/no-sleep` - no sleep: UPLOADED private (rbiXOjOD8SQ)
 
 - The owner picked topic 2, "What Happens If You Don't Sleep" (slug `no-sleep`); marked `taken (Mac, 2026-11-21)`
