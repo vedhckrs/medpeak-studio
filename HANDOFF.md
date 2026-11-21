@@ -6,7 +6,7 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
-## 2026-11-21 (4) - MacBook (local Claude Code) - branch `video/no-sleep` - no sleep: sheets approved, script passes the checks
+## 2026-11-21 (4) - MacBook (local Claude Code) - branch `video/no-sleep` - no sleep: silent video and storyboard sent
 
 - The owner picked topic 2, "What Happens If You Don't Sleep" (slug `no-sleep`); marked `taken (Mac, 2026-11-21)`
   in `topic-bank.md` and pushed.
@@ -38,7 +38,16 @@ you stop. The rules are in `CLAUDE.md`.
   `melatonin` (Lily -1), `crew` (Harry +2) in `toons-cast.json`, proposed, not auditioned; old-engine blueprints for
   them in `characters.tsx` (only so the layout checks can measure them); two test guards now follow the script's cast.
 - Not done: the v8 shots for this video (like `src/toons/v8/rabies.tsx`), storyboard, motion test, voices, music.
-- Next: the owner's OK on the shortened hook, then build the shots and a silent storyboard.
+- The owner OK'd the hook "Don't sleep? I clog your brain!".
+- Shots built: `src/toons/v8/no-sleep.tsx` (A-E, beats follow the script's events, name tags GUNK / MELATONIN / NIGHT CREW /
+  BRAIN, number tags on the grid) and the CTA card (SLEEP IS NOT OPTIONAL: 7+ hours, it adds up, don't drive sleepy),
+  registered in `video.tsx`. Silent render `npm run toon:v8 -- no-sleep --silent`: 56.8 s with the card (no narrator yet),
+  1080 x 1920, 60 fps, about 2.5 min on the Mac. Storyboard: 4 sheets in `videos/no-sleep/renders/storyboard/` (renders
+  are not in git). Sent to the owner with the silent video, WAITING for his OK on the motion.
+- Mac setup: the system Python has NO Pillow (the storyboard needs it). This session used a throwaway venv; for good,
+  run `python3 -m pip install --user pillow` in a normal terminal (pip fails inside Claude's sandbox: SSL through the proxy).
+- Next: the owner's OK on the silent video, then the voice auditions for gunk / melatonin / crew with the cost, then
+  voices, the narrator's CTA line and the video's own music (all paid: balance before and after).
 
 ---
 
