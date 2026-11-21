@@ -6,7 +6,7 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
-## 2026-11-21 (4) - MacBook (local Claude Code) - branch `video/no-sleep` - next video: no sleep, plan sent
+## 2026-11-21 (4) - MacBook (local Claude Code) - branch `video/no-sleep` - no sleep: plan, hook A, three look sheets sent
 
 - The owner picked topic 2, "What Happens If You Don't Sleep" (slug `no-sleep`); marked `taken (Mac, 2026-11-21)`
   in `topic-bank.md` and pushed.
@@ -16,7 +16,17 @@ you stop. The rules are in `CLAUDE.md`.
 - New: `plans/no-sleep-2026-11-21.md`: shape `crew` (no doctor), 17-line draft, 3 hook choices, cast, the
   new drawings it needs (Gunk + night crew, brain micro place with opening gaps, bedroom night/morning), care notes.
 - Not done: no `toon.json` yet, `toon:check` not run, nothing drawn, nothing voiced, no credits spent.
-- Next: the owner's OK on the plan (and a hook choice), then the sheets.
+- The owner picked hook A ("Don't sleep tonight? I pile up in your brain!").
+- Three look sheets drawn (free), WAITING for the owner's OK, copies in
+  `skill/medpeak-health/references/toons-boards/v8/no-sleep/` (`node pipeline/toon-v8-sheets.mjs sleep`):
+  1. `sleep-cast`: Gunk (grey-taupe sticky heap, stages 0/1/2) and the night crew (fluid droplets with mop,
+     bucket, brush and a headlamp band). Code `src/toons/v8/sleep-cast.tsx`.
+  2. `sleep-place`: inside the brain, microscopic, `BrainGapPlace` with dials `gap`, `wash`, `dirt`
+     (`src/toons/v8/sleep-places.tsx`).
+  3. `sleep-room`: Sam's bedroom at 2 a.m. and 7 a.m. (`src/toons/v8/sleep-rooms.tsx`; `BedFront` and `Duvet`
+     are drawn after Sam). New rig poses `sitPhone`, `sitSlump`, and a pose field `seat: false` (no rig chair).
+- Run: typecheck clean, `npm test` 50/50. Rendering stills needs the sandbox off on the Mac (Remotion's browser).
+- Next: the owner's OK on the three sheets, then `videos/no-sleep/toon.json` and `toon:check`.
 
 ---
 

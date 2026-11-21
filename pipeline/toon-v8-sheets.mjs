@@ -41,6 +41,10 @@ export const SHEETS = [
   ['entry-hud-v4.tsx', 'V4HudIcons', 'v4-icons'],
   ['entry-hud-v4.tsx', 'V4HudTags', 'v4-tags'],
   ['entry-people-v4.tsx', 'V4PeopleClothes', 'v4-clothes'],
+  // no-sleep (2026-11-21)
+  ['entry-sleep.tsx', 'SleepCast', 'sleep-cast'],
+  ['entry-sleep.tsx', 'SleepPlace', 'sleep-place'],
+  ['entry-sleep.tsx', 'SleepRoom', 'sleep-room'],
 ];
 
 // The scene frames of the rabies video (rooms, the arm, inside the body): [entry file, still id, output name]
