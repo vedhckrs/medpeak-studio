@@ -46,7 +46,11 @@ you stop. The rules are in `CLAUDE.md`.
   are not in git). Sent to the owner with the silent video, WAITING for his OK on the motion.
 - Mac setup: the system Python has NO Pillow (the storyboard needs it). This session used a throwaway venv; for good,
   run `python3 -m pip install --user pillow` in a normal terminal (pip fails inside Claude's sandbox: SSL through the proxy).
-- Next: the owner's OK on the silent video, then the voice auditions for gunk / melatonin / crew with the cost, then
+- The owner OK'd the motion. Voice tests for gunk, melatonin, crew made (`toon-voice.mjs --audition --who ...`): **75 credits**
+  by the charge receipt (quoted 189); balance before 56,825 (the counter lags). Files in `out/toons/auditions/` (not in git), plus
+  free variants: `gunk-p1` (pitch -1 instead of -3: synthetic score 0.59 against 0.71) and `melatonin-slow` (tempo 0.9: 3.96 s
+  against 3.58 s). Speech-to-text: every word right in all three. WAITING for the owner's picks.
+- Before that: the owner's OK on the silent video, then the voice auditions for gunk / melatonin / crew with the cost, then
   voices, the narrator's CTA line and the video's own music (all paid: balance before and after).
 
 ---
