@@ -41,7 +41,7 @@ shots = [
      E("A2", word="now?", set={"gap": 0.05}, over=16),
    ],
    "lines": [
-     L("A1", "gunk", "Don't sleep? I clog your brain!", "angry", "clog", src=[XIE, SHOK], cam="ecu 50 push"),
+     dict(L("A1", "gunk", "Don't sleep? I clog your brain!", "angry", "clog", src=[XIE, SHOK], cam="ecu 50 push"), tempo=1.15),  # 2.5 s as voiced: the hook rule is 2 s
      L("A2", "gunk", "And who's going to wash me out now?", "angry", "wash", chat=True, beat=0.4),
    ], "props": []},
   {"id": "B", "set": "home",

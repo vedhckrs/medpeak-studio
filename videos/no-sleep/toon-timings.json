@@ -1,0 +1,875 @@
+{
+  "lines": {
+    "A1": {
+      "who": "gunk",
+      "text": "Don't sleep? I clog your brain!",
+      "voiceId": "N2lVS1w4EtoT3dr4eOWO",
+      "pitch": -1,
+      "tempo": 1.15,
+      "file": "toons/no-sleep/voice/A1.mp3",
+      "duration": 2.209,
+      "words": [
+        {
+          "w": "Don't",
+          "start": 0,
+          "end": 0.252
+        },
+        {
+          "w": "sleep?",
+          "start": 0.293,
+          "end": 0.697
+        },
+        {
+          "w": "I",
+          "start": 0.868,
+          "end": 0.929
+        },
+        {
+          "w": "clog",
+          "start": 1.01,
+          "end": 1.252
+        },
+        {
+          "w": "your",
+          "start": 1.303,
+          "end": 1.434
+        },
+        {
+          "w": "brain!",
+          "start": 1.494,
+          "end": 2.14
+        }
+      ]
+    },
+    "A2": {
+      "who": "gunk",
+      "text": "And who's going to wash me out now?",
+      "voiceId": "N2lVS1w4EtoT3dr4eOWO",
+      "pitch": -1,
+      "tempo": 1,
+      "file": "toons/no-sleep/voice/A2.mp3",
+      "duration": 2.431,
+      "words": [
+        {
+          "w": "And",
+          "start": 0,
+          "end": 0.174
+        },
+        {
+          "w": "who's",
+          "start": 0.221,
+          "end": 0.441
+        },
+        {
+          "w": "going",
+          "start": 0.488,
+          "end": 0.685
+        },
+        {
+          "w": "to",
+          "start": 0.731,
+          "end": 0.801
+        },
+        {
+          "w": "wash",
+          "start": 0.882,
+          "end": 1.184
+        },
+        {
+          "w": "me",
+          "start": 1.265,
+          "end": 1.37
+        },
+        {
+          "w": "out",
+          "start": 1.428,
+          "end": 1.614
+        },
+        {
+          "w": "now?",
+          "start": 1.707,
+          "end": 2.368
+        }
+      ]
+    },
+    "B1": {
+      "who": "patient",
+      "text": "Just one more video...",
+      "voiceId": "TX3LPaxmHKxFdv7VOQHJ",
+      "pitch": 0,
+      "tempo": 1,
+      "file": "toons/no-sleep/voice/B1.mp3",
+      "duration": 1.629,
+      "words": [
+        {
+          "w": "Just",
+          "start": 0,
+          "end": 0.313
+        },
+        {
+          "w": "one",
+          "start": 0.395,
+          "end": 0.592
+        },
+        {
+          "w": "more",
+          "start": 0.627,
+          "end": 0.801
+        },
+        {
+          "w": "video...",
+          "start": 0.848,
+          "end": 1.579
+        }
+      ]
+    },
+    "B2": {
+      "who": "melatonin",
+      "text": "It's two a.m. My night crew needs you asleep!",
+      "voiceId": "pFZP5JQG7iQjIQuC4Bku",
+      "pitch": -1,
+      "tempo": 0.9,
+      "file": "toons/no-sleep/voice/B2.mp3",
+      "duration": 3.051,
+      "words": [
+        {
+          "w": "It's",
+          "start": 0,
+          "end": 0.246
+        },
+        {
+          "w": "two",
+          "start": 0.31,
+          "end": 0.464
+        },
+        {
+          "w": "a.m.",
+          "start": 0.568,
+          "end": 1.058
+        },
+        {
+          "w": "My",
+          "start": 1.239,
+          "end": 1.38
+        },
+        {
+          "w": "night",
+          "start": 1.471,
+          "end": 1.677
+        },
+        {
+          "w": "crew",
+          "start": 1.703,
+          "end": 1.883
+        },
+        {
+          "w": "needs",
+          "start": 1.948,
+          "end": 2.154
+        },
+        {
+          "w": "you",
+          "start": 2.18,
+          "end": 2.27
+        },
+        {
+          "w": "asleep!",
+          "start": 2.334,
+          "end": 2.993
+        }
+      ]
+    },
+    "B3": {
+      "who": "patient",
+      "text": "I'm fine on four hours. Watch me.",
+      "voiceId": "TX3LPaxmHKxFdv7VOQHJ",
+      "pitch": 0,
+      "tempo": 1,
+      "file": "toons/no-sleep/voice/B3.mp3",
+      "duration": 2.326,
+      "words": [
+        {
+          "w": "I'm",
+          "start": 0,
+          "end": 0.197
+        },
+        {
+          "w": "fine",
+          "start": 0.267,
+          "end": 0.499
+        },
+        {
+          "w": "on",
+          "start": 0.522,
+          "end": 0.592
+        },
+        {
+          "w": "four",
+          "start": 0.65,
+          "end": 0.859
+        },
+        {
+          "w": "hours.",
+          "start": 0.906,
+          "end": 1.324
+        },
+        {
+          "w": "Watch",
+          "start": 1.486,
+          "end": 1.765
+        },
+        {
+          "w": "me.",
+          "start": 1.823,
+          "end": 2.276
+        }
+      ]
+    },
+    "C1": {
+      "who": "crew",
+      "text": "When you sleep, these gaps open up, and we wash the waste out.",
+      "voiceId": "SOYHLrjzK2X1ezoPC6cr",
+      "pitch": 2,
+      "tempo": 1,
+      "file": "toons/no-sleep/voice/C1.mp3",
+      "duration": 3.798,
+      "words": [
+        {
+          "w": "When",
+          "start": 0,
+          "end": 0.186
+        },
+        {
+          "w": "you",
+          "start": 0.221,
+          "end": 0.302
+        },
+        {
+          "w": "sleep,",
+          "start": 0.383,
+          "end": 0.813
+        },
+        {
+          "w": "these",
+          "start": 0.975,
+          "end": 1.196
+        },
+        {
+          "w": "gaps",
+          "start": 1.254,
+          "end": 1.533
+        },
+        {
+          "w": "open",
+          "start": 1.579,
+          "end": 1.788
+        },
+        {
+          "w": "up,",
+          "start": 1.846,
+          "end": 2.078
+        },
+        {
+          "w": "and",
+          "start": 2.241,
+          "end": 2.368
+        },
+        {
+          "w": "we",
+          "start": 2.415,
+          "end": 2.508
+        },
+        {
+          "w": "wash",
+          "start": 2.566,
+          "end": 2.833
+        },
+        {
+          "w": "the",
+          "start": 2.891,
+          "end": 2.961
+        },
+        {
+          "w": "waste",
+          "start": 3.007,
+          "end": 3.262
+        },
+        {
+          "w": "out.",
+          "start": 3.297,
+          "end": 3.762
+        }
+      ]
+    },
+    "C2": {
+      "who": "crew",
+      "text": "In mice, they open sixty percent wider!",
+      "voiceId": "SOYHLrjzK2X1ezoPC6cr",
+      "pitch": 2,
+      "tempo": 1,
+      "file": "toons/no-sleep/voice/C2.mp3",
+      "duration": 2.505,
+      "words": [
+        {
+          "w": "In",
+          "start": 0,
+          "end": 0.139
+        },
+        {
+          "w": "mice,",
+          "start": 0.197,
+          "end": 0.58
+        },
+        {
+          "w": "they",
+          "start": 0.685,
+          "end": 0.824
+        },
+        {
+          "w": "open",
+          "start": 0.882,
+          "end": 1.091
+        },
+        {
+          "w": "sixty",
+          "start": 1.149,
+          "end": 1.416
+        },
+        {
+          "w": "percent",
+          "start": 1.474,
+          "end": 1.776
+        },
+        {
+          "w": "wider!",
+          "start": 1.834,
+          "end": 2.461
+        }
+      ]
+    },
+    "C3": {
+      "who": "gunk",
+      "text": "But he's still awake. No sleep, no wash. Party!",
+      "voiceId": "N2lVS1w4EtoT3dr4eOWO",
+      "pitch": -1,
+      "tempo": 1,
+      "file": "toons/no-sleep/voice/C3.mp3",
+      "duration": 4.01,
+      "words": [
+        {
+          "w": "But",
+          "start": 0,
+          "end": 0.174
+        },
+        {
+          "w": "he's",
+          "start": 0.221,
+          "end": 0.337
+        },
+        {
+          "w": "still",
+          "start": 0.36,
+          "end": 0.58
+        },
+        {
+          "w": "awake.",
+          "start": 0.639,
+          "end": 1.138
+        },
+        {
+          "w": "No",
+          "start": 1.254,
+          "end": 1.405
+        },
+        {
+          "w": "sleep,",
+          "start": 1.486,
+          "end": 1.892
+        },
+        {
+          "w": "no",
+          "start": 1.974,
+          "end": 2.125
+        },
+        {
+          "w": "wash.",
+          "start": 2.194,
+          "end": 2.705
+        },
+        {
+          "w": "Party!",
+          "start": 3.135,
+          "end": 3.947
+        }
+      ]
+    },
+    "C4": {
+      "who": "crew",
+      "text": "One night awake, and scans of people show more of it!",
+      "voiceId": "SOYHLrjzK2X1ezoPC6cr",
+      "pitch": 2,
+      "tempo": 1,
+      "file": "toons/no-sleep/voice/C4.mp3",
+      "duration": 3.016,
+      "words": [
+        {
+          "w": "One",
+          "start": 0,
+          "end": 0.174
+        },
+        {
+          "w": "night",
+          "start": 0.209,
+          "end": 0.383
+        },
+        {
+          "w": "awake,",
+          "start": 0.418,
+          "end": 0.813
+        },
+        {
+          "w": "and",
+          "start": 0.917,
+          "end": 1.057
+        },
+        {
+          "w": "scans",
+          "start": 1.115,
+          "end": 1.451
+        },
+        {
+          "w": "of",
+          "start": 1.498,
+          "end": 1.556
+        },
+        {
+          "w": "people",
+          "start": 1.614,
+          "end": 1.916
+        },
+        {
+          "w": "show",
+          "start": 1.962,
+          "end": 2.136
+        },
+        {
+          "w": "more",
+          "start": 2.206,
+          "end": 2.415
+        },
+        {
+          "w": "of",
+          "start": 2.473,
+          "end": 2.554
+        },
+        {
+          "w": "it!",
+          "start": 2.612,
+          "end": 2.972
+        }
+      ]
+    },
+    "D1": {
+      "who": "patient",
+      "text": "I'm fine. Just a bit... slow.",
+      "voiceId": "TX3LPaxmHKxFdv7VOQHJ",
+      "pitch": 0,
+      "tempo": 1,
+      "file": "toons/no-sleep/voice/D1.mp3",
+      "duration": 2.372,
+      "words": [
+        {
+          "w": "I'm",
+          "start": 0,
+          "end": 0.163
+        },
+        {
+          "w": "fine.",
+          "start": 0.232,
+          "end": 0.615
+        },
+        {
+          "w": "Just",
+          "start": 0.731,
+          "end": 0.929
+        },
+        {
+          "w": "a",
+          "start": 0.975,
+          "end": 0.998
+        },
+        {
+          "w": "bit...",
+          "start": 1.033,
+          "end": 1.335
+        },
+        {
+          "w": "slow.",
+          "start": 1.649,
+          "end": 2.322
+        }
+      ]
+    },
+    "D2": {
+      "who": "brain",
+      "text": "Seventeen hours awake? Some tests go as badly as being drunk.",
+      "voiceId": "iP95p4xoKVk53GoZ742B",
+      "pitch": 1,
+      "tempo": 1,
+      "file": "toons/no-sleep/voice/D2.mp3",
+      "duration": 2.968,
+      "words": [
+        {
+          "w": "Seventeen",
+          "start": 0,
+          "end": 0.418
+        },
+        {
+          "w": "hours",
+          "start": 0.453,
+          "end": 0.673
+        },
+        {
+          "w": "awake?",
+          "start": 0.72,
+          "end": 1.08
+        },
+        {
+          "w": "Some",
+          "start": 1.184,
+          "end": 1.358
+        },
+        {
+          "w": "tests",
+          "start": 1.382,
+          "end": 1.579
+        },
+        {
+          "w": "go",
+          "start": 1.614,
+          "end": 1.707
+        },
+        {
+          "w": "as",
+          "start": 1.741,
+          "end": 1.8
+        },
+        {
+          "w": "badly",
+          "start": 1.858,
+          "end": 2.101
+        },
+        {
+          "w": "as",
+          "start": 2.125,
+          "end": 2.171
+        },
+        {
+          "w": "being",
+          "start": 2.206,
+          "end": 2.357
+        },
+        {
+          "w": "drunk.",
+          "start": 2.392,
+          "end": 2.926
+        }
+      ]
+    },
+    "D3": {
+      "who": "brain",
+      "text": "And you can fall asleep for seconds without knowing it.",
+      "voiceId": "iP95p4xoKVk53GoZ742B",
+      "pitch": 1,
+      "tempo": 1,
+      "file": "toons/no-sleep/voice/D3.mp3",
+      "duration": 2.359,
+      "words": [
+        {
+          "w": "And",
+          "start": 0,
+          "end": 0.139
+        },
+        {
+          "w": "you",
+          "start": 0.174,
+          "end": 0.244
+        },
+        {
+          "w": "can",
+          "start": 0.267,
+          "end": 0.36
+        },
+        {
+          "w": "fall",
+          "start": 0.395,
+          "end": 0.534
+        },
+        {
+          "w": "asleep",
+          "start": 0.58,
+          "end": 0.789
+        },
+        {
+          "w": "for",
+          "start": 0.836,
+          "end": 0.917
+        },
+        {
+          "w": "seconds",
+          "start": 0.975,
+          "end": 1.277
+        },
+        {
+          "w": "without",
+          "start": 1.312,
+          "end": 1.591
+        },
+        {
+          "w": "knowing",
+          "start": 1.637,
+          "end": 1.881
+        },
+        {
+          "w": "it.",
+          "start": 1.927,
+          "end": 2.322
+        }
+      ]
+    },
+    "D4": {
+      "who": "brain",
+      "text": "Lose sleep night after night, and it adds up.",
+      "voiceId": "iP95p4xoKVk53GoZ742B",
+      "pitch": 1,
+      "tempo": 1,
+      "file": "toons/no-sleep/voice/D4.mp3",
+      "duration": 2.404,
+      "words": [
+        {
+          "w": "Lose",
+          "start": 0,
+          "end": 0.255
+        },
+        {
+          "w": "sleep",
+          "start": 0.279,
+          "end": 0.522
+        },
+        {
+          "w": "night",
+          "start": 0.569,
+          "end": 0.72
+        },
+        {
+          "w": "after",
+          "start": 0.755,
+          "end": 0.94
+        },
+        {
+          "w": "night,",
+          "start": 0.998,
+          "end": 1.254
+        },
+        {
+          "w": "and",
+          "start": 1.289,
+          "end": 1.428
+        },
+        {
+          "w": "it",
+          "start": 1.474,
+          "end": 1.544
+        },
+        {
+          "w": "adds",
+          "start": 1.591,
+          "end": 1.869
+        },
+        {
+          "w": "up.",
+          "start": 1.927,
+          "end": 2.368
+        }
+      ]
+    },
+    "E1": {
+      "who": "melatonin",
+      "text": "Tonight: phone down. Seven hours or more.",
+      "voiceId": "pFZP5JQG7iQjIQuC4Bku",
+      "pitch": -1,
+      "tempo": 0.9,
+      "file": "toons/no-sleep/voice/E1.mp3",
+      "duration": 2.568,
+      "words": [
+        {
+          "w": "Tonight:",
+          "start": 0,
+          "end": 0.516
+        },
+        {
+          "w": "phone",
+          "start": 0.554,
+          "end": 0.864
+        },
+        {
+          "w": "down.",
+          "start": 0.903,
+          "end": 1.239
+        },
+        {
+          "w": "Seven",
+          "start": 1.38,
+          "end": 1.664
+        },
+        {
+          "w": "hours",
+          "start": 1.703,
+          "end": 1.922
+        },
+        {
+          "w": "or",
+          "start": 1.961,
+          "end": 2.038
+        },
+        {
+          "w": "more.",
+          "start": 2.09,
+          "end": 2.529
+        }
+      ]
+    },
+    "E2": {
+      "who": "gunk",
+      "text": "The gaps are opening? No, no, not the crew!",
+      "voiceId": "N2lVS1w4EtoT3dr4eOWO",
+      "pitch": -1,
+      "tempo": 1,
+      "file": "toons/no-sleep/voice/E2.mp3",
+      "duration": 2.892,
+      "words": [
+        {
+          "w": "The",
+          "start": 0,
+          "end": 0.151
+        },
+        {
+          "w": "gaps",
+          "start": 0.197,
+          "end": 0.499
+        },
+        {
+          "w": "are",
+          "start": 0.546,
+          "end": 0.673
+        },
+        {
+          "w": "opening?",
+          "start": 0.72,
+          "end": 1.138
+        },
+        {
+          "w": "No,",
+          "start": 1.277,
+          "end": 1.521
+        },
+        {
+          "w": "no,",
+          "start": 1.579,
+          "end": 1.811
+        },
+        {
+          "w": "not",
+          "start": 1.846,
+          "end": 2.043
+        },
+        {
+          "w": "the",
+          "start": 2.078,
+          "end": 2.148
+        },
+        {
+          "w": "crew!",
+          "start": 2.206,
+          "end": 2.833
+        }
+      ]
+    },
+    "E3": {
+      "who": "gunk",
+      "text": "You did sleep! Now they wash me out. I can't clog your brain!",
+      "voiceId": "N2lVS1w4EtoT3dr4eOWO",
+      "pitch": -1,
+      "tempo": 1,
+      "file": "toons/no-sleep/voice/E3.mp3",
+      "duration": 4.002,
+      "words": [
+        {
+          "w": "You",
+          "start": 0,
+          "end": 0.174
+        },
+        {
+          "w": "did",
+          "start": 0.232,
+          "end": 0.395
+        },
+        {
+          "w": "sleep!",
+          "start": 0.453,
+          "end": 0.894
+        },
+        {
+          "w": "Now",
+          "start": 1.091,
+          "end": 1.265
+        },
+        {
+          "w": "they",
+          "start": 1.324,
+          "end": 1.44
+        },
+        {
+          "w": "wash",
+          "start": 1.498,
+          "end": 1.765
+        },
+        {
+          "w": "me",
+          "start": 1.823,
+          "end": 1.916
+        },
+        {
+          "w": "out.",
+          "start": 1.974,
+          "end": 2.194
+        },
+        {
+          "w": "I",
+          "start": 2.229,
+          "end": 2.264
+        },
+        {
+          "w": "can't",
+          "start": 2.357,
+          "end": 2.601
+        },
+        {
+          "w": "clog",
+          "start": 2.647,
+          "end": 2.984
+        },
+        {
+          "w": "your",
+          "start": 3.03,
+          "end": 3.158
+        },
+        {
+          "w": "brain!",
+          "start": 3.216,
+          "end": 3.947
+        }
+      ]
+    }
+  }
+}

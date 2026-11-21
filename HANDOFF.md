@@ -52,6 +52,11 @@ you stop. The rules are in `CLAUDE.md`.
   against 3.58 s). Speech-to-text: every word right in all three. The owner picked: Gunk pitch -1, Melatonin slowed (her lines
   carry `"tempo": 0.9`), the crew as made. Balance after the tests: 56,750. All checks pass again. Next: voice the script (702
   credits quoted), on the owner's yes.
+- VOICED on the owner's yes: 16 lines, **280 credits** by the receipt (702 quoted); balance 56,750 -> 56,470. Clips in
+  `assets/toons-voice/no-sleep/` (committed), timings `videos/no-sleep/toon-timings.json`. `toon:listen --words`: 140 words, 0 wrong;
+  `--voices`: all at -14.4 to -15.1 LUFS, speech 76-89%, synthetic 0-56%, no clipping. Voiced length 48.8 s.
+- OPEN, the checker FAILS one rule: hook A1 takes 2.2 s (rule 2 s) even at "tempo" 1.15 (the most allowed; was 2.5 s). The owner
+  chooses: a new take of A1 (31 characters, paid) or accept 2.2 s. Until then `toon:check --all` (CI) fails on this branch.
 - Before that: the owner's OK on the silent video, then the voice auditions for gunk / melatonin / crew with the cost, then
   voices, the narrator's CTA line and the video's own music (all paid: balance before and after).
 

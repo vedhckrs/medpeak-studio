@@ -224,7 +224,8 @@
       "xie-2013",
       "shokri-2018"
      ],
-     "cam": "ecu 50 push"
+     "cam": "ecu 50 push",
+     "tempo": 1.15
     },
     {
      "id": "A2",
