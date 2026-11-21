@@ -128,8 +128,8 @@ wobble, no turn. An icon leaves before the picture changes (`out`), and a transi
 
 **Name tags**: `CharTag`, 1 second, the FIRST time each non-human character appears (RABIES VIRUS, NERVE ENDING,
 DEFENCE CELL, ANTIBODY, WHITE BLOOD CELL). A white tag box above the head (to the side when there is no room), an
-arrow that draws itself, a flat halo of two thin white rings: **no glow, no blur** (the owner, 2026-11-20). Never on
-people. The box and the halo must never cover a face: point at a part of the character away from the others, and
+arrow that draws itself. **No circle, no halo, no glow, no blur** around the character (the owner, 2026-11-21: "remove
+completely everywhere"; the two white rings of 2026-11-20 are gone). Never on people. The box must never cover a face: point at a part of the character away from the others, and
 start a tag after a transition has finished.
 
 **Camera and transitions**
@@ -166,3 +166,18 @@ caught. A video with a chase question gets one.
 **Approval steps for a video**: 16:9 look sheets -> narrator clip (cost first) -> a 10 s motion test
 (`toon-v8-render --from A --to B`) -> the full video + the storyboard from the finished render
 (`node --import tsx pipeline/toon-v8-board.mjs <slug>`).
+
+
+## Owner's notes of 2026-11-21 (no-sleep), rules from now on
+
+- **No circle around a tagged character**, anywhere (see Name tags).
+- **The end card: every line on ONE line.** The headline and each point's bold text; `CtaCardV4` fits the three points
+  together at one size. An icon must look finished (the flat calendar was "cheap"): a round badge with a scene, as the sunrise.
+- **No jiggle or flicker when someone talks.** No squash per syllable (a slow small sway while speaking); mouths come from
+  `talkSmooth` (0.1 s average), never the raw per-frame opening; no fast hops or shakes (nothing faster than about 2 a second).
+- **The room camera** is smoothed on a fixed time grid (`smoothCam` in video.tsx). Check a room with a frame-difference
+  scan: a steady 5 Hz pulse means the camera steps.
+- **Room <-> body transitions go through a person**: give the room shot a `portal` (the head when the body place is the brain),
+  so the camera dives into it and pulls back out of it. Never a zoom-through crossfade that ghosts a big face over a room.
+- **A held phone**: out in front at chest height, seen from its back (the screen faces the person), the person's own hand
+  drawn again over it (`HandAt` with `rod={false}`: a gripping hand with no hole). Never pasted on the hand at the chin.

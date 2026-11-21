@@ -321,13 +321,10 @@ export const CharTag: React.FC<{label: string; x: number; y: number; r: number; 
   const a2 = Math.atan2(tip[1] - mid[1], tip[0] - mid[0]);
   const head = (s: number) => `M ${tip[0] + Math.cos(a2) * 4} ${tip[1] + Math.sin(a2) * 4} L ${tip[0] - Math.cos(a2 - 0.5) * s} ${tip[1] - Math.sin(a2 - 0.5) * s} L ${tip[0] - Math.cos(a2 + 0.5) * s} ${tip[1] - Math.sin(a2 + 0.5) * s} Z`;
   const arc = `M ${from[0]} ${from[1]} Q ${mid[0]} ${mid[1]} ${tip[0]} ${tip[1]}`;
-  const ring = settleIn(t - 0.05, 0.35);
   return (
     <div style={{position: 'absolute', inset: 0, opacity: op, pointerEvents: 'none'}}>
       <svg style={{position: 'absolute', left: 0, top: 0, overflow: 'visible'}} width={1080} height={1920} viewBox="0 0 1080 1920">
-        {/* the flat halo: two thin white rings around the character */}
-        <circle cx={x} cy={y} r={r * (1.02 + 0.1 * ring)} fill="none" stroke="#ffffff" strokeWidth={9} opacity={0.7} />
-        <circle cx={x} cy={y} r={r * (1.1 + 0.16 * ring)} fill="none" stroke="#ffffff" strokeWidth={5} opacity={0.38} />
+        {/* no halo (the owner, 2026-11-21: "this circle I don't want, remove completely everywhere"): the tag and its arrow only */}
         {draw > 0.02 && <>
           <path d={arc} stroke={INK} strokeWidth={14} strokeLinecap="round" fill="none" />
           <path d={arc} stroke="#ffffff" strokeWidth={7} strokeLinecap="round" fill="none" />

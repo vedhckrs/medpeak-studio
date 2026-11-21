@@ -105,9 +105,16 @@ const smoothCam = (L: Layout, toon: Toon, timings: ToonTimings | null, def: Shot
   if (!def || def.view) return cameraAt(L, def, n0.s, si, sec);
   // b: the shot's LAST frame (a sample past it would fall outside every camera segment and jump)
   const a = L.shots[si].from / TOON_FPS, b = (L.shots[si].from + L.shots[si].frames - 1) / TOON_FPS;
+  // 2026-11-21 (the owner: "frame jiggle"): the samples sit on a FIXED time grid and each weighs by its distance from
+  // `sec` (a tent 1.4 s wide). Samples that moved with `sec` made the picture step every 0.2 s whenever one crossed a
+  // change of framing (a 5 Hz jitter in every room). On the grid every weight changes smoothly.
+  const STEP = 0.1, HALF = 1.4;
+  const g0 = Math.ceil((sec - HALF) / STEP);
   let wx = 0, x = 0, y = 0, z = 0;
-  for (let i = -6; i <= 6; i++) {
-    const at = Math.min(b, Math.max(a, sec + i * 0.2)), w = 7 - Math.abs(i);
+  for (let k = g0; k * STEP <= sec + HALF; k++) {
+    const g = k * STEP, w = HALF - Math.abs(g - sec);
+    if (w <= 0) continue;
+    const at = Math.min(b, Math.max(a, g));
     const n = shotNow(L, toon, timings, at);
     const c = cameraAt(L, def, n.s, si, at);
     wx += w; x += c.x * w; y += c.y * w; z += c.z * w;

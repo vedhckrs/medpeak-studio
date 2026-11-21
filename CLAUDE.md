@@ -112,10 +112,14 @@ Do these once on a new machine. None of it needs the old machine except step 6.
 - **End every video with a CTA card: three strong points, each a big icon with short bold text** (2026-11-20).
   The headline on one line; the channel logo (`assets/brand/logo.png`) top centre in a circle with "MedPeak Health"
   typed below; the background in the logo's royal blue. A **professional male narrator, the same voice in every video** (Joey, `narrator` in `skill/medpeak-health/toons-cast.json`, the owner's pick 2026-11-20),
-  speaks the CTA and ends with: "Follow MedPeak Health for more health tips that keep you safe."
+  speaks the CTA and ends with: "Follow MedPeak Health for more health tips that keep you safe." **Every line on the card
+  is ONE line** (the headline and each point's bold text; 2026-11-21): `CtaCardV4` sizes the three points together to fit.
+- **No jiggle** (2026-11-21): a talking character does not squash on every syllable; mouths are smoothed (`talkSmooth`);
+  the room camera's smoothing samples a fixed time grid (a moving one stepped 5 times a second). A transition between a room
+  and the body goes through a person's `portal` (dive in / pull out), never a crossfade ghost.
 - **Icons only when the words say it**; non-human characters get a 1-second name tag (arrow + tag box above the head)
-  the first time they appear; no tags on humans; the tag's halo is two flat white rings, **no glow** (his answer,
-  2026-11-20); a tag never covers a face. The camera moves smoothly (one eased move per shot, a continuous dive
+  the first time they appear; no tags on humans; **no circle or halo around the character at all** (2026-11-21: "this circle
+  I don't want, remove completely everywhere"; it was two white rings), no glow; a tag never covers a face. The camera moves smoothly (one eased move per shot, a continuous dive
   inside the body); transitions follow the story (dive into the skin, pull back out). No flicker: nothing appears or
   vanishes in one frame. The story stays under 60 s; the narrator's end card may run past one minute (never cut or
   speed up the narrator). Clothes changes must read at phone

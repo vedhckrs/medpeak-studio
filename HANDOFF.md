@@ -73,6 +73,11 @@ you stop. The rules are in `CLAUDE.md`.
   `bodyFace` now uses `talkSmooth` (the mouth averaged over 0.1 s, all videos), no squash on every syllable, slow sways instead
   of fast hops/shakes; (4) Sam's phone "not proper": held out at chest height (`sitPhone` pose), seen from its back, his own
   hand drawn again over it (`HandAt` with `rod={false}` -> `Hand grips`, a gripping hand with no hole). Re-rendered, 0 flicker.
+- Second round of notes (2026-11-21), fixed: the name-tag circle removed everywhere (`CharTag`, rule in CLAUDE.md and the
+  skill); Sam's "Just one more video" jiggled: (a) the room camera stepped 5 times a second (`smoothCam` now samples a fixed
+  grid), (b) the cut from the brain was a zoom-through ghost: shots B and D now have a `portal` (Sam's head), so the camera
+  pulls out of his head / dives into it. Re-rendered: 0 one-frame jumps, no 5 Hz pulse on Sam.
+- OPEN: the owner says the hook is not powerful and asked for the reason FIRST (diagnosis sent, no change made yet).
 - NOT uploaded. Next: the owner watches the video; upload private only on his word (`python3 publish/upload.py no-sleep toon` with
   the venv Python, dry run first; check `upload.py` keeps repo-relative paths).
 - Spent on this video in all: 75 + 280 + 12 + 202 + 500 = **1,069 ElevenLabs credits** (56,825 -> 55,755). Anthropic key: not used ($0).

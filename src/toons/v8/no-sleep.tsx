@@ -285,9 +285,11 @@ const ScreenE: React.FC<{s: ShotNow}> = ({s}) => <NumTag s={s} text="7+ hours" i
 // ------------------------------------------------------------------ the shots
 export const NO_SLEEP_SHOTS: Record<string, ShotDef> = {
   A: {Scene: dived(ShotA), Screen: ScreenA, focus: (_w, s) => { const v = posA(s); return {x: v.x, y: v.y, r: v.size * 0.34}; }, view: viewA},
-  B: {Scene: ShotB, Screen: ScreenB, focus: (who, s) => (who === 'melatonin' ? {x: melB(s).x, y: melB(s).y, r: 110} : samFocus(samB))},
+  // portal (2026-11-21, the owner: the cut into "Just one more video" flickered): the brain is INSIDE Sam's head, so the camera
+  // pulls back out of his head into the room, and dives back into it from the room (no zoom-through ghost)
+  B: {Scene: ShotB, Screen: ScreenB, focus: (who, s) => (who === 'melatonin' ? {x: melB(s).x, y: melB(s).y, r: 110} : samFocus(samB)), portal: () => { const h = headAt(SAM, samB); return [h.x, h.y - h.r * 0.3]; }},
   C: {Scene: dived(ShotC), Screen: ScreenC, focus: () => ({x: 540, y: 1000, r: 160}), view: viewC},
-  D: {Scene: ShotD, Screen: ScreenD, focus: (who, s) => (who === 'brain' ? {x: brainD(s).x, y: brainD(s).y, r: 130} : samFocus(samD))},
+  D: {Scene: ShotD, Screen: ScreenD, focus: (who, s) => (who === 'brain' ? {x: brainD(s).x, y: brainD(s).y, r: 130} : samFocus(samD)), portal: () => { const h = headAt(SAM, samD); return [h.x, h.y - h.r * 0.3]; }},
   E: {Scene: dived(ShotE), Screen: ScreenE, focus: () => ({x: 545, y: 1000, r: 180}), view: viewE},
 };
 
