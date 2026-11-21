@@ -55,7 +55,9 @@ export const STAGE_KEYS: Partial<Record<SetName, string[]>> = {
   // MACRO (the owner's hero visual): view picks the close-up (0 entry, 1 inside, 2 caught); slide, speed and grip play it.
   // no-sleep (2026-11-21): the brain among its cells (src/toons/v8/sleep-places.tsx). gap: 0 awake (cells close),
   // 1 asleep (the channels open). wash: brain fluid streams through. dirt: waste stuck in the channels.
-  macro: ['view', 'slide', 'speed', 'grip', 'snap', 'gap', 'wash', 'dirt'],
+  // creatine (2026-11-21, src/toons/v8/crea-places.tsx): crea (grains in the blood stream), flex (the muscle contracts),
+  // drain (the batteries empty), charge (they refill), water (water drifts into the cell), bits (creatinine in the kidney filter).
+  macro: ['view', 'slide', 'speed', 'grip', 'snap', 'gap', 'wash', 'dirt', 'crea', 'flex', 'drain', 'charge', 'water', 'bits'],
   arm: ['bite', 'climb', 'days', 'vaccine', 'wall', 'wash', 'dizzy'],
   molar: ['night', 'guards', 'sleep', 'sugar', 'snack', 'wash', 'fight', 'party', 'acid', 'chalk', 'brush', 'shield'],
   // gum: a swallowed piece of gum comes down and floats with the food. pass: what is in the stomach
@@ -66,7 +68,7 @@ export const STAGE_KEYS: Partial<Record<SetName, string[]>> = {
 // ------------------------------------------------------------------ rooms (owner, 2026-11-16: "each video a
 // different clinic and a different home, unique"). The sets `clinic` and `home` are BUILT from a
 // recipe in the script (`rooms`), so no two videos have to share a background.
-export const ROOM_KINDS = ['clinic', 'bedroom', 'kitchen', 'bathroom', 'living'] as const;
+export const ROOM_KINDS = ['clinic', 'bedroom', 'kitchen', 'bathroom', 'living', 'gym'] as const; // gym: creatine (2026-11-21), drawn in look v8 (src/toons/v8/crea-gym.tsx)
 export type RoomKind = (typeof ROOM_KINDS)[number];
 export const ROOM_PALETTES = ['mint', 'sky', 'peach', 'lavender', 'butter', 'sage', 'blush', 'stone', 'nightblue', 'cream', 'terracotta', 'forest', 'lilac', 'sunny', 'slate', 'rose'] as const;
 export const ROOM_WALLS = ['paint', 'stripes', 'wainscot', 'tiles', 'dots'] as const;
@@ -83,6 +85,7 @@ export const ROOM_LAYOUTS: Record<RoomKind, readonly string[]> = {
   kitchen: ['stove-left', 'stove-right'],
   bathroom: ['sink-left', 'sink-right'],
   living: ['sofa-left', 'sofa-right'],
+  gym: ['rack-left', 'rack-right'],
 };
 export type RoomLook = {
   kind?: RoomKind; // home only: which room of the home (the clinic is always a clinic)
@@ -197,7 +200,12 @@ export type ToonProp = {hold?: boolean; kind: PropName; x?: number; y?: number; 
  * seconds) the stage's state moves to `set` over `over` frames, a sound plays, an effect flashes.
  * This is how a Toon SHOWS the process instead of talking about it.
  */
-export type ToonEvent = {at: string; word?: string; delay?: number; set?: Record<string, number>; over?: number; sfx?: string; fx?: 'flash'};
+/**
+ * `act` (acting kit, 2026-11-21): a visible ACTION of a character at this moment (a jump, a take, a nod, a gesture, a throw), done by
+ * the shot's own code; it counts as "something happens" like a stage change. It names who acts and what, e.g. "mom: jumps in panic".
+ * The shot must really do it: the look check and the owner's eye are the test.
+ */
+export type ToonEvent = {at: string; word?: string; delay?: number; set?: Record<string, number>; over?: number; sfx?: string; fx?: 'flash'; act?: string};
 /**
  * A shot is one place. `card` makes it a time card instead ("LATER THAT NIGHT..."), lasting
  * `seconds`. `state` is where the stage's dials start; `events` change them.

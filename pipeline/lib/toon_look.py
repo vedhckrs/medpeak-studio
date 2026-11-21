@@ -5,8 +5,12 @@ Run by pipeline/toon-look.mjs with earshot's Python (it has numpy).
 import json, subprocess, sys
 import numpy as np
 W, H = 270, 480
+TO = None  # seconds: measure only the story (set from the command line by toon-look.mjs: the end card is left out)
 def frames(path):
-    p = subprocess.Popen(['ffmpeg', '-v', 'error', '-i', path, '-vf', f'scale={W}:{H}', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-'], stdout=subprocess.PIPE)
+    # resample to 30 fps first: the reference Shorts were measured at 30 fps; our renders run at 60 (2026-11-21: a 60 fps video read
+    # as 30 fps reported twice its length and half its cut rate, and frame-to-frame motion is halved at 60)
+    cut = ['-t', str(TO)] if TO else []
+    p = subprocess.Popen(['ffmpeg', '-v', 'error', '-i', path, *cut, '-vf', f'fps=30,scale={W}:{H}', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-'], stdout=subprocess.PIPE)
     n = W * H * 3
     while True:
         b = p.stdout.read(n)
@@ -43,6 +47,9 @@ def video(path):
             'still_frames': round(float((area < 0.005).mean()), 3), 'small_motion': round(float(((area >= 0.005) & (area < 0.08)).mean()), 3),
             'big_motion': round(float((area >= 0.25).mean()), 3), 'median_moving_area': round(float(np.median(area)), 4), **{k: round(v, 4) for k, v in L.items()}}
 out = {}
-for p in sys.argv[2:]:
+args = sys.argv[2:]
+if args and args[0].startswith('--to='):
+    TO = float(args[0][5:]); args = args[1:]
+for p in args:
     out[p.split('/')[-1]] = video(p); print(p.split('/')[-1], out[p.split('/')[-1]], flush=True)
 json.dump(out, open(sys.argv[1], 'w'), indent=1)

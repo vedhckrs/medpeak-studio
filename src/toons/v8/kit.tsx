@@ -20,8 +20,8 @@ import {theme} from '../../brand/theme';
 
 // ------------------------------------------------------------------ constants
 export const INK = '#2b1a17'; // the one outline colour
-export const OUT = 3.4; // outline thickness in board pixels (a board is 1920 x 1080)
-export const IN = 2.2; // inner line thickness in board pixels
+export const OUT = 5.6; // outline thickness (2026-11-21, the owner: "Yes, finish it" on the bolder-line test; was 3.4). Board pixels: a board is 1920 x 1080
+export const IN = 3.2; // inner line thickness (was 2.2, with OUT)
 export const BG = '#fbf7f0'; // board paper
 export const FONT = theme.font;
 

@@ -27,7 +27,7 @@ export const CAPTION_Y = 1470;
 export const CAPTION_KEY = '#ffd23f';
 
 export const WordCaption: React.FC<{word: string; t: number; isKey?: boolean; y?: number}> = ({word, t, isKey, y = CAPTION_Y}) => {
-  const k = popIn(t, isKey ? 0.26 : 0.16);
+  const k = popIn(t, isKey ? 0.14 : 0.08); // quicker (acting kit, 2026-11-21): the word lands and HOLDS; the long pop kept 9% of frames moving
   const size = isKey ? 132 : 108;
   return (
     <div style={{position: 'absolute', left: 0, right: 0, top: y, display: 'flex', justifyContent: 'center', pointerEvents: 'none'}}>

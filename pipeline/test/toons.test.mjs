@@ -312,7 +312,9 @@ test('every real script has its own clinic and home, and no two videos share one
 });
 
 test('the gate refuses a copied room, a shared room and a bad recipe', () => {
-  const [a, b] = real;
+  // two videos with both rooms, within six episodes of each other (the colour rule only holds for neighbours)
+  const both = real.filter((x) => x.rooms?.clinic && x.rooms?.home).sort((x, y) => x.episode - y.episode);
+  const a = both[0], b = both.find((x) => x !== a && Math.abs(x.episode - a.episode) <= 6 && x.rooms.home.palette !== a.rooms.home.palette);
   let t = clone(a);
   t.rooms.clinic = clone(b.rooms.clinic);
   assert.ok(failed(t).includes('Rooms are unique'), 'the same clinic as another video');
@@ -376,7 +378,7 @@ test('the staging check catches a bubble put on the doctor, and a thought bubble
 
 test('no graphic sits on the caption line, and the staging check catches one that does', async () => {
   for (const t of real) assert.deepEqual((await scanStaging(t, null)).onCaption, [], `${t.slug}: a graphic on the caption line`);
-  const t = clone(real[0]);
+  const t = clone(real.find((x) => x.shots.some((s) => (s.props ?? []).some((p) => p.kind === 'tag' && p.x))));
   const shot = t.shots.find((s) => (s.props ?? []).some((p) => p.kind === 'tag' && p.x));
   Object.assign(shot.props.find((p) => p.kind === 'tag' && p.x), {x: 540, y: 1500});
   assert.ok((await scanStaging(t, null)).onCaption.length >= 1, 'a tag typed onto the caption line is reported');
@@ -388,7 +390,8 @@ test('in every room a recipe can make, the wall items hang above head height, in
   const {ROOM_LAYOUTS, ROOM_WINDOWS, ROOM_SIDES} = await import('../../src/toons/director.ts');
   const hit = (a, b) => Math.min(a[2], b[2]) - Math.max(a[0], b[0]) > 0 && Math.min(a[3], b[3]) - Math.max(a[1], b[1]) > 0;
   let rooms = 0;
-  for (const [kind, layouts] of Object.entries(ROOM_LAYOUTS)) for (const layout of layouts) for (const style of ROOM_WINDOWS) for (const side of ROOM_SIDES) {
+  // the gym (creatine) is drawn only in look v8 (src/toons/v8/crea-gym.tsx); the old room kit hangs nothing in it
+  for (const [kind, layouts] of Object.entries(ROOM_LAYOUTS).filter(([k]) => k !== 'gym')) for (const layout of layouts) for (const style of ROOM_WINDOWS) for (const side of ROOM_SIDES) {
     const look = {kind, palette: 'mint', wall: 'paint', floor: 'wood', window: {style, side, view: 'garden'}, layout, chart: 'body'};
     const role = kind === 'clinic' ? 'clinic' : 'home';
     const items = wallItems(look, role, 0); // everything a wall can carry (ROOM_TIDY 0)

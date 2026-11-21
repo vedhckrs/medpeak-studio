@@ -89,3 +89,13 @@ behind people as in any room.
 | i | The YouTube login expires about every 7 days | the Google app is in testing mode | the owner publishes the Google app, or signs in again each week |
 | j | The food-pipe and tooth stages do not report where their contents are, so the check cannot measure them. Looked at by eye on their boards: the tooth is clear in every state; on the food pipe the pill and the water pass over its face for about a second when the pill is washed down | only the stomach stage was rebuilt on a layout the check can read | rebuild the food pipe the same way before it is used again; ask the owner whether its face should move to the wall |
 | k | The AI-use answer cannot be confirmed from here. The upload does not store it; `after_upload.py --label` sends it and the update call answers "True", but a fresh read of the video's status shows no such field (seen 2026-11-17 on video 4 and on the night-brushing video). I reported video 4's answer as set on the strength of the update call alone | YouTube's API does not return the field on read-back | confirmed by eye on 2026-11-17, on the owner's yes, in YouTube Studio in the owner's Chrome: both videos show "AI use: Yes" as the saved value (Details, Show advanced settings, "AI use"). So the `--label` step works; only the read-back is blind. Opening the advanced settings marks the page as changed by itself: press "Undo changes" and read the value again, never "Save" |
+
+## A line across a hand that holds something (creatine, 2026-11-21)
+- **Seen:** the owner, on Mom's shaker hand: "what line in hand", then "you join hand with arm, why line come".
+- **Root cause:** the held prop was drawn ON TOP of her arm, and a second gripping hand (`HandAt ... rod={false}`) was drawn over the
+  prop so the fingers would wrap it. That second hand has its own outline, so it shows a seam where it meets the forearm (and, on a
+  left hand without `mirror`, a line across the fist). The rule is that the hand is ONE piece with the forearm.
+- **Rule for every video:** draw a held prop BEHIND the person (before `PersonAt`), centred at the palm (`handAt(...)`), and let the
+  rig's own hand close over it: the rig's arm and hand are one outlined form and its 'hold' hand has curled fingers with no hole,
+  made for an object drawn behind (the clipboard does the same). Do not draw a second hand over a prop. (no-sleep's phone still uses
+  the second-hand method: fix it the same way if it is ever re-rendered.) Look at a close crop of every held prop before showing a render.

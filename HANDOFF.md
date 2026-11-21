@@ -6,6 +6,234 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-21 (16) - MacBook (local Claude Code) - branch `video/creatine` - creatine: UPLOADED private (dKQm2aRKyTs)
+
+- On the owner's word ("Yes, upload private"): **https://youtu.be/dKQm2aRKyTs**, private, not made for kids (id in
+  `videos/creatine/package/toon.json`). Dry run first, then `--approve`.
+- Python on this Mac: none had the YouTube client; a throwaway venv in this session's scratchpad (`pip install google-api-python-client
+  google-auth google-auth-oauthlib`). For good, set one up in a normal terminal.
+- AI label: `after_upload.py creatine toon --label --approve`: the update call answered True; YouTube does not show the field on read
+  back (same as rabies and no-sleep): the owner checks it in YouTube Studio (Details, "Altered content").
+- Topic bank: #3 marked `creatine (uploaded private 2026-11-21)`. Next video: topic 4 ("What Happens If You Quit Sugar for 30 Days").
+- Merged `video/creatine` into `main` after CI (the owner's standing word).
+
+---
+
+## 2026-11-21 (15) - MacBook (local Claude Code) - branch `video/creatine` - creatine FINISHED (acted version), waiting for the owner to watch (NOT uploaded)
+
+- The owner: "Yes, finish it" (the bolder line and a new steady music track).
+- **Bolder line for every video from now on:** `kit.tsx` OUT 3.4 -> 5.6, IN 2.2 -> 3.2. Older uploaded videos keep their look unless re-rendered.
+- New music `assets/toons-music/creatine.mp3` from a steady prompt (no stops): **500 credits**; balance 49,730 -> 49,230. The scan shows
+  no rest inside its loop (only the end fade, cut out of the loop). The old track is replaced (not kept in git history beyond the commit before).
+- Final fixes: the BATTERY tag's arrow stops above the cap (it read "AYP"); on "no" Dr. Mira rests and nods (her open hand covered Mom's
+  shaker in Mom's close-up).
+- Final: `videos/creatine/renders/toon-v8.mp4` 66.8 s, -14.0 LUFS, true peak -0.9 dBTP, no holes, 8 of 9 sounds heard. `npm test` 50/50;
+  toon:check (+ `--all`), camera, motion, staging, sound ALL PASS. Look: outlines 2.7% PASS, brightness 170 PASS, line detail PASS;
+  still frames 26% FAIL (target 45; was 4% in the rejected cut), small movement 57% (target 55). Told the owner plainly.
+- Package rebuilt READY (cover 1.75 s). Phone copy `toon-v8-phone.mp4`.
+- Spent on this video in all: 75 + 285 + 193 + 500 + 500 = **about 1,550 ElevenLabs credits** (the first music track was not used).
+- Next: the owner watches; upload private only on his word; then merge `video/creatine`.
+
+---
+
+## 2026-11-21 (14) - MacBook (local Claude Code) - branch `video/creatine` - creatine restaged C-G (review cut), WAITING
+
+- The owner: "Yes, do the rest" (after the hook test). Built (free), all with the acting kit:
+  - New drawings: `Fat` (grumpy blob, `knock`), Muscle `band` + `sweat`, `Dumbbell`, `CellDoorPlace` (the cell close up: `fill`, `pour`,
+    `door`; `doorAt`), `MuscleSign` (signpost with a flexed muscle). New poses `press` (near arm overhead), `holdL` (near arm at the chest
+    when facing left). Pose test `ActPoses` in `entry-act.tsx`.
+  - C blood: Crea surfs in on a red cell, splash, points, hops, the signpost pops up, he zips into the opening; the stream flows only
+    while he arrives and leaves (`BloodPlace t={flowT}`).
+  - D muscle: a cut to Mom pressing a dumbbell; the batteries go out one after another (`batteryLevel`, left to right); the big battery
+    shakes; Crea runs in, winds up, throws the spark on an arc, it hits (burst), the battery refills with a hop; Muscle drops in big
+    and does reps on the beats, then jogs in a headband, sweats, slumps on "barely".
+  - E kidney: Kidney moved off the act-2 watermark; a chip pops off Crea and rides the tube (CREATININE tag once it has left him);
+    a syringe reaches in; the blood-test card SLAMS on; the Kidney jumps in fright, then hops twice; the filter's clock runs only on beats.
+  - F clinic: held framings with HARD cuts per line (`viewF`): the room camera's 2.8 s smoothing made every reframe a slow slide.
+    Dr. Mira raises the lab sheet (clipboard), nods, opens her hand; Mom holds her shaker (behind her hand), panic jump, joy hop.
+    No raised single finger.
+  - G ending: a NEW view (`view: 3`): water pours into the cell, it swells; Fat waddles up and knocks; Crea slams the door on "fat!".
+  - Checker: events may carry `act` ("mom: jumps in panic"), a visible character action that counts as something happening; the
+    blood stream and the kidney flow no longer count as flowing all the time. Caption pop quicker (0.08 s; 0.14 s for the key word).
+- Checks: toon:check (+ `--all`), camera, motion, staging ALL PASS. `npm test` 48/50: only the two music tests (the funk bed stops).
+- Look (story only): still frames 26% (was 4%; target 45-80), small movement 57% (target 15-55), outlines 0.9% (target 2.5),
+  brightness 174 PASS. Not passing: a bolder line needs the owner's OK (before/after `plans/review-creatine/outline-*.jpg`,
+  kit OUT 3.4 -> 5.6, IN 2.2 -> 3.2; NOT applied); the rest is a dialogue-heavy story (mouths, one-word captions).
+- Sent as a REVIEW cut (not final): `renders/toon-v8-phone.mp4`, `plans/review-creatine/new-pieces.jpg`, the outline sheets.
+- Next on the owner's word: the bolder line (free), a new steady music track (about 500 credits, balance 49,730), re-render, package.
+
+---
+
+## 2026-11-21 (13) - MacBook (local Claude Code) - branch `video/creatine` - acting kit + hook test (0-10 s) sent, WAITING
+
+- The owner approved the review plan ("Yes, go ahead"). Built (free):
+  - `toon-look` fixed: resamples to 30 fps (it read 60 fps renders as 30: double length, half the cut rate) and measures the STORY
+    only (the still end card hid the problem: creatine's story holds still in 4% of frames, not 31%). `--whole` measures the whole file.
+    CLAUDE.md: the look check must pass before the owner sees a video.
+  - `src/toons/v8/act.tsx`, the acting kit: `keyed` (key poses with holds; ease/back/out/snap), `take`, `hop`, `shake`, `arc`,
+    `Burst`, `SpeedLines`, `Stamp`.
+  - New rig poses `cheeks` (the take; use the FRONT view, the three-quarter one covers the nose), `shake` (near arm up with a bottle;
+    for a figure facing right that is her LEFT arm), `shrug2`. Pose test: `src/toons/v8/entry-act.tsx` (`ActPoses`).
+  - Calm places: `crea-places.tsx` depth planes no longer drift; no floating specks, bobbing batteries or wavy membranes.
+  - Blood: one dark opening at the far end (the two holes read as a face).
+  - Hook (shots A, B in `creatine.tsx`): close on Mom's nervous face (eyes shut) as she steps on, Crea at her ear; cut to the dial filling
+    the screen, the needle SLAMS (shake, burst), Crea leaps at the lens; Mom's take (front, `cheeks`, jump back) with the +2 KG stamp
+    on the second "Your scale jumps..." (not during the hook line: the owner's rule); the dive into her upper arm with skin / fat / muscle
+    rims. B: medium (shot `view`), she shakes an orange shaker at the dial and stomps on "week!". Crea's eyes open while he talks (`openFace`).
+- Checks: toon:check, camera, motion, staging ALL PASS. Look on the 10 s slice (`--whole`): still frames 16% (was 4% for the whole story;
+  target 45-80), small movement 42% PASS, outlines 2.3% (target 2.5), brightness 116 (the dark gym wall; target 140), a cut every 1.4 s
+  (the hook cuts fast on purpose). Not yet passing.
+- **`npm test` 48/50: the creatine music breaks the steady-bed rule** (format-5 beds must never go quiet; the funk track stops 4 times).
+  It failed since the music was made (18:15); the tests were not run then. Needs a new steady track (about 500 credits, owner's yes).
+  The branch cannot be merged until it passes.
+- Test clip: `videos/creatine/renders/toon-v8-0-10.mp4`, phone copy `hook-test-phone.mp4`. Sent to the owner.
+- The owner on the test: "what line in hand" (Mom's shaker hand). Then "you join hand with arm, why line come". Root cause: a second
+  gripping hand drawn over the prop has its own outline (a seam at the wrist). Fixed the right way: the bottle is drawn BEHIND her and
+  the rig's own one-piece arm and hand close over it; no second hand. Speed lines dropped from the shake. Rule in `toons-known-issues.md`.
+- Open (from the plan, after the owner's yes): bolder outlines sheet, a lighter gym wall, scenes C-G restaged (lift, spark throw, running,
+  needle and lab sheet, clinic acting, the water-balloon cell with the Fat blob), the event-size check, no place reused, watermark off
+  characters, Dr. Mira's finger, a new steady music bed. No credits spent since the review.
+
+---
+
+## 2026-11-21 (12) - MacBook (local Claude Code) - branch `video/creatine` - creatine: the owner rejected the look; review + plan sent, WAITING
+
+- The owner on the finished creatine video: animation, characters and visuals weak, not viral or engaging; asked for a
+  frame-by-frame analysis, a plan first, and the bugs. NOT uploaded.
+- Review and plan: `plans/creatine-review-2026-11-21.md`, picture sheet `plans/review-creatine/frames-1-10.jpg`.
+- Measured with `toon:look`: creatine and no-sleep both FAIL (still frames 31% vs 63% reference, small movement 60% vs 34%,
+  near-black outline 1.2% vs 3.0%). This check was not run before sending: a process miss (bug 2 in the plan).
+- Bug found in `toon-look.mjs`: reads 60 fps renders as 30 fps (133.6 s for 66.8 s). The 20 reference Shorts are no longer on this
+  Mac (the old scratchpad folder is empty); only the written numbers remain.
+- Nothing changed in code, nothing spent.
+- Next: the owner's answer on the plan (acting kit, bold outline sheet, +2 KG card and time card).
+
+---
+
+## 2026-11-21 (11) - MacBook (local Claude Code) - branch `video/creatine` - creatine: FINISHED, waiting for the owner to watch (NOT uploaded)
+
+- The owner: "Yes, make both". Balance before: 50,424.
+- Joey's end card (`toon-voice.mjs creatine --cta`): **193 credits** by the receipt, 16.11 s, `assets/toons-voice/creatine/cta.mp3`,
+  beats wired in `CREATINE_CTA` (head 0, points 2.53 / 6.44 / 9.95, follow 12.59).
+- The music `assets/toons-music/creatine.mp3` (funk, 40 s): the tool reported 194 from the balance (the counter lags). Balance after
+  both: **49,730** (694 below the 50,424 before: matches 193 + about 500 for the music). `toon:music:scan`: 17 short rests (0.3-0.7 s).
+- Final render `videos/creatine/renders/toon-v8.mp4`: 66.8 s (story 49.1 s + card), -14.0 LUFS, true peak -0.8 dBTP; holes 0.3-0.4 s only
+  (none of 0.5 s). Sounds: first mix 5 of 9 heard; moved the splash into a pause, dropped the clinic thud and ding, tada later: now
+  8 of 9 (the tada under the card's whoosh). Contact sheets at 2 frames a second read. Phone copy `toon-v8-phone.mp4`.
+- Package READY (`node pipeline/toon-package.mjs creatine`): cover moved to 1.75 s (just after the needle swings into the red).
+- Spent on this video: 75 + 285 + 193 + about 500 = **about 1,050 ElevenLabs credits**. Anthropic key not used ($0).
+  Note: the balance also fell by about 2,000 more during the day from use outside this session.
+- Next: the owner watches with sound; upload private only on his word (`python3 publish/upload.py creatine toon`, dry run first; the
+  Mac's Python needs the venv as for no-sleep). Merge `video/creatine` after the upload (as no-sleep, PR #12).
+
+---
+
+## 2026-11-21 (10) - MacBook (local Claude Code) - branch `video/creatine` - creatine: VOICED, one word to confirm by ear
+
+- The owner: "Yes, voice it". Balance right before: 51,340 (540 below the reading after the voice tests with nothing spent here:
+  something else is using these keys). Voiced 18 lines: **285 credits** by the receipt (711 quoted). Clips committed in
+  `assets/toons-voice/creatine/`, timings `videos/creatine/toon-timings.json`.
+- With real timings two rules failed; fixed for free with a line's `tempo` (`toon-voice.mjs creatine --remix`): A1 1.1 (2.1 s -> 1.9 s,
+  hook rule 2 s), F1 1.12 and F2 1.15 (the clinic had a 3.3 s stretch with nothing new; push camera segments do not count as change).
+  Voiced length 49.1 s. `toon:check` (+ `--all`), camera, motion, staging: ALL PASS.
+- `toon:listen --voices`: 18 lines all speech, -14.4 to -15.4 LUFS, no clipping. G1 (Crea) also tagged "quack 49%" (his pitched timbre?).
+  `--words`: 130 words, 2 differ: B1 "creating" for "creatine" (a near miss), and **E1 "creatinine" heard as "creatine"**. That word is the
+  point of the kidney twist. A stronger check was not possible here: whisper-large-v3 is only half downloaded (weights.npz missing),
+  parakeet is not downloaded, faster-whisper is not installed. The word lasts 0.86 s against 0.52-0.62 s for "creatine" (fits one more
+  syllable, not proof). E1 and G1 sent to the owner to judge by ear; a re-take of E1 with a clearer spelling costs about 45 characters.
+- The owner, after hearing G1 (and E1): "is good to go": the voices stay as made.
+- Next: Joey's card (214 characters quoted) and the music, on his yes; render; package.
+
+---
+
+## 2026-11-21 (9) - MacBook (local Claude Code) - branch `video/creatine` - creatine: voice tests made, WAITING for the owner's picks
+
+- The owner: "Yes, voice tests" (which also OKs the silent video's motion).
+- Balance before (live, sandbox off): 52,365 (4 keys). Lower than the 55,755 noted after no-sleep: about 3,400 were spent elsewhere
+  between the two sessions.
+- Voice tests `toon-voice.mjs creatine --audition --who crea,battery,muscle`: **75 credits** by the receipt (189 quoted). Files in
+  `out/toons/auditions/` (crea.mp3, battery.mp3, muscle.mp3; this Mac only) plus a free variant `battery-fast.mp3` (tempo 1.15: 4.76 s
+  against 5.46 s). Speech-to-text (mlx_whisper): every word right in all three. `earshot realness`: real/pro 0.97 / 0.89 / 0.92.
+  Loudness -17.5 / -18.0 / -17.6 LUFS.
+- Balance after: 51,880. That is 485 less, but this session's receipt says 75: about 410 more went from key 4 at the same time,
+  not from this session (another machine or account?). Told the owner.
+- The owner picked "All three as made" (the battery at its own pace, not the faster take); written in `toons-cast.json`.
+- Next: voice the script (711 quoted) on the owner's yes, then Joey's card, the music (about 500).
+
+---
+
+## 2026-11-21 (8) - MacBook (local Claude Code) - branch `video/creatine` - creatine: silent video sent, WAITING for the owner's OK on motion
+
+- Fixed: the doctor line F4 split in two (F4 "A trial over twelve weeks..." + F5 "found no hair loss.", tag "12 WEEKS"): the one-word
+  "twelve-week" could not carry a number tag and the long line left a 3.5 s still. End of F: Dr. Mira rests her arm (her hand touched
+  Mom's thumbs-up).
+- Tests: four failed after creatine joined (it sorts first among the real scripts): the room gate test now picks two neighbouring videos,
+  the caption-line test picks a script with a tag, the old-kit wall test leaves out `gym` (drawn only in v8). `npm test` 50/50.
+  `toon:check` (+ `--all`), camera, motion, staging: ALL PASS.
+- Silent render `videos/creatine/renders/toon-v8.mp4`: 62.7 s (story about 49 s + card), 1080 x 1920, 60 fps; phone copy
+  `toon-v8-silent-phone.mp4`; storyboard `renders/storyboard/` (5 sheets; Pillow from a throwaway venv, the Mac's Python still has none).
+  Contact sheets at 2 frames a second read.
+- Voice quote (dry run): script 711 characters (the receipt usually comes in far lower: no-sleep 702 quoted, 280 charged); auditions for
+  crea / battery / muscle 189 characters. The live balance could not be read from Claude's shell (keys "NOT WORKING (network)"): read it
+  before any spend. Last known: 55,755.
+- Next: the owner OKs the motion, the clinic look and the hook wording; then auditions (paid), voices, Joey's card, music.
+
+---
+
+## 2026-11-21 (7) - MacBook (local Claude Code) - branch `video/creatine` - creatine: script + shots built, silent render NOT made yet
+
+- The owner OK'd the looks ("Yes, these looks").
+- Script `videos/creatine/toon.json` from `plans/creatine-script.py` (edit the .py, re-run): 7 shots A-G (macro hook with the gym
+  cold open, gym, blood, muscle cell, kidney filter, clinic, macro end), 17 lines, hook "Take creatine? Your scale jumps!" (A cut
+  for the hook rules: "your" + 2 title words; tell the owner). `toon:check` (and `--all`), `toon:camera`, `toon:motion`, `toon:staging`: ALL PASS.
+- New: room kind `gym` (director.ts), macro dials crea/flex/drain/charge/water/bits, flow dials crea/bits, proposed voices crea (Will +2),
+  battery (Jessica +3), muscle (George 0) NOT auditioned, layout stand-ins in characters.tsx, the video's own clinic `CreaClinic`
+  (crea-gym.tsx; NOT yet shown to the owner as a sheet), shots `src/toons/v8/creatine.tsx` registered in video.tsx, CTA card
+  (placeholder beats, no narrator clip yet).
+- Checked: silent stills of every line (two per line) read; fixed Dr. Mira's hand touching Mom (spacing 270/800, `youSee`), and the
+  thumbs-up hands touching (doctor now `youSee` on F4: re-check that still).
+- NOT done: `npm test` after these changes, the full silent render (`npm run toon:v8 -- creatine --silent`), storyboard, sending to owner.
+  No credits spent.
+- Next: npm test, silent render + storyboard, send to the owner with the clinic look and the hook wording change.
+
+---
+
+## 2026-11-21 (6) - MacBook (local Claude Code) - branch `video/creatine` - creatine: look sheets drawn, WAITING for the owner
+
+- The owner: "Hook A, go ahead" (plan approved; my picks stand: Mom as the lifter).
+- Four look sheets drawn (free), copies in `skill/medpeak-health/references/toons-boards/v8/creatine/`
+  (`node pipeline/toon-v8-sheets.mjs crea`, entry `src/toons/v8/entry-crea.tsx`):
+  1. `crea-cast`: Crea (white crystal grain, `carry` = a yellow spark), Battery (ATP; `charge` fills green/yellow/red,
+     `charging`, `face={false}` crowd), Muscle (striped fibre, `flex`). Code `src/toons/v8/crea-cast.tsx`.
+  2. `crea-place` + `crea-place-close`: `BloodPlace` (`crea`), `MuscleCellPlace` (`flex`, `drain`, `charge`, `water`;
+     `gapY`/`DOCKS` place things in the tilted gaps), `KidneyFilterPlace` (`bits`). Code `src/toons/v8/crea-places.tsx`.
+     The blood got a new place: `HighwayPlace` is the inside of a nerve.
+  3. `crea-gym`: `GymRoom` with the upright scale (`needle` 0..1, `SCALE`), Mom as `LIFTER` (tee, trousers, trainers),
+     the shaker held with `HandAt` over it. Code `src/toons/v8/crea-gym.tsx`.
+- Fixed before sending: Muscle's arms (were antennae on top; now a real flex / hanging at the sides), the muscle
+  fibres (flat blocks -> round rods: curved bands, light and shade, tilted).
+- Run: typecheck clean, `npm test` passes. No credits spent.
+- Next: the owner OKs the looks; then `videos/creatine/toon.json` (`toon:check` must pass), the shots file, silent render.
+
+---
+
+## 2026-11-21 (5) - MacBook (local Claude Code) - branch `video/creatine` - creatine: plan sent, WAITING for the owner
+
+- The owner said "Start"; the next topic is #3 "What Happens When You Take Creatine" (slug `creatine`), marked
+  `taken (Mac, 2026-11-21)` in `topic-bank.md` and pushed on `video/creatine`.
+- Sources read: PubMed 28615996 (ISSN 2017, full text PMC5469049), 33557850 (ISSN 2021 myths, PMC7871530), 12945830
+  (Branch 2003 meta-analysis), 43050022 (Raihan 2026 kidney meta-analysis), 42507286 (Almeida 2026 kidney meta-analysis),
+  40265319 (Lak 2025 hair RCT), 1327657 (Harris 1992, not used in the script). Abstracts saved in
+  `videos/creatine/research/abstracts.md`. The NIH ODS fact sheet shows a Cloudflare bot check (curl and the browser pane):
+  not clicked through; MedlinePlus no longer has the creatine page.
+- New: `plans/creatine-2026-11-21.md`: shape `journey` (gym -> blood -> muscle cell -> kidney filter -> clinic, Dr. Mira at
+  the end), 16-line draft, 3 hook choices, cast (new: Crea, the batteries, Muscle), new drawings (muscle cell inside,
+  gym, kidney filter), care notes (no dose; kidney wording "no harm was found", never "safe"; industry ties of the ISSN papers).
+- Not done: no `toon.json`, no sheets, nothing voiced, no credits spent. Anthropic key not used.
+- Next: the owner picks the hook, the lifter and OKs the plan; then the look sheets (free).
+
+---
+
 ## 2026-11-21 (4) - MacBook (local Claude Code) - branch `video/no-sleep` - no sleep: UPLOADED private (rbiXOjOD8SQ)
 
 - The owner picked topic 2, "What Happens If You Don't Sleep" (slug `no-sleep`); marked `taken (Mac, 2026-11-21)`
