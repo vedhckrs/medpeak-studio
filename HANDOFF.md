@@ -6,6 +6,23 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-21 (10) - MacBook (local Claude Code) - branch `video/creatine` - creatine: VOICED, one word to confirm by ear
+
+- The owner: "Yes, voice it". Balance right before: 51,340 (540 below the reading after the voice tests with nothing spent here:
+  something else is using these keys). Voiced 18 lines: **285 credits** by the receipt (711 quoted). Clips committed in
+  `assets/toons-voice/creatine/`, timings `videos/creatine/toon-timings.json`.
+- With real timings two rules failed; fixed for free with a line's `tempo` (`toon-voice.mjs creatine --remix`): A1 1.1 (2.1 s -> 1.9 s,
+  hook rule 2 s), F1 1.12 and F2 1.15 (the clinic had a 3.3 s stretch with nothing new; push camera segments do not count as change).
+  Voiced length 49.1 s. `toon:check` (+ `--all`), camera, motion, staging: ALL PASS.
+- `toon:listen --voices`: 18 lines all speech, -14.4 to -15.4 LUFS, no clipping. G1 (Crea) also tagged "quack 49%" (his pitched timbre?).
+  `--words`: 130 words, 2 differ: B1 "creating" for "creatine" (a near miss), and **E1 "creatinine" heard as "creatine"**. That word is the
+  point of the kidney twist. A stronger check was not possible here: whisper-large-v3 is only half downloaded (weights.npz missing),
+  parakeet is not downloaded, faster-whisper is not installed. The word lasts 0.86 s against 0.52-0.62 s for "creatine" (fits one more
+  syllable, not proof). E1 and G1 sent to the owner to judge by ear; a re-take of E1 with a clearer spelling costs about 45 characters.
+- Next: the owner's ear on E1 (and G1); then Joey's card (about 200) and the music (about 500), each on his yes; render; package.
+
+---
+
 ## 2026-11-21 (9) - MacBook (local Claude Code) - branch `video/creatine` - creatine: voice tests made, WAITING for the owner's picks
 
 - The owner: "Yes, voice tests" (which also OKs the silent video's motion).
