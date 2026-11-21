@@ -231,9 +231,11 @@ export const WatermarkV3: React.FC<{act: number; t: number}> = ({act, t}) => {
  */
 export const WM_SIZE = 26;
 export const WM_OPACITY = 0.44;
-export const Watermark: React.FC<{act: number; t: number}> = ({act, t}) => {
+/** `out` (seconds since it started leaving) fades it away over 0.35 s; the end card has no watermark (the owner, 2026-11-21). */
+export const Watermark: React.FC<{act: number; t: number; out?: number}> = ({act, t, out}) => {
   const p = WM_AT[Math.max(0, Math.min(2, act))];
-  const k = clamp01(t / 0.35);
+  const k = clamp01(t / 0.35) * (out === undefined ? 1 : 1 - clamp01(out / 0.35));
+  if (k <= 0) return null;
   const tx = p.align === 'right' ? '-100%' : p.align === 'center' ? '-50%' : '0';
   return (
     <div style={{position: 'absolute', left: p.x, top: p.y, transform: `translate(${tx}, -50%)`, opacity: WM_OPACITY * k, pointerEvents: 'none',
