@@ -6,6 +6,28 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-21 (2) - Cloud session -> the owner moves to his MacBook (local Claude Code)
+
+The owner will work on his MacBook from now on (local Claude Code, his own copy of the repo). The cloud could not
+upload: it has no YouTube login, Remote Control to his Mac did not attach, and his OAuth client has no localhost
+redirect.
+
+**Next step on the Mac: upload rabies v4, PRIVATE (the owner said "package, private").**
+1. `git fetch --all --prune`, `git switch main`, `git pull` (rabies v4 is on `main`, PR #7).
+2. `npm ci`, then `npm run typecheck` and `npm test` (50 tests).
+3. The video is not in git: `npm run toon:v8 -- rabies` (about 7 min, writes `videos/rabies/renders/toon-v8.mp4`,
+   61.6 s) or the owner saves the file sent in the chat there.
+4. `node --import tsx pipeline/toon-package.mjs rabies` (READY, makes the v8 cover).
+5. `python3 publish/upload.py rabies toon --dry-run`, then with the owner's yes `--approve` (private). It needs the Mac's
+   saved login `~/.config/youtube-analytics/token.json` with the youtube.upload scope.
+6. Commit `videos/rabies/package/toon.json` (it records the video id), push, tell the owner the link.
+
+Cloud leftovers: a Google OAuth token saved as a network secret for `www.googleapis.com` on the `medpeak-studio` cloud
+environment was rejected by YouTube and is useless; the owner can delete it in the environment's settings. The
+owner's OAuth client secret was shared in the cloud chat: he may want to make a new secret in Google Cloud.
+
+---
+
 ## 2026-11-21 - Cloud session (claude.ai/code) - rabies v4 APPROVED, PR #7 merged
 
 - The owner approved the final rabies video and said "merge + package, private".
