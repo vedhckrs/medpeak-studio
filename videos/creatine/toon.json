@@ -215,7 +215,8 @@
      "src": [
       "antonio-2021"
      ],
-     "cam": "ecu 50 push"
+     "cam": "ecu 50 push",
+     "tempo": 1.1
     },
     {
      "id": "A2",
@@ -681,7 +682,8 @@
      "src": [
       "antonio-2021"
      ],
-     "cam": "mcu push"
+     "cam": "mcu push",
+     "tempo": 1.12
     },
     {
      "id": "F2",
@@ -693,7 +695,8 @@
      "src": [
       "antonio-2021"
      ],
-     "cam": "ecu push"
+     "cam": "ecu push",
+     "tempo": 1.15
     },
     {
      "id": "F3",

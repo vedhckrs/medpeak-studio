@@ -40,7 +40,7 @@ shots = [
      E("A2", word="fat?", set={"water": 1}, over=16, sfx="drip"),
    ],
    "lines": [
-     L("A1", "crea", "Take creatine? Your scale jumps!", "happy", "jumps", src=[AN], cam="ecu 50 push"),
+     dict(L("A1", "crea", "Take creatine? Your scale jumps!", "happy", "jumps", src=[AN], cam="ecu 50 push"), tempo=1.1),  # voiced 2.1 s; the hook rule is 2 s (free retime)
      L("A2", "crea", "Your scale jumps... is it fat?", "happy", "fat", chat=True, beat=0.3),
    ], "props": []},
   # B: the gym. Mom on the scale with her shaker: she only started this week.
@@ -119,8 +119,8 @@ shots = [
      E("F5", word="no", sfx="success-chime"),
    ],
    "lines": [
-     L("F1", "doctor", "Taking creatine? Tell me before a blood test.", "neutral", "blood", src=[AN], cam="mcu push"),
-     L("F2", "doctor", "Kidney problems already? Ask before you take it.", "neutral", "kidney", src=[AN], cam="ecu push"),
+     dict(L("F1", "doctor", "Taking creatine? Tell me before a blood test.", "neutral", "blood", src=[AN], cam="mcu push"), tempo=1.12),  # voiced, the clinic had a 3.3 s stretch with nothing new (free retime)
+     dict(L("F2", "doctor", "Kidney problems already? Ask before you take it.", "neutral", "kidney", src=[AN], cam="ecu push"), tempo=1.15),  # voiced 3.3 s on one picture (limit 3): free retime
      L("F3", "mom", "And my hair?", "shocked", "hair", chat=True, cam="ms crash"),
      L("F4", "doctor", "A trial over twelve weeks...", "happy", "twelve", src=[LAK], cam="mcu push"),
      L("F5", "doctor", "found no hair loss.", "happy", "hair", src=[LAK], cam="ecu push", react={"mom": "happy"}),
