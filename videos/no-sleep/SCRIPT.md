@@ -6,7 +6,7 @@ Toon script `no-sleep` · about 51 seconds · 16 pictures
 
 | | First line | Why |
 |---|---|---|
-| A (in the script) | Don't sleep? I clog your brain! | the owner's pick A cut to fit the 2-second hook rule (A was 9 words, about 3 s): same villain, same words, 6 words |
+| A (in the script) | Don't sleep? I clog your brain! | the owner's pick (2026-11-21): A cut to fit the 2-second hook rule (A was 9 words, about 3 s) |
 | B | Don't sleep? Your brain fills with gunk! | says the villain's name |
 | C | Don't sleep? I pile up in your head! | closest to A, 8 words |
 

@@ -125,7 +125,7 @@ toon = {
   "slug": "no-sleep", "title": "What Happens If You Don't Sleep", "format": 5, "shape": "crew",
   "music": "no-sleep", "camera": "steady", "episode": 10,
   "hooks": [
-    {"line": "Don't sleep? I clog your brain!", "why": "the owner's pick A cut to fit the 2-second hook rule (A was 9 words, about 3 s): same villain, same words, 6 words"},
+    {"line": "Don't sleep? I clog your brain!", "why": "the owner's pick (2026-11-21): A cut to fit the 2-second hook rule (A was 9 words, about 3 s)"},
     {"line": "Don't sleep? Your brain fills with gunk!", "why": "says the villain's name"},
     {"line": "Don't sleep? I pile up in your head!", "why": "closest to A, 8 words"},
   ],
