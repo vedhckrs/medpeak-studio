@@ -22,8 +22,11 @@ import {active, blink, bodyFace, clamp01, go, lerp, pop, since, sway, talk, type
 
 // ------------------------------------------------------------------ helpers
 /** Inside a shot, pass from one place to the next with a zoom-through over `d` seconds starting at u = 0. */
+// 2026-11-21 (the owner: no transitions, "it looks fake"): a change of place is a clean CUT; the zoom-through below never runs
+const SWAP_CUT = true;
 const Swap: React.FC<{u: number; from: React.ReactNode; to: React.ReactNode; d?: number}> = ({u, from, to, d = 0.38}) => {
   if (u < 0) return <>{from}</>;
+  if (SWAP_CUT) return <>{to}</>;
   const k = clamp01(u / d);
   if (k >= 1) return <>{to}</>;
   const e = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;

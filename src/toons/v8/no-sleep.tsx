@@ -12,6 +12,7 @@
  */
 import React from 'react';
 import {Put} from './scene';
+import {lobe} from './scenes-body';
 import {Brain} from './organs-a';
 import {Melatonin} from './cells';
 import {CharTag, Sunrise, Warning, type CtaPoint} from './hud';
@@ -68,42 +69,133 @@ const tagVia = (view: (s: ShotNow) => {x: number; y: number; z: number}) => {
   return T;
 };
 
-// =================================================================== A: the hook, inside the brain
-// 0.0 Gunk drops in from above onto the piled waste (squash) · "sleep?" the waste rises · "clog" a squelch and a flash,
-// Gunk swells · A2 he leans in, "wash" a drip, the gaps twitch
-const posA = (s: ShotNow) => {
+// =================================================================== A: the hook (the owner's choice A, 2026-11-21)
+// 0.00  Sam's face in the dark, lit by his phone; the clock SLAMS onto 2:00 (beep) · "Just one more video..." (cold open)
+// ~1.5  the camera dives through his face into his brain (a round window opens from between his eyes)
+// A1    Gunk SPLATS onto the lens (flash, goo runs down the screen), then drops back to his heap · "clog": the gaps squeeze shut
+// A2    he leans in; his name tag only now, after the hook
+type HookA = {dive0: number; dive1: number; splat: number; clog: number};
+const hookA = (s: ShotNow): HookA => {
+  const splat = at(s, 'A1', undefined, 2.0);
+  return {dive0: splat - 0.55, dive1: splat - 0.05, splat, clog: at(s, 'A1', 'clog', splat + 1.1)};
+};
+/** Sam close up for the cold open: the rig at 7x, his face placed high in the frame. */
+const samCloseOpts = () => {
+  const o0 = {pose: 'sitPhone' as const, view: 'three-quarter' as const, facing: 'right' as const, x: 540, y: 1560, scale: 5.6};
+  const h0 = headAt(SAM, o0);
+  return {...o0, x: o0.x + (590 - h0.x), y: o0.y + (700 - h0.y)};
+};
+const diveAt = (): [number, number] => { const h = headAt(SAM, samCloseOpts()); return [h.x + h.r * 0.12, h.y - h.r * 0.05]; };
+const SamCold: React.FC<{s: ShotNow}> = ({s}) => {
   const t = s.t;
-  const fall = clamp01(t / 0.32);
-  const land = t >= 0.32 ? Math.sin(clamp01((t - 0.32) / 0.3) * Math.PI) * (1 - clamp01((t - 0.32) / 0.3)) : 0;
-  const clog = go(since(s, 'A1', 'clog'), 0, 0.25) * (1 - go(since(s, 'A1', 'clog'), 0.5, 0.4) * 0.6);
+  const o = samCloseOpts();
+  const hand = handAt(SAM, o).R;
+  const slam = t < 0.3 ? lerp(2.4, 1, Math.pow(clamp01(t / 0.22), 2)) + Math.sin(clamp01((t - 0.22) / 0.08) * Math.PI) * 0.06 : 1;
+  const expr = EXPR_OF[feel(s, 'patient', 'happy')] ?? 'happy';
+  return (
+    <div style={{position: 'absolute', inset: 0, background: '#1d2447', overflow: 'hidden'}}>
+      {/* the room behind him, dark and close: the moon window, out of focus is not drawn, only darker */}
+      <div style={{position: 'absolute', inset: 0, transformOrigin: '560px 520px', transform: 'scale(1.9)', opacity: 0.55}}><BedroomRoom night /></div>
+      <svg style={{position: 'absolute', left: 0, top: 0}} width={1080} height={1920} viewBox="0 0 1080 1920">
+        <path d={`M ${hand.palm[0]} ${hand.palm[1] - 60} L ${hand.palm[0] - 360} ${hand.palm[1] - 900} L ${hand.palm[0] - 620} ${hand.palm[1] - 300} Z`} fill="#d4e8f6" opacity={0.22 + sway(t, 0.7) * 0.03} />
+      </svg>
+      <PersonAt spec={SAM} {...o} expr={expr} look={[0.5, 0.5]} talk={talkSmooth(s, 'patient')} blink={blink(t, 2)} bob={sway(t, 2.6) * 0.3} />
+      {/* he is IN BED: the duvet pulled up over his legs, close to the lens */}
+      <svg style={{position: 'absolute', left: 0, top: 0}} width={1080} height={1920} viewBox="0 0 1080 1920">
+        <path d="M -40 1430 Q 200 1330 520 1390 Q 820 1440 1120 1360 L 1120 1960 L -40 1960 Z" fill="#3fa79a" stroke={INK} strokeWidth={6} />
+        <path d="M -40 1510 Q 260 1440 560 1490 Q 860 1530 1120 1460" stroke="#2f8a7f" strokeWidth={14} fill="none" />
+        <path d="M 240 1420 Q 280 1560 250 1700 M 700 1430 Q 740 1580 720 1720" stroke={INK} strokeWidth={4} fill="none" />
+        {Array.from({length: 7}, (_, i) => <circle key={i} cx={80 + i * 150} cy={1600 + (i % 2) * 70} r={10} fill="#6cc4b8" />)}
+      </svg>
+      <HeldPhone h={hand} />
+      {/* the clock slams in, top right: 2:00 */}
+      <div style={{position: 'absolute', left: 250, top: 250, transform: `translate(-50%, -50%) scale(${slam.toFixed(3)}) rotate(4deg)`, background: CLOTH.charcoal, border: `6px solid ${INK}`, borderRadius: 26,
+        padding: '14px 30px', boxShadow: `0 10px 0 ${INK}`, fontFamily: FONT, fontWeight: 900, fontSize: 120, color: '#ff6b5e', letterSpacing: 4}}>2:00</div>
+    </div>
+  );
+};
+const posA = (s: ShotNow) => {
+  const t = s.t, h = hookA(s);
+  const u = t - h.splat;
+  // flies at the lens (0.18 s), hits it huge, then drops back to his heap with a bounce
+  const fly = clamp01(u / 0.18), back = go(u, 0.35, 0.5);
+  const size = u < 0 ? 120 : u < 0.18 ? lerp(160, 1500, fly * fly) : lerp(1500, 560, back);
+  const clog = go(since(s, 'A1', 'clog'), 0, 0.2) * (1 - go(since(s, 'A1', 'clog'), 0.4, 0.4) * 0.6);
   const lean = go(since(s, 'A2'), 0, 0.5);
   const c = calm(s, 'gunk');
   return {
-    x: 545 + sway(t, 2.4, 1) * 10 * c,
-    y: lerp(-300, 1010, fall * fall) + lerp(0, 60, lean),
-    size: 520 * (1 + clog * 0.12) + lean * 60,
-    sq: land * 0.22 + voiceSq(s, 'gunk'),
-    rot: sway(t, 1.3, 2) * 4 * c,
+    x: 545 + sway(t, 2.4, 1) * 10 * c * back,
+    y: lerp(960, 1010, back) + lerp(0, 60, lean),
+    size: size * (1 + clog * 0.12) + lean * 60,
+    sq: u > 0.18 && u < 0.4 ? 0.18 * Math.sin(((u - 0.18) / 0.22) * Math.PI) : voiceSq(s, 'gunk'),
+    rot: sway(t, 1.3, 2) * 4 * c * back,
+    on: u >= 0,
   };
 };
+/** Goo on the lens after the splat: lumpy splats stuck on the glass at the edges (half off the frame), each with short
+ * drips that run down, then the whole lot fades (2026-11-21: round blobs with one tail read as balloons). */
+const Goo: React.FC<{u: number}> = ({u}) => {
+  if (u < 0.15 || u > 2.3) return null;
+  const k = clamp01((u - 0.15) / 0.1), run = clamp01((u - 0.3) / 1.7), op = 1 - clamp01((u - 1.5) / 0.8);
+  const splats: [number, number, number, number][] = [[-30, 330, 190, 1], [1110, 260, 210, 2], [-20, 1480, 220, 3], [1100, 1350, 180, 4], [430, -40, 170, 5], [760, 1960, 160, 6]];
+  const GOO = '#a89c8f';
+  return (
+    <svg style={{position: 'absolute', left: 0, top: 0}} width={1080} height={1920} viewBox="0 0 1080 1920" opacity={op}>
+      {splats.map(([x, y, r, seed]) => {
+        const rr = r * (0.6 + 0.4 * k);
+        const drips = [-0.45, -0.05, 0.38].map((dx, j) => ({dx: dx * rr, len: rr * (0.35 + 0.25 * ((seed + j) % 3)) * (0.3 + run * 1.2), w: rr * (0.13 + 0.04 * (j % 2))}));
+        return (
+          <g key={seed} transform={`translate(${x} ${y})`}>
+            {drips.map((d, j) => (
+              <g key={j}>
+                <path d={`M ${d.dx - d.w} 0 L ${d.dx - d.w} ${rr * 0.55 + d.len} A ${d.w} ${d.w} 0 0 0 ${d.dx + d.w} ${rr * 0.55 + d.len} L ${d.dx + d.w} 0 Z`} fill={GOO} stroke={INK} strokeWidth={5} />
+              </g>
+            ))}
+            <path d={lobe(0, 0, rr, rr * 0.82, seed * 13 + 3, 11)} fill={GOO} stroke={INK} strokeWidth={5} />
+            {[0, 1, 2].map((j) => <circle key={j} cx={Math.cos(seed + j * 2.1) * rr * 1.25} cy={Math.sin(seed + j * 2.1) * rr * 1.05} r={rr * (0.1 + 0.05 * j)} fill={GOO} stroke={INK} strokeWidth={4} />)}
+            <path d={`M ${-rr * 0.45} ${-rr * 0.3} q ${rr * 0.2} ${-rr * 0.28} ${rr * 0.55} ${-rr * 0.26}`} stroke="#ffffff" strokeWidth={10} strokeLinecap="round" fill="none" opacity={0.9} />
+          </g>
+        );
+      })}
+    </svg>
+  );
+};
 const ShotA: React.FC<{s: ShotNow}> = ({s}) => {
-  const t = s.t;
-  const dirt = dial(t, 0.6, [[0, 0.7, 0.1], [at(s, 'A1', "don't", 0.4), 0.75], [at(s, 'A1', 'sleep', 0.7), 0.8], [at(s, 'A1', 'clog', 1.2), 0.9], [at(s, 'A1', 'brain', 1.6), 0.95], [at(s, 'A2', 'wash', 2.6), 1]]);
-  const gap = 0.05 * go(since(s, 'A2', 'now'), 0, 0.4) * (0.5 + 0.5 * sway(t, 0.5));
+  const t = s.t, h = hookA(s);
+  const dirt = dial(t, 0.65, [[h.splat, 0.75], [at(s, 'A1', 'sleep', h.splat + 0.6), 0.8], [h.clog, 0.9], [at(s, 'A2', 'wash', h.splat + 2.6), 1]]);
+  const gap = dial(t, 0.6, [[h.clog, 0, 0.25]]); // the gaps squeeze shut on "clog"
+  const squeeze = go(t, h.clog, 0.25) * (1 - go(t, h.clog + 0.5, 0.6)) * 0.28; // a dark pulse as they shut
   const v = posA(s);
   const f = bodyFace(s, 'gunk', 3, 'angry');
+  // the dive: Sam grows about the point between his eyes, the brain shows through a round window that opens there
+  const k = clamp01((t - h.dive0) / (h.dive1 - h.dive0)), e = k * k * (3 - 2 * k);
+  const [px, py] = diveAt();
+  const R = e * 2300;
   return (
     <>
-      <BrainGapPlace t={t} gap={gap} dirt={dirt} />
-      <Put x={v.x} y={v.y} size={v.size} rot={v.rot} sq={v.sq}><Gunk stage={1} mood={f.mood} mouth={f.mouth} look={[0, 0.5]} /></Put>
+      <div style={{position: 'absolute', inset: 0}}>
+        <DiveCtx.Provider value={0}>
+          <BrainGapPlace t={t} gap={gap} dirt={dirt} />
+        </DiveCtx.Provider>
+        {v.on && <Put x={v.x} y={v.y} size={v.size} rot={v.rot} sq={v.sq}><Gunk stage={1} mood={f.mood} mouth={f.mouth} look={[0, 0.5]} /></Put>}
+        {squeeze > 0 && <div style={{position: 'absolute', inset: 0, background: '#141a33', opacity: squeeze}} />}
+        <Goo u={t - h.splat} />
+      </div>
+      {e < 1 && (
+        <div style={{position: 'absolute', inset: 0, transformOrigin: `${px}px ${py}px`, transform: `scale(${(1 + e * e * 7).toFixed(4)})`,
+          WebkitMaskImage: e > 0 ? `radial-gradient(circle at ${px}px ${py}px, transparent ${(R / (1 + e * e * 7)).toFixed(1)}px, black ${(R / (1 + e * e * 7) + 1).toFixed(1)}px)` : undefined}}>
+          <SamCold s={s} />
+        </div>
+      )}
     </>
   );
 };
-const viewA = slowPush(545, 1000, 1.1, 1.18);
+const viewA = slowPush(545, 980, 1.06, 1.12);
 const TagA = tagVia(viewA);
 const ScreenA: React.FC<{s: ShotNow}> = ({s}) => {
   const v = posA(s);
-  return <TagA s={s} label="GUNK (BRAIN WASTE)" x={v.x} y={v.y} r={v.size * 0.34} t={s.t - 0.6} />;
+  // the name tag only after the hook line (the owner, 2026-11-21: too much text in the first seconds)
+  return <TagA s={s} label="GUNK (BRAIN WASTE)" x={v.x} y={v.y} r={v.size * 0.34} t={since(s, 'A2') - 0.3} />;
 };
 
 // =================================================================== B: the bedroom, 2 a.m.
@@ -285,11 +377,9 @@ const ScreenE: React.FC<{s: ShotNow}> = ({s}) => <NumTag s={s} text="7+ hours" i
 // ------------------------------------------------------------------ the shots
 export const NO_SLEEP_SHOTS: Record<string, ShotDef> = {
   A: {Scene: dived(ShotA), Screen: ScreenA, focus: (_w, s) => { const v = posA(s); return {x: v.x, y: v.y, r: v.size * 0.34}; }, view: viewA},
-  // portal (2026-11-21, the owner: the cut into "Just one more video" flickered): the brain is INSIDE Sam's head, so the camera
-  // pulls back out of his head into the room, and dives back into it from the room (no zoom-through ghost)
-  B: {Scene: ShotB, Screen: ScreenB, focus: (who, s) => (who === 'melatonin' ? {x: melB(s).x, y: melB(s).y, r: 110} : samFocus(samB)), portal: () => { const h = headAt(SAM, samB); return [h.x, h.y - h.r * 0.3]; }},
+  B: {Scene: ShotB, Screen: ScreenB, focus: (who, s) => (who === 'melatonin' ? {x: melB(s).x, y: melB(s).y, r: 110} : samFocus(samB))},
   C: {Scene: dived(ShotC), Screen: ScreenC, focus: () => ({x: 540, y: 1000, r: 160}), view: viewC},
-  D: {Scene: ShotD, Screen: ScreenD, focus: (who, s) => (who === 'brain' ? {x: brainD(s).x, y: brainD(s).y, r: 130} : samFocus(samD)), portal: () => { const h = headAt(SAM, samD); return [h.x, h.y - h.r * 0.3]; }},
+  D: {Scene: ShotD, Screen: ScreenD, focus: (who, s) => (who === 'brain' ? {x: brainD(s).x, y: brainD(s).y, r: 130} : samFocus(samD))},
   E: {Scene: dived(ShotE), Screen: ScreenE, focus: () => ({x: 545, y: 1000, r: 180}), view: viewE},
 };
 

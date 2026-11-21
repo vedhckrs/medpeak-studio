@@ -23,6 +23,8 @@ export const V8_VIDEOS: Record<string, Record<string, ShotDef>> = {rabies: RABIE
 export type V8Cta = {title: string; points: CtaPoint[]; voice?: string; seconds?: number; at?: CtaAt};
 export const V8_CTA: Record<string, V8Cta> = {rabies: RABIES_CTA, 'no-sleep': NO_SLEEP_CTA};
 /** The narrator starts after the card has slid in; the card holds a moment after his last word. */
+/** The music bed 10% lower than the director's levels (the owner, 2026-11-21: "background music 10% decrease"). */
+export const MUSIC_LEVEL = 0.9;
 export const CTA_LEAD = 0.4, CTA_TAIL = 1.2; // the narrator's last word is never cut; keep the sum in step with CTA_PAD in pipeline/toon-check.mjs
 export const ctaSeconds = (c: V8Cta | undefined) => (!c ? 0 : CTA_LEAD + (c.seconds ?? 4) + CTA_TAIL);
 
@@ -180,8 +182,11 @@ export const ToonV8: React.FC<V8VideoProps> = ({toon, timings, sfx, music, bare 
   // the body back to a room it PULLS back out of his arm; a whip pan only from room to room; else a zoom-through.
   const TR = {whip: 0.42, zoom: 0.5, dive: 0.8, pull: 0.8};
   const into = sec - L.shots[si].from / TOON_FPS;
+  // NO transitions between scenes (the owner, 2026-11-21: "I don't want transitions when the scene changes, it looks fake"):
+  // every change of scene is a clean cut. The code below stays only so an old render can be reproduced; it never runs.
+  const TRANSITIONS = false;
   const trans = (() => {
-    if (si === 0 || into >= 0.8 || !def) return null;
+    if (!TRANSITIONS || si === 0 || into >= 0.8 || !def) return null;
     const pf = L.shots[si].from / TOON_FPS - 1 / V8_FPS;
     const p = shotNow(L, toon, timings, pf);
     const pdef = V8_VIDEOS[toon.slug]?.[p.s.id];
@@ -285,9 +290,9 @@ export const ToonV8: React.FC<V8VideoProps> = ({toon, timings, sfx, music, bare 
       {music && <Audio src={staticFile(`toons/music/${music}.mp3`)} loop volume={(fr) => {
         // v4: the bed stays low under the narrator on the end card, then fades out with it
         const t = fr / K;
-        if (!cta || t < L.total - 24) return bedAt(L, t);
+        if (!cta || t < L.total - 24) return MUSIC_LEVEL * bedAt(L, t);
         const end = L.total + ctaSeconds(cta) * TOON_FPS;
-        return Math.max(Math.min(bedAt(L, L.total - 24), SOUND.bedUnderVoice * 1.2), 0) * clamp01((end - t) / 40);
+        return MUSIC_LEVEL * Math.max(Math.min(bedAt(L, L.total - 24), SOUND.bedUnderVoice * 1.2), 0) * clamp01((end - t) / 40);
       }} />}
     </AbsoluteFill>
   );

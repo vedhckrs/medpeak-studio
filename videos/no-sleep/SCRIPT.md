@@ -27,21 +27,22 @@ Toon script `no-sleep` · about 48 seconds · 16 pictures
 | | Rule | Result |
 |---|---|---|
 | PASS | Script is valid | 5 scenes, 16 lines, 5 voices |
+| PASS | Cold open | "Just one more video..." opens cold in 1.8 s (at most 4); the hook is the next line |
 | PASS | 1 No intro | hook: "Don't sleep? I clog your brain!" |
 | PASS | 2 Promise | starts at 2.0 s (limit 8 s) |
-| PASS | 4 3-sec change | something new HAPPENS 44 times in 48 s (a place, a cut, a thing arriving, a change of the stage; text stickers do not count); the longest wait is 2.9 s (from 7.3 s) |
-| PASS | 5 Twist | twist starts at 62% |
+| PASS | 4 3-sec change | something new HAPPENS 45 times in 48 s (a place, a cut, a thing arriving, a change of the stage; text stickers do not count); the longest wait is 2.9 s (from 7.5 s) |
+| PASS | 5 Twist | twist starts at 60% |
 | PASS | 6 Best last | best point starts at 91% |
 | PASS | 7 Loop | last line shares 3 key word(s) with the first: sleep, clog, brain |
 | PASS | Sources on numbers | every number has a source |
 | PASS | Source ids exist | all source ids known |
 | PASS | No banned claims | no cure/miracle/detox claims |
 | PASS | 1 Hook: short, to the viewer, about the title | "Don't sleep? I clog your brain!" (6 words, 1.9 s, says "you", says the title's words) |
-| PASS | 1 Hook: the first frame shows the consequence | the video opens on the macro with dirt already there |
+| PASS | 1 Hook: the first frame shows the consequence | the video opens on the macro with gap, dirt already there |
 | PASS | 1 Hook: three choices for the owner | 3 choices, each short, to the viewer and about the title |
-| PASS | 3 Open question | asked at 2.0 s ("And who's going to wash me out now?"), answered at 91% ("You did sleep! Now they wash me out. I can't clog your brain!"; shared words: wash, out, now) |
+| PASS | 3 Open question | asked at 3.9 s ("And who's going to wash me out now?"), answered at 91% ("You did sleep! Now they wash me out. I can't clog your brain!"; shared words: wash, out, now) |
 | PASS | 3 No counting | the story is told as one chain of cause and effect, not as a numbered list |
-| PASS | Length | story 48.1 s (under 60 s; aim for 40-58); with the end card 66.5 s |
+| PASS | Length | story 48.3 s (under 60 s; aim for 40-58); with the end card 66.6 s |
 | PASS | Places | 2 set(s): macro, home (at least a body scene and the doctor's office) |
 | PASS | Own rooms | home: bedroom|nightblue|stripes|wood|wide@centre|night|bed-left|-|night |
 | PASS | Rooms are unique | no other video has this clinic or this home (compared with 9 other video(s)) |
@@ -59,8 +60,8 @@ Toon script `no-sleep` · about 48 seconds · 16 pictures
 | PASS | Own music | its own track "no-sleep" (made from "musicPrompt" with: node pipeline/toon-music.mjs --slug no-sleep) |
 | PASS | 1 Hook: said in 2 s | "Don't sleep? I clog your brain!" takes 1.9 s (at most 2) |
 | PASS | 1 Hook: something big moves at once | the first movement starts at 0.00 s (within 0.5 s) |
-| PASS | 1 Hook: no still opening | in the first 3 s the longest still is 0.8 s (at most 1), from 2.0 s |
-| PASS | Never still | the longest stretch with no movement, cut, camera move or new thing is 1.0 s (at most 2), from 4.2 s |
+| PASS | 1 Hook: no still opening | in the first 3 s the longest still is 0.0 s (at most 1), from 0.0 s |
+| PASS | Never still | the longest stretch with no movement, cut, camera move or new thing is 1.0 s (at most 2), from 6.2 s |
 | PASS | Body scene | body characters speak for 83% of the video (30% or more: they are the show) |
 | PASS | Short lines | the longest line is 13 words |
 | PASS | Banter | at most 3 lines in a row by one speaker (3 or fewer) |
@@ -72,19 +73,21 @@ Toon script `no-sleep` · about 48 seconds · 16 pictures
 
 ## Scene A: macro
 
-Characters: gunk
+Characters: gunk, patient
 
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
-| 0.0 s | A1 | gunk | angry | Don't sleep? I clog your brain! | ecu 50 push | xie-2013, shokri-2018 |
-| 2.0 s | A2 | gunk | angry | And who's going to wash me out now? | ews 24 lock |  |
+| 0.0 s | B1 | patient | happy | Just one more video... | ecu 50 push |  |
+| 1.9 s | A1 | gunk | angry | Don't sleep? I clog your brain! | ecu 50 push | xie-2013, shokri-2018 |
+| 3.9 s | A2 | gunk | angry | And who's going to wash me out now? | ews 24 lock |  |
 
 What happens in the picture:
 
-- at start: dirt to 0.7 [squelch]
-- at A1 ("Don't"): dirt to 0.75 [plop]
+- at start: dirt to 0.65 [alarm-beep]
+- at B1 ("video..."): dirt to 0.7 [whoosh-fast]
+- at A1: dirt to 0.75 [squelch]
 - at A1 ("sleep?"): dirt to 0.8
-- at A1 ("clog"): dirt to 0.9 [squish]
+- at A1 ("clog"): gap to 0, dirt to 0.9 [thud-soft]
 - at A1 ("brain!"): dirt to 0.95
 - at A2 ("wash"): dirt to 1 [drip]
 - at A2 ("now?"): gap to 0.05
@@ -95,13 +98,11 @@ Characters: patient, melatonin · props: tag, clock
 
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
-| 5.2 s | B1 | patient | happy | Just one more video... | ms 35 crash |  |
-| 7.0 s | B2 | melatonin | neutral | It's two a.m. My night crew needs you asleep! | mcu 50 push | xie-2013 |
-| 10.2 s | B3 | patient | happy | I'm fine on four hours. Watch me. | cu 85 push |  |
+| 7.2 s | B2 | melatonin | neutral | It's two a.m. My night crew needs you asleep! | mcu 50 push | xie-2013 |
+| 10.4 s | B3 | patient | happy | I'm fine on four hours. Watch me. | cu 85 push |  |
 
 What happens in the picture:
 
-- at B1 ("one"): sound [caption-pop]
 - at B2 ("two"): sound [alarm-beep]
 - at B2: sound [whoosh-air]
 - at B3 ("four"): sound [boing]
@@ -115,10 +116,10 @@ Characters: crew, gunk · props: tag
 
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
-| 12.9 s | C1 | crew | happy | When you sleep, these gaps open up, and we wash the waste out. | whip to ews 18 lock | xie-2013 |
-| 16.9 s | C2 | crew | happy | In mice, they open sixty percent wider! | mcu 50 push | xie-2013 |
-| 19.5 s | C3 | gunk | happy | But he's still awake. No sleep, no wash. Party! | cu 85 lock |  |
-| 23.6 s | C4 | crew | scared | One night awake, and scans of people show more of it! | mcu 50 push | shokri-2018 |
+| 13.1 s | C1 | crew | happy | When you sleep, these gaps open up, and we wash the waste out. | whip to ews 18 lock | xie-2013 |
+| 17.0 s | C2 | crew | happy | In mice, they open sixty percent wider! | mcu 50 push | xie-2013 |
+| 19.7 s | C3 | gunk | happy | But he's still awake. No sleep, no wash. Party! | cu 85 lock |  |
+| 23.8 s | C4 | crew | scared | One night awake, and scans of people show more of it! | mcu 50 push | shokri-2018 |
 
 What happens in the picture:
 
@@ -138,10 +139,10 @@ Characters: patient, brain · props: tag, pain, pillow, pain
 
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
-| 27.1 s | D1 | patient | sleepy | I'm fine. Just a bit... slow. | ms 35 crash |  |
-| 29.6 s | D2 | brain | scared | Seventeen hours awake? Some tests go as badly as being drunk. | mcu 50 push | williamson-2000, nhlbi-effects |
-| 32.7 s | D3 | brain | scared | And you can fall asleep for seconds without knowing it. | ews 24 lock | nhlbi-effects |
-| 35.2 s | D4 | brain | sad | Lose sleep night after night, and it adds up. | mcu 50 push | nhlbi-hours |
+| 27.2 s | D1 | patient | sleepy | I'm fine. Just a bit... slow. | ms 35 crash |  |
+| 29.7 s | D2 | brain | scared | Seventeen hours awake? Some tests go as badly as being drunk. | mcu 50 push | williamson-2000, nhlbi-effects |
+| 32.8 s | D3 | brain | scared | And you can fall asleep for seconds without knowing it. | ews 24 lock | nhlbi-effects |
+| 35.3 s | D4 | brain | sad | Lose sleep night after night, and it adds up. | mcu 50 push | nhlbi-hours |
 
 What happens in the picture:
 
@@ -162,9 +163,9 @@ Characters: gunk, melatonin, crew · props: tag
 
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
-| 38.0 s | E1 | melatonin | happy | Tonight: phone down. Seven hours or more. | mcu 50 push | cdc-sleep, nhlbi-hours |
-| 40.7 s | E2 | gunk | scared | The gaps are opening? No, no, not the crew! | ews 18 lock |  |
-| 43.7 s | E3 | gunk | sad | You did sleep! Now they wash me out. I can't clog your brain! | cu 85 push | xie-2013 |
+| 38.1 s | E1 | melatonin | happy | Tonight: phone down. Seven hours or more. | mcu 50 push | cdc-sleep, nhlbi-hours |
+| 40.8 s | E2 | gunk | scared | The gaps are opening? No, no, not the crew! | ews 18 lock |  |
+| 43.9 s | E3 | gunk | sad | You did sleep! Now they wash me out. I can't clog your brain! | cu 85 push | xie-2013 |
 
 What happens in the picture:
 
@@ -172,12 +173,14 @@ What happens in the picture:
 - at E1 ("down."): gap to 0.5
 - at E1: sound [whoosh-air]
 - at E1 ("seven"): gap to 0.8
-- at E2 ("opening?"): gap to 1, wash to 1 [splash-small]
+- at E2 ("opening?"): gap to 1, wash to 1
+- at E2 ("opening?"): sound [splash-small]
 - at E2 ("crew!"): dirt to 0.5
 - at E2 ("crew!"): sound [gulp]
 - at E3 ("sleep!"): dirt to 0.2 [zip-away]
 - at E3 ("wash"): dirt to 0 [success-chime]
-- at E3 ("clog"): gap to 0.9 [sparkle]
+- at E3 ("clog"): gap to 0.9
+- at E3 ("brain!"): sound [sparkle]
 - at E1 ("seven"): tag "7+ hours"
 
 ## Sources

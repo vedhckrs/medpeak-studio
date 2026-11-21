@@ -115,12 +115,15 @@ Do these once on a new machine. None of it needs the old machine except step 6.
   speaks the CTA and ends with: "Follow MedPeak Health for more health tips that keep you safe." **Every line on the card
   is ONE line** (the headline and each point's bold text; 2026-11-21): `CtaCardV4` sizes the three points together to fit.
 - **No jiggle** (2026-11-21): a talking character does not squash on every syllable; mouths are smoothed (`talkSmooth`);
-  the room camera's smoothing samples a fixed time grid (a moving one stepped 5 times a second). A transition between a room
-  and the body goes through a person's `portal` (dive in / pull out), never a crossfade ghost.
+  the room camera's smoothing samples a fixed time grid (a moving one stepped 5 times a second).
+- **No transitions: every scene change is a hard cut** (2026-11-21: "it looks fake"). **Music 10% lower** (`MUSIC_LEVEL`
+  0.9 in video.tsx). **The hook opens on the person and comes at the lens** (no-sleep: Sam at 2 a.m., the dive into his
+  brain inside the first shot, Gunk splats on the glass); no tag or number during the hook line. Details in
+  `skill/medpeak-health/references/toons-v8-style.md`.
 - **Icons only when the words say it**; non-human characters get a 1-second name tag (arrow + tag box above the head)
   the first time they appear; no tags on humans; **no circle or halo around the character at all** (2026-11-21: "this circle
   I don't want, remove completely everywhere"; it was two white rings), no glow; a tag never covers a face. The camera moves smoothly (one eased move per shot, a continuous dive
-  inside the body); transitions follow the story (dive into the skin, pull back out). No flicker: nothing appears or
+  inside the body); hard cuts between scenes (no transitions). No flicker: nothing appears or
   vanishes in one frame. The story stays under 60 s; the narrator's end card may run past one minute (never cut or
   speed up the narrator). Clothes changes must read at phone
   size. All the version 4 rules, with the code: `skill/medpeak-health/references/toons-v8-style.md`. (2026-11-20)

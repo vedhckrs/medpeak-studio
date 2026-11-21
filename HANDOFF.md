@@ -77,7 +77,14 @@ you stop. The rules are in `CLAUDE.md`.
   skill); Sam's "Just one more video" jiggled: (a) the room camera stepped 5 times a second (`smoothCam` now samples a fixed
   grid), (b) the cut from the brain was a zoom-through ghost: shots B and D now have a `portal` (Sam's head), so the camera
   pulls out of his head / dives into it. Re-rendered: 0 one-frame jumps, no 5 Hz pulse on Sam.
-- OPEN: the owner says the hook is not powerful and asked for the reason FIRST (diagnosis sent, no change made yet).
+- Hook diagnosed (empty first frame, an unrecognisable place, nothing coming at the lens, no person, the threat not shown,
+  three texts at once, a soft first sound); the owner chose A. Built in shot A: Sam close up at 2 a.m. (phone, the clock
+  SLAMS onto 2:00), his "Just one more video..." is now a COLD OPEN (the same clip, no new voice), the camera dives through his
+  face into his brain, Gunk splats on the lens with goo, "clog" squeezes the gaps shut; the name tag after the hook. Cover at 2.4 s.
+- The owner: **no transitions anywhere** (hard cuts; `TRANSITIONS = false` in video.tsx, `SWAP_CUT` in shots-v3.tsx) and
+  **music 10% lower** (`MUSIC_LEVEL = 0.9`). Rules written into CLAUDE.md, SKILL.md and toons-v8-style.md (with the hook pattern).
+- Render: 66.7 s, -14.0 LUFS, the 3 one-frame jumps are exactly the scene cuts; 7 of 9 planned sounds heard (the splash where
+  the wash starts stays under the voices and the running water).
 - NOT uploaded. Next: the owner watches the video; upload private only on his word (`python3 publish/upload.py no-sleep toon` with
   the venv Python, dry run first; check `upload.py` keeps repo-relative paths).
 - Spent on this video in all: 75 + 280 + 12 + 202 + 500 = **1,069 ElevenLabs credits** (56,825 -> 55,755). Anthropic key: not used ($0).

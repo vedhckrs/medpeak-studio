@@ -29,18 +29,21 @@ XIE, SHOK, WIL, NHE, NHH, CDC = "xie-2013", "shokri-2018", "williamson-2000", "n
 
 shots = [
   {"id": "A", "set": "macro",
-   "cast": [{"who": "gunk", "x": 540, "size": 420, "stage": True, "emotion": "angry", "pose": "rest"}],
-   "state": {"view": 0, "gap": 0, "dirt": 0.6},
+   "cast": [{"who": "gunk", "x": 540, "size": 420, "stage": True, "emotion": "angry", "pose": "rest"},
+            {"who": "patient", "x": 540, "size": 960, "emotion": "happy", "pose": "rest", "y": 979}],
+   "state": {"view": 0, "gap": 0.6, "dirt": 0.6},
    "events": [
-     E("start", set={"dirt": 0.7}, over=6, sfx="squelch"),
-     E("A1", word="Don't", set={"dirt": 0.75}, over=8, sfx="plop"),
+     E("start", set={"dirt": 0.65}, over=6, sfx="alarm-beep"),  # the clock slams to 2:00
+     E("B1", word="video...", set={"dirt": 0.7}, over=12, sfx="whoosh-fast"),  # the dive into his eye
+     E("A1", set={"dirt": 0.75}, over=8, sfx="squelch", fx="flash"),  # Gunk SPLATS on the lens
      E("A1", word="sleep?", set={"dirt": 0.8}, over=10),
-     E("A1", word="clog", set={"dirt": 0.9}, over=10, sfx="squish", fx="flash"),
+     E("A1", word="clog", set={"gap": 0, "dirt": 0.9}, over=8, sfx="thud-soft"),  # the gaps squeeze shut
      E("A1", word="brain!", set={"dirt": 0.95}, over=12),
      E("A2", word="wash", set={"dirt": 1}, over=14, sfx="drip"),
      E("A2", word="now?", set={"gap": 0.05}, over=16),
    ],
    "lines": [
+     dict(L("B1", "patient", "Just one more video...", "happy", "video", chat=True, cam="ecu 50 push", beat=0.15), cold=True),  # hook A (owner, 2026-11-21): Sam at 2 a.m., then the dive into his brain
      dict(L("A1", "gunk", "Don't sleep? I clog your brain!", "angry", "clog", src=[XIE, SHOK], cam="ecu 50 push"), tempo=1.15, speed=1.2),  # 2.5 s as voiced at speed 1.04: the hook rule is 2 s; the owner asked for a new take (2026-11-21)
      L("A2", "gunk", "And who's going to wash me out now?", "angry", "wash", chat=True, beat=0.4),
    ], "props": []},
@@ -48,14 +51,12 @@ shots = [
    "cast": [{"who": "patient", "x": 300, "size": 960, "emotion": "happy", "pose": "rest", "y": 979},
             {"who": "melatonin", "x": 760, "size": 300, "emotion": "neutral", "pose": "rest", "y": 640}],
    "events": [
-     E("B1", word="one", sfx="caption-pop"),
      E("B2", word="two", sfx="alarm-beep"),
-     E("B2", sfx="whoosh-air", delay=-0.25),  # in the pause before her line (on "crew" it was lost under the voice)
+     E("B2", sfx="whoosh-air", delay=0.05),  # Melatonin floats in
      E("B3", word="four", sfx="boing"),
      E("B3", word="Watch", sfx="swish"),
    ],
    "lines": [
-     L("B1", "patient", "Just one more video...", "happy", "video", chat=True, cam="ms crash", react={"melatonin": "sleepy"}),
      L("B2", "melatonin", "It's two a.m. My night crew needs you asleep!", "neutral", "asleep", src=[XIE], cam="mcu push"),
      L("B3", "patient", "I'm fine on four hours. Watch me.", "happy", "four", chat=True, cam="cu push", react={"melatonin": "angry"}),
    ],
@@ -109,12 +110,14 @@ shots = [
      E("E1", word="down.", set={"gap": 0.5}, over=24),
      E("E1", sfx="whoosh-air", delay=-0.25),
      E("E1", word="seven", set={"gap": 0.8}, over=24),
-     E("E2", word="opening?", set={"gap": 1, "wash": 1}, over=20, sfx="splash-small"),
+     E("E2", word="opening?", set={"gap": 1, "wash": 1}, over=20),
+     E("E2", word="opening?", sfx="splash-small", delay=0.45),  # in the pause after the word (on it, it was lost)
      E("E2", word="crew!", set={"dirt": 0.5}, over=30),
      E("E2", word="crew!", sfx="gulp", delay=0.5),  # after his last word (on it, it was lost)
      E("E3", word="sleep!", set={"dirt": 0.2}, over=30, sfx="zip-away"),
      E("E3", word="wash", set={"dirt": 0}, over=24, sfx="success-chime", fx="flash"),
-     E("E3", word="clog", set={"gap": 0.9}, over=20, sfx="sparkle"),
+     E("E3", word="clog", set={"gap": 0.9}, over=20),
+     E("E3", word="brain!", sfx="sparkle", delay=0.55),  # after his last word
    ],
    "lines": [
      L("E1", "melatonin", "Tonight: phone down. Seven hours or more.", "happy", "seven", src=[CDC, NHH], cam="mcu push"),
@@ -142,7 +145,7 @@ toon = {
     "tags": ["what happens if you don't sleep", "sleep deprivation", "no sleep", "all nighter", "why we need sleep",
              "brain cleaning during sleep", "microsleep", "how much sleep do I need", "sleep health", "health cartoon"],
     "hashtags": "#sleep #brain #shorts",
-    "cover": {"at": 1.0, "text": "Don't sleep?", "accent": "sleep"},
+    "cover": {"at": 2.4, "text": "Don't sleep?", "accent": "sleep"},
   },
   "retention": {
     "noIntro": {"scene": "A1", "line": "Don't sleep? I clog your brain!"},
