@@ -661,6 +661,11 @@
     },
     {
      "at": "F4",
+     "word": "twelve",
+     "sfx": "ding"
+    },
+    {
+     "at": "F5",
      "word": "no",
      "sfx": "success-chime"
     }
@@ -703,20 +708,43 @@
     {
      "id": "F4",
      "who": "doctor",
-     "text": "A twelve-week trial found no hair loss.",
+     "text": "A trial over twelve weeks...",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "twelve",
+     "src": [
+      "lak-2025"
+     ],
+     "cam": "mcu push"
+    },
+    {
+     "id": "F5",
+     "who": "doctor",
+     "text": "found no hair loss.",
      "emotion": "happy",
      "pose": "rest",
      "key": "hair",
      "src": [
       "lak-2025"
      ],
-     "cam": "mcu push",
+     "cam": "ecu push",
      "react": {
       "mom": "happy"
      }
     }
    ],
-   "props": []
+   "props": [
+    {
+     "kind": "tag",
+     "text": "12 weeks",
+     "x": 540,
+     "y": 300,
+     "size": 300,
+     "from": "F4",
+     "to": "F4",
+     "word": "twelve"
+    }
+   ]
   },
   {
    "id": "G",

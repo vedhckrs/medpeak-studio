@@ -311,8 +311,8 @@ const DOC_X = 270, MOM_X = 800;
 const clinicCast = (s: ShotNow) => {
   const t = s.t;
   const T = (id: string, w: string | undefined, d: number) => at(s, id, w, d);
-  const docPose = poseAt(t, [[-9, 'youSee'], [T('F2', 'kidney', 2.9), 'oneFinger', 0.3], [T('F3', undefined, 5.6), 'rest', 0.5], [T('F4', 'no', 7.2) - 0.15, 'youSee', 0.32]]);
-  const momPose = poseAt(t, [[-9, 'rest'], [T('F3', undefined, 5.6) - 0.1, 'shrugR', 0.35], [T('F4', 'no', 7.2) + 0.3, 'thumbsUpR', 0.35]]);
+  const docPose = poseAt(t, [[-9, 'youSee'], [T('F2', 'kidney', 2.9), 'oneFinger', 0.3], [T('F3', undefined, 5.6), 'rest', 0.5], [T('F5', 'no', 7.2) - 0.15, 'rest', 0.45]]);
+  const momPose = poseAt(t, [[-9, 'rest'], [T('F3', undefined, 5.6) - 0.1, 'shrugR', 0.35], [T('F5', 'no', 7.2) + 0.3, 'thumbsUpR', 0.35]]);
   const doc = {spec: DOC, pose: docPose, expr: exprOf(s, 'doctor', 'neutral'), look: [0.7, 0.3] as [number, number], x: DOC_X, facing: 'right' as const, talk: talkSmooth(s, 'doctor'), blink: blink(t, 2.2), bob: breath(s, 'doctor', 2)};
   const mom = {spec: MOM, pose: momPose, expr: exprOf(s, 'mom', 'neutral'), look: [0.7, 0.3] as [number, number], x: MOM_X, facing: 'left' as const, talk: talkSmooth(s, 'mom'), blink: blink(t, 0.7), bob: breath(s, 'mom', 5)};
   return {doc, mom};
@@ -327,6 +327,21 @@ const ShotF: React.FC<{s: ShotNow}> = ({s}) => {
     </Scene>
   );
 };
+/** The yellow number tag, on the SCREEN (after the camera), on the grid, from its word to its line's end (as in no-sleep.tsx). */
+const NumTag: React.FC<{s: ShotNow; text: string; id: string; word: string; x?: number; y?: number}> = ({s, text, id, word, x = 780, y = 330}) => {
+  const u = since(s, id, word);
+  const line = s.lines.find((l) => l.id === id);
+  if (!line || u < 0) return null;
+  const left = line.from + line.voice + 0.15 - s.t;
+  if (left < -0.25) return null;
+  const k = pop(u, 0, 0.3);
+  const o = clamp01(u / 0.12) * clamp01((left + 0.25) / 0.25);
+  return (
+    <div style={{position: 'absolute', left: x, top: y, transform: `translate(-50%, -50%) scale(${k.toFixed(3)})`, opacity: o, background: CLOTH.yellow, border: `5px solid ${INK}`, borderRadius: 14,
+      padding: '10px 30px', fontFamily: 'Poppins, Inter, sans-serif', fontWeight: 900, fontSize: 68, color: INK, whiteSpace: 'nowrap', boxShadow: `0 8px 0 ${INK}`}}>{text.toUpperCase()}</div>
+  );
+};
+const ScreenF: React.FC<{s: ShotNow}> = ({s}) => <NumTag s={s} text="12 weeks" id="F4" word="twelve" x={540} y={300} />;
 const faceF = (who: string): Focus => {
   const o = who === 'mom' ? {view: 'three-quarter' as const, facing: 'left' as const, x: MOM_X, y: FEET_Y, scale: PEOPLE_SCALE} : {view: 'three-quarter' as const, facing: 'right' as const, x: DOC_X, y: FEET_Y, scale: PEOPLE_SCALE};
   const h = headAt(who === 'mom' ? MOM : DOC, o);
@@ -357,7 +372,7 @@ export const CREATINE_SHOTS: Record<string, ShotDef> = {
   C: {Scene: dived(ShotC), focus: (_w, s) => { const v = posC(s); return {x: v.x, y: v.y, r: v.size * 0.32}; }, view: viewC},
   D: {Scene: dived(ShotD), Screen: ScreenD, focus: () => ({x: 540, y: 820, r: 160}), view: viewD},
   E: {Scene: dived(ShotE), Screen: ScreenE, focus: () => ({x: 540, y: 1000, r: 180}), view: viewE},
-  F: {Scene: ShotF, focus: (who) => faceF(who === 'mom' ? 'mom' : 'doctor')},
+  F: {Scene: ShotF, Screen: ScreenF, focus: (who) => faceF(who === 'mom' ? 'mom' : 'doctor')},
   G: {Scene: dived(ShotG), focus: () => ({x: 540, y: 1010, r: 150}), view: viewG},
 };
 

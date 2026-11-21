@@ -6,6 +6,24 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-21 (8) - MacBook (local Claude Code) - branch `video/creatine` - creatine: silent video sent, WAITING for the owner's OK on motion
+
+- Fixed: the doctor line F4 split in two (F4 "A trial over twelve weeks..." + F5 "found no hair loss.", tag "12 WEEKS"): the one-word
+  "twelve-week" could not carry a number tag and the long line left a 3.5 s still. End of F: Dr. Mira rests her arm (her hand touched
+  Mom's thumbs-up).
+- Tests: four failed after creatine joined (it sorts first among the real scripts): the room gate test now picks two neighbouring videos,
+  the caption-line test picks a script with a tag, the old-kit wall test leaves out `gym` (drawn only in v8). `npm test` 50/50.
+  `toon:check` (+ `--all`), camera, motion, staging: ALL PASS.
+- Silent render `videos/creatine/renders/toon-v8.mp4`: 62.7 s (story about 49 s + card), 1080 x 1920, 60 fps; phone copy
+  `toon-v8-silent-phone.mp4`; storyboard `renders/storyboard/` (5 sheets; Pillow from a throwaway venv, the Mac's Python still has none).
+  Contact sheets at 2 frames a second read.
+- Voice quote (dry run): script 711 characters (the receipt usually comes in far lower: no-sleep 702 quoted, 280 charged); auditions for
+  crea / battery / muscle 189 characters. The live balance could not be read from Claude's shell (keys "NOT WORKING (network)"): read it
+  before any spend. Last known: 55,755.
+- Next: the owner OKs the motion, the clinic look and the hook wording; then auditions (paid), voices, Joey's card, music.
+
+---
+
 ## 2026-11-21 (7) - MacBook (local Claude Code) - branch `video/creatine` - creatine: script + shots built, silent render NOT made yet
 
 - The owner OK'd the looks ("Yes, these looks").
