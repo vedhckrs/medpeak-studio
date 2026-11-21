@@ -167,6 +167,8 @@ toon = {
      "note": "Recommended sleep for adults 18-60 years: '7 or more hours'; 61-64 years: 7-9 hours; 65 and older: 7-8 hours."},
   ],
   "shots": shots,
+  "cta": {"text": "Sleep is not optional. Adults need seven or more hours a night. Lost sleep adds up, night after night. And never drive sleepy: it can be as bad as driving drunk. Follow MedPeak Health for more health tips that keep you safe.",
+          "src": [CDC, NHH, NHE]},
   "musicPrompt": "Soft dreamy night lullaby on celesta and muted pizzicato strings, 96 BPM, a sneaky bassoon creeping in for the villain; it turns clumsy and off-beat when the hero stays awake, then resolves into a warm calm sunrise with gentle harp and a bright glockenspiel finish.",
 }
 with open(os.path.join(ROOT, "videos", "no-sleep", "toon.json"), "w") as fh:

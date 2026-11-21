@@ -827,5 +827,13 @@
    ]
   }
  ],
+ "cta": {
+  "text": "Sleep is not optional. Adults need seven or more hours a night. Lost sleep adds up, night after night. And never drive sleepy: it can be as bad as driving drunk. Follow MedPeak Health for more health tips that keep you safe.",
+  "src": [
+   "cdc-sleep",
+   "nhlbi-hours",
+   "nhlbi-effects"
+  ]
+ },
  "musicPrompt": "Soft dreamy night lullaby on celesta and muted pizzicato strings, 96 BPM, a sneaky bassoon creeping in for the villain; it turns clumsy and off-beat when the hero stays awake, then resolves into a warm calm sunrise with gentle harp and a bright glockenspiel finish."
 }

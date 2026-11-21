@@ -10,6 +10,8 @@
  *   node pipeline/toon-voice.mjs --audition --dry-run                   # one short line per character
  *   node pipeline/toon-voice.mjs --audition --approve --max-characters N   # -> out/toons/auditions/<who>.mp3
  *   node pipeline/toon-voice.mjs --audition --who gunk,crew --dry-run   # only these characters
+ *   node pipeline/toon-voice.mjs <slug> --cta --dry-run                 # the narrator's end card (toon.json "cta".text)
+ *   node pipeline/toon-voice.mjs <slug> --cta --approve --max-characters N   # -> public/toons/<slug>/voice/cta.mp3 + videos/<slug>/cta-timings.json
  *
  * Lines already voiced with the same text, voice and pitch are skipped (no double spend).
  * Writes public/toons/<slug>/voice/<id>.mp3 and videos/<slug>/toon-timings.json.
@@ -69,6 +71,24 @@ const main = async () => {
 
   const slug = a._[0];
   const toon = readJson(path.join(videoDir(slug), 'toon.json'));
+  if (a.cta) { // the narrator (Joey, the same voice in every video) reads the end card at his own pace: never sped up or cut
+    const text = toon.cta?.text;
+    if (!text) { console.error('No "cta": {"text": ...} in toon.json.'); process.exit(2); }
+    const bal = await balance();
+    console.log(`End card: ${cast.cast.narrator.voice}, ${text.length} characters -> about ${text.length} credits on ${cast.model}`);
+    console.log(`  "${text}"`);
+    printPool(bal);
+    if (a['dry-run']) return;
+    if (!approved()) needApproval(`the end card voice (${text.length} characters)`);
+    if (!cap || text.length > cap) { console.error(`Stopped: ${text.length} characters is over the approved cap (--max-characters ${cap || 'missing'}).`); process.exit(5); }
+    const raw = path.join(ROOT, 'out', 'toons', 'raw', slug, 'cta.mp3');
+    const words = await speakLine(cast, 'narrator', text, 'neutral', raw);
+    const file = path.join(PUBLIC, 'toons', slug, 'voice', 'cta.mp3');
+    voiceFx(raw, file, 0);
+    writeJson(path.join(videoDir(slug), 'cta-timings.json'), {voice: cast.cast.narrator.voice, voiceId: cast.cast.narrator.voiceId, text, seconds: +seconds(file).toFixed(2), words});
+    console.log(`voiced the end card: ${seconds(file).toFixed(2)} s. Spent ${billed} credits.`);
+    return;
+  }
   const tPath = path.join(videoDir(slug), 'toon-timings.json');
   const timings = readJson(tPath, {lines: {}});
   // forget lines the script no longer has (a removed scene used to stay in the file for good)
