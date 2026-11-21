@@ -51,8 +51,8 @@ Do these once on a new machine. None of it needs the old machine except step 6.
 1. **Install**: Git, Node.js 20 or newer (24 is in use), ffmpeg and ffprobe on the PATH, Python 3.12 with
    Pillow (`pip install pillow`; only for the storyboard sheets). On Windows install with `winget`
    (`winget search` for the exact id); the Poppins fonts must be installed for the user.
-2. **Get the repo**: `git clone https://github.com/vedhckrs/medpeak-studio.git`, then
-   `git switch feat/toons-engage` (the branch the Toons work is on until the owner merges it to `main`).
+2. **Get the repo**: `git clone https://github.com/vedhckrs/medpeak-studio.git` (all the Toons work, rabies v4
+   included, is on `main` since 2026-11-21; an existing copy: `git switch main` and `git pull`).
    Sign in to GitHub in a normal terminal window when Git asks; a sign-in window cannot open from
    Claude's own shell. The `gh` tool is not needed.
 3. **Install the packages**: `npm install` in the repo folder. The first render also downloads the
