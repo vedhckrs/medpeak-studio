@@ -124,7 +124,7 @@ shots = [
      E("F2", act="doctor: lowers the sheet"),
      E("F2", word="Ask", act="doctor: opens her hand to Mom"),
      E("F3", word="hair?", sfx="boing", act="mom: jumps in panic"),
-     E("F5", word="no", sfx="success-chime", act="doctor: opens her palm"),
+     E("F5", word="no", sfx="success-chime", act="doctor: nods"),
      E("F5", word="loss.", act="mom: hops for joy"),
    ],
    "lines": [
@@ -201,7 +201,7 @@ toon = {
   "shots": shots,
   "cta": {"text": "Creatine: know this. The first jump on the scale is mostly water, not fat. Taking it? Tell your doctor before a blood test. Kidney problems? Ask first. Follow MedPeak Health for more health tips that keep you safe.",
           "src": [AN]},
-  "musicPrompt": "Bouncy gym-workout funk on slap bass and punchy brass stabs, 112 BPM, a cheeky whistle melody for the little hero, a tense pulsing synth when the energy drains, a short suspense sting for the blood test, then a bright confident brass finish.",
+  "musicPrompt": "A steady, continuous upbeat gym-workout funk groove at 112 BPM that never stops or drops out: a constant driving drum beat, a sustained warm bass line and a held synth pad under everything from the first second to the last, no breaks, no silences, no stop-time stabs. A cheeky whistle melody floats on top, playful and light, with a bright confident brass lift near the end. Background music under dialogue.",  # remade 2026-11-21: the first track stopped 4 times (the steady-bed rule)
 }
 os.makedirs(os.path.join(ROOT, "videos", "creatine"), exist_ok=True)
 with open(os.path.join(ROOT, "videos", "creatine", "toon.json"), "w") as fh:

@@ -377,7 +377,7 @@ const ScreenD: React.FC<{s: ShotNow}> = ({s}) => {
   const k = timesD(s);
   return (
     <>
-      <TagD s={s} label="BATTERY (ATP)" x={540} y={BAT_Y} r={150} t={s.t - k.inside - 0.1} />
+      <TagD s={s} label="BATTERY (ATP)" x={540} y={BAT_Y} r={250} t={s.t - k.inside - 0.1} /> {/* the arrow stops above the cap (at r 150 its tip sat on the label: "ATP" read "AYP") */}
       <TagD s={s} label="MUSCLE FIBRE" x={540} y={MUS_Y - 40} r={95} t={s.t - k.d3 - 0.2} /> {/* a tight radius: the tag fits ABOVE Muscle (below, it covered the battery's face) */}
     </>
   );
@@ -489,9 +489,9 @@ const clinicCast = (s: ShotNow) => {
   // each change is a key pose that then HOLDS (the camera holds too): raise the sheet, nod on "blood", lower it, open the hand on
   // "Ask", rest, open the palm on "no" (the script's "act" events name these moments)
   const f2 = T('F2', undefined, 2.42);
-  const docPose = poseAt(t, [[-9, 'rest'], [0, 'clipboard', 0.3], [f2, 'rest', 0.35], [T('F2', 'ask', 3.9), 'explain', 0.3], [T('F3', undefined, 5.8), 'rest', 0.45], [T('F5', 'no', 9.3) - 0.1, 'youSee', 0.3]]);
+  const docPose = poseAt(t, [[-9, 'rest'], [0, 'clipboard', 0.3], [f2, 'rest', 0.35], [T('F2', 'ask', 3.9), 'explain', 0.3], [T('F3', undefined, 5.8), 'rest', 0.45], ]); // on "no" she stays at rest and NODS (both 'youSee' and 'explain' reached across into Mom's close-up and covered her hand)
   const nodAt = (t0: number) => { const u = (t - t0) / 0.4; return u <= 0 || u >= 1 ? 0 : -Math.sin(Math.PI * u); };
-  const doc = {spec: DOC, pose: docPose, expr: exprOf(s, 'doctor', 'neutral'), look: [0.7, 0.3] as [number, number], x: DOC_X, facing: 'right' as const, talk: talkSmooth(s, 'doctor'), blink: blink(t, 2.2), bob: nodAt(T('F1', 'blood', 1.63))};
+  const doc = {spec: DOC, pose: docPose, expr: exprOf(s, 'doctor', 'neutral'), look: [0.7, 0.3] as [number, number], x: DOC_X, facing: 'right' as const, talk: talkSmooth(s, 'doctor'), blink: blink(t, 2.2), bob: nodAt(T('F1', 'blood', 1.63)) + nodAt(T('F5', 'no', 9.3))};
   const mom = {spec: MOM, ...momF, pose: 'holdL' as const, expr: exprOf(s, 'mom', 'neutral'), look: [0.7, 0.3] as [number, number], talk: talkSmooth(s, 'mom'), blink: blink(t, 0.7), bob: 0};
   return {doc, mom, panic: take(t, T('F3', 'hair', 6.2) - 0.05, 0.8), joy: hop(t, T('F5', 'loss', 9.8), 90, 0.32)};
 };

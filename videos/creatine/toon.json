@@ -704,7 +704,7 @@
     },
     {
      "at": "F5",
-     "act": "doctor: opens her palm",
+     "act": "doctor: nods",
      "word": "no",
      "sfx": "success-chime"
     },
@@ -874,5 +874,5 @@
    "antonio-2021"
   ]
  },
- "musicPrompt": "Bouncy gym-workout funk on slap bass and punchy brass stabs, 112 BPM, a cheeky whistle melody for the little hero, a tense pulsing synth when the energy drains, a short suspense sting for the blood test, then a bright confident brass finish."
+ "musicPrompt": "A steady, continuous upbeat gym-workout funk groove at 112 BPM that never stops or drops out: a constant driving drum beat, a sustained warm bass line and a held synth pad under everything from the first second to the last, no breaks, no silences, no stop-time stabs. A cheeky whistle melody floats on top, playful and light, with a bright confident brass lift near the end. Background music under dialogue."
 }

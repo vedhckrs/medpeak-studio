@@ -6,6 +6,23 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-21 (15) - MacBook (local Claude Code) - branch `video/creatine` - creatine FINISHED (acted version), waiting for the owner to watch (NOT uploaded)
+
+- The owner: "Yes, finish it" (the bolder line and a new steady music track).
+- **Bolder line for every video from now on:** `kit.tsx` OUT 3.4 -> 5.6, IN 2.2 -> 3.2. Older uploaded videos keep their look unless re-rendered.
+- New music `assets/toons-music/creatine.mp3` from a steady prompt (no stops): **500 credits**; balance 49,730 -> 49,230. The scan shows
+  no rest inside its loop (only the end fade, cut out of the loop). The old track is replaced (not kept in git history beyond the commit before).
+- Final fixes: the BATTERY tag's arrow stops above the cap (it read "AYP"); on "no" Dr. Mira rests and nods (her open hand covered Mom's
+  shaker in Mom's close-up).
+- Final: `videos/creatine/renders/toon-v8.mp4` 66.8 s, -14.0 LUFS, true peak -0.9 dBTP, no holes, 8 of 9 sounds heard. `npm test` 50/50;
+  toon:check (+ `--all`), camera, motion, staging, sound ALL PASS. Look: outlines 2.7% PASS, brightness 170 PASS, line detail PASS;
+  still frames 26% FAIL (target 45; was 4% in the rejected cut), small movement 57% (target 55). Told the owner plainly.
+- Package rebuilt READY (cover 1.75 s). Phone copy `toon-v8-phone.mp4`.
+- Spent on this video in all: 75 + 285 + 193 + 500 + 500 = **about 1,550 ElevenLabs credits** (the first music track was not used).
+- Next: the owner watches; upload private only on his word; then merge `video/creatine`.
+
+---
+
 ## 2026-11-21 (14) - MacBook (local Claude Code) - branch `video/creatine` - creatine restaged C-G (review cut), WAITING
 
 - The owner: "Yes, do the rest" (after the hook test). Built (free), all with the acting kit:
