@@ -8,7 +8,8 @@
  *  - title starts with the search phrase; no ALL CAPS words, no emojis, no hashtags in titles
  *  - description: keyword-first opener, chapters (long), sources, @MedPeakHealth, comment question,
  *    disclaimer, 3 hashtags
- *  - AI-made visuals are disclosed (containsSyntheticMedia), not made for kids, category 27 Education
+ *  - not made for kids, category 27 Education; YouTube's "AI use" question is answered Yes
+ *    (containsSyntheticMedia), but the description never says how the video is made (owner, 2026-11-16)
  */
 import fs from 'node:fs';
 import path from 'node:path';

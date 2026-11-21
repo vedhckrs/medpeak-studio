@@ -113,3 +113,19 @@ export const get = async (path) => {
   if (!r.ok) throw new Error(`ElevenLabs GET ${path}: ${r.status}`);
   return r.json();
 };
+
+/** Credits one response cost, from ElevenLabs' own "character-cost" header (null when it is missing). */
+export const costOf = (r) => {
+  const h = r.headers.get('character-cost');
+  const n = Number(h);
+  return h !== null && h !== '' && Number.isFinite(n) && n >= 0 ? n : null;
+};
+/** The balance counter can lag behind a request: read it until it drops below `before` (about a minute at most). */
+export const settledSpend = async (before, tries = 6) => {
+  for (let i = 0; i < tries; i++) {
+    const now = (await balance()).left;
+    if (now < before) return before - now;
+    await new Promise((res) => setTimeout(res, 10000));
+  }
+  return 0;
+};

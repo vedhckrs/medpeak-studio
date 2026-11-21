@@ -1,0 +1,139 @@
+// "What Happens If You Get Rabies": format 4, the clock shape (a race up one nerve), with three macro
+// close-ups as the hero visual (owner, 2026-11-18): the entry (hook), inside the nerve (middle), caught (end).
+// Writes videos/rabies/toon.json. Run: node plans/rabies-script.mjs
+import fs from 'node:fs';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+const ROOT = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
+
+const tag = (text, from, o = {}) => ({kind: 'tag', text, x: 760, y: 470, size: 320, rot: -3, from, to: from, ...o});
+const virus = (emotion, pose) => [{who: 'virus', x: 420, size: 380, stage: true, emotion, pose}];
+
+const toon = {
+  slug: 'rabies', title: 'What Happens If You Get Rabies', format: 4, shape: 'clock', music: 'panic', camera: 'steady', episode: 9,
+  hooks: [
+    {line: 'You can get rabies from one bite.', why: 'the plain danger in seven words; the first picture is the virus at a scratch, looking up the nerve'},
+    {line: 'Get rabies, and your brain is next.', why: 'stronger, more frightening; the brain is where the race ends'},
+    {line: 'What happens if you get rabies? A race.', why: 'the search question itself, with a promise of a story'},
+  ],
+  rooms: {
+    clinic: {palette: 'sky', wall: 'stripes', floor: 'checker', window: {style: 'arch', side: 'right', view: 'hills'}, layout: 'desk', chart: 'body', time: 'day'},
+    home: {kind: 'kitchen', palette: 'cream', wall: 'tiles', floor: 'wood', window: {style: 'round', side: 'left', view: 'city'}, layout: 'stove-right', time: 'day'},
+  },
+  package: {
+    title: 'What Happens If You Get Rabies', phrase: 'what happens if you get rabies',
+    opener: 'What happens if you get rabies? The virus enters through a bite or scratch, usually from a dog, and travels slowly along a nerve toward the brain. Once symptoms start, rabies is almost always fatal, but treatment given in time stops the virus before it gets there. The World Health Organization says: wash the wound with soap and water for at least 15 minutes straight away, then see a doctor the same day.',
+    question: 'Did you know you should wash a dog scratch for 15 minutes?',
+    tags: ['what happens if you get rabies', 'rabies', 'rabies symptoms', 'dog bite', 'what to do after a dog bite', 'rabies vaccine', 'is rabies curable', 'dog scratch rabies', 'first aid', 'health cartoon'],
+    hashtags: '#rabies #dogbite #shorts',
+    cover: {at: 1.2, text: 'One small scratch?', accent: 'scratch'},
+  },
+  retention: {
+    noIntro: {scene: 'A1', line: 'You can get rabies from one bite.'},
+    promise: {scene: 'A2', line: 'Can you stop me before the brain?'},
+    question: {scene: 'A2', line: 'Can you stop me before the brain?'},
+    answer: {scene: 'E2', line: 'A wall? They stopped me before the brain!'},
+    change3s: {scene: 'all', line: 'steady camera: something happens in the picture at least every 3 s (stickers do not count)'},
+    twist: {scene: 'D2', line: 'One hard truth: once symptoms start, it is almost always fatal.'},
+    bestLast: {scene: 'E3', line: 'One bite, but no rabies. You got the vaccine in time!'},
+    loop: {scene: 'E3', line: 'One bite, but no rabies. You got the vaccine in time!'},
+  },
+  sources: [
+    {id: 'who-rabies', label: 'World Health Organization. Rabies, fact sheet (17 September 2026)', url: 'https://www.who.int/news-room/fact-sheets/detail/rabies', note: "'Dog bites and scratches cause 99% of the human rabies cases.' Rabies spreads 'via saliva, usually through bites, scratches, or direct contact with mucosa'. 'The incubation period for rabies is typically 2–3 months but may vary from one week to one year'. 'Once clinical symptoms appear, rabies is virtually 100% fatal.' 'Rabies deaths are preventable with prompt post exposure prophylaxis (PEP) by stopping the virus from reaching the central nervous system.' 'If a person is bitten or scratched by a potentially rabid animal, they should immediately and always wash the wound with water and soap for at least 15 minutes and seek medical attention.' PEP is wound washing, 'a course of human rabies vaccine and, when indicated, rabies immunoglobulins'."},
+    {id: 'cdc-rabies', label: 'US Centers for Disease Control and Prevention. About Rabies (27 January 2026)', url: 'https://www.cdc.gov/rabies/about/index.html', note: "'Rabies spreads primarily through bites or scratches from an infected animal.' 'The rabies virus must travel to the brain before it can cause symptoms.' Treatment after exposure is 'nearly 100% effective if you get it after exposure'. 'Once clinical signs of rabies appear, the disease is nearly always fatal.'"},
+  ],
+  shots: [
+    {id: 'A', set: 'macro', cast: virus('smug', 'rest'),
+      state: {view: 0, slide: 0.55},
+      events: [
+        {at: 'A1', word: 'rabies', set: {slide: 0.68}, over: 24},
+        {at: 'A1', word: 'bite.', set: {slide: 0.84}, over: 20, sfx: 'plop'},
+        {at: 'A2', word: 'brain?', set: {slide: 1}, over: 30},
+      ],
+      lines: [
+        {id: 'A1', who: 'virus', text: 'You can get rabies from one bite.', emotion: 'smug', pose: 'rest', key: 'bite', src: ['who-rabies', 'cdc-rabies']},
+        {id: 'A2', who: 'virus', text: 'Can you stop me before the brain?', emotion: 'smug', pose: 'rest', key: 'brain', chat: true, beat: 0.4},
+      ]},
+    {id: 'T1', set: 'arm', card: 'That morning...', seconds: 1.2, cast: [], lines: []},
+    {id: 'B', set: 'arm', label: 'THAT MORNING', cast: virus('happy', 'rest'),
+      state: {bite: 0},
+      events: [
+        {at: 'B1', set: {bite: 0.42}, over: 34},
+        {at: 'B1', word: 'nip.', set: {bite: 0.62}, over: 16},
+        {at: 'B1', word: 'scratch.', set: {bite: 0.82}, over: 24},
+        {at: 'B2', set: {bite: 1}, over: 18, sfx: 'plop'},
+        {at: 'B2', word: 'nerve!', set: {days: 0.02}, over: 6},
+        {at: 'B2', word: 'nerve!', set: {climb: 0.08}, over: 24},
+      ],
+      lines: [
+        {id: 'B1', who: 'virus', text: 'A stray dog. A little nip. A tiny scratch.', emotion: 'smug', pose: 'rest', key: 'scratch', chat: true, beat: 0.4},
+        {id: 'B2', who: 'virus', text: 'I ride in on its spit. Now, up this nerve!', emotion: 'happy', pose: 'rest', key: 'nerve', src: ['who-rabies', 'cdc-rabies']},
+      ]},
+    {id: 'M2', set: 'macro', cast: virus('smug', 'rest'),
+      state: {view: 1, speed: 0.3},
+      events: [
+        {at: 'start', set: {speed: 0.6}, over: 20},
+        {at: 'B3', word: 'two', set: {speed: 1}, over: 20},
+        {at: 'B3', word: 'months', set: {speed: 1.4}, over: 20},
+        {at: 'B3', word: 'brain.', set: {speed: 1.8}, over: 20},
+      ],
+      props: [
+        tag('2-3 months', 'B3', {word: 'two', x: 300, y: 430, size: 300, rot: -5}),
+        tag('or just 1 week!', 'B3', {word: 'brain.', x: 760, y: 590, size: 300, rot: 4}),
+      ],
+      lines: [
+        {id: 'B3', who: 'virus', text: 'Slowly. Usually two to three months to the brain.', emotion: 'smug', pose: 'rest', key: 'months', src: ['who-rabies', 'cdc-rabies'], beat: 0.3},
+      ]},
+    {id: 'C', set: 'home', cast: [{who: 'mom', x: 285, size: 960, emotion: 'scared', pose: 'rest'}, {who: 'kid', x: 805, size: 980, emotion: 'neutral', pose: 'rest'}],
+      props: [
+        {kind: 'pain', x: 880, y: 1240, size: 120, from: 'C1', word: 'scratch,', to: 'C1', on: 'kid'},
+        {kind: 'drop', x: 545, y: 1180, size: 200, from: 'C2', word: 'Soap', to: 'C2', halo: true},
+        {kind: 'clock', x: 545, y: 1180, size: 200, from: 'C3', halo: true},
+        tag('15 minutes', 'C2', {x: 545, y: 330, size: 300, word: 'fifteen'}),
+      ],
+      lines: [
+        {id: 'C1', who: 'kid', text: "It's just a little scratch, Mum.", emotion: 'neutral', pose: 'shrug', key: 'scratch', chat: true},
+        {id: 'C2', who: 'mom', text: 'Wash it now. Soap and water, fifteen minutes.', emotion: 'scared', pose: 'point', key: 'fifteen', react: {kid: 'shocked'}, src: ['who-rabies']},
+        {id: 'C3', who: 'kid', text: 'Fifteen minutes? For a scratch?', cam: 'mcu', emotion: 'shocked', pose: 'think', key: 'scratch', chat: true},
+      ]},
+    {id: 'D', set: 'clinic', cast: [{who: 'doctor', x: 285, size: 940}, {who: 'kid', x: 805, size: 980, emotion: 'scared', pose: 'rest'}],
+      props: [
+        tag('same day', 'D1', {x: 550, y: 1180, size: 280, rot: 0, word: 'today.'}),
+        {kind: 'glass', size: 300, from: 'D1', word: 'Washing', to: 'D1', bubble: true, of: 'doctor'},
+        {kind: 'pain', x: 880, y: 1240, size: 120, from: 'D2', word: 'start,', to: 'D2', on: 'kid'},
+        {kind: 'pillbottle', x: 550, y: 1190, size: 200, from: 'D3', word: 'treatment', halo: true},
+        tag('act in time', 'D3', {x: 610, y: 300, size: 300, word: 'works'}),
+      ],
+      lines: [
+        {id: 'D1', who: 'doctor', text: 'Your mum was right. Washing first, then a doctor, today.', emotion: 'happy', pose: 'explain', key: 'today', react: {kid: 'happy'}, src: ['who-rabies']},
+        {id: 'D2', who: 'doctor', text: 'One hard truth: once symptoms start, it is almost always fatal.', cam: 'mcu', emotion: 'neutral', pose: 'present', key: 'symptoms', react: {kid: 'scared'}, src: ['who-rabies', 'cdc-rabies']},
+        {id: 'D3', who: 'doctor', text: 'But act in time and treatment works almost every time.', emotion: 'happy', pose: 'thumb', key: 'time', react: {kid: 'happy'}, src: ['cdc-rabies', 'who-rabies']},
+      ]},
+    {id: 'E', set: 'arm', label: 'AFTER THE VACCINE', cast: virus('smug', 'rest'),
+      state: {bite: 1, climb: 0.27},
+      events: [
+        {at: 'start', set: {vaccine: 1}, over: 50, sfx: 'sparkle'},
+        {at: 'E1', word: 'this?', set: {wall: 1}, over: 30},
+        {at: 'E2', set: {climb: 0.31}, over: 14, sfx: 'bonk'},
+        {at: 'E2', delay: 0.15, set: {dizzy: 1}, over: 12},
+        {at: 'E2', word: 'stopped', set: {climb: 0.23}, over: 20},
+      ],
+      lines: [
+        {id: 'E1', who: 'virus', text: 'Wait. Who are all of you? What is this?', emotion: 'shocked', pose: 'rest', key: 'this', chat: true},
+        {id: 'E2', who: 'virus', text: 'A wall? They stopped me before the brain!', emotion: 'angry', pose: 'rest', key: 'stopped', src: ['who-rabies']},
+      ]},
+    {id: 'M3', set: 'macro', cast: virus('sad', 'rest'),
+      state: {view: 2, grip: 0},
+      events: [
+        {at: 'E3', set: {grip: 0.45}, over: 18},
+        {at: 'E3', word: 'rabies.', set: {grip: 1}, over: 16},
+      ],
+      lines: [
+        {id: 'E3', who: 'virus', text: 'One bite, but no rabies. You got the vaccine in time!', emotion: 'sad', pose: 'rest', key: 'time', src: ['who-rabies', 'cdc-rabies']},
+      ]},
+  ],
+};
+const dir = path.join(ROOT, 'videos', toon.slug);
+fs.mkdirSync(path.join(dir, 'renders'), {recursive: true});
+fs.writeFileSync(path.join(dir, 'toon.json'), JSON.stringify(toon, null, 1) + '\n');
+console.log('wrote', toon.slug, toon.shots.flatMap((s) => s.lines).length, 'lines');

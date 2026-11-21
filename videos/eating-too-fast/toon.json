@@ -1,0 +1,696 @@
+{
+ "slug": "eating-too-fast",
+ "title": "What Happens When You Eat Too Fast",
+ "format": 2,
+ "music": "panic",
+ "camera": "steady",
+ "episode": 4,
+ "hooks": [
+  {
+   "line": "Eat too fast and your belly balloons.",
+   "why": "names what you will feel (the bloating); the first picture is the stretched stomach full of air",
+   "picked": "the owner, 2026-11-17"
+  },
+  {
+   "line": "Eat too fast? You'll still feel hungry.",
+   "why": "the surprise: a full plate and still hungry; leads into the brain being late"
+  },
+  {
+   "line": "Eat too fast, your brain runs late.",
+   "why": "the cause in one line; the most curious, the least physical"
+  }
+ ],
+ "rooms": {
+  "clinic": {
+   "palette": "mint",
+   "wall": "tiles",
+   "floor": "checker",
+   "window": {
+    "style": "tall",
+    "side": "left",
+    "view": "garden"
+   },
+   "layout": "exam-bed",
+   "chart": "stomach",
+   "time": "day"
+  },
+  "home": {
+   "kind": "living",
+   "palette": "sage",
+   "wall": "paint",
+   "floor": "wood",
+   "window": {
+    "style": "wide",
+    "side": "right",
+    "view": "city"
+   },
+   "layout": "sofa-left",
+   "time": "day"
+  }
+ },
+ "package": {
+  "title": "What Happens When You Eat Too Fast",
+  "phrase": "what happens when you eat too fast",
+  "opener": "What happens when you eat too fast? You swallow air with your food, so your stomach bloats, and your brain can take fifteen minutes or more to notice that you are full, so you keep eating. This cartoon shows it from inside the stomach, and Dr. Mira shares the simple fix from the US National Institutes of Health: eat slowly, chew well, and put your fork down.",
+  "question": "How many minutes does your lunch usually take?",
+  "tags": [
+   "what happens when you eat too fast",
+   "eating too fast",
+   "eating too fast effects",
+   "bloating after eating",
+   "why am I bloated",
+   "still hungry after eating",
+   "eat slowly",
+   "how to stop overeating",
+   "stomach",
+   "health cartoon"
+  ],
+  "hashtags": "#bloating #eatslowly #shorts",
+  "cover": {
+   "at": 1.2,
+   "text": "Eating too fast?",
+   "accent": "fast"
+  }
+ },
+ "retention": {
+  "noIntro": {
+   "scene": "A1",
+   "line": "Eat too fast and your belly balloons."
+  },
+  "promise": {
+   "scene": "A2",
+   "line": "Same lunch, no balloon. Want to know how?"
+  },
+  "question": {
+   "scene": "A2",
+   "line": "Same lunch, no balloon. Want to know how?"
+  },
+  "answer": {
+   "scene": "D6",
+   "line": "So: same lunch, fifteen minutes, no balloon."
+  },
+  "change3s": {
+   "scene": "all",
+   "line": "steady camera: something new happens in the picture at least every 3 s"
+  },
+  "twist": {
+   "scene": "D3",
+   "line": "But here's the twist: your stomach was full. Your brain just didn't know yet."
+  },
+  "bestLast": {
+   "scene": "D6",
+   "line": "So: same lunch, fifteen minutes, no balloon."
+  },
+  "loop": {
+   "scene": "E2",
+   "line": "Eat too fast? Not this belly. Never again!"
+  }
+ },
+ "sources": [
+  {
+   "id": "niddk-gas",
+   "label": "NIH National Institute of Diabetes and Digestive and Kidney Diseases. Symptoms and Causes of Gas in the Digestive Tract (last reviewed June 2021)",
+   "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/gas-digestive-tract/symptoms-causes",
+   "note": "'Swallowing more air may lead to more gas and gas symptoms. You swallow more air when you ... eat or drink too fast'. 'Common symptoms of gas in the digestive tract include belching, bloating and distention, and passing gas.'"
+  },
+  {
+   "id": "niddk-portions",
+   "label": "NIH National Institute of Diabetes and Digestive and Kidney Diseases. Food Portions: Choosing Just Enough for You (last reviewed July 2021)",
+   "url": "https://www.niddk.nih.gov/health-information/weight-management/just-enough-food-portions",
+   "note": "Under 'How can I manage food portions at home?': 'Eat slowly so your brain has time to realize your stomach is full, which may take at least 15 minutes.' 'Focus on what you are eating, chew your food well'. The page also says 'Put down your fork and glass'."
+  },
+  {
+   "id": "kokkinos-2010",
+   "label": "Kokkinos A, et al. Eating slowly increases the postprandial response of the anorexigenic gut hormones, peptide YY and glucagon-like peptide-1. J Clin Endocrinol Metab. 2010 (PMID 19875483)",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/19875483/",
+   "note": "17 healthy men ate the same 300 ml of ice cream in 5 minutes and in 30 minutes. The fullness hormones PYY and GLP-1 rose more after the 30-minute meal. 'Eating at a physiologically moderate pace leads to a more pronounced anorexigenic gut peptide response' than eating very fast. Kept for the description; not said in the video."
+  },
+  {
+   "id": "ohkuma-2015",
+   "label": "Ohkuma T, et al. Association between eating rate and obesity: a systematic review and meta-analysis. Int J Obes. 2015 (PMID 26100137)",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/26100137/",
+   "note": "Pooled odds ratio for obesity among people who eat quickly: 2.15 (95% CI 1.84 to 2.51). 'Eating quickly is positively associated with excess body weight.' An association, not a proven cause. Kept for the description; not said in the video."
+  }
+ ],
+ "shots": [
+  {
+   "id": "A",
+   "set": "tummy",
+   "label": "STOMACH",
+   "cast": [
+    {
+     "who": "stomach",
+     "x": 540,
+     "size": 600,
+     "stage": true,
+     "emotion": "sick",
+     "pose": "belly"
+    },
+    {
+     "who": "foodpipe",
+     "x": 540,
+     "size": 600,
+     "stage": true,
+     "emotion": "shocked",
+     "pose": "panic"
+    }
+   ],
+   "state": {
+    "food": 1,
+    "full": 1,
+    "air": 1
+   },
+   "events": [
+    {
+     "at": "A3",
+     "set": {
+      "food": 0,
+      "full": 0.15,
+      "air": 0
+     },
+     "over": 8,
+     "fx": "flash"
+    },
+    {
+     "at": "A3",
+     "word": "lunch",
+     "set": {
+      "food": 1,
+      "full": 0.7
+     },
+     "over": 26,
+     "sfx": "plop"
+    },
+    {
+     "at": "A4",
+     "word": "air",
+     "set": {
+      "air": 1
+     },
+     "over": 30
+    },
+    {
+     "at": "A5",
+     "set": {
+      "full": 1
+     },
+     "over": 16,
+     "sfx": "gurgle-stomach"
+    }
+   ],
+   "props": [
+    {
+     "kind": "pain",
+     "x": 200,
+     "y": 700,
+     "size": 160,
+     "from": "A1",
+     "word": "balloons",
+     "to": "A1"
+    },
+    {
+     "kind": "tag",
+     "text": "same lunch?",
+     "x": 330,
+     "y": 330,
+     "size": 320,
+     "rot": -4,
+     "from": "A2",
+     "to": "A2"
+    },
+    {
+     "kind": "tag",
+     "text": "5 minutes earlier",
+     "x": 330,
+     "y": 330,
+     "size": 280,
+     "rot": -3,
+     "from": "A3",
+     "to": "A3"
+    },
+    {
+     "kind": "burger",
+     "x": 190,
+     "y": 540,
+     "size": 230,
+     "from": "A3",
+     "word": "huge",
+     "to": "A3",
+     "halo": true
+    },
+    {
+     "kind": "tag",
+     "text": "swallowed air",
+     "x": 330,
+     "y": 330,
+     "size": 300,
+     "rot": 4,
+     "from": "A4",
+     "word": "air",
+     "to": "A4"
+    },
+    {
+     "kind": "tag",
+     "text": "FULL!",
+     "x": 330,
+     "y": 330,
+     "size": 340,
+     "rot": -5,
+     "from": "A5",
+     "word": "full",
+     "to": "A5"
+    },
+    {
+     "kind": "clock",
+     "x": 190,
+     "y": 540,
+     "size": 230,
+     "from": "A6",
+     "halo": true
+    },
+    {
+     "kind": "burger",
+     "x": 330,
+     "y": 760,
+     "size": 210,
+     "from": "A6",
+     "word": "more",
+     "halo": true
+    }
+   ],
+   "lines": [
+    {
+     "id": "A1",
+     "who": "stomach",
+     "text": "Eat too fast and your belly balloons.",
+     "emotion": "sick",
+     "pose": "belly",
+     "key": "balloons",
+     "react": {
+      "foodpipe": "shocked"
+     },
+     "src": [
+      "niddk-gas"
+     ]
+    },
+    {
+     "id": "A2",
+     "who": "foodpipe",
+     "text": "Same lunch, no balloon. Want to know how?",
+     "emotion": "smug",
+     "pose": "think",
+     "key": "how"
+    },
+    {
+     "id": "A3",
+     "who": "stomach",
+     "text": "Rewind! Five minutes ago, lunch came down in huge gulps.",
+     "emotion": "neutral",
+     "pose": "explain",
+     "key": "gulps",
+     "react": {
+      "foodpipe": "scared"
+     }
+    },
+    {
+     "id": "A4",
+     "who": "foodpipe",
+     "text": "He swallowed so fast, air came down too!",
+     "emotion": "scared",
+     "pose": "panic",
+     "key": "air",
+     "src": [
+      "niddk-gas"
+     ]
+    },
+    {
+     "id": "A5",
+     "who": "stomach",
+     "text": "I'm stretched tight! Brain, we're full down here!",
+     "emotion": "scared",
+     "pose": "panic",
+     "key": "full",
+     "react": {
+      "foodpipe": "shocked"
+     }
+    },
+    {
+     "id": "A6",
+     "who": "foodpipe",
+     "text": "The brain hasn't heard yet. He's reaching for more!",
+     "emotion": "sad",
+     "pose": "shrug",
+     "key": "more",
+     "react": {
+      "stomach": "sick"
+     },
+     "src": [
+      "niddk-portions"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "T1",
+   "set": "tummy",
+   "card": "A few minutes later...",
+   "seconds": 1.4,
+   "cast": [],
+   "lines": []
+  },
+  {
+   "id": "C",
+   "set": "home",
+   "cast": [
+    {
+     "who": "patient",
+     "x": 540,
+     "size": 1040,
+     "emotion": "sick",
+     "pose": "belly"
+    }
+   ],
+   "events": [
+    {
+     "at": "start",
+     "sfx": "burp-small"
+    }
+   ],
+   "props": [
+    {
+     "kind": "pain",
+     "x": 560,
+     "y": 1010,
+     "size": 170,
+     "from": "C1",
+     "word": "bloated",
+     "on": "patient"
+    }
+   ],
+   "lines": [
+    {
+     "id": "C1",
+     "who": "patient",
+     "text": "Ugh. I'm bloated... and still hungry?!",
+     "emotion": "sick",
+     "pose": "belly",
+     "key": "bloated"
+    }
+   ]
+  },
+  {
+   "id": "D",
+   "set": "clinic",
+   "cast": [
+    {
+     "who": "doctor",
+     "x": 285,
+     "size": 940
+    },
+    {
+     "who": "patient",
+     "x": 805,
+     "size": 900,
+     "emotion": "sick",
+     "pose": "belly"
+    }
+   ],
+   "props": [
+    {
+     "kind": "burger",
+     "x": 610,
+     "y": 330,
+     "size": 210,
+     "from": "D1",
+     "word": "hungry",
+     "to": "D1",
+     "halo": true
+    },
+    {
+     "kind": "tag",
+     "text": "swallowed air",
+     "x": 610,
+     "y": 300,
+     "size": 250,
+     "rot": -4,
+     "from": "D2",
+     "word": "air",
+     "to": "D2"
+    },
+    {
+     "kind": "pain",
+     "x": 790,
+     "y": 1010,
+     "size": 150,
+     "from": "D2",
+     "word": "bloating",
+     "to": "D2",
+     "on": "patient"
+    },
+    {
+     "kind": "tag",
+     "text": "the twist",
+     "x": 610,
+     "y": 300,
+     "size": 300,
+     "rot": -4,
+     "from": "D3",
+     "to": "D3"
+    },
+    {
+     "kind": "tag",
+     "text": "full, but no signal",
+     "x": 550,
+     "y": 1180,
+     "size": 270,
+     "from": "D3",
+     "word": "brain",
+     "to": "D3"
+    },
+    {
+     "kind": "tag",
+     "text": "late?!",
+     "x": 610,
+     "y": 320,
+     "size": 320,
+     "rot": 5,
+     "from": "D4",
+     "to": "D4"
+    },
+    {
+     "kind": "clock",
+     "size": 300,
+     "from": "D5",
+     "word": "fifteen",
+     "to": "D5",
+     "bubble": true,
+     "of": "doctor"
+    },
+    {
+     "kind": "tag",
+     "text": "15 minutes or more",
+     "x": 550,
+     "y": 1180,
+     "size": 280,
+     "from": "D5",
+     "word": "minutes",
+     "to": "D5"
+    },
+    {
+     "kind": "clock",
+     "x": 455,
+     "y": 1190,
+     "size": 190,
+     "from": "D6",
+     "word": "fifteen",
+     "halo": true
+    },
+    {
+     "kind": "burger",
+     "x": 648,
+     "y": 1190,
+     "size": 190,
+     "from": "D6",
+     "halo": true
+    },
+    {
+     "kind": "tag",
+     "text": "fork down",
+     "x": 610,
+     "y": 300,
+     "size": 320,
+     "from": "D6",
+     "word": "Chew"
+    }
+   ],
+   "lines": [
+    {
+     "id": "D1",
+     "who": "patient",
+     "text": "Doctor, why am I bloated and still hungry?",
+     "emotion": "sick",
+     "pose": "belly",
+     "key": "hungry"
+    },
+    {
+     "id": "D2",
+     "who": "doctor",
+     "text": "Eat too fast and you swallow air. That means burps and bloating.",
+     "emotion": "neutral",
+     "pose": "explain",
+     "key": "air",
+     "react": {
+      "patient": "shocked"
+     },
+     "src": [
+      "niddk-gas"
+     ]
+    },
+    {
+     "id": "D3",
+     "who": "doctor",
+     "text": "But here's the twist: your stomach was full. Your brain just didn't know yet.",
+     "emotion": "happy",
+     "pose": "present",
+     "key": "twist",
+     "src": [
+      "niddk-portions"
+     ]
+    },
+    {
+     "id": "D4",
+     "who": "patient",
+     "text": "My brain was late?",
+     "emotion": "shocked",
+     "pose": "think",
+     "key": "late"
+    },
+    {
+     "id": "D5",
+     "who": "doctor",
+     "text": "It can take fifteen minutes or more to notice you're full.",
+     "emotion": "neutral",
+     "pose": "point",
+     "key": "fifteen",
+     "src": [
+      "niddk-portions"
+     ]
+    },
+    {
+     "id": "D6",
+     "who": "doctor",
+     "text": "So: same lunch, fifteen minutes, no balloon. Chew well, fork down.",
+     "emotion": "happy",
+     "pose": "thumb",
+     "key": "fifteen",
+     "react": {
+      "patient": "happy"
+     },
+     "src": [
+      "niddk-portions"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "E",
+   "set": "tummy",
+   "label": "NEXT TIME",
+   "cast": [
+    {
+     "who": "stomach",
+     "x": 540,
+     "size": 600,
+     "stage": true,
+     "emotion": "happy",
+     "pose": "rest"
+    },
+    {
+     "who": "foodpipe",
+     "x": 540,
+     "size": 600,
+     "stage": true,
+     "emotion": "happy",
+     "pose": "rest"
+    }
+   ],
+   "state": {
+    "food": 0.1,
+    "full": 0.2
+   },
+   "events": [
+    {
+     "at": "start",
+     "set": {
+      "food": 0.7,
+      "full": 0.6
+     },
+     "over": 110
+    },
+    {
+     "at": "E2",
+     "word": "belly",
+     "set": {
+      "full": 0.66
+     },
+     "over": 20
+    }
+   ],
+   "props": [
+    {
+     "kind": "tag",
+     "text": "small bites",
+     "x": 330,
+     "y": 330,
+     "size": 320,
+     "rot": -4,
+     "from": "E1",
+     "to": "E1"
+    },
+    {
+     "kind": "clock",
+     "x": 190,
+     "y": 540,
+     "size": 230,
+     "from": "E1",
+     "word": "air",
+     "to": "E1",
+     "halo": true
+    },
+    {
+     "kind": "tag",
+     "text": "15 minutes",
+     "x": 330,
+     "y": 330,
+     "size": 320,
+     "rot": -4,
+     "from": "E2"
+    }
+   ],
+   "lines": [
+    {
+     "id": "E1",
+     "who": "stomach",
+     "text": "Small bites, slowly. No air, and full right on time!",
+     "emotion": "happy",
+     "pose": "thumb",
+     "key": "time",
+     "react": {
+      "foodpipe": "happy"
+     },
+     "src": [
+      "niddk-portions"
+     ]
+    },
+    {
+     "id": "E2",
+     "who": "foodpipe",
+     "text": "Eat too fast? Not this belly. Never again!",
+     "emotion": "happy",
+     "pose": "cheer",
+     "key": "belly"
+    }
+   ]
+  }
+ ]
+}

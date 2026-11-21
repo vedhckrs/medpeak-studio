@@ -1,0 +1,750 @@
+{
+ "slug": "stomach-growls",
+ "title": "Why Your Stomach Growls When You're Hungry",
+ "format": 2,
+ "music": "panic",
+ "camera": "steady",
+ "episode": 7,
+ "hooks": [
+  {
+   "line": "Hungry? Your stomach is doing the housework.",
+   "why": "turns an embarrassing moment into a surprise; the first picture is the empty stomach squeezing"
+  },
+  {
+   "line": "Your hungry stomach growls like water pipes.",
+   "why": "a picture everyone knows (the sound in the pipes); less of a twist"
+  },
+  {
+   "line": "Your stomach growls when hungry. Here's why.",
+   "why": "the plain search question; safe, less curious"
+  }
+ ],
+ "rooms": {
+  "clinic": {
+   "palette": "forest",
+   "wall": "dots",
+   "floor": "wood",
+   "window": {
+    "style": "tall",
+    "side": "left",
+    "view": "city"
+   },
+   "layout": "desk",
+   "chart": "stomach",
+   "time": "day"
+  },
+  "home": {
+   "kind": "living",
+   "palette": "terracotta",
+   "wall": "wainscot",
+   "floor": "carpet",
+   "window": {
+    "style": "arch",
+    "side": "left",
+    "view": "hills"
+   },
+   "layout": "sofa-right",
+   "time": "evening"
+  }
+ },
+ "package": {
+  "title": "Why Your Stomach Growls When You're Hungry",
+  "phrase": "why your stomach growls",
+  "opener": "Why your stomach growls when you're hungry: between meals, strong squeezing waves pass through the empty stomach and gut and sweep leftover bits along, a job researchers call housekeeping. The gut is hollow, so the sound echoes like water pipes. This cartoon shows it from inside, and Dr. Mira explains why most tummy sounds are normal.",
+  "question": "Where was the most embarrassing place your stomach ever growled?",
+  "tags": [
+   "why does my stomach growl",
+   "stomach growling",
+   "why your stomach growls when hungry",
+   "stomach rumbling",
+   "stomach noises",
+   "hunger",
+   "digestion",
+   "stomach",
+   "gut health",
+   "health cartoon"
+  ],
+  "hashtags": "#stomach #hungry #shorts",
+  "cover": {
+   "at": 1.2,
+   "text": "Why it growls",
+   "accent": "growls"
+  }
+ },
+ "retention": {
+  "noIntro": {
+   "scene": "A1",
+   "line": "Hungry? Your stomach is doing the housework."
+  },
+  "promise": {
+   "scene": "A2",
+   "line": "Housework? So what makes that growling noise?"
+  },
+  "question": {
+   "scene": "A2",
+   "line": "Housework? So what makes that growling noise?"
+  },
+  "answer": {
+   "scene": "D6",
+   "line": "So the growling noise is your hollow gut at work. Most tummy sounds are normal."
+  },
+  "change3s": {
+   "scene": "all",
+   "line": "steady camera: something new happens in the picture at least every 3 s"
+  },
+  "twist": {
+   "scene": "D3",
+   "line": "But here's the twist: an empty stomach isn't resting. It squeezes hard to sweep itself out."
+  },
+  "bestLast": {
+   "scene": "D6",
+   "line": "So the growling noise is your hollow gut at work. Most tummy sounds are normal."
+  },
+  "loop": {
+   "scene": "E2",
+   "line": "Hungry? Your stomach is just doing the housework!"
+  }
+ },
+ "sources": [
+  {
+   "id": "medline-sounds",
+   "label": "MedlinePlus (US National Library of Medicine). Abdominal sounds (review date 9 October 2024)",
+   "url": "https://medlineplus.gov/ency/article/003137.htm",
+   "note": "'Abdominal sounds (bowel sounds) are made by the movement of the intestines as they push food through. The intestines are hollow, so bowel sounds echo through the abdomen much like the sounds heard from water pipes.' 'Most bowel sounds are normal. They simply mean that the gastrointestinal tract is working.' 'Most of the sounds you hear in your stomach and intestines are due to normal digestion.'"
+  },
+  {
+   "id": "sanger-2011",
+   "label": "Sanger GJ, Hellstrom PM, Naslund E. The hungry stomach: physiology, disease, and drug development opportunities. Front Pharmacol. 2011 (PMID 21927604)",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/21927604/",
+   "note": "'During hunger, a series of high-amplitude contractions of the stomach and small intestine (phase III), which form part of a cycle of quiescence and contractions (known as the migrating motor complex, MMC), play a \"housekeeping\" role prior to the next meal, and may contribute toward the development of hunger.'"
+  },
+  {
+   "id": "goyal-2019",
+   "label": "Goyal RK, Guo Y, Mashimo H. Advances in the physiology of gastric emptying. Neurogastroenterol Motil. 2019 (PMID 30740834)",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/30740834/",
+   "note": "'In the inter-digestive (fasting) period, gastric motility designed to clear the stomach of undigestible residues.' 'During the migrating front, the pylorus and duodenum remain relaxed and open to allow phase III activity to sweep food residues out of the stomach.' Read in the full text (PMC6850045)."
+  }
+ ],
+ "shots": [
+  {
+   "id": "A",
+   "set": "tummy",
+   "label": "STOMACH",
+   "cast": [
+    {
+     "who": "stomach",
+     "x": 540,
+     "size": 600,
+     "stage": true,
+     "emotion": "happy",
+     "pose": "rest"
+    },
+    {
+     "who": "foodpipe",
+     "x": 540,
+     "size": 600,
+     "stage": true,
+     "emotion": "shocked",
+     "pose": "think"
+    }
+   ],
+   "state": {
+    "squeeze": 1,
+    "food": 0.3,
+    "full": 0.12
+   },
+   "events": [
+    {
+     "at": "A3",
+     "set": {
+      "squeeze": 0
+     },
+     "over": 8,
+     "fx": "flash"
+    },
+    {
+     "at": "A4",
+     "word": "squeezes?",
+     "set": {
+      "squeeze": 1
+     },
+     "over": 24
+    },
+    {
+     "at": "A5",
+     "word": "squeezes",
+     "sfx": "gurgle-stomach"
+    },
+    {
+     "at": "A6",
+     "word": "sweep",
+     "set": {
+      "pass": 1
+     },
+     "over": 80
+    }
+   ],
+   "props": [
+    {
+     "kind": "tag",
+     "text": "GRRRRR",
+     "x": 330,
+     "y": 330,
+     "size": 340,
+     "rot": -5,
+     "from": "A1",
+     "to": "A1",
+     "word": "stomach"
+    },
+    {
+     "kind": "tag",
+     "text": "that noise?",
+     "x": 330,
+     "y": 330,
+     "size": 320,
+     "rot": 3,
+     "from": "A2",
+     "to": "A2"
+    },
+    {
+     "kind": "tag",
+     "text": "hours after lunch",
+     "x": 330,
+     "y": 330,
+     "size": 290,
+     "rot": -3,
+     "from": "A3",
+     "to": "A3"
+    },
+    {
+     "kind": "clock",
+     "x": 190,
+     "y": 540,
+     "size": 230,
+     "from": "A3",
+     "to": "A3",
+     "halo": true,
+     "word": "hours"
+    },
+    {
+     "kind": "tag",
+     "text": "empty!",
+     "x": 330,
+     "y": 330,
+     "size": 320,
+     "rot": 4,
+     "from": "A4",
+     "to": "A4"
+    },
+    {
+     "kind": "tag",
+     "text": "big squeezes",
+     "x": 330,
+     "y": 330,
+     "size": 320,
+     "rot": -4,
+     "from": "A5",
+     "to": "A5"
+    },
+    {
+     "kind": "burger",
+     "x": 190,
+     "y": 540,
+     "size": 230,
+     "from": "A5",
+     "to": "A5",
+     "halo": true,
+     "word": "hunger",
+     "no": true
+    },
+    {
+     "kind": "tag",
+     "text": "crumbs out",
+     "x": 330,
+     "y": 330,
+     "size": 320,
+     "rot": 4,
+     "from": "A6"
+    },
+    {
+     "kind": "burger",
+     "x": 190,
+     "y": 540,
+     "size": 230,
+     "from": "A6",
+     "halo": true,
+     "word": "meal!"
+    }
+   ],
+   "lines": [
+    {
+     "id": "A1",
+     "who": "stomach",
+     "text": "Hungry? Your stomach is doing the housework.",
+     "emotion": "happy",
+     "pose": "explain",
+     "key": "housework",
+     "react": {
+      "foodpipe": "shocked"
+     },
+     "src": [
+      "sanger-2011"
+     ]
+    },
+    {
+     "id": "A2",
+     "who": "foodpipe",
+     "text": "Housework? So what makes that growling noise?",
+     "emotion": "shocked",
+     "pose": "think",
+     "key": "noise"
+    },
+    {
+     "id": "A3",
+     "who": "stomach",
+     "text": "Rewind! Lunch was hours ago. I'm nearly empty.",
+     "emotion": "neutral",
+     "pose": "explain",
+     "key": "empty"
+    },
+    {
+     "id": "A4",
+     "who": "foodpipe",
+     "text": "Empty? Then why the big squeezes?",
+     "emotion": "scared",
+     "pose": "panic",
+     "key": "squeezes"
+    },
+    {
+     "id": "A5",
+     "who": "stomach",
+     "text": "It's hunger time. Strong squeezes roll right through me!",
+     "emotion": "happy",
+     "pose": "cheer",
+     "key": "squeezes",
+     "src": [
+      "sanger-2011"
+     ]
+    },
+    {
+     "id": "A6",
+     "who": "foodpipe",
+     "text": "And they sweep the last crumbs out, before the next meal!",
+     "emotion": "happy",
+     "pose": "point",
+     "key": "crumbs",
+     "react": {
+      "stomach": "happy"
+     },
+     "src": [
+      "goyal-2019",
+      "sanger-2011"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "T1",
+   "set": "tummy",
+   "card": "Meanwhile, in a quiet room...",
+   "seconds": 1.4,
+   "cast": [],
+   "lines": []
+  },
+  {
+   "id": "C",
+   "set": "home",
+   "cast": [
+    {
+     "who": "patient",
+     "x": 540,
+     "size": 1040,
+     "emotion": "shocked",
+     "pose": "belly"
+    }
+   ],
+   "events": [
+    {
+     "at": "start",
+     "sfx": "gurgle-stomach"
+    }
+   ],
+   "props": [
+    {
+     "kind": "tag",
+     "text": "GRRRRR",
+     "x": 800,
+     "y": 420,
+     "size": 320,
+     "rot": 5,
+     "from": "C1"
+    },
+    {
+     "kind": "pain",
+     "x": 540,
+     "y": 1150,
+     "size": 150,
+     "from": "C1",
+     "word": "stomach!",
+     "on": "patient"
+    }
+   ],
+   "lines": [
+    {
+     "id": "C1",
+     "who": "patient",
+     "text": "Shh! Not now, stomach!",
+     "emotion": "shocked",
+     "pose": "belly",
+     "key": "stomach"
+    }
+   ]
+  },
+  {
+   "id": "D",
+   "set": "clinic",
+   "cast": [
+    {
+     "who": "doctor",
+     "x": 285,
+     "size": 940
+    },
+    {
+     "who": "patient",
+     "x": 805,
+     "size": 900,
+     "emotion": "sad",
+     "pose": "belly"
+    }
+   ],
+   "props": [
+    {
+     "kind": "tag",
+     "text": "so loud!",
+     "x": 610,
+     "y": 300,
+     "size": 300,
+     "rot": 5,
+     "from": "D1",
+     "to": "D1"
+    },
+    {
+     "kind": "pain",
+     "x": 805,
+     "y": 1150,
+     "size": 140,
+     "from": "D1",
+     "word": "growl",
+     "to": "D1",
+     "on": "patient"
+    },
+    {
+     "kind": "tag",
+     "text": "hollow",
+     "x": 610,
+     "y": 300,
+     "size": 300,
+     "rot": -4,
+     "from": "D2",
+     "to": "D2"
+    },
+    {
+     "kind": "tag",
+     "text": "it squeezes...",
+     "x": 550,
+     "y": 1180,
+     "size": 290,
+     "rot": 0,
+     "from": "D2",
+     "to": "D2",
+     "word": "squeezes,"
+    },
+    {
+     "kind": "tag",
+     "text": "...and echoes",
+     "x": 550,
+     "y": 1340,
+     "size": 280,
+     "rot": 0,
+     "from": "D2",
+     "to": "D2",
+     "word": "echoes"
+    },
+    {
+     "kind": "tag",
+     "text": "the twist",
+     "x": 610,
+     "y": 300,
+     "size": 300,
+     "rot": -4,
+     "from": "D3",
+     "to": "D3"
+    },
+    {
+     "kind": "tag",
+     "text": "not resting",
+     "x": 550,
+     "y": 1180,
+     "size": 290,
+     "rot": 0,
+     "from": "D3",
+     "to": "D3",
+     "word": "resting."
+    },
+    {
+     "kind": "tag",
+     "text": "it sweeps itself out",
+     "x": 550,
+     "y": 1340,
+     "size": 280,
+     "rot": 0,
+     "from": "D3",
+     "to": "D3",
+     "word": "sweep"
+    },
+    {
+     "kind": "tag",
+     "text": "housework?!",
+     "x": 610,
+     "y": 300,
+     "size": 300,
+     "rot": 5,
+     "from": "D4",
+     "to": "D4"
+    },
+    {
+     "kind": "burger",
+     "x": 550,
+     "y": 1170,
+     "size": 210,
+     "from": "D5",
+     "to": "D5",
+     "halo": true
+    },
+    {
+     "kind": "tag",
+     "text": "same squeezes",
+     "x": 610,
+     "y": 300,
+     "size": 300,
+     "rot": -4,
+     "from": "D5",
+     "to": "D5",
+     "word": "squeezes"
+    },
+    {
+     "kind": "tag",
+     "text": "you feel hungry",
+     "x": 550,
+     "y": 1340,
+     "size": 280,
+     "rot": 0,
+     "from": "D5",
+     "to": "D5",
+     "word": "hungry."
+    },
+    {
+     "kind": "tag",
+     "text": "that noise:",
+     "x": 610,
+     "y": 300,
+     "size": 300,
+     "rot": -4,
+     "from": "D6"
+    },
+    {
+     "kind": "tag",
+     "text": "your gut at work",
+     "x": 550,
+     "y": 1180,
+     "size": 290,
+     "rot": 0,
+     "from": "D6",
+     "word": "gut"
+    },
+    {
+     "kind": "tag",
+     "text": "most sounds: normal",
+     "x": 550,
+     "y": 1340,
+     "size": 280,
+     "rot": 0,
+     "from": "D6",
+     "word": "tummy"
+    }
+   ],
+   "lines": [
+    {
+     "id": "D1",
+     "who": "patient",
+     "text": "Doctor, why does my stomach growl so loud?",
+     "emotion": "sad",
+     "pose": "shrug",
+     "key": "loud"
+    },
+    {
+     "id": "D2",
+     "who": "doctor",
+     "text": "Your gut is hollow. When it squeezes, the sound echoes like water pipes.",
+     "emotion": "neutral",
+     "pose": "explain",
+     "key": "pipes",
+     "react": {
+      "patient": "shocked"
+     },
+     "src": [
+      "medline-sounds"
+     ]
+    },
+    {
+     "id": "D3",
+     "who": "doctor",
+     "text": "But here's the twist: an empty stomach isn't resting. It squeezes hard to sweep itself out.",
+     "emotion": "happy",
+     "pose": "present",
+     "key": "twist",
+     "src": [
+      "sanger-2011",
+      "goyal-2019"
+     ]
+    },
+    {
+     "id": "D4",
+     "who": "patient",
+     "text": "My stomach does housework?",
+     "emotion": "shocked",
+     "pose": "think",
+     "key": "housework"
+    },
+    {
+     "id": "D5",
+     "who": "doctor",
+     "text": "Yes. And those same squeezes may help you feel hungry.",
+     "emotion": "neutral",
+     "pose": "point",
+     "key": "hungry",
+     "src": [
+      "sanger-2011"
+     ]
+    },
+    {
+     "id": "D6",
+     "who": "doctor",
+     "text": "So the growling noise is your hollow gut at work. Most tummy sounds are normal.",
+     "emotion": "happy",
+     "pose": "thumb",
+     "key": "normal",
+     "react": {
+      "patient": "happy"
+     },
+     "src": [
+      "medline-sounds"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "E",
+   "set": "tummy",
+   "label": "LUNCH TIME",
+   "cast": [
+    {
+     "who": "stomach",
+     "x": 540,
+     "size": 600,
+     "stage": true,
+     "emotion": "happy",
+     "pose": "rest"
+    },
+    {
+     "who": "foodpipe",
+     "x": 540,
+     "size": 600,
+     "stage": true,
+     "emotion": "happy",
+     "pose": "rest"
+    }
+   ],
+   "state": {
+    "squeeze": 0.7,
+    "food": 0,
+    "full": 0.08
+   },
+   "events": [
+    {
+     "at": "start",
+     "set": {
+      "food": 0.8,
+      "full": 0.5,
+      "squeeze": 0
+     },
+     "over": 70,
+     "sfx": "plop"
+    },
+    {
+     "at": "E2",
+     "word": "housework!",
+     "set": {
+      "full": 0.56
+     },
+     "over": 20
+    }
+   ],
+   "props": [
+    {
+     "kind": "burger",
+     "x": 190,
+     "y": 540,
+     "size": 230,
+     "from": "E1",
+     "to": "E1",
+     "halo": true
+    },
+    {
+     "kind": "tag",
+     "text": "housework done",
+     "x": 330,
+     "y": 330,
+     "size": 320,
+     "rot": -4,
+     "from": "E1",
+     "to": "E1",
+     "word": "housework"
+    },
+    {
+     "kind": "tag",
+     "text": "all clean",
+     "x": 330,
+     "y": 330,
+     "size": 320,
+     "rot": 4,
+     "from": "E2"
+    }
+   ],
+   "lines": [
+    {
+     "id": "E1",
+     "who": "stomach",
+     "text": "Lunch! The housework is done. Thank you!",
+     "emotion": "happy",
+     "pose": "cheer",
+     "key": "done",
+     "react": {
+      "foodpipe": "happy"
+     }
+    },
+    {
+     "id": "E2",
+     "who": "foodpipe",
+     "text": "Hungry? Your stomach is just doing the housework!",
+     "emotion": "happy",
+     "pose": "thumb",
+     "key": "housework",
+     "src": [
+      "sanger-2011"
+     ]
+    }
+   ]
+  }
+ ]
+}

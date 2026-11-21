@@ -23,6 +23,10 @@ TOKEN = os.path.expanduser("~/.config/youtube-analytics/token.json")
 
 def upload(yt, pkg_path, args):
     pkg = json.load(open(pkg_path))
+    # the package stores paths relative to the repo (it is made on one machine and uploaded from another)
+    for k in ("file", "thumbnail"):
+        if pkg.get(k) and not os.path.isabs(pkg[k]):
+            pkg[k] = os.path.join(ROOT, *pkg[k].split("/"))
     if pkg.get("uploaded"):
         print(f"{pkg['cut']}: already uploaded as {pkg['uploaded']}, skipped")
         return
@@ -53,9 +57,20 @@ def upload(yt, pkg_path, args):
     if os.path.exists(pkg["thumbnail"]):
         try:
             yt.thumbnails().set(videoId=vid, media_body=MediaFileUpload(pkg["thumbnail"])).execute()
+            pkg["coverSet"] = True
         except Exception as e:  # Shorts often refuse custom thumbnails; the cover is still useful in Studio
-            print(f"  thumbnail not set: {str(e)[:120]}")
+            pkg["coverSet"] = False
+            print(f"  cover NOT accepted by YouTube (pick the frame in the app instead): {str(e)[:120]}")
     pkg["uploaded"] = vid
+    # read back what YouTube really stored: a field it silently dropped is caught here, not days later
+    live = yt.videos().list(part="status,snippet", id=vid).execute()["items"][0]
+    stored = live["status"]
+    pkg["stored"] = {"privacyStatus": stored.get("privacyStatus"), "madeForKids": stored.get("madeForKids"),
+                     "containsSyntheticMedia": stored.get("containsSyntheticMedia")}
+    if stored.get("privacyStatus") != status["privacyStatus"]:
+        print(f"  WARNING: asked for {status['privacyStatus']}, YouTube stored {stored.get('privacyStatus')}")
+    if status.get("containsSyntheticMedia") and not stored.get("containsSyntheticMedia"):
+        print("  WARNING: the AI-use answer was not stored by the upload; set it with: publish/after_upload.py <slug> <cut> --label --approve")
     json.dump(pkg, open(pkg_path, "w"), indent=2, ensure_ascii=False)
     print(f"  uploaded: https://youtu.be/{vid}")
 

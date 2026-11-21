@@ -1,0 +1,824 @@
+{
+  "lines": {
+    "A1": {
+      "who": "stomach",
+      "text": "He ate a huge dinner. Now he's lying down!",
+      "voiceId": "N2lVS1w4EtoT3dr4eOWO",
+      "pitch": -1,
+      "file": "toons/lying-down-after-dinner/voice/A1.mp3",
+      "duration": 3.08,
+      "words": [
+        {
+          "w": "He",
+          "start": 0,
+          "end": 0.151
+        },
+        {
+          "w": "ate",
+          "start": 0.209,
+          "end": 0.372
+        },
+        {
+          "w": "a",
+          "start": 0.395,
+          "end": 0.43
+        },
+        {
+          "w": "huge",
+          "start": 0.488,
+          "end": 0.801
+        },
+        {
+          "w": "dinner.",
+          "start": 0.848,
+          "end": 1.277
+        },
+        {
+          "w": "Now",
+          "start": 1.567,
+          "end": 1.753
+        },
+        {
+          "w": "he's",
+          "start": 1.811,
+          "end": 1.974
+        },
+        {
+          "w": "lying",
+          "start": 2.032,
+          "end": 2.31
+        },
+        {
+          "w": "down!",
+          "start": 2.368,
+          "end": 3.019
+        }
+      ]
+    },
+    "A2": {
+      "who": "foodpipe",
+      "text": "Lying down? Your acid will come up to me!",
+      "voiceId": "CwhRBWXzGAHq8TQ4Fs17",
+      "pitch": 1,
+      "file": "toons/lying-down-after-dinner/voice/A2.mp3",
+      "duration": 2.594,
+      "words": [
+        {
+          "w": "Lying",
+          "start": 0,
+          "end": 0.302
+        },
+        {
+          "w": "down?",
+          "start": 0.36,
+          "end": 0.708
+        },
+        {
+          "w": "Your",
+          "start": 0.906,
+          "end": 1.115
+        },
+        {
+          "w": "acid",
+          "start": 1.184,
+          "end": 1.428
+        },
+        {
+          "w": "will",
+          "start": 1.463,
+          "end": 1.602
+        },
+        {
+          "w": "come",
+          "start": 1.649,
+          "end": 1.788
+        },
+        {
+          "w": "up",
+          "start": 1.823,
+          "end": 1.916
+        },
+        {
+          "w": "to",
+          "start": 1.962,
+          "end": 2.009
+        },
+        {
+          "w": "me!",
+          "start": 2.067,
+          "end": 2.554
+        }
+      ]
+    },
+    "A3": {
+      "who": "stomach",
+      "text": "Then three things happen. The third one burns!",
+      "voiceId": "N2lVS1w4EtoT3dr4eOWO",
+      "pitch": -1,
+      "file": "toons/lying-down-after-dinner/voice/A3.mp3",
+      "duration": 3.407,
+      "words": [
+        {
+          "w": "Then",
+          "start": 0,
+          "end": 0.255
+        },
+        {
+          "w": "three",
+          "start": 0.313,
+          "end": 0.557
+        },
+        {
+          "w": "things",
+          "start": 0.604,
+          "end": 0.836
+        },
+        {
+          "w": "happen.",
+          "start": 0.882,
+          "end": 1.335
+        },
+        {
+          "w": "The",
+          "start": 1.683,
+          "end": 1.811
+        },
+        {
+          "w": "third",
+          "start": 1.869,
+          "end": 2.125
+        },
+        {
+          "w": "one",
+          "start": 2.194,
+          "end": 2.426
+        },
+        {
+          "w": "burns!",
+          "start": 2.496,
+          "end": 3.344
+        }
+      ]
+    },
+    "A4": {
+      "who": "stomach",
+      "text": "First, I'm too full.",
+      "voiceId": "N2lVS1w4EtoT3dr4eOWO",
+      "pitch": -1,
+      "file": "toons/lying-down-after-dinner/voice/A4.mp3",
+      "duration": 1.496,
+      "words": [
+        {
+          "w": "First,",
+          "start": 0,
+          "end": 0.383
+        },
+        {
+          "w": "I'm",
+          "start": 0.418,
+          "end": 0.557
+        },
+        {
+          "w": "too",
+          "start": 0.604,
+          "end": 0.755
+        },
+        {
+          "w": "full.",
+          "start": 0.824,
+          "end": 1.44
+        }
+      ]
+    },
+    "A5": {
+      "who": "foodpipe",
+      "text": "Second, my valve relaxes!",
+      "voiceId": "CwhRBWXzGAHq8TQ4Fs17",
+      "pitch": 1,
+      "file": "toons/lying-down-after-dinner/voice/A5.mp3",
+      "duration": 1.801,
+      "words": [
+        {
+          "w": "Second,",
+          "start": 0,
+          "end": 0.383
+        },
+        {
+          "w": "my",
+          "start": 0.418,
+          "end": 0.511
+        },
+        {
+          "w": "valve",
+          "start": 0.58,
+          "end": 0.906
+        },
+        {
+          "w": "relaxes!",
+          "start": 0.929,
+          "end": 1.765
+        }
+      ]
+    },
+    "A6": {
+      "who": "stomach",
+      "text": "Third, my acid flows up the food pipe!",
+      "voiceId": "N2lVS1w4EtoT3dr4eOWO",
+      "pitch": -1,
+      "file": "toons/lying-down-after-dinner/voice/A6.mp3",
+      "duration": 2.314,
+      "words": [
+        {
+          "w": "Third,",
+          "start": 0,
+          "end": 0.453
+        },
+        {
+          "w": "my",
+          "start": 0.522,
+          "end": 0.65
+        },
+        {
+          "w": "acid",
+          "start": 0.72,
+          "end": 1.022
+        },
+        {
+          "w": "flows",
+          "start": 1.068,
+          "end": 1.335
+        },
+        {
+          "w": "up",
+          "start": 1.382,
+          "end": 1.486
+        },
+        {
+          "w": "the",
+          "start": 1.533,
+          "end": 1.602
+        },
+        {
+          "w": "food",
+          "start": 1.66,
+          "end": 1.869
+        },
+        {
+          "w": "pipe!",
+          "start": 1.916,
+          "end": 2.276
+        }
+      ]
+    },
+    "A7": {
+      "who": "foodpipe",
+      "text": "Ow! It burns! Make it stop!",
+      "voiceId": "CwhRBWXzGAHq8TQ4Fs17",
+      "pitch": 1,
+      "file": "toons/lying-down-after-dinner/voice/A7.mp3",
+      "duration": 2.033,
+      "words": [
+        {
+          "w": "Ow!",
+          "start": 0,
+          "end": 0.313
+        },
+        {
+          "w": "It",
+          "start": 0.348,
+          "end": 0.43
+        },
+        {
+          "w": "burns!",
+          "start": 0.488,
+          "end": 0.929
+        },
+        {
+          "w": "Make",
+          "start": 1.033,
+          "end": 1.219
+        },
+        {
+          "w": "it",
+          "start": 1.254,
+          "end": 1.312
+        },
+        {
+          "w": "stop!",
+          "start": 1.347,
+          "end": 1.997
+        }
+      ]
+    },
+    "C1": {
+      "who": "patient",
+      "text": "Ow! My chest is on fire!",
+      "voiceId": "TX3LPaxmHKxFdv7VOQHJ",
+      "pitch": 0,
+      "file": "toons/lying-down-after-dinner/voice/C1.mp3",
+      "duration": 1.722,
+      "words": [
+        {
+          "w": "Ow!",
+          "start": 0,
+          "end": 0.255
+        },
+        {
+          "w": "My",
+          "start": 0.302,
+          "end": 0.406
+        },
+        {
+          "w": "chest",
+          "start": 0.464,
+          "end": 0.697
+        },
+        {
+          "w": "is",
+          "start": 0.743,
+          "end": 0.813
+        },
+        {
+          "w": "on",
+          "start": 0.859,
+          "end": 0.94
+        },
+        {
+          "w": "fire!",
+          "start": 1.01,
+          "end": 1.672
+        }
+      ]
+    },
+    "D1": {
+      "who": "patient",
+      "text": "Doctor, why does my chest burn after dinner?",
+      "voiceId": "TX3LPaxmHKxFdv7VOQHJ",
+      "pitch": 0,
+      "file": "toons/lying-down-after-dinner/voice/D1.mp3",
+      "duration": 2.511,
+      "words": [
+        {
+          "w": "Doctor,",
+          "start": 0,
+          "end": 0.418
+        },
+        {
+          "w": "why",
+          "start": 0.441,
+          "end": 0.627
+        },
+        {
+          "w": "does",
+          "start": 0.673,
+          "end": 0.801
+        },
+        {
+          "w": "my",
+          "start": 0.859,
+          "end": 0.964
+        },
+        {
+          "w": "chest",
+          "start": 1.033,
+          "end": 1.3
+        },
+        {
+          "w": "burn",
+          "start": 1.358,
+          "end": 1.567
+        },
+        {
+          "w": "after",
+          "start": 1.602,
+          "end": 1.788
+        },
+        {
+          "w": "dinner?",
+          "start": 1.846,
+          "end": 2.461
+        }
+      ]
+    },
+    "D2": {
+      "who": "doctor",
+      "text": "That's heartburn: stomach acid travelling up toward your throat.",
+      "voiceId": "XrExE9yKIg1WjnnlVkGX",
+      "pitch": 0,
+      "file": "toons/lying-down-after-dinner/voice/D2.mp3",
+      "duration": 3.812,
+      "words": [
+        {
+          "w": "That's",
+          "start": 0,
+          "end": 0.302
+        },
+        {
+          "w": "heartburn:",
+          "start": 0.372,
+          "end": 1.022
+        },
+        {
+          "w": "stomach",
+          "start": 1.265,
+          "end": 1.649
+        },
+        {
+          "w": "acid",
+          "start": 1.707,
+          "end": 2.02
+        },
+        {
+          "w": "travelling",
+          "start": 2.067,
+          "end": 2.473
+        },
+        {
+          "w": "up",
+          "start": 2.519,
+          "end": 2.624
+        },
+        {
+          "w": "toward",
+          "start": 2.67,
+          "end": 2.891
+        },
+        {
+          "w": "your",
+          "start": 2.926,
+          "end": 3.03
+        },
+        {
+          "w": "throat.",
+          "start": 3.065,
+          "end": 3.762
+        }
+      ]
+    },
+    "D3": {
+      "who": "doctor",
+      "text": "But here's the twist: the problem is a door. Your stomach's valve relaxes when it shouldn't.",
+      "voiceId": "XrExE9yKIg1WjnnlVkGX",
+      "pitch": 0,
+      "file": "toons/lying-down-after-dinner/voice/D3.mp3",
+      "duration": 5.901,
+      "words": [
+        {
+          "w": "But",
+          "start": 0,
+          "end": 0.186
+        },
+        {
+          "w": "here's",
+          "start": 0.232,
+          "end": 0.488
+        },
+        {
+          "w": "the",
+          "start": 0.522,
+          "end": 0.592
+        },
+        {
+          "w": "twist:",
+          "start": 0.639,
+          "end": 1.196
+        },
+        {
+          "w": "the",
+          "start": 1.649,
+          "end": 1.741
+        },
+        {
+          "w": "problem",
+          "start": 1.8,
+          "end": 2.171
+        },
+        {
+          "w": "is",
+          "start": 2.218,
+          "end": 2.287
+        },
+        {
+          "w": "a",
+          "start": 2.345,
+          "end": 2.368
+        },
+        {
+          "w": "door.",
+          "start": 2.415,
+          "end": 2.856
+        },
+        {
+          "w": "Your",
+          "start": 3.251,
+          "end": 3.425
+        },
+        {
+          "w": "stomach's",
+          "start": 3.471,
+          "end": 3.866
+        },
+        {
+          "w": "valve",
+          "start": 3.913,
+          "end": 4.191
+        },
+        {
+          "w": "relaxes",
+          "start": 4.226,
+          "end": 4.795
+        },
+        {
+          "w": "when",
+          "start": 4.841,
+          "end": 4.969
+        },
+        {
+          "w": "it",
+          "start": 5.004,
+          "end": 5.062
+        },
+        {
+          "w": "shouldn't.",
+          "start": 5.097,
+          "end": 5.851
+        }
+      ]
+    },
+    "D4": {
+      "who": "patient",
+      "text": "And lying down makes it worse?",
+      "voiceId": "TX3LPaxmHKxFdv7VOQHJ",
+      "pitch": 0,
+      "file": "toons/lying-down-after-dinner/voice/D4.mp3",
+      "duration": 1.908,
+      "words": [
+        {
+          "w": "And",
+          "start": 0,
+          "end": 0.163
+        },
+        {
+          "w": "lying",
+          "start": 0.244,
+          "end": 0.522
+        },
+        {
+          "w": "down",
+          "start": 0.58,
+          "end": 0.778
+        },
+        {
+          "w": "makes",
+          "start": 0.836,
+          "end": 1.045
+        },
+        {
+          "w": "it",
+          "start": 1.091,
+          "end": 1.161
+        },
+        {
+          "w": "worse?",
+          "start": 1.207,
+          "end": 1.858
+        }
+      ]
+    },
+    "D5": {
+      "who": "doctor",
+      "text": "Yes. So no food for three or four hours before bed.",
+      "voiceId": "XrExE9yKIg1WjnnlVkGX",
+      "pitch": 0,
+      "file": "toons/lying-down-after-dinner/voice/D5.mp3",
+      "duration": 3.208,
+      "words": [
+        {
+          "w": "Yes.",
+          "start": 0,
+          "end": 0.546
+        },
+        {
+          "w": "So",
+          "start": 0.755,
+          "end": 0.882
+        },
+        {
+          "w": "no",
+          "start": 0.952,
+          "end": 1.057
+        },
+        {
+          "w": "food",
+          "start": 1.138,
+          "end": 1.358
+        },
+        {
+          "w": "for",
+          "start": 1.393,
+          "end": 1.486
+        },
+        {
+          "w": "three",
+          "start": 1.521,
+          "end": 1.695
+        },
+        {
+          "w": "or",
+          "start": 1.718,
+          "end": 1.776
+        },
+        {
+          "w": "four",
+          "start": 1.823,
+          "end": 1.95
+        },
+        {
+          "w": "hours",
+          "start": 1.997,
+          "end": 2.218
+        },
+        {
+          "w": "before",
+          "start": 2.276,
+          "end": 2.519
+        },
+        {
+          "w": "bed.",
+          "start": 2.566,
+          "end": 3.158
+        }
+      ]
+    },
+    "D6": {
+      "who": "doctor",
+      "text": "And raise the head of your bed ten to twenty centimetres.",
+      "voiceId": "XrExE9yKIg1WjnnlVkGX",
+      "pitch": 0,
+      "file": "toons/lying-down-after-dinner/voice/D6.mp3",
+      "duration": 3.115,
+      "words": [
+        {
+          "w": "And",
+          "start": 0,
+          "end": 0.151
+        },
+        {
+          "w": "raise",
+          "start": 0.209,
+          "end": 0.418
+        },
+        {
+          "w": "the",
+          "start": 0.453,
+          "end": 0.522
+        },
+        {
+          "w": "head",
+          "start": 0.569,
+          "end": 0.697
+        },
+        {
+          "w": "of",
+          "start": 0.731,
+          "end": 0.789
+        },
+        {
+          "w": "your",
+          "start": 0.824,
+          "end": 0.94
+        },
+        {
+          "w": "bed",
+          "start": 0.987,
+          "end": 1.254
+        },
+        {
+          "w": "ten",
+          "start": 1.37,
+          "end": 1.649
+        },
+        {
+          "w": "to",
+          "start": 1.707,
+          "end": 1.765
+        },
+        {
+          "w": "twenty",
+          "start": 1.811,
+          "end": 2.09
+        },
+        {
+          "w": "centimetres.",
+          "start": 2.136,
+          "end": 3.065
+        }
+      ]
+    },
+    "E1": {
+      "who": "foodpipe",
+      "text": "Ahh. Nothing is coming up tonight!",
+      "voiceId": "CwhRBWXzGAHq8TQ4Fs17",
+      "pitch": 1,
+      "file": "toons/lying-down-after-dinner/voice/E1.mp3",
+      "duration": 2.129,
+      "words": [
+        {
+          "w": "Ahh.",
+          "start": 0,
+          "end": 0.36
+        },
+        {
+          "w": "Nothing",
+          "start": 0.557,
+          "end": 0.871
+        },
+        {
+          "w": "is",
+          "start": 0.917,
+          "end": 0.998
+        },
+        {
+          "w": "coming",
+          "start": 1.057,
+          "end": 1.277
+        },
+        {
+          "w": "up",
+          "start": 1.324,
+          "end": 1.393
+        },
+        {
+          "w": "tonight!",
+          "start": 1.44,
+          "end": 2.09
+        }
+      ]
+    },
+    "E2": {
+      "who": "stomach",
+      "text": "A huge dinner, four hours ago. Now he can lie down!",
+      "voiceId": "N2lVS1w4EtoT3dr4eOWO",
+      "pitch": -1,
+      "file": "toons/lying-down-after-dinner/voice/E2.mp3",
+      "duration": 3.955,
+      "words": [
+        {
+          "w": "A",
+          "start": 0,
+          "end": 0.104
+        },
+        {
+          "w": "huge",
+          "start": 0.174,
+          "end": 0.534
+        },
+        {
+          "w": "dinner,",
+          "start": 0.592,
+          "end": 0.987
+        },
+        {
+          "w": "four",
+          "start": 1.045,
+          "end": 1.289
+        },
+        {
+          "w": "hours",
+          "start": 1.347,
+          "end": 1.614
+        },
+        {
+          "w": "ago.",
+          "start": 1.66,
+          "end": 2.09
+        },
+        {
+          "w": "Now",
+          "start": 2.38,
+          "end": 2.601
+        },
+        {
+          "w": "he",
+          "start": 2.67,
+          "end": 2.74
+        },
+        {
+          "w": "can",
+          "start": 2.798,
+          "end": 2.926
+        },
+        {
+          "w": "lie",
+          "start": 2.984,
+          "end": 3.181
+        },
+        {
+          "w": "down!",
+          "start": 3.228,
+          "end": 3.901
+        }
+      ]
+    }
+  }
+}

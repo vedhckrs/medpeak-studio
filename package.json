@@ -15,7 +15,23 @@
     "render": "node pipeline/render.mjs",
     "qc": "node pipeline/qc.mjs",
     "package": "node pipeline/package.mjs",
-    "test": "node --test \"pipeline/test/*.test.mjs\""
+    "test": "node --import tsx --test \"pipeline/test/*.test.mjs\"",
+    "toons:sheets": "node pipeline/toon-sheets.mjs",
+    "toon:voice": "node pipeline/toon-voice.mjs",
+    "toon:sfx": "node pipeline/toon-sfx.mjs",
+    "toon:music": "node pipeline/toon-music.mjs",
+    "toon:render": "node pipeline/toon-render.mjs",
+    "toon:check": "node pipeline/toon-check.mjs",
+    "toon:camera": "node --import tsx pipeline/toon-camera.mjs",
+    "toon:motion": "node --import tsx pipeline/toon-motion.mjs",
+    "toon:staging": "node --import tsx pipeline/toon-staging.mjs",
+    "toon:sound": "node pipeline/toon-sound.mjs",
+    "toon:listen": "node pipeline/toon-listen.mjs",
+    "toon:music:scan": "node pipeline/toon-music-scan.mjs",
+    "toon:package": "node pipeline/toon-package.mjs",
+    "toon:look": "node pipeline/toon-look.mjs",
+    "toon:sheets": "node pipeline/toon-v8-sheets.mjs",
+    "toon:v8": "node --import tsx pipeline/toon-v8-render.mjs"
   },
   "dependencies": {
     "@remotion/cli": "4.0.543",
@@ -27,6 +43,7 @@
   },
   "devDependencies": {
     "@types/react": "19.2.2",
+    "tsx": "^4.23.15",
     "typescript": "5.9.3"
   }
 }

@@ -1,0 +1,763 @@
+{
+ "slug": "sugar-attack-on-teeth",
+ "title": "What sugar really does to your teeth",
+ "music": "panic",
+ "camera": "steady",
+ "episode": 2,
+ "rooms": {
+  "clinic": {
+   "palette": "butter",
+   "wall": "dots",
+   "floor": "wood",
+   "window": {
+    "style": "round",
+    "side": "left",
+    "view": "hills"
+   },
+   "layout": "shelves",
+   "chart": "tooth",
+   "time": "day"
+  },
+  "home": {
+   "kind": "bathroom",
+   "palette": "lilac",
+   "wall": "tiles",
+   "floor": "checker",
+   "window": {
+    "style": "wide",
+    "side": "right",
+    "view": "garden"
+   },
+   "layout": "sink-left",
+   "time": "evening"
+  }
+ },
+ "package": {
+  "title": "What Sugar Does to Your Teeth (and How Spit Fights Back)",
+  "phrase": "what sugar does to your teeth",
+  "opener": "What sugar does to your teeth: mouth bacteria turn it into acid, and the acid attacks your enamel until a cavity forms. This cartoon shows it on a tooth cut open. Then Dr. Mira explains the twist: your own spit helps repair enamel, if you snack less often and brush twice a day with fluoride toothpaste.",
+  "question": "How many times a day do you snack on something sweet?",
+  "tags": [
+   "what sugar does to your teeth",
+   "what does sugar do to your teeth",
+   "how cavities form",
+   "tooth decay",
+   "sugar and teeth",
+   "cavity",
+   "acid attack on teeth",
+   "fluoride toothpaste",
+   "enamel",
+   "health cartoon",
+   "dental health for kids"
+  ],
+  "hashtags": "#teeth #sugar #shorts",
+  "cover": {
+   "at": 16.4,
+   "text": "Sugar on your teeth",
+   "accent": "sugar"
+  }
+ },
+ "retention": {
+  "noIntro": {
+   "scene": "A1",
+   "line": "Sugar! He's eating candy again. Party on this tooth!"
+  },
+  "promise": {
+   "scene": "A3",
+   "line": "Relax. I do three things. The third one leaves a hole!"
+  },
+  "counting": {
+   "scene": "A4,A5,A6",
+   "line": "First / Second / Third"
+  },
+  "change3s": {
+   "scene": "all",
+   "line": "steady camera: something new happens in the picture at least every 3 s"
+  },
+  "twist": {
+   "scene": "D3",
+   "line": "But here's the twist: your spit fights back. Its minerals help repair enamel."
+  },
+  "bestLast": {
+   "scene": "D6",
+   "line": "And brush twice a day with fluoride toothpaste. Fluoride helps enamel rebuild."
+  },
+  "loop": {
+   "scene": "E2",
+   "line": "No more sugar party on this tooth!"
+  }
+ },
+ "sources": [
+  {
+   "id": "nidcr",
+   "label": "NIH National Institute of Dental and Craniofacial Research. The Tooth Decay Process: How to Reverse It and Avoid a Cavity (reviewed January 2025)",
+   "url": "https://www.nidcr.nih.gov/health-info/tooth-decay/more-info/tooth-decay-process",
+   "note": "'Whenever we eat or drink something that contains sugar or starch, the bacteria use them to produce acids. These acids begin to eat away at the tooth's hard outer surface, or enamel.' 'Our saliva can help fight off this acid attack.' 'Enamel can repair itself by using minerals from saliva, and fluoride from toothpaste or other sources.' 'Limit between-meal snacks. This reduces the number of acid attacks on teeth and gives teeth a chance to repair themselves.' 'Brushing with fluoride toothpaste two times each day is important for preventing cavities.' 'A white spot may appear where minerals have been lost. This is a sign of early decay.' 'Over time, the enamel is weakened and destroyed, forming a cavity. A cavity is permanent damage that a dentist has to repair with a filling.'"
+  },
+  {
+   "id": "who-sugars",
+   "label": "World Health Organization. Sugars and dental caries, fact sheet (14 August 2025)",
+   "url": "https://www.who.int/news-room/fact-sheets/detail/sugars-and-dental-caries",
+   "note": "'Dental caries results when plaque forms on the surface of a tooth and converts the free sugars ... into acids that destroy the tooth over time.' WHO advises limiting free sugars 'to less than 10% of total energy intake - and ideally to less than 5%'."
+  },
+  {
+   "id": "nidcr-decay",
+   "label": "NIH National Institute of Dental and Craniofacial Research. Tooth Decay (reviewed September 2025)",
+   "url": "https://www.nidcr.nih.gov/health-info/tooth-decay",
+   "note": "'In early tooth decay, there are not usually any symptoms. As tooth decay advances, it can cause a toothache (tooth pain) or tooth sensitivity to sweets, hot, or cold.' 'This can lead to a small hole in a tooth, called a cavity.'"
+  }
+ ],
+ "shots": [
+  {
+   "id": "A",
+   "set": "tooth",
+   "label": "TOOTH",
+   "cast": [
+    {
+     "who": "tooth",
+     "x": 540,
+     "size": 600,
+     "stage": true,
+     "emotion": "scared",
+     "pose": "panic"
+    },
+    {
+     "who": "bacteria",
+     "x": 540,
+     "size": 600,
+     "stage": true,
+     "emotion": "happy",
+     "pose": "cheer"
+    }
+   ],
+   "state": {},
+   "events": [
+    {
+     "at": "start",
+     "set": {
+      "sugar": 1
+     },
+     "over": 40,
+     "sfx": "plop"
+    },
+    {
+     "at": "A2",
+     "set": {
+      "feast": 0.3
+     },
+     "over": 16
+    },
+    {
+     "at": "A3",
+     "word": "third",
+     "set": {
+      "feast": 0.5
+     },
+     "over": 14
+    },
+    {
+     "at": "A4",
+     "word": "eat",
+     "set": {
+      "feast": 1
+     },
+     "over": 40
+    },
+    {
+     "at": "A5",
+     "word": "acid",
+     "set": {
+      "acid": 1
+     },
+     "over": 30,
+     "sfx": "sizzle-acid"
+    },
+    {
+     "at": "A6",
+     "word": "eats",
+     "set": {
+      "hole": 0.12
+     },
+     "over": 20
+    },
+    {
+     "at": "A6",
+     "word": "Delicious",
+     "set": {
+      "hole": 0.34
+     },
+     "over": 24,
+     "fx": "flash"
+    }
+   ],
+   "props": [
+    {
+     "kind": "candy",
+     "x": 230,
+     "y": 440,
+     "size": 230,
+     "from": "A1",
+     "word": "candy",
+     "to": "A2",
+     "halo": true
+    },
+    {
+     "kind": "tag",
+     "text": "not again!",
+     "x": 330,
+     "y": 250,
+     "size": 340,
+     "rot": -5,
+     "from": "A2",
+     "word": "again",
+     "to": "A2"
+    },
+    {
+     "kind": "tag",
+     "text": "3 things",
+     "x": 300,
+     "y": 330,
+     "size": 340,
+     "rot": -4,
+     "from": "A3",
+     "word": "three",
+     "to": "A3"
+    },
+    {
+     "kind": "chip",
+     "text": "1",
+     "x": 72,
+     "y": 700,
+     "size": 150,
+     "from": "A4"
+    },
+    {
+     "kind": "chip",
+     "text": "2",
+     "x": 72,
+     "y": 880,
+     "size": 150,
+     "from": "A5"
+    },
+    {
+     "kind": "chip",
+     "text": "3",
+     "x": 72,
+     "y": 1060,
+     "size": 150,
+     "from": "A6"
+    }
+   ],
+   "lines": [
+    {
+     "id": "A1",
+     "who": "bacteria",
+     "text": "Sugar! He's eating candy again. Party on this tooth!",
+     "emotion": "happy",
+     "pose": "cheer",
+     "key": "Party",
+     "react": {
+      "tooth": "scared"
+     }
+    },
+    {
+     "id": "A2",
+     "who": "tooth",
+     "text": "Oh no! You'll spit acid on me again!",
+     "emotion": "scared",
+     "pose": "panic",
+     "key": "acid",
+     "src": [
+      "nidcr"
+     ]
+    },
+    {
+     "id": "A3",
+     "who": "bacteria",
+     "text": "Relax. I do three things. The third one leaves a hole!",
+     "emotion": "smug",
+     "pose": "hips",
+     "key": "hole",
+     "src": [
+      "who-sugars"
+     ]
+    },
+    {
+     "id": "A4",
+     "who": "bacteria",
+     "text": "First, I eat his sugar.",
+     "emotion": "happy",
+     "pose": "belly",
+     "key": "eat",
+     "src": [
+      "nidcr"
+     ]
+    },
+    {
+     "id": "A5",
+     "who": "tooth",
+     "text": "Second, you turn it into acid!",
+     "emotion": "shocked",
+     "pose": "panic",
+     "key": "acid",
+     "react": {
+      "bacteria": "smug"
+     },
+     "src": [
+      "nidcr"
+     ]
+    },
+    {
+     "id": "A6",
+     "who": "bacteria",
+     "text": "Third, the acid eats your enamel. Delicious!",
+     "emotion": "smug",
+     "pose": "point",
+     "key": "enamel",
+     "react": {
+      "tooth": "sad"
+     },
+     "src": [
+      "nidcr"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "T1",
+   "set": "tooth",
+   "card": "Many snacks later...",
+   "seconds": 1.4,
+   "cast": [],
+   "lines": []
+  },
+  {
+   "id": "B",
+   "set": "tooth",
+   "label": "MANY SNACKS LATER",
+   "cast": [
+    {
+     "who": "tooth",
+     "x": 540,
+     "size": 600,
+     "stage": true,
+     "emotion": "sad",
+     "pose": "shrug"
+    },
+    {
+     "who": "bacteria",
+     "x": 540,
+     "size": 600,
+     "stage": true,
+     "emotion": "happy",
+     "pose": "cheer"
+    }
+   ],
+   "state": {
+    "feast": 1,
+    "acid": 0.8,
+    "hole": 0.34
+   },
+   "events": [
+    {
+     "at": "B1",
+     "word": "hole",
+     "set": {
+      "hole": 0.85
+     },
+     "over": 30,
+     "sfx": "squelch"
+    },
+    {
+     "at": "B1",
+     "word": "cavity",
+     "set": {
+      "pain": 1
+     },
+     "over": 8,
+     "fx": "flash"
+    }
+   ],
+   "props": [
+    {
+     "kind": "tag",
+     "text": "a cavity",
+     "x": 300,
+     "y": 330,
+     "size": 340,
+     "rot": -4,
+     "from": "B1",
+     "word": "cavity"
+    }
+   ],
+   "lines": [
+    {
+     "id": "B1",
+     "who": "tooth",
+     "text": "Now it's a real hole. A cavity!",
+     "emotion": "sad",
+     "pose": "panic",
+     "key": "cavity",
+     "src": [
+      "nidcr",
+      "nidcr-decay"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "C",
+   "set": "home",
+   "cast": [
+    {
+     "who": "kid",
+     "x": 540,
+     "size": 1040,
+     "emotion": "sad",
+     "pose": "rest"
+    }
+   ],
+   "props": [
+    {
+     "kind": "pain",
+     "x": 640,
+     "y": 1010,
+     "size": 130,
+     "from": "C1",
+     "word": "tooth",
+     "on": "kid"
+    }
+   ],
+   "lines": [
+    {
+     "id": "C1",
+     "who": "kid",
+     "text": "Ow! My tooth hurts!",
+     "emotion": "sad",
+     "pose": "facepalm",
+     "key": "hurts"
+    }
+   ]
+  },
+  {
+   "id": "D",
+   "set": "clinic",
+   "cast": [
+    {
+     "who": "doctor",
+     "x": 285,
+     "size": 940
+    },
+    {
+     "who": "kid",
+     "x": 805,
+     "size": 980,
+     "emotion": "sad",
+     "pose": "rest"
+    }
+   ],
+   "props": [
+    {
+     "kind": "candy",
+     "x": 800,
+     "y": 330,
+     "size": 210,
+     "from": "D1",
+     "word": "sugar",
+     "to": "D1",
+     "halo": true
+    },
+    {
+     "kind": "candy",
+     "size": 300,
+     "from": "D2",
+     "to": "D2",
+     "bubble": true,
+     "of": "doctor"
+    },
+    {
+     "kind": "tag",
+     "text": "sugar = acid",
+     "x": 550,
+     "y": 1180,
+     "size": 300,
+     "from": "D2",
+     "word": "acid",
+     "to": "D2"
+    },
+    {
+     "kind": "pain",
+     "size": 84,
+     "from": "D2",
+     "word": "attacks",
+     "to": "D2",
+     "on": "bubble",
+     "dx": 44,
+     "dy": -34
+    },
+    {
+     "kind": "tag",
+     "text": "the twist",
+     "x": 550,
+     "y": 300,
+     "size": 340,
+     "rot": -4,
+     "from": "D3",
+     "to": "D3"
+    },
+    {
+     "kind": "drop",
+     "x": 550,
+     "y": 1170,
+     "size": 240,
+     "from": "D3",
+     "word": "spit",
+     "to": "D4",
+     "halo": true
+    },
+    {
+     "kind": "tag",
+     "text": "minerals",
+     "x": 550,
+     "y": 1340,
+     "size": 280,
+     "from": "D3",
+     "word": "minerals",
+     "to": "D3"
+    },
+    {
+     "kind": "tag",
+     "text": "really?!",
+     "x": 800,
+     "y": 520,
+     "size": 320,
+     "rot": 5,
+     "from": "D4",
+     "to": "D4"
+    },
+    {
+     "kind": "clock",
+     "x": 455,
+     "y": 1190,
+     "size": 190,
+     "from": "D5",
+     "to": "D5",
+     "halo": true
+    },
+    {
+     "kind": "candy",
+     "x": 648,
+     "y": 1190,
+     "size": 190,
+     "from": "D5",
+     "word": "snack",
+     "to": "D5",
+     "halo": true,
+     "no": true
+    },
+    {
+     "kind": "toothbrush",
+     "x": 490,
+     "y": 1250,
+     "size": 220,
+     "from": "D6",
+     "halo": true
+    },
+    {
+     "kind": "tag",
+     "text": "2 times a day",
+     "x": 550,
+     "y": 300,
+     "size": 300,
+     "from": "D6",
+     "word": "twice"
+    },
+    {
+     "kind": "tag",
+     "text": "fluoride",
+     "x": 490,
+     "y": 1060,
+     "size": 300,
+     "from": "D6",
+     "word": "fluoride"
+    },
+    {
+     "kind": "tag",
+     "text": "enamel rebuilds",
+     "x": 550,
+     "y": 190,
+     "size": 280,
+     "from": "D6",
+     "word": "rebuild"
+    }
+   ],
+   "lines": [
+    {
+     "id": "D1",
+     "who": "kid",
+     "text": "Doctor, is sugar really that bad?",
+     "emotion": "sad",
+     "pose": "shrug",
+     "key": "sugar"
+    },
+    {
+     "id": "D2",
+     "who": "doctor",
+     "text": "Mouth bacteria turn sugar into acid. And that acid attacks your enamel.",
+     "emotion": "neutral",
+     "pose": "explain",
+     "key": "acid",
+     "react": {
+      "kid": "shocked"
+     },
+     "src": [
+      "nidcr",
+      "who-sugars"
+     ]
+    },
+    {
+     "id": "D3",
+     "who": "doctor",
+     "text": "But here's the twist: your spit fights back. Its minerals help repair enamel.",
+     "emotion": "happy",
+     "pose": "present",
+     "key": "twist",
+     "src": [
+      "nidcr"
+     ]
+    },
+    {
+     "id": "D4",
+     "who": "kid",
+     "text": "My spit fixes my teeth?!",
+     "emotion": "shocked",
+     "pose": "panic",
+     "key": "spit"
+    },
+    {
+     "id": "D5",
+     "who": "doctor",
+     "text": "Yes, if you give it time. So snack less often between meals.",
+     "emotion": "happy",
+     "pose": "thumb",
+     "key": "snack",
+     "react": {
+      "kid": "neutral"
+     },
+     "src": [
+      "nidcr"
+     ]
+    },
+    {
+     "id": "D6",
+     "who": "doctor",
+     "text": "And brush twice a day with fluoride toothpaste. Fluoride helps enamel rebuild.",
+     "emotion": "neutral",
+     "pose": "point",
+     "key": "twice",
+     "react": {
+      "kid": "happy"
+     },
+     "src": [
+      "nidcr"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "E",
+   "set": "tooth",
+   "label": "NEXT TIME",
+   "cast": [
+    {
+     "who": "tooth",
+     "x": 540,
+     "size": 600,
+     "stage": true,
+     "emotion": "neutral",
+     "pose": "rest"
+    },
+    {
+     "who": "bacteria",
+     "x": 540,
+     "size": 600,
+     "stage": true,
+     "emotion": "scared",
+     "pose": "panic"
+    }
+   ],
+   "state": {
+    "feast": 1,
+    "acid": 0.7,
+    "hole": 0.12
+   },
+   "events": [
+    {
+     "at": "start",
+     "set": {
+      "saliva": 1
+     },
+     "over": 30,
+     "sfx": "splash-small"
+    },
+    {
+     "at": "start",
+     "delay": 0.7,
+     "set": {
+      "mend": 1
+     },
+     "over": 36
+    },
+    {
+     "at": "E1",
+     "word": "brush",
+     "set": {
+      "brush": 1
+     },
+     "over": 52,
+     "sfx": "swish"
+    },
+    {
+     "at": "E2",
+     "set": {
+      "shield": 1
+     },
+     "over": 18
+    }
+   ],
+   "props": [
+    {
+     "kind": "tag",
+     "text": "clean!",
+     "x": 300,
+     "y": 330,
+     "size": 340,
+     "rot": -5,
+     "from": "E2",
+     "word": "party"
+    }
+   ],
+   "lines": [
+    {
+     "id": "E1",
+     "who": "bacteria",
+     "text": "Hey! Spit? A brush? Not fair!",
+     "emotion": "scared",
+     "pose": "panic",
+     "key": "brush",
+     "react": {
+      "tooth": "happy"
+     }
+    },
+    {
+     "id": "E2",
+     "who": "tooth",
+     "text": "No more sugar party on this tooth!",
+     "emotion": "happy",
+     "pose": "cheer",
+     "key": "party"
+    }
+   ]
+  }
+ ]
+}

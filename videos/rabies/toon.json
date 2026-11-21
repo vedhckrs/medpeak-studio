@@ -1,0 +1,845 @@
+{
+ "slug": "rabies",
+ "title": "What Happens If You Get Rabies",
+ "format": 5,
+ "shape": "clock",
+ "music": "rabies",
+ "camera": "steady",
+ "episode": 9,
+ "hooks": [
+  {
+   "line": "Get rabies? I get your brain!",
+   "why": "7 words, to the viewer, the title words, a villain with a goal"
+  },
+  {
+   "line": "Get rabies, and your brain is next.",
+   "why": "more frightening"
+  },
+  {
+   "line": "You get rabies, your brain is next.",
+   "why": "the search words, a threat"
+  }
+ ],
+ "rooms": {
+  "clinic": {
+   "palette": "sky",
+   "wall": "stripes",
+   "floor": "checker",
+   "window": {
+    "style": "arch",
+    "side": "right",
+    "view": "hills"
+   },
+   "layout": "desk",
+   "chart": "body",
+   "time": "day"
+  },
+  "home": {
+   "kind": "kitchen",
+   "palette": "cream",
+   "wall": "tiles",
+   "floor": "wood",
+   "window": {
+    "style": "round",
+    "side": "left",
+    "view": "city"
+   },
+   "layout": "stove-right",
+   "time": "day"
+  }
+ },
+ "package": {
+  "title": "What Happens If You Get Rabies",
+  "phrase": "what happens if you get rabies",
+  "opener": "What happens if you get rabies? The virus enters through a bite or scratch, usually from a dog, and travels slowly along a nerve toward the brain. Once symptoms start, rabies is almost always fatal, but treatment given in time stops the virus before it gets there. The World Health Organization says: wash the wound with soap and water for at least 15 minutes straight away, then see a doctor the same day.",
+  "question": "Did you know you should wash a dog scratch for 15 minutes?",
+  "tags": [
+   "what happens if you get rabies",
+   "rabies",
+   "rabies symptoms",
+   "dog bite",
+   "what to do after a dog bite",
+   "rabies vaccine",
+   "is rabies curable",
+   "dog scratch rabies",
+   "first aid",
+   "health cartoon"
+  ],
+  "hashtags": "#rabies #dogbite #shorts",
+  "cover": {
+   "at": 1.2,
+   "text": "One small scratch?",
+   "accent": "scratch"
+  }
+ },
+ "retention": {
+  "noIntro": {
+   "scene": "A1",
+   "line": "Get rabies? I get your brain!"
+  },
+  "promise": {
+   "scene": "A2",
+   "line": "Can you catch me before the brain?"
+  },
+  "question": {
+   "scene": "A2",
+   "line": "Can you catch me before the brain?"
+  },
+  "answer": {
+   "scene": "E2",
+   "line": "A wall?! No, no, no! Caught before the brain!"
+  },
+  "change3s": {
+   "scene": "all",
+   "line": "steady camera: something happens in the picture at least every 3 s (stickers do not count)"
+  },
+  "twist": {
+   "scene": "D2",
+   "line": "Here is the hard truth. Once symptoms start, rabies is almost always fatal."
+  },
+  "bestLast": {
+   "scene": "E3",
+   "line": "Not fair! I was going for your brain... and you didn't get rabies!"
+  },
+  "loop": {
+   "scene": "E3",
+   "line": "Not fair! I was going for your brain... and you didn't get rabies!"
+  }
+ },
+ "sources": [
+  {
+   "id": "who-rabies",
+   "label": "World Health Organization. Rabies, fact sheet (17 September 2026)",
+   "url": "https://www.who.int/news-room/fact-sheets/detail/rabies",
+   "note": "'Dog bites and scratches cause 99% of the human rabies cases.' Rabies spreads 'via saliva, usually through bites, scratches, or direct contact with mucosa'. 'The incubation period for rabies is typically 2–3 months but may vary from one week to one year'. 'Once clinical symptoms appear, rabies is virtually 100% fatal.' 'Rabies deaths are preventable with prompt post exposure prophylaxis (PEP) by stopping the virus from reaching the central nervous system.' 'If a person is bitten or scratched by a potentially rabid animal, they should immediately and always wash the wound with water and soap for at least 15 minutes and seek medical attention.' PEP is wound washing, 'a course of human rabies vaccine and, when indicated, rabies immunoglobulins'."
+  },
+  {
+   "id": "cdc-rabies",
+   "label": "US Centers for Disease Control and Prevention. About Rabies (27 January 2026)",
+   "url": "https://www.cdc.gov/rabies/about/index.html",
+   "note": "'Rabies spreads primarily through bites or scratches from an infected animal.' 'The rabies virus must travel to the brain before it can cause symptoms.' Treatment after exposure is 'nearly 100% effective if you get it after exposure'. 'Once clinical signs of rabies appear, the disease is nearly always fatal.'"
+  }
+ ],
+ "shots": [
+  {
+   "id": "A",
+   "set": "macro",
+   "lead": 0,
+   "cast": [
+    {
+     "who": "virus",
+     "x": 420,
+     "size": 380,
+     "stage": true,
+     "emotion": "angry",
+     "pose": "rest"
+    }
+   ],
+   "state": {
+    "view": 0,
+    "slide": 0.55,
+    "snap": 0
+   },
+   "events": [
+    {
+     "at": "start",
+     "set": {
+      "snap": 0.5
+     },
+     "over": 6,
+     "sfx": "whoosh-fast"
+    },
+    {
+     "at": "A1",
+     "word": "brain!",
+     "sfx": "whoosh-air"
+    },
+    {
+     "at": "A1",
+     "word": "rabies.",
+     "set": {
+      "slide": 0.62
+     },
+     "over": 10
+    },
+    {
+     "at": "A1",
+     "word": "get",
+     "set": {
+      "snap": 1
+     },
+     "over": 9,
+     "sfx": "plop"
+    },
+    {
+     "at": "A1",
+     "word": "get",
+     "set": {
+      "slide": 0.74
+     },
+     "over": 14
+    },
+    {
+     "at": "A1",
+     "word": "brain!",
+     "set": {
+      "slide": 0.84
+     },
+     "over": 14
+    },
+    {
+     "at": "A2",
+     "set": {
+      "slide": 0.92
+     },
+     "over": 20
+    },
+    {
+     "at": "A2",
+     "word": "brain?",
+     "set": {
+      "slide": 1
+     },
+     "over": 24
+    },
+    {
+     "at": "B1",
+     "word": "scratch.",
+     "sfx": "thud-soft",
+     "fx": "flash"
+    },
+    {
+     "at": "B1",
+     "word": "scratch.",
+     "delay": 0.06,
+     "sfx": "squelch"
+    },
+    {
+     "at": "A1",
+     "delay": -0.15,
+     "sfx": "bubble-pop"
+    },
+    {
+     "at": "B1",
+     "word": "stray",
+     "set": {
+      "snap": 0.7
+     },
+     "over": 10
+    },
+    {
+     "at": "B1",
+     "word": "dog.",
+     "set": {
+      "slide": 0.6
+     },
+     "over": 8
+    },
+    {
+     "at": "B1",
+     "word": "tiny",
+     "set": {
+      "snap": 0.9
+     },
+     "over": 8
+    },
+    {
+     "at": "B1",
+     "word": "that's",
+     "set": {
+      "slide": 0.66
+     },
+     "over": 10
+    },
+    {
+     "at": "B1",
+     "word": "need.",
+     "set": {
+      "snap": 1
+     },
+     "over": 8
+    }
+   ],
+   "lines": [
+    {
+     "id": "B1",
+     "who": "virus",
+     "text": "One stray dog. One tiny scratch. That's all I need.",
+     "emotion": "smug",
+     "pose": "rest",
+     "key": "scratch",
+     "chat": true,
+     "beat": 0.4,
+     "cold": true,
+     "cam": "ecu 50 push"
+    },
+    {
+     "id": "A1",
+     "who": "virus",
+     "text": "Get rabies? I get your brain!",
+     "emotion": "angry",
+     "pose": "rest",
+     "key": "brain",
+     "src": [
+      "who-rabies",
+      "cdc-rabies"
+     ]
+    },
+    {
+     "id": "A2",
+     "who": "virus",
+     "text": "Can you catch me before the brain?",
+     "emotion": "angry",
+     "pose": "rest",
+     "key": "catch",
+     "chat": true,
+     "beat": 0.4
+    }
+   ],
+   "props": []
+  },
+  {
+   "id": "B",
+   "set": "arm",
+   "label": "THAT MORNING",
+   "cast": [
+    {
+     "who": "virus",
+     "x": 420,
+     "size": 380,
+     "stage": true,
+     "emotion": "happy",
+     "pose": "rest"
+    }
+   ],
+   "state": {
+    "bite": 0
+   },
+   "events": [
+    {
+     "at": "start",
+     "set": {
+      "bite": 0.82
+     },
+     "over": 12
+    },
+    {
+     "at": "B2",
+     "set": {
+      "bite": 0.92
+     },
+     "over": 14,
+     "sfx": "plop"
+    },
+    {
+     "at": "B2",
+     "word": "spit,",
+     "set": {
+      "bite": 1
+     },
+     "over": 12
+    },
+    {
+     "at": "B2",
+     "word": "jump",
+     "set": {
+      "climb": 0.03
+     },
+     "over": 14
+    },
+    {
+     "at": "B2",
+     "word": "nerve...",
+     "set": {
+      "days": 0.02
+     },
+     "over": 6
+    },
+    {
+     "at": "B2",
+     "word": "nerve...",
+     "set": {
+      "climb": 0.08
+     },
+     "over": 24
+    }
+   ],
+   "lines": [
+    {
+     "id": "B2",
+     "who": "virus",
+     "text": "I ride in on the spit, jump onto a nerve... next stop, the brain!",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "nerve",
+     "src": [
+      "who-rabies",
+      "cdc-rabies"
+     ],
+     "cam": "cu"
+    }
+   ]
+  },
+  {
+   "id": "M2",
+   "set": "macro",
+   "cast": [
+    {
+     "who": "virus",
+     "x": 420,
+     "size": 380,
+     "stage": true,
+     "emotion": "smug",
+     "pose": "rest"
+    }
+   ],
+   "state": {
+    "view": 1,
+    "speed": 0.3
+   },
+   "events": [
+    {
+     "at": "start",
+     "set": {
+      "speed": 0.6
+     },
+     "over": 20
+    },
+    {
+     "at": "B3",
+     "word": "two",
+     "set": {
+      "speed": 1
+     },
+     "over": 20
+    },
+    {
+     "at": "B3",
+     "word": "months",
+     "set": {
+      "speed": 1.4
+     },
+     "over": 20
+    },
+    {
+     "at": "B3",
+     "word": "faster.",
+     "set": {
+      "speed": 1.8
+     },
+     "over": 20
+    }
+   ],
+   "props": [
+    {
+     "kind": "tag",
+     "text": "2-3 months",
+     "x": 540,
+     "y": 330,
+     "size": 300,
+     "from": "B3",
+     "to": "B3",
+     "word": "two"
+    }
+   ],
+   "lines": [
+    {
+     "id": "B3",
+     "who": "virus",
+     "text": "Usually two to three months. Sometimes faster.",
+     "emotion": "smug",
+     "pose": "rest",
+     "key": "months",
+     "src": [
+      "who-rabies",
+      "cdc-rabies"
+     ],
+     "beat": 0.3,
+     "cam": "ews whip"
+    }
+   ]
+  },
+  {
+   "id": "C",
+   "set": "home",
+   "cast": [
+    {
+     "who": "mom",
+     "x": 285,
+     "size": 960,
+     "emotion": "scared",
+     "pose": "rest",
+     "y": 979
+    },
+    {
+     "who": "kid",
+     "x": 805,
+     "size": 980,
+     "emotion": "neutral",
+     "pose": "rest",
+     "y": 970
+    }
+   ],
+   "props": [
+    {
+     "kind": "pain",
+     "x": 880,
+     "y": 1240,
+     "size": 120,
+     "from": "C1",
+     "word": "scratch!",
+     "to": "C1",
+     "on": "kid"
+    },
+    {
+     "kind": "drop",
+     "x": 545,
+     "y": 1180,
+     "size": 200,
+     "from": "C2",
+     "word": "Soap",
+     "to": "C2",
+     "halo": true
+    },
+    {
+     "kind": "tag",
+     "text": "15 minutes",
+     "x": 780,
+     "y": 330,
+     "size": 300,
+     "from": "C2",
+     "to": "C2",
+     "word": "fifteen"
+    }
+   ],
+   "lines": [
+    {
+     "id": "C1",
+     "who": "kid",
+     "text": "Mom, it's just a scratch!",
+     "emotion": "neutral",
+     "pose": "shrug",
+     "key": "scratch",
+     "chat": true
+    },
+    {
+     "id": "C2",
+     "who": "mom",
+     "text": "Soap and water. Fifteen minutes. Right now.",
+     "emotion": "scared",
+     "pose": "point",
+     "key": "fifteen",
+     "react": {
+      "kid": "shocked"
+     },
+     "src": [
+      "who-rabies"
+     ],
+     "cam": "ms crash"
+    },
+    {
+     "id": "C3",
+     "who": "kid",
+     "text": "Fifteen MINUTES?!",
+     "cam": "mcu push",
+     "emotion": "shocked",
+     "pose": "think",
+     "key": "minutes",
+     "chat": true
+    }
+   ]
+  },
+  {
+   "id": "D",
+   "set": "clinic",
+   "cast": [
+    {
+     "who": "doctor",
+     "x": 285,
+     "size": 940,
+     "y": 989
+    },
+    {
+     "who": "kid",
+     "x": 805,
+     "size": 980,
+     "emotion": "scared",
+     "pose": "rest",
+     "y": 970
+    }
+   ],
+   "props": [
+    {
+     "kind": "glass",
+     "size": 300,
+     "from": "D1",
+     "word": "Wash",
+     "to": "D1",
+     "bubble": true,
+     "of": "doctor"
+    },
+    {
+     "kind": "pain",
+     "x": 880,
+     "y": 1240,
+     "size": 120,
+     "from": "D2",
+     "word": "start,",
+     "to": "D2",
+     "on": "kid"
+    },
+    {
+     "kind": "pillbottle",
+     "x": 550,
+     "y": 1190,
+     "size": 200,
+     "from": "D3",
+     "word": "shots",
+     "halo": true
+    }
+   ],
+   "lines": [
+    {
+     "id": "D1",
+     "who": "doctor",
+     "text": "Mom is right. Wash first, then see a doctor today.",
+     "emotion": "happy",
+     "pose": "explain",
+     "key": "today",
+     "react": {
+      "kid": "happy"
+     },
+     "src": [
+      "who-rabies"
+     ],
+     "cam": "two push"
+    },
+    {
+     "id": "D2",
+     "who": "doctor",
+     "text": "Here is the hard truth. Once symptoms start, rabies is almost always fatal.",
+     "cam": "mcu push",
+     "emotion": "sad",
+     "pose": "present",
+     "key": "fatal",
+     "react": {
+      "kid": "scared"
+     },
+     "src": [
+      "who-rabies",
+      "cdc-rabies"
+     ],
+     "serious": true
+    },
+    {
+     "id": "D3",
+     "who": "doctor",
+     "text": "But get the shots in time, and they work almost every time.",
+     "emotion": "happy",
+     "pose": "thumb",
+     "key": "work",
+     "react": {
+      "kid": "happy"
+     },
+     "src": [
+      "cdc-rabies",
+      "who-rabies"
+     ],
+     "cam": "ms push"
+    }
+   ],
+   "events": [
+    {
+     "at": "D3",
+     "word": "every",
+     "fx": "flash",
+     "sfx": "ding"
+    }
+   ]
+  },
+  {
+   "id": "E",
+   "set": "arm",
+   "label": "AFTER THE VACCINE",
+   "cast": [
+    {
+     "who": "virus",
+     "x": 420,
+     "size": 380,
+     "stage": true,
+     "emotion": "smug",
+     "pose": "rest"
+    }
+   ],
+   "state": {
+    "bite": 1,
+    "climb": 0.27
+   },
+   "events": [
+    {
+     "at": "start",
+     "set": {
+      "vaccine": 1
+     },
+     "over": 50,
+     "sfx": "sparkle"
+    },
+    {
+     "at": "E1",
+     "word": "guys?",
+     "set": {
+      "wall": 1
+     },
+     "over": 30
+    },
+    {
+     "at": "E2",
+     "set": {
+      "climb": 0.31
+     },
+     "over": 14,
+     "sfx": "bonk",
+     "fx": "flash"
+    },
+    {
+     "at": "E2",
+     "delay": 0.15,
+     "set": {
+      "dizzy": 1
+     },
+     "over": 12
+    },
+    {
+     "at": "E2",
+     "word": "No,",
+     "set": {
+      "climb": 0.23
+     },
+     "over": 20
+    },
+    {
+     "at": "E2",
+     "word": "Caught",
+     "set": {
+      "dizzy": 1
+     },
+     "over": 8
+    }
+   ],
+   "lines": [
+    {
+     "id": "E1",
+     "who": "virus",
+     "text": "Huh? Who are you guys?",
+     "emotion": "shocked",
+     "pose": "rest",
+     "key": "who",
+     "chat": true
+    },
+    {
+     "id": "E2",
+     "who": "virus",
+     "text": "A wall?! No, no, no! Caught before the brain!",
+     "emotion": "angry",
+     "pose": "rest",
+     "key": "wall",
+     "src": [
+      "who-rabies"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "M3",
+   "set": "macro",
+   "cast": [
+    {
+     "who": "virus",
+     "x": 420,
+     "size": 380,
+     "stage": true,
+     "emotion": "sad",
+     "pose": "rest"
+    },
+    {
+     "who": "whitecell",
+     "x": 200,
+     "size": 280,
+     "stage": true,
+     "emotion": "angry",
+     "pose": "rest"
+    }
+   ],
+   "state": {
+    "view": 2,
+    "grip": 0
+   },
+   "events": [
+    {
+     "at": "X1",
+     "set": {
+      "grip": 0.5
+     },
+     "over": 14
+    },
+    {
+     "at": "X1",
+     "word": "nowhere.",
+     "set": {
+      "grip": 0.7
+     },
+     "over": 10
+    },
+    {
+     "at": "E3",
+     "set": {
+      "grip": 0.85
+     },
+     "over": 14
+    },
+    {
+     "at": "E3",
+     "word": "rabies!",
+     "set": {
+      "grip": 1
+     },
+     "over": 16
+    },
+    {
+     "at": "E3",
+     "word": "brain...",
+     "set": {
+      "grip": 0.9
+     },
+     "over": 10
+    }
+   ],
+   "lines": [
+    {
+     "id": "X1",
+     "who": "whitecell",
+     "text": "Freeze! You're going nowhere.",
+     "cam": "cu",
+     "emotion": "angry",
+     "pose": "rest",
+     "key": "freeze",
+     "chat": true
+    },
+    {
+     "id": "E3",
+     "who": "virus",
+     "text": "Not fair! I was going for your brain... and you didn't get rabies!",
+     "emotion": "sad",
+     "pose": "rest",
+     "key": "fair",
+     "src": [
+      "who-rabies",
+      "cdc-rabies"
+     ],
+     "cam": "ews push"
+    }
+   ]
+  }
+ ],
+ "musicPrompt": "Dark tense cartoon pulse for a race against time: low staccato strings, a ticking woodblock clock, soft timpani hits, 124 BPM, creeping and urgent; in the last ten seconds it lifts into a warm hopeful major resolve with bright marimba."
+}

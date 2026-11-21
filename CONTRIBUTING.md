@@ -6,3 +6,5 @@
 - Small commits with a clear message: `feat(render): ...`, `video(sugar): ...`, `fix(qc): ...`.
 - Push the branch, open a pull request, merge after the owner's OK. Tag releases `v0.x.0`.
 - Never commit: renders, voice, music, clips (rebuilt from code), `.env`, YouTube logins, client secrets.
+  Exception: the Toons' voice clips, sound effects and music beds (`assets/toons-voice`, `assets/toons-sfx`,
+  `assets/toons-music`) are paid for once and ARE committed.

@@ -1,0 +1,689 @@
+{
+ "slug": "lying-down-after-dinner",
+ "title": "What happens when you lie down after a big dinner",
+ "music": "panic",
+ "camera": "steady",
+ "episode": 3,
+ "rooms": {
+  "clinic": {
+   "palette": "peach",
+   "wall": "stripes",
+   "floor": "wood",
+   "window": {
+    "style": "arch",
+    "side": "centre",
+    "view": "garden"
+   },
+   "layout": "desk",
+   "chart": "stomach",
+   "time": "day"
+  },
+  "home": {
+   "kind": "bedroom",
+   "palette": "nightblue",
+   "wall": "paint",
+   "floor": "carpet",
+   "window": {
+    "style": "arch",
+    "side": "right",
+    "view": "night"
+   },
+   "layout": "bed-left",
+   "time": "night"
+  }
+ },
+ "package": {
+  "title": "What Happens If You Lie Down After Eating a Big Dinner",
+  "phrase": "what happens if you lie down after eating",
+  "opener": "What happens if you lie down after eating a big dinner? Your stomach is full, the valve at its top can relax, and acid flows up your food pipe: that burning in your chest is heartburn. This cartoon shows it from inside the stomach, and Dr. Mira shares the NHS advice: no food for three or four hours before bed.",
+  "question": "How long do you wait after dinner before you lie down?",
+  "tags": [
+   "what happens if you lie down after eating",
+   "lying down after eating",
+   "lying down after eating effects",
+   "heartburn",
+   "acid reflux",
+   "heartburn at night",
+   "acid reflux at night",
+   "how to stop heartburn",
+   "stomach acid",
+   "health cartoon"
+  ],
+  "hashtags": "#heartburn #acidreflux #shorts",
+  "cover": {
+   "at": 17.2,
+   "text": "Lying down after dinner?",
+   "accent": "dinner"
+  }
+ },
+ "retention": {
+  "noIntro": {
+   "scene": "A1",
+   "line": "He ate a huge dinner. Now he's lying down!"
+  },
+  "promise": {
+   "scene": "A3",
+   "line": "Then three things happen. The third one burns!"
+  },
+  "counting": {
+   "scene": "A4,A5,A6",
+   "line": "First / Second / Third"
+  },
+  "change3s": {
+   "scene": "all",
+   "line": "steady camera: something new happens in the picture at least every 3 s"
+  },
+  "twist": {
+   "scene": "D3",
+   "line": "But here's the twist: the problem is a door. Your stomach's valve relaxes when it shouldn't."
+  },
+  "bestLast": {
+   "scene": "D6",
+   "line": "And raise the head of your bed ten to twenty centimetres."
+  },
+  "loop": {
+   "scene": "E2",
+   "line": "A huge dinner, four hours ago. Now he can lie down!"
+  }
+ },
+ "sources": [
+  {
+   "id": "nhs-heartburn",
+   "label": "NHS. Heartburn and acid reflux (page last reviewed 20 November 2023)",
+   "url": "https://www.nhs.uk/conditions/heartburn-and-acid-reflux/",
+   "note": "'Heartburn is a burning feeling in the chest caused by stomach acid travelling up towards the throat (acid reflux).' 'Symptoms are often worse after eating, when lying down and when bending over.' Advice: 'eat smaller, more frequent meals', 'do not eat within 3 or 4 hours before bed', 'raise the head of your bed by around 10 to 20cm'."
+  },
+  {
+   "id": "niddk-gerd",
+   "label": "NIH National Institute of Diabetes and Digestive and Kidney Diseases. Symptoms and Causes of GER and GERD (reviewed July 2020)",
+   "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/acid-reflux-ger-gerd-adults/symptoms-causes",
+   "note": "'GERD may develop if your lower esophageal sphincter becomes weak or relaxes when it shouldn't.' The lower esophageal sphincter is the ring of muscle between the food pipe and the stomach."
+  }
+ ],
+ "shots": [
+  {
+   "id": "A",
+   "set": "tummy",
+   "label": "STOMACH",
+   "cast": [
+    {
+     "who": "stomach",
+     "x": 540,
+     "size": 600,
+     "stage": true,
+     "emotion": "happy",
+     "pose": "cheer"
+    },
+    {
+     "who": "foodpipe",
+     "x": 540,
+     "size": 600,
+     "stage": true,
+     "emotion": "neutral",
+     "pose": "rest"
+    }
+   ],
+   "state": {
+    "full": 0.15
+   },
+   "events": [
+    {
+     "at": "start",
+     "set": {
+      "food": 1,
+      "full": 0.85
+     },
+     "over": 60,
+     "sfx": "plop"
+    },
+    {
+     "at": "A1",
+     "word": "lying",
+     "set": {
+      "tilt": 1
+     },
+     "over": 34
+    },
+    {
+     "at": "A4",
+     "word": "full",
+     "set": {
+      "full": 1
+     },
+     "over": 20,
+     "sfx": "gurgle-stomach"
+    },
+    {
+     "at": "A5",
+     "word": "valve",
+     "set": {
+      "valve": 1
+     },
+     "over": 18
+    },
+    {
+     "at": "A6",
+     "word": "acid",
+     "set": {
+      "leak": 1
+     },
+     "over": 50,
+     "sfx": "sizzle-acid"
+    },
+    {
+     "at": "A7",
+     "set": {
+      "burn": 1
+     },
+     "over": 10,
+     "fx": "flash"
+    }
+   ],
+   "props": [
+    {
+     "kind": "burger",
+     "x": 190,
+     "y": 520,
+     "size": 230,
+     "from": "A1",
+     "word": "dinner",
+     "to": "A1",
+     "halo": true
+    },
+    {
+     "kind": "pillow",
+     "x": 330,
+     "y": 520,
+     "size": 230,
+     "from": "A2",
+     "to": "A2",
+     "halo": true
+    },
+    {
+     "kind": "tag",
+     "text": "uh-oh!",
+     "x": 330,
+     "y": 330,
+     "size": 340,
+     "rot": -5,
+     "from": "A2",
+     "word": "acid",
+     "to": "A2"
+    },
+    {
+     "kind": "tag",
+     "text": "3 things",
+     "x": 330,
+     "y": 330,
+     "size": 340,
+     "rot": -4,
+     "from": "A3",
+     "to": "A3"
+    },
+    {
+     "kind": "pain",
+     "x": 330,
+     "y": 560,
+     "size": 170,
+     "from": "A3",
+     "word": "burns",
+     "to": "A3"
+    },
+    {
+     "kind": "chip",
+     "text": "1",
+     "x": 110,
+     "y": 440,
+     "size": 150,
+     "from": "A4"
+    },
+    {
+     "kind": "chip",
+     "text": "2",
+     "x": 110,
+     "y": 620,
+     "size": 150,
+     "from": "A5"
+    },
+    {
+     "kind": "chip",
+     "text": "3",
+     "x": 110,
+     "y": 800,
+     "size": 150,
+     "from": "A6"
+    }
+   ],
+   "lines": [
+    {
+     "id": "A1",
+     "who": "stomach",
+     "text": "He ate a huge dinner. Now he's lying down!",
+     "emotion": "happy",
+     "pose": "cheer",
+     "key": "lying",
+     "react": {
+      "foodpipe": "scared"
+     }
+    },
+    {
+     "id": "A2",
+     "who": "foodpipe",
+     "text": "Lying down? Your acid will come up to me!",
+     "emotion": "scared",
+     "pose": "panic",
+     "key": "acid",
+     "src": [
+      "nhs-heartburn"
+     ]
+    },
+    {
+     "id": "A3",
+     "who": "stomach",
+     "text": "Then three things happen. The third one burns!",
+     "emotion": "sick",
+     "pose": "shrug",
+     "key": "burns"
+    },
+    {
+     "id": "A4",
+     "who": "stomach",
+     "text": "First, I'm too full.",
+     "emotion": "sick",
+     "pose": "belly",
+     "key": "full",
+     "src": [
+      "nhs-heartburn"
+     ]
+    },
+    {
+     "id": "A5",
+     "who": "foodpipe",
+     "text": "Second, my valve relaxes!",
+     "emotion": "shocked",
+     "pose": "panic",
+     "key": "valve",
+     "src": [
+      "niddk-gerd"
+     ]
+    },
+    {
+     "id": "A6",
+     "who": "stomach",
+     "text": "Third, my acid flows up the food pipe!",
+     "emotion": "scared",
+     "pose": "panic",
+     "key": "acid",
+     "react": {
+      "foodpipe": "scared"
+     },
+     "src": [
+      "nhs-heartburn"
+     ]
+    },
+    {
+     "id": "A7",
+     "who": "foodpipe",
+     "text": "Ow! It burns! Make it stop!",
+     "emotion": "sad",
+     "pose": "panic",
+     "key": "burns",
+     "react": {
+      "stomach": "sad"
+     },
+     "src": [
+      "nhs-heartburn"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "T1",
+   "set": "tummy",
+   "card": "Meanwhile, in bed...",
+   "seconds": 1.4,
+   "cast": [],
+   "lines": []
+  },
+  {
+   "id": "C",
+   "set": "home",
+   "cast": [
+    {
+     "who": "patient",
+     "x": 540,
+     "size": 1040,
+     "emotion": "sick",
+     "pose": "heart"
+    }
+   ],
+   "props": [
+    {
+     "kind": "pain",
+     "x": 560,
+     "y": 930,
+     "size": 170,
+     "from": "C1",
+     "word": "chest",
+     "on": "patient"
+    }
+   ],
+   "lines": [
+    {
+     "id": "C1",
+     "who": "patient",
+     "text": "Ow! My chest is on fire!",
+     "emotion": "sick",
+     "pose": "heart",
+     "key": "fire"
+    }
+   ]
+  },
+  {
+   "id": "D",
+   "set": "clinic",
+   "cast": [
+    {
+     "who": "doctor",
+     "x": 285,
+     "size": 940
+    },
+    {
+     "who": "patient",
+     "x": 805,
+     "size": 900,
+     "emotion": "sick",
+     "pose": "heart"
+    }
+   ],
+   "props": [
+    {
+     "kind": "burger",
+     "x": 800,
+     "y": 330,
+     "size": 210,
+     "from": "D1",
+     "word": "dinner",
+     "to": "D1",
+     "halo": true
+    },
+    {
+     "kind": "tag",
+     "text": "heartburn",
+     "x": 550,
+     "y": 300,
+     "size": 340,
+     "rot": -4,
+     "from": "D2",
+     "to": "D2"
+    },
+    {
+     "kind": "pain",
+     "x": 790,
+     "y": 960,
+     "size": 150,
+     "from": "D2",
+     "word": "acid",
+     "to": "D2",
+     "on": "patient"
+    },
+    {
+     "kind": "tag",
+     "text": "the twist",
+     "x": 800,
+     "y": 330,
+     "size": 320,
+     "rot": -4,
+     "from": "D3",
+     "to": "D3"
+    },
+    {
+     "kind": "valve",
+     "size": 300,
+     "from": "D3",
+     "word": "door",
+     "to": "D3",
+     "bubble": true,
+     "of": "doctor"
+    },
+    {
+     "kind": "tag",
+     "text": "it opens too soon",
+     "x": 550,
+     "y": 1180,
+     "size": 280,
+     "from": "D3",
+     "word": "relaxes",
+     "to": "D3"
+    },
+    {
+     "kind": "pillow",
+     "x": 800,
+     "y": 330,
+     "size": 210,
+     "from": "D4",
+     "word": "lying",
+     "to": "D4",
+     "halo": true
+    },
+    {
+     "kind": "burger",
+     "x": 455,
+     "y": 1190,
+     "size": 190,
+     "from": "D5",
+     "to": "D5",
+     "halo": true,
+     "no": true
+    },
+    {
+     "kind": "clock",
+     "x": 648,
+     "y": 1190,
+     "size": 190,
+     "from": "D5",
+     "word": "hours",
+     "to": "D5",
+     "halo": true
+    },
+    {
+     "kind": "tag",
+     "text": "3 to 4 hours",
+     "x": 550,
+     "y": 300,
+     "size": 300,
+     "from": "D5",
+     "word": "three",
+     "to": "D5"
+    },
+    {
+     "kind": "bed",
+     "x": 550,
+     "y": 1170,
+     "size": 270,
+     "from": "D6",
+     "word": "raise",
+     "halo": true
+    },
+    {
+     "kind": "tag",
+     "text": "10 to 20 cm",
+     "x": 550,
+     "y": 300,
+     "size": 300,
+     "from": "D6",
+     "word": "ten"
+    }
+   ],
+   "lines": [
+    {
+     "id": "D1",
+     "who": "patient",
+     "text": "Doctor, why does my chest burn after dinner?",
+     "emotion": "sick",
+     "pose": "heart",
+     "key": "burn"
+    },
+    {
+     "id": "D2",
+     "who": "doctor",
+     "text": "That's heartburn: stomach acid travelling up toward your throat.",
+     "emotion": "neutral",
+     "pose": "explain",
+     "key": "heartburn",
+     "react": {
+      "patient": "shocked"
+     },
+     "src": [
+      "nhs-heartburn"
+     ]
+    },
+    {
+     "id": "D3",
+     "who": "doctor",
+     "text": "But here's the twist: the problem is a door. Your stomach's valve relaxes when it shouldn't.",
+     "emotion": "happy",
+     "pose": "present",
+     "key": "twist",
+     "src": [
+      "niddk-gerd"
+     ]
+    },
+    {
+     "id": "D4",
+     "who": "patient",
+     "text": "And lying down makes it worse?",
+     "emotion": "neutral",
+     "pose": "think",
+     "key": "worse"
+    },
+    {
+     "id": "D5",
+     "who": "doctor",
+     "text": "Yes. So no food for three or four hours before bed.",
+     "emotion": "happy",
+     "pose": "thumb",
+     "key": "hours",
+     "src": [
+      "nhs-heartburn"
+     ]
+    },
+    {
+     "id": "D6",
+     "who": "doctor",
+     "text": "And raise the head of your bed ten to twenty centimetres.",
+     "emotion": "neutral",
+     "pose": "point",
+     "key": "raise",
+     "react": {
+      "patient": "happy"
+     },
+     "src": [
+      "nhs-heartburn"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "E",
+   "set": "tummy",
+   "label": "NEXT TIME",
+   "cast": [
+    {
+     "who": "stomach",
+     "x": 540,
+     "size": 600,
+     "stage": true,
+     "emotion": "sleepy",
+     "pose": "rest"
+    },
+    {
+     "who": "foodpipe",
+     "x": 540,
+     "size": 600,
+     "stage": true,
+     "emotion": "neutral",
+     "pose": "rest"
+    }
+   ],
+   "state": {
+    "food": 0.35,
+    "full": 0.22
+   },
+   "events": [
+    {
+     "at": "start",
+     "delay": 0.3,
+     "set": {
+      "tilt": 1
+     },
+     "over": 34
+    }
+   ],
+   "props": [
+    {
+     "kind": "tag",
+     "text": "all quiet",
+     "x": 330,
+     "y": 330,
+     "size": 340,
+     "rot": -4,
+     "from": "E1",
+     "word": "Nothing",
+     "to": "E1"
+    },
+    {
+     "kind": "clock",
+     "x": 300,
+     "y": 500,
+     "size": 230,
+     "from": "E2",
+     "halo": true
+    },
+    {
+     "kind": "pillow",
+     "x": 560,
+     "y": 500,
+     "size": 230,
+     "from": "E2",
+     "word": "Now",
+     "halo": true
+    },
+    {
+     "kind": "tag",
+     "text": "sleep well",
+     "x": 330,
+     "y": 330,
+     "size": 340,
+     "rot": -4,
+     "from": "E2",
+     "word": "down"
+    }
+   ],
+   "lines": [
+    {
+     "id": "E1",
+     "who": "foodpipe",
+     "text": "Ahh. Nothing is coming up tonight!",
+     "emotion": "happy",
+     "pose": "thumb",
+     "key": "Nothing",
+     "react": {
+      "stomach": "sleepy"
+     }
+    },
+    {
+     "id": "E2",
+     "who": "stomach",
+     "text": "A huge dinner, four hours ago. Now he can lie down!",
+     "emotion": "happy",
+     "pose": "cheer",
+     "key": "down",
+     "src": [
+      "nhs-heartburn"
+     ]
+    }
+   ]
+  }
+ ]
+}

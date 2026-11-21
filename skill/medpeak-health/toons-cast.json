@@ -1,0 +1,46 @@
+{
+  "note": "MedPeak Toons voice cast: every character has ONE fixed voice, so it sounds the same in every video. All voices are ElevenLabs default voices (on every account, no voice slots needed, so the key pool can switch freely). `pitch` is in semitones, applied after generation with ffmpeg (free): small characters go up, big ones go down. `speed` is the ElevenLabs speaking speed (0.7-1.2). Organs talk fast (about 2.8 words a second); Dr. Mira is calmer.",
+  "model": "eleven_multilingual_v2",
+  "cast": {
+    "narrator": {"voice": "Joey - Upbeat Popular News Host", "voiceId": "mUfWEBhcigm8YlCDbmGP", "publicOwnerId": "19ce68b7b5adbf25e601d51a3b985ff64e420a831b7b3957d0c5603adeb22133", "pitch": 0, "speed": 1, "why": "the CTA narrator, the SAME voice in every video (owner pick 2026-11-20): young, energetic, professional"},
+    "doctor": {"voice": "Matilda", "voiceId": "XrExE9yKIg1WjnnlVkGX", "pitch": 0, "speed": 0.98, "why": "knowledgeable, professional, warm"},
+    "patient": {"voice": "Liam", "voiceId": "TX3LPaxmHKxFdv7VOQHJ", "pitch": 0, "speed": 1.05, "why": "ordinary young man"},
+    "mom": {"voice": "Sarah", "voiceId": "EXAVITQu4vr4xnSDxMaL", "pitch": 0, "speed": 1.05, "why": "mature, reassuring, worried"},
+    "kid": {"voice": "Jessica", "voiceId": "cgSgspJ2msm6clMCkdW9", "pitch": 4, "speed": 1.08, "why": "bright and playful, pitched up to a child"},
+    "grandpa": {"voice": "Bill", "voiceId": "pqHfZKP75CvOlQylNhV4", "pitch": -1, "speed": 0.95, "why": "old, wise, unhurried"},
+    "baby": {"voice": "Laura", "voiceId": "FGY2WhTYpPnrIDTdsKH5", "pitch": 6, "speed": 1.0, "why": "tiny voice for rare lines"},
+
+    "stomach": {"voice": "Callum", "voiceId": "N2lVS1w4EtoT3dr4eOWO", "pitch": -1, "speed": 1.1, "why": "husky, grumpy cook"},
+    "intestine": {"voice": "River", "voiceId": "SAz9YHcvj6GT2YYXdXww", "pitch": 1, "speed": 1.1, "why": "relaxed, chatty"},
+    "liver": {"voice": "Eric", "voiceId": "cjVigY5qzO86Huf0OWal", "pitch": -1, "speed": 1.04, "why": "smooth, calm, overworked"},
+    "kidney": {"voice": "Daniel", "voiceId": "onwK4e9ZLuTAKqWW03F9", "pitch": 1, "speed": 1.08, "why": "precise broadcaster, a little fussy"},
+    "bladder": {"voice": "Laura", "voiceId": "FGY2WhTYpPnrIDTdsKH5", "pitch": 2, "speed": 1.14, "why": "quirky, anxious"},
+    "lungs": {"voice": "Jessica", "voiceId": "cgSgspJ2msm6clMCkdW9", "pitch": 1, "speed": 1.1, "why": "bright, cheerful"},
+    "heart": {"voice": "Charlie", "voiceId": "IKne3meq5aSn9XLyUdCD", "pitch": 0, "speed": 1.1, "why": "deep, energetic, dramatic"},
+    "brain": {"voice": "Chris", "voiceId": "iP95p4xoKVk53GoZ742B", "pitch": 1, "speed": 1.1, "why": "charming, quick, distracted"},
+    "tooth": {"voice": "Alice", "voiceId": "Xb7hH8MSUJpSbSDYk0k2", "pitch": 3, "speed": 1.1, "why": "clear and prim, pitched up"},
+    "bone": {"voice": "George", "voiceId": "JBFqnCBsd6RMkjVDRZzb", "pitch": -1, "speed": 1.0, "why": "warm, old-fashioned"},
+
+    "foodpipe": {"voice": "Roger", "voiceId": "CwhRBWXzGAHq8TQ4Fs17", "pitch": 1, "speed": 1.08, "why": "the long-suffering hallway everything passes through (a stage character: the organ itself talks)"},
+    "pill": {"voice": "Will", "voiceId": "bIHbv24MWmeRgasZH58o", "pitch": 3, "speed": 1.12, "why": "young optimist, eager helper"},
+    "poop": {"voice": "Roger", "voiceId": "CwhRBWXzGAHq8TQ4Fs17", "pitch": -3, "speed": 1.0, "why": "laid-back, blunt, low"},
+    "redcell": {"voice": "Bella", "voiceId": "hpp4J3VqNfWAUOO0d1Us", "pitch": 2, "speed": 1.14, "why": "bright, friendly, in a hurry"},
+    "whitecell": {"voice": "Adam", "voiceId": "pNInz6obpgDQGcFmaJgB", "pitch": 0, "speed": 1.06, "why": "firm guard voice"},
+    "platelet": {"voice": "Harry", "voiceId": "SOYHLrjzK2X1ezoPC6cr", "pitch": 5, "speed": 1.15, "why": "fierce but tiny"},
+    "egg": {"voice": "Lily", "voiceId": "pFZP5JQG7iQjIQuC4Bku", "pitch": 1, "speed": 1.0, "why": "velvety, calm, picky"},
+    "sperm": {"voice": "Charlie", "voiceId": "IKne3meq5aSn9XLyUdCD", "pitch": 5, "speed": 1.15, "why": "energetic racer, pitched up"},
+    "virus": {"voice": "Charlie", "voiceId": "IKne3meq5aSn9XLyUdCD", "pitch": 3, "speed": 1.08, "why": "cheeky gremlin: the owner picked audition C on 2026-11-18 (was Brian, deep and smug)"},
+    "bacteria": {"voice": "Callum", "voiceId": "N2lVS1w4EtoT3dr4eOWO", "pitch": 5, "speed": 1.15, "why": "trickster, pitched up"}
+  },
+  "acting": {
+    "neutral": {"stability": 0.5, "style": 0.2},
+    "happy": {"stability": 0.42, "style": 0.4},
+    "angry": {"stability": 0.3, "style": 0.6},
+    "scared": {"stability": 0.28, "style": 0.6},
+    "smug": {"stability": 0.45, "style": 0.45},
+    "sick": {"stability": 0.4, "style": 0.35},
+    "sleepy": {"stability": 0.6, "style": 0.15},
+    "shocked": {"stability": 0.28, "style": 0.65},
+    "sad": {"stability": 0.45, "style": 0.35}
+  }
+}

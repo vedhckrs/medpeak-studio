@@ -1,0 +1,721 @@
+{
+ "slug": "skip-brushing-at-night",
+ "title": "What Happens If You Skip Brushing at Night",
+ "format": 3,
+ "shape": "fight",
+ "music": "panic",
+ "camera": "steady",
+ "episode": 6,
+ "hooks": [
+  {
+   "line": "Skip brushing at night, your teeth pay.",
+   "why": "says the cost in six words; the first picture is the tooth at night, germs all over it"
+  },
+  {
+   "line": "You skip brushing at night. Germs feast.",
+   "why": "names the villain; a little funnier"
+  },
+  {
+   "line": "Skip brushing at night? Your spit is asleep.",
+   "why": "gives the surprising reason at once (less left for the twist)"
+  }
+ ],
+ "rooms": {
+  "home": {
+   "kind": "bathroom",
+   "palette": "slate",
+   "wall": "tiles",
+   "floor": "wood",
+   "window": {
+    "style": "tall",
+    "side": "left",
+    "view": "hills"
+   },
+   "layout": "sink-right",
+   "time": "day"
+  }
+ },
+ "package": {
+  "title": "What Happens If You Skip Brushing at Night",
+  "phrase": "what happens if you skip brushing at night",
+  "opener": "What happens if you skip brushing at night? Mouth germs turn leftover food into acid, and while you sleep your spit, which clears sugar and acid by day, almost stops flowing. This cartoon shows the night from the top of a tooth: the spit guards fall asleep and the germs throw a party. The fix is the NHS advice: brush last thing before bed for two minutes with fluoride toothpaste, then spit and do not rinse.",
+  "question": "Be honest: how often do you fall asleep without brushing?",
+  "tags": [
+   "what happens if you skip brushing at night",
+   "skip brushing teeth at night",
+   "not brushing teeth before bed",
+   "brushing teeth at night",
+   "why brush before bed",
+   "tooth decay",
+   "cavities",
+   "saliva",
+   "teeth",
+   "health cartoon"
+  ],
+  "hashtags": "#teeth #brushing #shorts",
+  "cover": {
+   "at": 1.2,
+   "text": "Skip brushing tonight?",
+   "accent": "tonight"
+  }
+ },
+ "retention": {
+  "noIntro": {
+   "scene": "A1",
+   "line": "Skip brushing at night, your teeth pay."
+  },
+  "promise": {
+   "scene": "A2",
+   "line": "Guess why we party at night?"
+  },
+  "question": {
+   "scene": "A2",
+   "line": "Guess why we party at night?"
+  },
+  "answer": {
+   "scene": "E2",
+   "line": "No! We party hardest at night because your spit sleeps!"
+  },
+  "change3s": {
+   "scene": "all",
+   "line": "steady camera: something happens in the picture at least every 3 s (stickers do not count)"
+  },
+  "twist": {
+   "scene": "B6",
+   "line": "Surprise! When he sleeps, your spit guards sleep too!"
+  },
+  "bestLast": {
+   "scene": "E3",
+   "line": "Two minutes, then spit, don't rinse. Skip brushing at night? Not these teeth!"
+  },
+  "loop": {
+   "scene": "E3",
+   "line": "Two minutes, then spit, don't rinse. Skip brushing at night? Not these teeth!"
+  }
+ },
+ "sources": [
+  {
+   "id": "nhs-teeth",
+   "label": "NHS. How to keep your teeth clean (page last reviewed 30 June 2025)",
+   "url": "https://www.nhs.uk/live-well/healthy-teeth-and-gums/how-to-keep-your-teeth-clean/",
+   "note": "'Brush your teeth twice a day for about 2 minutes each time. Brush them last thing before you go to bed, as night-time brushing is important, and on 1 other occasion.' 'After brushing, spit out any excess toothpaste. Don't rinse your mouth immediately after brushing, as it'll wash away the concentrated fluoride in the remaining toothpaste.'"
+  },
+  {
+   "id": "dawes-2008",
+   "label": "Dawes C. Salivary flow patterns and the health of hard and soft oral tissues. J Am Dent Assoc. 2008 (PMID 18460676)",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/18460676/",
+   "note": "'Saliva protects against dental caries'. 'The most important time for toothbrushing is just before bedtime, because salivary flow is negligible during sleep and the protective effects of saliva are lost.' A review by one author, not a systematic review."
+  },
+  {
+   "id": "nidcr",
+   "label": "NIH National Institute of Dental and Craniofacial Research. The Tooth Decay Process: How to Reverse It and Avoid a Cavity (reviewed January 2025)",
+   "url": "https://www.nidcr.nih.gov/health-info/tooth-decay/more-info/tooth-decay-process",
+   "note": "'Whenever we eat or drink something that contains sugar or starch, the bacteria use them to produce acids. These acids begin to eat away at the tooth's hard outer surface, or enamel.' 'Our saliva can help fight off this acid attack.' 'A white spot may appear where minerals have been lost. This is a sign of early decay.'"
+  },
+  {
+   "id": "nidcr-decay",
+   "label": "NIH National Institute of Dental and Craniofacial Research. Tooth Decay (reviewed September 2025)",
+   "url": "https://www.nidcr.nih.gov/health-info/tooth-decay",
+   "note": "'In early tooth decay, there are not usually any symptoms. As tooth decay advances, it can cause a toothache (tooth pain) or tooth sensitivity to sweets, hot, or cold.'"
+  }
+ ],
+ "shots": [
+  {
+   "id": "A",
+   "set": "molar",
+   "label": "TONIGHT",
+   "cast": [
+    {
+     "who": "tooth",
+     "x": 540,
+     "size": 700,
+     "stage": true,
+     "emotion": "scared",
+     "pose": "rest"
+    },
+    {
+     "who": "bacteria",
+     "x": 540,
+     "size": 320,
+     "stage": true,
+     "emotion": "happy",
+     "pose": "hips"
+    }
+   ],
+   "state": {
+    "night": 1,
+    "guards": 1,
+    "sleep": 1,
+    "sugar": 1,
+    "party": 1,
+    "acid": 0.55,
+    "chalk": 0.3
+   },
+   "events": [
+    {
+     "at": "A1",
+     "word": "teeth",
+     "set": {
+      "acid": 0.85
+     },
+     "over": 30
+    },
+    {
+     "at": "A2",
+     "set": {
+      "chalk": 0.7
+     },
+     "over": 40
+    },
+    {
+     "at": "A2",
+     "word": "night?",
+     "set": {
+      "acid": 1
+     },
+     "over": 20
+    }
+   ],
+   "lines": [
+    {
+     "id": "A1",
+     "who": "tooth",
+     "text": "Skip brushing at night, your teeth pay.",
+     "tempo": 1.08,
+     "emotion": "scared",
+     "pose": "panic",
+     "key": "night",
+     "react": {
+      "bacteria": "happy"
+     },
+     "src": [
+      "nidcr",
+      "dawes-2008"
+     ]
+    },
+    {
+     "id": "A2",
+     "who": "bacteria",
+     "text": "Guess why we party at night?",
+     "emotion": "smug",
+     "pose": "cheer",
+     "key": "night",
+     "chat": true,
+     "beat": 0.8
+    }
+   ]
+  },
+  {
+   "id": "T1",
+   "set": "molar",
+   "card": "Earlier that evening...",
+   "seconds": 1.2,
+   "cast": [],
+   "lines": []
+  },
+  {
+   "id": "B",
+   "set": "molar",
+   "label": "THAT EVENING",
+   "cast": [
+    {
+     "who": "tooth",
+     "x": 540,
+     "size": 700,
+     "stage": true,
+     "emotion": "happy",
+     "pose": "rest"
+    },
+    {
+     "who": "bacteria",
+     "x": 540,
+     "size": 320,
+     "stage": true,
+     "emotion": "angry",
+     "pose": "fists"
+    }
+   ],
+   "state": {
+    "night": 0,
+    "guards": 0
+   },
+   "events": [
+    {
+     "at": "B1",
+     "word": "guards",
+     "set": {
+      "guards": 1
+     },
+     "over": 30
+    },
+    {
+     "at": "B1b",
+     "set": {
+      "snack": 1
+     },
+     "over": 30,
+     "sfx": "plop"
+    },
+    {
+     "at": "B2",
+     "set": {
+      "fight": 0.3
+     },
+     "over": 26
+    },
+    {
+     "at": "B2",
+     "delay": 0.95,
+     "set": {
+      "fight": 0.72
+     },
+     "over": 52
+    },
+    {
+     "at": "B2",
+     "delay": 2.1,
+     "sfx": "bonk"
+    },
+    {
+     "at": "B2",
+     "delay": 2.75,
+     "set": {
+      "fight": 1
+     },
+     "over": 34
+    },
+    {
+     "at": "B2",
+     "delay": 2.95,
+     "sfx": "zip-away"
+    },
+    {
+     "at": "B3",
+     "word": "washes",
+     "set": {
+      "wash": 1
+     },
+     "over": 46,
+     "sfx": "splash-small"
+    },
+    {
+     "at": "B4",
+     "set": {
+      "night": 0.3
+     },
+     "over": 30
+    },
+    {
+     "at": "B4",
+     "word": "bedtime.",
+     "set": {
+      "night": 0.6
+     },
+     "over": 30
+    },
+    {
+     "at": "B5",
+     "set": {
+      "night": 1
+     },
+     "over": 36
+    },
+    {
+     "at": "B5",
+     "word": "brush!",
+     "set": {
+      "sugar": 1
+     },
+     "over": 36
+    },
+    {
+     "at": "B5",
+     "delay": 2.5,
+     "set": {
+      "sleep": 0.12
+     },
+     "over": 24
+    },
+    {
+     "at": "B6",
+     "word": "sleeps,",
+     "set": {
+      "sleep": 0.5
+     },
+     "over": 44
+    },
+    {
+     "at": "B6",
+     "word": "too!",
+     "set": {
+      "sleep": 1
+     },
+     "over": 44
+    },
+    {
+     "at": "B7",
+     "set": {
+      "party": 0.5
+     },
+     "over": 30
+    },
+    {
+     "at": "B7",
+     "word": "Leftovers",
+     "set": {
+      "party": 1
+     },
+     "over": 30
+    },
+    {
+     "at": "B8",
+     "word": "acid.",
+     "set": {
+      "acid": 1
+     },
+     "over": 44,
+     "sfx": "sizzle-acid"
+    },
+    {
+     "at": "B8",
+     "word": "enamel!",
+     "set": {
+      "chalk": 1
+     },
+     "over": 40
+    }
+   ],
+   "lines": [
+    {
+     "id": "B1",
+     "who": "tooth",
+     "text": "This evening, my spit guards were on duty.",
+     "cut": 2.06,
+     "emotion": "happy",
+     "pose": "present",
+     "key": "guards",
+     "react": {
+      "bacteria": "angry"
+     },
+     "src": [
+      "dawes-2008"
+     ],
+     "beat": 0.5
+    },
+    {
+     "id": "B1b",
+     "who": "tooth",
+     "text": "Every snack leaves sugar on me.",
+     "emotion": "neutral",
+     "pose": "explain",
+     "key": "sugar",
+     "react": {
+      "bacteria": "happy"
+     },
+     "src": [
+      "nidcr"
+     ],
+     "beat": 0.3
+    },
+    {
+     "id": "B2",
+     "who": "bacteria",
+     "text": "Sugar! Charge!",
+     "emotion": "angry",
+     "pose": "point",
+     "key": "charge",
+     "react": {
+      "tooth": "shocked"
+     },
+     "chat": true,
+     "beat": 2.85
+    },
+    {
+     "id": "B3",
+     "who": "tooth",
+     "text": "Ha! My spit washes away their sugar and their acid.",
+     "emotion": "happy",
+     "pose": "cheer",
+     "key": "washes",
+     "react": {
+      "bacteria": "sad"
+     },
+     "src": [
+      "dawes-2008",
+      "nidcr"
+     ]
+    },
+    {
+     "id": "B4",
+     "who": "bacteria",
+     "text": "Fine. We'll wait for bedtime.",
+     "emotion": "smug",
+     "pose": "think",
+     "key": "bedtime",
+     "chat": true,
+     "beat": 1.1
+    },
+    {
+     "id": "B5",
+     "who": "tooth",
+     "text": "Bedtime. And he didn't brush!",
+     "emotion": "shocked",
+     "pose": "panic",
+     "key": "brush",
+     "react": {
+      "bacteria": "happy"
+     },
+     "chat": true,
+     "beat": 1.5
+    },
+    {
+     "id": "B6",
+     "who": "bacteria",
+     "text": "Surprise! When he sleeps, your spit guards sleep too!",
+     "emotion": "happy",
+     "pose": "point",
+     "key": "sleep",
+     "react": {
+      "tooth": "scared"
+     },
+     "src": [
+      "dawes-2008"
+     ],
+     "beat": 0.8
+    },
+    {
+     "id": "B7",
+     "who": "bacteria",
+     "text": "Party time! Leftovers for everyone!",
+     "emotion": "happy",
+     "pose": "cheer",
+     "key": "party",
+     "react": {
+      "tooth": "scared"
+     },
+     "chat": true
+    },
+    {
+     "id": "B8",
+     "who": "tooth",
+     "text": "They turn it into acid. All night. My enamel!",
+     "emotion": "scared",
+     "pose": "panic",
+     "key": "acid",
+     "react": {
+      "bacteria": "smug"
+     },
+     "src": [
+      "nidcr",
+      "dawes-2008"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "T2",
+   "set": "molar",
+   "card": "Many nights later...",
+   "seconds": 1.2,
+   "cast": [],
+   "lines": []
+  },
+  {
+   "id": "D",
+   "set": "home",
+   "cast": [
+    {
+     "who": "patient",
+     "x": 540,
+     "size": 1040,
+     "emotion": "sad",
+     "pose": "facepalm"
+    }
+   ],
+   "props": [
+    {
+     "kind": "pain",
+     "x": 612,
+     "y": 790,
+     "size": 130,
+     "from": "D1",
+     "word": "tooth",
+     "on": "patient"
+    }
+   ],
+   "lines": [
+    {
+     "id": "D1",
+     "who": "patient",
+     "text": "Ow! Why does this tooth ache?",
+     "emotion": "sad",
+     "pose": "facepalm",
+     "key": "ache",
+     "src": [
+      "nidcr-decay"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "E",
+   "set": "molar",
+   "label": "THE NEXT NIGHT",
+   "cast": [
+    {
+     "who": "tooth",
+     "x": 540,
+     "size": 700,
+     "stage": true,
+     "emotion": "happy",
+     "pose": "rest"
+    },
+    {
+     "who": "bacteria",
+     "x": 540,
+     "size": 320,
+     "stage": true,
+     "emotion": "smug",
+     "pose": "hips"
+    }
+   ],
+   "state": {
+    "night": 0.35,
+    "guards": 1,
+    "sugar": 1,
+    "party": 0.5
+   },
+   "events": [
+    {
+     "at": "E1",
+     "word": "brushes,",
+     "set": {
+      "brush": 0.4
+     },
+     "over": 30,
+     "sfx": "swish"
+    },
+    {
+     "at": "E2",
+     "set": {
+      "brush": 1
+     },
+     "over": 56
+    },
+    {
+     "at": "E2",
+     "delay": 0.5,
+     "set": {
+      "party": 0
+     },
+     "over": 20
+    },
+    {
+     "at": "E2",
+     "word": "because",
+     "set": {
+      "night": 0.7
+     },
+     "over": 30
+    },
+    {
+     "at": "E3",
+     "set": {
+      "shield": 1
+     },
+     "over": 22
+    },
+    {
+     "at": "E3",
+     "word": "rinse.",
+     "set": {
+      "night": 1
+     },
+     "over": 40
+    },
+    {
+     "at": "E3",
+     "word": "night?",
+     "set": {
+      "sleep": 1
+     },
+     "over": 60
+    }
+   ],
+   "props": [
+    {
+     "kind": "tag",
+     "text": "NHS: brush before bed",
+     "x": 700,
+     "y": 250,
+     "size": 330,
+     "rot": -3,
+     "from": "E1",
+     "to": "E1",
+     "word": "last"
+    },
+    {
+     "kind": "tag",
+     "text": "2 minutes",
+     "x": 740,
+     "y": 250,
+     "size": 340,
+     "rot": 3,
+     "from": "E3",
+     "to": "E3",
+     "word": "Two"
+    },
+    {
+     "kind": "tag",
+     "text": "spit, don't rinse",
+     "x": 740,
+     "y": 352,
+     "size": 340,
+     "rot": -3,
+     "from": "E3",
+     "word": "spit,"
+    }
+   ],
+   "lines": [
+    {
+     "id": "E1",
+     "who": "tooth",
+     "text": "But tonight he brushes, last thing before bed!",
+     "emotion": "happy",
+     "pose": "cheer",
+     "key": "brushes",
+     "react": {
+      "bacteria": "scared"
+     },
+     "src": [
+      "nhs-teeth",
+      "dawes-2008"
+     ]
+    },
+    {
+     "id": "E2",
+     "who": "bacteria",
+     "text": "No! We party hardest at night because your spit sleeps!",
+     "emotion": "scared",
+     "pose": "panic",
+     "key": "sleeps",
+     "src": [
+      "dawes-2008"
+     ],
+     "beat": 0.2
+    },
+    {
+     "id": "E3",
+     "who": "tooth",
+     "text": "Two minutes, then spit, don't rinse. Skip brushing at night? Not these teeth!",
+     "emotion": "happy",
+     "pose": "cheer",
+     "key": "teeth",
+     "src": [
+      "nhs-teeth"
+     ]
+    }
+   ]
+  }
+ ]
+}

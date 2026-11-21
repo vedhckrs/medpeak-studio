@@ -1,0 +1,761 @@
+{
+ "slug": "when-you-burp",
+ "title": "What Happens When You Burp",
+ "format": 2,
+ "music": "panic",
+ "camera": "steady",
+ "episode": 8,
+ "hooks": [
+  {
+   "line": "When you burp, a tiny door opens.",
+   "why": "makes you want to see the door; the first picture is the stomach stretched with air"
+  },
+  {
+   "line": "When you burp, it's air you swallowed.",
+   "why": "the surprising fact at once (it gives the twist away early)"
+  },
+  {
+   "line": "When you burp, your stomach lets go.",
+   "why": "short and physical; a little vague"
+  }
+ ],
+ "rooms": {
+  "clinic": {
+   "palette": "stone",
+   "wall": "tiles",
+   "floor": "carpet",
+   "window": {
+    "style": "wide",
+    "side": "left",
+    "view": "hills"
+   },
+   "layout": "exam-bed",
+   "chart": "stomach",
+   "time": "day"
+  },
+  "home": {
+   "kind": "kitchen",
+   "palette": "rose",
+   "wall": "stripes",
+   "floor": "wood",
+   "window": {
+    "style": "round",
+    "side": "right",
+    "view": "garden"
+   },
+   "layout": "stove-left",
+   "time": "day"
+  }
+ },
+ "package": {
+  "title": "What Happens When You Burp",
+  "phrase": "what happens when you burp",
+  "opener": "What happens when you burp? Every time you swallow, a little air goes down too. It gathers at the top of the stomach and stretches it, a ring of muscle at the end of the food pipe relaxes, and the air comes back up. This cartoon shows it from inside, and Dr. Mira shares what the US National Institutes of Health say: burping is normal, up to 30 times a day, and eating slowly means less air.",
+  "question": "What makes you burp the most: fizzy drinks, eating fast, or gum?",
+  "tags": [
+   "what happens when you burp",
+   "why do we burp",
+   "burping",
+   "belching",
+   "why do I burp so much",
+   "swallowed air",
+   "fizzy drinks",
+   "stomach",
+   "digestion",
+   "health cartoon"
+  ],
+  "hashtags": "#burp #stomach #shorts",
+  "cover": {
+   "at": 1.2,
+   "text": "Why you burp",
+   "accent": "burp"
+  }
+ },
+ "retention": {
+  "noIntro": {
+   "scene": "A1",
+   "line": "When you burp, a tiny door opens."
+  },
+  "promise": {
+   "scene": "A2",
+   "line": "Guess how many times a day you burp?"
+  },
+  "question": {
+   "scene": "A2",
+   "line": "Guess how many times a day you burp?"
+  },
+  "answer": {
+   "scene": "D6",
+   "line": "And it's normal. People burp up to thirty times a day."
+  },
+  "change3s": {
+   "scene": "all",
+   "line": "steady camera: something new happens in the picture at least every 3 s"
+  },
+  "twist": {
+   "scene": "D3",
+   "line": "But here's the twist: a burp isn't your food talking. It's that air coming back up."
+  },
+  "bestLast": {
+   "scene": "D6",
+   "line": "And it's normal. People burp up to thirty times a day."
+  },
+  "loop": {
+   "scene": "E2",
+   "line": "When you burp, my tiny door opens. Thirty times a day!"
+  }
+ },
+ "sources": [
+  {
+   "id": "medline-belching",
+   "label": "MedlinePlus (US National Library of Medicine). Belching (review date 3 July 2025)",
+   "url": "https://medlineplus.gov/ency/article/003080.htm",
+   "note": "'Belching is a normal process. The purpose of belching is to release air from the stomach. Every time you swallow, you also swallow air, along with fluid or food.' 'The buildup of air in the upper stomach causes the stomach to stretch. This triggers the muscle at the lower end of the esophagus (the tube that runs from your mouth to the stomach) to relax. Air then escapes up the esophagus and out of your mouth.' 'Avoid chewing gum, eating quickly, and eating gas-producing foods and beverages.'"
+  },
+  {
+   "id": "niddk-gas",
+   "label": "NIH National Institute of Diabetes and Digestive and Kidney Diseases. Symptoms and Causes of Gas in the Digestive Tract (last reviewed June 2021)",
+   "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/gas-digestive-tract/symptoms-causes",
+   "note": "'Belching, or burping, is a release of gas from your stomach through your mouth. People typically belch up to 30 times a day.' 'Swallowing more air may lead to more gas and gas symptoms. You swallow more air when you chew gum or suck on hard candy, drink carbonated, or fizzy, drinks, eat or drink too fast'."
+  }
+ ],
+ "shots": [
+  {
+   "id": "A",
+   "set": "tummy",
+   "label": "STOMACH",
+   "cast": [
+    {
+     "who": "stomach",
+     "x": 540,
+     "size": 600,
+     "stage": true,
+     "emotion": "sick",
+     "pose": "belly"
+    },
+    {
+     "who": "foodpipe",
+     "x": 540,
+     "size": 600,
+     "stage": true,
+     "emotion": "shocked",
+     "pose": "think"
+    }
+   ],
+   "state": {
+    "food": 0.46,
+    "full": 0.6,
+    "air": 1
+   },
+   "events": [
+    {
+     "at": "A3",
+     "set": {
+      "food": 0,
+      "full": 0.25,
+      "air": 0
+     },
+     "over": 8,
+     "fx": "flash"
+    },
+    {
+     "at": "A3",
+     "word": "fizzy",
+     "set": {
+      "full": 0.6,
+      "food": 0.46
+     },
+     "over": 30,
+     "sfx": "splash-small"
+    },
+    {
+     "at": "A4",
+     "word": "air",
+     "set": {
+      "air": 1
+     },
+     "over": 30
+    },
+    {
+     "at": "A5",
+     "word": "stretching!",
+     "set": {
+      "full": 0.66
+     },
+     "over": 20
+    },
+    {
+     "at": "A6",
+     "word": "opens",
+     "set": {
+      "valve": 1
+     },
+     "over": 10
+    },
+    {
+     "at": "A6",
+     "word": "opens",
+     "delay": 0.3,
+     "set": {
+      "burp": 1,
+      "air": 0.15
+     },
+     "over": 40,
+     "sfx": "burp-small"
+    }
+   ],
+   "props": [
+    {
+     "kind": "tag",
+     "text": "BURP!",
+     "x": 800,
+     "y": 330,
+     "size": 340,
+     "rot": 5,
+     "from": "A1",
+     "to": "A1",
+     "word": "burp,"
+    },
+    {
+     "kind": "tag",
+     "text": "how many a day?",
+     "x": 800,
+     "y": 330,
+     "size": 300,
+     "rot": -3,
+     "from": "A2",
+     "to": "A2"
+    },
+    {
+     "kind": "clock",
+     "x": 190,
+     "y": 540,
+     "size": 230,
+     "from": "A2",
+     "to": "A2",
+     "halo": true,
+     "word": "day"
+    },
+    {
+     "kind": "tag",
+     "text": "a minute earlier",
+     "x": 800,
+     "y": 330,
+     "size": 290,
+     "rot": 3,
+     "from": "A3",
+     "to": "A3"
+    },
+    {
+     "kind": "soda",
+     "x": 190,
+     "y": 540,
+     "size": 230,
+     "from": "A3",
+     "to": "A4",
+     "halo": true,
+     "word": "fizzy"
+    },
+    {
+     "kind": "tag",
+     "text": "swallowed air",
+     "x": 800,
+     "y": 330,
+     "size": 300,
+     "rot": -4,
+     "from": "A4",
+     "to": "A4",
+     "word": "air"
+    },
+    {
+     "kind": "tag",
+     "text": "piling up",
+     "x": 800,
+     "y": 330,
+     "size": 300,
+     "rot": 4,
+     "from": "A5",
+     "to": "A5"
+    },
+    {
+     "kind": "tag",
+     "text": "the door opens",
+     "x": 800,
+     "y": 330,
+     "size": 300,
+     "rot": -4,
+     "from": "A6",
+     "word": "opens"
+    }
+   ],
+   "lines": [
+    {
+     "id": "A1",
+     "who": "stomach",
+     "text": "When you burp, a tiny door opens.",
+     "emotion": "sick",
+     "pose": "belly",
+     "key": "door",
+     "react": {
+      "foodpipe": "shocked"
+     },
+     "src": [
+      "medline-belching"
+     ]
+    },
+    {
+     "id": "A2",
+     "who": "foodpipe",
+     "text": "Guess how many times a day you burp?",
+     "emotion": "smug",
+     "pose": "think",
+     "key": "times"
+    },
+    {
+     "id": "A3",
+     "who": "stomach",
+     "text": "Rewind! He's gulping a fizzy drink.",
+     "emotion": "neutral",
+     "pose": "explain",
+     "key": "fizzy",
+     "src": [
+      "niddk-gas"
+     ]
+    },
+    {
+     "id": "A4",
+     "who": "foodpipe",
+     "text": "And with every gulp, air comes down too!",
+     "emotion": "scared",
+     "pose": "panic",
+     "key": "air",
+     "src": [
+      "medline-belching"
+     ]
+    },
+    {
+     "id": "A5",
+     "who": "stomach",
+     "text": "It's piling up at my top. I'm stretching!",
+     "emotion": "scared",
+     "pose": "panic",
+     "key": "stretching",
+     "react": {
+      "foodpipe": "scared"
+     },
+     "src": [
+      "medline-belching"
+     ]
+    },
+    {
+     "id": "A6",
+     "who": "foodpipe",
+     "text": "The stretch opens my muscle ring. Out it goes!",
+     "emotion": "shocked",
+     "pose": "point",
+     "key": "opens",
+     "react": {
+      "stomach": "happy"
+     },
+     "src": [
+      "medline-belching"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "T1",
+   "set": "tummy",
+   "card": "One fizzy drink later...",
+   "seconds": 1.4,
+   "cast": [],
+   "lines": []
+  },
+  {
+   "id": "C",
+   "set": "home",
+   "cast": [
+    {
+     "who": "kid",
+     "x": 540,
+     "size": 1040,
+     "emotion": "happy",
+     "pose": "belly"
+    }
+   ],
+   "events": [
+    {
+     "at": "start",
+     "sfx": "burp-small"
+    }
+   ],
+   "props": [
+    {
+     "kind": "soda",
+     "x": 820,
+     "y": 430,
+     "size": 230,
+     "from": "C1",
+     "halo": true
+    },
+    {
+     "kind": "tag",
+     "text": "excuse me!",
+     "x": 270,
+     "y": 430,
+     "size": 300,
+     "rot": -5,
+     "from": "C1",
+     "word": "Excuse"
+    }
+   ],
+   "lines": [
+    {
+     "id": "C1",
+     "who": "kid",
+     "text": "Burp! Oops. Excuse me!",
+     "emotion": "happy",
+     "pose": "belly",
+     "key": "excuse"
+    }
+   ]
+  },
+  {
+   "id": "D",
+   "set": "clinic",
+   "cast": [
+    {
+     "who": "doctor",
+     "x": 285,
+     "size": 940
+    },
+    {
+     "who": "kid",
+     "x": 805,
+     "size": 980,
+     "emotion": "sad",
+     "pose": "belly"
+    }
+   ],
+   "props": [
+    {
+     "kind": "tag",
+     "text": "so many burps",
+     "x": 610,
+     "y": 300,
+     "size": 300,
+     "rot": 5,
+     "from": "D1",
+     "to": "D1"
+    },
+    {
+     "kind": "soda",
+     "x": 550,
+     "y": 1170,
+     "size": 210,
+     "from": "D1",
+     "word": "burp",
+     "to": "D1",
+     "halo": true
+    },
+    {
+     "kind": "tag",
+     "text": "every swallow",
+     "x": 610,
+     "y": 300,
+     "size": 300,
+     "rot": -4,
+     "from": "D2",
+     "to": "D2"
+    },
+    {
+     "kind": "tag",
+     "text": "+ a little air",
+     "x": 550,
+     "y": 1180,
+     "size": 290,
+     "rot": 0,
+     "from": "D2",
+     "to": "D2",
+     "word": "air"
+    },
+    {
+     "kind": "tag",
+     "text": "the twist",
+     "x": 610,
+     "y": 300,
+     "size": 300,
+     "rot": -4,
+     "from": "D3",
+     "to": "D3"
+    },
+    {
+     "kind": "burger",
+     "x": 550,
+     "y": 1170,
+     "size": 210,
+     "from": "D3",
+     "word": "food",
+     "to": "D3",
+     "halo": true,
+     "no": true
+    },
+    {
+     "kind": "tag",
+     "text": "air, coming back up",
+     "x": 550,
+     "y": 1340,
+     "size": 280,
+     "rot": 0,
+     "from": "D3",
+     "to": "D3",
+     "word": "air"
+    },
+    {
+     "kind": "tag",
+     "text": "just air?!",
+     "x": 610,
+     "y": 300,
+     "size": 300,
+     "rot": 5,
+     "from": "D4",
+     "to": "D4"
+    },
+    {
+     "kind": "soda",
+     "size": 300,
+     "from": "D5",
+     "to": "D5",
+     "bubble": true,
+     "of": "doctor",
+     "no": true
+    },
+    {
+     "kind": "tag",
+     "text": "eat slowly",
+     "x": 550,
+     "y": 1180,
+     "size": 290,
+     "rot": 0,
+     "from": "D5",
+     "to": "D5",
+     "word": "slowly,"
+    },
+    {
+     "kind": "tag",
+     "text": "less fizz, less gum",
+     "x": 550,
+     "y": 1340,
+     "size": 280,
+     "rot": 0,
+     "from": "D5",
+     "to": "D5",
+     "word": "fizzy"
+    },
+    {
+     "kind": "tag",
+     "text": "normal",
+     "x": 610,
+     "y": 300,
+     "size": 300,
+     "rot": -4,
+     "from": "D6"
+    },
+    {
+     "kind": "tag",
+     "text": "up to 30 times a day",
+     "x": 550,
+     "y": 1180,
+     "size": 290,
+     "rot": 0,
+     "from": "D6",
+     "word": "thirty"
+    }
+   ],
+   "lines": [
+    {
+     "id": "D1",
+     "who": "kid",
+     "text": "Doctor, why do I burp so much?",
+     "emotion": "sad",
+     "pose": "shrug",
+     "key": "burp"
+    },
+    {
+     "id": "D2",
+     "who": "doctor",
+     "text": "Every time you swallow, you swallow a little air too.",
+     "emotion": "neutral",
+     "pose": "explain",
+     "key": "air",
+     "react": {
+      "kid": "shocked"
+     },
+     "src": [
+      "medline-belching"
+     ]
+    },
+    {
+     "id": "D3",
+     "who": "doctor",
+     "text": "But here's the twist: a burp isn't your food talking. It's that air coming back up.",
+     "emotion": "happy",
+     "pose": "present",
+     "key": "twist",
+     "src": [
+      "medline-belching"
+     ]
+    },
+    {
+     "id": "D4",
+     "who": "kid",
+     "text": "Just air? Not my lunch?",
+     "emotion": "shocked",
+     "pose": "think",
+     "key": "air"
+    },
+    {
+     "id": "D5",
+     "who": "doctor",
+     "text": "Just air. Want fewer burps? Eat slowly, and go easy on fizzy drinks and gum.",
+     "emotion": "neutral",
+     "pose": "point",
+     "key": "slowly",
+     "src": [
+      "medline-belching",
+      "niddk-gas"
+     ]
+    },
+    {
+     "id": "D6",
+     "who": "doctor",
+     "text": "And it's normal. People burp up to thirty times a day.",
+     "emotion": "happy",
+     "pose": "thumb",
+     "key": "thirty",
+     "react": {
+      "kid": "happy"
+     },
+     "src": [
+      "niddk-gas"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "E",
+   "set": "tummy",
+   "label": "NEXT TIME",
+   "cast": [
+    {
+     "who": "stomach",
+     "x": 540,
+     "size": 600,
+     "stage": true,
+     "emotion": "happy",
+     "pose": "rest"
+    },
+    {
+     "who": "foodpipe",
+     "x": 540,
+     "size": 600,
+     "stage": true,
+     "emotion": "happy",
+     "pose": "rest"
+    }
+   ],
+   "state": {
+    "food": 0.3,
+    "full": 0.3
+   },
+   "events": [
+    {
+     "at": "start",
+     "set": {
+      "full": 0.5,
+      "food": 0.46,
+      "air": 0.3
+     },
+     "over": 90
+    },
+    {
+     "at": "E2",
+     "word": "door",
+     "set": {
+      "valve": 1
+     },
+     "over": 10
+    },
+    {
+     "at": "E2",
+     "word": "door",
+     "delay": 0.3,
+     "set": {
+      "burp": 1,
+      "air": 0
+     },
+     "over": 40,
+     "sfx": "burp-small"
+    }
+   ],
+   "props": [
+    {
+     "kind": "tag",
+     "text": "small sips",
+     "x": 800,
+     "y": 330,
+     "size": 300,
+     "rot": -4,
+     "from": "E1",
+     "to": "E1"
+    },
+    {
+     "kind": "glass",
+     "x": 190,
+     "y": 540,
+     "size": 230,
+     "from": "E1",
+     "to": "E1",
+     "halo": true,
+     "word": "slowly."
+    },
+    {
+     "kind": "tag",
+     "text": "the door opens",
+     "x": 800,
+     "y": 330,
+     "size": 300,
+     "rot": 4,
+     "from": "E2"
+    }
+   ],
+   "lines": [
+    {
+     "id": "E1",
+     "who": "stomach",
+     "text": "Small sips, slowly. Hardly any air!",
+     "emotion": "happy",
+     "pose": "thumb",
+     "key": "air",
+     "react": {
+      "foodpipe": "happy"
+     },
+     "src": [
+      "niddk-gas"
+     ]
+    },
+    {
+     "id": "E2",
+     "who": "foodpipe",
+     "text": "When you burp, my tiny door opens. Thirty times a day!",
+     "emotion": "happy",
+     "pose": "cheer",
+     "key": "door",
+     "src": [
+      "niddk-gas"
+     ]
+    }
+   ]
+  }
+ ]
+}
