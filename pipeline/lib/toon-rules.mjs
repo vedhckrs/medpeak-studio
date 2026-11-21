@@ -37,7 +37,7 @@ export const ENGAGE = {hookSeconds: 2, firstMotion: 0.5, openSeconds: 3, openSti
 /** A text on the picture may write a spoken number in digits ("15 minutes" for "fifteen minutes"). */
 const NUMBER_WORDS = {1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'five', 6: 'six', 7: 'seven', 8: 'eight', 9: 'nine', 10: 'ten', 11: 'eleven', 12: 'twelve', 13: 'thirteen', 14: 'fourteen', 15: 'fifteen', 16: 'sixteen', 17: 'seventeen', 18: 'eighteen', 19: 'nineteen', 20: 'twenty', 30: 'thirty', 40: 'forty', 50: 'fifty', 60: 'sixty', 70: 'seventy', 80: 'eighty', 90: 'ninety', 100: 'hundred'};
 /** Stage dials that mean "this keeps moving while it is above zero" (a ride, a flow). */
-const FLOW_DIALS = {macro: ['speed', 'wash', 'crea', 'bits']}; // crea, bits: the blood stream and the filter flow (creatine)
+const FLOW_DIALS = {macro: ['speed', 'wash']}; // creatine (2026-11-21): the blood stream and the kidney filter move only on story beats, and their events say when
 /**
  * Every stretch of frames in which the picture changes: a cut, a camera move, a stage event while it
  * plays, a thing arriving, a stage that flows. People's talking mouths and arm beats do not count.
@@ -48,7 +48,7 @@ export const motionSpans = (L) => {
     const s = sh.shot;
     spans.push([sh.from, sh.from + 1]);
     for (const e of s.events ?? []) {
-      if (!e.set && !e.fx) continue;
+      if (!e.set && !e.fx && !e.act) continue; // a character's visible action counts too (acting kit, 2026-11-21)
       const f = frameOf(L, si, e.at, e.word, e.delay);
       spans.push([f, f + Math.max(2, e.over ?? 18)]);
     }
@@ -121,7 +121,8 @@ export const checkToon = (toon, timings, known) => {
       for (const k of Object.keys(e.set ?? {})) if (!dials.includes(k)) bad.push(`shot ${s.id}: an event sets "${k}", which the ${s.set} set does not have`);
       if (e.sfx && !known.sfx.includes(e.sfx)) bad.push(`shot ${s.id}: event sound "${e.sfx}" is not in the library`);
       if (e.fx && e.fx !== 'flash') bad.push(`shot ${s.id}: unknown event effect "${e.fx}"`);
-      if (!e.set && !e.fx && !e.sfx) bad.push(`shot ${s.id}: the event at ${e.at} does nothing`);
+      if (!e.set && !e.fx && !e.sfx && !e.act) bad.push(`shot ${s.id}: the event at ${e.at} does nothing`);
+      if (e.act !== undefined && !/^[a-z]+: \S/.test(String(e.act))) bad.push(`shot ${s.id}: an "act" names who acts and what ("mom: jumps"), got "${e.act}"`);
     }
     for (const a of s.cast ?? []) {
       if (!known.cast.includes(a.who)) bad.push(`shot ${s.id}: "${a.who}" is not in the cast (toons-cast.json)`);

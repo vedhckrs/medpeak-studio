@@ -17,10 +17,12 @@ import React from 'react';
 import {Put, Scene} from './scene';
 import {CharTag, type CtaPoint} from './hud';
 import {DiveCtx, DIVE} from './micro3';
-import {BloodPlace, KidneyFilterPlace, MuscleCellPlace, gapY} from './crea-places';
-import {Battery, Crea, Muscle, Spark, roundPoly} from './crea-cast';
-import {CLINIC, CreaClinic, GYM, GymRoom, LIFTER, SCALE, Shaker} from './crea-gym';
-import {Burst, easeOut, keyed, shake, SpeedLines, Stamp, take} from './act';
+import {batteryLevel, BloodPlace, CellDoorPlace, CELLDOOR, doorAt, KidneyFilterPlace, MuscleCellPlace, MuscleSign, gapY, TUBULE} from './crea-places';
+import {Battery, Crea, Fat, Grain, Muscle, Spark, roundPoly} from './crea-cast';
+import {CLINIC, CreaClinic, Dumbbell, GYM, GymRoom, LIFTER, SCALE, Shaker} from './crea-gym';
+import {RedCell} from './cells';
+import {Syringe} from './props';
+import {arc as arcPt, Burst, easeOut, hop, keyed, shake, SpeedLines, Stamp, take} from './act';
 import {FEET_Y, PEOPLE_SCALE} from './scenes-rooms';
 import {castById, handAt, HandAt, headAt, PersonAt, type Expr, type PoseIn, type PoseName} from './people-rig';
 import {Kidney} from './organs-a';
@@ -49,9 +51,9 @@ const voiceSq = (s: ShotNow, who: string) => active(s, who) * sway(s.t, 0.9, who
 const calm = (s: ShotNow, who: string) => 0.15 + 0.85 * active(s, who);
 /** A name tag through a shot's camera (frame point -> screen). */
 const tagVia = (view: (s: ShotNow) => {x: number; y: number; z: number}) => {
-  const T: React.FC<{s: ShotNow; label: string; x: number; y: number; r: number; t: number}> = ({s, label, x, y, r, t}) => {
+  const T: React.FC<{s: ShotNow; label: string; x: number; y: number; r: number; t: number; dur?: number}> = ({s, label, x, y, r, t, dur}) => {
     const c = view(s);
-    return <CharTag label={label} x={540 + (x - c.x) * c.z} y={960 + (y - c.y) * c.z} r={r * c.z} t={t} />;
+    return <CharTag label={label} x={540 + (x - c.x) * c.z} y={960 + (y - c.y) * c.z} r={r * c.z} t={t} dur={dur} />;
   };
   return T;
 };
@@ -237,120 +239,211 @@ const ShotB: React.FC<{s: ShotNow}> = ({s}) => {
 };
 const momFocusB = (s: ShotNow): Focus => { const h = headAt(MOM, {...momB, pose: 'shake'}); void s; return {x: h.x, y: h.y, r: h.r}; };
 
-// =================================================================== C: the blood
+// =================================================================== C: the blood (acting kit, 2026-11-21)
+// Crea SURFS in on a red cell along an arc and lands it in the middle of the stream; on "blood." a splash; on "muscles." a signpost
+// with a flexed muscle pops up by the far opening, he points at it and zips into the opening, shrinking, with speed lines.
+const timesC = (s: ShotNow) => ({blood: at(s, 'C1', 'blood', 1.57), c2: at(s, 'C2', undefined, 2.36), heads: at(s, 'C2', 'heads', 3.87), mus: at(s, 'C2', 'muscles', 4.43)});
 const posC = (s: ShotNow) => {
-  const t = s.t;
-  const go2 = go(t, at(s, 'C2', 'muscles', s.dur - 0.8), 0.7); // it zips off toward the right branch
-  return {x: lerp(600, 690, go2) + sway(t, 2, 1) * 14, y: lerp(1120, 820, go2) + sway(t, 1.6, 2) * 12, size: lerp(420, 210, go2), rot: -6 + sway(t, 1.3) * 6};
+  const t = s.t, k = timesC(s);
+  const inK = keyed(t, 0, [[0, 1, 0.7, 'out']]);
+  const [ax, ay] = arcPt([-160, 1560], [560, 1160], 260, inK);
+  const zip = clamp01((t - k.mus - 0.35) / 0.55);
+  const [zx, zy] = arcPt([560, 1160], [546, 760], 120, easeOut(zip));
+  const surf = t < 0.7 ? Math.sin(t * 9) * 6 : 0;
+  return {x: zip > 0 ? zx : ax, y: (zip > 0 ? zy : ay) + surf, size: zip > 0 ? lerp(420, 90, easeOut(zip)) : 420, rot: zip > 0 ? 0 : lerp(-24, -4, inK), zip, gone: zip >= 1};
 };
 const ShotC: React.FC<{s: ShotNow}> = ({s}) => {
-  const t = s.t;
-  const crea = dial(t, 0.5, [[0, 0.7, 0.6], [at(s, 'C1', 'blood', 2.2), 0.9, 0.6], [at(s, 'C2', 'muscles', 5.4), 1, 0.5]]);
+  const t = s.t, k = timesC(s);
+  const crea = dial(t, 0.5, [[0, 0.7, 0.6], [k.blood, 0.9, 0.6], [k.mus, 1, 0.5]]);
+  // the stream's clock: it flows while Crea surfs in (to "blood." and its splash), HOLDS while he talks and points ahead,
+  // and flows again when he zips off on "muscles."
+  const flowT = Math.min(t, k.blood + 0.5) + Math.max(0, t - k.mus);
+  const point = keyed(t, 0, [[k.c2 + 0.24, 1, 0.25, 'back'], [k.mus, 0, 0.2]]);
   const v = posC(s);
-  const f = bodyFace(s, 'crea', 1, 'happy');
+  const f = openFace(s, 'crea', 1, 'happy');
+  const sign = pop(t, k.mus - 0.1, 0.35);
+  const pointing = (point > 0.5 || t > k.mus) && v.zip < 0.05;
   return (
     <>
-      <BloodPlace t={t} crea={crea} />
-      <Put x={v.x} y={v.y} size={v.size} rot={v.rot} sq={voiceSq(s, 'crea')}><Crea mood={f.mood} mouth={f.mouth} look={[-0.2, -0.6]} /></Put>
+      <BloodPlace t={flowT} crea={crea} />
+      {sign > 0.01 && <Put x={760} y={600} size={300 * sign} rot={6}><MuscleSign /></Put>}
+      {!v.gone && (
+        <Put x={v.x} y={v.y + hop(t, k.heads, 50, 0.26).dy} size={v.size} rot={v.rot - point * 8} sq={hop(t, k.heads, 50, 0.26).sq}>
+          <g transform="translate(0 92) scale(0.95 0.55)"><RedCell mood="closed" mouth="smile" /></g>
+          <g transform="translate(0 -18)"><Crea carry={false} mood={pointing ? 'happy' : f.mood} mouth={pointing ? 'big' : f.mouth} look={pointing ? [0.8, -0.6] : [-0.2, -0.5]} /></g>
+        </Put>
+      )}
+      <Burst t={t} t0={k.blood + 0.05} x={v.x + 40} y={v.y + 60} r={90} col="#f3c7a8" />
+      {v.zip > 0 && v.zip < 0.9 && <SpeedLines x={v.x} y={v.y} dir={[0, -1]} len={180} o={1 - v.zip} />}
     </>
   );
 };
-const viewC = slowPush(560, 1000, 1.0, 1.08);
+const viewC = () => ({x: 540, y: 960, z: 1}); // held: the stream moves, the camera does not
 
-// =================================================================== D: inside a muscle cell
-type DTimes = {lift: number; flat: number; d2: number; spark: number; re: number; d3: number; pow: number; bur: number; run: number; bar: number};
-const timesD = (s: ShotNow): DTimes => ({
-  lift: at(s, 'D1', 'lift', 0.5), flat: at(s, 'D1', 'flat', 1.4), d2: at(s, 'D2', undefined, 1.8), spark: at(s, 'D2', 'spark', 1.8), re: at(s, 'D2', 'recharged', 2.6),
-  d3: at(s, 'D3', undefined, 3.0), pow: at(s, 'D3', 'power', 3.5), bur: at(s, 'D3', 'bursts', 5.0), run: at(s, 'D4', 'run', 6.2), bar: at(s, 'D4', 'barely', 7.6),
-});
-const dialsD = (t: number, k: DTimes) => {
-  const flex = dial(t, 0, [[k.lift, 1, 0.15], [k.re, 0.4, 0.4], [k.pow, 0.7, 0.2], [k.bur, 1, 0.15], [k.run, 0.2, 0.6]]);
-  const drain = dial(t, 0, [[k.lift, 0.5, 0.2], [k.flat, 1, 0.4], [k.bar, 0.6, 0.5]]);
-  const charge = dial(t, 0, [[k.re, 1, 0.6], [k.bar, 0.3, 0.6]]);
-  return {flex, drain, charge, level: clamp01(1 - drain + charge * drain)};
-};
-const BAT_Y = gapY(1, 600) - 10;
-const posD = (s: ShotNow) => {
-  const t = s.t, k = timesD(s);
-  const crIn = go(t, k.d2 - 0.35, 0.45);
-  const musIn = pop(t, k.d3 - 0.3, 0.4);
+// =================================================================== D: inside a muscle cell (acting kit)
+// 0.0  a quick cut to Mom pressing a dumbbell overhead ("Heavy lift!"), then inside: the fibres CRUNCH and the batteries go out
+//      one after another, the big one panics and shakes as it drains red ("We're going flat!")
+// D2   Crea runs in from the left, winds up on "Spark", THROWS on "coming!": the spark flies on an arc and HITS the battery on
+//      "Recharged!" (burst): it fills green with a bounce and throws its arms up
+// D3   Muscle drops in, filling half the frame, and does three reps on the beats (power, short, hard, bursts)
+// D4   Muscle in a running headband jogs on the spot, sweats, slows and slumps on "barely"; the batteries sink to yellow
+type DTimes = {lift: number; flat: number; inside: number; d2: number; spark: number; coming: number; re: number; d3: number; reps: number[]; d4: number; run: number; bar: number};
+const timesD = (s: ShotNow): DTimes => {
+  const d3 = at(s, 'D3', undefined, 3.4), d4 = at(s, 'D4', undefined, 6.33);
   return {
-    bat: {x: lerp(540, 660, crIn) + sway(t, 2.1, 2) * 6 * calm(s, 'battery'), y: BAT_Y + sway(t, 1.7, 1) * 6, size: 330},
-    crea: {x: lerp(-220, 330, crIn), y: BAT_Y + 6 + sway(t, 1.9, 3) * 6, size: 320, on: crIn > 0},
-    mus: {x: 540 + sway(t, 2.3, 4) * 8 * calm(s, 'muscle'), y: gapY(0, 540) - 20, size: 380 * musIn, on: musIn > 0.01},
+    lift: at(s, 'D1', 'lift', 0.3), flat: at(s, 'D1', 'flat', 0.92), inside: at(s, 'D1', 'lift', 0.3) + 0.3, d2: at(s, 'D2', undefined, 1.7),
+    spark: at(s, 'D2', 'spark', 1.7), coming: at(s, 'D2', 'coming', 2.07), re: at(s, 'D2', 'recharged', 2.39),
+    d3, reps: [at(s, 'D3', 'power', d3 + 0.57), at(s, 'D3', 'short', d3 + 1.08), at(s, 'D3', 'hard', d3 + 1.6), at(s, 'D3', 'bursts', d3 + 1.94)],
+    d4, run: at(s, 'D4', 'run', d4 + 0.41), bar: at(s, 'D4', 'barely', d4 + 1.66),
   };
 };
+const repFlex = (t: number, reps: number[]) => reps.reduce((m, r) => Math.max(m, t >= r - 0.08 && t < r + 0.34 ? Math.sin(clamp01((t - r + 0.08) / 0.42) * Math.PI) : 0), 0);
+const dialsD = (t: number, k: DTimes) => {
+  const reps = repFlex(t, k.reps);
+  const flex = Math.max(keyed(t, 0, [[k.inside, 1, 0.12, 'snap'], [k.re, 0.3, 0.4]]), reps);
+  const drain = keyed(t, 0, [[k.inside, 0.55, 0.3], [k.flat, 1, 0.45], [k.bar, 0.7, 0.6]]);
+  const charge = keyed(t, 0, [[k.re, 1, 0.5, 'back'], [k.bar, 0.35, 0.6]]);
+  return {flex, drain, charge, level: batteryLevel(540, drain, charge)};
+};
+const BAT_Y = gapY(1, 600) - 10;
+const MUS_Y = gapY(0, 540) + 20; // low enough that its name tag fits ABOVE it (below, the tag covered the battery's face)
+const momPress = {view: 'three-quarter' as const, facing: 'right' as const, x: 420, y: FEET_Y - 22, scale: PEOPLE_SCALE};
 const ShotD: React.FC<{s: ShotNow}> = ({s}) => {
   const t = s.t, k = timesD(s);
+  if (t < k.inside) {
+    // the cut to the gym: she presses the dumbbell up on "lift!"
+    const pose = poseAt(t, [[-9, 'rest'], [k.lift - 0.25, 'press', 0.25]]);
+    const o = {...momPress, pose};
+    const hand = handAt(MOM, o).L;
+    const hd = headAt(MOM, momPress);
+    return (
+      <div style={{position: 'absolute', inset: 0, background: GYM.wall, overflow: 'hidden'}}>
+        <div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, transformOrigin: '0 0', transform: frameOf(1.6, [hd.x, hd.y + 200], [560, 900])}}>
+          <Scene bg={GYM.wall}>
+            <GymRoom needle={0.97} />
+            <Put x={hand.palm[0]} y={hand.palm[1]} size={170}><Dumbbell /></Put>
+            <PersonAt spec={MOM} {...o} expr="angry" look={[0.4, -0.8]} blink={0} />
+          </Scene>
+        </div>
+      </div>
+    );
+  }
   const d = dialsD(t, k);
-  const p = posD(s);
-  const bf = bodyFace(s, 'battery', 4, 'scared');
-  const cf = bodyFace(s, 'crea', 1, 'angry');
-  const mf = bodyFace(s, 'muscle', 6, 'happy');
-  // the spark: carried in, then thrown from Crea's arms into the battery on "Recharged!"
-  const fly = clamp01((t - k.re + 0.05) / 0.3);
-  const carry = t < k.re - 0.05;
-  const shake = d.drain > 0.6 && d.level < 0.4 ? sway(t, 0.12) * 6 : 0;
-  const charging = t > k.re && t < k.re + 1;
+  const bf = openFace(s, 'battery', 4, 'scared');
+  const cf = openFace(s, 'crea', 1, 'angry');
+  const mf = openFace(s, 'muscle', 6, 'happy');
+  // the battery
+  const panic = d.drain > 0.3 && d.level < 0.45 && t < k.re;
+  const batHop = hop(t, k.re + 0.02, 70, 0.3);
+  const shk = panic ? Math.sin(t * 60) * 7 : 0;
+  // Crea: runs in, winds up, throws, recovers
+  const crX = keyed(t, -260, [[k.d2 - 0.35, 300, 0.35, 'out']]);
+  const wind = keyed(t, 0, [[k.spark, 1, 0.3, 'ease'], [k.coming, -0.6, 0.12, 'snap'], [k.coming + 0.2, 0, 0.35, 'ease']]);
+  const sparkK = clamp01((t - k.coming) / Math.max(0.15, k.re - k.coming));
+  const [spx, spy] = arcPt([300 + 40, BAT_Y - 230], [560, BAT_Y - 60], 260, sparkK);
+  // Muscle: drops in on D3, reps, then the jog and the slump
+  const musIn = keyed(t, 0, [[k.d3 - 0.3, 1, 0.35, 'back']]);
+  const jog = t > k.run && t < k.bar ? Math.abs(Math.sin((t - k.run) * Math.PI / 0.28)) * lerp(40, 12, clamp01((t - k.run) / (k.bar - k.run))) : 0;
+  const slump = keyed(t, 0, [[k.bar, 1, 0.4, 'ease']]);
+  const band = t > k.d4 - 0.1;
+  const sweat = band ? clamp01((t - k.run) / 1.6) + (t - k.run) * 0.8 : 0;
   return (
     <>
       <MuscleCellPlace t={t} flex={d.flex} drain={d.drain} charge={d.charge} />
-      {p.mus.on && <Put x={p.mus.x} y={p.mus.y} size={p.mus.size} rot={sway(t, 1.6) * 3 * calm(s, 'muscle')} sq={voiceSq(s, 'muscle')}><Muscle flex={d.flex} mood={mf.mood} mouth={mf.mouth} look={[0, 0.4]} /></Put>}
-      <Put x={p.bat.x + shake} y={p.bat.y} size={p.bat.size} rot={sway(t, 1.5) * 3 * calm(s, 'battery')} sq={voiceSq(s, 'battery')}>
-        <Battery charge={d.level} charging={charging} mood={bf.mood} mouth={bf.mouth} look={p.crea.on ? [-0.6, 0] : [0, -0.5]} />
-      </Put>
-      {p.crea.on && <Put x={p.crea.x} y={p.crea.y} size={p.crea.size} rot={sway(t, 1.4, 1) * 4 * calm(s, 'crea')} sq={voiceSq(s, 'crea')}><Crea carry={carry} mood={cf.mood} mouth={cf.mouth} look={[0.7, -0.2]} /></Put>}
-      {!carry && fly < 1 && (
-        <Put x={lerp(p.crea.x, p.bat.x, fly)} y={lerp(p.crea.y - 140, p.bat.y - 60, fly) - Math.sin(fly * Math.PI) * 90} size={140} rot={fly * 200}><Spark /></Put>
+      {musIn > 0.01 && (
+        <Put x={540} y={lerp(-200, MUS_Y, musIn) - jog + slump * 40} size={560} rot={slump * 12} sq={repFlex(t, k.reps) * 0.12 - (jog > 20 ? 0.05 : 0) + slump * 0.08}>
+          <Muscle flex={band ? 0.2 : Math.max(0.3, repFlex(t, k.reps))} band={band} sweat={sweat} mood={slump > 0.5 ? 'sad' : mf.mood} mouth={slump > 0.5 ? 'wavy' : mf.mouth} look={[0, 0.4]} />
+        </Put>
       )}
+      <Put x={540 + shk} y={BAT_Y + batHop.dy} size={440} sq={batHop.sq}>
+        <Battery charge={d.level} charging={t > k.re && t < k.re + 0.8} mood={t > k.re ? 'happy' : bf.mood} mouth={t > k.re && t < k.re + 1 ? 'big' : bf.mouth} look={t > k.d2 - 0.4 && t < k.re ? [-0.7, 0] : [0, -0.4]} />
+      </Put>
+      {t > k.d2 - 0.4 && (
+        <Put x={crX - 60 * wind} y={BAT_Y + 20} size={360} rot={-18 * wind} sq={voiceSq(s, 'crea')}><Crea carry={t < k.coming} mood={cf.mood} mouth={cf.mouth} look={[0.8, -0.3]} /></Put>
+      )}
+      {t >= k.coming && sparkK < 1 && (
+        <>
+          <SpeedLines x={spx} y={spy} dir={[560 - 340, 170]} len={130} o={0.9} />
+          <Put x={spx} y={spy} size={170} rot={sparkK * 260}><Spark /></Put>
+        </>
+      )}
+      <Burst t={t} t0={k.re} x={560} y={BAT_Y - 70} r={150} col="#ffd23f" />
     </>
   );
 };
-const viewD = slowPush(540, 820, 1.0, 1.05);
+const viewD = () => ({x: 540, y: 900, z: 1});
 const TagD = tagVia(viewD);
 const ScreenD: React.FC<{s: ShotNow}> = ({s}) => {
-  const p = posD(s);
-  const [bx, by] = inPlane(s, p.bat.x, p.bat.y, 0.4);
-  const [mx, my] = inPlane(s, p.mus.x, p.mus.y, 0.4);
+  const k = timesD(s);
   return (
     <>
-      <TagD s={s} label="BATTERY (ATP)" x={bx} y={by} r={110} t={since(s, 'D1') - 0.2} />
-      {p.mus.on && <TagD s={s} label="MUSCLE FIBRE" x={mx} y={my} r={120} t={since(s, 'D3') - 0.1} />}
+      <TagD s={s} label="BATTERY (ATP)" x={540} y={BAT_Y} r={150} t={s.t - k.inside - 0.1} />
+      <TagD s={s} label="MUSCLE FIBRE" x={540} y={MUS_Y - 40} r={95} t={s.t - k.d3 - 0.2} /> {/* a tight radius: the tag fits ABOVE Muscle (below, it covered the battery's face) */}
     </>
   );
 };
 
-// =================================================================== E: the kidney filter (the twist)
-type ETimes = {crea: number; blood: number; looks: number; no: number; e3: number};
-const timesE = (s: ShotNow): ETimes => ({crea: at(s, 'E1', 'creatinine', 2.0), blood: at(s, 'E2', 'blood', 3.4), looks: at(s, 'E2', 'looks', 4.8), no: at(s, 'E3', 'no', 8.4), e3: at(s, 'E3', undefined, 6.8)});
+// =================================================================== E: the kidney filter (the twist, acting kit)
+// E1 "A little of me breaks down": a chip POPS off Crea (burst) and rides down the tube to the kidney: CREATININE (its name tag)
+// E2 "Your blood test": a syringe reaches in from outside and draws; on "Looks" the blood-test card SLAMS on, red arrow up;
+//    on "trouble!" the Kidney jumps in fright and shakes
+// E3 on "no" the arrow turns into a green tick; on "harm" and "found" the Kidney hops twice for joy
+type ETimes = {little: number; breaks: number; crea: number; blood: number; it: number; looks: number; trouble: number; e3: number; no: number; harm: number; found: number};
+const timesE = (s: ShotNow): ETimes => {
+  const e2 = at(s, 'E2', undefined, 2.5), e3 = at(s, 'E3', undefined, 6.17);
+  return {little: at(s, 'E1', 'little', 0.21), breaks: at(s, 'E1', 'breaks', 0.74), crea: at(s, 'E1', 'creatinine', 1.46), blood: at(s, 'E2', 'blood', e2 + 0.26), it: at(s, 'E2', 'it.', e2 + 1.46),
+    looks: at(s, 'E2', 'looks', e2 + 1.94), trouble: at(s, 'E2', 'trouble', e2 + 2.83), e3, no: at(s, 'E3', 'no', e3 + 2.25), harm: at(s, 'E3', 'harm', e3 + 2.94), found: at(s, 'E3', 'found', e3 + 3.46)};
+};
+const KID: [number, number] = [330, 1080]; // clear of the act-2 watermark (bottom left, y 1330: it sat on the Kidney's body)
+const CREA_E: [number, number] = [800, 960];
+/** Where the creatinine chip is at time t: popped off Crea, then down the tube. */
+const chipAt = (t: number, k: ETimes): [number, number] | null => {
+  if (t < k.breaks) return null;
+  const u = clamp01((t - k.breaks) / 1.8);
+  if (u < 0.25) return arcPt([CREA_E[0] - 30, CREA_E[1] - 80], [TUBULE[0][0], TUBULE[0][1]], 140, u / 0.25);
+  const k2 = ((u - 0.25) / 0.75) * (TUBULE.length - 2);
+  const j = Math.min(TUBULE.length - 2, Math.floor(k2)), r = k2 - j;
+  return [lerp(TUBULE[j][0], TUBULE[j + 1][0], r), lerp(TUBULE[j][1], TUBULE[j + 1][1], r)];
+};
 const ShotE: React.FC<{s: ShotNow}> = ({s}) => {
   const t = s.t, k = timesE(s);
-  const bits = dial(t, 0.2, [[0, 0.4, 0.6], [k.crea, 1, 0.8], [k.blood, 0.85, 0.2], [k.looks, 1, 0.2], [k.no, 0.6, 0.6]]);
-  const kf = bodyFace(s, 'kidney', 7, 'scared');
-  const cf = bodyFace(s, 'crea', 1, 'neutral');
-  const fright = go(t, k.blood, 0.15) * (1 - go(t, k.e3, 0.4));
+  const bits = dial(t, 0.2, [[0, 0.4, 0.6], [k.crea, 1, 0.8], [k.no, 0.6, 0.6]]);
+  // the filter's clock runs only during the beats: the chip's ride, and the blood test; between them the filter holds still
+  const win = (a: number, b: number) => clamp01((t - a) / Math.max(0.01, b - a)) * (b - a);
+  const flowT = win(0, 0.6) + win(k.breaks, k.breaks + 2.2) + win(k.blood, k.blood + 1.2);
+  const kf = openFace(s, 'kidney', 7, 'scared');
+  const cf = openFace(s, 'crea', 1, 'neutral');
+  const fright = take(t, k.trouble, 0.9);
+  const scared = t > k.trouble && t < k.no;
+  const joy = hop(t, k.harm, 80, 0.3), joy2 = hop(t, k.found, 80, 0.3);
+  const ch = chipAt(t, k);
+  const pinch = hop(t, k.breaks - 0.05, 40, 0.22);
+  // the syringe reaches in from the top right on "blood" and goes back after "it."
+  const syr = keyed(t, 0, [[k.blood - 0.1, 1, 0.3, 'out'], [k.it + 0.2, 0, 0.35, 'ease']]);
   return (
     <>
-      <KidneyFilterPlace t={t} bits={bits} />
-      <Put x={250 + (fright > 0.3 ? sway(t, 0.14) * 7 : 0)} y={1210 - fright * 30} size={380 * (1 + fright * 0.05)} rot={sway(t, 1.6, 2) * 3 * calm(s, 'kidney')} sq={voiceSq(s, 'kidney')}>
-        <Kidney mood={kf.mood} mouth={kf.mouth} look={[0.6, -0.4]} />
+      <KidneyFilterPlace t={t} bits={bits} flow={flowT} />
+      <Put x={KID[0] + (scared ? Math.sin(t * 55) * 6 : 0)} y={KID[1] + fright.dy + joy.dy + joy2.dy} size={440} rot={fright.lean * 0.6} sq={joy.sq + joy2.sq}>
+        <Kidney mood={scared ? 'scared' : t > k.no ? 'happy' : kf.mood} mouth={scared ? 'o' : t > k.no ? 'big' : kf.mouth} look={[0.6, -0.4]} />
       </Put>
-      <Put x={800 + sway(t, 2, 1) * 8} y={980 + sway(t, 1.7, 2) * 8} size={280} rot={-6 + sway(t, 1.4) * 4 * calm(s, 'crea')} sq={voiceSq(s, 'crea')}><Crea mood={cf.mood} mouth={cf.mouth} look={[-0.6, 0.2]} /></Put>
+      <Put x={CREA_E[0]} y={CREA_E[1] + pinch.dy} size={300} rot={-6} sq={pinch.sq + voiceSq(s, 'crea')}><Crea mood={cf.mood} mouth={cf.mouth} look={[-0.6, 0.3]} /></Put>
+      {ch && <Put x={ch[0]} y={ch[1]} size={70} rot={t * 120}><Grain seed={7} /></Put>}
+      <Burst t={t} t0={k.breaks} x={CREA_E[0] - 30} y={CREA_E[1] - 80} r={70} />
+      {syr > 0.01 && <Put x={lerp(1260, 900, syr)} y={lerp(160, 430, syr)} size={420} rot={-24}><Syringe /></Put>}
     </>
   );
 };
-const viewE = slowPush(540, 960, 1.0, 1.06);
+const viewE = () => ({x: 540, y: 960, z: 1});
 const TagE = tagVia(viewE);
-/** The blood test, as a picture: a tube of blood with a red arrow going up; on "no" the arrow turns into a green tick. */
+/** The blood test, as a picture: a tube of blood with a red arrow going up; on "no" the arrow turns into a green tick. It SLAMS on. */
 const BloodTest: React.FC<{t: number; ok: number}> = ({t, ok}) => {
-  const k = pop(t, 0, 0.3);
   if (t < 0) return null;
+  const k = t < 0.12 ? lerp(2.4, 0.9, easeOut(t / 0.12)) : t < 0.3 ? lerp(0.9, 1, (t - 0.12) / 0.18) : 1;
   const up = Math.sin(t * 6) * 4 * (1 - ok);
   return (
-    <svg style={{position: 'absolute', left: 780 - 150, top: 330 - 150, overflow: 'visible'}} width={300} height={300} viewBox="-100 -100 200 200">
-      <g transform={`scale(${(k * 1.4).toFixed(3)})`}>
+    <svg style={{position: 'absolute', left: 760 - 170, top: 420 - 170, overflow: 'visible'}} width={340} height={340} viewBox="-100 -100 200 200">
+      <g transform={`rotate(-6) scale(${(k * 1.55).toFixed(3)})`}>
         <circle cx={0} cy={0} r={92} {...EDGE} fill="#ffffff" />
-        {/* the tube */}
         <g transform="rotate(-14) translate(-18 0)">
           <Shape d="M -16 -66 L 16 -66 L 16 48 Q 16 66 0 66 Q -16 66 -16 48 Z" fill="#f4f7fb" />
           <path d="M -15 -6 L 15 -6 L 15 48 Q 15 64 0 64 Q -15 64 -15 48 Z" fill={CLOTH.red} {...EDGE_IN} />
@@ -372,39 +465,51 @@ const BloodTest: React.FC<{t: number; ok: number}> = ({t, ok}) => {
 };
 const ScreenE: React.FC<{s: ShotNow}> = ({s}) => {
   const k = timesE(s);
-  const [kx, ky] = inPlane(s, 250, 1210, 0.4);
   const end = s.lines.find((l) => l.id === 'E3');
   const out = end ? clamp01((s.t - (end.from + end.voice)) / 0.25) : 0;
+  const ch = chipAt(s.t, k);
   return (
     <>
-      <TagE s={s} label="KIDNEY" x={kx} y={ky} r={150} t={s.t - 0.3} />
-      <div style={{opacity: 1 - out}}><BloodTest t={s.t - k.blood} ok={go(s.t, k.no, 0.3)} /></div>
+      <TagE s={s} label="KIDNEY" x={KID[0]} y={KID[1]} r={170} t={s.t - 0.3} />
+      {ch && <TagE s={s} label="CREATININE" x={ch[0]} y={ch[1]} r={50} t={s.t - k.breaks - 0.9} dur={1.4} />} {/* named as it leaves Crea, gone before it nears the caption */}
+      <div style={{opacity: 1 - out}}><BloodTest t={s.t - k.looks} ok={go(s.t, k.no, 0.3)} /></div>
+      <Burst t={s.t} t0={k.looks} x={760} y={420} r={190} />
     </>
   );
 };
 
-// =================================================================== F: the clinic
+// =================================================================== F: the clinic (acting kit)
+// Dr. Mira holds the lab sheet (her clipboard); Mom holds her shaker at her chest (drawn behind her hand). The camera holds.
+// "hair?" Mom jumps in panic; "no hair loss" she hops for joy. No raised single finger (it could read as rude at phone size).
 const DOC_X = 270, MOM_X = 800;
+const momF = {view: 'three-quarter' as const, facing: 'left' as const, x: MOM_X, y: FEET_Y, scale: PEOPLE_SCALE};
 const clinicCast = (s: ShotNow) => {
   const t = s.t;
   const T = (id: string, w: string | undefined, d: number) => at(s, id, w, d);
-  const docPose = poseAt(t, [[-9, 'youSee'], [T('F2', 'kidney', 2.9), 'oneFinger', 0.3], [T('F3', undefined, 5.6), 'rest', 0.5], [T('F5', 'no', 7.2) - 0.15, 'rest', 0.45]]);
-  const momPose = poseAt(t, [[-9, 'rest'], [T('F3', undefined, 5.6) - 0.1, 'shrugR', 0.35], [T('F5', 'no', 7.2) + 0.3, 'thumbsUpR', 0.35]]);
-  const doc = {spec: DOC, pose: docPose, expr: exprOf(s, 'doctor', 'neutral'), look: [0.7, 0.3] as [number, number], x: DOC_X, facing: 'right' as const, talk: talkSmooth(s, 'doctor'), blink: blink(t, 2.2), bob: breath(s, 'doctor', 2)};
-  const mom = {spec: MOM, pose: momPose, expr: exprOf(s, 'mom', 'neutral'), look: [0.7, 0.3] as [number, number], x: MOM_X, facing: 'left' as const, talk: talkSmooth(s, 'mom'), blink: blink(t, 0.7), bob: breath(s, 'mom', 5)};
-  return {doc, mom};
+  // each change is a key pose that then HOLDS (the camera holds too): raise the sheet, nod on "blood", lower it, open the hand on
+  // "Ask", rest, open the palm on "no" (the script's "act" events name these moments)
+  const f2 = T('F2', undefined, 2.42);
+  const docPose = poseAt(t, [[-9, 'rest'], [0, 'clipboard', 0.3], [f2, 'rest', 0.35], [T('F2', 'ask', 3.9), 'explain', 0.3], [T('F3', undefined, 5.8), 'rest', 0.45], [T('F5', 'no', 9.3) - 0.1, 'youSee', 0.3]]);
+  const nodAt = (t0: number) => { const u = (t - t0) / 0.4; return u <= 0 || u >= 1 ? 0 : -Math.sin(Math.PI * u); };
+  const doc = {spec: DOC, pose: docPose, expr: exprOf(s, 'doctor', 'neutral'), look: [0.7, 0.3] as [number, number], x: DOC_X, facing: 'right' as const, talk: talkSmooth(s, 'doctor'), blink: blink(t, 2.2), bob: nodAt(T('F1', 'blood', 1.63))};
+  const mom = {spec: MOM, ...momF, pose: 'holdL' as const, expr: exprOf(s, 'mom', 'neutral'), look: [0.7, 0.3] as [number, number], talk: talkSmooth(s, 'mom'), blink: blink(t, 0.7), bob: 0};
+  return {doc, mom, panic: take(t, T('F3', 'hair', 6.2) - 0.05, 0.8), joy: hop(t, T('F5', 'loss', 9.8), 90, 0.32)};
 };
 const ShotF: React.FC<{s: ShotNow}> = ({s}) => {
-  const {doc, mom} = clinicCast(s);
+  const {doc, mom, panic, joy} = clinicCast(s);
+  const hand = handAt(MOM, {...momF, pose: 'holdL'}).L;
+  const dy = panic.dy + joy.dy;
   return (
     <Scene bg={CLINIC.wall}>
       <CreaClinic />
-      <PersonAt {...mom} view="three-quarter" y={FEET_Y} scale={PEOPLE_SCALE} />
+      <div style={{position: 'absolute', inset: 0, transform: `translateY(${dy.toFixed(1)}px)`}}>
+        <Put x={hand.palm[0]} y={hand.palm[1] - 10} size={170}><Shaker /></Put>
+        <PersonAt {...mom} expr={panic.shock > 0.5 && joy.dy === 0 && s.t < at(s, 'F4', undefined, 7) ? 'surprised' : mom.expr} />
+      </div>
       <PersonAt {...doc} view="three-quarter" y={FEET_Y} scale={PEOPLE_SCALE} />
     </Scene>
   );
 };
-/** The yellow number tag, on the SCREEN (after the camera), on the grid, from its word to its line's end (as in no-sleep.tsx). */
 const NumTag: React.FC<{s: ShotNow; text: string; id: string; word: string; x?: number; y?: number}> = ({s, text, id, word, x = 780, y = 330}) => {
   const u = since(s, id, word);
   const line = s.lines.find((l) => l.id === id);
@@ -419,38 +524,68 @@ const NumTag: React.FC<{s: ShotNow; text: string; id: string; word: string; x?: 
   );
 };
 const ScreenF: React.FC<{s: ShotNow}> = ({s}) => <NumTag s={s} text="12 weeks" id="F4" word="twelve" x={540} y={300} />;
+/** The clinic's pictures: one held framing per line, a hard cut at each line (wide, Dr. Mira, Mom, wide, Mom). */
+const viewF = (s: ShotNow) => {
+  const id = s.cur?.id ?? 'F1';
+  const wide = {x: 540, y: 1000, z: 1.12};
+  const doc = {x: DOC_X + 80, y: 930, z: 1.75}, mom = {x: MOM_X - 80, y: 930, z: 1.7};
+  return id === 'F2' ? doc : id === 'F3' || id === 'F5' ? mom : wide;
+};
 const faceF = (who: string): Focus => {
-  const o = who === 'mom' ? {view: 'three-quarter' as const, facing: 'left' as const, x: MOM_X, y: FEET_Y, scale: PEOPLE_SCALE} : {view: 'three-quarter' as const, facing: 'right' as const, x: DOC_X, y: FEET_Y, scale: PEOPLE_SCALE};
+  const o = who === 'mom' ? momF : {view: 'three-quarter' as const, facing: 'right' as const, x: DOC_X, y: FEET_Y, scale: PEOPLE_SCALE};
   const h = headAt(who === 'mom' ? MOM : DOC, o);
   return {x: h.x, y: h.y, r: h.r};
 };
 
-// =================================================================== G: back inside her muscle, the answer
+// =================================================================== G: the answer (a NEW view: the cell close up, with a door)
+// Water pours in and the cell swells like a water balloon while Crea says it; he walks to the door; a grumpy Fat blob waddles up
+// and KNOCKS on "creatine."; on "Not fat!" Crea SLAMS the door: a burst, the Fat bounces off and tumbles away.
+const timesG = (s: ShotNow) => ({thats: at(s, 'G1', "that's", 1.32), water: at(s, 'G1', 'water', 1.64), from: at(s, 'G1', 'from', 2.54), cre: at(s, 'G1', 'creatine', 2.73), not: at(s, 'G1', 'not', 3.39), fat: at(s, 'G1', 'fat', 3.7)});
 const ShotG: React.FC<{s: ShotNow}> = ({s}) => {
-  const t = s.t;
-  const tThats = at(s, 'G1', "that's", 1.0), tWater = at(s, 'G1', 'water', 1.4), tCre = at(s, 'G1', 'creatine', 2.6), tFat = at(s, 'G1', 'fat', 3.4);
-  const water = dial(t, 0.3, [[0, 0.6, 0.6], [tThats, 0.8, 0.3], [tWater, 1, 0.8]]);
-  const flex = dial(t, 0, [[tCre, 0.5, 0.3]]);
-  const f = bodyFace(s, 'crea', 1, 'happy');
-  const hop = Math.max(0, Math.sin(clamp01((t - tFat - 0.3) / 0.45) * Math.PI));
+  const t = s.t, k = timesG(s);
+  const fill = keyed(t, 0.35, [[0, 0.5, 0.8], [k.thats, 0.75, 0.4], [k.water, 1, 0.6, 'back']]);
+  const pour = t < k.cre ? 1 : 1 - clamp01((t - k.cre) / 0.4);
+  const door = keyed(t, 0, [[k.fat - 0.05, 1, 0.1, 'snap']]);
+  const [dx, dy] = doorAt(fill);
+  const f = openFace(s, 'crea', 1, 'happy');
+  // Crea: in the middle, then to the door on "from"; a hop after the slam
+  const cx = keyed(t, 360, [[k.from - 0.2, dx - 110, 0.45, 'out']]);
+  const after = hop(t, k.fat + 0.35, 70, 0.3);
+  // Fat: waddles in from the right, knocks, gets bounced off by the door, tumbles away
+  const fatX = keyed(t, 1300, [[k.water, dx + 130, 0.8, 'out']]);
+  const waddle = t > k.water && t < k.water + 0.8 ? Math.abs(Math.sin((t - k.water) * Math.PI / 0.2)) * 18 : 0;
+  const knock = t > k.cre && t < k.not ? (Math.sin((t - k.cre) * 22) > 0 ? 1 : 0) : 0;
+  const bounce = clamp01((t - k.fat) / 0.6);
   return (
     <>
-      <MuscleCellPlace t={t} water={water} flex={flex} />
-      <Put x={540 + sway(t, 2.4, 1) * 10 * calm(s, 'crea')} y={1010 - hop * 90} size={440} rot={sway(t, 1.4, 2) * 4 * calm(s, 'crea')} sq={voiceSq(s, 'crea') + hop * 0.04}><Crea mood={hop > 0.1 ? 'happy' : f.mood} mouth={hop > 0.1 ? 'big' : f.mouth} look={[0, 0.3]} /></Put>
+      <CellDoorPlace t={t} fill={fill} pour={pour} door={door} />
+      <Put x={fatX + bounce * 420} y={dy + 40 - waddle - Math.sin(bounce * Math.PI) * 160 + bounce * 120} size={300} rot={bounce * 220} sq={knock * 0.05}>
+        <Fat knock={knock} mood="angry" mouth={bounce > 0 ? 'o' : 'frown'} look={[-0.7, 0]} />
+      </Put>
+      <Put x={cx} y={CELLDOOR.c[1] + 60 + after.dy} size={330} sq={after.sq + voiceSq(s, 'crea')} rot={t > k.not && t < k.fat + 0.2 ? 10 : 0}>
+        <Crea mood={t > k.not ? 'angry' : f.mood} mouth={t > k.not && t < k.fat + 0.35 ? 'big' : f.mouth} look={t > k.cre ? [0.8, 0] : [0, 0.3]} />
+      </Put>
+      <Burst t={t} t0={k.fat} x={dx + 20} y={dy} r={150} />
     </>
   );
 };
-const viewG = slowPush(540, 990, 1.0, 1.1);
+const viewG = () => ({x: 600, y: 1010, z: 1.35}); // close on the cell, the door and Fat (at z 1 the cell filled a third of the frame)
+const TagG = tagVia(viewG);
+const ScreenG: React.FC<{s: ShotNow}> = ({s}) => {
+  const k = timesG(s);
+  const [dx, dy] = doorAt(1);
+  return <TagG s={s} label="FAT" x={dx + 130} y={dy + 40} r={120} t={s.t - k.water - 0.6} />;
+};
 
 // ------------------------------------------------------------------ the shots
 export const CREATINE_SHOTS: Record<string, ShotDef> = {
   A: {Scene: dived(ShotA), Screen: ScreenA, focus: (_w, s) => { const v = posA(s); return {x: v.x, y: v.y, r: v.size * 0.32}; }, view: viewA},
   B: {Scene: ShotB, focus: (_w, s) => momFocusB(s), view: () => ({x: 520, y: 900, z: 1.5})}, // medium on Mom and the dial, held still
-  C: {Scene: dived(ShotC), focus: (_w, s) => { const v = posC(s); return {x: v.x, y: v.y, r: v.size * 0.32}; }, view: viewC},
-  D: {Scene: dived(ShotD), Screen: ScreenD, focus: () => ({x: 540, y: 820, r: 160}), view: viewD},
-  E: {Scene: dived(ShotE), Screen: ScreenE, focus: () => ({x: 540, y: 1000, r: 180}), view: viewE},
-  F: {Scene: ShotF, Screen: ScreenF, focus: (who) => faceF(who === 'mom' ? 'mom' : 'doctor')},
-  G: {Scene: dived(ShotG), focus: () => ({x: 540, y: 1010, r: 150}), view: viewG},
+  C: {Scene: ShotC, focus: (_w, s) => { const v = posC(s); return {x: v.x, y: v.y, r: v.size * 0.32}; }, view: viewC},
+  D: {Scene: ShotD, Screen: ScreenD, focus: () => ({x: 540, y: 900, r: 160}), view: viewD},
+  E: {Scene: ShotE, Screen: ScreenE, focus: () => ({x: 540, y: 1000, r: 180}), view: viewE},
+  F: {Scene: ShotF, Screen: ScreenF, focus: (who) => faceF(who === 'mom' ? 'mom' : 'doctor'), view: viewF}, // hard cuts between HELD pictures, one per line: the room camera's slow slides kept the picture moving
+  G: {Scene: ShotG, Screen: ScreenG, focus: () => ({x: 540, y: 1000, r: 150}), view: viewG},
 };
 
 // ------------------------------------------------------------------ the end card's icons (round badges, like the others)

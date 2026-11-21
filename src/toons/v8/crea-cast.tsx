@@ -139,7 +139,7 @@ export const Battery: React.FC<V8Props & {charge?: number; charging?: boolean; f
 };
 
 // ================================================================== Muscle: one muscle fibre with a face
-export const Muscle: React.FC<V8Props & {flex?: number}> = ({mood = 'open', mouth = 'smile', look = [0, 0], flex = 0}) => {
+export const Muscle: React.FC<V8Props & {flex?: number; band?: boolean; sweat?: number}> = ({mood = 'open', mouth = 'smile', look = [0, 0], flex = 0, band = false, sweat = 0}) => {
   const k = clamp01(flex);
   const half = 70 - k * 12; // half length of the belly
   const thick = 46 + k * 16; // half height at the middle
@@ -167,8 +167,43 @@ export const Muscle: React.FC<V8Props & {flex?: number}> = ({mood = 'open', mout
       ) : (
         <TinyArm key={s} from={[s * half * 0.6, thick * 0.6]} bend={[s * (half * 0.8 + 10), thick * 0.95]} to={[s * (half * 0.9 + 14), thick + 8]} fill={M} hand="mitten" />
       ))}
+      {/* the runner's headband (a long run) */}
+      {band && (
+        <g>
+          <path d={`M ${-half * 0.62} ${-thick * 0.74} Q 0 ${-thick * 0.96} ${half * 0.62} ${-thick * 0.74} L ${half * 0.6} ${-thick * 0.56} Q 0 ${-thick * 0.78} ${-half * 0.6} ${-thick * 0.56} Z`} fill={CLOTH.blue} {...EDGE_IN} />
+          <path d={`M ${half * 0.58} ${-thick * 0.66} q 22 -4 30 10 q -14 2 -30 -2 Z M ${half * 0.58} ${-thick * 0.64} q 24 8 26 24 q -14 -6 -26 -16 Z`} fill={CLOTH.blue} {...EDGE_IN} />
+        </g>
+      )}
       <Eyes x={0} y={-6} r={11} mood={mood} look={look} brows />
       <Mouth x={0} y={18} w={12} kind={mouth} />
+      {/* sweat drops fly off as it tires */}
+      {sweat > 0 && [[-40, -thick - 6, -1], [44, -thick - 2, 1], [-58, -thick * 0.3, -1]].map(([x, y, d], i) => {
+        const u = (sweat * 1.6 + i * 0.33) % 1;
+        return <path key={i} transform={`translate(${f(x + d * u * 26)} ${f(y - Math.sin(u * Math.PI) * 18 + u * 20)})`} d="M 0 -9 C 3 -4 6 0 6 3 A 6 6 0 0 1 -6 3 C -6 0 -3 -4 0 -9 Z" fill="#bfe3f2" {...EDGE_IN} opacity={1 - u * 0.6} />;
+      })}
+    </g>
+  );
+};
+
+// ================================================================== Fat: the grumpy blob Crea keeps out ("Not fat!")
+/** A soft, lumpy pale-yellow blob (body fat), grumpy, with stubby arms; `knock` 0..1 raises a fist to knock. */
+export const Fat: React.FC<V8Props & {knock?: number}> = ({mood = 'angry', mouth = 'frown', look = [0.4, 0], knock = 0}) => {
+  const C = '#f4d98a';
+  const body = 'M -58 30 C -70 -10 -50 -52 -14 -60 C 8 -72 44 -60 58 -30 C 74 -6 72 34 50 54 C 26 74 -30 72 -50 56 C -62 48 -60 40 -58 30 Z';
+  return (
+    <g>
+      <TinyLeg from={[-20, 62]} to={[-24, 84]} fill={C} foot={-1} />
+      <TinyLeg from={[20, 62]} to={[24, 84]} fill={C} />
+      <TinyArm from={[-54, 10]} to={[-78, 28]} bend={[-72, 2]} fill={C} hand="mitten" />
+      <Shape d={body} fill={C} shadow={1.1}>
+        {/* soft rolls */}
+        <path d="M -52 22 Q 0 40 54 18" {...INLINE} />
+        <path d="M -44 46 Q 4 60 46 42" {...INLINE} />
+        <path d="M -26 -38 q 14 -12 32 -10" stroke="#ffffff" strokeWidth={5} strokeLinecap="round" fill="none" />
+      </Shape>
+      <TinyArm from={[54, 0]} to={knock > 0.5 ? [84, -34] : [80, 22]} bend={knock > 0.5 ? [86, -4] : [76, -2]} fill={C} hand="fist" />
+      <Eyes x={0} y={-14} r={12} mood={mood} look={look} brows />
+      <Mouth x={0} y={10} w={14} kind={mouth} />
     </g>
   );
 };

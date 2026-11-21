@@ -96,6 +96,19 @@ export const GymRoom: React.FC<{needle?: number}> = ({needle = 0.3}) => (
 );
 
 /** The shaker bottle (creatine mixed in water): a tall cup with a cap, held by the hand drawn over it. */
+/** A dumbbell, centred on its handle (held in a fist drawn over the handle by the rig: draw it BEHIND the person). */
+export const Dumbbell: React.FC = () => (
+  <g>
+    <Shape d={rr(-46, -7, 92, 14, 6)} fill={GYM.steel} shadow={0.3} />
+    {[-1, 1].map((sx) => (
+      <g key={sx}>
+        <Shape d={rr(sx * 46 - (sx > 0 ? 0 : 26), -38, 26, 76, 8)} fill={CLOTH.charcoal} shadow={0.6} />
+        <Shape d={rr(sx * 74 - (sx > 0 ? 0 : 16), -28, 16, 56, 6)} fill={CLOTH.charcoal} shadow={0.6} />
+      </g>
+    ))}
+  </g>
+);
+
 export const Shaker: React.FC = () => (
   <g>
     <Shape d={rr(-28, -60, 56, 112, 12)} fill={CLOTH.orange} shadow={0.6}>

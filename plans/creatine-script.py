@@ -11,8 +11,9 @@ def L(id, who, text, emo, key, src=None, chat=False, cam=None, beat=None, pose='
     if react: l["react"] = react
     return l
 
-def E(at, word=None, set=None, over=None, sfx=None, fx=None, delay=None):
+def E(at, word=None, set=None, over=None, sfx=None, fx=None, delay=None, act=None):
     e = {"at": at}
+    if act: e["act"] = act
     if word: e["word"] = word
     if set: e["set"] = set
     if over: e["over"] = over
@@ -60,7 +61,9 @@ shots = [
    "events": [
      E("start", set={"crea": 0.7}, over=20, sfx="whoosh-fast"),
      E("C1", word="blood.", set={"crea": 0.9}, over=20, sfx="splash-small", delay=0.45),  # in the pause after the word (on it, it was lost)
+     E("C2", word="ninety-five", act="crea: leans and points ahead at the far opening"),
      E("C2", word="percent", sfx="ding"),
+     E("C2", word="heads", act="crea: hops on his red cell"),
      E("C2", word="muscles.", set={"crea": 1}, over=16, sfx="zip-away"),
    ],
    "lines": [
@@ -96,10 +99,14 @@ shots = [
    "state": {"view": 2, "bits": 0.2},
    "events": [
      E("start", set={"bits": 0.4}, over=20, sfx="whoosh-air"),
+     E("E1", word="breaks", sfx="pop", act="crea: a chip pops off him and rides down to the kidney"),
      E("E1", word="creatinine.", set={"bits": 1}, over=24, sfx="plop"),
      E("E2", word="blood", set={"bits": 0.85}, over=10, sfx="alarm-beep", fx="flash"),  # the blood-test card pops up, its number red
      E("E2", word="Looks", set={"bits": 1}, over=10),
-     E("E2", word="trouble!", sfx="gasp"),
+     E("E2", word="trouble!", sfx="gasp", act="kidney: jumps in fright and shakes"),
+     E("E3", act="kidney: stops shaking, looks at the card"),
+     E("E3", word="harm", act="kidney: hops for joy"),
+     E("E3", word="found.", act="kidney: hops again"),
      E("E3", word="no", set={"bits": 0.6}, over=20, sfx="success-chime"),
    ],
    "lines": [
@@ -112,27 +119,31 @@ shots = [
    "cast": [{"who": "doctor", "x": 270, "size": 960, "emotion": "neutral", "pose": "rest", "y": 979},
             {"who": "mom", "x": 800, "size": 960, "emotion": "neutral", "pose": "rest", "y": 979}],
    "events": [
-     E("F1", word="blood", sfx="ding"),
-     E("F3", word="hair?", sfx="boing"),
-     E("F5", word="no", sfx="success-chime"),
+     E("F1", act="doctor: raises the lab sheet"),
+     E("F1", word="blood", sfx="ding", act="doctor: nods at the sheet"),
+     E("F2", act="doctor: lowers the sheet"),
+     E("F2", word="Ask", act="doctor: opens her hand to Mom"),
+     E("F3", word="hair?", sfx="boing", act="mom: jumps in panic"),
+     E("F5", word="no", sfx="success-chime", act="doctor: opens her palm"),
+     E("F5", word="loss.", act="mom: hops for joy"),
    ],
    "lines": [
-     dict(L("F1", "doctor", "Taking creatine? Tell me before a blood test.", "neutral", "blood", src=[AN], cam="mcu push"), tempo=1.12),  # voiced, the clinic had a 3.3 s stretch with nothing new (free retime)
-     dict(L("F2", "doctor", "Kidney problems already? Ask before you take it.", "neutral", "kidney", src=[AN], cam="ecu push"), tempo=1.15),  # voiced 3.3 s on one picture (limit 3): free retime
-     L("F3", "mom", "And my hair?", "shocked", "hair", chat=True, cam="ms crash"),
-     L("F4", "doctor", "A trial over twelve weeks...", "happy", "twelve", src=[LAK], cam="mcu push"),
-     L("F5", "doctor", "found no hair loss.", "happy", "hair", src=[LAK], cam="ecu push", react={"mom": "happy"}),
+     dict(L("F1", "doctor", "Taking creatine? Tell me before a blood test.", "neutral", "blood", src=[AN]), tempo=1.12),  # voiced, the clinic had a 3.3 s stretch with nothing new (free retime)
+     dict(L("F2", "doctor", "Kidney problems already? Ask before you take it.", "neutral", "kidney", src=[AN], cam="mcu lock"), tempo=1.15),  # voiced 3.3 s on one picture (limit 3): free retime
+     L("F3", "mom", "And my hair?", "shocked", "hair", chat=True, cam="mcu lock"),
+     L("F4", "doctor", "A trial over twelve weeks...", "happy", "twelve", src=[LAK], cam="ms lock"),
+     L("F5", "doctor", "found no hair loss.", "happy", "hair", src=[LAK], cam="mcu lock", react={"mom": "happy"}),
    ], "props": [tag("12 weeks", "F4", "twelve", x=540, y=300)]},
   # G: back inside her muscle, the answer: the swollen cell is water, not fat (loops back to the hook).
   {"id": "G", "set": "macro",
    "cast": [{"who": "crea", "x": 540, "size": 440, "stage": True, "emotion": "happy", "pose": "rest"}],
-   "state": {"view": 1, "water": 0.3, "flex": 0},
+   "state": {"view": 3, "water": 0.35, "flex": 0},  # view 3: the cell close up with a door (a NEW view: the owner's review, 2026-11-21)
    "events": [
-     E("start", set={"water": 0.6}, over=20, sfx="whoosh-air"),
-     E("G1", word="That's", set={"water": 0.8}, over=12),
-     E("G1", word="water", set={"water": 1}, over=30, sfx="drip"),
-     E("G1", word="creatine.", set={"flex": 0.5}, over=12),
-     E("G1", word="fat!", sfx="tada", delay=0.6),  # after his last word (at 0.35 s it was lost)
+     E("start", set={"water": 0.5}, over=24, sfx="splash-small"),  # water pours in from the pipe
+     E("G1", word="That's", set={"water": 0.75}, over=12),
+     E("G1", word="water", set={"water": 1}, over=30, sfx="drip"),  # the cell swells like a water balloon; Fat waddles in
+     E("G1", word="creatine.", set={"flex": 0.5}, over=12, sfx="bonk"),  # Fat knocks on the door
+     E("G1", word="fat!", sfx="thud-soft", fx="flash"),  # Crea slams the door: Fat bounces off
    ],
    "lines": [
      L("G1", "crea", "Your scale jumps? That's water in your muscles from creatine. Not fat!", "happy", "water", src=[AN], cam="push"),

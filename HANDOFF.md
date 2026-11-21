@@ -6,6 +6,34 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-21 (14) - MacBook (local Claude Code) - branch `video/creatine` - creatine restaged C-G (review cut), WAITING
+
+- The owner: "Yes, do the rest" (after the hook test). Built (free), all with the acting kit:
+  - New drawings: `Fat` (grumpy blob, `knock`), Muscle `band` + `sweat`, `Dumbbell`, `CellDoorPlace` (the cell close up: `fill`, `pour`,
+    `door`; `doorAt`), `MuscleSign` (signpost with a flexed muscle). New poses `press` (near arm overhead), `holdL` (near arm at the chest
+    when facing left). Pose test `ActPoses` in `entry-act.tsx`.
+  - C blood: Crea surfs in on a red cell, splash, points, hops, the signpost pops up, he zips into the opening; the stream flows only
+    while he arrives and leaves (`BloodPlace t={flowT}`).
+  - D muscle: a cut to Mom pressing a dumbbell; the batteries go out one after another (`batteryLevel`, left to right); the big battery
+    shakes; Crea runs in, winds up, throws the spark on an arc, it hits (burst), the battery refills with a hop; Muscle drops in big
+    and does reps on the beats, then jogs in a headband, sweats, slumps on "barely".
+  - E kidney: Kidney moved off the act-2 watermark; a chip pops off Crea and rides the tube (CREATININE tag once it has left him);
+    a syringe reaches in; the blood-test card SLAMS on; the Kidney jumps in fright, then hops twice; the filter's clock runs only on beats.
+  - F clinic: held framings with HARD cuts per line (`viewF`): the room camera's 2.8 s smoothing made every reframe a slow slide.
+    Dr. Mira raises the lab sheet (clipboard), nods, opens her hand; Mom holds her shaker (behind her hand), panic jump, joy hop.
+    No raised single finger.
+  - G ending: a NEW view (`view: 3`): water pours into the cell, it swells; Fat waddles up and knocks; Crea slams the door on "fat!".
+  - Checker: events may carry `act` ("mom: jumps in panic"), a visible character action that counts as something happening; the
+    blood stream and the kidney flow no longer count as flowing all the time. Caption pop quicker (0.08 s; 0.14 s for the key word).
+- Checks: toon:check (+ `--all`), camera, motion, staging ALL PASS. `npm test` 48/50: only the two music tests (the funk bed stops).
+- Look (story only): still frames 26% (was 4%; target 45-80), small movement 57% (target 15-55), outlines 0.9% (target 2.5),
+  brightness 174 PASS. Not passing: a bolder line needs the owner's OK (before/after `plans/review-creatine/outline-*.jpg`,
+  kit OUT 3.4 -> 5.6, IN 2.2 -> 3.2; NOT applied); the rest is a dialogue-heavy story (mouths, one-word captions).
+- Sent as a REVIEW cut (not final): `renders/toon-v8-phone.mp4`, `plans/review-creatine/new-pieces.jpg`, the outline sheets.
+- Next on the owner's word: the bolder line (free), a new steady music track (about 500 credits, balance 49,730), re-render, package.
+
+---
+
 ## 2026-11-21 (13) - MacBook (local Claude Code) - branch `video/creatine` - acting kit + hook test (0-10 s) sent, WAITING
 
 - The owner approved the review plan ("Yes, go ahead"). Built (free):

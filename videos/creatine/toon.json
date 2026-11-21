@@ -308,8 +308,18 @@
     },
     {
      "at": "C2",
+     "act": "crea: leans and points ahead at the far opening",
+     "word": "ninety-five"
+    },
+    {
+     "at": "C2",
      "word": "percent",
      "sfx": "ding"
+    },
+    {
+     "at": "C2",
+     "act": "crea: hops on his red cell",
+     "word": "heads"
     },
     {
      "at": "C2",
@@ -543,6 +553,12 @@
     },
     {
      "at": "E1",
+     "act": "crea: a chip pops off him and rides down to the kidney",
+     "word": "breaks",
+     "sfx": "pop"
+    },
+    {
+     "at": "E1",
      "word": "creatinine.",
      "set": {
       "bits": 1
@@ -570,8 +586,23 @@
     },
     {
      "at": "E2",
+     "act": "kidney: jumps in fright and shakes",
      "word": "trouble!",
      "sfx": "gasp"
+    },
+    {
+     "at": "E3",
+     "act": "kidney: stops shaking, looks at the card"
+    },
+    {
+     "at": "E3",
+     "act": "kidney: hops for joy",
+     "word": "harm"
+    },
+    {
+     "at": "E3",
+     "act": "kidney: hops again",
+     "word": "found."
     },
     {
      "at": "E3",
@@ -648,18 +679,39 @@
    "events": [
     {
      "at": "F1",
+     "act": "doctor: raises the lab sheet"
+    },
+    {
+     "at": "F1",
+     "act": "doctor: nods at the sheet",
      "word": "blood",
      "sfx": "ding"
     },
     {
+     "at": "F2",
+     "act": "doctor: lowers the sheet"
+    },
+    {
+     "at": "F2",
+     "act": "doctor: opens her hand to Mom",
+     "word": "Ask"
+    },
+    {
      "at": "F3",
+     "act": "mom: jumps in panic",
      "word": "hair?",
      "sfx": "boing"
     },
     {
      "at": "F5",
+     "act": "doctor: opens her palm",
      "word": "no",
      "sfx": "success-chime"
+    },
+    {
+     "at": "F5",
+     "act": "mom: hops for joy",
+     "word": "loss."
     }
    ],
    "lines": [
@@ -673,7 +725,6 @@
      "src": [
       "antonio-2021"
      ],
-     "cam": "mcu push",
      "tempo": 1.12
     },
     {
@@ -686,7 +737,7 @@
      "src": [
       "antonio-2021"
      ],
-     "cam": "ecu push",
+     "cam": "mcu lock",
      "tempo": 1.15
     },
     {
@@ -697,7 +748,7 @@
      "pose": "rest",
      "key": "hair",
      "chat": true,
-     "cam": "ms crash"
+     "cam": "mcu lock"
     },
     {
      "id": "F4",
@@ -709,7 +760,7 @@
      "src": [
       "lak-2025"
      ],
-     "cam": "mcu push"
+     "cam": "ms lock"
     },
     {
      "id": "F5",
@@ -721,7 +772,7 @@
      "src": [
       "lak-2025"
      ],
-     "cam": "ecu push",
+     "cam": "mcu lock",
      "react": {
       "mom": "happy"
      }
@@ -754,24 +805,24 @@
     }
    ],
    "state": {
-    "view": 1,
-    "water": 0.3,
+    "view": 3,
+    "water": 0.35,
     "flex": 0
    },
    "events": [
     {
      "at": "start",
      "set": {
-      "water": 0.6
+      "water": 0.5
      },
-     "over": 20,
-     "sfx": "whoosh-air"
+     "over": 24,
+     "sfx": "splash-small"
     },
     {
      "at": "G1",
      "word": "That's",
      "set": {
-      "water": 0.8
+      "water": 0.75
      },
      "over": 12
     },
@@ -790,13 +841,14 @@
      "set": {
       "flex": 0.5
      },
-     "over": 12
+     "over": 12,
+     "sfx": "bonk"
     },
     {
      "at": "G1",
      "word": "fat!",
-     "sfx": "tada",
-     "delay": 0.6
+     "sfx": "thud-soft",
+     "fx": "flash"
     }
    ],
    "lines": [

@@ -483,7 +483,7 @@ export type PoseName = 'rest' | 'explain' | 'point' | 'thumbs' | 'think' | 'worr
   // no-sleep (2026-11-21): in bed with a phone; slumped on the bed edge in the morning
   | 'sitPhone' | 'sitSlump'
   // creatine acting kit (2026-11-21): the big take (both hands on the cheeks), shaking a bottle at something, a real shrug
-  | 'cheeks' | 'shake' | 'shrug2';
+  | 'cheeks' | 'shake' | 'shrug2' | 'press' | 'holdL';
 /** Arm: directions in the ARM frame: x = outwards from the body, y = down, z = forwards. */
 type ArmPose = {up: V3; fore: V3; hand: HandKind; thumb?: V3; bend?: number; ang?: number; front?: boolean; prop?: 'clipboard'};
 type LegPose = {thigh: V3; shin: V3; foot: V3};
@@ -552,6 +552,10 @@ export const POSES: Record<PoseName, Pose> = {
     L: {up: [0.45, 1, 0.2], fore: [0.95, -0.15, 0.35], hand: 'open', thumb: [0, -1, 0.2]},
     legR: STAND_R, legL: STAND_L, tilt: 6,
   },
+  /** pressing a weight overhead with the near arm (her LEFT when she faces right); the other hand on the hip (creatine, 2026-11-21) */
+  press: {R: {up: [0.75, 0.62, 0.1], fore: [-0.55, 0.85, 0.1], hand: 'rest', thumb: [0, -1, 0]}, L: {up: [0.3, -0.85, 0.25], fore: [0.05, -1, 0.05], hand: 'hold', thumb: [0, -1, 0]}, legR: STAND_R, legL: STAND_L, tilt: -3},
+  /** holding something at the chest with the near arm when facing LEFT (her left hand); the other arm at rest */
+  holdL: {R: REST_R, L: {up: [0.06, 1, 0.3], fore: [-0.55, -0.2, 0.8], hand: 'hold', thumb: [0, -1, 0], front: true}, legR: STAND_R, legL: STAND_L},
   /** sitting slumped: both hands rest on the thighs, the body leans forward, head down */
   sitSlump: {
     R: {up: [0.06, 1, 0.3], fore: [-0.1, 0.25, 1], hand: 'rest', thumb: [0, -1, 0], front: true},

@@ -200,7 +200,12 @@ export type ToonProp = {hold?: boolean; kind: PropName; x?: number; y?: number; 
  * seconds) the stage's state moves to `set` over `over` frames, a sound plays, an effect flashes.
  * This is how a Toon SHOWS the process instead of talking about it.
  */
-export type ToonEvent = {at: string; word?: string; delay?: number; set?: Record<string, number>; over?: number; sfx?: string; fx?: 'flash'};
+/**
+ * `act` (acting kit, 2026-11-21): a visible ACTION of a character at this moment (a jump, a take, a nod, a gesture, a throw), done by
+ * the shot's own code; it counts as "something happens" like a stage change. It names who acts and what, e.g. "mom: jumps in panic".
+ * The shot must really do it: the look check and the owner's eye are the test.
+ */
+export type ToonEvent = {at: string; word?: string; delay?: number; set?: Record<string, number>; over?: number; sfx?: string; fx?: 'flash'; act?: string};
 /**
  * A shot is one place. `card` makes it a time card instead ("LATER THAT NIGHT..."), lasting
  * `seconds`. `state` is where the stage's dials start; `events` change them.

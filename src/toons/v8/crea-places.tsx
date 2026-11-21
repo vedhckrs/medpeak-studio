@@ -18,7 +18,7 @@
  * Drawn with the kit only: one outline colour, flat fills, one darker tone, no gradients, no blur, no glow.
  */
 import React from 'react';
-import {EDGE, EDGE_IN, FLESH, INLINE, shade, tint} from './kit';
+import {EDGE, EDGE_IN, FLESH, INLINE, OUTLINE, shade, tint} from './kit';
 import {Layer, Put, Scene} from './scene';
 import {f, lobe, open, rnd, tube, type P} from './scenes-body';
 import {Bits, Depth} from './micro3';
@@ -165,8 +165,14 @@ const Membrane: React.FC<{top: boolean; bulge: number; t: number}> = ({top, bulg
   );
 };
 
+/** The charge of a battery at x when the cell has drained by `drain` and been recharged by `charge` (the drain sweeps left to right). */
+export const batteryLevel = (x: number, drain: number, charge: number) => {
+  const d = clamp01(drain * 1.7 - (x / 1080) * 0.7);
+  return clamp01(1 - d + charge * d);
+};
 export const MuscleCellPlace: React.FC<{t: number; flex?: number; drain?: number; charge?: number; water?: number}> = ({t, flex = 0, drain = 0, charge = 0, water = 0}) => {
-  const level = (i: number) => clamp01(1 - drain * (0.85 + rnd(i, 901) * 0.15) + charge * drain);
+  // the batteries go out ONE AFTER ANOTHER, left to right, like a row of lights (acting kit, 2026-11-21)
+  const level = (i: number) => batteryLevel(DOCKS[i][0], drain, charge);
   return (
     <Scene bg={CELL.cyto}>
       <Depth {...float(t, 0)}>
@@ -201,7 +207,7 @@ export const MuscleCellPlace: React.FC<{t: number; flex?: number; drain?: number
           {/* water drawn in with the creatine: pale blue drops drifting from the edges into the gaps */}
           {Array.from({length: Math.round(water * 22)}, (_, i) => {
             const g = i % 3;
-            const u = ((rnd(i, 921) + t * 0.05) % 1 + 1) % 1;
+            const u = rnd(i, 921); // the drops sit where they came to rest (they drifted all the time: the picture never held)
             const x = (i % 2 ? u : 1 - u) * 1180 - 50;
             const y = gapY(g, x) + (rnd(i, 922) - 0.5) * 120 + sway(t, 3, i) * 8;
             const s = 14 + rnd(i, 923) * 12;
@@ -231,7 +237,10 @@ const Chip: React.FC<{x: number; y: number; s: number; rot: number}> = ({x, y, s
   </g>
 );
 
-export const KidneyFilterPlace: React.FC<{t: number; bits?: number}> = ({t, bits = 0.5}) => {
+export const KidneyFilterPlace: React.FC<{t: number; bits?: number; flow?: number}> = ({t: tReal, bits = 0.5, flow}) => {
+  // `flow`: the time the filter's motion runs on (the chips and the blood in the loops). A shot passes a clock that stops between
+  // story beats, so the filter HOLDS STILL while the characters act (acting kit, 2026-11-21). Without it the filter runs on `t`.
+  const t = flow ?? tReal;
   // the capillary loops of the tuft: each a closed loop of tube around the tuft's centre
   const loops = Array.from({length: 7}, (_, i) => {
     const a = (i / 7) * Math.PI * 2 + 0.3;
@@ -298,6 +307,80 @@ export const KidneyFilterPlace: React.FC<{t: number; bits?: number}> = ({t, bits
     </Scene>
   );
 };
+
+// =================================================================== 4. the cell close up, with a door (the ending)
+/**
+ * One muscle cell seen whole, like a balloon among its neighbours (acting kit, 2026-11-21: the ending needs a NEW view, not the
+ * muscle picture a third time). A pipe from the top pours water in; `fill` 0..1 raises the water inside and swells the cell;
+ * a round door on its right side: `door` 0 open (the lid swung out) .. 1 shut.
+ */
+export const CELLDOOR = {c: [430, 1000] as P, r: 300};
+export const doorAt = (fill: number): P => { const r = CELLDOOR.r * (1 + fill * 0.12); return [CELLDOOR.c[0] + r, CELLDOOR.c[1] + 40]; };
+export const CellDoorPlace: React.FC<{t: number; fill?: number; pour?: number; door?: number}> = ({t, fill = 0, pour = 0, door = 0}) => {
+  const [cx, cy] = CELLDOOR.c;
+  const r = CELLDOOR.r * (1 + fill * 0.12);
+  const lvl = cy + r - fill * r * 1.7; // the water line inside
+  const id = 'celldoor';
+  const [dx, dy] = doorAt(fill);
+  const lid = 1 - clamp01(door); // 1 = swung fully open
+  return (
+    <Scene bg={shade(CELL.cyto, 0.08)}>
+      <Layer>
+        {/* the neighbours: other cells, pressed close, cut by the frame */}
+        {([[-120, 300, 300, 1], [1060, 420, 260, 2], [1150, 1500, 330, 3], [-80, 1700, 310, 4], [560, 2020, 280, 5], [620, -120, 260, 6]] as [number, number, number, number][]).map(([x, y, rr, sd], i) => (
+          <g key={i}><path d={lobe(x, y, rr, rr * 0.92, 960 + sd, 10)} fill={tint(CELL.fibril, 0.45)} {...EDGE_IN} /><path d={lobe(x + rr * 0.08, y + rr * 0.1, rr * 0.7, rr * 0.62, 970 + sd, 9)} fill={tint(CELL.fibril, 0.55)} /></g>
+        ))}
+        {/* the pipe from the top, and the water falling from it into the cell */}
+        <path d={tube([[cx - 40, -60], [cx - 40, cy - r - 70]], [70, 70], ['cut', 'round'], 4, 2).d} fill={tint(CELL.water, -0.05)} {...EDGE} />
+        {pour > 0.02 && (
+          <g opacity={clamp01(pour * 3)}>
+            <path d={`M ${cx - 62} ${cy - r - 60} L ${cx - 18} ${cy - r - 60} L ${cx - 12} ${lvl} L ${cx - 68} ${lvl} Z`} fill={CELL.water} {...EDGE_IN} />
+            {[0, 1, 2, 3].map((i) => <path key={i} d={`M ${cx - 50 + i * 8} ${cy - r - 50 + ((t * 600 + i * 70) % Math.max(40, lvl - cy + r))} v 26`} stroke="#ffffff" strokeWidth={5} strokeLinecap="round" />)}
+          </g>
+        )}
+        {/* the cell: membrane, its stripes inside, the water */}
+        <defs><clipPath id={id}><circle cx={cx} cy={cy} r={r} /></clipPath></defs>
+        <circle cx={cx} cy={cy} r={r + 16} fill={CELL.mem} {...EDGE} />
+        <circle cx={cx} cy={cy} r={r} fill={CELL.cyto} {...EDGE_IN} />
+        <g clipPath={`url(#${id})`}>
+          {[-150, 0, 150].map((oy, i) => (
+            <g key={i}>
+              <rect x={cx - r} y={cy + oy - 48} width={r * 2} height={96} fill={CELL.fibril} />
+              {Array.from({length: 12}, (_, j) => <rect key={j} x={cx - r + j * 56 + 14} y={cy + oy - 48} width={24} height={96} fill={CELL.band} />)}
+              <path d={`M ${cx - r} ${cy + oy - 48} H ${cx + r} M ${cx - r} ${cy + oy + 48} H ${cx + r}`} {...INLINE} />
+            </g>
+          ))}
+          {fill > 0.01 && (
+            <g>
+              <path d={`M ${cx - r} ${lvl} Q ${cx - r / 2} ${lvl - 14} ${cx} ${lvl} T ${cx + r} ${lvl} V ${cy + r + 20} H ${cx - r} Z`} fill={CELL.water} opacity={0.82} />
+              <path d={`M ${cx - r} ${lvl} Q ${cx - r / 2} ${lvl - 14} ${cx} ${lvl} T ${cx + r} ${lvl}`} {...INLINE} />
+            </g>
+          )}
+        </g>
+        <circle cx={cx} cy={cy} r={r} {...OUTLINE_IN} />
+        {/* the door: a dark round doorway in the membrane, its lid hinged at the top */}
+        <ellipse cx={dx} cy={dy} rx={34} ry={92} fill={shade(CELL.band, 0.35)} {...EDGE} />
+        <g transform={`rotate(${(-lid * 75).toFixed(1)} ${dx + 4} ${dy - 92})`}>
+          <ellipse cx={dx + 4} cy={dy} rx={30} ry={92} fill={CELL.mem} {...EDGE} />
+          <circle cx={dx - 14} cy={dy + 6} r={7} fill={CLOTH_DOOR} {...EDGE_IN} />
+          <path d={`M ${dx + 4} ${dy - 70} V ${dy + 70}`} {...INLINE} />
+        </g>
+      </Layer>
+    </Scene>
+  );
+};
+const CLOTH_DOOR = '#c98a4b';
+const OUTLINE_IN = {stroke: '#2b1a17', strokeWidth: 4, fill: 'none'} as const;
+
+/** The signpost in the blood: a round sign with a flexed muscle on it and an arrow toward the far opening. */
+export const MuscleSign: React.FC = () => (
+  <g>
+    <path d="M -6 10 L 6 10 L 8 98 L -8 98 Z" fill={CLOTH_DOOR} {...EDGE_IN} />
+    <circle cx={0} cy={-30} r={62} fill="#ffffff" {...EDGE} />
+    <g transform="translate(-8 -34) scale(0.42)"><Muscle flex={1} mood="happy" mouth="smile" /></g>
+    <path d="M 30 -78 L 72 -78 L 72 -92 L 98 -70 L 72 -48 L 72 -62 L 30 -62 Z" fill={'#ffd23f'} {...EDGE} />
+  </g>
+);
 
 // =================================================================== the moments for the sheet
 /** B: in the blood, Crea rides the stream toward the fork (the right branch: to the muscles). */
