@@ -29,6 +29,11 @@ import {args, readJson, remotion, ROOT, VIDEOS, videoDir, writeJson} from './lib
 import {layoutToon, GAP, TOON_FPS} from '../src/toons/director.ts';
 import {v8Props} from './toon-v8-render.mjs';
 
+/** The real length of the rendered file (the end card included), else the story's length. */
+const fileSeconds = (file, fallback) => {
+  try { return Number(execFileSync('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', file]).toString().trim()) || fallback; } catch { return fallback; }
+};
+
 const SUBSCRIBE = '🔔 Subscribe to MedPeak Health for cartoons and 3D animations that show what really happens inside your body: @MedPeakHealth';
 const DISCLAIMER = '⚠️ For education only. This video is not medical advice, diagnosis or treatment. Always talk to a qualified doctor about your health.';
 // No 'made with AI' line in the description (owner 2026-11-16: "i dont want in descption this line i dont want to give this reveal").
@@ -163,7 +168,7 @@ const one = (slug, a) => {
     '',
     issues.length ? `> **Not ready:** ${issues.join('; ')}` : '> Ready. Nothing is uploaded until the owner says so; an upload is always private first.',
     '',
-    `**Video:** \`${rel(video)}\` (${seconds.toFixed(1)} s, 1080 x 1920, a Short)`,
+    `**Video:** \`${rel(video)}\` (${fileSeconds(video, seconds).toFixed(1)} s, 1080 x 1920, a Short)`,
     `**Cover:** \`videos/${slug}/renders/toon-cover.jpg\` (the frame at ${(pkg.cover?.at ?? 1).toFixed(1)} s; in the YouTube app a Short's cover is picked from the video's own frames, so choose that moment there if the picture is not accepted)`,
     wantCaptions ? `**Captions:** \`videos/${slug}/package/captions.srt\` (YouTube Studio > Subtitles > Upload file > With timing)` : '**Captions:** none. The words are already on screen; the owner does not want a caption track.',
     '',

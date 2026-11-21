@@ -2,7 +2,7 @@
 
 > Ready. Nothing is uploaded until the owner says so; an upload is always private first.
 
-**Video:** `videos/rabies/renders/toon-v8.mp4` (46.6 s, 1080 x 1920, a Short)
+**Video:** `videos/rabies/renders/toon-v8.mp4` (61.6 s, 1080 x 1920, a Short)
 **Cover:** `videos/rabies/renders/toon-cover.jpg` (the frame at 1.2 s; in the YouTube app a Short's cover is picked from the video's own frames, so choose that moment there if the picture is not accepted)
 **Captions:** none. The words are already on screen; the owner does not want a caption track.
 
