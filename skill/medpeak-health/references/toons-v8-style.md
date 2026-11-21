@@ -118,7 +118,8 @@ Every Toon follows these from now on. Code: `src/toons/v8/hud.tsx`, `video.tsx`,
 - The narrator's clip is added AFTER the story, so the script rules (loop, the answer in the last quarter) still pass.
 
 **Watermark**: `@MedPeakHealth`, Inter Regular (400), 26 px, opacity 0.44 (half transparent), no outline (a 1 px
-flat drop only). Act 1 top right, act 2 bottom left, act 3 top middle; on the end card top right (clear of the logo).
+flat drop only). Act 1 top right, act 2 bottom left, act 3 top middle. **No watermark on the end card** (the owner, 2026-11-21): it
+fades out over 0.35 s as the card comes in.
 
 **Icons only when the words say it**: a dog on "stray dog", a dog with a warning badge on "fatal", the stopwatch on
 "fifteen minutes", the calendar on "months", the shield ONLY where the vaccine is named ("shots"). No icon the words

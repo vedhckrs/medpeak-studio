@@ -264,8 +264,8 @@ export const ToonV8: React.FC<V8VideoProps> = ({toon, timings, sfx, music, bare 
           <CtaCardV4 t={sec - ends} title={cta!.title} points={cta!.points} at={ctaAt} />
         </div>
       )}
-      {/* on the end card the watermark sits top right (act 1's place), clear of the logo */}
-      <Watermark act={inCta ? 0 : act} t={inCta ? sec - ends : sec - acts[act]} />
+      {/* no watermark on the end card (the owner, 2026-11-21): the last act's mark fades out as the card comes in */}
+      <Watermark act={act} t={sec - acts[act]} out={inCta ? sec - ends : undefined} />
       {cta && [0, 1, 2].map((i) => <Sequence key={'cta' + i} from={Math.round((ends + (ctaAt ? ctaAt.points[i] : 0.45 + i * 0.55)) * V8_FPS)} durationInFrames={60 * K}><Audio src={staticFile('toons/sfx/pop.mp3')} volume={0.35} /></Sequence>)}
       {cta && <Sequence from={Math.round((ends + (ctaAt ? ctaAt.follow : 2.3)) * V8_FPS)} durationInFrames={90 * K}><Audio src={staticFile('toons/sfx/success-chime.mp3')} volume={0.3} /></Sequence>}
       {cta?.voice && <Sequence from={Math.round((ends + CTA_LEAD) * V8_FPS)} durationInFrames={Math.round(((cta.seconds ?? 4) + CTA_TAIL) * V8_FPS)}><Audio src={staticFile(cta.voice)} /></Sequence>}

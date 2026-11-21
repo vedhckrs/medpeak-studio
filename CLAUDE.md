@@ -104,7 +104,8 @@ Do these once on a new machine. None of it needs the old machine except step 6.
 - **Paid generation**: one recommended option, and the cost shown before any spend.
 - **Watermark `@MedPeakHealth` on every video, the whole video** (2026-11-20). Small, clean, Inter Regular, about half transparent, inside the
   YouTube Shorts safe area (clear of the top bar, the right-hand buttons and the bottom title band). It moves
-  three times, once per act: act 1 top right, act 2 bottom left, act 3 top middle. In look v8 it is
+  three times, once per act: act 1 top right, act 2 bottom left, act 3 top middle. **Not on the CTA end card** (2026-11-21):
+  it fades out as the card comes in. In look v8 it is
   `Watermark` in `src/toons/v8/hud.tsx`, drawn by the player.
 - **End every video with a CTA card: three strong points, each a big icon with short bold text** (2026-11-20).
   The headline on one line; the channel logo (`assets/brand/logo.png`) top centre in a circle with "MedPeak Health"
