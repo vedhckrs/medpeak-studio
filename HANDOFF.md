@@ -17,7 +17,8 @@ you stop. The rules are in `CLAUDE.md`.
   Loudness -17.5 / -18.0 / -17.6 LUFS.
 - Balance after: 51,880. That is 485 less, but this session's receipt says 75: about 410 more went from key 4 at the same time,
   not from this session (another machine or account?). Told the owner.
-- Next: the owner picks the voices; then voice the script (711 quoted), Joey's card, the music (about 500).
+- The owner picked "All three as made" (the battery at its own pace, not the faster take); written in `toons-cast.json`.
+- Next: voice the script (711 quoted) on the owner's yes, then Joey's card, the music (about 500).
 
 ---
 
