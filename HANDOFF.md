@@ -23,6 +23,14 @@ you stop. The rules are in `CLAUDE.md`.
 - Next: render `snake-`, look at every sheet and the SnakeCheck crops at full size, fix overlaps/edges/hands, then show the owner
   `out/toons/sheets-v8/snake-cast.jpg` and `snake-place.jpg`.
 
+## 2026-11-23 (31) - MacBook (local Claude Code) - branch `video/snake-bite` - snake-bite SCHEDULED (Mon 23 Nov 21:30 IST)
+
+- The owner: "Yes, schedule it". https://youtu.be/xnnOatChD8U, private, publishAt 2026-11-23T16:00:00Z; read back after the AI-label
+  step too (the fixed after_upload kept the schedule). AI label: update answered, not shown on read (check Studio). Topic #6 marked.
+- Next free MedPeak slots: Tue 24 Nov 12:30 and 21:30 IST. Next topic in the bank: #7 "What Happens When You Quit Smoking".
+
+---
+
 ## 2026-11-23 (30) - MacBook (local Claude Code) - branch `video/snake-bite` - snake-bite FINISHED, waiting for the owner (NOT uploaded)
 
 - Final `videos/snake-bite/renders/toon-v8.mp4` 61.7 s (story about 48 s), -14.0 LUFS, -1.0 dBTP, no holes, END CARD speech 83%,

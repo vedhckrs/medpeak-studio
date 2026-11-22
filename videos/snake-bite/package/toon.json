@@ -29,5 +29,15 @@
     "containsSyntheticMedia": true
   },
   "relatedVideo": null,
-  "issues": []
+  "issues": [],
+  "coverSet": true,
+  "uploaded": "xnnOatChD8U",
+  "stored": {
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "containsSyntheticMedia": null,
+    "publishAt": "2026-11-23T16:00:00Z"
+  },
+  "labelSet": true,
+  "labelConfirmed": false
 }
