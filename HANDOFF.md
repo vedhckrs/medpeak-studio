@@ -13,7 +13,8 @@ you stop. The rules are in `CLAUDE.md`.
 - BUG found and fixed: `after_upload.py --label` updated the status WITHOUT publishAt, which CANCELS a schedule on YouTube. The time was
   put back (read back: 2026-11-23T07:00:00Z) and the script now keeps publishAt and warns if it changes.
 - AI label: update answered; YouTube does not show it on read (check Studio, "Altered content"). Topic #5 marked scheduled.
-- Open: Quit Sugar (public) has a silent end card; the owner decides on a re-upload with Joey. Next free slots: Mon 21:30, Tue 12:30 IST.
+- Quit Sugar (public) keeps its silent end card: the owner said "Leave it" (2026-11-22). Do not offer the re-upload again.
+- Next free slots: Mon 21:30, Tue 12:30 IST.
 
 ---
 
