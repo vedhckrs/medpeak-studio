@@ -3,15 +3,21 @@
     python publish/upload.py <slug> <cut> --dry-run
     python publish/upload.py <slug> <cut> --approve                      # private upload
     python publish/upload.py <slug> <cut> --approve --publish-at 2026-11-20T13:30:00+05:30
+    python publish/upload.py <slug> <cut> --slot              # dry run: shows the next free slot it would use
+    python publish/upload.py <slug> <cut> --approve --slot    # scheduled in the next free MedPeak slot
     python publish/upload.py <slug> all --approve                        # long video first, then Shorts
 
 Uses the saved login in ~/.config/youtube-analytics/token.json (needs the youtube + youtube.upload
 scopes). Writes the new video id back into videos/<slug>/package/<cut>.json as "uploaded".
+--slot follows the channel's posting schedule (publish/schedule.py; the owner's rule, 2026-11-22): Shorts at 12:30 or
+21:30 IST, long videos Wednesday/Saturday 05:30 IST, checked against the channel's real schedule read from the API.
 The "Related video" link on each Short is set in YouTube Studio (the API has no field for it).
 """
 import json
 import os
 import sys
+
+import schedule as sched
 
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
@@ -35,7 +41,15 @@ def upload(yt, pkg_path, args):
     if not os.path.exists(pkg["file"]):
         sys.exit(f"{pkg['cut']}: render missing: {pkg['file']}")
     status = dict(pkg["status"])
-    if "--publish-at" in args:
+    if "--slot" in args:
+        short = pkg["cut"] != "long"
+        slots = sched.free_slots(sched.channel_schedule(yt), short, 1)
+        if not slots:
+            sys.exit(f"{pkg['cut']}: no free {'Short' if short else 'long'} slot in the next 14 days")
+        status["privacyStatus"] = "private"
+        status["publishAt"] = sched.utc_iso(slots[0])
+        print(f"  slot: {sched.ist(slots[0])} (next free {'Short' if short else 'long-video'} slot)")
+    elif "--publish-at" in args:
         status["privacyStatus"] = "private"
         status["publishAt"] = args[args.index("--publish-at") + 1]
     if "--public" in args:
@@ -69,6 +83,17 @@ def upload(yt, pkg_path, args):
                      "containsSyntheticMedia": stored.get("containsSyntheticMedia")}
     if stored.get("privacyStatus") != status["privacyStatus"]:
         print(f"  WARNING: asked for {status['privacyStatus']}, YouTube stored {stored.get('privacyStatus')}")
+    if status.get("publishAt"):
+        pkg["stored"]["publishAt"] = stored.get("publishAt")
+        want, got = sched._when(status["publishAt"]), stored.get("publishAt")
+        if not got or sched._when(got) != want:
+            print(f"  WARNING: asked to go live {status['publishAt']}, YouTube stored {got}: fixing it")
+            yt.videos().update(part="status", body={"id": vid, "status": {**{k: stored[k] for k in ("privacyStatus", "embeddable", "license", "publicStatsViewable", "selfDeclaredMadeForKids") if k in stored}, "privacyStatus": "private", "publishAt": status["publishAt"]}}).execute()
+            got = yt.videos().list(part="status", id=vid).execute()["items"][0]["status"].get("publishAt")
+            pkg["stored"]["publishAt"] = got
+            print(f"  publishAt now {got}")
+        else:
+            print(f"  goes live {sched.ist(want)} (read back from YouTube)")
     if status.get("containsSyntheticMedia") and not stored.get("containsSyntheticMedia"):
         print("  WARNING: the AI-use answer was not stored by the upload; set it with: publish/after_upload.py <slug> <cut> --label --approve")
     # write the paths back RELATIVE to the repo (2026-11-21: they came back as this Mac's full paths, twice)

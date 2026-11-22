@@ -85,6 +85,12 @@ Do these once on a new machine. None of it needs the old machine except step 6.
 - **Show before you build.** Characters, looks, scenes and storyboards go to him as 16:9 JPG sheets for
   approval before they go into a video. Motion is approved separately from looks. Give a short plan before
   big work. Never upload anything without his word.
+- **Posting schedule** (2026-11-22, shared with the cartoon pipeline in `~/Desktop/New/POSTING-SCHEDULE.md`): MedPeak posts
+  2 Shorts a day at **12:30 and 21:30 IST** and long videos **Wednesday and Saturday 05:30 IST** only; the cartoon pipeline
+  owns 08:00, 15:30 and 18:30 IST, never use those. Read the channel's real schedule first (`publish/schedule.py`), at most
+  5 Shorts a day, 3 h between Shorts, 2 h between a long video and any Short; upload private with `publishAt`
+  (`publish/upload.py <slug> <cut> --approve --slot`) and read the time back. Ask before each upload and before changing
+  a time he set in Studio. Details: `skill/medpeak-health/references/posting-schedule.md`.
 - **Everything is drawn in code, in look v8** (since 2026-11-20). Stock art, the Adobe Animate rig, the
   Adobe rebuild and AI-generated character sheets were all tried and rejected by him. Do not propose them
   again unless he asks. The code left from those roads (`pipeline/animate/`, `src/toons/look-people.tsx`,
