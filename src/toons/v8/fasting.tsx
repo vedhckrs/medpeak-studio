@@ -1,34 +1,29 @@
 /**
  * "What Happens to Your Body When You Fast" (`fasting`) in look v8: its seven shots by id (videos/fasting/toon.json) and its
- * CTA end card. Shape `clock`: Grandpa's 16-hour overnight fast; the big wall clock's red FAST ring is the clock. The owner
- * approved the plan, hook A, Grandpa and the looks on 2026-11-22.
+ * CTA end card. Shape `clock`: Grandpa's 16-hour overnight fast.
  *
- *   A  0 h, the living room: the Stomach BURSTS on screen at the lens ("When you fast, I scream!"); Grandpa slides his plate
- *      away and points at the clock ("Sixteen hours..."); on "stomach?" the camera dives into his belly: the whole stomach
- *   B  4 h, the whole stomach growls and pounds ("Feed me!"); the Brain peeks down from the top: hunger comes in waves...
- *      and drops again on its own (the growl dies)
- *   C  12 h, the whole liver and its sugar jar: the beads drop away, then the last ones go ("my store runs dry!")
- *   D  the switch: Lardo pops up, fuel drops pop off him; the liver flips its SUGAR/FAT switch
- *   E  16 h, the living room: the clock rings, breakfast; Grandpa proud; Lardo on the side table: no faster than eating less
- *   F  the whole brain: fasting isn't for everyone; pregnant, or had an eating disorder? ask a doctor first
- *   G  the stomach again: "who was screaming at me all night?" The Brain peeks in: "Me!" (the loop)
- *
- * B and C open on the wall clock jumping (the shot's `lead`: the jump plays in silence). Acting kit (act.tsx): key poses
- * that HOLD, one big action per beat, held framings per line (hard cuts).
+ * Second cut (2026-11-22, the owner on the first: "not interesting and not visual, confusion, hook is not good, camera jump bugs"):
+ *   - the hook opens INSIDE: the whole stomach fills the frame, screaming at the lens ("When you fast sixteen hours, I scream!")
+ *   - one colour per place (stomach orange, liver teal, brain purple, the room plum), quiet backgrounds, one or two characters
+ *   - big physical pictures: the hunger WAVE, the liver's FUEL GAUGE falling to EMPTY with an alarm, the body's FURNACE that Lardo
+ *     shovels fat into, its lever clanking from SUGAR to FAT
+ *   - Grandpa acts in silent beats: he sneaks to the biscuit tin at 4 h (the clock alarm stops him), sleeps through to 12 h, dashes
+ *     to breakfast at 16 h
+ *   - ONE framing per place: no reframe inside a shot (pipeline/test/views.test.mjs reads the real framings)
+ *   - a clock badge in the corner of every body shot says the hour
  */
 import React from 'react';
 import {Put, Scene} from './scene';
 import {CharTag, type CtaPoint} from './hud';
 import {arc, Burst, easeOut, hop, keyed, shake, take} from './act';
-import {gestureAt, pounding, type ArmPose} from './organ-act';
-void pounding;
 import {FEET_Y, PEOPLE_SCALE} from './scenes-rooms';
-import {castById, handAt, headAt, PersonAt, type PoseIn, type PoseName} from './people-rig';
-import {Brain, Stomach} from './organs-a';
+import {castById, PersonAt, type PoseIn, type PoseName} from './people-rig';
+import {Brain} from './organs-a';
 import {CLOTH, EDGE, EDGE_IN, FONT, INK, OUTLINE, Shape, shade, tint} from './kit';
 import {active, blink, bodyFace, clamp01, go, lerp, pop, since, talkSmooth, type Focus, type ShotDef, type ShotNow} from './play';
 import {BrainFull, LiverFull} from './sugar-organs';
-import {FAST_ROOM, FastRoom, Lardo, STOMACH_FULL, StomachFull, SugarJar} from './fast-art';
+import {BiscuitTin, FAST_ROOM, FastClock, FastRoom, FuelGauge, Furnace, Lardo, PLACE, Snore, StomachFull} from './fast-art';
+import {gestureAt, type ArmPose} from './organ-act';
 
 const GRANDPA = castById('grandpa');
 
@@ -49,15 +44,14 @@ const openFace = (s: ShotNow, who: string, seed: number, rest: string) => {
 };
 const frameOf = (k: number, p: [number, number], to: [number, number]) => `translate(${(to[0] - p[0] * k).toFixed(1)}px, ${(to[1] - p[1] * k).toFixed(1)}px) scale(${k})`;
 type View = {x: number; y: number; z: number};
-const tagVia = (view: (s: ShotNow) => View) => {
-  const T: React.FC<{s: ShotNow; label: string; x: number; y: number; r: number; t: number; dur?: number}> = ({s, label, x, y, r, t, dur}) => {
-    const c = view(s);
-    return <CharTag label={label} x={540 + (x - c.x) * c.z} y={960 + (y - c.y) * c.z} r={r * c.z} t={t} dur={dur} />;
-  };
+const WIDE: View = {x: 540, y: 960, z: 1};
+const ROOM_VIEW: View = {x: 600, y: 960, z: 1.06};
+const tagAt = (view: View) => {
+  const T: React.FC<{label: string; x: number; y: number; r: number; t: number; dur?: number}> = ({label, x, y, r, t, dur}) =>
+    <CharTag label={label} x={540 + (x - view.x) * view.z} y={960 + (y - view.y) * view.z} r={r * view.z} t={t} dur={dur} />;
   return T;
 };
-const byLine = (by: Record<string, View>, first: View) => (s: ShotNow) => by[s.cur?.id ?? ''] ?? first;
-const WIDE: View = {x: 540, y: 960, z: 1};
+const Tag = tagAt(WIDE);
 /** A yellow number tag, shown from `word` to the end of its line (text on the screen, after the camera). */
 const NumTag: React.FC<{s: ShotNow; text: string; id: string; word: string; x?: number; y?: number}> = ({s, text, id, word, x = 540, y = 300}) => {
   const u = since(s, id, word);
@@ -72,115 +66,121 @@ const NumTag: React.FC<{s: ShotNow; text: string; id: string; word: string; x?: 
       padding: '10px 30px', fontFamily: 'Poppins, Inter, sans-serif', fontWeight: 900, fontSize: 68, color: INK, whiteSpace: 'nowrap', boxShadow: `0 8px 0 ${INK}`}}>{text.toUpperCase()}</div>
   );
 };
+/** The hour badge in the corner of a body shot: a small copy of Grandpa's wall clock (where we are in the fast). */
+const HourBadge: React.FC<{hours: number}> = ({hours}) => (
+  <svg style={{position: 'absolute', left: 40, top: 230, overflow: 'visible'}} width={200} height={200} viewBox="-160 -160 320 320">
+    <FastClock hours={hours} />
+  </svg>
+);
 
-// ------------------------------------------------------------------ the clock jump (the first 0.6 s of B and C)
-const LEAD = 0.6; // the shot's `lead` in toon.json: the clock jumps in silence, the first line starts after it
+// ------------------------------------------------------------------ the room (the clock, Grandpa's silent beats)
 const CLOCK: [number, number] = [860, 385];
-const ClockInsert: React.FC<{t: number; from: number; to: number}> = ({t, from, to}) => {
-  const k = easeOut(clamp01((t - 0.06) / 0.4));
-  const [sx, sy] = shake(t, 0.46, 10, 0.2);
+const gpRoom = {view: 'three-quarter' as const, facing: 'right' as const, x: 620, y: FEET_Y - 22, scale: PEOPLE_SCALE};
+const TIN: [number, number] = [900, 1170];
+/** A room picture at ROOM_VIEW (a wide, steady framing of Grandpa's living room). */
+const RoomPic: React.FC<{children: React.ReactNode}> = ({children}) => (
+  <div style={{position: 'absolute', inset: 0, overflow: 'hidden', background: FAST_ROOM.wall}}>
+    <div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, transformOrigin: '0 0', transform: frameOf(ROOM_VIEW.z, [ROOM_VIEW.x, ROOM_VIEW.y], [540, 960])}}>
+      <Scene bg={FAST_ROOM.wall}>{children}</Scene>
+    </div>
+  </div>
+);
+/** 4 h, silent (the first 1.6 s of B): the clock jumps 0 -> 4 h; Grandpa sneaks a hand to the biscuit tin; the ALARM rings
+ *  (the clock shakes, a burst) and he snatches his hand back. */
+const SNEAK = {jump: 0.5, reach: 0.55, alarm: 1.05};
+const SneakBeat: React.FC<{t: number}> = ({t}) => {
+  const hours = lerp(0, 4, easeOut(clamp01(t / SNEAK.jump)));
+  const alarm = t > SNEAK.alarm;
+  const ring = alarm ? Math.sin((t - SNEAK.alarm) * 60) * 7 : 0;
+  const pose = poseAt(t, [[-9, 'rest'], [SNEAK.reach, 'offer', 0.35], [SNEAK.alarm + 0.05, 'cheeks', 0.12]]);
+  const tk = take(t, SNEAK.alarm, 0.8);
   return (
-    <div style={{position: 'absolute', inset: 0, background: FAST_ROOM.wall, overflow: 'hidden'}}>
-      <div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, transformOrigin: '0 0', transform: `translate(${sx}px, ${sy}px) ${frameOf(3.0, CLOCK, [540, 860])}`}}>
-        <Scene bg={FAST_ROOM.wall}><FastRoom hours={lerp(from, to, k)} plate="away" sec={k * 180} /></Scene>
+    <>
+      <RoomPic>
+        <FastRoom hours={hours} plate="away" plateX={1000} clockShake={ring} sec={t * 60} />
+        <Put x={TIN[0] - 60} y={TIN[1]} size={240}><BiscuitTin open={keyed(t, 0, [[SNEAK.reach + 0.2, 1, 0.25], [SNEAK.alarm, 0, 0.1, 'snap']])} /></Put>
+        <div style={{position: 'absolute', inset: 0, transform: `translateY(${tk.dy.toFixed(1)}px)`}}>
+          <PersonAt spec={GRANDPA} {...gpRoom} pose={pose} expr={alarm ? 'surprised' : 'happy'} look={alarm ? [0.7, -0.8] : [0.8, 0.5]} blink={alarm ? 0 : blink(t, 3)} />
+        </div>
+      </RoomPic>
+      <Burst t={t} t0={SNEAK.alarm} x={540 + (CLOCK[0] - ROOM_VIEW.x) * ROOM_VIEW.z} y={960 + (CLOCK[1] - ROOM_VIEW.y) * ROOM_VIEW.z} r={190} col={CLOTH.yellow} />
+    </>
+  );
+};
+/** 4 -> 12 h, silent (the first 1.4 s of C): Grandpa asleep in the armchair, snoring; the clock spins to 12 h. */
+const SleepBeat: React.FC<{t: number}> = ({t}) => {
+  const hours = lerp(4, 12, clamp01((t - 0.1) / 1.1));
+  return (
+    <RoomPic>
+      <FastRoom hours={hours} plate="away" plateX={1000} sec={t * 600} lamp />
+      <PersonAt spec={GRANDPA} pose="sitSlump" view="three-quarter" facing="right" expr="sleepy" look={[0, 0.5]} x={450} y={1520} scale={PEOPLE_SCALE} blink={1} />
+      <svg style={{position: 'absolute', left: 0, top: 0, overflow: 'visible'}} width={1080} height={1920} viewBox="0 0 1080 1920"><Snore t={t} x={560} y={760} /></svg>
+    </RoomPic>
+  );
+};
+
+// =================================================================== A: the hook, INSIDE, then Grandpa
+//   A1  (inside) the whole stomach fills the frame, screaming at the lens; it PUNCHES at the lens at 0.05 s (a burst, the screen
+//       shakes); "scream" both fists up, a big squash
+//   A2  (the room, a hard cut) Grandpa, grinning: "Sixteen" he slides his plate away and points up at the clock; "Scared" he
+//       points down at his belly; "stomach?" he pats it
+const timesA = (s: ShotNow) => {
+  const a2 = at(s, 'A2', undefined, 1.7);
+  return {fast: at(s, 'A1', 'fast', 0.7), scream: at(s, 'A1', 'scream', 1.1), a2, sixteen: at(s, 'A2', 'sixteen', a2), scared: at(s, 'A2', 'scared', a2 + 1.4), stomach: at(s, 'A2', 'stomach', a2 + 2.6)};
+};
+const ShotA: React.FC<{s: ShotNow}> = ({s}) => {
+  const t = s.t, k = timesA(s);
+  if (t < k.a2) {
+    const sf = openFace(s, 'stomach', 3, 'angry');
+    const punch = keyed(t, 0, [[0, 1, 0.12, 'out'], [0.2, 0, 0.3, 'back']]);
+    const armR: ArmPose = gestureAt(t, [[-9, 'pound'], [0.25, 'up', 0.2], [k.scream - 0.05, 'pound', 0.1], [k.scream + 0.3, 'up', 0.2]]);
+    const armL: ArmPose = gestureAt(t, [[-9, 'up'], [k.scream, 'pound', 0.1], [k.scream + 0.35, 'up', 0.2]]);
+    const big = keyed(t, 0, [[k.scream, 0.08, 0.08, 'out'], [k.scream + 0.12, 0, 0.3, 'back']]);
+    const [sx, sy] = shake(t, 0.02, 26, 0.35);
+    const zoom = 1 + punch * 0.12;
+    const rear = keyed(t, 0, [[k.fast - 0.05, -5, 0.2], [k.scream - 0.05, 4, 0.1, 'out'], [k.scream + 0.3, 0, 0.3]]);
+    return (
+      <>
+        <div style={{position: 'absolute', inset: 0, transform: `translate(${sx}px, ${sy}px) scale(${zoom.toFixed(4)})`, transformOrigin: '700px 900px'}}>
+          <StomachFull t={t} place={PLACE.stomach} growl={0} mood="angry" mouth={active(s, 'stomach') > 0.3 ? sf.mouth : 'big'} look={[0, 0.1]} armL={armL} armR={armR} sq={big} rot={rear} />
+        </div>
+        <Burst t={t} t0={0.02} x={860} y={760} r={220} />
+      </>
+    );
+  }
+  const slide = keyed(t, 0, [[k.sixteen, 1, 0.4, 'out']]);
+  const pose = poseAt(t, [[-9, 'rest'], [k.sixteen - 0.1, 'offer', 0.2], [k.sixteen + 0.55, 'point', 0.25], [k.scared - 0.1, 'explainLow', 0.25]]);
+  return (
+    <div style={{position: 'absolute', inset: 0, overflow: 'hidden', background: FAST_ROOM.wall}}>
+      <div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, transformOrigin: '0 0', transform: frameOf(1.7, [610, 860], [540, 960])}}>
+        <Scene bg={FAST_ROOM.wall}>
+          <FastRoom hours={0} plate="full" plateX={lerp(900, 958, slide)} sec={Math.floor(t)} />
+          <PersonAt spec={GRANDPA} {...gpRoom} pose={pose} expr={active(s, 'grandpa') > 0.3 ? 'talking' : 'happy'} look={t > k.scared - 0.1 ? [-0.7, 0.8] : t > k.sixteen + 0.5 ? [0.7, -0.8] : [-0.6, 0.5]} talk={talkSmooth(s, 'grandpa')} blink={blink(t, 3)} />
+        </Scene>
       </div>
     </div>
   );
 };
+const ScreenA: React.FC<{s: ShotNow}> = ({s}) => (s.t < timesA(s).a2 ? <HourBadge hours={0} /> : null);
 
-// =================================================================== A: the hook (0 h, the living room)
-//   0.00  the Stomach BURSTS on screen at the lens from the bottom left, fists up ("When you fast, I scream!")
-//   "scream" it shakes both fists at Grandpa (a screen shake); Grandpa, smiling, does a small take
-//   A2    (close on Grandpa) "Sixteen" he slides his plate away and points up at the clock; on "stomach?" the camera dives
-//         into his belly: the whole stomach, already growling
-const gpA = {view: 'three-quarter' as const, facing: 'right' as const, x: 620, y: FEET_Y - 22, scale: PEOPLE_SCALE};
-const timesA = (s: ShotNow) => {
-  const a2 = at(s, 'A2', undefined, 1.5);
-  return {scream: at(s, 'A1', 'scream', 1.0), a2, sixteen: at(s, 'A2', 'sixteen', a2), scared: at(s, 'A2', 'scared', a2 + 1.4), stomach: at(s, 'A2', 'stomach', a2 + 2.6)};
-};
-const bellyA = (): [number, number] => { const h = headAt(GRANDPA, {...gpA, pose: 'rest'}); return [h.x + h.r * 0.1, h.y + h.r * 3.2]; };
-const RoomA: React.FC<{s: ShotNow}> = ({s}) => {
-  const t = s.t, k = timesA(s);
-  const fly = keyed(t, 0, [[0, 1, 0.36, 'back']]);
-  const stf = openFace(s, 'stomach', 3, 'angry');
-  const slide = keyed(t, 0, [[k.sixteen, 1, 0.4, 'out']]);
-  const pose = poseAt(t, [[-9, 'rest'], [k.sixteen - 0.1, 'offer', 0.2], [k.sixteen + 0.55, 'point', 0.25], [k.scared - 0.1, 'explainLow', 0.25]]);
-  const tk = take(t, k.scream + 0.05, 0.5);
-  const [shx, shy] = shake(t, k.scream, 14, 0.4);
-  const fists = t > k.scream && t < k.scream + 0.6 ? Math.sin((t - k.scream) * 30) * 6 : 0;
-  // the Stomach's fists: up as it lands, pounding on "scream", folded while Grandpa talks
-  const pR = pounding(t, k.scream - 0.1, 0.9, 3.4), pL = pounding(t, k.scream - 0.1, 0.9, 3.4, 0.5);
-  const stR: ArmPose = pR ?? gestureAt(t, [[-9, 'up'], [k.a2, 'fold', 0.3]]);
-  const stL: ArmPose = pL ?? gestureAt(t, [[-9, 'up'], [k.a2, 'hips', 0.3]]);
-  // Grandpa's hand pushes the plate: the plate follows his palm while he pushes
-  const hand = handAt(GRANDPA, {...gpA, pose});
-  const palmX = Math.max(hand.R.palm[0], hand.L.palm[0]);
-  const plateX = t < k.sixteen ? 900 : Math.max(900, Math.min(958, palmX + 70 > 900 ? lerp(900, 958, slide) : 900));
-  return (
-    <div style={{position: 'absolute', inset: 0, transform: `translate(${shx}px, ${shy}px)`}}>
-      <Scene bg={FAST_ROOM.wall}>
-        <FastRoom hours={0} plate="full" plateX={plateX} sec={Math.floor(t)} />
-        <div style={{position: 'absolute', inset: 0, transform: `translateY(${tk.dy.toFixed(1)}px)`}}>
-          <PersonAt spec={GRANDPA} {...gpA} pose={pose} expr={t < k.a2 ? 'happy' : 'talking'} look={t > k.scared - 0.1 ? [-0.7, 0.8] : t > k.sixteen + 0.5 ? [0.7, -0.8] : [-0.6, 0.5]} talk={talkSmooth(s, 'grandpa')} blink={blink(t, 3)} />
-        </div>
-        {/* the Stomach at the lens: in from the bottom left, big, then it holds down there */}
-        <Put x={lerp(160, 300, fly)} y={lerp(2100, 1480, fly) + fists} size={lerp(300, 700, fly)} rot={lerp(-30, -8, fly) + fists * 0.6}>
-          <Stomach mood={t < k.a2 ? 'angry' : stf.mood} mouth={t < k.a2 && active(s, 'stomach') < 0.3 ? 'grit' : stf.mouth} look={t < k.a2 ? [0.4, -0.4] : [0.6, -0.6]} armL={stL} armR={stR} />
-        </Put>
-      </Scene>
-      <Burst t={t} t0={0.02} x={300} y={1500} r={200} />
-    </div>
-  );
-};
-const ShotA: React.FC<{s: ShotNow}> = ({s}) => {
-  const t = s.t, k = timesA(s);
-  const d0 = k.stomach + 0.05, d1 = d0 + 0.5;
-  const e = clamp01((t - d0) / (d1 - d0)), ee = e * e * (3 - 2 * e);
-  const [px, py] = bellyA();
-  const cam = t < k.a2 ? {k: 1, p: [540, 960] as [number, number]} : {k: 1.5, p: [600, 880] as [number, number]};
-  const [sxp, syp] = [540 + (px - cam.p[0]) * cam.k, 960 + (py - cam.p[1]) * cam.k];
-  const Z = 1 + ee * ee * 9, R = ee * 2300;
-  return (
-    <>
-      {e > 0 && <div style={{position: 'absolute', inset: 0}}><StomachFull t={t} growl={0} mood="angry" mouth="big" look={[-0.3, 0.3]} armL="up" armR="up" /></div>}
-      {e < 1 && (
-        <div style={{position: 'absolute', inset: 0, transformOrigin: `${sxp}px ${syp}px`, transform: `scale(${Z.toFixed(4)})`,
-          WebkitMaskImage: e > 0 ? `radial-gradient(circle at ${sxp}px ${syp}px, transparent ${(R / Z).toFixed(1)}px, black ${(R / Z + 1).toFixed(1)}px)` : undefined}}>
-          <div style={{position: 'absolute', inset: 0, overflow: 'hidden', background: FAST_ROOM.wall}}>
-            <div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, transformOrigin: '0 0', transform: frameOf(cam.k, cam.p, [540, 960])}}><RoomA s={s} /></div>
-          </div>
-        </div>
-      )}
-      {e > 0 && e < 1 && (
-        <svg style={{position: 'absolute', left: 0, top: 0, pointerEvents: 'none'}} width={1080} height={1920} viewBox="0 0 1080 1920">
-          <circle cx={sxp} cy={syp} r={R + 40} fill="none" stroke={GRANDPA.top.color} strokeWidth={36} />
-          <circle cx={sxp} cy={syp} r={R + 10} fill="none" stroke={GRANDPA.skin} strokeWidth={24} />
-          {[R + 58, R + 22, R].map((rr, i) => <circle key={i} cx={sxp} cy={syp} r={rr} fill="none" stroke={INK} strokeWidth={5} />)}
-        </svg>
-      )}
-    </>
-  );
-};
-
-// =================================================================== B: 4 h, the whole stomach
-//   0.00-0.6  the clock jumps 0 -> 4 h
-//   B1   "Feed" it growls and shakes; "FEED" it pounds the wall (a burst)
-//   B2   (closer) "Hunger" the Brain peeks down from the top; "waves," the growl swells and eases with its hand; "meal" again
-//   B3   (wide) "drops" the growl dies away; the stomach blinks, surprised
-const BRAIN_PEEK: [number, number] = [820, 350];
+// =================================================================== B: 4 h, the stomach and the hunger WAVE
+//   0.0-1.6  the room: the clock jumps to 4 h, Grandpa sneaks to the biscuit tin, the ALARM rings, he snatches his hand back
+//   B1   "Feed" a punch (held), "FEED" the other fist (a burst, the screen shakes)
+//   B2   "Hunger" the Brain drops in on its thread; "waves," a big blue wave rises across the frame, then sinks; "meal" again
+//   B3   "drops" the wave sinks away; the stomach's fists fall, it blinks, surprised
+const BLEAD = 1.6;
+const BRAIN_PEEK: [number, number] = [820, 360];
 const timesB = (s: ShotNow) => {
-  const b2 = at(s, 'B2', undefined, 2.2), b3 = at(s, 'B3', undefined, 5.2);
-  return {feed: at(s, 'B1', 'feed', 0.7), feed2: at(s, 'B1', 'FEED', 1.4), b2, hunger: at(s, 'B2', 'hunger', b2), waves: at(s, 'B2', 'waves', b2 + 0.7), meal: at(s, 'B2', 'meal', b2 + 1.9), b3, drops: at(s, 'B3', 'drops', b3 + 0.7)};
+  const b2 = at(s, 'B2', undefined, 3.2), b3 = at(s, 'B3', undefined, 6.2);
+  return {feed: at(s, 'B1', 'feed', 1.7), feed2: at(s, 'B1', 'FEED', 2.4), b2, hunger: at(s, 'B2', 'hunger', b2), waves: at(s, 'B2', 'waves', b2 + 0.7), meal: at(s, 'B2', 'meal', b2 + 1.9), b3, drops: at(s, 'B3', 'drops', b3 + 0.7)};
 };
 const BrainPeek: React.FC<{t: number; t0: number; mood?: string; mouth?: string; look?: [number, number]; size?: number}> = ({t, t0, mood = 'open', mouth = 'smile', look = [-0.5, 0.6], size = 400}) => {
   const k = keyed(t, 0, [[t0 - 0.2, 1, 0.4, 'back']]);
   if (k < 0.01) return null;
-  // it drops in on its thread and SWINGS, the swing dying away (a pendulum from the top of the frame)
   const u = Math.max(0, t - t0 - 0.2);
   const sw = 12 * Math.exp(-u * 3.2) * Math.sin(u * 7);
   return (
     <Put x={BRAIN_PEEK[0] + sw * 6} y={lerp(-220, BRAIN_PEEK[1], k)} size={size} rot={lerp(20, -6, k) + sw}>
-      {/* a thread from the top, like a spider coming down */}
       <path d="M 0 -60 L 0 -400" stroke={INK} strokeWidth={4} />
       <Brain mood={mood as never} mouth={mouth as never} look={look} />
     </Put>
@@ -188,191 +188,163 @@ const BrainPeek: React.FC<{t: number; t0: number; mood?: string; mouth?: string;
 };
 const ShotB: React.FC<{s: ShotNow}> = ({s}) => {
   const t = s.t, k = timesB(s);
-  if (t < LEAD) return <ClockInsert t={t} from={0} to={4} />;
+  if (t < BLEAD) return <SneakBeat t={t} />;
   const sf = openFace(s, 'stomach', 3, 'angry');
-  // the growl comes in WAVES (the line): a swell on "waves" and on "meal", each dying away, the stage holding between them
-  const growl = keyed(t, 0, [[k.feed, 1, 0.1], [k.b2 - 0.1, 0, 0.3], [k.waves, 0.7, 0.15], [k.waves + 0.55, 0, 0.3], [k.meal, 0.8, 0.15], [k.meal + 0.55, 0, 0.3]]);
-  const bf = openFace(s, 'brain', 2, 'neutral');
-  const calm = t > k.drops;
-  const [sx, sy] = shake(t, k.feed2, 22, 0.35);
-  // "Feed me! FEED ME!": both fists pound the wall; listening to the Brain it folds its arms; on "drops" they fall slack
-  // two clear punches, each HELD: the right fist on "Feed", the left on "FEED"
+  const wave = keyed(t, 0, [[k.waves, 0.9, 0.5], [k.waves + 0.9, 0.3, 0.6], [k.meal, 0.85, 0.5], [k.meal + 0.9, 0.3, 0.6], [k.drops, 0, 0.8]]);
   const armR: ArmPose = gestureAt(t, [[-9, 'up'], [k.feed - 0.05, 'pound', 0.1], [k.feed + 0.35, 'up', 0.2], [k.b2 - 0.1, 'fold', 0.3], [k.drops, 'rest', 0.4]]);
   const armL: ArmPose = gestureAt(t, [[-9, 'up'], [k.feed2 - 0.05, 'pound', 0.1], [k.feed2 + 0.35, 'up', 0.2], [k.b2 - 0.1, 'hips', 0.3], [k.drops, 'rest', 0.4]]);
   const big = keyed(t, 0, [[k.feed2, 0.08, 0.08, 'out'], [k.feed2 + 0.12, 0, 0.3, 'back']]);
-  const deflate = keyed(t, 0, [[k.drops, -0.04, 0.5]]);
+  const calm = t > k.drops;
+  const bf = openFace(s, 'brain', 2, 'neutral');
+  const [sx, sy] = shake(t, k.feed2, 22, 0.35);
   return (
     <div style={{position: 'absolute', inset: 0, transform: `translate(${sx}px, ${sy}px)`}}>
-      <StomachFull t={t} growl={growl} mood={calm ? (active(s, 'stomach') > 0.3 ? sf.mood : 'open') : 'angry'} mouth={calm ? 'o' : active(s, 'stomach') > 0.3 ? sf.mouth : 'grit'} look={t > k.hunger ? [0.6, -0.7] : [-0.3, 0.3]} armL={armL} armR={armR} sq={big + deflate} rot={t > k.hunger && t < k.drops ? 3 : 0} />
+      <StomachFull t={t} place={PLACE.stomach} wave={wave} growl={0} mood={calm ? 'open' : 'angry'} mouth={calm && active(s, 'stomach') < 0.3 ? 'o' : active(s, 'stomach') > 0.3 ? sf.mouth : 'grit'} look={t > k.hunger ? [0.6, -0.7] : [0, 0.1]} armL={armL} armR={armR} sq={big + keyed(t, 0, [[k.drops, -0.04, 0.5]])} />
       <BrainPeek t={t} t0={k.hunger} mood={bf.mood} mouth={bf.mouth} look={[-0.6, 0.6]} />
       <Burst t={t} t0={k.feed2} x={520} y={1250} r={170} />
     </div>
   );
 };
-const viewB = byLine({B2: {x: 700, y: 720, z: 1.25}}, WIDE);
-const TagB = tagVia(viewB);
-const ScreenB: React.FC<{s: ShotNow}> = ({s}) => (
-  <>
-    <TagB s={s} label="STOMACH" x={716} y={860} r={190} t={s.t - LEAD - 0.15} />
-    <TagB s={s} label="BRAIN" x={BRAIN_PEEK[0]} y={BRAIN_PEEK[1]} r={120} t={s.t - timesB(s).hunger - 0.25} />
-  </>
-);
-
-// =================================================================== C: 12 h, the whole liver and its sugar jar
-//   0.00-0.6  the clock jumps 4 -> 12 h
-//   C1   "sugar" the liver taps its jar (a ding); "low..." the beads drop away to a few
-//   C2   (closer) "twelve" the last beads go; "dry!" it stares at the empty jar, shocked (a burst, a jolt)
-const JAR: [number, number] = [840, 1260];
-const timesC = (s: ShotNow) => {
-  const c2 = at(s, 'C2', undefined, 3.4);
-  return {sugar: at(s, 'C1', 'sugar', 1.0), low: at(s, 'C1', 'low', 2.6), c2, twelve: at(s, 'C2', 'twelve', c2 + 0.5), dry: at(s, 'C2', 'dry', c2 + 2.0)};
-};
-const ShotC: React.FC<{s: ShotNow}> = ({s}) => {
-  const t = s.t, k = timesC(s);
-  if (t < LEAD) return <ClockInsert t={t} from={4} to={12} />;
-  const lf = openFace(s, 'liver', 5, 'scared');
-  const store = keyed(t, 1, [[k.low, 0.3, 0.5], [k.twelve, 0.04, 0.35], [k.dry, 0, 0.1]]);
-  const tap = t > k.sugar && t < k.sugar + 0.4 ? Math.sin(((t - k.sugar) / 0.4) * Math.PI * 2) * 4 : 0;
-  const jolt = take(t, k.dry, 0.5);
-  const shocked = t > k.dry;
-  const armR: ArmPose = shocked ? gestureAt(t, [[-9, 'tap'], [k.dry, 'cheek', 0.15]]) : gestureAt(t, [[-9, 'rest'], [k.sugar - 0.15, 'tap', 0.2], [k.sugar + 0.5, 'rest', 0.3], [k.low, 'shrug', 0.25], [k.c2, 'rest', 0.3], [k.twelve, 'tap', 0.25]]);
-  const armL: ArmPose = gestureAt(t, [[-9, 'rest'], [k.dry, 'cheek', 0.15]]);
-  // the beads leave the jar one after another and fly down into the vessels at the liver's gate (the sugar goes out to the body)
-  const flights = [...Array.from({length: 7}, (_, i) => k.low + i * 0.09), ...Array.from({length: 3}, (_, i) => k.twelve + 0.05 + i * 0.1)];
-  const beadLook: [number, number] = t > k.low && t < k.low + 1.2 ? [0.4, 0.9] : [0.8, 0.5];
+const ScreenB: React.FC<{s: ShotNow}> = ({s}) => {
+  if (s.t < BLEAD) return null;
   return (
     <>
-      <LiverFull t={t} fat={0} mood={shocked ? 'scared' : lf.mood} mouth={shocked && active(s, 'liver') < 0.3 ? 'o' : lf.mouth} look={beadLook} lift={jolt.dy} armL={armL} armR={armR} sq={shocked ? keyed(t, 0, [[k.dry, -0.06, 0.1, 'out'], [k.dry + 0.12, 0, 0.35, 'back']]) : 0} />
-      <svg style={{position: 'absolute', left: 0, top: 0, overflow: 'visible'}} width={1080} height={1920} viewBox="0 0 1080 1920">
-        {flights.map((t0, i) => {
-          const u = (t - t0) / 0.55;
-          if (u <= 0 || u >= 1) return null;
-          const [x, y] = arc([JAR[0] - 40 + (i % 3) * 40, JAR[1] - 230], [560 + (i % 2) * 40, 1170], 180, easeOut(u));
-          const r = 20 * (1 - u * 0.5);
-          return <g key={i}><circle cx={x} cy={y} r={r} fill={i % 3 ? '#ffffff' : '#fff6e2'} {...EDGE_IN} /><circle cx={x - r * 0.3} cy={y - r * 0.3} r={r * 0.25} fill={tint(CLOTH.sky, 0.3)} /></g>;
-        })}
-      </svg>
-      <Put x={JAR[0]} y={JAR[1]} size={600} rot={tap}><g transform="translate(0 -6) scale(0.5)"><SugarJar store={store} /></g></Put>
-      <Burst t={t} t0={k.dry} x={JAR[0]} y={JAR[1] - 60} r={150} />
+      {s.cur?.id !== 'B2' && <HourBadge hours={4} />}
+      {s.cur?.id !== 'B2' && <Tag label="STOMACH" x={716} y={860} r={190} t={s.t - BLEAD - 0.15} />}
+      {s.cur?.id === 'B2' ? <CharTag label="BRAIN" x={540 + (BRAIN_PEEK[0] - 760) * 1.6} y={960 + (BRAIN_PEEK[1] - 640) * 1.6} r={120 * 1.6} t={s.t - timesB(s).hunger - 0.25} /> : null}
     </>
   );
 };
-const viewC = byLine({C2: {x: 610, y: 960, z: 1.22}}, WIDE);
-const TagC = tagVia(viewC);
-const ScreenC: React.FC<{s: ShotNow}> = ({s}) => (
-  <>
-    <TagC s={s} label="LIVER" x={317} y={786} r={170} t={s.t - LEAD - 0.15} />
-    <NumTag s={s} text="about 12 hours" id="C2" word="about" />
-  </>
-);
 
-// =================================================================== D: the switch
-//   0.00 Lardo POPS up beside the liver (a boing)
-//   D1   "turn!" his arms fly up; "fat!" fuel drops pop off his top
-//   D2   (closer) "switches" the liver's big switch flips from SUGAR to FAT (a burst); "fat!" the liver hops
-const LARDO: [number, number] = [360, 1420];
-const SWITCH: [number, number] = [945, 1235];
+// =================================================================== C: 12 h, the liver and its FUEL GAUGE
+//   0.0-1.4  the room: Grandpa asleep in the armchair, snoring; the clock spins to 12 h
+//   C1   (the liver on teal, the gauge on the wall above it) "sugar" the liver points up at the gauge (FULL); "low..." the needle falls
+//   C2   "twelve" the needle hits EMPTY; "dry!" the alarm lamp flashes red, the liver throws its hands to its face (a jolt)
+const CLEAD = 1.4;
+const GAUGE: [number, number] = [790, 400];
+const LIVER_AT: [number, number, number] = [520, 1010, 1];
+const timesC = (s: ShotNow) => {
+  const c2 = at(s, 'C2', undefined, 4.2);
+  return {sugar: at(s, 'C1', 'sugar', 1.8), low: at(s, 'C1', 'low', 3.4), c2, twelve: at(s, 'C2', 'twelve', c2 + 0.5), dry: at(s, 'C2', 'dry', c2 + 2.0)};
+};
+const ShotC: React.FC<{s: ShotNow}> = ({s}) => {
+  const t = s.t, k = timesC(s);
+  if (t < CLEAD) return <SleepBeat t={t} />;
+  const lf = openFace(s, 'liver', 5, 'scared');
+  const level = keyed(t, 1, [[k.low, 0.3, 0.6], [k.twelve, 0, 0.4]]);
+  const shocked = t > k.dry;
+  const jolt = take(t, k.dry, 0.5);
+  const armR: ArmPose = shocked ? gestureAt(t, [[-9, 'wave'], [k.dry, 'cheek', 0.15]]) : gestureAt(t, [[-9, 'rest'], [k.sugar - 0.15, 'wave', 0.25]]);
+  const armL: ArmPose = gestureAt(t, [[-9, 'rest'], [k.dry, 'cheek', 0.15]]);
+  return (
+    <>
+      <LiverFull t={t} fat={0} place={PLACE.liver} at={LIVER_AT} mood={shocked ? 'scared' : lf.mood} mouth={shocked && active(s, 'liver') < 0.3 ? 'o' : lf.mouth} look={[0.7, -0.8]} lift={jolt.dy} armL={armL} armR={armR} />
+      <Put x={GAUGE[0]} y={GAUGE[1]} size={560} rot={shocked ? Math.sin(t * 40) * 1.5 * clamp01(1 - (t - k.dry) / 0.6) : 0}><g transform="scale(0.5)"><FuelGauge level={level} alarm={shocked ? t - k.dry : 0} /></g></Put>
+      <Burst t={t} t0={k.dry} x={GAUGE[0]} y={GAUGE[1] - 150} r={150} col={CLOTH.red} />
+    </>
+  );
+};
+const ScreenC: React.FC<{s: ShotNow}> = ({s}) => {
+  if (s.t < CLEAD) return null;
+  return (
+    <>
+      <HourBadge hours={12} />
+      <Tag label="LIVER" x={LIVER_AT[0] - 36 * 6.2} y={LIVER_AT[1] - 28 * 6.2} r={170} t={s.t - CLEAD - 0.15} />
+      <NumTag s={s} text="about 12 hours" id="C2" word="about" y={1180} />
+    </>
+  );
+};
+
+// =================================================================== D: the switch, the body's FURNACE
+//   0.0  (a new framing: the liver smaller, high on the left; the furnace big, bottom right) Lardo pops up with a shovel
+//   D1   "turn!" he throws his arms up; "Burning" he shovels a lump of fat into the furnace: it roars up
+//   D2   "switches" the furnace lever clanks from SUGAR to FAT (a burst); "fat!" the fire blazes; the liver hops
+const FURNACE: [number, number] = [520, 1270];
+const LARDO: [number, number] = [170, 1390];
 const timesD = (s: ShotNow) => {
   const d2 = at(s, 'D2', undefined, 1.9);
-  return {turn: at(s, 'D1', 'turn', 0.5), fat1: at(s, 'D1', 'fat', 1.2), d2, sw: at(s, 'D2', 'switches', d2 + 1.2), fat2: at(s, 'D2', 'fat', d2 + 2.3)};
-};
-/** The liver's fuel switch: a plate with SUGAR above, FAT below, and a lever (k: 0 = sugar, 1 = fat). */
-const FuelSwitch: React.FC<{k: number}> = ({k}) => {
-  const a = lerp(-40, 40, k);
-  return (
-    <g>
-      <Shape d="M -90 -120 H 90 Q 104 -120 104 -106 V 106 Q 104 120 90 120 H -90 Q -104 120 -104 106 V -106 Q -104 -120 -90 -120 Z" fill={CLOTH.offwhite} shadow={0.6} />
-      <text x={0} y={-74} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={32} fill={k < 0.5 ? INK : tint(INK, 0.6)}>SUGAR</text>
-      <text x={0} y={100} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={32} fill={k >= 0.5 ? CLOTH.orange : tint(INK, 0.6)}>FAT</text>
-      <circle cx={0} cy={10} r={26} fill={CLOTH.charcoal} {...EDGE_IN} />
-      <g transform={`rotate(${a.toFixed(1)} 0 10)`}>
-        <path d="M 0 10 L 0 -46" stroke={INK} strokeWidth={22} strokeLinecap="round" />
-        <path d="M 0 10 L 0 -46" stroke={tint(CLOTH.grey, 0.3)} strokeWidth={14} strokeLinecap="round" />
-        <circle cx={0} cy={-50} r={20} fill={CLOTH.red} {...EDGE_IN} />
-      </g>
-    </g>
-  );
+  return {turn: at(s, 'D1', 'turn', 0.5), burn: at(s, 'D1', 'burning', 1.0), d2, sw: at(s, 'D2', 'switches', d2 + 1.2), fat2: at(s, 'D2', 'fat', d2 + 2.3)};
 };
 const ShotD: React.FC<{s: ShotNow}> = ({s}) => {
   const t = s.t, k = timesD(s);
   const lf = openFace(s, 'liver', 5, 'happy');
   const la = openFace(s, 'lardo', 7, 'happy');
   const up = keyed(t, 0, [[0.02, 1, 0.38, 'back']]);
-  const drops = keyed(t, 0, [[k.fat1, 1, 0.33]]);
-  const flip = keyed(t, 0, [[k.sw, 1, 0.12, 'snap']]);
-  const hp = hop(t, k.fat2, 60, 0.32);
+  const lever = keyed(t, 0, [[k.sw, 1, 0.12, 'snap']]);
+  const fire = keyed(t, 0.15, [[k.burn + 0.45, 0.6, 0.3, 'out'], [k.fat2, 1, 0.3, 'out']]);
+  const hp = hop(t, k.fat2, 50, 0.3);
   const lhp = hop(t, k.turn, 50, 0.3);
-  const shrink = keyed(t, 1, [[k.fat1, 0.86, 1.6]]);
-  const armR: ArmPose = gestureAt(t, [[-9, 'rest'], [k.sw - 0.25, 'tap', 0.25], [k.sw + 0.5, 'rest', 0.3]]);
-  const armL: ArmPose = gestureAt(t, [[-9, 'rest'], [k.fat2 - 0.1, 'up', 0.15]]);
-  // fuel drops: each leaves Lardo's top and arcs up into the liver
-  const drops2 = t > k.fat1 ? Array.from({length: 3}, (_, i) => k.fat1 + 0.2 + i * 0.7) : [];
+  // the shovel throw: back, then a swing toward the furnace; the lump flies in an arc and drops into the fire
+  const swing = keyed(t, 0, [[k.burn - 0.1, -1, 0.15], [k.burn + 0.1, 1, 0.15, 'out'], [k.burn + 0.6, 0, 0.3]]);
+  const lumpU = (t - k.burn - 0.15) / 0.45;
+  const [lx, ly] = arc([LARDO[0] + 150, LARDO[1] - 170], [FURNACE[0] - 20, FURNACE[1] + 20], 260, easeOut(clamp01(lumpU)));
   return (
     <>
-      <LiverFull t={t} fat={0} mood={t > k.fat2 ? 'happy' : lf.mood} mouth={t > k.fat2 && active(s, 'liver') < 0.3 ? 'big' : lf.mouth} look={t < k.d2 ? [-0.6, 0.8] : t < k.sw + 0.5 ? [0.9, 0.7] : [-0.4, 0.6]} lift={hp.dy} armL={armL} armR={armR} />
-      <Put x={SWITCH[0]} y={SWITCH[1]} size={300}><g transform="scale(0.75)"><FuelSwitch k={flip} /></g></Put>
-      <svg style={{position: 'absolute', left: 0, top: 0, overflow: 'visible'}} width={1080} height={1920} viewBox="0 0 1080 1920">
-        {drops2.map((t0, i) => {
-          const u = (t - t0) / 0.6;
-          if (u <= 0 || u >= 1) return null;
-          const [x, y] = arc([LARDO[0], LARDO[1] - 190], [640 + (i % 3) * 70, 820], 260, easeOut(u));
-          return <path key={i} d={`M ${x} ${y - 24} Q ${x + 16} ${y - 2} ${x + 16} ${y + 6} A 16 16 0 1 1 ${x - 16} ${y + 6} Q ${x - 16} ${y - 2} ${x} ${y - 24} Z`} fill={CLOTH.yellow} {...EDGE_IN} />;
-        })}
-      </svg>
-      <Put x={LARDO[0]} y={lerp(1800, LARDO[1], up) + lhp.dy} size={lerp(240, 560, up) * shrink} sq={lhp.sq}>
-        <Lardo mood={la.mood} mouth={la.mouth} arms={t > k.turn - 0.05 ? 'up' : 'hips'} drops={drops} look={[0.5, -0.5]} />
+      <LiverFull t={t} fat={0} place={PLACE.liver} at={[420, 640, 0.62]} mood={t > k.fat2 ? 'happy' : lf.mood} mouth={t > k.fat2 && active(s, 'liver') < 0.3 ? 'big' : lf.mouth} look={[0.6, 0.8]} lift={hp.dy} armL={gestureAt(t, [[-9, 'rest'], [k.fat2 - 0.1, 'up', 0.15]])} armR={gestureAt(t, [[-9, 'rest'], [k.fat2 - 0.1, 'up', 0.15]])} />
+      <Put x={FURNACE[0]} y={FURNACE[1]} size={620}><g transform="scale(0.5)"><Furnace fire={fire} lever={lever} t={t} /></g></Put>
+      {lumpU > 0 && lumpU < 1 && <svg style={{position: 'absolute', left: 0, top: 0, overflow: 'visible'}} width={1080} height={1920} viewBox="0 0 1080 1920"><ellipse cx={lx} cy={ly} rx={34} ry={26} fill={CLOTH.yellow} {...EDGE_IN} /><circle cx={lx - 10} cy={ly - 8} r={7} fill="#ffffff" /></svg>}
+      <Put x={LARDO[0]} y={lerp(1800, LARDO[1], up) + lhp.dy} size={lerp(240, 480, up)} sq={lhp.sq}>
+        {/* the shovel, held in his right hand, swinging toward the furnace */}
+        <g transform={`rotate(${(swing * 40).toFixed(1)} 40 10)`}>
+          <path d="M 40 10 L 150 -40" stroke={INK} strokeWidth={13} strokeLinecap="round" />
+          <path d="M 40 10 L 150 -40" stroke={CLOTH.brown} strokeWidth={7} strokeLinecap="round" />
+          <Shape d="M 140 -70 L 190 -50 L 176 -10 L 128 -28 Z" fill={tint(CLOTH.grey, 0.2)} shadow={0.3} />
+        </g>
+        <Lardo mood={la.mood} mouth={la.mouth} arms={t > k.turn - 0.05 && t < k.burn - 0.1 ? 'up' : 'out'} look={[0.8, -0.2]} />
       </Put>
-      <Burst t={t} t0={k.sw} x={SWITCH[0]} y={SWITCH[1]} r={130} />
+      <Burst t={t} t0={k.sw} x={FURNACE[0] + 330} y={FURNACE[1]} r={100} />
+      <Burst t={t} t0={k.burn + 0.6} x={FURNACE[0]} y={FURNACE[1] - 40} r={150} col={CLOTH.orange} />
     </>
   );
 };
-const viewD = byLine({D2: {x: 600, y: 1050, z: 1.12}}, WIDE);
-const TagD = tagVia(viewD);
-const ScreenD: React.FC<{s: ShotNow}> = ({s}) => <TagD s={s} label="LARDO (FAT CELL)" x={LARDO[0]} y={LARDO[1] - 40} r={150} t={s.t - 0.4} />;
+const ScreenD: React.FC<{s: ShotNow}> = ({s}) => (
+  <>
+    <HourBadge hours={12} />
+    <Tag label="LARDO (FAT CELL)" x={LARDO[0]} y={LARDO[1] - 40} r={150} t={s.t - 0.4} />
+  </>
+);
 
-// =================================================================== E: 16 h, the living room (the twist)
-//   0.00  the clock RINGS at 16 h (it shakes, a burst); breakfast on the side table
-//   E1    "Sixteen" Grandpa gives a big thumbs-up; "faster?" he leans in, pleased with himself
-//   E2    (on Lardo) "year-long" Lardo pops up on the side table; "every" he counts on his fingers (arms out)
-//   E3    (wide) "same" he shrugs with a hop; "less." Grandpa's grin drops (a jolt)
-const gpE = {view: 'three-quarter' as const, facing: 'right' as const, x: 520, y: FEET_Y - 22, scale: PEOPLE_SCALE};
+// =================================================================== E: 16 h, the room (the twist)
+//   0.0-1.0  the clock RINGS at 16 h; Grandpa DASHES across the room to his breakfast (speed lines)
+//   E1   "Sixteen" a big thumbs-up; "melts" his arm spreads proudly; "faster?" he rubs his chin
+//   E2   "year-long" Lardo leaps onto the side table in an arc; "every" he counts on his fingers
+//   E3   "same" Lardo shrugs with a hop; "less." Grandpa's big take, hands to his cheeks
+const ELEAD = 1.0;
 const LARDO_E: [number, number] = [850, 1078];
 const timesE = (s: ShotNow) => {
-  const e2 = at(s, 'E2', undefined, 2.6), e3 = at(s, 'E3', undefined, 5.2);
-  return {sixteen: at(s, 'E1', 'sixteen', 0.1), melts: at(s, 'E1', 'melts', 1.6), faster: at(s, 'E1', 'faster', 1.9), e2, year: at(s, 'E2', 'year-long', e2 + 0.4), every: at(s, 'E2', 'every', e2 + 1.4), e3, same: at(s, 'E3', 'same', e3 + 0.8), less: at(s, 'E3', 'less', e3 + 1.9)};
+  const e2 = at(s, 'E2', undefined, 4.6), e3 = at(s, 'E3', undefined, 7.4);
+  return {sixteen: at(s, 'E1', 'sixteen', 1.1), melts: at(s, 'E1', 'melts', 2.6), faster: at(s, 'E1', 'faster', 3.0), e2, year: at(s, 'E2', 'year-long', e2 + 0.4), every: at(s, 'E2', 'every', e2 + 1.4), e3, same: at(s, 'E3', 'same', e3 + 0.8), less: at(s, 'E3', 'less', e3 + 1.9)};
 };
 const ShotE: React.FC<{s: ShotNow}> = ({s}) => {
   const t = s.t, k = timesE(s);
-  const ring = t < 0.6 ? Math.sin(t * 60) * 6 * (1 - t / 0.6) : 0;
-  const pose = poseAt(t, [[-9, 'rest'], [k.sixteen - 0.15, 'thumbsUp', 0.25], [k.melts - 0.1, 'explain', 0.25], [k.faster - 0.1, 'think', 0.25], [k.less - 0.05, 'cheeks', 0.15]]);
+  const ring = t < 0.7 ? Math.sin(t * 60) * 7 * (1 - t / 0.7) : 0;
+  const dash = easeOut(clamp01((t - 0.15) / 0.6));
+  const x = lerp(150, 520, dash);
+  const bounce = dash < 1 ? -Math.abs(Math.sin(dash * Math.PI * 4)) * 26 : 0;
+  const pose = poseAt(t, [[-9, 'worried'], [0.75, 'rest', 0.2], [k.sixteen - 0.15, 'thumbsUp', 0.25], [k.melts - 0.1, 'explain', 0.25], [k.faster - 0.1, 'think', 0.25], [k.less - 0.05, 'cheeks', 0.15]]);
   const up = keyed(t, 0, [[k.year - 0.45, 1, 0.5, 'out']]);
   const la = openFace(s, 'lardo', 7, 'neutral');
   const lhp = hop(t, k.same, 46, 0.3);
   const jolt = take(t, k.less, 0.8);
   const down = t > k.less;
   return (
-    <>
-      <Scene bg={FAST_ROOM.wall}>
-        <FastRoom hours={16} plate="breakfast" lamp={false} plateX={968} clockShake={ring} sec={Math.floor(t)} />
-        <div style={{position: 'absolute', inset: 0, transform: `translateY(${jolt.dy.toFixed(1)}px)`}}>
-          <PersonAt spec={GRANDPA} {...gpE} pose={pose} expr={down ? 'worried' : active(s, 'grandpa') > 0.3 ? 'talking' : 'happy'} look={t > k.e2 ? [0.9, 0.3] : [-0.2, 0]} talk={talkSmooth(s, 'grandpa')} blink={blink(t, 3)} />
-        </div>
-        {up > 0.01 && (
-          <Put x={lerp(1060, LARDO_E[0], up)} y={lerp(1560, LARDO_E[1], up) - Math.sin(clamp01(up) * Math.PI) * 260 + lhp.dy} size={300} rot={lerp(30, 0, clamp01(up))} sq={lhp.sq}>
-            <Lardo mood={t > k.same && t < k.less ? 'bored' : la.mood} mouth={la.mouth} arms={t > k.every && t < k.same ? 'out' : t > k.same ? 'down' : 'hips'} look={[-0.8, 0]} />
-          </Put>
-        )}
-      </Scene>
-      <Burst t={t} t0={0.02} x={CLOCK[0]} y={CLOCK[1]} r={200} col={CLOTH.yellow} />
-    </>
+    <RoomPic>
+      <FastRoom hours={16} plate="breakfast" lamp={false} plateX={968} clockShake={ring} sec={Math.floor(t)} />
+      <div style={{position: 'absolute', inset: 0, transform: `translateY(${(jolt.dy + bounce).toFixed(1)}px)`}}>
+        <PersonAt spec={GRANDPA} view="three-quarter" facing="right" x={x} y={FEET_Y - 22} scale={PEOPLE_SCALE} pose={pose} expr={down ? 'worried' : active(s, 'grandpa') > 0.3 ? 'talking' : 'happy'} look={t > k.e2 ? [0.9, 0.3] : [0.6, 0]} talk={talkSmooth(s, 'grandpa')} blink={blink(t, 3)} />
+      </div>
+      {dash > 0 && dash < 1 && <svg style={{position: 'absolute', left: 0, top: 0, overflow: 'visible'}} width={1080} height={1920} viewBox="0 0 1080 1920">{[900, 1100, 1300].map((y, i) => <path key={i} d={`M ${(x - 260 - i * 30).toFixed(0)} ${y} L ${(x - 120).toFixed(0)} ${y}`} stroke={INK} strokeWidth={8} strokeLinecap="round" opacity={1 - dash} />)}</svg>}
+      {up > 0.01 && (
+        <Put x={lerp(1060, LARDO_E[0], up)} y={lerp(1560, LARDO_E[1], up) - Math.sin(clamp01(up) * Math.PI) * 260 + lhp.dy} size={300} rot={lerp(30, 0, clamp01(up))} sq={lhp.sq}>
+          <Lardo mood={t > k.same && t < k.less ? 'bored' : la.mood} mouth={la.mouth} arms={t > k.every && t < k.same ? 'out' : t > k.same ? 'down' : 'hips'} look={[-0.8, 0]} />
+        </Put>
+      )}
+    </RoomPic>
   );
 };
-const viewE = byLine({E2: {x: 760, y: 1000, z: 1.35}}, {x: 600, y: 960, z: 1.06});
-const TagE = tagVia(viewE);
 
-// =================================================================== F: the whole brain (the care line)
-//   F1   "isn't" it wags (tilts left-right); "everyone." it shakes its head
-//   F2   (wide) "Pregnant?" a hop; "disorder?" a burst; "doctor" it leans to the lens (a push in)
+// =================================================================== F: the whole brain on purple (the care line)
+//   F1   "isn't" it wags a finger; F2 "Pregnant?" one hand up; "disorder?" the other; "doctor" it points and leans to the lens
 const timesF = (s: ShotNow) => {
   const f2 = at(s, 'F2', undefined, 1.6);
   return {isnt: at(s, 'F1', "isn't", 0.3), every: at(s, 'F1', 'everyone', 0.9), f2, preg: at(s, 'F2', 'pregnant', f2), dis: at(s, 'F2', 'disorder', f2 + 1.3), doc: at(s, 'F2', 'doctor', f2 + 2.2)};
@@ -380,14 +352,11 @@ const timesF = (s: ShotNow) => {
 const ShotF: React.FC<{s: ShotNow}> = ({s}) => {
   const t = s.t, k = timesF(s);
   const bf = openFace(s, 'brain', 2, 'neutral');
-  const wag = t > k.isnt && t < k.isnt + 1.0 ? Math.sin((t - k.isnt) * 14) * 3 * (1 - (t - k.isnt)) : 0;
-  const no = 0; // (a whole-brain head shake moved most of the frame: the wagging finger carries "not everyone")
-  const hp = {dy: 0};
   const lean = keyed(t, 1, [[k.doc, 1.08, 0.3, 'back']]);
   return (
     <>
-      <div style={{position: 'absolute', inset: 0, transformOrigin: '540px 900px', transform: `translate(${no.toFixed(1)}px, ${hp.dy.toFixed(1)}px) rotate(${wag.toFixed(2)}deg) scale(${lean.toFixed(4)})`}}>
-        <BrainFull t={t} mood={bf.mood} mouth={bf.mouth} look={t > k.doc ? [0, 0] : [0.3, 0.2]}
+      <div style={{position: 'absolute', inset: 0, transformOrigin: '540px 900px', transform: `scale(${lean.toFixed(4)})`}}>
+        <BrainFull t={t} place={PLACE.brain} mood={bf.mood} mouth={bf.mouth} look={t > k.doc ? [0, 0] : [0.3, 0.2]}
           armR={t > k.isnt && t < k.isnt + 0.9 ? {a: 'count', b: 'point', k: (Math.sin((t - k.isnt) * 16) + 1) / 2} : gestureAt(t, [[-9, 'rest'], [k.isnt - 0.15, 'count', 0.15], [k.every + 0.3, 'rest', 0.3], [k.dis - 0.1, 'wave', 0.2], [k.doc - 0.1, 'point', 0.2]])}
           armL={gestureAt(t, [[-9, 'rest'], [k.preg - 0.1, 'wave', 0.2]])} />
       </div>
@@ -395,13 +364,10 @@ const ShotF: React.FC<{s: ShotNow}> = ({s}) => {
     </>
   );
 };
-const viewF = byLine({F2: WIDE}, {x: 420, y: 700, z: 1.25});
 
 // =================================================================== G: the stomach again (the answer and the loop)
-//   0.00 the stomach, full and calm after breakfast (a small burp), then it frowns
-//   G1   "screaming" a little growl, it looks around, suspicious; "night?" it folds its arms (holds)
-//   G2   (closer) "Me!" the Brain drops in on its thread and winks (a burst); "scream," it pulls a tiny scream face and the
-//        stomach rattles; "stomach!" the stomach's jaw drops
+//   0.0  full and calm after breakfast, it pats its belly (a small burp); G1 "screaming" arms folded, eyes darting; "Me!" the
+//   Brain drops in and winks; "scream," the stomach rattles; "stomach!" its jaw drops, a shrug
 const timesG = (s: ShotNow) => {
   const g2 = at(s, 'G2', undefined, 2.4);
   return {scr: at(s, 'G1', 'screaming', 0.9), night: at(s, 'G1', 'night', 1.8), g2, me: at(s, 'G2', 'me', g2), scream: at(s, 'G2', 'scream', g2 + 1.6), stom: at(s, 'G2', 'stomach', g2 + 2.6)};
@@ -409,7 +375,6 @@ const timesG = (s: ShotNow) => {
 const ShotG: React.FC<{s: ShotNow}> = ({s}) => {
   const t = s.t, k = timesG(s);
   const sf = openFace(s, 'stomach', 3, 'angry');
-  const growl = keyed(t, 0, [[k.scr, 0.5, 0.1], [k.me, 0, 0.13], [k.scream, 0.4, 0.1], [k.stom, 0, 0.1]]);
   const calm = t < k.scr - 0.3;
   const jaw = t > k.stom;
   const look: [number, number] = t > k.me ? [0.6, -0.7] : t > k.scr ? [Math.sin(t * 4) * 0.8, 0.1] : [0, 0.2];
@@ -421,26 +386,25 @@ const ShotG: React.FC<{s: ShotNow}> = ({s}) => {
   const rattle = t > k.scream && t < k.scream + 0.5 ? Math.sin((t - k.scream) * 50) * 0.04 : 0;
   return (
     <>
-      <StomachFull t={t} growl={growl} mood={jaw ? 'scared' : calm ? 'happy' : sf.mood} mouth={jaw && active(s, 'stomach') < 0.3 ? 'o' : calm ? 'smile' : sf.mouth} look={look} armL={armL} armR={armR} sq={burp + rattle} rot={0} />
+      <StomachFull t={t} place={PLACE.stomach} growl={0} mood={jaw ? 'scared' : calm ? 'happy' : sf.mood} mouth={jaw && active(s, 'stomach') < 0.3 ? 'o' : calm ? 'smile' : sf.mouth} look={look} armL={armL} armR={armR} sq={burp + rattle} />
       <BrainPeek t={t} t0={k.me} mood={bm.mood} mouth={bm.mouth} look={[-0.6, 0.6]} />
       <Burst t={t} t0={k.me} x={BRAIN_PEEK[0] - 230} y={BRAIN_PEEK[1] + 40} r={110} col={CLOTH.yellow} />
     </>
   );
 };
-const viewG = byLine({G2: {x: 720, y: 720, z: 1.2}}, WIDE);
 
-// ------------------------------------------------------------------ the shots
+// ------------------------------------------------------------------ the shots: ONE framing each (no reframe inside a shot)
 const face = (x: number, y: number, r: number): Focus => ({x, y, r});
 export const FASTING_SHOTS: Record<string, ShotDef> = {
-  A: {Scene: ShotA, focus: () => face(560, 760, 120), view: () => WIDE},
-  B: {Scene: ShotB, Screen: ScreenB, focus: () => face(716, 860, 190), view: viewB},
-  C: {Scene: ShotC, Screen: ScreenC, focus: () => face(317, 786, 170), view: viewC},
-  D: {Scene: ShotD, Screen: ScreenD, focus: () => face(317, 786, 170), view: viewD},
-  E: {Scene: ShotE, focus: () => face(520, 700, 120), view: viewE},
-  F: {Scene: ShotF, focus: () => face(390, 612, 160), view: viewF},
-  G: {Scene: ShotG, focus: () => face(716, 860, 190), view: viewG},
+  A: {Scene: ShotA, Screen: ScreenA, focus: () => face(716, 860, 190), view: () => WIDE},
+  B: {Scene: ShotB, Screen: ScreenB, focus: () => face(716, 860, 190), view: (s) => (s.cur?.id === 'B2' ? {x: 760, y: 640, z: 1.6} : WIDE)},
+  C: {Scene: ShotC, Screen: ScreenC, focus: () => face(297, 836, 170), view: () => WIDE},
+  D: {Scene: ShotD, Screen: ScreenD, focus: () => face(420, 600, 120), view: () => WIDE},
+  E: {Scene: ShotE, focus: () => face(560, 700, 120), view: (s) => (s.cur?.id === 'E2' ? {x: 740, y: 1000, z: 1.6} : WIDE)},
+  F: {Scene: ShotF, focus: () => face(390, 612, 160), view: () => WIDE},
+  G: {Scene: ShotG, focus: () => face(716, 860, 190), view: () => WIDE},
 };
-void TagE; void STOMACH_FULL;
+void EDGE; void FONT; void shade; void OUTLINE; void ELEAD;
 
 // ------------------------------------------------------------------ the end card's icons (round badges, like the others)
 const Badge: React.FC<{bg: string; children: React.ReactNode; id: string}> = ({bg, children, id}) => (

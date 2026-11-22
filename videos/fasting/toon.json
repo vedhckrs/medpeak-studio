@@ -10,7 +10,7 @@
  "hooks": [
   {
    "line": "When you fast, I scream!",
-   "why": "the owner's pick A (2026-11-22: \"Hook A, Grandpa\"), cut to 5 words for the 2-second hook rule (\"No food for sixteen hours? I'll scream in four!\" took 2.7 s)"
+   "why": "the owner's pick A of the second round (2026-11-22: \"Hook A, go ahead\"): open INSIDE, the whole stomach screaming at the lens"
   },
   {
    "line": "You fast? Hour twelve, your body switches fuel!",
@@ -55,7 +55,7 @@
   ],
   "hashtags": "#fasting #health #shorts",
   "cover": {
-   "at": 3.2,
+   "at": 1.2,
    "text": "When you fast",
    "accent": "fast"
   }
@@ -155,8 +155,14 @@
    "events": [
     {
      "at": "start",
-     "act": "stomach: bursts on screen at the lens, fists up",
+     "act": "stomach: fills the frame, screaming, and punches at the lens",
      "sfx": "pop",
+     "fx": "flash"
+    },
+    {
+     "at": "A1",
+     "act": "stomach: rears back, winding up",
+     "word": "fast,",
      "fx": "flash"
     },
     {
@@ -179,13 +185,12 @@
     },
     {
      "at": "A2",
-     "act": "grandpa: the camera dives into his belly to the growling stomach",
+     "act": "grandpa: pats his belly, grinning",
      "word": "stomach?",
      "set": {
-      "growl": 1
+      "growl": 0
      },
-     "over": 12,
-     "sfx": "whoosh-fast"
+     "over": 12
     }
    ],
    "lines": [
@@ -197,7 +202,6 @@
      "pose": "rest",
      "key": "scream",
      "chat": true,
-     "cam": "ecu 50 push",
      "react": {
       "grandpa": "happy"
      },
@@ -211,7 +215,7 @@
      "pose": "rest",
      "key": "hunger",
      "chat": true,
-     "cam": "mcu lock"
+     "cam": "ms lock"
     }
    ],
    "props": []
@@ -219,7 +223,7 @@
   {
    "id": "B",
    "set": "macro",
-   "lead": 0.6,
+   "lead": 1.6,
    "cast": [
     {
      "who": "stomach",
@@ -244,8 +248,8 @@
    "events": [
     {
      "at": "start",
-     "act": "grandpa: the clock jumps to 4 h; cut inside to his stomach",
-     "sfx": "swish"
+     "act": "grandpa: the clock jumps to 4 h; he sneaks a hand to the biscuit tin; the clock alarm rings and he snatches it back; cut inside to his stomach",
+     "sfx": "alarm-beep"
     },
     {
      "at": "B1",
@@ -307,8 +311,7 @@
      "emotion": "angry",
      "pose": "rest",
      "key": "feed",
-     "chat": true,
-     "cam": "ews whip"
+     "chat": true
     },
     {
      "id": "B2",
@@ -320,7 +323,7 @@
      "src": [
       "natalucci-2005"
      ],
-     "cam": "mcu push"
+     "cam": "cu lock"
     },
     {
      "id": "B3",
@@ -331,8 +334,7 @@
      "key": "drops",
      "src": [
       "natalucci-2005"
-     ],
-     "cam": "ews"
+     ]
     }
    ],
    "props": []
@@ -340,7 +342,7 @@
   {
    "id": "C",
    "set": "macro",
-   "lead": 0.6,
+   "lead": 1.4,
    "cast": [
     {
      "who": "liver",
@@ -358,18 +360,23 @@
    "events": [
     {
      "at": "start",
-     "act": "grandpa: the clock jumps to 12 h; cut to his liver",
-     "sfx": "swish"
+     "act": "grandpa: asleep in his armchair, snoring, while the clock spins to 12 h; cut to his liver",
+     "sfx": "whoosh-soft"
     },
     {
      "at": "C1",
-     "act": "liver: taps its sugar jar",
+     "act": "liver: the cut from the room: it looks up at its fuel gauge",
+     "fx": "flash"
+    },
+    {
+     "at": "C1",
+     "act": "liver: points up at its big fuel gauge, the needle on FULL",
      "word": "sugar",
      "sfx": "ding"
     },
     {
      "at": "C1",
-     "act": "liver: the beads in its jar drop away",
+     "act": "liver: the gauge needle falls toward EMPTY",
      "word": "low...",
      "set": {
       "store": 0.3
@@ -379,7 +386,7 @@
     },
     {
      "at": "C2",
-     "act": "liver: the last beads go",
+     "act": "liver: the needle hits EMPTY",
      "word": "twelve",
      "set": {
       "store": 0
@@ -388,9 +395,9 @@
     },
     {
      "at": "C2",
-     "act": "liver: stares at the empty jar, shocked",
+     "act": "liver: the alarm lamp flashes red; hands to its face",
      "word": "dry!",
-     "sfx": "record-scratch",
+     "sfx": "alarm-beep",
      "fx": "flash"
     }
    ],
@@ -404,8 +411,7 @@
      "key": "sugar",
      "src": [
       "anton-2018"
-     ],
-     "cam": "ews whip"
+     ]
     },
     {
      "id": "C2",
@@ -416,8 +422,7 @@
      "key": "dry",
      "src": [
       "anton-2018"
-     ],
-     "cam": "cu push"
+     ]
     }
    ],
    "props": [
@@ -460,7 +465,7 @@
    "events": [
     {
      "at": "start",
-     "act": "lardo: pops up beside the liver",
+     "act": "lardo: pops up by the body's furnace with a shovel",
      "sfx": "boing"
     },
     {
@@ -471,24 +476,24 @@
     },
     {
      "at": "D1",
-     "act": "lardo: fuel drops pop off his top",
-     "word": "fat!",
+     "act": "lardo: shovels a lump of fat into the furnace; it roars",
+     "word": "Burning",
      "set": {
       "drops": 1
      },
      "over": 20,
-     "sfx": "sparkle"
+     "sfx": "whoosh-air"
     },
     {
      "at": "D2",
-     "act": "liver: flips a big switch on its side from SUGAR to FAT",
+     "act": "lardo: the furnace lever clanks from SUGAR to FAT",
      "word": "switches",
      "sfx": "toot",
      "fx": "flash"
     },
     {
      "at": "D2",
-     "act": "liver: catches a fuel drop and hops for joy",
+     "act": "liver: the fire blazes orange; it hops for joy",
      "word": "fat!",
      "sfx": "success-chime"
     }
@@ -503,8 +508,7 @@
      "key": "fat",
      "src": [
       "anton-2018"
-     ],
-     "cam": "ms lock"
+     ]
     },
     {
      "id": "D2",
@@ -515,8 +519,7 @@
      "key": "switches",
      "src": [
       "anton-2018"
-     ],
-     "cam": "cu push"
+     ]
     }
    ],
    "props": []
@@ -524,6 +527,7 @@
   {
    "id": "E",
    "set": "home",
+   "lead": 1.0,
    "cast": [
     {
      "who": "grandpa",
@@ -544,8 +548,14 @@
    "events": [
     {
      "at": "start",
-     "act": "grandpa: the clock rings 16 h; breakfast on the table",
-     "sfx": "ding",
+     "act": "grandpa: the clock rings 16 h; he dashes across the room to his breakfast",
+     "sfx": "whoosh-fast",
+     "fx": "flash"
+    },
+    {
+     "at": "E1",
+     "act": "grandpa: skids to a stop by his breakfast",
+     "sfx": "skid",
      "fx": "flash"
     },
     {
@@ -599,8 +609,7 @@
      "emotion": "happy",
      "pose": "rest",
      "key": "faster",
-     "chat": true,
-     "cam": "ms lock"
+     "chat": true
     },
     {
      "id": "E2",
@@ -612,7 +621,7 @@
      "src": [
       "trepanowski-2017"
      ],
-     "cam": "mcu lock"
+     "cam": "cu lock"
     },
     {
      "id": "E3",
@@ -624,8 +633,7 @@
      "src": [
       "trepanowski-2017",
       "lowe-2020"
-     ],
-     "cam": "ews"
+     ]
     }
    ],
    "props": []
@@ -695,8 +703,7 @@
      "emotion": "neutral",
      "pose": "rest",
      "key": "everyone",
-     "chat": true,
-     "cam": "cu push"
+     "chat": true
     },
     {
      "id": "F2",
@@ -707,8 +714,7 @@
      "key": "doctor",
      "src": [
       "niddk-if"
-     ],
-     "cam": "ews"
+     ]
     }
    ],
    "props": []
@@ -803,8 +809,7 @@
      "emotion": "angry",
      "pose": "rest",
      "key": "screaming",
-     "chat": true,
-     "cam": "ews whip"
+     "chat": true
     },
     {
      "id": "G2",
@@ -815,8 +820,7 @@
      "key": "brain",
      "src": [
       "natalucci-2005"
-     ],
-     "cam": "cu push"
+     ]
     }
    ],
    "props": []

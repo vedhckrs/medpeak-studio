@@ -6,6 +6,24 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-22 (27) - MacBook (local Claude Code) - branch `video/fasting` - fasting SECOND CUT after the owner's notes (NOT uploaded)
+
+- Owner on the first final: no narrator on the end card, not interesting / not visual / confusing, the hook failed, camera jumps.
+  Plan `plans/fasting-fix-2026-11-22.md`; the owner: "Hook A, go ahead".
+- END CARD (a class bug, also in quit-sugar, which is PUBLIC with a silent card): the player played Joey only when a video's code named
+  the clip by hand. Now `toon-v8-render.mjs` passes every paid clip in (`toon.ctaClip` from cta-timings.json) and `ctaOf` in video.tsx
+  plays it with beats from his real words; `toon:listen` fails a card without speech; `pipeline/test/cta.test.mjs`.
+- CAMERA: the shots' own framings were never checked (toon:camera reads script cam words). `pipeline/test/views.test.mjs` reads the real
+  framings (a reframe must change size 1.5x); fasting holds ONE framing per place, three cuts to another character at 1.6x.
+- PICTURES: one colour per place (`PLACE` in fast-art.tsx; quiet tone-on-tone backgrounds: `place` prop on StomachFull, LiverFull, BrainFull),
+  the hook opens inside (the stomach screaming at the lens), the hunger WAVE, the liver's FUEL GAUGE with an alarm, the body's FURNACE
+  that Lardo shovels fat into, Grandpa's silent beats (biscuit tin + alarm at 4 h, asleep to 12 h, dash to breakfast at 16 h), an hour
+  badge on body shots. The hook line stays "When you fast, I scream!" (the longer one took 2.4 s, over the 2 s rule): no new voices.
+- Final: 65.2 s (story 48 s), -14.0 LUFS, END CARD speech 81%, look ALL PASS (still 53%, bright 152), all checks pass, npm test 52/52.
+- Open: the owner decides on re-uploading Quit Sugar with its narrator; upload fasting on his word (`upload.py fasting toon --approve --slot`).
+
+---
+
 ## 2026-11-22 (26) - MacBook (local Claude Code) - branch `video/fasting` - fasting FINISHED, waiting for the owner to watch (NOT uploaded)
 
 - Topic #5 "What Happens to Your Body When You Fast" (slug `fasting`, episode 13, shape `clock`): plan `plans/fasting-2026-11-22.md`,

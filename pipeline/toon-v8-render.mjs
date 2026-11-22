@@ -54,6 +54,15 @@ export const v8Props = (slug, {silent = false, music: other} = {}) => {
       music = turned;
     }
   }
+  // the narrator's end card (2026-11-22: quit-sugar and fasting went out with a SILENT card, because the clip was named by hand in
+  // each video's code and two videos missed it). Now: every paid clip with its timings goes into the props, no hand-typed line.
+  const ctaT = silent ? null : readJson(path.join(videoDir(slug), 'cta-timings.json'), null);
+  const ctaLen = ctaT ? (ctaT.seconds ?? ctaT.words?.at(-1)?.end) : null; // the first card's file (rabies) has no `seconds`
+  if (ctaLen) {
+    const clip = path.join(PUBLIC, 'toons', slug, 'voice', 'cta.mp3');
+    if (!fs.existsSync(clip)) throw new Error(`${slug}: the end card's voice is paid for (cta-timings.json) but ${clip} is missing: run the voice sync`);
+    toon.ctaClip = {voice: `toons/${slug}/voice/cta.mp3`, seconds: ctaLen, words: ctaT.words ?? []};
+  }
   return {toon, timings, sfx, music};
 };
 

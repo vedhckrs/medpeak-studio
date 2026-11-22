@@ -2,8 +2,8 @@
 
 > Ready. Nothing is uploaded until the owner says so; an upload is always private first.
 
-**Video:** `videos/fasting/renders/toon-v8.mp4` (60.2 s, 1080 x 1920, a Short)
-**Cover:** `videos/fasting/renders/toon-cover.jpg` (the frame at 3.2 s; in the YouTube app a Short's cover is picked from the video's own frames, so choose that moment there if the picture is not accepted)
+**Video:** `videos/fasting/renders/toon-v8.mp4` (65.2 s, 1080 x 1920, a Short)
+**Cover:** `videos/fasting/renders/toon-cover.jpg` (the frame at 1.2 s; in the YouTube app a Short's cover is picked from the video's own frames, so choose that moment there if the picture is not accepted)
 **Captions:** none. The words are already on screen; the owner does not want a caption track.
 
 ## Title
@@ -53,7 +53,7 @@ Have you ever tried a 16-hour fast?
 
 - [x] voices made and unchanged since
 - [x] final render exists
-- [x] under 60 seconds (45.6 s)
+- [x] under 60 seconds (48.4 s)
 - [x] title follows the channel rules
 - [x] 5 source(s) listed
 - [ ] owner has watched the final video with sound

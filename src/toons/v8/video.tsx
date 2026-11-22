@@ -30,9 +30,31 @@ export const V8_CTA: Record<string, V8Cta> = {rabies: RABIES_CTA, 'no-sleep': NO
 export const MUSIC_LEVEL = 0.9;
 export const CTA_LEAD = 0.4, CTA_TAIL = 1.2; // the narrator's last word is never cut; keep the sum in step with CTA_PAD in pipeline/toon-check.mjs
 export const ctaSeconds = (c: V8Cta | undefined) => (!c ? 0 : CTA_LEAD + (c.seconds ?? 4) + CTA_TAIL);
+type CtaClip = {voice: string; seconds: number; words: {w: string; start: number}[]};
+/**
+ * A video's end card WITH its narrator: the card's look from the video's code, the voice and its real beats from the paid clip
+ * (toon.ctaClip, put in by the render from videos/<slug>/cta-timings.json). The beats: each point lands on the first word of its
+ * bold text that Joey says after the last beat; the follow line on "Follow".
+ */
+export const ctaOf = (toon: Toon): V8Cta | undefined => {
+  const c = V8_CTA[toon.slug];
+  const clip = (toon as Toon & {ctaClip?: CtaClip}).ctaClip;
+  if (!c || !clip) return c;
+  const bare = (w: string) => w.toLowerCase().replace(/[^a-z0-9']/g, '');
+  const W = clip.words.map((w) => ({w: bare(w.w), t: w.start}));
+  let from = 0;
+  const find = (cands: string[], dflt: number) => {
+    for (let i = from; i < W.length; i++) if (cands.includes(W[i].w)) { from = i + 1; return W[i].t; }
+    return dflt;
+  };
+  const small = new Set(['a', 'an', 'the', 'no', 'of', 'to', 'in', 'is', 'and', 'than']);
+  const points = c.points.map((p, i) => find(p.big.split(/\s+/).map(bare).filter((w) => w && !small.has(w)), c.at ? c.at.points[i] : 2 + i * 2.6)) as [number, number, number];
+  const follow = find(['follow'], c.at ? c.at.follow : clip.seconds - 3);
+  return {...c, voice: clip.voice, seconds: clip.seconds, at: {head: 0, points, follow}};
+};
 
 const K = V8_FPS / TOON_FPS; // the layout counts 30 frames a second; the video runs at 60
-export const v8Frames = (toon: Toon, timings: ToonTimings | null) => Math.round((layoutToon(toon, timings).total / TOON_FPS + ctaSeconds(V8_CTA[toon.slug])) * V8_FPS);
+export const v8Frames = (toon: Toon, timings: ToonTimings | null) => Math.round((layoutToon(toon, timings).total / TOON_FPS + ctaSeconds(ctaOf(toon))) * V8_FPS);
 
 /** A shot's "now" (play.tsx) at second `sec` of the video. */
 export const shotNow = (L: Layout, toon: Toon, timings: ToonTimings | null, sec: number): {s: ShotNow; si: number} => {
@@ -220,7 +242,7 @@ export const ToonV8: React.FC<V8VideoProps> = ({toon, timings, sfx, music, bare 
   const ends = L.total / TOON_FPS;
   const acts = actStarts.length === 3 ? actStarts : [0, ends / 3, (2 * ends) / 3];
   const act = sec >= ends ? 2 : acts.filter((a) => sec >= a).length - 1;
-  const cta = V8_CTA[toon.slug];
+  const cta = ctaOf(toon);
   const inCta = !!cta && sec >= ends;
   // the card's beats, in seconds from the card's start (the narrator begins at CTA_LEAD)
   const ctaAt: CtaAt | undefined = cta?.at && {head: CTA_LEAD + cta.at.head, points: cta.at.points.map((p) => CTA_LEAD + p) as [number, number, number], follow: CTA_LEAD + cta.at.follow};

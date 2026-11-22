@@ -41,24 +41,25 @@ shots = [
             {"who": "grandpa", "x": 560, "size": 960, "emotion": "happy", "pose": "rest", "y": 979}],
    "state": {"view": 0, "growl": 1},
    "events": [
-     E("start", act="stomach: bursts on screen at the lens, fists up", sfx="pop", fx="flash"),
+     E("start", act="stomach: fills the frame, screaming, and punches at the lens", sfx="pop", fx="flash"),
+     E("A1", word="fast,", act="stomach: rears back, winding up", fx="flash"),
      E("A1", word="scream", act="stomach: shakes both fists at grandpa", sfx="gurgle-stomach"),
      E("A2", word="Sixteen", act="grandpa: pushes his dinner plate away and points at the clock", sfx="swish"),
      E("A2", word="Scared", act="grandpa: turns and points down at his stomach, teasing", fx="flash"),
-     E("A2", word="stomach?", act="grandpa: the camera dives into his belly to the growling stomach", sfx="whoosh-fast", set={"growl": 1}, over=12),
+     E("A2", word="stomach?", act="grandpa: pats his belly, grinning", set={"growl": 0}, over=12),
    ],
    "lines": [
-     L("A1", "stomach", "When you fast, I scream!", "angry", "scream", chat=True, cam="ecu 50 push", tempo=1.15, react={"grandpa": "happy"}),
-     L("A2", "grandpa", "Sixteen hours. Scared of a little hunger, stomach?", "happy", "hunger", chat=True, cam="mcu lock"),
+     L("A1", "stomach", "When you fast, I scream!", "angry", "scream", chat=True, tempo=1.15, react={"grandpa": "happy"}),
+     L("A2", "grandpa", "Sixteen hours. Scared of a little hunger, stomach?", "happy", "hunger", chat=True, cam="ms lock"),
    ], "props": []},
   # B: 4 h, the whole stomach: it growls and shakes ("Feed me!"); the Brain peeks down from the top: hunger comes in waves at
   # your usual meal times, and drops again on its own (the growl dies down).
-  {"id": "B", "set": "macro", "lead": 0.6,
+  {"id": "B", "set": "macro", "lead": 1.6,
    "cast": [{"who": "stomach", "x": 540, "size": 1080, "stage": True, "emotion": "angry", "pose": "rest"},
             {"who": "brain", "x": 820, "size": 340, "emotion": "neutral", "pose": "rest"}],
    "state": {"view": 0, "growl": 0},
    "events": [
-     E("start", act="grandpa: the clock jumps to 4 h; cut inside to his stomach", sfx="swish"),
+     E("start", act="grandpa: the clock jumps to 4 h; he sneaks a hand to the biscuit tin; the clock alarm rings and he snatches it back; cut inside to his stomach", sfx="alarm-beep"),
      E("B1", word="Feed", act="stomach: growls and shakes", set={"growl": 1}, over=6, sfx="gurgle-stomach"),
      E("B1", word="FEED", act="stomach: pounds the wall with both fists", fx="flash"),
      E("B2", word="Hunger", act="brain: peeks down from the top of the frame", sfx="bubble-pop"),
@@ -67,24 +68,25 @@ shots = [
      E("B3", word="drops", act="stomach: the growl dies down, it blinks, surprised", set={"growl": 0}, over=20, sfx="whoosh-soft"),
    ],
    "lines": [
-     L("B1", "stomach", "Feed me! FEED ME!", "angry", "feed", chat=True, cam="ews whip"),
-     L("B2", "brain", "Hunger comes in waves, at your usual meal times...", "neutral", "waves", src=[NA], cam="mcu push"),
-     L("B3", "brain", "...and it drops again on its own.", "happy", "drops", src=[NA], cam="ews"),
+     L("B1", "stomach", "Feed me! FEED ME!", "angry", "feed", chat=True),
+     L("B2", "brain", "Hunger comes in waves, at your usual meal times...", "neutral", "waves", src=[NA], cam="cu lock"),
+     L("B3", "brain", "...and it drops again on its own.", "happy", "drops", src=[NA]),
    ], "props": []},
   # C: 12 h, the whole liver and its sugar store: the jar empties bead by bead, then runs dry.
-  {"id": "C", "set": "macro", "lead": 0.6,
+  {"id": "C", "set": "macro", "lead": 1.4,
    "cast": [{"who": "liver", "x": 540, "size": 1080, "stage": True, "emotion": "scared", "pose": "rest"}],
    "state": {"view": 1, "store": 1},
    "events": [
-     E("start", act="grandpa: the clock jumps to 12 h; cut to his liver", sfx="swish"),
-     E("C1", word="sugar", act="liver: taps its sugar jar", sfx="ding"),
-     E("C1", word="low...", act="liver: the beads in its jar drop away", set={"store": 0.3}, over=30, sfx="drip"),
-     E("C2", word="twelve", act="liver: the last beads go", set={"store": 0}, over=20),
-     E("C2", word="dry!", act="liver: stares at the empty jar, shocked", sfx="record-scratch", fx="flash"),
+     E("start", act="grandpa: asleep in his armchair, snoring, while the clock spins to 12 h; cut to his liver", sfx="whoosh-soft"),
+     E("C1", act="liver: the cut from the room: it looks up at its fuel gauge", fx="flash"),
+     E("C1", word="sugar", act="liver: points up at its big fuel gauge, the needle on FULL", sfx="ding"),
+     E("C1", word="low...", act="liver: the gauge needle falls toward EMPTY", set={"store": 0.3}, over=30, sfx="drip"),
+     E("C2", word="twelve", act="liver: the needle hits EMPTY", set={"store": 0}, over=20),
+     E("C2", word="dry!", act="liver: the alarm lamp flashes red; hands to its face", sfx="alarm-beep", fx="flash"),
    ],
    "lines": [
-     L("C1", "liver", "I keep sugar for between meals. Running low...", "scared", "sugar", src=[AN], cam="ews whip"),
-     L("C2", "liver", "Past about twelve hours, my store runs dry!", "shocked", "dry", src=[AN], cam="cu push"),
+     L("C1", "liver", "I keep sugar for between meals. Running low...", "scared", "sugar", src=[AN]),
+     L("C2", "liver", "Past about twelve hours, my store runs dry!", "shocked", "dry", src=[AN]),
    ], "props": [tag("about 12 hours", "C2", "about", y=300)]},
   # D: the switch: Lardo the fat cell pops up and starts burning fat; the body switches fuel from sugar to fat.
   {"id": "D", "set": "macro",
@@ -92,22 +94,23 @@ shots = [
             {"who": "liver", "x": 540, "size": 1080, "stage": True, "emotion": "happy", "pose": "rest"}],
    "state": {"view": 2, "drops": 0},
    "events": [
-     E("start", act="lardo: pops up beside the liver", sfx="boing"),
+     E("start", act="lardo: pops up by the body's furnace with a shovel", sfx="boing"),
      E("D1", word="turn!", act="lardo: throws his arms up", sfx="tada"),
-     E("D1", word="fat!", act="lardo: fuel drops pop off his top", set={"drops": 1}, over=20, sfx="sparkle"),
-     E("D2", word="switches", act="liver: flips a big switch on its side from SUGAR to FAT", sfx="toot", fx="flash"),
-     E("D2", word="fat!", act="liver: catches a fuel drop and hops for joy", sfx="success-chime"),
+     E("D1", word="Burning", act="lardo: shovels a lump of fat into the furnace; it roars", set={"drops": 1}, over=20, sfx="whoosh-air"),
+     E("D2", word="switches", act="lardo: the furnace lever clanks from SUGAR to FAT", sfx="toot", fx="flash"),
+     E("D2", word="fat!", act="liver: the fire blazes orange; it hops for joy", sfx="success-chime"),
    ],
    "lines": [
-     L("D1", "lardo", "My turn! Burning fat!", "happy", "fat", src=[AN], cam="ms lock"),
-     L("D2", "liver", "No sugar left, so the body switches fuel: fat!", "happy", "switches", src=[AN], cam="cu push"),
+     L("D1", "lardo", "My turn! Burning fat!", "happy", "fat", src=[AN]),
+     L("D2", "liver", "No sugar left, so the body switches fuel: fat!", "happy", "switches", src=[AN]),
    ], "props": []},
   # E: 16 h, the living room, breakfast (the twist): Grandpa is proud; Lardo, on the side table, says fasting was no faster.
-  {"id": "E", "set": "home",
+  {"id": "E", "set": "home", "lead": 1.0,
    "cast": [{"who": "grandpa", "x": 560, "size": 960, "emotion": "happy", "pose": "rest", "y": 979},
             {"who": "lardo", "x": 900, "size": 300, "emotion": "neutral", "pose": "rest"}],
    "events": [
-     E("start", act="grandpa: the clock rings 16 h; breakfast on the table", sfx="ding", fx="flash"),
+     E("start", act="grandpa: the clock rings 16 h; he dashes across the room to his breakfast", sfx="whoosh-fast", fx="flash"),
+     E("E1", act="grandpa: skids to a stop by his breakfast", sfx="skid", fx="flash"),
      E("E1", word="Sixteen", act="grandpa: gives a big thumbs-up"),
      E("E1", word="melts", act="grandpa: spreads his arm out proudly", fx="flash"),
      E("E1", word="faster?", act="grandpa: rubs his chin, grinning"),
@@ -117,9 +120,9 @@ shots = [
      E("E3", word="less.", act="grandpa: his grin drops", sfx="sad-trombone", fx="flash"),
    ],
    "lines": [
-     L("E1", "grandpa", "Sixteen hours! So fasting melts fat faster?", "happy", "faster", chat=True, cam="ms lock"),
-     L("E2", "lardo", "In a year-long trial, fasting every other day...", "neutral", "trial", src=[TR], cam="mcu lock"),
-     L("E3", "lardo", "...lost about the same as just eating less.", "neutral", "same", src=[TR, LO], cam="ews"),
+     L("E1", "grandpa", "Sixteen hours! So fasting melts fat faster?", "happy", "faster", chat=True),
+     L("E2", "lardo", "In a year-long trial, fasting every other day...", "neutral", "trial", src=[TR], cam="cu lock"),
+     L("E3", "lardo", "...lost about the same as just eating less.", "neutral", "same", src=[TR, LO]),
    ], "props": []},
   # F: the care line, the whole brain: fasting is not for everyone; who should not (NIDDK).
   {"id": "F", "set": "macro",
@@ -134,8 +137,8 @@ shots = [
      E("F2", word="doctor", act="brain: leans in to the lens", set={"lean": 1}, over=18, sfx="ding"),
    ],
    "lines": [
-     L("F1", "brain", "Fasting isn't for everyone.", "neutral", "everyone", chat=True, cam="cu push"),
-     L("F2", "brain", "Pregnant? Had an eating disorder? Ask a doctor first.", "neutral", "doctor", src=[NID], cam="ews"),
+     L("F1", "brain", "Fasting isn't for everyone.", "neutral", "everyone", chat=True),
+     L("F2", "brain", "Pregnant? Had an eating disorder? Ask a doctor first.", "neutral", "doctor", src=[NID]),
    ], "props": []},
   # G: the stomach again (best last): it asks who was screaming all night; the Brain peeks in and owns up (the loop to A1).
   {"id": "G", "set": "macro",
@@ -152,8 +155,8 @@ shots = [
      E("G2", word="stomach!", act="stomach: drops its jaw; the rattle stops", set={"growl": 0}, over=6),
    ],
    "lines": [
-     L("G1", "stomach", "So who was screaming at me all night?", "angry", "screaming", chat=True, cam="ews whip"),
-     L("G2", "brain", "Me! When you fast, the brain makes you scream, little stomach!", "happy", "brain", src=[NA], cam="cu push"),
+     L("G1", "stomach", "So who was screaming at me all night?", "angry", "screaming", chat=True),
+     L("G2", "brain", "Me! When you fast, the brain makes you scream, little stomach!", "happy", "brain", src=[NA]),
    ], "props": []},
 ]
 
@@ -161,7 +164,7 @@ toon = {
   "slug": "fasting", "title": "What Happens to Your Body When You Fast", "format": 5, "shape": "clock",
   "music": "fasting", "camera": "steady", "episode": 13, "caption": 2,
   "hooks": [
-    {"line": "When you fast, I scream!", "why": "the owner's pick A (2026-11-22: \"Hook A, Grandpa\"), cut to 5 words for the 2-second hook rule (\"No food for sixteen hours? I'll scream in four!\" took 2.7 s)"},
+    {"line": "When you fast, I scream!", "why": "the owner's pick A of the second round (2026-11-22: \"Hook A, go ahead\"): open INSIDE, the whole stomach screaming at the lens"},
     {"line": "You fast? Hour twelve, your body switches fuel!", "why": "B: the liver's sugar jar, the last bead drops"},
     {"line": "When you fast, hunger starts in your brain.", "why": "C: the Brain winks while the Stomach screams"},
   ],
@@ -177,7 +180,7 @@ toon = {
     "tags": ["what happens to your body when you fast", "intermittent fasting", "16 hour fast", "fasting benefits", "what happens when you fast",
              "ketosis", "fasting for weight loss", "hunger", "metabolic switch", "health cartoon"],
     "hashtags": "#fasting #health #shorts",
-    "cover": {"at": 3.2, "text": "When you fast", "accent": "fast"},
+    "cover": {"at": 1.2, "text": "When you fast", "accent": "fast"},
   },
   "retention": {
     "noIntro": {"scene": "A1", "line": "When you fast, I scream!"},

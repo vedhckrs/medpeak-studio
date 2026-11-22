@@ -82,6 +82,107 @@ export const Lardo: React.FC<V8Props & {size?: number; drops?: number; arms?: 'o
   );
 };
 
+// =================================================================== quiet places and the new story pictures (2026-11-22, the owner on
+// the first fasting cut: "not interesting and not visual, confusion"): one colour per place, big physical metaphors.
+export const PLACE = {stomach: '#f7ad6a', liver: '#6cc3bd', brain: '#ab9ce4'};
+/** The stomach's surroundings as quiet tone-on-tone shapes (no outline, no shine). */
+const PlainStomachBack: React.FC<{c: string}> = ({c}) => (
+  <g>
+    <path d="M -40 -40 L 1120 -40 L 1120 400 Q 540 280 -40 400 Z" fill={shade(c, 0.1)} />
+    <path d="M -60 380 Q 200 330 420 420 Q 470 500 380 600 Q 220 720 -60 760 Z" fill={tint(c, 0.14)} />
+    {[[80, 1760, 230, 110], [480, 1790, 250, 115], [900, 1770, 230, 110], [280, 1960, 260, 120], [720, 1960, 260, 120]].map(([x, y, rx, ry], i) => <ellipse key={i} cx={x} cy={y} rx={rx} ry={ry} fill={tint(c, 0.12)} />)}
+  </g>
+);
+/** "Hunger comes in waves": a real blue wave rising across the frame behind the stomach (k 0..1: how high). */
+export const HungerWave: React.FC<{c: string; k: number; t: number}> = ({k, t}) => {
+  const y0 = 1700 - k * 620, amp = 70 * k;
+  const pts = Array.from({length: 13}, (_, i) => { const x = -60 + i * 100; return [x, y0 + Math.sin(i * 0.9 + t * 1.2) * amp] as [number, number]; });
+  const d = `M ${pts.map(([x, y]) => `${f(x)} ${f(y)}`).join(' L ')} L 1140 2000 L -60 2000 Z`;
+  return (
+    <g>
+      <path d={d} fill={tint(CLOTH.sky, 0.15)} opacity={0.9} />
+      <path d={`M ${pts.map(([x, y]) => `${f(x)} ${f(y)}`).join(' L ')}`} stroke="#ffffff" strokeWidth={16} strokeLinejoin="round" strokeLinecap="round" fill="none" />
+      <path d={`M ${pts.map(([x, y]) => `${f(x)} ${f(y)}`).join(' L ')}`} {...INLINE} fill="none" />
+    </g>
+  );
+};
+/** The liver's sugar store as a giant FUEL GAUGE: the needle from FULL to EMPTY, a red alarm lamp on top (alarm 0..1 flashes). */
+export const FuelGauge: React.FC<{level: number; alarm?: number}> = ({level, alarm = 0}) => {
+  const a = Math.PI * (1 - clamp01(level)); // 0 = right (FULL), pi = left (EMPTY)
+  const R = 150;
+  const arcPt = (u: number, r: number) => [Math.cos(Math.PI * (1 - u)) * r, -Math.sin(Math.PI * (1 - u)) * r];
+  const seg = (u0: number, u1: number, col: string) => { const [x0, y0] = arcPt(u0, R), [x1, y1] = arcPt(u1, R), [x2, y2] = arcPt(u1, R - 40), [x3, y3] = arcPt(u0, R - 40); return <path d={`M ${f(x0)} ${f(y0)} A ${R} ${R} 0 0 1 ${f(x1)} ${f(y1)} L ${f(x2)} ${f(y2)} A ${R - 40} ${R - 40} 0 0 0 ${f(x3)} ${f(y3)} Z`} fill={col} />; };
+  const on = alarm > 0 && Math.floor(alarm * 6) % 2 === 0;
+  return (
+    <g>
+      <Shape d={rr(-200, -230, 400, 330, 40)} fill={CLOTH.offwhite} shadow={0.7} />
+      {seg(0, 0.22, CLOTH.red)}{seg(0.22, 0.6, CLOTH.yellow)}{seg(0.6, 1, CLOTH.green)}
+      <path d={`M ${-R} 0 A ${R} ${R} 0 0 1 ${R} 0`} {...INLINE} fill="none" />
+      <text x={-168} y={70} fontFamily={FONT} fontWeight={900} fontSize={44} fill={CLOTH.red}>E</text>
+      <text x={140} y={70} fontFamily={FONT} fontWeight={900} fontSize={44} fill={INK}>F</text>
+      <text x={0} y={70} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={40} fill={INK} letterSpacing={2}>SUGAR</text>
+      <g transform={`rotate(${f(-a * 180 / Math.PI)})`}>
+        <path d="M -10 0 L 0 -132 L 10 0 Z" fill={CLOTH.red} {...EDGE_IN} />
+      </g>
+      <circle cx={0} cy={0} r={22} fill={CLOTH.charcoal} {...EDGE_IN} />
+      {/* the alarm lamp */}
+      <Shape d={rr(-50, -300, 100, 70, 30)} fill={on ? '#ff3b30' : shade(CLOTH.red, 0.3)} shadow={0.4} />
+      {on && [[-90, -300], [0, -350], [90, -300]].map(([x, y], i) => <path key={i} d={`M ${x * 0.6} ${y + 20} L ${x} ${y - 10}`} stroke="#ff3b30" strokeWidth={10} strokeLinecap="round" />)}
+    </g>
+  );
+};
+/** The body's furnace: a round iron stove; `fire` 0..1 from a small blue flame to a roaring orange blaze; a lever SUGAR / FAT. */
+export const Furnace: React.FC<{fire: number; lever: number; t: number}> = ({fire, lever, t}) => {
+  const k = clamp01(fire);
+  const flick = (i: number) => Math.sin(t * 9 + i * 1.7) * 10 * (0.4 + k);
+  const flames = [-60, -20, 20, 60].map((x, i) => {
+    const h = 40 + k * 120 + flick(i);
+    return <path key={i} d={`M ${x - 34} 70 Q ${x - 40} ${70 - h * 0.5} ${x} ${70 - h} Q ${x + 40} ${70 - h * 0.5} ${x + 34} 70 Z`} fill={k > 0.5 ? CLOTH.orange : '#6fa8dc'} {...EDGE_IN} />;
+  });
+  return (
+    <g>
+      <Shape d="M -190 200 L -190 -80 Q -190 -230 0 -230 Q 190 -230 190 -80 L 190 200 Z" fill={CLOTH.charcoal} shadow={0.8} />
+      <path d="M -150 120 L -150 -40 Q -150 -150 0 -150 Q 150 -150 150 -40 L 150 120 Z" fill="#1d2430" {...EDGE_IN} />
+      <g transform="translate(0 40)">{flames}{k > 0.5 && [-30, 30].map((x, i) => <path key={i} d={`M ${x - 18} 30 Q ${x} ${-30 - k * 50 + flick(i + 4) * 0.5} ${x + 18} 30 Z`} fill={CLOTH.yellow} />)}</g>
+      <path d="M -190 140 H 190" {...INLINE} />
+      {[-120, 120].map((x) => <rect key={x} x={x - 22} y={200} width={44} height={40} rx={6} fill={CLOTH.charcoal} {...EDGE_IN} />)}
+      {/* the chimney */}
+      <Shape d="M 60 -220 L 60 -330 L 120 -330 L 120 -200 Z" fill={CLOTH.charcoal} shadow={0.4} />
+      {/* the lever on the side: up = SUGAR, down = FAT */}
+      <g transform={`translate(210 0) rotate(${f(lerpN(-40, 40, clamp01(lever)))})`}>
+        <path d="M 0 0 L 70 0" stroke={INK} strokeWidth={22} strokeLinecap="round" />
+        <path d="M 0 0 L 70 0" stroke={tint(CLOTH.grey, 0.3)} strokeWidth={14} strokeLinecap="round" />
+        <circle cx={76} cy={0} r={22} fill={CLOTH.red} {...EDGE_IN} />
+      </g>
+      <circle cx={210} cy={0} r={18} fill={CLOTH.charcoal} {...EDGE_IN} />
+      <text x={262} y={-70} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={30} fill={lever < 0.5 ? INK : tint(INK, 0.55)}>SUGAR</text>
+      <text x={262} y={100} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={30} fill={lever >= 0.5 ? CLOTH.orange : tint(INK, 0.55)}>FAT</text>
+    </g>
+  );
+};
+const lerpN = (a: number, b: number, k: number) => a + (b - a) * k;
+/** A biscuit tin on the side table (4 h: Grandpa reaches for it); `open` lifts the lid. */
+export const BiscuitTin: React.FC<{open?: number}> = ({open = 0}) => (
+  <g>
+    <Shape d={rr(-70, -60, 140, 80, 14)} fill={CLOTH.blue} shadow={0.6}>
+      <path d="M -70 -28 H 70" stroke={CLOTH.yellow} strokeWidth={10} />
+    </Shape>
+    <g transform={`translate(${f(open * 20)} ${f(-open * 30)}) rotate(${f(open * 18)})`}>
+      <Shape d={rr(-78, -76, 156, 22, 8)} fill={shade(CLOTH.blue, 0.12)} shadow={0} />
+    </g>
+    {open > 0.3 && [-30, 10, 40].map((x) => <circle key={x} cx={x} cy={-58} r={16} fill={CLOTH.tan} {...EDGE_IN} />)}
+  </g>
+);
+/** "Z z z" over a sleeper (t in seconds: the letters float up and fade, one after another). */
+export const Snore: React.FC<{t: number; x: number; y: number}> = ({t, x, y}) => (
+  <g>
+    {[0, 1, 2].map((i) => {
+      const u = ((t * 0.7 + i / 3) % 1);
+      return <text key={i} x={f(x + u * 70 + i * 6)} y={f(y - u * 160)} fontFamily={FONT} fontWeight={900} fontSize={f(36 + i * 14)} fill="#ffffff" stroke={INK} strokeWidth={5} paintOrder="stroke" opacity={f(1 - u)}>Z</text>;
+    })}
+  </g>
+);
+
 // =================================================================== 2. the whole stomach
 export const STOMACH_FULL = {
   cavity: '#f2c4b5', cavity2: '#e8ab9b', muscle: '#d8737a', muscle2: '#c8636c', tendon: '#eab3b2',
@@ -93,14 +194,15 @@ const STOMACH_BODY: P[] = [[-2, -48], [10, -58], [26, -68], [48, -69], [66, -54]
 // the folds (rugae) on its wall, in its own units, kept off the face (around 36, -20)
 const RUGAE = ['M -54 30 Q -36 24 -18 30 Q 0 36 16 30', 'M -40 44 Q -16 38 8 46 Q 26 52 40 42', 'M 0 -40 Q 4 -20 0 0 Q -4 14 2 26', 'M 60 20 Q 44 34 24 38', 'M 70 -6 Q 64 8 52 16', 'M 12 -58 Q 6 -48 8 -38'];
 
-export const StomachFull: React.FC<V8Props & {t: number; growl?: number; armL?: ArmPose | Gesture; armR?: ArmPose | Gesture; sq?: number; rot?: number}> = ({t, growl = 0, mood = 'angry', mouth = 'open', look = [-0.4, 0.2], armL, armR, sq = 0, rot = 0}) => {
+export const StomachFull: React.FC<V8Props & {t: number; growl?: number; armL?: ArmPose | Gesture; armR?: ArmPose | Gesture; sq?: number; rot?: number; place?: string; wave?: number}> = ({t, growl = 0, mood = 'angry', mouth = 'open', look = [-0.4, 0.2], armL, armR, sq = 0, rot = 0, place, wave = 0}) => {
   const g = clamp01(growl);
   const S = 6.0;
   // the growl is a squash pulse of the body (below), not a jitter of the whole organ (2026-11-22: the jitter kept most of the frame moving)
   const sx = 0, sy = 0;
   return (
-    <Scene bg={STOMACH_FULL.cavity}>
+    <Scene bg={place ?? STOMACH_FULL.cavity}>
       <Layer>
+        {place ? <PlainStomachBack c={place} /> : (<>
         {/* the back wall: soft folds and thin vessels */}
         {[[160, 1300, 250, 110], [920, 1240, 220, 90], [560, 1560, 320, 90]].map(([x, y, rx, ry], i) => <ellipse key={i} cx={x} cy={y} rx={rx} ry={ry} fill={STOMACH_FULL.cavity2} />)}
         {([[[30, 1000], [140, 1080], [190, 1220]], [[1060, 1100], [980, 1180], [960, 1320]]] as P[][]).map((pts, i) => (
@@ -131,6 +233,8 @@ export const StomachFull: React.FC<V8Props & {t: number; growl?: number; armL?: 
             </Shape>
           </g>
         ))}
+        </>)}
+        {wave > 0 && <HungerWave c={place ?? STOMACH_FULL.cavity} k={wave} t={t} />}
       </Layer>
 
       <svg style={{position: 'absolute', left: 0, top: 0, overflow: 'visible'}} width={1080} height={1920} viewBox="0 0 1080 1920">

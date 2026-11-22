@@ -56,6 +56,23 @@ const TubeShape: React.FC<{pts: P[]; w: number[]; fill: string; ends?: [string, 
   );
 };
 
+// ------------------------------------------------------------------ quiet places (2026-11-22, the owner on fasting: "not visual,
+// confusion"): with a `place` colour the organ stands on ONE flat colour; what is around it (the diaphragm, the gut, the skull) is
+// drawn as big tone-on-tone shapes with no outline and no shine, so the character and its action are what the eye reads.
+const PlainBack: React.FC<{c: string}> = ({c}) => (
+  <g>
+    <path d="M -40 -40 L 1120 -40 L 1120 470 Q 540 330 -40 470 Z" fill={shade(c, 0.1)} />
+    {[160, 400, 640, 880].map((x) => <path key={x} d={`M ${x} -40 Q ${x + 30} 200 ${x + 10} ${380 - Math.abs(x - 520) * 0.12}`} stroke={shade(c, 0.16)} strokeWidth={14} fill="none" strokeLinecap="round" />)}
+    {[[120, 1760, 230, 110], [520, 1790, 250, 115], [930, 1760, 230, 110], [320, 1960, 260, 120], [760, 1960, 260, 120]].map(([x, y, rx, ry], i) => <ellipse key={i} cx={x} cy={y} rx={rx} ry={ry} fill={tint(c, 0.12)} />)}
+  </g>
+);
+const PlainSkull: React.FC<{c: string}> = ({c}) => (
+  <g>
+    <path d="M -60 1500 L -60 300 Q -40 -60 540 -60 Q 1120 -60 1140 300 L 1140 1500 L 1050 1500 L 1050 320 Q 1030 40 540 40 Q 50 40 30 320 L 30 1500 Z" fill={tint(c, 0.18)} />
+    <path d="M 0 1500 Q 540 1440 1080 1500 L 1080 1920 L 0 1920 Z" fill={shade(c, 0.08)} />
+  </g>
+);
+
 // =================================================================== 1. the whole liver
 export const LIVER_FULL = {
   cavity: '#f2c4b5', cavity2: '#e8ab9b', vesselR: '#d6646a', vesselB: '#8a90c4',
@@ -71,15 +88,16 @@ const FAT: [number, number, number][] = [[28, -40, 11], [54, -28, 8], [8, -12, 1
 // a faint speckle of lobules over the surface
 const SPECK: P[] = Array.from({length: 70}, (_, i): P => [-80 + rnd(i, 71) * 168, -60 + rnd(i, 72) * 108]);
 
-export const LiverFull: React.FC<V8Props & OrganActing & {t: number; fat?: number; lift?: number}> = ({fat = 1, mood = 'sleepy', mouth = 'smile', look = [0, 0.2], lift = 0, armL, armR, sq = 0, rot = 0}) => {
+export const LiverFull: React.FC<V8Props & OrganActing & {t: number; fat?: number; lift?: number; place?: string; at?: [number, number, number]}> = ({fat = 1, mood = 'sleepy', mouth = 'smile', look = [0, 0.2], lift = 0, armL, armR, sq = 0, rot = 0, place, at}) => {
   const k = clamp01(fat);
   const fatty = clamp01((k - 0.4) / 0.6); // how far the colour leans to the pale, fatty liver
   const body = mix(LIVER_FULL.healthy, LIVER_FULL.fatty, fatty);
   const S = 6.2; // the cast liver, about 6 times bigger, filling the width
   const face = (x: number, y: number) => Math.abs(x + 36) < 30 && y > -46 && y < 8;
   return (
-    <Scene bg={LIVER_FULL.cavity}>
+    <Scene bg={place ?? LIVER_FULL.cavity}>
       <Layer>
+        {place ? <PlainBack c={place} /> : (<>
         {/* the back wall: soft folds and thin vessels */}
         {[[180, 1260, 260, 110], [900, 1180, 220, 90], [560, 1500, 320, 90]].map(([x, y, rx, ry], i) => <ellipse key={i} cx={x} cy={y} rx={rx} ry={ry} fill={LIVER_FULL.cavity2} />)}
         {([[[40, 1100], [160, 1180], [230, 1320]], [[1060, 1000], [960, 1100], [930, 1250]], [[300, 1420], [420, 1480], [560, 1470]]] as P[][]).map((pts, i) => (
@@ -126,11 +144,12 @@ export const LiverFull: React.FC<V8Props & OrganActing & {t: number; fat?: numbe
           <Shine d="M 880 1100 Q 950 1060 1040 1060" w={12} o={0.6} />
         </Shape>
 
+        </>)}
       </Layer>
 
       {/* the liver itself, its face on its wall */}
       <svg style={{position: 'absolute', left: 0, top: 0, overflow: 'visible'}} width={1080} height={1920} viewBox="0 0 1080 1920">
-        <g transform={`translate(540 ${960 + lift}) scale(${S}) ${bodyTx(sq, rot, 50)}`}>
+        <g transform={`translate(${at ? at[0] : 540} ${(at ? at[1] : 960) + lift}) scale(${at ? S * at[2] : S}) ${bodyTx(sq, rot, 50)}`}>
           {armL ? <OrganArm from={[-74, 32]} s={-1} pose={armL} fill={body} /> : <TinyArm from={[-74, 32]} bend={[-90, 46]} to={[-78, 64]} fill={body} hand="mitten" />}
           {/* the gallbladder, tucked under, with its own shine */}
           <Shape d={smooth([[-26, 36], [-10, 34], [-4, 50], [-12, 62], [-24, 58]])} fill={ORGAN_COL.gall} shadow={0.5}>
@@ -345,11 +364,12 @@ const FOLDS: string[] = [
   'M 64 -22 q -10 6 -6 18', 'M -66 4 q 8 -8 18 -4', 'M 30 -22 q 10 -2 14 8', 'M 26 -60 q 8 8 2 18', 'M 52 -36 q 10 4 8 16', 'M 70 -6 q -8 8 0 16',
   'M 36 0 q 8 6 18 2', 'M -12 -64 q -4 10 4 18', 'M -30 -66 q 2 8 -6 14', 'M -76 -8 q 8 4 6 14', 'M -6 28 q 8 -6 16 0', 'M -36 30 q 6 -6 14 -2',
 ];
-export const BrainFull: React.FC<V8Props & OrganActing & {t: number}> = ({mood = 'bored', mouth = 'flat', look = [0.6, 0], armL, armR, sq = 0, rot = 0}) => {
+export const BrainFull: React.FC<V8Props & OrganActing & {t: number; place?: string}> = ({mood = 'bored', mouth = 'flat', look = [0.6, 0], armL, armR, sq = 0, rot = 0, place}) => {
   const S = 6.8;
   return (
-    <Scene bg={BRAIN_FULL.space}>
+    <Scene bg={place ?? BRAIN_FULL.space}>
       <Layer>
+        {place ? <PlainSkull c={place} /> : (<>
         {/* the skull round the top and sides: a thick band of bone with its spongy middle, the pink lining inside it */}
         <path d="M -60 1500 L -60 300 Q -40 -60 540 -60 Q 1120 -60 1140 300 L 1140 1500 L 1050 1500 L 1050 320 Q 1030 40 540 40 Q 50 40 30 320 L 30 1500 Z" {...EDGE} fill={BRAIN_FULL.bone} />
         <path d="M -10 1500 L -10 310 Q 10 0 540 -10 Q 1070 0 1090 310 L 1090 1500" fill="none" stroke={BRAIN_FULL.bone2} strokeWidth={26} />
@@ -357,6 +377,7 @@ export const BrainFull: React.FC<V8Props & OrganActing & {t: number}> = ({mood =
         <path d="M 30 1500 L 30 320 Q 50 40 540 40 Q 1030 40 1050 320 L 1050 1500" fill="none" stroke={BRAIN_FULL.mening} strokeWidth={22} />
         <path d="M 52 1500 L 52 326 Q 72 62 540 62 Q 1008 62 1028 326 L 1028 1500" {...INLINE} />
         <path d="M 0 1500 Q 540 1440 1080 1500 L 1080 1920 L 0 1920 Z" fill={BRAIN_FULL.space2} opacity={0.6} />
+        </>)}
       </Layer>
       <svg style={{position: 'absolute', left: 0, top: 0, overflow: 'visible'}} width={1080} height={1920} viewBox="0 0 1080 1920">
         <g transform={`translate(540 830) scale(${S}) ${bodyTx(sq, rot, 40)}`}>
@@ -378,12 +399,12 @@ export const BrainFull: React.FC<V8Props & OrganActing & {t: number}> = ({mood =
             <Dot x={-4} y={-70} r={1.6} />
           </Shape>
           {armL ? <OrganArm from={[-62, 26]} s={-1} pose={armL} fill={BRAIN_FULL.brain} /> : <TinyArm from={[-62, 26]} bend={[-84, 44]} to={[-72, 62]} fill={BRAIN_FULL.brain} hand="mitten" />}
-          {armR ? <OrganArm from={[-20, 38]} s={1} pose={armR} fill={BRAIN_FULL.brain} /> : <TinyArm from={[-20, 38]} bend={[-14, 58]} to={[-28, 70]} fill={BRAIN_FULL.brain} hand="mitten" />}
+          {armR ? <OrganArm from={[66, 22]} s={1} pose={armR} fill={BRAIN_FULL.brain} /> : <TinyArm from={[-20, 38]} bend={[-14, 58]} to={[-28, 70]} fill={BRAIN_FULL.brain} hand="mitten" />}
           <Eyes x={-22} y={-32} r={14} mood={mood} look={look} brows />
           <Mouth x={-20} y={-6} w={14} kind={mouth} />
         </g>
         {/* the spine: the cord runs down through each vertebra (a wing of bone either side of it) */}
-        {[1560, 1700, 1840].map((y, i) => (
+        {!place && [1560, 1700, 1840].map((y, i) => (
           <g key={i}>
             {[-1, 1].map((sd) => (
               <Shape key={sd} d={`M ${618 + sd * 0 - (sd < 0 ? 78 : 0)} ${y} ${sd < 0 ? `Q 470 ${y - 24} 400 ${y + 6} L 396 ${y + 96} Q 470 ${y + 120} 540 ${y + 104} Z` : `L 618 ${y} Q 690 ${y - 24} 760 ${y + 6} L 764 ${y + 96} Q 690 ${y + 120} 618 ${y + 104} Z`}`} fill={BRAIN_FULL.bone} shadow={3}>
