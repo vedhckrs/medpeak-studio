@@ -1,0 +1,33 @@
+  0.00  Take creatine, your scale jumps.
+  2.00  Your scale jumps?
+  3.28  Is it fat?
+  4.48  What?
+  4.96  I only started creatine this week.
+  7.28  Almost all of me gets into your blood.
+  9.68  And 95% of me heads for your muscles.
+ 12.80  Heavy lift, we're going flat.
+ 14.64  Spark coming, recharged.
+ 16.40  A bit more power for short heart bursts.
+ 19.28  A long run.
+ 20.24  Studies say it barely helps.
+ 22.40  A little of me breaks down into creatinine.
+ 25.04  Your blood test shows more of it.
+ 26.96  Looks like kidney trouble.
+ 28.64  But in trials with healthy adults, no kidney harm was found.
+ 33.20  Taking creatine?
+ 34.56  Tell me before a blood test.
+ 36.16  Kidney problems already?
+ 37.60  Ask before you take it.
+ 39.12  And my hair?
+ 40.24  A trial over 12 weeks.
+ 42.16  Found no hair loss.
+ 44.00  Your scale jumps?
+ 45.36  That's water in your muscles from creatine, not fat.
+ 49.36  Creatine.
+ 50.72  Know this.
+ 51.92  The first jump on the scale is mostly water, not fat.
+ 55.84  Taking it?
+ 56.88  Tell your doctor before a blood test.
+ 59.36  Kidney problems?
+ 60.64  Ask first.
+ 61.84  Follow MedPeak Health for more health tips that keep you safe.

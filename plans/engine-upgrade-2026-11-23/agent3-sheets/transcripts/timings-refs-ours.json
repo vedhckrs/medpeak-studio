@@ -1,0 +1,6912 @@
+[
+ {
+  "id": "ours-creatine",
+  "text": "Take creatine, your scale jumps. Your scale jumps? Is it fat? What? I only started creatine this week. Almost all of me gets into your blood. And 95% of me heads for your muscles. Heavy lift, we're going flat. Spark coming, recharged. A bit more power for short heart bursts. A long run. Studies say it barely helps. A little of me breaks down into creatinine. Your blood test shows more of it. Looks like kidney trouble. But in trials with healthy adults, no kidney harm was found. Taking creatine? Tell me before a blood test. Kidney problems already? Ask before you take it. And my hair? A trial over 12 weeks. Found no hair loss. Your scale jumps? That's water in your muscles from creatine, not fat. Creatine. Know this. The first jump on the scale is mostly water, not fat. Taking it? Tell your doctor before a blood test. Kidney problems? Ask first. Follow MedPeak Health for more health tips that keep you safe.",
+  "words": [
+   {
+    "w": "Take",
+    "start": 0.0,
+    "end": 0.24,
+    "conf": 0.991
+   },
+   {
+    "w": "creatine,",
+    "start": 0.24,
+    "end": 0.88,
+    "conf": 0.904
+   },
+   {
+    "w": "your",
+    "start": 0.88,
+    "end": 0.96,
+    "conf": 0.999
+   },
+   {
+    "w": "scale",
+    "start": 1.04,
+    "end": 1.36,
+    "conf": 1.0
+   },
+   {
+    "w": "jumps.",
+    "start": 1.36,
+    "end": 2.0,
+    "conf": 0.982
+   },
+   {
+    "w": "Your",
+    "start": 2.0,
+    "end": 2.24,
+    "conf": 0.996
+   },
+   {
+    "w": "scale",
+    "start": 2.24,
+    "end": 2.64,
+    "conf": 1.0
+   },
+   {
+    "w": "jumps?",
+    "start": 2.64,
+    "end": 3.28,
+    "conf": 0.927
+   },
+   {
+    "w": "Is",
+    "start": 3.28,
+    "end": 3.52,
+    "conf": 0.999
+   },
+   {
+    "w": "it",
+    "start": 3.52,
+    "end": 3.84,
+    "conf": 1.0
+   },
+   {
+    "w": "fat?",
+    "start": 3.84,
+    "end": 4.48,
+    "conf": 0.995
+   },
+   {
+    "w": "What?",
+    "start": 4.48,
+    "end": 4.96,
+    "conf": 0.977
+   },
+   {
+    "w": "I",
+    "start": 4.96,
+    "end": 5.2,
+    "conf": 0.998
+   },
+   {
+    "w": "only",
+    "start": 5.2,
+    "end": 5.36,
+    "conf": 1.0
+   },
+   {
+    "w": "started",
+    "start": 5.36,
+    "end": 5.68,
+    "conf": 1.0
+   },
+   {
+    "w": "creatine",
+    "start": 5.68,
+    "end": 6.4,
+    "conf": 0.984
+   },
+   {
+    "w": "this",
+    "start": 6.4,
+    "end": 6.64,
+    "conf": 1.0
+   },
+   {
+    "w": "week.",
+    "start": 6.64,
+    "end": 7.28,
+    "conf": 0.983
+   },
+   {
+    "w": "Almost",
+    "start": 7.28,
+    "end": 7.84,
+    "conf": 0.999
+   },
+   {
+    "w": "all",
+    "start": 7.84,
+    "end": 8.0,
+    "conf": 1.0
+   },
+   {
+    "w": "of",
+    "start": 8.0,
+    "end": 8.24,
+    "conf": 1.0
+   },
+   {
+    "w": "me",
+    "start": 8.24,
+    "end": 8.4,
+    "conf": 0.999
+   },
+   {
+    "w": "gets",
+    "start": 8.4,
+    "end": 8.72,
+    "conf": 0.998
+   },
+   {
+    "w": "into",
+    "start": 8.72,
+    "end": 8.88,
+    "conf": 1.0
+   },
+   {
+    "w": "your",
+    "start": 8.88,
+    "end": 9.12,
+    "conf": 1.0
+   },
+   {
+    "w": "blood.",
+    "start": 9.12,
+    "end": 9.68,
+    "conf": 0.931
+   },
+   {
+    "w": "And",
+    "start": 9.68,
+    "end": 10.0,
+    "conf": 0.998
+   },
+   {
+    "w": "95%",
+    "start": 10.0,
+    "end": 10.88,
+    "conf": 0.991
+   },
+   {
+    "w": "of",
+    "start": 10.88,
+    "end": 11.04,
+    "conf": 1.0
+   },
+   {
+    "w": "me",
+    "start": 11.04,
+    "end": 11.28,
+    "conf": 0.999
+   },
+   {
+    "w": "heads",
+    "start": 11.28,
+    "end": 11.6,
+    "conf": 0.998
+   },
+   {
+    "w": "for",
+    "start": 11.6,
+    "end": 11.76,
+    "conf": 1.0
+   },
+   {
+    "w": "your",
+    "start": 11.76,
+    "end": 11.92,
+    "conf": 1.0
+   },
+   {
+    "w": "muscles.",
+    "start": 11.92,
+    "end": 12.8,
+    "conf": 0.993
+   },
+   {
+    "w": "Heavy",
+    "start": 12.8,
+    "end": 13.28,
+    "conf": 0.993
+   },
+   {
+    "w": "lift,",
+    "start": 13.28,
+    "end": 13.68,
+    "conf": 0.921
+   },
+   {
+    "w": "we're",
+    "start": 13.68,
+    "end": 13.84,
+    "conf": 1.0
+   },
+   {
+    "w": "going",
+    "start": 13.84,
+    "end": 14.08,
+    "conf": 1.0
+   },
+   {
+    "w": "flat.",
+    "start": 14.08,
+    "end": 14.64,
+    "conf": 0.967
+   },
+   {
+    "w": "Spark",
+    "start": 14.64,
+    "end": 15.2,
+    "conf": 0.997
+   },
+   {
+    "w": "coming,",
+    "start": 15.2,
+    "end": 15.52,
+    "conf": 0.909
+   },
+   {
+    "w": "recharged.",
+    "start": 15.52,
+    "end": 16.4,
+    "conf": 0.958
+   },
+   {
+    "w": "A",
+    "start": 16.4,
+    "end": 16.64,
+    "conf": 0.986
+   },
+   {
+    "w": "bit",
+    "start": 16.64,
+    "end": 16.8,
+    "conf": 1.0
+   },
+   {
+    "w": "more",
+    "start": 16.8,
+    "end": 17.04,
+    "conf": 1.0
+   },
+   {
+    "w": "power",
+    "start": 17.04,
+    "end": 17.44,
+    "conf": 1.0
+   },
+   {
+    "w": "for",
+    "start": 17.44,
+    "end": 17.6,
+    "conf": 1.0
+   },
+   {
+    "w": "short",
+    "start": 17.6,
+    "end": 17.92,
+    "conf": 1.0
+   },
+   {
+    "w": "heart",
+    "start": 18.08,
+    "end": 18.48,
+    "conf": 0.937
+   },
+   {
+    "w": "bursts.",
+    "start": 18.48,
+    "end": 19.28,
+    "conf": 0.937
+   },
+   {
+    "w": "A",
+    "start": 19.28,
+    "end": 19.6,
+    "conf": 0.993
+   },
+   {
+    "w": "long",
+    "start": 19.6,
+    "end": 19.84,
+    "conf": 1.0
+   },
+   {
+    "w": "run.",
+    "start": 19.84,
+    "end": 20.24,
+    "conf": 0.889
+   },
+   {
+    "w": "Studies",
+    "start": 20.24,
+    "end": 20.8,
+    "conf": 0.995
+   },
+   {
+    "w": "say",
+    "start": 20.8,
+    "end": 20.96,
+    "conf": 1.0
+   },
+   {
+    "w": "it",
+    "start": 20.96,
+    "end": 21.12,
+    "conf": 1.0
+   },
+   {
+    "w": "barely",
+    "start": 21.12,
+    "end": 21.52,
+    "conf": 1.0
+   },
+   {
+    "w": "helps.",
+    "start": 21.52,
+    "end": 22.4,
+    "conf": 0.994
+   },
+   {
+    "w": "A",
+    "start": 22.4,
+    "end": 22.72,
+    "conf": 0.984
+   },
+   {
+    "w": "little",
+    "start": 22.72,
+    "end": 22.88,
+    "conf": 1.0
+   },
+   {
+    "w": "of",
+    "start": 22.88,
+    "end": 23.12,
+    "conf": 0.999
+   },
+   {
+    "w": "me",
+    "start": 23.12,
+    "end": 23.28,
+    "conf": 0.999
+   },
+   {
+    "w": "breaks",
+    "start": 23.28,
+    "end": 23.6,
+    "conf": 1.0
+   },
+   {
+    "w": "down",
+    "start": 23.6,
+    "end": 23.76,
+    "conf": 1.0
+   },
+   {
+    "w": "into",
+    "start": 23.76,
+    "end": 23.92,
+    "conf": 1.0
+   },
+   {
+    "w": "creatinine.",
+    "start": 23.92,
+    "end": 25.04,
+    "conf": 0.993
+   },
+   {
+    "w": "Your",
+    "start": 25.04,
+    "end": 25.28,
+    "conf": 0.984
+   },
+   {
+    "w": "blood",
+    "start": 25.28,
+    "end": 25.68,
+    "conf": 1.0
+   },
+   {
+    "w": "test",
+    "start": 25.68,
+    "end": 25.92,
+    "conf": 1.0
+   },
+   {
+    "w": "shows",
+    "start": 25.92,
+    "end": 26.24,
+    "conf": 1.0
+   },
+   {
+    "w": "more",
+    "start": 26.24,
+    "end": 26.4,
+    "conf": 1.0
+   },
+   {
+    "w": "of",
+    "start": 26.4,
+    "end": 26.56,
+    "conf": 1.0
+   },
+   {
+    "w": "it.",
+    "start": 26.56,
+    "end": 26.96,
+    "conf": 0.959
+   },
+   {
+    "w": "Looks",
+    "start": 26.96,
+    "end": 27.28,
+    "conf": 0.995
+   },
+   {
+    "w": "like",
+    "start": 27.28,
+    "end": 27.52,
+    "conf": 1.0
+   },
+   {
+    "w": "kidney",
+    "start": 27.52,
+    "end": 28.08,
+    "conf": 1.0
+   },
+   {
+    "w": "trouble.",
+    "start": 28.08,
+    "end": 28.64,
+    "conf": 0.915
+   },
+   {
+    "w": "But",
+    "start": 28.64,
+    "end": 28.88,
+    "conf": 0.993
+   },
+   {
+    "w": "in",
+    "start": 28.88,
+    "end": 29.12,
+    "conf": 1.0
+   },
+   {
+    "w": "trials",
+    "start": 29.12,
+    "end": 29.6,
+    "conf": 1.0
+   },
+   {
+    "w": "with",
+    "start": 29.6,
+    "end": 29.76,
+    "conf": 1.0
+   },
+   {
+    "w": "healthy",
+    "start": 29.76,
+    "end": 30.24,
+    "conf": 1.0
+   },
+   {
+    "w": "adults,",
+    "start": 30.24,
+    "end": 30.96,
+    "conf": 0.997
+   },
+   {
+    "w": "no",
+    "start": 30.96,
+    "end": 31.2,
+    "conf": 1.0
+   },
+   {
+    "w": "kidney",
+    "start": 31.2,
+    "end": 31.76,
+    "conf": 1.0
+   },
+   {
+    "w": "harm",
+    "start": 31.76,
+    "end": 32.16,
+    "conf": 1.0
+   },
+   {
+    "w": "was",
+    "start": 32.16,
+    "end": 32.48,
+    "conf": 1.0
+   },
+   {
+    "w": "found.",
+    "start": 32.48,
+    "end": 33.2,
+    "conf": 0.997
+   },
+   {
+    "w": "Taking",
+    "start": 33.2,
+    "end": 33.76,
+    "conf": 0.992
+   },
+   {
+    "w": "creatine?",
+    "start": 33.76,
+    "end": 34.56,
+    "conf": 0.965
+   },
+   {
+    "w": "Tell",
+    "start": 34.56,
+    "end": 34.8,
+    "conf": 0.995
+   },
+   {
+    "w": "me",
+    "start": 34.8,
+    "end": 34.96,
+    "conf": 1.0
+   },
+   {
+    "w": "before",
+    "start": 34.96,
+    "end": 35.2,
+    "conf": 1.0
+   },
+   {
+    "w": "a",
+    "start": 35.2,
+    "end": 35.28,
+    "conf": 0.998
+   },
+   {
+    "w": "blood",
+    "start": 35.28,
+    "end": 35.68,
+    "conf": 1.0
+   },
+   {
+    "w": "test.",
+    "start": 35.68,
+    "end": 36.16,
+    "conf": 0.982
+   },
+   {
+    "w": "Kidney",
+    "start": 36.16,
+    "end": 36.64,
+    "conf": 0.986
+   },
+   {
+    "w": "problems",
+    "start": 36.64,
+    "end": 37.04,
+    "conf": 1.0
+   },
+   {
+    "w": "already?",
+    "start": 37.04,
+    "end": 37.6,
+    "conf": 0.97
+   },
+   {
+    "w": "Ask",
+    "start": 37.6,
+    "end": 38.0,
+    "conf": 0.995
+   },
+   {
+    "w": "before",
+    "start": 38.0,
+    "end": 38.32,
+    "conf": 1.0
+   },
+   {
+    "w": "you",
+    "start": 38.32,
+    "end": 38.4,
+    "conf": 1.0
+   },
+   {
+    "w": "take",
+    "start": 38.4,
+    "end": 38.72,
+    "conf": 1.0
+   },
+   {
+    "w": "it.",
+    "start": 38.72,
+    "end": 39.12,
+    "conf": 0.99
+   },
+   {
+    "w": "And",
+    "start": 39.12,
+    "end": 39.44,
+    "conf": 0.991
+   },
+   {
+    "w": "my",
+    "start": 39.44,
+    "end": 39.68,
+    "conf": 1.0
+   },
+   {
+    "w": "hair?",
+    "start": 39.68,
+    "end": 40.24,
+    "conf": 0.948
+   },
+   {
+    "w": "A",
+    "start": 40.24,
+    "end": 40.48,
+    "conf": 0.985
+   },
+   {
+    "w": "trial",
+    "start": 40.48,
+    "end": 40.88,
+    "conf": 1.0
+   },
+   {
+    "w": "over",
+    "start": 40.88,
+    "end": 41.12,
+    "conf": 1.0
+   },
+   {
+    "w": "12",
+    "start": 41.12,
+    "end": 41.52,
+    "conf": 0.969
+   },
+   {
+    "w": "weeks.",
+    "start": 41.52,
+    "end": 42.16,
+    "conf": 0.955
+   },
+   {
+    "w": "Found",
+    "start": 42.16,
+    "end": 42.64,
+    "conf": 0.999
+   },
+   {
+    "w": "no",
+    "start": 42.64,
+    "end": 42.88,
+    "conf": 1.0
+   },
+   {
+    "w": "hair",
+    "start": 42.88,
+    "end": 43.28,
+    "conf": 1.0
+   },
+   {
+    "w": "loss.",
+    "start": 43.28,
+    "end": 44.0,
+    "conf": 0.985
+   },
+   {
+    "w": "Your",
+    "start": 44.0,
+    "end": 44.32,
+    "conf": 0.995
+   },
+   {
+    "w": "scale",
+    "start": 44.32,
+    "end": 44.72,
+    "conf": 1.0
+   },
+   {
+    "w": "jumps?",
+    "start": 44.72,
+    "end": 45.36,
+    "conf": 0.921
+   },
+   {
+    "w": "That's",
+    "start": 45.36,
+    "end": 45.76,
+    "conf": 0.998
+   },
+   {
+    "w": "water",
+    "start": 45.76,
+    "end": 46.08,
+    "conf": 1.0
+   },
+   {
+    "w": "in",
+    "start": 46.08,
+    "end": 46.24,
+    "conf": 0.988
+   },
+   {
+    "w": "your",
+    "start": 46.24,
+    "end": 46.32,
+    "conf": 1.0
+   },
+   {
+    "w": "muscles",
+    "start": 46.32,
+    "end": 46.64,
+    "conf": 1.0
+   },
+   {
+    "w": "from",
+    "start": 46.64,
+    "end": 46.88,
+    "conf": 1.0
+   },
+   {
+    "w": "creatine,",
+    "start": 46.88,
+    "end": 47.76,
+    "conf": 0.963
+   },
+   {
+    "w": "not",
+    "start": 47.76,
+    "end": 48.08,
+    "conf": 1.0
+   },
+   {
+    "w": "fat.",
+    "start": 48.08,
+    "end": 49.04,
+    "conf": 0.921
+   },
+   {
+    "w": "Creatine.",
+    "start": 49.36,
+    "end": 50.72,
+    "conf": 0.875
+   },
+   {
+    "w": "Know",
+    "start": 50.72,
+    "end": 51.2,
+    "conf": 0.984
+   },
+   {
+    "w": "this.",
+    "start": 51.2,
+    "end": 51.92,
+    "conf": 0.928
+   },
+   {
+    "w": "The",
+    "start": 51.92,
+    "end": 52.16,
+    "conf": 0.988
+   },
+   {
+    "w": "first",
+    "start": 52.16,
+    "end": 52.48,
+    "conf": 1.0
+   },
+   {
+    "w": "jump",
+    "start": 52.48,
+    "end": 52.8,
+    "conf": 1.0
+   },
+   {
+    "w": "on",
+    "start": 52.8,
+    "end": 52.88,
+    "conf": 1.0
+   },
+   {
+    "w": "the",
+    "start": 52.88,
+    "end": 53.12,
+    "conf": 1.0
+   },
+   {
+    "w": "scale",
+    "start": 53.12,
+    "end": 53.52,
+    "conf": 1.0
+   },
+   {
+    "w": "is",
+    "start": 53.52,
+    "end": 53.76,
+    "conf": 1.0
+   },
+   {
+    "w": "mostly",
+    "start": 53.76,
+    "end": 54.24,
+    "conf": 1.0
+   },
+   {
+    "w": "water,",
+    "start": 54.24,
+    "end": 54.8,
+    "conf": 0.997
+   },
+   {
+    "w": "not",
+    "start": 54.8,
+    "end": 55.12,
+    "conf": 1.0
+   },
+   {
+    "w": "fat.",
+    "start": 55.12,
+    "end": 55.84,
+    "conf": 0.995
+   },
+   {
+    "w": "Taking",
+    "start": 55.84,
+    "end": 56.48,
+    "conf": 0.998
+   },
+   {
+    "w": "it?",
+    "start": 56.48,
+    "end": 56.88,
+    "conf": 0.967
+   },
+   {
+    "w": "Tell",
+    "start": 56.88,
+    "end": 57.28,
+    "conf": 0.996
+   },
+   {
+    "w": "your",
+    "start": 57.28,
+    "end": 57.52,
+    "conf": 1.0
+   },
+   {
+    "w": "doctor",
+    "start": 57.52,
+    "end": 57.92,
+    "conf": 1.0
+   },
+   {
+    "w": "before",
+    "start": 57.92,
+    "end": 58.24,
+    "conf": 1.0
+   },
+   {
+    "w": "a",
+    "start": 58.24,
+    "end": 58.32,
+    "conf": 1.0
+   },
+   {
+    "w": "blood",
+    "start": 58.32,
+    "end": 58.8,
+    "conf": 1.0
+   },
+   {
+    "w": "test.",
+    "start": 58.8,
+    "end": 59.36,
+    "conf": 0.915
+   },
+   {
+    "w": "Kidney",
+    "start": 59.36,
+    "end": 60.0,
+    "conf": 0.992
+   },
+   {
+    "w": "problems?",
+    "start": 60.0,
+    "end": 60.64,
+    "conf": 0.91
+   },
+   {
+    "w": "Ask",
+    "start": 60.64,
+    "end": 61.2,
+    "conf": 0.998
+   },
+   {
+    "w": "first.",
+    "start": 61.2,
+    "end": 61.84,
+    "conf": 0.987
+   },
+   {
+    "w": "Follow",
+    "start": 61.84,
+    "end": 62.32,
+    "conf": 0.996
+   },
+   {
+    "w": "MedPeak",
+    "start": 62.32,
+    "end": 63.12,
+    "conf": 0.94
+   },
+   {
+    "w": "Health",
+    "start": 63.12,
+    "end": 63.44,
+    "conf": 0.977
+   },
+   {
+    "w": "for",
+    "start": 63.44,
+    "end": 63.6,
+    "conf": 1.0
+   },
+   {
+    "w": "more",
+    "start": 63.6,
+    "end": 63.76,
+    "conf": 1.0
+   },
+   {
+    "w": "health",
+    "start": 63.76,
+    "end": 64.08,
+    "conf": 0.999
+   },
+   {
+    "w": "tips",
+    "start": 64.08,
+    "end": 64.4,
+    "conf": 1.0
+   },
+   {
+    "w": "that",
+    "start": 64.4,
+    "end": 64.56,
+    "conf": 1.0
+   },
+   {
+    "w": "keep",
+    "start": 64.56,
+    "end": 64.88,
+    "conf": 0.999
+   },
+   {
+    "w": "you",
+    "start": 64.88,
+    "end": 65.2,
+    "conf": 1.0
+   },
+   {
+    "w": "safe.",
+    "start": 65.2,
+    "end": 66.48,
+    "conf": 0.984
+   }
+  ]
+ },
+ {
+  "id": "ours-fasting",
+  "text": "When you fast, I scream. 16 hours. Scared of a little hunger? Stomach? Feed me. Feed me. Hunger comes in waves at your usual meal times. And it drops again on its own. I keep sugar for between meals, running low. Past about 12 hours, my store runs dry. My turn, burning fat. No sugar left, so the body switches fuel, fat. 16 hours? So fasting melts fat faster? In a year-long trial, fasting every other day. Lost about the same as just eating less. Fasting isn't for everyone. Pregnant, had an eating disorder? Ask a doctor first. So who was screaming at me all night? Me. When you fast, the brain makes you scream, little stomach. Fasting. Know this. Hunger comes in waves and it passes. Fasting is no faster than eating less. Pregnant or had an eating disorder? Ask a doctor first. Follow MedPeak Health for more health tips that keep you safe.",
+  "words": [
+   {
+    "w": "When",
+    "start": 0.0,
+    "end": 0.24,
+    "conf": 0.997
+   },
+   {
+    "w": "you",
+    "start": 0.24,
+    "end": 0.4,
+    "conf": 1.0
+   },
+   {
+    "w": "fast,",
+    "start": 0.4,
+    "end": 0.8,
+    "conf": 0.954
+   },
+   {
+    "w": "I",
+    "start": 0.8,
+    "end": 0.96,
+    "conf": 1.0
+   },
+   {
+    "w": "scream.",
+    "start": 0.96,
+    "end": 1.76,
+    "conf": 0.97
+   },
+   {
+    "w": "16",
+    "start": 1.76,
+    "end": 2.16,
+    "conf": 0.919
+   },
+   {
+    "w": "hours.",
+    "start": 2.32,
+    "end": 2.96,
+    "conf": 0.98
+   },
+   {
+    "w": "Scared",
+    "start": 2.96,
+    "end": 3.44,
+    "conf": 0.997
+   },
+   {
+    "w": "of",
+    "start": 3.44,
+    "end": 3.6,
+    "conf": 1.0
+   },
+   {
+    "w": "a",
+    "start": 3.6,
+    "end": 3.76,
+    "conf": 1.0
+   },
+   {
+    "w": "little",
+    "start": 3.76,
+    "end": 3.92,
+    "conf": 1.0
+   },
+   {
+    "w": "hunger?",
+    "start": 3.92,
+    "end": 4.56,
+    "conf": 0.939
+   },
+   {
+    "w": "Stomach?",
+    "start": 4.56,
+    "end": 7.28,
+    "conf": 0.908
+   },
+   {
+    "w": "Feed",
+    "start": 7.28,
+    "end": 7.84,
+    "conf": 0.994
+   },
+   {
+    "w": "me.",
+    "start": 7.84,
+    "end": 8.24,
+    "conf": 0.896
+   },
+   {
+    "w": "Feed",
+    "start": 8.24,
+    "end": 8.64,
+    "conf": 0.99
+   },
+   {
+    "w": "me.",
+    "start": 8.64,
+    "end": 9.12,
+    "conf": 0.975
+   },
+   {
+    "w": "Hunger",
+    "start": 9.12,
+    "end": 9.6,
+    "conf": 0.998
+   },
+   {
+    "w": "comes",
+    "start": 9.6,
+    "end": 9.76,
+    "conf": 1.0
+   },
+   {
+    "w": "in",
+    "start": 9.76,
+    "end": 10.0,
+    "conf": 1.0
+   },
+   {
+    "w": "waves",
+    "start": 10.0,
+    "end": 10.4,
+    "conf": 1.0
+   },
+   {
+    "w": "at",
+    "start": 10.4,
+    "end": 10.48,
+    "conf": 1.0
+   },
+   {
+    "w": "your",
+    "start": 10.48,
+    "end": 10.64,
+    "conf": 1.0
+   },
+   {
+    "w": "usual",
+    "start": 10.64,
+    "end": 11.04,
+    "conf": 1.0
+   },
+   {
+    "w": "meal",
+    "start": 11.04,
+    "end": 11.36,
+    "conf": 1.0
+   },
+   {
+    "w": "times.",
+    "start": 11.36,
+    "end": 12.16,
+    "conf": 0.92
+   },
+   {
+    "w": "And",
+    "start": 12.16,
+    "end": 12.48,
+    "conf": 0.996
+   },
+   {
+    "w": "it",
+    "start": 12.48,
+    "end": 12.64,
+    "conf": 1.0
+   },
+   {
+    "w": "drops",
+    "start": 12.64,
+    "end": 13.04,
+    "conf": 1.0
+   },
+   {
+    "w": "again",
+    "start": 13.04,
+    "end": 13.28,
+    "conf": 1.0
+   },
+   {
+    "w": "on",
+    "start": 13.28,
+    "end": 13.6,
+    "conf": 1.0
+   },
+   {
+    "w": "its",
+    "start": 13.6,
+    "end": 13.92,
+    "conf": 1.0
+   },
+   {
+    "w": "own.",
+    "start": 13.92,
+    "end": 15.6,
+    "conf": 0.994
+   },
+   {
+    "w": "I",
+    "start": 15.6,
+    "end": 15.92,
+    "conf": 0.98
+   },
+   {
+    "w": "keep",
+    "start": 15.92,
+    "end": 16.16,
+    "conf": 1.0
+   },
+   {
+    "w": "sugar",
+    "start": 16.16,
+    "end": 16.48,
+    "conf": 1.0
+   },
+   {
+    "w": "for",
+    "start": 16.48,
+    "end": 16.72,
+    "conf": 0.997
+   },
+   {
+    "w": "between",
+    "start": 16.72,
+    "end": 17.04,
+    "conf": 1.0
+   },
+   {
+    "w": "meals,",
+    "start": 17.04,
+    "end": 17.52,
+    "conf": 0.94
+   },
+   {
+    "w": "running",
+    "start": 17.52,
+    "end": 17.84,
+    "conf": 1.0
+   },
+   {
+    "w": "low.",
+    "start": 17.84,
+    "end": 18.4,
+    "conf": 0.993
+   },
+   {
+    "w": "Past",
+    "start": 18.4,
+    "end": 18.64,
+    "conf": 0.983
+   },
+   {
+    "w": "about",
+    "start": 18.64,
+    "end": 18.88,
+    "conf": 1.0
+   },
+   {
+    "w": "12",
+    "start": 18.88,
+    "end": 19.2,
+    "conf": 0.963
+   },
+   {
+    "w": "hours,",
+    "start": 19.2,
+    "end": 19.44,
+    "conf": 0.95
+   },
+   {
+    "w": "my",
+    "start": 19.44,
+    "end": 19.68,
+    "conf": 1.0
+   },
+   {
+    "w": "store",
+    "start": 19.68,
+    "end": 20.0,
+    "conf": 1.0
+   },
+   {
+    "w": "runs",
+    "start": 20.0,
+    "end": 20.24,
+    "conf": 1.0
+   },
+   {
+    "w": "dry.",
+    "start": 20.24,
+    "end": 20.96,
+    "conf": 0.991
+   },
+   {
+    "w": "My",
+    "start": 20.96,
+    "end": 21.28,
+    "conf": 0.987
+   },
+   {
+    "w": "turn,",
+    "start": 21.28,
+    "end": 21.68,
+    "conf": 0.891
+   },
+   {
+    "w": "burning",
+    "start": 21.68,
+    "end": 22.24,
+    "conf": 0.999
+   },
+   {
+    "w": "fat.",
+    "start": 22.24,
+    "end": 22.8,
+    "conf": 0.981
+   },
+   {
+    "w": "No",
+    "start": 22.8,
+    "end": 23.04,
+    "conf": 0.993
+   },
+   {
+    "w": "sugar",
+    "start": 23.04,
+    "end": 23.44,
+    "conf": 1.0
+   },
+   {
+    "w": "left,",
+    "start": 23.44,
+    "end": 23.68,
+    "conf": 0.978
+   },
+   {
+    "w": "so",
+    "start": 23.68,
+    "end": 23.92,
+    "conf": 1.0
+   },
+   {
+    "w": "the",
+    "start": 23.92,
+    "end": 24.0,
+    "conf": 1.0
+   },
+   {
+    "w": "body",
+    "start": 24.0,
+    "end": 24.24,
+    "conf": 1.0
+   },
+   {
+    "w": "switches",
+    "start": 24.24,
+    "end": 24.56,
+    "conf": 0.999
+   },
+   {
+    "w": "fuel,",
+    "start": 24.72,
+    "end": 25.2,
+    "conf": 0.901
+   },
+   {
+    "w": "fat.",
+    "start": 25.2,
+    "end": 26.96,
+    "conf": 0.969
+   },
+   {
+    "w": "16",
+    "start": 26.96,
+    "end": 27.52,
+    "conf": 0.919
+   },
+   {
+    "w": "hours?",
+    "start": 27.68,
+    "end": 28.32,
+    "conf": 0.934
+   },
+   {
+    "w": "So",
+    "start": 28.32,
+    "end": 28.56,
+    "conf": 0.995
+   },
+   {
+    "w": "fasting",
+    "start": 28.64,
+    "end": 29.2,
+    "conf": 1.0
+   },
+   {
+    "w": "melts",
+    "start": 29.2,
+    "end": 29.6,
+    "conf": 0.999
+   },
+   {
+    "w": "fat",
+    "start": 29.6,
+    "end": 29.92,
+    "conf": 1.0
+   },
+   {
+    "w": "faster?",
+    "start": 29.92,
+    "end": 30.72,
+    "conf": 0.928
+   },
+   {
+    "w": "In",
+    "start": 30.72,
+    "end": 30.96,
+    "conf": 0.984
+   },
+   {
+    "w": "a",
+    "start": 30.96,
+    "end": 31.2,
+    "conf": 0.965
+   },
+   {
+    "w": "year-long",
+    "start": 31.2,
+    "end": 31.84,
+    "conf": 0.93
+   },
+   {
+    "w": "trial,",
+    "start": 31.84,
+    "end": 32.32,
+    "conf": 0.947
+   },
+   {
+    "w": "fasting",
+    "start": 32.32,
+    "end": 32.8,
+    "conf": 1.0
+   },
+   {
+    "w": "every",
+    "start": 32.8,
+    "end": 33.12,
+    "conf": 1.0
+   },
+   {
+    "w": "other",
+    "start": 33.12,
+    "end": 33.36,
+    "conf": 1.0
+   },
+   {
+    "w": "day.",
+    "start": 33.36,
+    "end": 33.92,
+    "conf": 0.881
+   },
+   {
+    "w": "Lost",
+    "start": 34.08,
+    "end": 34.56,
+    "conf": 0.986
+   },
+   {
+    "w": "about",
+    "start": 34.56,
+    "end": 34.72,
+    "conf": 1.0
+   },
+   {
+    "w": "the",
+    "start": 34.72,
+    "end": 34.88,
+    "conf": 1.0
+   },
+   {
+    "w": "same",
+    "start": 34.88,
+    "end": 35.28,
+    "conf": 1.0
+   },
+   {
+    "w": "as",
+    "start": 35.28,
+    "end": 35.44,
+    "conf": 1.0
+   },
+   {
+    "w": "just",
+    "start": 35.44,
+    "end": 35.68,
+    "conf": 1.0
+   },
+   {
+    "w": "eating",
+    "start": 35.68,
+    "end": 36.16,
+    "conf": 1.0
+   },
+   {
+    "w": "less.",
+    "start": 36.16,
+    "end": 36.88,
+    "conf": 0.986
+   },
+   {
+    "w": "Fasting",
+    "start": 36.88,
+    "end": 37.44,
+    "conf": 0.967
+   },
+   {
+    "w": "isn't",
+    "start": 37.44,
+    "end": 37.76,
+    "conf": 1.0
+   },
+   {
+    "w": "for",
+    "start": 37.76,
+    "end": 37.92,
+    "conf": 1.0
+   },
+   {
+    "w": "everyone.",
+    "start": 37.92,
+    "end": 38.56,
+    "conf": 0.984
+   },
+   {
+    "w": "Pregnant,",
+    "start": 38.56,
+    "end": 39.2,
+    "conf": 0.905
+   },
+   {
+    "w": "had",
+    "start": 39.2,
+    "end": 39.44,
+    "conf": 0.998
+   },
+   {
+    "w": "an",
+    "start": 39.44,
+    "end": 39.6,
+    "conf": 1.0
+   },
+   {
+    "w": "eating",
+    "start": 39.6,
+    "end": 39.92,
+    "conf": 1.0
+   },
+   {
+    "w": "disorder?",
+    "start": 39.92,
+    "end": 40.4,
+    "conf": 0.938
+   },
+   {
+    "w": "Ask",
+    "start": 40.4,
+    "end": 40.72,
+    "conf": 0.993
+   },
+   {
+    "w": "a",
+    "start": 40.72,
+    "end": 40.8,
+    "conf": 1.0
+   },
+   {
+    "w": "doctor",
+    "start": 40.8,
+    "end": 41.36,
+    "conf": 1.0
+   },
+   {
+    "w": "first.",
+    "start": 41.36,
+    "end": 42.0,
+    "conf": 0.996
+   },
+   {
+    "w": "So",
+    "start": 42.0,
+    "end": 42.16,
+    "conf": 0.98
+   },
+   {
+    "w": "who",
+    "start": 42.24,
+    "end": 42.48,
+    "conf": 1.0
+   },
+   {
+    "w": "was",
+    "start": 42.48,
+    "end": 42.72,
+    "conf": 1.0
+   },
+   {
+    "w": "screaming",
+    "start": 42.72,
+    "end": 43.28,
+    "conf": 1.0
+   },
+   {
+    "w": "at",
+    "start": 43.28,
+    "end": 43.44,
+    "conf": 1.0
+   },
+   {
+    "w": "me",
+    "start": 43.44,
+    "end": 43.6,
+    "conf": 1.0
+   },
+   {
+    "w": "all",
+    "start": 43.6,
+    "end": 43.84,
+    "conf": 1.0
+   },
+   {
+    "w": "night?",
+    "start": 43.84,
+    "end": 44.48,
+    "conf": 0.994
+   },
+   {
+    "w": "Me.",
+    "start": 44.48,
+    "end": 45.04,
+    "conf": 0.961
+   },
+   {
+    "w": "When",
+    "start": 45.04,
+    "end": 45.28,
+    "conf": 0.998
+   },
+   {
+    "w": "you",
+    "start": 45.28,
+    "end": 45.44,
+    "conf": 1.0
+   },
+   {
+    "w": "fast,",
+    "start": 45.44,
+    "end": 45.76,
+    "conf": 0.954
+   },
+   {
+    "w": "the",
+    "start": 45.76,
+    "end": 46.0,
+    "conf": 0.999
+   },
+   {
+    "w": "brain",
+    "start": 46.0,
+    "end": 46.24,
+    "conf": 1.0
+   },
+   {
+    "w": "makes",
+    "start": 46.24,
+    "end": 46.4,
+    "conf": 1.0
+   },
+   {
+    "w": "you",
+    "start": 46.4,
+    "end": 46.56,
+    "conf": 1.0
+   },
+   {
+    "w": "scream,",
+    "start": 46.56,
+    "end": 47.04,
+    "conf": 0.912
+   },
+   {
+    "w": "little",
+    "start": 47.04,
+    "end": 47.28,
+    "conf": 0.999
+   },
+   {
+    "w": "stomach.",
+    "start": 47.28,
+    "end": 48.32,
+    "conf": 0.908
+   },
+   {
+    "w": "Fasting.",
+    "start": 48.72,
+    "end": 49.68,
+    "conf": 0.89
+   },
+   {
+    "w": "Know",
+    "start": 49.68,
+    "end": 49.84,
+    "conf": 0.947
+   },
+   {
+    "w": "this.",
+    "start": 50.16,
+    "end": 50.56,
+    "conf": 0.905
+   },
+   {
+    "w": "Hunger",
+    "start": 50.56,
+    "end": 51.12,
+    "conf": 0.997
+   },
+   {
+    "w": "comes",
+    "start": 51.12,
+    "end": 51.36,
+    "conf": 1.0
+   },
+   {
+    "w": "in",
+    "start": 51.36,
+    "end": 51.6,
+    "conf": 1.0
+   },
+   {
+    "w": "waves",
+    "start": 51.6,
+    "end": 52.08,
+    "conf": 1.0
+   },
+   {
+    "w": "and",
+    "start": 52.16,
+    "end": 52.4,
+    "conf": 1.0
+   },
+   {
+    "w": "it",
+    "start": 52.4,
+    "end": 52.64,
+    "conf": 1.0
+   },
+   {
+    "w": "passes.",
+    "start": 52.64,
+    "end": 53.44,
+    "conf": 0.993
+   },
+   {
+    "w": "Fasting",
+    "start": 53.44,
+    "end": 54.08,
+    "conf": 0.996
+   },
+   {
+    "w": "is",
+    "start": 54.08,
+    "end": 54.24,
+    "conf": 1.0
+   },
+   {
+    "w": "no",
+    "start": 54.24,
+    "end": 54.48,
+    "conf": 1.0
+   },
+   {
+    "w": "faster",
+    "start": 54.48,
+    "end": 54.96,
+    "conf": 1.0
+   },
+   {
+    "w": "than",
+    "start": 54.96,
+    "end": 55.12,
+    "conf": 1.0
+   },
+   {
+    "w": "eating",
+    "start": 55.12,
+    "end": 55.52,
+    "conf": 1.0
+   },
+   {
+    "w": "less.",
+    "start": 55.52,
+    "end": 56.16,
+    "conf": 0.967
+   },
+   {
+    "w": "Pregnant",
+    "start": 56.16,
+    "end": 56.72,
+    "conf": 0.996
+   },
+   {
+    "w": "or",
+    "start": 56.8,
+    "end": 57.04,
+    "conf": 1.0
+   },
+   {
+    "w": "had",
+    "start": 57.04,
+    "end": 57.28,
+    "conf": 0.999
+   },
+   {
+    "w": "an",
+    "start": 57.28,
+    "end": 57.44,
+    "conf": 1.0
+   },
+   {
+    "w": "eating",
+    "start": 57.44,
+    "end": 57.76,
+    "conf": 1.0
+   },
+   {
+    "w": "disorder?",
+    "start": 57.76,
+    "end": 58.56,
+    "conf": 0.914
+   },
+   {
+    "w": "Ask",
+    "start": 58.56,
+    "end": 58.96,
+    "conf": 0.998
+   },
+   {
+    "w": "a",
+    "start": 58.96,
+    "end": 59.12,
+    "conf": 1.0
+   },
+   {
+    "w": "doctor",
+    "start": 59.12,
+    "end": 59.52,
+    "conf": 1.0
+   },
+   {
+    "w": "first.",
+    "start": 59.52,
+    "end": 59.92,
+    "conf": 0.98
+   },
+   {
+    "w": "Follow",
+    "start": 59.92,
+    "end": 60.32,
+    "conf": 0.994
+   },
+   {
+    "w": "MedPeak",
+    "start": 60.32,
+    "end": 61.04,
+    "conf": 0.845
+   },
+   {
+    "w": "Health",
+    "start": 61.04,
+    "end": 61.44,
+    "conf": 0.988
+   },
+   {
+    "w": "for",
+    "start": 61.52,
+    "end": 61.68,
+    "conf": 1.0
+   },
+   {
+    "w": "more",
+    "start": 61.68,
+    "end": 61.84,
+    "conf": 1.0
+   },
+   {
+    "w": "health",
+    "start": 61.84,
+    "end": 62.24,
+    "conf": 0.999
+   },
+   {
+    "w": "tips",
+    "start": 62.24,
+    "end": 62.64,
+    "conf": 1.0
+   },
+   {
+    "w": "that",
+    "start": 62.64,
+    "end": 62.88,
+    "conf": 1.0
+   },
+   {
+    "w": "keep",
+    "start": 62.88,
+    "end": 63.2,
+    "conf": 0.999
+   },
+   {
+    "w": "you",
+    "start": 63.2,
+    "end": 63.52,
+    "conf": 1.0
+   },
+   {
+    "w": "safe.",
+    "start": 63.52,
+    "end": 64.48,
+    "conf": 0.921
+   }
+  ]
+ },
+ {
+  "id": "ours-quit-sugar",
+  "text": "Quit sugar, you'll be back. No sugar for a month? Watch me. You're hooked on me. Here come the cravings. Hooked? Studies find little proof sugar is addictive in people. Relax, I'm juice now. Healthy. Juice, honey, syrup, still sugar to me. Out! Under 12 teaspoons a day, and I get fewer holes. In kids with obesity who swap sugar for starch, liver fat nearly halved in nine days. Same calories. Fine, have my sweet cousin, zero sugar! The WHO says, don't swap sugar for sweeteners. So we're did I lose weight? In trials, about one kilo. Only because you ate less. And me? Sweet food tastes just the same. No sugar for a month? Not yet. Three months? 40% sweeter. You quit sugar? I'll be back.",
+  "words": [
+   {
+    "w": "Quit",
+    "start": 0.0,
+    "end": 0.4,
+    "conf": 0.994
+   },
+   {
+    "w": "sugar,",
+    "start": 0.4,
+    "end": 0.88,
+    "conf": 0.891
+   },
+   {
+    "w": "you'll",
+    "start": 0.88,
+    "end": 1.12,
+    "conf": 0.998
+   },
+   {
+    "w": "be",
+    "start": 1.12,
+    "end": 1.36,
+    "conf": 1.0
+   },
+   {
+    "w": "back.",
+    "start": 1.36,
+    "end": 1.84,
+    "conf": 0.929
+   },
+   {
+    "w": "No",
+    "start": 1.84,
+    "end": 2.16,
+    "conf": 1.0
+   },
+   {
+    "w": "sugar",
+    "start": 2.16,
+    "end": 2.56,
+    "conf": 1.0
+   },
+   {
+    "w": "for",
+    "start": 2.56,
+    "end": 2.72,
+    "conf": 1.0
+   },
+   {
+    "w": "a",
+    "start": 2.72,
+    "end": 2.8,
+    "conf": 1.0
+   },
+   {
+    "w": "month?",
+    "start": 2.8,
+    "end": 3.36,
+    "conf": 0.921
+   },
+   {
+    "w": "Watch",
+    "start": 3.36,
+    "end": 4.0,
+    "conf": 0.996
+   },
+   {
+    "w": "me.",
+    "start": 4.0,
+    "end": 4.96,
+    "conf": 0.962
+   },
+   {
+    "w": "You're",
+    "start": 4.96,
+    "end": 5.44,
+    "conf": 0.987
+   },
+   {
+    "w": "hooked",
+    "start": 5.44,
+    "end": 5.92,
+    "conf": 1.0
+   },
+   {
+    "w": "on",
+    "start": 5.92,
+    "end": 6.16,
+    "conf": 0.999
+   },
+   {
+    "w": "me.",
+    "start": 6.16,
+    "end": 6.48,
+    "conf": 0.904
+   },
+   {
+    "w": "Here",
+    "start": 6.48,
+    "end": 6.72,
+    "conf": 0.998
+   },
+   {
+    "w": "come",
+    "start": 6.72,
+    "end": 6.96,
+    "conf": 0.968
+   },
+   {
+    "w": "the",
+    "start": 6.96,
+    "end": 7.2,
+    "conf": 1.0
+   },
+   {
+    "w": "cravings.",
+    "start": 7.2,
+    "end": 8.08,
+    "conf": 0.92
+   },
+   {
+    "w": "Hooked?",
+    "start": 8.08,
+    "end": 8.88,
+    "conf": 0.919
+   },
+   {
+    "w": "Studies",
+    "start": 8.88,
+    "end": 9.44,
+    "conf": 0.998
+   },
+   {
+    "w": "find",
+    "start": 9.44,
+    "end": 9.68,
+    "conf": 1.0
+   },
+   {
+    "w": "little",
+    "start": 9.68,
+    "end": 9.92,
+    "conf": 1.0
+   },
+   {
+    "w": "proof",
+    "start": 9.92,
+    "end": 10.16,
+    "conf": 1.0
+   },
+   {
+    "w": "sugar",
+    "start": 10.24,
+    "end": 10.56,
+    "conf": 1.0
+   },
+   {
+    "w": "is",
+    "start": 10.56,
+    "end": 10.72,
+    "conf": 0.999
+   },
+   {
+    "w": "addictive",
+    "start": 10.72,
+    "end": 11.28,
+    "conf": 1.0
+   },
+   {
+    "w": "in",
+    "start": 11.28,
+    "end": 11.6,
+    "conf": 0.998
+   },
+   {
+    "w": "people.",
+    "start": 11.6,
+    "end": 12.64,
+    "conf": 0.988
+   },
+   {
+    "w": "Relax,",
+    "start": 12.64,
+    "end": 13.36,
+    "conf": 0.918
+   },
+   {
+    "w": "I'm",
+    "start": 13.36,
+    "end": 13.6,
+    "conf": 0.998
+   },
+   {
+    "w": "juice",
+    "start": 13.6,
+    "end": 13.84,
+    "conf": 0.979
+   },
+   {
+    "w": "now.",
+    "start": 13.92,
+    "end": 14.16,
+    "conf": 0.898
+   },
+   {
+    "w": "Healthy.",
+    "start": 14.16,
+    "end": 14.88,
+    "conf": 0.909
+   },
+   {
+    "w": "Juice,",
+    "start": 14.88,
+    "end": 15.36,
+    "conf": 0.937
+   },
+   {
+    "w": "honey,",
+    "start": 15.36,
+    "end": 15.76,
+    "conf": 0.984
+   },
+   {
+    "w": "syrup,",
+    "start": 15.76,
+    "end": 16.16,
+    "conf": 0.932
+   },
+   {
+    "w": "still",
+    "start": 16.16,
+    "end": 16.48,
+    "conf": 0.997
+   },
+   {
+    "w": "sugar",
+    "start": 16.48,
+    "end": 16.8,
+    "conf": 0.999
+   },
+   {
+    "w": "to",
+    "start": 16.8,
+    "end": 16.96,
+    "conf": 0.999
+   },
+   {
+    "w": "me.",
+    "start": 16.96,
+    "end": 17.28,
+    "conf": 0.927
+   },
+   {
+    "w": "Out!",
+    "start": 17.28,
+    "end": 17.92,
+    "conf": 0.882
+   },
+   {
+    "w": "Under",
+    "start": 17.92,
+    "end": 18.24,
+    "conf": 0.984
+   },
+   {
+    "w": "12",
+    "start": 18.24,
+    "end": 18.64,
+    "conf": 0.926
+   },
+   {
+    "w": "teaspoons",
+    "start": 18.64,
+    "end": 19.2,
+    "conf": 0.999
+   },
+   {
+    "w": "a",
+    "start": 19.2,
+    "end": 19.28,
+    "conf": 0.999
+   },
+   {
+    "w": "day,",
+    "start": 19.28,
+    "end": 19.52,
+    "conf": 0.934
+   },
+   {
+    "w": "and",
+    "start": 19.52,
+    "end": 19.68,
+    "conf": 1.0
+   },
+   {
+    "w": "I",
+    "start": 19.68,
+    "end": 19.76,
+    "conf": 0.999
+   },
+   {
+    "w": "get",
+    "start": 19.76,
+    "end": 19.92,
+    "conf": 0.999
+   },
+   {
+    "w": "fewer",
+    "start": 19.92,
+    "end": 20.48,
+    "conf": 0.993
+   },
+   {
+    "w": "holes.",
+    "start": 20.48,
+    "end": 21.84,
+    "conf": 0.956
+   },
+   {
+    "w": "In",
+    "start": 21.84,
+    "end": 22.16,
+    "conf": 0.981
+   },
+   {
+    "w": "kids",
+    "start": 22.16,
+    "end": 22.48,
+    "conf": 0.997
+   },
+   {
+    "w": "with",
+    "start": 22.48,
+    "end": 22.64,
+    "conf": 1.0
+   },
+   {
+    "w": "obesity",
+    "start": 22.64,
+    "end": 23.12,
+    "conf": 1.0
+   },
+   {
+    "w": "who",
+    "start": 23.2,
+    "end": 23.36,
+    "conf": 0.999
+   },
+   {
+    "w": "swap",
+    "start": 23.36,
+    "end": 23.76,
+    "conf": 1.0
+   },
+   {
+    "w": "sugar",
+    "start": 23.76,
+    "end": 24.08,
+    "conf": 1.0
+   },
+   {
+    "w": "for",
+    "start": 24.08,
+    "end": 24.32,
+    "conf": 1.0
+   },
+   {
+    "w": "starch,",
+    "start": 24.32,
+    "end": 25.12,
+    "conf": 0.894
+   },
+   {
+    "w": "liver",
+    "start": 25.12,
+    "end": 25.52,
+    "conf": 0.999
+   },
+   {
+    "w": "fat",
+    "start": 25.52,
+    "end": 25.76,
+    "conf": 1.0
+   },
+   {
+    "w": "nearly",
+    "start": 25.84,
+    "end": 26.08,
+    "conf": 1.0
+   },
+   {
+    "w": "halved",
+    "start": 26.08,
+    "end": 26.48,
+    "conf": 0.992
+   },
+   {
+    "w": "in",
+    "start": 26.56,
+    "end": 26.64,
+    "conf": 0.999
+   },
+   {
+    "w": "nine",
+    "start": 26.64,
+    "end": 26.88,
+    "conf": 0.99
+   },
+   {
+    "w": "days.",
+    "start": 26.88,
+    "end": 27.2,
+    "conf": 0.917
+   },
+   {
+    "w": "Same",
+    "start": 27.2,
+    "end": 27.6,
+    "conf": 0.992
+   },
+   {
+    "w": "calories.",
+    "start": 27.6,
+    "end": 28.56,
+    "conf": 0.964
+   },
+   {
+    "w": "Fine,",
+    "start": 28.56,
+    "end": 29.12,
+    "conf": 0.876
+   },
+   {
+    "w": "have",
+    "start": 29.12,
+    "end": 29.2,
+    "conf": 0.987
+   },
+   {
+    "w": "my",
+    "start": 29.36,
+    "end": 29.52,
+    "conf": 1.0
+   },
+   {
+    "w": "sweet",
+    "start": 29.52,
+    "end": 29.76,
+    "conf": 0.999
+   },
+   {
+    "w": "cousin,",
+    "start": 29.76,
+    "end": 30.32,
+    "conf": 0.828
+   },
+   {
+    "w": "zero",
+    "start": 30.32,
+    "end": 30.64,
+    "conf": 0.989
+   },
+   {
+    "w": "sugar!",
+    "start": 30.64,
+    "end": 31.28,
+    "conf": 0.892
+   },
+   {
+    "w": "The",
+    "start": 31.28,
+    "end": 31.6,
+    "conf": 0.99
+   },
+   {
+    "w": "WHO",
+    "start": 31.6,
+    "end": 32.24,
+    "conf": 0.98
+   },
+   {
+    "w": "says,",
+    "start": 32.24,
+    "end": 32.48,
+    "conf": 0.896
+   },
+   {
+    "w": "don't",
+    "start": 32.48,
+    "end": 32.72,
+    "conf": 0.922
+   },
+   {
+    "w": "swap",
+    "start": 32.72,
+    "end": 33.04,
+    "conf": 1.0
+   },
+   {
+    "w": "sugar",
+    "start": 33.04,
+    "end": 33.28,
+    "conf": 1.0
+   },
+   {
+    "w": "for",
+    "start": 33.28,
+    "end": 33.44,
+    "conf": 1.0
+   },
+   {
+    "w": "sweeteners.",
+    "start": 33.44,
+    "end": 34.4,
+    "conf": 0.989
+   },
+   {
+    "w": "So",
+    "start": 34.4,
+    "end": 34.56,
+    "conf": 0.96
+   },
+   {
+    "w": "we're",
+    "start": 34.72,
+    "end": 34.96,
+    "conf": 0.93
+   },
+   {
+    "w": "did",
+    "start": 35.12,
+    "end": 35.2,
+    "conf": 0.945
+   },
+   {
+    "w": "I",
+    "start": 35.28,
+    "end": 35.44,
+    "conf": 0.997
+   },
+   {
+    "w": "lose",
+    "start": 35.44,
+    "end": 35.68,
+    "conf": 1.0
+   },
+   {
+    "w": "weight?",
+    "start": 35.68,
+    "end": 36.32,
+    "conf": 0.96
+   },
+   {
+    "w": "In",
+    "start": 36.32,
+    "end": 36.64,
+    "conf": 0.956
+   },
+   {
+    "w": "trials,",
+    "start": 36.64,
+    "end": 37.28,
+    "conf": 0.945
+   },
+   {
+    "w": "about",
+    "start": 37.28,
+    "end": 37.52,
+    "conf": 1.0
+   },
+   {
+    "w": "one",
+    "start": 37.52,
+    "end": 37.76,
+    "conf": 0.994
+   },
+   {
+    "w": "kilo.",
+    "start": 37.76,
+    "end": 38.48,
+    "conf": 0.83
+   },
+   {
+    "w": "Only",
+    "start": 38.48,
+    "end": 38.8,
+    "conf": 0.999
+   },
+   {
+    "w": "because",
+    "start": 38.8,
+    "end": 39.04,
+    "conf": 1.0
+   },
+   {
+    "w": "you",
+    "start": 39.04,
+    "end": 39.2,
+    "conf": 1.0
+   },
+   {
+    "w": "ate",
+    "start": 39.2,
+    "end": 39.68,
+    "conf": 1.0
+   },
+   {
+    "w": "less.",
+    "start": 39.68,
+    "end": 40.4,
+    "conf": 0.932
+   },
+   {
+    "w": "And",
+    "start": 40.4,
+    "end": 40.72,
+    "conf": 0.989
+   },
+   {
+    "w": "me?",
+    "start": 40.72,
+    "end": 41.2,
+    "conf": 0.915
+   },
+   {
+    "w": "Sweet",
+    "start": 41.2,
+    "end": 41.68,
+    "conf": 0.998
+   },
+   {
+    "w": "food",
+    "start": 41.68,
+    "end": 42.0,
+    "conf": 0.999
+   },
+   {
+    "w": "tastes",
+    "start": 42.0,
+    "end": 42.32,
+    "conf": 0.997
+   },
+   {
+    "w": "just",
+    "start": 42.32,
+    "end": 42.56,
+    "conf": 1.0
+   },
+   {
+    "w": "the",
+    "start": 42.56,
+    "end": 42.72,
+    "conf": 1.0
+   },
+   {
+    "w": "same.",
+    "start": 42.72,
+    "end": 43.28,
+    "conf": 0.966
+   },
+   {
+    "w": "No",
+    "start": 43.28,
+    "end": 43.6,
+    "conf": 0.999
+   },
+   {
+    "w": "sugar",
+    "start": 43.6,
+    "end": 44.0,
+    "conf": 1.0
+   },
+   {
+    "w": "for",
+    "start": 44.0,
+    "end": 44.16,
+    "conf": 1.0
+   },
+   {
+    "w": "a",
+    "start": 44.16,
+    "end": 44.24,
+    "conf": 1.0
+   },
+   {
+    "w": "month?",
+    "start": 44.24,
+    "end": 44.8,
+    "conf": 0.899
+   },
+   {
+    "w": "Not",
+    "start": 44.8,
+    "end": 45.12,
+    "conf": 0.995
+   },
+   {
+    "w": "yet.",
+    "start": 45.12,
+    "end": 45.68,
+    "conf": 0.967
+   },
+   {
+    "w": "Three",
+    "start": 45.68,
+    "end": 46.0,
+    "conf": 0.992
+   },
+   {
+    "w": "months?",
+    "start": 46.0,
+    "end": 46.56,
+    "conf": 0.883
+   },
+   {
+    "w": "40%",
+    "start": 46.56,
+    "end": 47.2,
+    "conf": 0.914
+   },
+   {
+    "w": "sweeter.",
+    "start": 47.36,
+    "end": 48.08,
+    "conf": 0.986
+   },
+   {
+    "w": "You",
+    "start": 48.08,
+    "end": 48.32,
+    "conf": 0.991
+   },
+   {
+    "w": "quit",
+    "start": 48.32,
+    "end": 48.72,
+    "conf": 1.0
+   },
+   {
+    "w": "sugar?",
+    "start": 48.72,
+    "end": 49.44,
+    "conf": 0.888
+   },
+   {
+    "w": "I'll",
+    "start": 49.44,
+    "end": 49.92,
+    "conf": 0.983
+   },
+   {
+    "w": "be",
+    "start": 49.92,
+    "end": 50.24,
+    "conf": 1.0
+   },
+   {
+    "w": "back.",
+    "start": 50.24,
+    "end": 64.64,
+    "conf": 0.811
+   }
+  ]
+ },
+ {
+  "id": "ours-snake-bite",
+  "text": "A snake bites you, we ride. Ow! Was that snake venomous? Over five million bites a year. We're busy. I go for the nerves. Breathing gets hard. I stop your blood from clotting. And I wreck the flesh right here. Stay calm, keep the bitten leg still. And don't go near the snake. Cut it, suck it out, tie it tight. Yes, do all of that. We love it. No, Mom. Don't cut it, suck it, or tie it. Rings off. I'm calling for help. Uh-oh. What's in that drip? Anti-venom. The best treatment there is. Some snake bites carry no venom at all. But you can't tell which snake is venomous. Get every bite checked. Next time a snake bites you, we ride again. Snake bite. Know this. Never cut, suck, or tie the bite. Stay calm and keep it still. Get every bite checked. Follow MedPak Health for more health tips that keep you safe.",
+  "words": [
+   {
+    "w": "A",
+    "start": 0.08,
+    "end": 0.24,
+    "conf": 0.967
+   },
+   {
+    "w": "snake",
+    "start": 0.24,
+    "end": 0.56,
+    "conf": 1.0
+   },
+   {
+    "w": "bites",
+    "start": 0.56,
+    "end": 0.88,
+    "conf": 1.0
+   },
+   {
+    "w": "you,",
+    "start": 0.88,
+    "end": 1.12,
+    "conf": 0.945
+   },
+   {
+    "w": "we",
+    "start": 1.12,
+    "end": 1.36,
+    "conf": 1.0
+   },
+   {
+    "w": "ride.",
+    "start": 1.36,
+    "end": 1.84,
+    "conf": 0.994
+   },
+   {
+    "w": "Ow!",
+    "start": 1.84,
+    "end": 2.32,
+    "conf": 0.883
+   },
+   {
+    "w": "Was",
+    "start": 2.32,
+    "end": 2.56,
+    "conf": 0.997
+   },
+   {
+    "w": "that",
+    "start": 2.56,
+    "end": 2.72,
+    "conf": 1.0
+   },
+   {
+    "w": "snake",
+    "start": 2.72,
+    "end": 3.12,
+    "conf": 0.998
+   },
+   {
+    "w": "venomous?",
+    "start": 3.12,
+    "end": 4.16,
+    "conf": 0.997
+   },
+   {
+    "w": "Over",
+    "start": 4.16,
+    "end": 4.64,
+    "conf": 0.983
+   },
+   {
+    "w": "five",
+    "start": 4.64,
+    "end": 5.04,
+    "conf": 0.93
+   },
+   {
+    "w": "million",
+    "start": 5.04,
+    "end": 5.36,
+    "conf": 1.0
+   },
+   {
+    "w": "bites",
+    "start": 5.36,
+    "end": 5.92,
+    "conf": 0.999
+   },
+   {
+    "w": "a",
+    "start": 5.92,
+    "end": 6.08,
+    "conf": 1.0
+   },
+   {
+    "w": "year.",
+    "start": 6.08,
+    "end": 6.56,
+    "conf": 0.988
+   },
+   {
+    "w": "We're",
+    "start": 6.56,
+    "end": 7.04,
+    "conf": 0.995
+   },
+   {
+    "w": "busy.",
+    "start": 7.04,
+    "end": 7.76,
+    "conf": 0.983
+   },
+   {
+    "w": "I",
+    "start": 7.76,
+    "end": 8.08,
+    "conf": 0.996
+   },
+   {
+    "w": "go",
+    "start": 8.08,
+    "end": 8.32,
+    "conf": 1.0
+   },
+   {
+    "w": "for",
+    "start": 8.32,
+    "end": 8.48,
+    "conf": 1.0
+   },
+   {
+    "w": "the",
+    "start": 8.48,
+    "end": 8.64,
+    "conf": 1.0
+   },
+   {
+    "w": "nerves.",
+    "start": 8.64,
+    "end": 9.44,
+    "conf": 0.958
+   },
+   {
+    "w": "Breathing",
+    "start": 9.44,
+    "end": 10.08,
+    "conf": 0.997
+   },
+   {
+    "w": "gets",
+    "start": 10.08,
+    "end": 10.48,
+    "conf": 1.0
+   },
+   {
+    "w": "hard.",
+    "start": 10.48,
+    "end": 11.04,
+    "conf": 0.984
+   },
+   {
+    "w": "I",
+    "start": 11.04,
+    "end": 11.28,
+    "conf": 0.984
+   },
+   {
+    "w": "stop",
+    "start": 11.28,
+    "end": 11.6,
+    "conf": 1.0
+   },
+   {
+    "w": "your",
+    "start": 11.6,
+    "end": 11.76,
+    "conf": 1.0
+   },
+   {
+    "w": "blood",
+    "start": 11.76,
+    "end": 12.16,
+    "conf": 0.987
+   },
+   {
+    "w": "from",
+    "start": 12.16,
+    "end": 12.32,
+    "conf": 1.0
+   },
+   {
+    "w": "clotting.",
+    "start": 12.32,
+    "end": 13.28,
+    "conf": 0.888
+   },
+   {
+    "w": "And",
+    "start": 13.28,
+    "end": 13.52,
+    "conf": 0.994
+   },
+   {
+    "w": "I",
+    "start": 13.52,
+    "end": 13.76,
+    "conf": 1.0
+   },
+   {
+    "w": "wreck",
+    "start": 13.76,
+    "end": 14.24,
+    "conf": 0.995
+   },
+   {
+    "w": "the",
+    "start": 14.24,
+    "end": 14.32,
+    "conf": 1.0
+   },
+   {
+    "w": "flesh",
+    "start": 14.32,
+    "end": 14.72,
+    "conf": 1.0
+   },
+   {
+    "w": "right",
+    "start": 14.88,
+    "end": 15.2,
+    "conf": 1.0
+   },
+   {
+    "w": "here.",
+    "start": 15.2,
+    "end": 16.0,
+    "conf": 0.99
+   },
+   {
+    "w": "Stay",
+    "start": 16.0,
+    "end": 16.4,
+    "conf": 0.994
+   },
+   {
+    "w": "calm,",
+    "start": 16.4,
+    "end": 16.88,
+    "conf": 0.946
+   },
+   {
+    "w": "keep",
+    "start": 16.88,
+    "end": 17.12,
+    "conf": 1.0
+   },
+   {
+    "w": "the",
+    "start": 17.12,
+    "end": 17.28,
+    "conf": 1.0
+   },
+   {
+    "w": "bitten",
+    "start": 17.28,
+    "end": 17.76,
+    "conf": 0.993
+   },
+   {
+    "w": "leg",
+    "start": 17.76,
+    "end": 17.92,
+    "conf": 0.995
+   },
+   {
+    "w": "still.",
+    "start": 18.08,
+    "end": 18.56,
+    "conf": 0.939
+   },
+   {
+    "w": "And",
+    "start": 18.56,
+    "end": 18.8,
+    "conf": 0.994
+   },
+   {
+    "w": "don't",
+    "start": 18.8,
+    "end": 19.12,
+    "conf": 1.0
+   },
+   {
+    "w": "go",
+    "start": 19.12,
+    "end": 19.28,
+    "conf": 1.0
+   },
+   {
+    "w": "near",
+    "start": 19.28,
+    "end": 19.6,
+    "conf": 1.0
+   },
+   {
+    "w": "the",
+    "start": 19.6,
+    "end": 19.84,
+    "conf": 1.0
+   },
+   {
+    "w": "snake.",
+    "start": 19.84,
+    "end": 20.64,
+    "conf": 0.992
+   },
+   {
+    "w": "Cut",
+    "start": 20.64,
+    "end": 20.96,
+    "conf": 0.982
+   },
+   {
+    "w": "it,",
+    "start": 20.96,
+    "end": 21.28,
+    "conf": 0.986
+   },
+   {
+    "w": "suck",
+    "start": 21.28,
+    "end": 21.6,
+    "conf": 1.0
+   },
+   {
+    "w": "it",
+    "start": 21.6,
+    "end": 21.76,
+    "conf": 1.0
+   },
+   {
+    "w": "out,",
+    "start": 21.76,
+    "end": 22.0,
+    "conf": 0.989
+   },
+   {
+    "w": "tie",
+    "start": 22.0,
+    "end": 22.32,
+    "conf": 1.0
+   },
+   {
+    "w": "it",
+    "start": 22.32,
+    "end": 22.56,
+    "conf": 1.0
+   },
+   {
+    "w": "tight.",
+    "start": 22.56,
+    "end": 23.12,
+    "conf": 0.984
+   },
+   {
+    "w": "Yes,",
+    "start": 23.12,
+    "end": 23.6,
+    "conf": 0.958
+   },
+   {
+    "w": "do",
+    "start": 23.6,
+    "end": 23.84,
+    "conf": 1.0
+   },
+   {
+    "w": "all",
+    "start": 23.84,
+    "end": 24.0,
+    "conf": 1.0
+   },
+   {
+    "w": "of",
+    "start": 24.0,
+    "end": 24.16,
+    "conf": 1.0
+   },
+   {
+    "w": "that.",
+    "start": 24.16,
+    "end": 24.48,
+    "conf": 0.903
+   },
+   {
+    "w": "We",
+    "start": 24.48,
+    "end": 24.72,
+    "conf": 0.991
+   },
+   {
+    "w": "love",
+    "start": 24.72,
+    "end": 24.88,
+    "conf": 1.0
+   },
+   {
+    "w": "it.",
+    "start": 24.88,
+    "end": 25.2,
+    "conf": 0.93
+   },
+   {
+    "w": "No,",
+    "start": 25.2,
+    "end": 25.6,
+    "conf": 0.937
+   },
+   {
+    "w": "Mom.",
+    "start": 25.6,
+    "end": 26.08,
+    "conf": 0.926
+   },
+   {
+    "w": "Don't",
+    "start": 26.08,
+    "end": 26.32,
+    "conf": 0.999
+   },
+   {
+    "w": "cut",
+    "start": 26.32,
+    "end": 26.56,
+    "conf": 1.0
+   },
+   {
+    "w": "it,",
+    "start": 26.56,
+    "end": 26.8,
+    "conf": 0.996
+   },
+   {
+    "w": "suck",
+    "start": 26.8,
+    "end": 27.12,
+    "conf": 1.0
+   },
+   {
+    "w": "it,",
+    "start": 27.12,
+    "end": 27.28,
+    "conf": 0.983
+   },
+   {
+    "w": "or",
+    "start": 27.28,
+    "end": 27.52,
+    "conf": 1.0
+   },
+   {
+    "w": "tie",
+    "start": 27.52,
+    "end": 27.76,
+    "conf": 1.0
+   },
+   {
+    "w": "it.",
+    "start": 27.76,
+    "end": 28.24,
+    "conf": 0.985
+   },
+   {
+    "w": "Rings",
+    "start": 28.24,
+    "end": 28.64,
+    "conf": 0.976
+   },
+   {
+    "w": "off.",
+    "start": 28.72,
+    "end": 29.04,
+    "conf": 0.969
+   },
+   {
+    "w": "I'm",
+    "start": 29.04,
+    "end": 29.28,
+    "conf": 0.991
+   },
+   {
+    "w": "calling",
+    "start": 29.28,
+    "end": 29.6,
+    "conf": 1.0
+   },
+   {
+    "w": "for",
+    "start": 29.6,
+    "end": 29.84,
+    "conf": 1.0
+   },
+   {
+    "w": "help.",
+    "start": 29.84,
+    "end": 30.64,
+    "conf": 0.999
+   },
+   {
+    "w": "Uh-oh.",
+    "start": 30.64,
+    "end": 31.36,
+    "conf": 0.931
+   },
+   {
+    "w": "What's",
+    "start": 31.36,
+    "end": 31.76,
+    "conf": 0.994
+   },
+   {
+    "w": "in",
+    "start": 31.76,
+    "end": 31.92,
+    "conf": 1.0
+   },
+   {
+    "w": "that",
+    "start": 31.92,
+    "end": 32.16,
+    "conf": 1.0
+   },
+   {
+    "w": "drip?",
+    "start": 32.16,
+    "end": 32.8,
+    "conf": 0.981
+   },
+   {
+    "w": "Anti-venom.",
+    "start": 32.8,
+    "end": 33.92,
+    "conf": 0.943
+   },
+   {
+    "w": "The",
+    "start": 33.92,
+    "end": 34.16,
+    "conf": 0.993
+   },
+   {
+    "w": "best",
+    "start": 34.16,
+    "end": 34.4,
+    "conf": 1.0
+   },
+   {
+    "w": "treatment",
+    "start": 34.4,
+    "end": 34.88,
+    "conf": 1.0
+   },
+   {
+    "w": "there",
+    "start": 34.88,
+    "end": 35.2,
+    "conf": 1.0
+   },
+   {
+    "w": "is.",
+    "start": 35.2,
+    "end": 35.68,
+    "conf": 0.987
+   },
+   {
+    "w": "Some",
+    "start": 35.68,
+    "end": 36.0,
+    "conf": 0.986
+   },
+   {
+    "w": "snake",
+    "start": 36.0,
+    "end": 36.4,
+    "conf": 1.0
+   },
+   {
+    "w": "bites",
+    "start": 36.4,
+    "end": 36.8,
+    "conf": 0.999
+   },
+   {
+    "w": "carry",
+    "start": 36.8,
+    "end": 37.04,
+    "conf": 1.0
+   },
+   {
+    "w": "no",
+    "start": 37.04,
+    "end": 37.2,
+    "conf": 1.0
+   },
+   {
+    "w": "venom",
+    "start": 37.2,
+    "end": 37.68,
+    "conf": 1.0
+   },
+   {
+    "w": "at",
+    "start": 37.68,
+    "end": 38.0,
+    "conf": 1.0
+   },
+   {
+    "w": "all.",
+    "start": 38.0,
+    "end": 38.64,
+    "conf": 0.967
+   },
+   {
+    "w": "But",
+    "start": 38.64,
+    "end": 38.88,
+    "conf": 0.998
+   },
+   {
+    "w": "you",
+    "start": 38.88,
+    "end": 39.04,
+    "conf": 1.0
+   },
+   {
+    "w": "can't",
+    "start": 39.04,
+    "end": 39.36,
+    "conf": 1.0
+   },
+   {
+    "w": "tell",
+    "start": 39.36,
+    "end": 39.6,
+    "conf": 1.0
+   },
+   {
+    "w": "which",
+    "start": 39.6,
+    "end": 39.84,
+    "conf": 1.0
+   },
+   {
+    "w": "snake",
+    "start": 39.84,
+    "end": 40.16,
+    "conf": 1.0
+   },
+   {
+    "w": "is",
+    "start": 40.16,
+    "end": 40.32,
+    "conf": 1.0
+   },
+   {
+    "w": "venomous.",
+    "start": 40.32,
+    "end": 41.2,
+    "conf": 0.989
+   },
+   {
+    "w": "Get",
+    "start": 41.2,
+    "end": 41.52,
+    "conf": 0.997
+   },
+   {
+    "w": "every",
+    "start": 41.52,
+    "end": 41.84,
+    "conf": 1.0
+   },
+   {
+    "w": "bite",
+    "start": 41.84,
+    "end": 42.24,
+    "conf": 1.0
+   },
+   {
+    "w": "checked.",
+    "start": 42.24,
+    "end": 43.2,
+    "conf": 0.993
+   },
+   {
+    "w": "Next",
+    "start": 43.2,
+    "end": 43.76,
+    "conf": 0.998
+   },
+   {
+    "w": "time",
+    "start": 43.76,
+    "end": 44.0,
+    "conf": 1.0
+   },
+   {
+    "w": "a",
+    "start": 44.0,
+    "end": 44.24,
+    "conf": 1.0
+   },
+   {
+    "w": "snake",
+    "start": 44.24,
+    "end": 44.64,
+    "conf": 1.0
+   },
+   {
+    "w": "bites",
+    "start": 44.64,
+    "end": 45.2,
+    "conf": 1.0
+   },
+   {
+    "w": "you,",
+    "start": 45.2,
+    "end": 45.68,
+    "conf": 0.972
+   },
+   {
+    "w": "we",
+    "start": 45.68,
+    "end": 46.0,
+    "conf": 1.0
+   },
+   {
+    "w": "ride",
+    "start": 46.0,
+    "end": 46.56,
+    "conf": 1.0
+   },
+   {
+    "w": "again.",
+    "start": 46.56,
+    "end": 47.52,
+    "conf": 0.923
+   },
+   {
+    "w": "Snake",
+    "start": 47.84,
+    "end": 48.4,
+    "conf": 0.986
+   },
+   {
+    "w": "bite.",
+    "start": 48.4,
+    "end": 49.12,
+    "conf": 0.898
+   },
+   {
+    "w": "Know",
+    "start": 49.12,
+    "end": 49.28,
+    "conf": 0.976
+   },
+   {
+    "w": "this.",
+    "start": 49.6,
+    "end": 50.08,
+    "conf": 0.926
+   },
+   {
+    "w": "Never",
+    "start": 50.08,
+    "end": 50.56,
+    "conf": 0.998
+   },
+   {
+    "w": "cut,",
+    "start": 50.56,
+    "end": 51.12,
+    "conf": 0.987
+   },
+   {
+    "w": "suck,",
+    "start": 51.12,
+    "end": 51.52,
+    "conf": 0.94
+   },
+   {
+    "w": "or",
+    "start": 51.52,
+    "end": 51.76,
+    "conf": 1.0
+   },
+   {
+    "w": "tie",
+    "start": 51.76,
+    "end": 52.08,
+    "conf": 1.0
+   },
+   {
+    "w": "the",
+    "start": 52.08,
+    "end": 52.32,
+    "conf": 1.0
+   },
+   {
+    "w": "bite.",
+    "start": 52.32,
+    "end": 52.88,
+    "conf": 0.992
+   },
+   {
+    "w": "Stay",
+    "start": 52.88,
+    "end": 53.28,
+    "conf": 0.997
+   },
+   {
+    "w": "calm",
+    "start": 53.28,
+    "end": 53.6,
+    "conf": 1.0
+   },
+   {
+    "w": "and",
+    "start": 53.6,
+    "end": 53.84,
+    "conf": 1.0
+   },
+   {
+    "w": "keep",
+    "start": 53.84,
+    "end": 54.16,
+    "conf": 1.0
+   },
+   {
+    "w": "it",
+    "start": 54.16,
+    "end": 54.4,
+    "conf": 1.0
+   },
+   {
+    "w": "still.",
+    "start": 54.4,
+    "end": 55.04,
+    "conf": 0.987
+   },
+   {
+    "w": "Get",
+    "start": 55.04,
+    "end": 55.36,
+    "conf": 0.977
+   },
+   {
+    "w": "every",
+    "start": 55.36,
+    "end": 55.68,
+    "conf": 1.0
+   },
+   {
+    "w": "bite",
+    "start": 55.68,
+    "end": 56.08,
+    "conf": 1.0
+   },
+   {
+    "w": "checked.",
+    "start": 56.08,
+    "end": 56.64,
+    "conf": 0.994
+   },
+   {
+    "w": "Follow",
+    "start": 56.64,
+    "end": 57.04,
+    "conf": 0.995
+   },
+   {
+    "w": "MedPak",
+    "start": 57.04,
+    "end": 57.68,
+    "conf": 0.838
+   },
+   {
+    "w": "Health",
+    "start": 57.76,
+    "end": 58.16,
+    "conf": 0.971
+   },
+   {
+    "w": "for",
+    "start": 58.16,
+    "end": 58.32,
+    "conf": 1.0
+   },
+   {
+    "w": "more",
+    "start": 58.32,
+    "end": 58.48,
+    "conf": 1.0
+   },
+   {
+    "w": "health",
+    "start": 58.48,
+    "end": 58.8,
+    "conf": 0.999
+   },
+   {
+    "w": "tips",
+    "start": 58.8,
+    "end": 59.12,
+    "conf": 1.0
+   },
+   {
+    "w": "that",
+    "start": 59.12,
+    "end": 59.36,
+    "conf": 1.0
+   },
+   {
+    "w": "keep",
+    "start": 59.36,
+    "end": 59.68,
+    "conf": 0.999
+   },
+   {
+    "w": "you",
+    "start": 59.68,
+    "end": 59.92,
+    "conf": 1.0
+   },
+   {
+    "w": "safe.",
+    "start": 59.92,
+    "end": 61.52,
+    "conf": 0.991
+   }
+  ]
+ },
+ {
+  "id": "ref-01-5nv9ht6pz38",
+  "sentences": [
+   {
+    "start": 0.64,
+    "end": 3.28,
+    "words": 6,
+    "kind": "."
+   },
+   {
+    "start": 3.28,
+    "end": 5.68,
+    "words": 8,
+    "kind": "?"
+   },
+   {
+    "start": 5.68,
+    "end": 6.48,
+    "words": 1,
+    "kind": "?"
+   },
+   {
+    "start": 6.48,
+    "end": 7.6,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 7.6,
+    "end": 8.64,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 9.04,
+    "end": 10.08,
+    "words": 3,
+    "kind": "."
+   },
+   {
+    "start": 10.08,
+    "end": 11.84,
+    "words": 3,
+    "kind": "."
+   },
+   {
+    "start": 11.84,
+    "end": 13.76,
+    "words": 4,
+    "kind": "."
+   },
+   {
+    "start": 13.76,
+    "end": 15.76,
+    "words": 6,
+    "kind": "."
+   },
+   {
+    "start": 16.0,
+    "end": 16.8,
+    "words": 2,
+    "kind": "!"
+   },
+   {
+    "start": 16.8,
+    "end": 20.08,
+    "words": 13,
+    "kind": "."
+   },
+   {
+    "start": 20.08,
+    "end": 20.72,
+    "words": 1,
+    "kind": "."
+   },
+   {
+    "start": 20.72,
+    "end": 22.16,
+    "words": 3,
+    "kind": "."
+   },
+   {
+    "start": 22.32,
+    "end": 24.48,
+    "words": 7,
+    "kind": "."
+   },
+   {
+    "start": 24.48,
+    "end": 25.28,
+    "words": 2,
+    "kind": "."
+   },
+   {
+    "start": 25.28,
+    "end": 27.2,
+    "words": 8,
+    "kind": "."
+   },
+   {
+    "start": 27.2,
+    "end": 28.64,
+    "words": 3,
+    "kind": "."
+   },
+   {
+    "start": 28.96,
+    "end": 30.32,
+    "words": 1,
+    "kind": "."
+   },
+   {
+    "start": 31.28,
+    "end": 32.96,
+    "words": 5,
+    "kind": "?"
+   },
+   {
+    "start": 32.96,
+    "end": 36.08,
+    "words": 11,
+    "kind": "."
+   },
+   {
+    "start": 36.64,
+    "end": 39.76,
+    "words": 9,
+    "kind": "?"
+   },
+   {
+    "start": 39.76,
+    "end": 41.84,
+    "words": 8,
+    "kind": "."
+   },
+   {
+    "start": 41.84,
+    "end": 45.2,
+    "words": 11,
+    "kind": "."
+   },
+   {
+    "start": 45.2,
+    "end": 51.6,
+    "words": 24,
+    "kind": "."
+   }
+  ]
+ },
+ {
+  "id": "ref-02-6MVMDGdHR5Q",
+  "sentences": [
+   {
+    "start": 0.96,
+    "end": 2.96,
+    "words": 6,
+    "kind": "."
+   },
+   {
+    "start": 2.96,
+    "end": 3.76,
+    "words": 3,
+    "kind": "?"
+   },
+   {
+    "start": 3.76,
+    "end": 5.44,
+    "words": 8,
+    "kind": "."
+   },
+   {
+    "start": 5.44,
+    "end": 6.32,
+    "words": 3,
+    "kind": "."
+   },
+   {
+    "start": 6.32,
+    "end": 8.32,
+    "words": 7,
+    "kind": "."
+   },
+   {
+    "start": 11.92,
+    "end": 13.84,
+    "words": 6,
+    "kind": "?"
+   },
+   {
+    "start": 13.84,
+    "end": 16.48,
+    "words": 8,
+    "kind": "."
+   },
+   {
+    "start": 17.28,
+    "end": 19.6,
+    "words": 6,
+    "kind": "."
+   },
+   {
+    "start": 19.6,
+    "end": 21.68,
+    "words": 6,
+    "kind": "."
+   },
+   {
+    "start": 22.4,
+    "end": 24.24,
+    "words": 3,
+    "kind": "!"
+   },
+   {
+    "start": 36.32,
+    "end": 37.52,
+    "words": 3,
+    "kind": "!"
+   },
+   {
+    "start": 38.24,
+    "end": 40.64,
+    "words": 8,
+    "kind": "?"
+   },
+   {
+    "start": 40.64,
+    "end": 41.52,
+    "words": 3,
+    "kind": "!"
+   },
+   {
+    "start": 41.52,
+    "end": 43.44,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 44.0,
+    "end": 45.68,
+    "words": 5,
+    "kind": "?"
+   },
+   {
+    "start": 45.68,
+    "end": 51.92,
+    "words": 16,
+    "kind": "."
+   },
+   {
+    "start": 51.92,
+    "end": 56.32,
+    "words": 13,
+    "kind": "."
+   },
+   {
+    "start": 56.32,
+    "end": 61.04,
+    "words": 14,
+    "kind": "."
+   }
+  ]
+ },
+ {
+  "id": "ref-03-8IbjH7zeeuU",
+  "sentences": [
+   {
+    "start": 1.2,
+    "end": 3.36,
+    "words": 7,
+    "kind": "?"
+   },
+   {
+    "start": 3.36,
+    "end": 5.52,
+    "words": 7,
+    "kind": "."
+   },
+   {
+    "start": 5.52,
+    "end": 7.68,
+    "words": 8,
+    "kind": "."
+   },
+   {
+    "start": 8.4,
+    "end": 9.76,
+    "words": 7,
+    "kind": "."
+   },
+   {
+    "start": 9.76,
+    "end": 10.72,
+    "words": 4,
+    "kind": "."
+   },
+   {
+    "start": 10.72,
+    "end": 12.08,
+    "words": 4,
+    "kind": "."
+   },
+   {
+    "start": 12.8,
+    "end": 14.72,
+    "words": 6,
+    "kind": "?"
+   },
+   {
+    "start": 14.88,
+    "end": 16.08,
+    "words": 2,
+    "kind": "!"
+   },
+   {
+    "start": 16.72,
+    "end": 17.76,
+    "words": 3,
+    "kind": "."
+   },
+   {
+    "start": 17.76,
+    "end": 18.64,
+    "words": 2,
+    "kind": "!"
+   },
+   {
+    "start": 18.64,
+    "end": 19.68,
+    "words": 3,
+    "kind": "!"
+   },
+   {
+    "start": 19.68,
+    "end": 21.28,
+    "words": 5,
+    "kind": "!"
+   },
+   {
+    "start": 22.08,
+    "end": 23.68,
+    "words": 4,
+    "kind": "."
+   }
+  ]
+ },
+ {
+  "id": "ref-04-8OYidFq1OzY",
+  "sentences": [
+   {
+    "start": 1.04,
+    "end": 2.4,
+    "words": 4,
+    "kind": "!"
+   },
+   {
+    "start": 2.4,
+    "end": 4.4,
+    "words": 5,
+    "kind": "?"
+   },
+   {
+    "start": 4.4,
+    "end": 6.56,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 6.56,
+    "end": 9.36,
+    "words": 11,
+    "kind": "."
+   },
+   {
+    "start": 9.36,
+    "end": 10.56,
+    "words": 3,
+    "kind": "."
+   },
+   {
+    "start": 10.56,
+    "end": 11.2,
+    "words": 2,
+    "kind": "?"
+   },
+   {
+    "start": 11.2,
+    "end": 12.4,
+    "words": 6,
+    "kind": "?"
+   },
+   {
+    "start": 12.4,
+    "end": 13.28,
+    "words": 2,
+    "kind": "?"
+   },
+   {
+    "start": 13.28,
+    "end": 14.8,
+    "words": 3,
+    "kind": "."
+   },
+   {
+    "start": 14.8,
+    "end": 16.72,
+    "words": 8,
+    "kind": "."
+   },
+   {
+    "start": 16.72,
+    "end": 18.96,
+    "words": 9,
+    "kind": "?"
+   },
+   {
+    "start": 18.96,
+    "end": 19.92,
+    "words": 4,
+    "kind": "."
+   },
+   {
+    "start": 19.92,
+    "end": 20.96,
+    "words": 4,
+    "kind": "."
+   },
+   {
+    "start": 22.0,
+    "end": 23.84,
+    "words": 6,
+    "kind": "?"
+   },
+   {
+    "start": 23.84,
+    "end": 24.8,
+    "words": 3,
+    "kind": "."
+   },
+   {
+    "start": 24.8,
+    "end": 26.4,
+    "words": 4,
+    "kind": "."
+   },
+   {
+    "start": 26.4,
+    "end": 28.56,
+    "words": 9,
+    "kind": "."
+   },
+   {
+    "start": 28.56,
+    "end": 29.6,
+    "words": 3,
+    "kind": "."
+   },
+   {
+    "start": 29.6,
+    "end": 31.6,
+    "words": 10,
+    "kind": "."
+   },
+   {
+    "start": 31.6,
+    "end": 32.8,
+    "words": 5,
+    "kind": "?"
+   },
+   {
+    "start": 32.8,
+    "end": 34.8,
+    "words": 9,
+    "kind": "."
+   },
+   {
+    "start": 34.8,
+    "end": 35.76,
+    "words": 2,
+    "kind": "?"
+   },
+   {
+    "start": 35.92,
+    "end": 37.04,
+    "words": 4,
+    "kind": "."
+   },
+   {
+    "start": 37.04,
+    "end": 38.72,
+    "words": 7,
+    "kind": "?"
+   },
+   {
+    "start": 38.72,
+    "end": 40.8,
+    "words": 8,
+    "kind": "."
+   },
+   {
+    "start": 40.8,
+    "end": 42.08,
+    "words": 6,
+    "kind": "."
+   },
+   {
+    "start": 42.08,
+    "end": 43.92,
+    "words": 4,
+    "kind": "."
+   },
+   {
+    "start": 44.4,
+    "end": 46.48,
+    "words": 6,
+    "kind": "?"
+   },
+   {
+    "start": 46.48,
+    "end": 47.28,
+    "words": 1,
+    "kind": "."
+   },
+   {
+    "start": 47.28,
+    "end": 52.48,
+    "words": 13,
+    "kind": "."
+   },
+   {
+    "start": 52.48,
+    "end": 53.68,
+    "words": 5,
+    "kind": "."
+   }
+  ]
+ },
+ {
+  "id": "ref-05-B7eX1klo0j0",
+  "sentences": [
+   {
+    "start": 0.88,
+    "end": 1.6,
+    "words": 1,
+    "kind": "?"
+   },
+   {
+    "start": 1.6,
+    "end": 5.28,
+    "words": 4,
+    "kind": "."
+   },
+   {
+    "start": 5.28,
+    "end": 7.36,
+    "words": 8,
+    "kind": "?"
+   },
+   {
+    "start": 7.52,
+    "end": 9.2,
+    "words": 5,
+    "kind": "?"
+   },
+   {
+    "start": 9.2,
+    "end": 11.2,
+    "words": 6,
+    "kind": "."
+   },
+   {
+    "start": 11.2,
+    "end": 13.36,
+    "words": 4,
+    "kind": "."
+   },
+   {
+    "start": 13.36,
+    "end": 14.24,
+    "words": 3,
+    "kind": "."
+   },
+   {
+    "start": 14.24,
+    "end": 16.56,
+    "words": 6,
+    "kind": "."
+   },
+   {
+    "start": 16.56,
+    "end": 17.52,
+    "words": 2,
+    "kind": "."
+   },
+   {
+    "start": 23.76,
+    "end": 24.8,
+    "words": 2,
+    "kind": "!"
+   },
+   {
+    "start": 24.8,
+    "end": 26.24,
+    "words": 4,
+    "kind": "!"
+   },
+   {
+    "start": 26.24,
+    "end": 28.8,
+    "words": 6,
+    "kind": "!"
+   },
+   {
+    "start": 32.96,
+    "end": 34.16,
+    "words": 3,
+    "kind": "!"
+   },
+   {
+    "start": 34.96,
+    "end": 37.12,
+    "words": 7,
+    "kind": "."
+   },
+   {
+    "start": 39.76,
+    "end": 41.36,
+    "words": 5,
+    "kind": "!"
+   },
+   {
+    "start": 41.36,
+    "end": 42.88,
+    "words": 5,
+    "kind": "!"
+   },
+   {
+    "start": 42.88,
+    "end": 45.28,
+    "words": 6,
+    "kind": "?"
+   },
+   {
+    "start": 45.28,
+    "end": 47.2,
+    "words": 7,
+    "kind": "."
+   },
+   {
+    "start": 47.2,
+    "end": 52.48,
+    "words": 17,
+    "kind": "."
+   },
+   {
+    "start": 52.48,
+    "end": 54.56,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 54.56,
+    "end": 56.8,
+    "words": 6,
+    "kind": "."
+   },
+   {
+    "start": 56.8,
+    "end": 63.44,
+    "words": 19,
+    "kind": "."
+   },
+   {
+    "start": 63.44,
+    "end": 65.12,
+    "words": 4,
+    "kind": "."
+   },
+   {
+    "start": 65.12,
+    "end": 68.8,
+    "words": 11,
+    "kind": "."
+   },
+   {
+    "start": 68.8,
+    "end": 72.8,
+    "words": 14,
+    "kind": "."
+   },
+   {
+    "start": 72.8,
+    "end": 75.44,
+    "words": 8,
+    "kind": "."
+   }
+  ]
+ },
+ {
+  "id": "ref-06-CsiDoORoTD8",
+  "sentences": [
+   {
+    "start": 0.0,
+    "end": 1.76,
+    "words": 7,
+    "kind": "."
+   },
+   {
+    "start": 1.76,
+    "end": 2.96,
+    "words": 6,
+    "kind": "."
+   },
+   {
+    "start": 2.96,
+    "end": 3.84,
+    "words": 2,
+    "kind": "!"
+   },
+   {
+    "start": 3.84,
+    "end": 4.72,
+    "words": 2,
+    "kind": "!"
+   },
+   {
+    "start": 7.68,
+    "end": 8.64,
+    "words": 3,
+    "kind": "."
+   },
+   {
+    "start": 8.64,
+    "end": 9.92,
+    "words": 4,
+    "kind": "."
+   },
+   {
+    "start": 10.24,
+    "end": 11.68,
+    "words": 4,
+    "kind": "?"
+   },
+   {
+    "start": 11.68,
+    "end": 12.88,
+    "words": 3,
+    "kind": "!"
+   },
+   {
+    "start": 14.48,
+    "end": 15.68,
+    "words": 2,
+    "kind": "."
+   },
+   {
+    "start": 15.68,
+    "end": 18.48,
+    "words": 7,
+    "kind": "."
+   },
+   {
+    "start": 18.48,
+    "end": 20.32,
+    "words": 6,
+    "kind": "."
+   },
+   {
+    "start": 20.64,
+    "end": 22.08,
+    "words": 3,
+    "kind": "."
+   },
+   {
+    "start": 22.08,
+    "end": 23.92,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 23.92,
+    "end": 25.44,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 25.44,
+    "end": 27.52,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 27.52,
+    "end": 29.12,
+    "words": 7,
+    "kind": "."
+   },
+   {
+    "start": 29.12,
+    "end": 30.72,
+    "words": 4,
+    "kind": "."
+   },
+   {
+    "start": 30.72,
+    "end": 34.64,
+    "words": 14,
+    "kind": "."
+   },
+   {
+    "start": 34.64,
+    "end": 35.52,
+    "words": 3,
+    "kind": "."
+   },
+   {
+    "start": 35.52,
+    "end": 36.72,
+    "words": 4,
+    "kind": "."
+   },
+   {
+    "start": 36.72,
+    "end": 39.12,
+    "words": 5,
+    "kind": "?"
+   },
+   {
+    "start": 39.12,
+    "end": 40.64,
+    "words": 4,
+    "kind": "."
+   },
+   {
+    "start": 40.64,
+    "end": 42.16,
+    "words": 6,
+    "kind": "."
+   },
+   {
+    "start": 42.16,
+    "end": 44.08,
+    "words": 6,
+    "kind": "."
+   },
+   {
+    "start": 44.08,
+    "end": 48.16,
+    "words": 10,
+    "kind": "."
+   },
+   {
+    "start": 48.16,
+    "end": 51.04,
+    "words": 9,
+    "kind": "."
+   }
+  ]
+ },
+ {
+  "id": "ref-07-EdxLRR288Z4",
+  "sentences": [
+   {
+    "start": 1.12,
+    "end": 2.16,
+    "words": 3,
+    "kind": "."
+   },
+   {
+    "start": 2.16,
+    "end": 3.52,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 5.36,
+    "end": 6.0,
+    "words": 1,
+    "kind": "?"
+   },
+   {
+    "start": 6.24,
+    "end": 8.88,
+    "words": 9,
+    "kind": "?"
+   },
+   {
+    "start": 8.88,
+    "end": 9.84,
+    "words": 4,
+    "kind": "?"
+   },
+   {
+    "start": 9.84,
+    "end": 11.76,
+    "words": 7,
+    "kind": "?"
+   },
+   {
+    "start": 11.76,
+    "end": 14.32,
+    "words": 8,
+    "kind": "?"
+   },
+   {
+    "start": 15.28,
+    "end": 16.32,
+    "words": 3,
+    "kind": "!"
+   },
+   {
+    "start": 16.32,
+    "end": 17.28,
+    "words": 3,
+    "kind": "."
+   },
+   {
+    "start": 17.28,
+    "end": 18.32,
+    "words": 4,
+    "kind": "."
+   },
+   {
+    "start": 18.32,
+    "end": 18.88,
+    "words": 1,
+    "kind": "."
+   },
+   {
+    "start": 18.88,
+    "end": 20.24,
+    "words": 6,
+    "kind": "."
+   },
+   {
+    "start": 20.24,
+    "end": 23.12,
+    "words": 9,
+    "kind": "."
+   },
+   {
+    "start": 24.32,
+    "end": 25.04,
+    "words": 1,
+    "kind": "!"
+   },
+   {
+    "start": 25.04,
+    "end": 27.04,
+    "words": 11,
+    "kind": "."
+   },
+   {
+    "start": 27.04,
+    "end": 27.92,
+    "words": 3,
+    "kind": "."
+   },
+   {
+    "start": 27.92,
+    "end": 28.96,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 28.96,
+    "end": 29.6,
+    "words": 2,
+    "kind": "!"
+   },
+   {
+    "start": 29.6,
+    "end": 30.72,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 30.72,
+    "end": 32.88,
+    "words": 7,
+    "kind": "."
+   },
+   {
+    "start": 33.36,
+    "end": 35.76,
+    "words": 9,
+    "kind": "."
+   },
+   {
+    "start": 35.76,
+    "end": 37.36,
+    "words": 6,
+    "kind": "."
+   },
+   {
+    "start": 37.36,
+    "end": 38.88,
+    "words": 3,
+    "kind": "."
+   },
+   {
+    "start": 39.36,
+    "end": 41.92,
+    "words": 9,
+    "kind": "."
+   },
+   {
+    "start": 42.16,
+    "end": 43.44,
+    "words": 3,
+    "kind": "."
+   },
+   {
+    "start": 43.44,
+    "end": 44.96,
+    "words": 4,
+    "kind": "."
+   },
+   {
+    "start": 46.24,
+    "end": 50.24,
+    "words": 15,
+    "kind": "?"
+   },
+   {
+    "start": 50.24,
+    "end": 55.04,
+    "words": 20,
+    "kind": "."
+   },
+   {
+    "start": 55.04,
+    "end": 57.68,
+    "words": 7,
+    "kind": "."
+   },
+   {
+    "start": 57.68,
+    "end": 61.28,
+    "words": 8,
+    "kind": "."
+   },
+   {
+    "start": 61.28,
+    "end": 64.32,
+    "words": 10,
+    "kind": "."
+   },
+   {
+    "start": 64.32,
+    "end": 66.4,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 66.4,
+    "end": 70.0,
+    "words": 11,
+    "kind": "."
+   },
+   {
+    "start": 70.0,
+    "end": 71.04,
+    "words": 3,
+    "kind": "."
+   }
+  ]
+ },
+ {
+  "id": "ref-08-G6GV0QxR-dY",
+  "sentences": [
+   {
+    "start": 2.48,
+    "end": 3.84,
+    "words": 7,
+    "kind": "?"
+   },
+   {
+    "start": 3.84,
+    "end": 4.8,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 4.8,
+    "end": 6.4,
+    "words": 6,
+    "kind": "?"
+   },
+   {
+    "start": 6.4,
+    "end": 8.48,
+    "words": 7,
+    "kind": "."
+   },
+   {
+    "start": 8.48,
+    "end": 11.52,
+    "words": 12,
+    "kind": "."
+   },
+   {
+    "start": 11.52,
+    "end": 13.52,
+    "words": 6,
+    "kind": "."
+   },
+   {
+    "start": 13.52,
+    "end": 15.2,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 15.2,
+    "end": 16.32,
+    "words": 3,
+    "kind": "."
+   },
+   {
+    "start": 16.32,
+    "end": 17.52,
+    "words": 2,
+    "kind": "."
+   },
+   {
+    "start": 17.84,
+    "end": 19.6,
+    "words": 6,
+    "kind": "?"
+   },
+   {
+    "start": 19.6,
+    "end": 21.52,
+    "words": 9,
+    "kind": "."
+   },
+   {
+    "start": 21.52,
+    "end": 23.12,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 23.12,
+    "end": 24.72,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 24.72,
+    "end": 26.4,
+    "words": 6,
+    "kind": "."
+   },
+   {
+    "start": 26.4,
+    "end": 27.84,
+    "words": 6,
+    "kind": "?"
+   },
+   {
+    "start": 27.84,
+    "end": 29.2,
+    "words": 6,
+    "kind": "?"
+   },
+   {
+    "start": 29.2,
+    "end": 30.96,
+    "words": 8,
+    "kind": "."
+   },
+   {
+    "start": 30.96,
+    "end": 32.88,
+    "words": 9,
+    "kind": "."
+   },
+   {
+    "start": 32.88,
+    "end": 35.2,
+    "words": 10,
+    "kind": "."
+   },
+   {
+    "start": 35.2,
+    "end": 36.24,
+    "words": 4,
+    "kind": "."
+   },
+   {
+    "start": 36.24,
+    "end": 38.0,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 38.16,
+    "end": 39.52,
+    "words": 3,
+    "kind": "!"
+   },
+   {
+    "start": 39.52,
+    "end": 41.28,
+    "words": 3,
+    "kind": "!"
+   },
+   {
+    "start": 41.6,
+    "end": 42.32,
+    "words": 1,
+    "kind": "!"
+   },
+   {
+    "start": 42.32,
+    "end": 44.08,
+    "words": 3,
+    "kind": "."
+   },
+   {
+    "start": 44.08,
+    "end": 46.08,
+    "words": 7,
+    "kind": "."
+   },
+   {
+    "start": 47.2,
+    "end": 48.72,
+    "words": 3,
+    "kind": "."
+   },
+   {
+    "start": 48.72,
+    "end": 50.56,
+    "words": 3,
+    "kind": "."
+   }
+  ]
+ },
+ {
+  "id": "ref-09-NVv8VGlm0kM",
+  "sentences": [
+   {
+    "start": 1.28,
+    "end": 1.92,
+    "words": 1,
+    "kind": "?"
+   },
+   {
+    "start": 1.92,
+    "end": 3.76,
+    "words": 6,
+    "kind": "?"
+   },
+   {
+    "start": 4.56,
+    "end": 6.48,
+    "words": 7,
+    "kind": "."
+   },
+   {
+    "start": 6.48,
+    "end": 8.48,
+    "words": 7,
+    "kind": "."
+   },
+   {
+    "start": 8.8,
+    "end": 9.68,
+    "words": 2,
+    "kind": "."
+   },
+   {
+    "start": 9.68,
+    "end": 10.48,
+    "words": 2,
+    "kind": "!"
+   },
+   {
+    "start": 10.48,
+    "end": 11.6,
+    "words": 4,
+    "kind": "?"
+   },
+   {
+    "start": 11.6,
+    "end": 12.32,
+    "words": 2,
+    "kind": "."
+   },
+   {
+    "start": 12.32,
+    "end": 14.48,
+    "words": 9,
+    "kind": "."
+   },
+   {
+    "start": 14.8,
+    "end": 16.08,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 16.08,
+    "end": 18.0,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 18.0,
+    "end": 19.04,
+    "words": 4,
+    "kind": "?"
+   },
+   {
+    "start": 19.04,
+    "end": 20.32,
+    "words": 4,
+    "kind": "."
+   },
+   {
+    "start": 20.32,
+    "end": 22.08,
+    "words": 8,
+    "kind": "?"
+   },
+   {
+    "start": 22.08,
+    "end": 22.88,
+    "words": 2,
+    "kind": "?"
+   },
+   {
+    "start": 22.88,
+    "end": 24.56,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 24.56,
+    "end": 26.64,
+    "words": 4,
+    "kind": "."
+   },
+   {
+    "start": 26.64,
+    "end": 27.44,
+    "words": 2,
+    "kind": "!"
+   },
+   {
+    "start": 27.44,
+    "end": 28.48,
+    "words": 4,
+    "kind": "!"
+   },
+   {
+    "start": 28.48,
+    "end": 30.48,
+    "words": 5,
+    "kind": "!"
+   },
+   {
+    "start": 30.64,
+    "end": 31.44,
+    "words": 3,
+    "kind": "."
+   },
+   {
+    "start": 31.44,
+    "end": 33.68,
+    "words": 7,
+    "kind": "."
+   },
+   {
+    "start": 33.68,
+    "end": 35.44,
+    "words": 6,
+    "kind": "."
+   },
+   {
+    "start": 35.44,
+    "end": 36.48,
+    "words": 3,
+    "kind": "?"
+   },
+   {
+    "start": 36.48,
+    "end": 39.44,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 39.44,
+    "end": 47.12,
+    "words": 23,
+    "kind": "."
+   },
+   {
+    "start": 47.12,
+    "end": 51.84,
+    "words": 13,
+    "kind": "."
+   },
+   {
+    "start": 51.84,
+    "end": 56.08,
+    "words": 14,
+    "kind": "."
+   }
+  ]
+ },
+ {
+  "id": "ref-10-OJS2ONcmZ58",
+  "sentences": [
+   {
+    "start": 1.04,
+    "end": 2.8,
+    "words": 6,
+    "kind": "?"
+   },
+   {
+    "start": 2.8,
+    "end": 4.48,
+    "words": 7,
+    "kind": "."
+   },
+   {
+    "start": 4.48,
+    "end": 6.24,
+    "words": 3,
+    "kind": "!"
+   },
+   {
+    "start": 6.24,
+    "end": 7.76,
+    "words": 5,
+    "kind": "?"
+   },
+   {
+    "start": 7.76,
+    "end": 9.28,
+    "words": 4,
+    "kind": "?"
+   },
+   {
+    "start": 9.28,
+    "end": 10.48,
+    "words": 4,
+    "kind": "."
+   },
+   {
+    "start": 10.48,
+    "end": 12.4,
+    "words": 6,
+    "kind": "."
+   },
+   {
+    "start": 12.4,
+    "end": 14.0,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 14.0,
+    "end": 15.92,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 15.92,
+    "end": 17.84,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 18.96,
+    "end": 20.88,
+    "words": 4,
+    "kind": "."
+   },
+   {
+    "start": 20.88,
+    "end": 21.92,
+    "words": 3,
+    "kind": "."
+   },
+   {
+    "start": 21.92,
+    "end": 23.68,
+    "words": 2,
+    "kind": "."
+   },
+   {
+    "start": 23.92,
+    "end": 25.76,
+    "words": 6,
+    "kind": "?"
+   },
+   {
+    "start": 25.76,
+    "end": 27.84,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 29.28,
+    "end": 30.48,
+    "words": 3,
+    "kind": "."
+   },
+   {
+    "start": 30.48,
+    "end": 31.28,
+    "words": 2,
+    "kind": "."
+   },
+   {
+    "start": 31.28,
+    "end": 32.72,
+    "words": 2,
+    "kind": "."
+   },
+   {
+    "start": 33.52,
+    "end": 35.04,
+    "words": 5,
+    "kind": "?"
+   },
+   {
+    "start": 35.04,
+    "end": 36.24,
+    "words": 5,
+    "kind": "?"
+   },
+   {
+    "start": 36.24,
+    "end": 38.8,
+    "words": 8,
+    "kind": "."
+   },
+   {
+    "start": 38.8,
+    "end": 39.68,
+    "words": 2,
+    "kind": "."
+   },
+   {
+    "start": 39.68,
+    "end": 44.88,
+    "words": 18,
+    "kind": "."
+   },
+   {
+    "start": 44.88,
+    "end": 47.92,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 49.44,
+    "end": 51.36,
+    "words": 3,
+    "kind": "."
+   },
+   {
+    "start": 51.36,
+    "end": 54.8,
+    "words": 9,
+    "kind": "."
+   },
+   {
+    "start": 54.8,
+    "end": 56.72,
+    "words": 6,
+    "kind": "."
+   },
+   {
+    "start": 56.72,
+    "end": 58.0,
+    "words": 1,
+    "kind": "."
+   },
+   {
+    "start": 58.0,
+    "end": 62.32,
+    "words": 16,
+    "kind": "."
+   },
+   {
+    "start": 62.32,
+    "end": 63.92,
+    "words": 5,
+    "kind": "."
+   }
+  ]
+ },
+ {
+  "id": "ref-11-O_Kn2QxEbwM",
+  "sentences": [
+   {
+    "start": 0.0,
+    "end": 2.08,
+    "words": 9,
+    "kind": "."
+   },
+   {
+    "start": 2.08,
+    "end": 2.4,
+    "words": 1,
+    "kind": "?"
+   },
+   {
+    "start": 2.4,
+    "end": 3.44,
+    "words": 3,
+    "kind": "!"
+   },
+   {
+    "start": 3.44,
+    "end": 5.44,
+    "words": 9,
+    "kind": "."
+   },
+   {
+    "start": 7.28,
+    "end": 8.48,
+    "words": 3,
+    "kind": "."
+   },
+   {
+    "start": 8.48,
+    "end": 9.84,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 10.48,
+    "end": 11.76,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 11.76,
+    "end": 12.56,
+    "words": 3,
+    "kind": "."
+   },
+   {
+    "start": 12.56,
+    "end": 14.08,
+    "words": 4,
+    "kind": "."
+   },
+   {
+    "start": 16.16,
+    "end": 17.2,
+    "words": 2,
+    "kind": "?"
+   },
+   {
+    "start": 20.48,
+    "end": 22.08,
+    "words": 4,
+    "kind": "."
+   },
+   {
+    "start": 22.08,
+    "end": 24.16,
+    "words": 9,
+    "kind": "."
+   },
+   {
+    "start": 24.88,
+    "end": 26.4,
+    "words": 3,
+    "kind": "."
+   },
+   {
+    "start": 26.72,
+    "end": 28.96,
+    "words": 8,
+    "kind": "?"
+   },
+   {
+    "start": 28.96,
+    "end": 30.08,
+    "words": 7,
+    "kind": "."
+   }
+  ]
+ },
+ {
+  "id": "ref-12-Sqpn5VTjYV8",
+  "sentences": [
+   {
+    "start": 0.88,
+    "end": 1.76,
+    "words": 1,
+    "kind": "?"
+   },
+   {
+    "start": 3.68,
+    "end": 4.48,
+    "words": 1,
+    "kind": "!"
+   },
+   {
+    "start": 4.48,
+    "end": 5.76,
+    "words": 4,
+    "kind": "!"
+   },
+   {
+    "start": 5.76,
+    "end": 7.2,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 7.2,
+    "end": 8.32,
+    "words": 2,
+    "kind": "."
+   },
+   {
+    "start": 8.32,
+    "end": 9.2,
+    "words": 2,
+    "kind": "."
+   },
+   {
+    "start": 9.2,
+    "end": 12.08,
+    "words": 8,
+    "kind": "."
+   },
+   {
+    "start": 12.08,
+    "end": 14.0,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 14.0,
+    "end": 18.48,
+    "words": 14,
+    "kind": "."
+   },
+   {
+    "start": 18.48,
+    "end": 20.24,
+    "words": 6,
+    "kind": "."
+   },
+   {
+    "start": 20.24,
+    "end": 21.36,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 22.4,
+    "end": 22.8,
+    "words": 1,
+    "kind": "?"
+   },
+   {
+    "start": 22.8,
+    "end": 24.64,
+    "words": 6,
+    "kind": "?"
+   },
+   {
+    "start": 24.88,
+    "end": 26.08,
+    "words": 2,
+    "kind": "!"
+   },
+   {
+    "start": 26.08,
+    "end": 26.96,
+    "words": 5,
+    "kind": "?"
+   },
+   {
+    "start": 26.96,
+    "end": 27.84,
+    "words": 3,
+    "kind": "?"
+   },
+   {
+    "start": 27.84,
+    "end": 29.6,
+    "words": 6,
+    "kind": "."
+   },
+   {
+    "start": 29.6,
+    "end": 30.96,
+    "words": 6,
+    "kind": "?"
+   },
+   {
+    "start": 30.96,
+    "end": 32.56,
+    "words": 4,
+    "kind": "."
+   },
+   {
+    "start": 32.56,
+    "end": 34.88,
+    "words": 11,
+    "kind": "."
+   },
+   {
+    "start": 34.88,
+    "end": 37.52,
+    "words": 10,
+    "kind": "."
+   },
+   {
+    "start": 37.52,
+    "end": 39.52,
+    "words": 4,
+    "kind": "."
+   },
+   {
+    "start": 41.92,
+    "end": 44.08,
+    "words": 10,
+    "kind": "?"
+   },
+   {
+    "start": 44.08,
+    "end": 45.6,
+    "words": 7,
+    "kind": "."
+   },
+   {
+    "start": 45.6,
+    "end": 46.56,
+    "words": 3,
+    "kind": "."
+   },
+   {
+    "start": 46.56,
+    "end": 48.56,
+    "words": 6,
+    "kind": "."
+   },
+   {
+    "start": 51.68,
+    "end": 52.48,
+    "words": 1,
+    "kind": "!"
+   },
+   {
+    "start": 52.48,
+    "end": 54.16,
+    "words": 7,
+    "kind": "."
+   },
+   {
+    "start": 54.16,
+    "end": 55.6,
+    "words": 6,
+    "kind": "."
+   },
+   {
+    "start": 55.6,
+    "end": 57.92,
+    "words": 6,
+    "kind": "."
+   },
+   {
+    "start": 58.72,
+    "end": 61.52,
+    "words": 7,
+    "kind": "?"
+   },
+   {
+    "start": 61.52,
+    "end": 63.12,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 63.12,
+    "end": 65.36,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 65.36,
+    "end": 67.68,
+    "words": 4,
+    "kind": "."
+   },
+   {
+    "start": 67.68,
+    "end": 71.2,
+    "words": 11,
+    "kind": "."
+   },
+   {
+    "start": 71.2,
+    "end": 76.88,
+    "words": 17,
+    "kind": "."
+   },
+   {
+    "start": 76.88,
+    "end": 78.8,
+    "words": 6,
+    "kind": "."
+   },
+   {
+    "start": 78.8,
+    "end": 80.24,
+    "words": 4,
+    "kind": "."
+   }
+  ]
+ },
+ {
+  "id": "ref-13-W08YsWO93qQ",
+  "sentences": [
+   {
+    "start": 0.56,
+    "end": 1.28,
+    "words": 1,
+    "kind": "?"
+   },
+   {
+    "start": 1.6,
+    "end": 3.28,
+    "words": 3,
+    "kind": "?"
+   },
+   {
+    "start": 3.52,
+    "end": 4.72,
+    "words": 1,
+    "kind": "?"
+   },
+   {
+    "start": 4.72,
+    "end": 5.44,
+    "words": 2,
+    "kind": "?"
+   },
+   {
+    "start": 5.44,
+    "end": 6.72,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 6.72,
+    "end": 9.2,
+    "words": 8,
+    "kind": "?"
+   },
+   {
+    "start": 9.2,
+    "end": 10.96,
+    "words": 7,
+    "kind": "."
+   },
+   {
+    "start": 10.96,
+    "end": 11.84,
+    "words": 3,
+    "kind": "."
+   },
+   {
+    "start": 11.84,
+    "end": 12.96,
+    "words": 3,
+    "kind": "."
+   },
+   {
+    "start": 12.96,
+    "end": 14.64,
+    "words": 6,
+    "kind": "."
+   },
+   {
+    "start": 14.64,
+    "end": 15.44,
+    "words": 2,
+    "kind": "."
+   },
+   {
+    "start": 15.44,
+    "end": 19.68,
+    "words": 14,
+    "kind": "."
+   },
+   {
+    "start": 21.36,
+    "end": 22.72,
+    "words": 4,
+    "kind": "!"
+   },
+   {
+    "start": 22.72,
+    "end": 23.84,
+    "words": 5,
+    "kind": "?"
+   },
+   {
+    "start": 23.84,
+    "end": 24.56,
+    "words": 2,
+    "kind": "."
+   },
+   {
+    "start": 24.56,
+    "end": 26.4,
+    "words": 7,
+    "kind": "."
+   },
+   {
+    "start": 26.4,
+    "end": 27.6,
+    "words": 5,
+    "kind": "?"
+   },
+   {
+    "start": 27.6,
+    "end": 29.68,
+    "words": 10,
+    "kind": "?"
+   },
+   {
+    "start": 29.68,
+    "end": 30.88,
+    "words": 4,
+    "kind": "."
+   },
+   {
+    "start": 31.6,
+    "end": 33.12,
+    "words": 3,
+    "kind": "."
+   },
+   {
+    "start": 33.12,
+    "end": 35.6,
+    "words": 10,
+    "kind": "."
+   },
+   {
+    "start": 35.6,
+    "end": 37.52,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 37.52,
+    "end": 41.84,
+    "words": 12,
+    "kind": "."
+   },
+   {
+    "start": 42.0,
+    "end": 45.04,
+    "words": 13,
+    "kind": "?"
+   },
+   {
+    "start": 45.04,
+    "end": 45.76,
+    "words": 1,
+    "kind": "?"
+   },
+   {
+    "start": 45.76,
+    "end": 46.64,
+    "words": 2,
+    "kind": "?"
+   },
+   {
+    "start": 46.8,
+    "end": 48.88,
+    "words": 8,
+    "kind": "."
+   },
+   {
+    "start": 48.88,
+    "end": 49.36,
+    "words": 1,
+    "kind": "?"
+   },
+   {
+    "start": 49.36,
+    "end": 50.4,
+    "words": 3,
+    "kind": "."
+   },
+   {
+    "start": 51.76,
+    "end": 52.4,
+    "words": 1,
+    "kind": "?"
+   },
+   {
+    "start": 52.56,
+    "end": 53.68,
+    "words": 3,
+    "kind": "."
+   },
+   {
+    "start": 53.68,
+    "end": 55.6,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 55.6,
+    "end": 57.84,
+    "words": 8,
+    "kind": "."
+   },
+   {
+    "start": 57.84,
+    "end": 59.44,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 60.0,
+    "end": 60.4,
+    "words": 1,
+    "kind": "?"
+   },
+   {
+    "start": 60.4,
+    "end": 61.68,
+    "words": 2,
+    "kind": "?"
+   },
+   {
+    "start": 62.88,
+    "end": 63.84,
+    "words": 2,
+    "kind": "!"
+   },
+   {
+    "start": 63.84,
+    "end": 65.28,
+    "words": 5,
+    "kind": "!"
+   },
+   {
+    "start": 66.88,
+    "end": 67.28,
+    "words": 1,
+    "kind": "?"
+   },
+   {
+    "start": 67.28,
+    "end": 69.2,
+    "words": 8,
+    "kind": "?"
+   },
+   {
+    "start": 69.2,
+    "end": 71.6,
+    "words": 9,
+    "kind": "."
+   },
+   {
+    "start": 71.6,
+    "end": 74.08,
+    "words": 8,
+    "kind": "."
+   },
+   {
+    "start": 74.32,
+    "end": 75.28,
+    "words": 2,
+    "kind": "."
+   },
+   {
+    "start": 75.28,
+    "end": 77.6,
+    "words": 9,
+    "kind": "?"
+   },
+   {
+    "start": 77.6,
+    "end": 79.28,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 79.28,
+    "end": 81.68,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 81.68,
+    "end": 88.32,
+    "words": 18,
+    "kind": "."
+   },
+   {
+    "start": 88.32,
+    "end": 93.44,
+    "words": 12,
+    "kind": "."
+   },
+   {
+    "start": 93.44,
+    "end": 97.04,
+    "words": 13,
+    "kind": "."
+   }
+  ]
+ },
+ {
+  "id": "ref-14-Z5blDCDARz8",
+  "sentences": [
+   {
+    "start": 0.64,
+    "end": 2.0,
+    "words": 3,
+    "kind": "."
+   },
+   {
+    "start": 2.0,
+    "end": 4.08,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 4.96,
+    "end": 6.0,
+    "words": 2,
+    "kind": "."
+   },
+   {
+    "start": 6.0,
+    "end": 8.56,
+    "words": 12,
+    "kind": "?"
+   },
+   {
+    "start": 8.56,
+    "end": 11.44,
+    "words": 9,
+    "kind": "."
+   },
+   {
+    "start": 14.88,
+    "end": 16.16,
+    "words": 4,
+    "kind": "?"
+   },
+   {
+    "start": 16.16,
+    "end": 18.4,
+    "words": 9,
+    "kind": "?"
+   },
+   {
+    "start": 18.4,
+    "end": 19.36,
+    "words": 4,
+    "kind": "."
+   },
+   {
+    "start": 19.36,
+    "end": 21.84,
+    "words": 7,
+    "kind": "."
+   },
+   {
+    "start": 22.16,
+    "end": 23.92,
+    "words": 6,
+    "kind": "."
+   },
+   {
+    "start": 23.92,
+    "end": 25.68,
+    "words": 5,
+    "kind": "?"
+   },
+   {
+    "start": 25.68,
+    "end": 27.76,
+    "words": 8,
+    "kind": "."
+   },
+   {
+    "start": 27.76,
+    "end": 29.04,
+    "words": 6,
+    "kind": "."
+   },
+   {
+    "start": 29.04,
+    "end": 30.0,
+    "words": 4,
+    "kind": "."
+   },
+   {
+    "start": 30.0,
+    "end": 31.12,
+    "words": 4,
+    "kind": "."
+   },
+   {
+    "start": 31.12,
+    "end": 32.72,
+    "words": 6,
+    "kind": "."
+   },
+   {
+    "start": 34.08,
+    "end": 36.88,
+    "words": 8,
+    "kind": "?"
+   },
+   {
+    "start": 36.88,
+    "end": 39.6,
+    "words": 7,
+    "kind": "."
+   },
+   {
+    "start": 39.6,
+    "end": 45.2,
+    "words": 18,
+    "kind": "?"
+   },
+   {
+    "start": 45.2,
+    "end": 50.72,
+    "words": 13,
+    "kind": "."
+   },
+   {
+    "start": 50.72,
+    "end": 54.72,
+    "words": 11,
+    "kind": "?"
+   },
+   {
+    "start": 54.72,
+    "end": 59.28,
+    "words": 13,
+    "kind": "."
+   }
+  ]
+ },
+ {
+  "id": "ref-15-bk9-IkTibVI",
+  "sentences": [
+   {
+    "start": 3.12,
+    "end": 3.76,
+    "words": 1,
+    "kind": "?"
+   },
+   {
+    "start": 3.76,
+    "end": 5.92,
+    "words": 5,
+    "kind": "?"
+   },
+   {
+    "start": 6.24,
+    "end": 9.36,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 12.88,
+    "end": 15.12,
+    "words": 7,
+    "kind": "?"
+   },
+   {
+    "start": 19.6,
+    "end": 21.28,
+    "words": 1,
+    "kind": "!"
+   },
+   {
+    "start": 21.28,
+    "end": 26.0,
+    "words": 16,
+    "kind": "."
+   },
+   {
+    "start": 26.0,
+    "end": 30.32,
+    "words": 12,
+    "kind": "."
+   },
+   {
+    "start": 31.76,
+    "end": 32.88,
+    "words": 3,
+    "kind": "!"
+   },
+   {
+    "start": 32.88,
+    "end": 35.44,
+    "words": 12,
+    "kind": "?"
+   },
+   {
+    "start": 35.44,
+    "end": 36.72,
+    "words": 6,
+    "kind": "."
+   },
+   {
+    "start": 36.72,
+    "end": 37.12,
+    "words": 1,
+    "kind": "?"
+   },
+   {
+    "start": 37.12,
+    "end": 38.64,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 38.64,
+    "end": 40.8,
+    "words": 8,
+    "kind": "."
+   },
+   {
+    "start": 40.8,
+    "end": 43.76,
+    "words": 9,
+    "kind": "."
+   },
+   {
+    "start": 43.76,
+    "end": 45.76,
+    "words": 6,
+    "kind": "."
+   },
+   {
+    "start": 45.76,
+    "end": 47.28,
+    "words": 6,
+    "kind": "."
+   },
+   {
+    "start": 47.84,
+    "end": 48.8,
+    "words": 3,
+    "kind": "."
+   }
+  ]
+ },
+ {
+  "id": "ref-16-i06BTN5rr3I",
+  "sentences": [
+   {
+    "start": 1.6,
+    "end": 2.56,
+    "words": 2,
+    "kind": "."
+   },
+   {
+    "start": 2.56,
+    "end": 5.52,
+    "words": 6,
+    "kind": "."
+   },
+   {
+    "start": 5.68,
+    "end": 8.4,
+    "words": 7,
+    "kind": "?"
+   },
+   {
+    "start": 8.4,
+    "end": 9.68,
+    "words": 4,
+    "kind": "?"
+   },
+   {
+    "start": 9.68,
+    "end": 11.04,
+    "words": 6,
+    "kind": "?"
+   },
+   {
+    "start": 11.04,
+    "end": 11.6,
+    "words": 3,
+    "kind": "."
+   },
+   {
+    "start": 11.6,
+    "end": 13.28,
+    "words": 8,
+    "kind": "."
+   },
+   {
+    "start": 13.28,
+    "end": 14.48,
+    "words": 4,
+    "kind": "?"
+   },
+   {
+    "start": 16.08,
+    "end": 17.28,
+    "words": 2,
+    "kind": "."
+   },
+   {
+    "start": 17.28,
+    "end": 19.04,
+    "words": 4,
+    "kind": "."
+   },
+   {
+    "start": 19.04,
+    "end": 20.16,
+    "words": 4,
+    "kind": "!"
+   },
+   {
+    "start": 20.16,
+    "end": 21.28,
+    "words": 1,
+    "kind": "."
+   },
+   {
+    "start": 21.84,
+    "end": 22.56,
+    "words": 2,
+    "kind": "!"
+   },
+   {
+    "start": 22.56,
+    "end": 24.16,
+    "words": 5,
+    "kind": "!"
+   },
+   {
+    "start": 24.16,
+    "end": 25.04,
+    "words": 2,
+    "kind": "!"
+   },
+   {
+    "start": 25.04,
+    "end": 26.56,
+    "words": 6,
+    "kind": "?"
+   },
+   {
+    "start": 26.56,
+    "end": 28.4,
+    "words": 6,
+    "kind": "!"
+   },
+   {
+    "start": 28.4,
+    "end": 29.68,
+    "words": 7,
+    "kind": "!"
+   },
+   {
+    "start": 29.68,
+    "end": 31.52,
+    "words": 7,
+    "kind": "!"
+   },
+   {
+    "start": 36.88,
+    "end": 38.0,
+    "words": 3,
+    "kind": "!"
+   },
+   {
+    "start": 38.0,
+    "end": 39.12,
+    "words": 4,
+    "kind": "!"
+   },
+   {
+    "start": 39.12,
+    "end": 41.84,
+    "words": 7,
+    "kind": "."
+   },
+   {
+    "start": 41.84,
+    "end": 44.08,
+    "words": 9,
+    "kind": "?"
+   },
+   {
+    "start": 44.08,
+    "end": 46.24,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 46.24,
+    "end": 52.08,
+    "words": 15,
+    "kind": "."
+   },
+   {
+    "start": 52.08,
+    "end": 58.48,
+    "words": 16,
+    "kind": "."
+   },
+   {
+    "start": 58.48,
+    "end": 61.04,
+    "words": 8,
+    "kind": "."
+   }
+  ]
+ },
+ {
+  "id": "ref-17-nMorHXPZnr4",
+  "sentences": [
+   {
+    "start": 7.12,
+    "end": 11.6,
+    "words": 17,
+    "kind": "?"
+   },
+   {
+    "start": 11.6,
+    "end": 15.6,
+    "words": 9,
+    "kind": "."
+   },
+   {
+    "start": 15.6,
+    "end": 20.32,
+    "words": 6,
+    "kind": "."
+   },
+   {
+    "start": 20.32,
+    "end": 23.36,
+    "words": 8,
+    "kind": "."
+   },
+   {
+    "start": 23.36,
+    "end": 24.48,
+    "words": 1,
+    "kind": "."
+   },
+   {
+    "start": 24.72,
+    "end": 26.16,
+    "words": 6,
+    "kind": "?"
+   },
+   {
+    "start": 26.16,
+    "end": 26.72,
+    "words": 1,
+    "kind": "."
+   },
+   {
+    "start": 26.72,
+    "end": 29.52,
+    "words": 13,
+    "kind": "."
+   },
+   {
+    "start": 29.52,
+    "end": 31.6,
+    "words": 8,
+    "kind": "?"
+   },
+   {
+    "start": 31.6,
+    "end": 33.28,
+    "words": 4,
+    "kind": "."
+   },
+   {
+    "start": 33.28,
+    "end": 33.84,
+    "words": 2,
+    "kind": "!"
+   },
+   {
+    "start": 33.84,
+    "end": 35.76,
+    "words": 7,
+    "kind": "."
+   },
+   {
+    "start": 35.76,
+    "end": 37.92,
+    "words": 6,
+    "kind": "?"
+   },
+   {
+    "start": 37.92,
+    "end": 41.12,
+    "words": 9,
+    "kind": "."
+   },
+   {
+    "start": 41.12,
+    "end": 45.44,
+    "words": 10,
+    "kind": "."
+   },
+   {
+    "start": 45.44,
+    "end": 51.04,
+    "words": 13,
+    "kind": "."
+   }
+  ]
+ },
+ {
+  "id": "ref-18-p7CPrFdKGhQ",
+  "sentences": [
+   {
+    "start": 2.48,
+    "end": 3.04,
+    "words": 1,
+    "kind": "?"
+   },
+   {
+    "start": 3.04,
+    "end": 4.24,
+    "words": 4,
+    "kind": "?"
+   },
+   {
+    "start": 4.24,
+    "end": 6.16,
+    "words": 7,
+    "kind": "?"
+   },
+   {
+    "start": 6.16,
+    "end": 6.88,
+    "words": 2,
+    "kind": "!"
+   },
+   {
+    "start": 6.88,
+    "end": 8.56,
+    "words": 7,
+    "kind": "!"
+   },
+   {
+    "start": 8.56,
+    "end": 11.12,
+    "words": 10,
+    "kind": "!"
+   },
+   {
+    "start": 14.32,
+    "end": 15.84,
+    "words": 3,
+    "kind": "."
+   },
+   {
+    "start": 15.84,
+    "end": 17.04,
+    "words": 5,
+    "kind": "?"
+   },
+   {
+    "start": 17.04,
+    "end": 18.56,
+    "words": 6,
+    "kind": "."
+   },
+   {
+    "start": 18.56,
+    "end": 19.6,
+    "words": 3,
+    "kind": "?"
+   },
+   {
+    "start": 19.6,
+    "end": 20.0,
+    "words": 1,
+    "kind": "."
+   },
+   {
+    "start": 20.0,
+    "end": 22.24,
+    "words": 8,
+    "kind": "."
+   },
+   {
+    "start": 22.24,
+    "end": 24.56,
+    "words": 1,
+    "kind": "."
+   },
+   {
+    "start": 26.16,
+    "end": 29.12,
+    "words": 11,
+    "kind": "."
+   },
+   {
+    "start": 29.12,
+    "end": 31.68,
+    "words": 11,
+    "kind": "?"
+   },
+   {
+    "start": 33.44,
+    "end": 34.24,
+    "words": 1,
+    "kind": "?"
+   },
+   {
+    "start": 39.68,
+    "end": 42.08,
+    "words": 8,
+    "kind": "?"
+   },
+   {
+    "start": 42.08,
+    "end": 44.08,
+    "words": 8,
+    "kind": "."
+   },
+   {
+    "start": 44.08,
+    "end": 49.92,
+    "words": 19,
+    "kind": "."
+   },
+   {
+    "start": 49.92,
+    "end": 55.12,
+    "words": 13,
+    "kind": "."
+   },
+   {
+    "start": 55.12,
+    "end": 56.88,
+    "words": 6,
+    "kind": "."
+   },
+   {
+    "start": 56.88,
+    "end": 63.36,
+    "words": 20,
+    "kind": "."
+   }
+  ]
+ },
+ {
+  "id": "ref-19-tg4bhFvYe_M",
+  "sentences": [
+   {
+    "start": 1.2,
+    "end": 2.8,
+    "words": 4,
+    "kind": "."
+   },
+   {
+    "start": 2.8,
+    "end": 3.84,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 3.84,
+    "end": 5.28,
+    "words": 3,
+    "kind": "!"
+   },
+   {
+    "start": 6.8,
+    "end": 8.4,
+    "words": 3,
+    "kind": "."
+   },
+   {
+    "start": 8.4,
+    "end": 10.88,
+    "words": 7,
+    "kind": "."
+   },
+   {
+    "start": 12.48,
+    "end": 13.04,
+    "words": 1,
+    "kind": "!"
+   },
+   {
+    "start": 13.04,
+    "end": 13.68,
+    "words": 1,
+    "kind": "!"
+   },
+   {
+    "start": 13.68,
+    "end": 15.04,
+    "words": 6,
+    "kind": "?"
+   },
+   {
+    "start": 15.04,
+    "end": 16.64,
+    "words": 7,
+    "kind": "?"
+   },
+   {
+    "start": 16.64,
+    "end": 19.2,
+    "words": 9,
+    "kind": "."
+   },
+   {
+    "start": 19.2,
+    "end": 19.68,
+    "words": 1,
+    "kind": "!"
+   },
+   {
+    "start": 19.68,
+    "end": 20.64,
+    "words": 4,
+    "kind": "!"
+   },
+   {
+    "start": 20.64,
+    "end": 21.84,
+    "words": 3,
+    "kind": "!"
+   },
+   {
+    "start": 21.84,
+    "end": 22.96,
+    "words": 2,
+    "kind": "!"
+   },
+   {
+    "start": 22.96,
+    "end": 24.4,
+    "words": 6,
+    "kind": "."
+   },
+   {
+    "start": 24.4,
+    "end": 25.6,
+    "words": 3,
+    "kind": "."
+   },
+   {
+    "start": 25.6,
+    "end": 28.96,
+    "words": 13,
+    "kind": "."
+   },
+   {
+    "start": 28.96,
+    "end": 31.04,
+    "words": 10,
+    "kind": "."
+   },
+   {
+    "start": 31.04,
+    "end": 33.12,
+    "words": 9,
+    "kind": "."
+   },
+   {
+    "start": 33.12,
+    "end": 34.72,
+    "words": 4,
+    "kind": "."
+   },
+   {
+    "start": 36.24,
+    "end": 37.44,
+    "words": 5,
+    "kind": "?"
+   },
+   {
+    "start": 37.44,
+    "end": 38.8,
+    "words": 6,
+    "kind": "?"
+   },
+   {
+    "start": 38.8,
+    "end": 39.92,
+    "words": 4,
+    "kind": "."
+   },
+   {
+    "start": 39.92,
+    "end": 42.24,
+    "words": 10,
+    "kind": "."
+   },
+   {
+    "start": 42.24,
+    "end": 43.04,
+    "words": 3,
+    "kind": "."
+   },
+   {
+    "start": 43.04,
+    "end": 45.52,
+    "words": 9,
+    "kind": "."
+   },
+   {
+    "start": 45.52,
+    "end": 46.48,
+    "words": 4,
+    "kind": "?"
+   },
+   {
+    "start": 46.48,
+    "end": 48.0,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 48.0,
+    "end": 49.68,
+    "words": 3,
+    "kind": "."
+   },
+   {
+    "start": 49.68,
+    "end": 52.08,
+    "words": 8,
+    "kind": "."
+   },
+   {
+    "start": 52.08,
+    "end": 55.52,
+    "words": 6,
+    "kind": "."
+   },
+   {
+    "start": 55.52,
+    "end": 59.44,
+    "words": 9,
+    "kind": "."
+   },
+   {
+    "start": 59.44,
+    "end": 65.76,
+    "words": 18,
+    "kind": "."
+   },
+   {
+    "start": 65.76,
+    "end": 67.92,
+    "words": 7,
+    "kind": "."
+   }
+  ]
+ },
+ {
+  "id": "ref-20-zAIArWsRp-E",
+  "sentences": [
+   {
+    "start": 1.44,
+    "end": 3.6,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 4.16,
+    "end": 5.12,
+    "words": 2,
+    "kind": "?"
+   },
+   {
+    "start": 5.12,
+    "end": 6.8,
+    "words": 7,
+    "kind": "."
+   },
+   {
+    "start": 6.8,
+    "end": 8.56,
+    "words": 6,
+    "kind": "."
+   },
+   {
+    "start": 9.2,
+    "end": 10.32,
+    "words": 3,
+    "kind": "."
+   },
+   {
+    "start": 10.32,
+    "end": 12.48,
+    "words": 8,
+    "kind": "."
+   },
+   {
+    "start": 14.56,
+    "end": 16.56,
+    "words": 6,
+    "kind": "."
+   },
+   {
+    "start": 16.56,
+    "end": 18.0,
+    "words": 4,
+    "kind": "."
+   },
+   {
+    "start": 18.0,
+    "end": 18.56,
+    "words": 1,
+    "kind": "!"
+   },
+   {
+    "start": 18.56,
+    "end": 19.52,
+    "words": 3,
+    "kind": "!"
+   },
+   {
+    "start": 19.52,
+    "end": 20.96,
+    "words": 7,
+    "kind": "."
+   },
+   {
+    "start": 20.96,
+    "end": 22.56,
+    "words": 6,
+    "kind": "?"
+   },
+   {
+    "start": 22.56,
+    "end": 24.08,
+    "words": 4,
+    "kind": "."
+   },
+   {
+    "start": 25.12,
+    "end": 29.52,
+    "words": 14,
+    "kind": "."
+   },
+   {
+    "start": 29.52,
+    "end": 30.96,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 30.96,
+    "end": 32.88,
+    "words": 10,
+    "kind": "."
+   },
+   {
+    "start": 32.88,
+    "end": 34.96,
+    "words": 7,
+    "kind": "."
+   },
+   {
+    "start": 34.96,
+    "end": 36.56,
+    "words": 8,
+    "kind": "?"
+   },
+   {
+    "start": 36.56,
+    "end": 37.44,
+    "words": 4,
+    "kind": "."
+   },
+   {
+    "start": 37.44,
+    "end": 39.6,
+    "words": 7,
+    "kind": "."
+   },
+   {
+    "start": 39.6,
+    "end": 40.72,
+    "words": 5,
+    "kind": "."
+   },
+   {
+    "start": 40.96,
+    "end": 42.08,
+    "words": 4,
+    "kind": "?"
+   },
+   {
+    "start": 42.08,
+    "end": 43.2,
+    "words": 1,
+    "kind": "."
+   },
+   {
+    "start": 46.88,
+    "end": 48.16,
+    "words": 3,
+    "kind": "?"
+   },
+   {
+    "start": 48.16,
+    "end": 50.24,
+    "words": 4,
+    "kind": "."
+   },
+   {
+    "start": 50.24,
+    "end": 52.24,
+    "words": 8,
+    "kind": "."
+   },
+   {
+    "start": 52.24,
+    "end": 54.88,
+    "words": 11,
+    "kind": "."
+   },
+   {
+    "start": 56.48,
+    "end": 60.08,
+    "words": 14,
+    "kind": "?"
+   }
+  ]
+ }
+]

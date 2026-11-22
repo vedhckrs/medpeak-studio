@@ -1,0 +1,4 @@
+# the comparison sheets hold frames of other channels' videos: kept on this Mac only (the repo is public)
+*.jpg
+*.png
+*.mp4
