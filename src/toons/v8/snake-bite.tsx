@@ -164,7 +164,7 @@ const ShotB: React.FC<{s: ShotNow}> = ({s}) => {
         <Put x={BLEED_B[0]} y={BLEED_B[1] + dive * 60} size={360} rot={10 + dive * 10}><Bleed mood={bf.mood} mouth={bf.mouth} arms={t > k.clot - 0.1 ? 'wave' : 'point'} look={[-0.6, -0.2]} /></Put>
         {(s.cur?.id !== 'B1' && s.cur?.id !== 'B2') && <Put x={CRUSH_B[0]} y={CRUSH_B[1] + stamp.dy} size={420} sq={stamp.sq}><Crush mood={cf.mood} mouth={cf.mouth} arms={t > k.here - 0.1 ? 'cheer' : 'hips'} look={[0, 0.4]} /></Put>}
       </Scene>
-      <Burst t={t} t0={k.nerves} x={NUMB_B[0] - 100} y={NUMB_B[1] - 40} r={110} col={CLOTH.yellow} />
+      <Burst t={t} t0={k.nerves} x={NUMB_B[0] - 170} y={NUMB_B[1] - 160} r={90} col={CLOTH.yellow} />
       <Burst t={t} t0={k.blood + 0.15} x={BLEED_B[0]} y={BLEED_B[1] + 60} r={120} col={tint('#c8342e', 0.4)} />
       <Burst t={t} t0={k.wreck + 0.25} x={CRUSH_B[0]} y={CRUSH_B[1] + 180} r={140} />
     </div>
@@ -284,7 +284,7 @@ const viewD = byLine({D2: {x: 560, y: 520, z: 1.6}}, WIDE);
 // =================================================================== E: inside, the drip: Antivenom arrives
 //   0.00 golden drip drops pour in from the top; E1 "drip?" Numb hides behind Bleed
 //   E2 "Antivenom." Antivenom lands, shining (a burst); "best" ONE punch: the gang flies off, knocked out (dial knock)
-const AV: [number, number] = [330, 1240];
+const AV: [number, number] = [330, 1080];
 const timesE = (s: ShotNow) => {
   const e2 = at(s, 'E2', undefined, 1.9);
   return {drip: at(s, 'E1', 'drip', 1.2), e2, av: at(s, 'E2', 'antivenom', e2), best: at(s, 'E2', 'best', e2 + 1.2)};
@@ -345,9 +345,9 @@ const ShotF: React.FC<{s: ShotNow}> = ({s}) => {
       <PersonAt spec={MIRA} {...miraF} pose={pose} expr="neutral" look={[shakeHead - 0.4, 0.1]} talk={talkSmooth(s, 'doctor')} blink={blink(t, 3)} />
       {cards > 0.01 && (
         <Svg>
-          <g transform={`translate(600 600) scale(${(cards * 0.42).toFixed(3)})`}><SnakeCard /></g>
-          <g transform={`translate(680 540) scale(${(cards * 0.42).toFixed(3)})`}><SnakeCard q /></g>
-          <g transform={`translate(760 600) scale(${(cards * 0.42).toFixed(3)})`}><SnakeCard /></g>
+          <g transform={`translate(600 470) scale(${(cards * 0.42).toFixed(3)})`}><SnakeCard /></g>
+          <g transform={`translate(680 410) scale(${(cards * 0.42).toFixed(3)})`}><SnakeCard q /></g>
+          <g transform={`translate(760 470) scale(${(cards * 0.42).toFixed(3)})`}><SnakeCard /></g>
         </Svg>
       )}
     </Scene>

@@ -23,6 +23,16 @@ you stop. The rules are in `CLAUDE.md`.
 - Next: render `snake-`, look at every sheet and the SnakeCheck crops at full size, fix overlaps/edges/hands, then show the owner
   `out/toons/sheets-v8/snake-cast.jpg` and `snake-place.jpg`.
 
+## 2026-11-23 (30) - MacBook (local Claude Code) - branch `video/snake-bite` - snake-bite FINISHED, waiting for the owner (NOT uploaded)
+
+- Final `videos/snake-bite/renders/toon-v8.mp4` 61.7 s (story about 48 s), -14.0 LUFS, -1.0 dBTP, no holes, END CARD speech 83%,
+  look ALL PASS (still 60%, bright 148, outlines 2.8%), every check passes, npm test 52/52, package READY, cover at 0.8 s.
+- The checklist on the final: real cuts are all place changes or designed subject cuts; every line's still checked at full size;
+  fixed: a burst on Numb's face, Antivenom in the caption band, the snake cards on Mira's hair.
+- Next: the owner watches; upload on his word in the next free slot (`upload.py snake-bite toon --approve --slot`).
+
+---
+
 ## 2026-11-22 (29) - MacBook (local Claude Code) - branch `video/snake-bite` - snake-bite VOICED, not yet rendered (usage limit)
 
 - Topic #6. Plan `plans/snake-bite-2026-11-22.md` (hook A, Mom), script `plans/snake-bite-script.py`, shots `src/toons/v8/snake-bite.tsx`.
