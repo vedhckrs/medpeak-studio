@@ -23,6 +23,18 @@ you stop. The rules are in `CLAUDE.md`.
 - Next: render `snake-`, look at every sheet and the SnakeCheck crops at full size, fix overlaps/edges/hands, then show the owner
   `out/toons/sheets-v8/snake-cast.jpg` and `snake-place.jpg`.
 
+## 2026-11-22 (29) - MacBook (local Claude Code) - branch `video/snake-bite` - snake-bite VOICED, not yet rendered (usage limit)
+
+- Topic #6. Plan `plans/snake-bite-2026-11-22.md` (hook A, Mom), script `plans/snake-bite-script.py`, shots `src/toons/v8/snake-bite.tsx`.
+- Anthropic: $2.90 of $5 (look sheets $2.05, a shot run that stopped $0.85); the owner then chose "code them yourself".
+- Voices (free picks with earshot): numb Seraphina, bleed Little Dude II, crush Maverick, antivenom Noku. Spent 789 credits
+  (lines 269, card 153, music 367); balance 35,653 before (about 7,300 lower than after fasting: not spent from this session).
+- On real timings: toon:check, camera, motion, staging, sound ALL PASS; music has no rest inside its loop.
+- NEXT: `node pipeline/toon-v8-render.mjs snake-bite`, then the checklist on the FINAL (toon:look, toon:listen incl. END CARD,
+  real cut list, full-size stills of every line, cover), `node pipeline/toon-package.mjs snake-bite`, send to the owner. Not uploaded.
+
+---
+
 ## 2026-11-22 (28) - MacBook (local Claude Code) - branch `video/fasting` - fasting SCHEDULED (Mon 23 Nov 12:30 IST)
 
 - The owner: "Yes, schedule it". `upload.py fasting toon --slot --approve` (first real use of --slot): https://youtu.be/mQQy3CIbXF0,

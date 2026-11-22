@@ -1,0 +1,168 @@
+{
+  "voice": "Joey - Upbeat Popular News Host",
+  "voiceId": "mUfWEBhcigm8YlCDbmGP",
+  "text": "Snake bite: know this. Never cut, suck or tie the bite. Stay calm and keep it still. Get every bite checked. Follow MedPeak Health for more health tips that keep you safe.",
+  "seconds": 12.4,
+  "words": [
+    {
+      "w": "Snake",
+      "start": 0,
+      "end": 0.348
+    },
+    {
+      "w": "bite:",
+      "start": 0.383,
+      "end": 0.813
+    },
+    {
+      "w": "know",
+      "start": 1.022,
+      "end": 1.242
+    },
+    {
+      "w": "this.",
+      "start": 1.324,
+      "end": 1.869
+    },
+    {
+      "w": "Never",
+      "start": 2.148,
+      "end": 2.438
+    },
+    {
+      "w": "cut,",
+      "start": 2.508,
+      "end": 2.914
+    },
+    {
+      "w": "suck",
+      "start": 3.088,
+      "end": 3.437
+    },
+    {
+      "w": "or",
+      "start": 3.529,
+      "end": 3.692
+    },
+    {
+      "w": "tie",
+      "start": 3.762,
+      "end": 4.005
+    },
+    {
+      "w": "the",
+      "start": 4.04,
+      "end": 4.11
+    },
+    {
+      "w": "bite.",
+      "start": 4.156,
+      "end": 4.609
+    },
+    {
+      "w": "Stay",
+      "start": 4.853,
+      "end": 5.143
+    },
+    {
+      "w": "calm",
+      "start": 5.213,
+      "end": 5.538
+    },
+    {
+      "w": "and",
+      "start": 5.631,
+      "end": 5.805
+    },
+    {
+      "w": "keep",
+      "start": 5.875,
+      "end": 6.06
+    },
+    {
+      "w": "it",
+      "start": 6.118,
+      "end": 6.188
+    },
+    {
+      "w": "still.",
+      "start": 6.235,
+      "end": 6.757
+    },
+    {
+      "w": "Get",
+      "start": 7.082,
+      "end": 7.303
+    },
+    {
+      "w": "every",
+      "start": 7.384,
+      "end": 7.663
+    },
+    {
+      "w": "bite",
+      "start": 7.721,
+      "end": 7.976
+    },
+    {
+      "w": "checked.",
+      "start": 8.011,
+      "end": 8.51
+    },
+    {
+      "w": "Follow",
+      "start": 8.789,
+      "end": 9.137
+    },
+    {
+      "w": "MedPeak",
+      "start": 9.207,
+      "end": 9.625
+    },
+    {
+      "w": "Health",
+      "start": 9.683,
+      "end": 9.938
+    },
+    {
+      "w": "for",
+      "start": 9.996,
+      "end": 10.124
+    },
+    {
+      "w": "more",
+      "start": 10.194,
+      "end": 10.414
+    },
+    {
+      "w": "health",
+      "start": 10.472,
+      "end": 10.704
+    },
+    {
+      "w": "tips",
+      "start": 10.762,
+      "end": 11.053
+    },
+    {
+      "w": "that",
+      "start": 11.099,
+      "end": 11.238
+    },
+    {
+      "w": "keep",
+      "start": 11.285,
+      "end": 11.471
+    },
+    {
+      "w": "you",
+      "start": 11.517,
+      "end": 11.61
+    },
+    {
+      "w": "safe.",
+      "start": 11.68,
+      "end": 12.399
+    }
+  ]
+}
