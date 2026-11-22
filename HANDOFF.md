@@ -6,6 +6,23 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-22 (29) - MacBook (local Claude Code, headless) - branch `video/snake-bite` - snake-bite look drawn, sheets NOT rendered yet
+
+- New: `src/toons/v8/snake-cast.tsx` (the venom gang Numb / Bleed / Crush as venom drops with two small fangs, the
+  Antivenom hero as a rounded gold Y; props mood, mouth, look, arms incl. 'cheer' and 'punch', knocked 0..1; `SnakeCastBoard`),
+  `src/toons/v8/snake-places.tsx` (TrailScene, LegInside with `swell`, HospitalBed; moments: hook, split, myths, drip, punch),
+  `src/toons/v8/entry-snake.tsx` (SnakeCast, SnakePlace, SnakeCheck), added to SHEETS in `pipeline/toon-v8-sheets.mjs`.
+  Placeholder blueprints in `src/toons/characters.tsx` and cast entries (voice "TBD") in `skill/medpeak-health/toons-cast.json`.
+  kit.tsx untouched.
+- Run: `npm run typecheck` passes, `npm test` passes (52/52).
+- NOT run: `node pipeline/toon-v8-sheets.mjs snake-` (the permission mode of that session refused to start the render). So
+  NOBODY HAS LOOKED at these drawings yet. Positions in the moments (Mom's pointing hand vs the shout bubble, Sam's sit pose in
+  the bed and the drip line reaching his forearm, the hook gang near the fangs) are first guesses and will likely need nudging.
+- Mom's knife and rope are drawn in her shout bubble ("CUT IT! TIE IT!"), not in her hands, to keep hands clean; change if the
+  owner wants them held. The myths moment shows Mom + Crush cheering (Sam off frame), keeping to two characters.
+- Next: render `snake-`, look at every sheet and the SnakeCheck crops at full size, fix overlaps/edges/hands, then show the owner
+  `out/toons/sheets-v8/snake-cast.jpg` and `snake-place.jpg`.
+
 ## 2026-11-22 (28) - MacBook (local Claude Code) - branch `video/fasting` - fasting SCHEDULED (Mon 23 Nov 12:30 IST)
 
 - The owner: "Yes, schedule it". `upload.py fasting toon --slot --approve` (first real use of --slot): https://youtu.be/mQQy3CIbXF0,

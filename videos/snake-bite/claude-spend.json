@@ -1,0 +1,10 @@
+{
+  "capUsd": 5,
+  "runs": [
+    {
+      "date": "2026-11-22T17:20:00.125Z",
+      "label": "look sheets: venom gang, antivenom, trail, leg, hospital",
+      "costUsd": 2.05
+    }
+  ]
+}

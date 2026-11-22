@@ -737,7 +737,12 @@ const muscle: Blueprint = {...heart, name: 'muscle', role: 'One muscle fibre: st
 const sweetie: Blueprint = {...pill, name: 'sweetie', role: 'A sly sugar cube who wants Dad back.', color: '#fbf8f2', ground: {y: 90, w: 46}};
 const lardo: Blueprint = {...pill, name: 'lardo', role: 'A fat cell who takes over when the sugar runs out.', color: '#fbe3a0', ground: {y: 90, w: 46}};
 const tongue: Blueprint = {...stomach, name: 'tongue', role: 'The tongue: its taste buds wake up after months of less sugar.', color: '#ee8f93'};
-export const BLUEPRINTS = {stomach, intestine, liver, kidney, bladder, lungs, heart, brain, tooth, bone, pill, poop, redcell, whitecell, platelet, virus, bacteria, egg, sperm, gunk, melatonin, crew, crea, battery, muscle, sweetie, tongue, lardo};
+// snake-bite (2026-11-22): placeholders; the real drawings are in v8 snake-cast.tsx
+const numb: Blueprint = {...lardo, name: 'numb', role: 'The blue venom drop who attacks the nerves.', color: '#6fa8dc'};
+const bleed: Blueprint = {...lardo, name: 'bleed', role: 'The red venom drop who stops the blood clotting.', color: '#d9534f'};
+const crush: Blueprint = {...lardo, name: 'crush', role: 'The green venom drop who wrecks the tissue.', color: '#58b56e'};
+const antivenom: Blueprint = {...lardo, name: 'antivenom', role: 'The calm hero antibody that arrives through the drip.', color: '#f3d98a'};
+export const BLUEPRINTS = {stomach, intestine, liver, kidney, bladder, lungs, heart, brain, tooth, bone, pill, poop, redcell, whitecell, platelet, virus, bacteria, egg, sperm, gunk, melatonin, crew, crea, battery, muscle, sweetie, tongue, lardo, numb, bleed, crush, antivenom};
 export type CastName = keyof typeof BLUEPRINTS;
 export const CAST = Object.fromEntries(Object.entries(BLUEPRINTS).map(([k, bp]) => [k, makeCharacter(bp)])) as Record<CastName, Character>;
 // `tone` stays exported from ink for older call sites; body characters use shade/lift (hue-shifted paint).

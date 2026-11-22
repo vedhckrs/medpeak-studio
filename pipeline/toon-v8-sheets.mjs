@@ -55,6 +55,10 @@ export const SHEETS = [
   ['entry-sugar.tsx', 'SugarPlace', 'sugar-place'],
   ['entry-sugar.tsx', 'SugarPlace2', 'sugar-place-close'],
   ['entry-sugar.tsx', 'SugarKitchen', 'sugar-kitchen'],
+  // snake-bite (2026-11-22)
+  ['entry-snake.tsx', 'SnakeCast', 'snake-cast'],
+  ['entry-snake.tsx', 'SnakePlace', 'snake-place'],
+  ['entry-snake.tsx', 'SnakeCheck', 'snake-check'],
   // fasting (2026-11-22)
   ['entry-fast.tsx', 'FastCast', 'fast-cast'],
   ['entry-fast.tsx', 'FastPlace', 'fast-place'],

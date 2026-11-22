@@ -27,7 +27,11 @@ export const MIN_RUN_USD = 0.75;
 export const MODEL = 'claude-opus-5-5';
 export const EFFORT = 'medium';
 export const TOOLS = ['Read', 'Edit', 'Write', 'Glob', 'Grep', 'Bash(npm run typecheck)', 'Bash(npm test)', 'Bash(npx tsc:*)',
-  'Bash(ls:*)', 'Bash(grep:*)', 'Bash(cat:*)', 'Bash(head:*)', 'Bash(sed -n:*)', 'Bash(wc:*)'];
+  'Bash(ls:*)', 'Bash(grep:*)', 'Bash(cat:*)', 'Bash(head:*)', 'Bash(sed -n:*)', 'Bash(wc:*)',
+  // 2026-11-22: the first snake-bite run could not render its own sheets or commit, so it could not look at what it drew. Free local
+  // renders, the checks and local commits are allowed; pushing stays with the main session.
+  'Bash(node pipeline/toon-v8-sheets.mjs:*)', 'Bash(node pipeline/toon-v8-render.mjs:*)', 'Bash(node pipeline/toon-check.mjs:*)',
+  'Bash(npm run toon:*)', 'Bash(ffmpeg:*)', 'Bash(git status:*)', 'Bash(git diff:*)', 'Bash(git add:*)', 'Bash(git commit:*)'];
 
 const r2 = (n) => Math.round(n * 100) / 100;
 export const spent = (ledger) => r2((ledger.runs || []).reduce((s, r) => s + (Number(r.costUsd) || 0), 0));
