@@ -139,8 +139,10 @@ export const Battery: React.FC<V8Props & {charge?: number; charging?: boolean; f
 };
 
 // ================================================================== Muscle: one muscle fibre with a face
-export const Muscle: React.FC<V8Props & {flex?: number; band?: boolean; sweat?: number}> = ({mood = 'open', mouth = 'smile', look = [0, 0], flex = 0, band = false, sweat = 0}) => {
+/** `arm`: the arms' pose chosen by the caller (true = flexed), held through a one-frame dip of `flex` (04-details.md M1); else from flex. */
+export const Muscle: React.FC<V8Props & {flex?: number; band?: boolean; sweat?: number; arm?: boolean}> = ({mood = 'open', mouth = 'smile', look = [0, 0], flex = 0, band = false, sweat = 0, arm}) => {
   const k = clamp01(flex);
+  const up = arm ?? k > 0.4;
   const half = 70 - k * 12; // half length of the belly
   const thick = 46 + k * 16; // half height at the middle
   const M = CREA_COL.muscle;
@@ -162,7 +164,7 @@ export const Muscle: React.FC<V8Props & {flex?: number; band?: boolean; sweat?: 
         <path d={`M ${-half * 0.6} ${-thick * 0.62} Q 0 ${-thick * 0.9} ${half * 0.6} ${-thick * 0.62}`} stroke="#ffffff" strokeWidth={4.5} strokeLinecap="round" fill="none" opacity={0.8} />
       </Shape>
       {/* arms from the upper sides: flexed = elbow out, fist up beside the face; relaxed = hanging at the lower sides */}
-      {([-1, 1] as const).map((s) => k > 0.4 ? (
+      {([-1, 1] as const).map((s) => up ? (
         <TinyArm key={s} from={[s * half * 0.62, -thick * 0.55]} bend={[s * (half + 56), -thick * 0.15]} to={[s * (half + 16), -thick - 16]} fill={M} hand="fist" />
       ) : (
         <TinyArm key={s} from={[s * half * 0.6, thick * 0.6]} bend={[s * (half * 0.8 + 10), thick * 0.95]} to={[s * (half * 0.9 + 14), thick + 8]} fill={M} hand="mitten" />
