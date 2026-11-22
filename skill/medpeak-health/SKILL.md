@@ -23,7 +23,11 @@ The owner is not technical: run everything yourself, explain in plain words, nev
    source's `note`. Never round a number into a different claim (2.75x is "nearly three times", not
    "three times"); prediabetes is not diabetes. See `references/medical-accuracy.md`.
 4. **Nothing goes public on its own.** Uploads are private or scheduled (`--publish-at`); public only
-   when the owner says so. Every upload is marked not made for kids, and
+   when the owner says so. **Schedule by `references/posting-schedule.md`** (shared with the talking-organ cartoon
+   pipeline on this channel): MedPeak Shorts at **12:30 and 21:30 IST**, long videos **Wed + Sat 05:30 IST**; the cartoons
+   own 08:00, 15:30 and 18:30 IST. Max 5 Shorts a day on the channel, 3 h between Shorts, 2 h between a long video and a
+   Short; read the channel's real schedule from the API before picking a slot, and ask before changing a time the owner
+   set in Studio. Every upload is marked not made for kids, and
    YouTube's "AI use" question is answered **Yes** (the uploader sets it and reads it back).
    **But say nothing about how the videos are made** (owner, 2026-11-16): no line about code or
    AI voices in a title, description, comment or cover.
@@ -64,6 +68,7 @@ The owner is not technical: run everything yourself, explain in plain words, nev
 9  qc         node pipeline/qc.mjs <slug>               QC PASS or fix
 10 package    node pipeline/package.mjs <slug>          title, chapters, sources, tags, AI label
 11 upload     python publish/upload.py <slug> all --approve [--publish-at ISO]   (after the owner's yes)
+             slots: Shorts 12:30 / 21:30 IST, long Wed+Sat 05:30 IST (references/posting-schedule.md)
 12 link       in YouTube Studio set each Short's Related video to the long video (no API for it)
 13 learn      after 7 days: analytics for the new video -> notes in references/channel.md
 ```
@@ -108,6 +113,7 @@ the first 15 made first. Mark a topic `taken` there before starting it.
 
 - `references/retention-7.md` - the owner's global Retention 7 rule (copied from ~/Remotion/repo/skills).
 - `references/channel.md` - analytics findings, title/description rules, goals, what worked.
+- `references/posting-schedule.md` - the channel's daily posting slots for both pipelines (5 Shorts a day; MedPeak 12:30 + 21:30 IST, long videos Wed/Sat 05:30). Same file as `~/Desktop/New/POSTING-SCHEDULE.md`.
 - `references/medical-accuracy.md` - sourcing rules, wording that is not allowed, how to cite.
 - `references/scene-types.md` - every visual type with its fields.
 - `references/toons.md` - MedPeak Toons: the cartoon talking-organ Shorts format, our own look, roadmap.
