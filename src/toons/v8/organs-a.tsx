@@ -19,7 +19,7 @@ type P = [number, number];
 const f = (n: number) => Math.round(n * 100) / 100;
 
 /** A smooth closed outline through the points (Catmull-Rom as cubic beziers). */
-const smooth = (pts: P[], k = 1): string => {
+export const smooth = (pts: P[], k = 1): string => {
   const n = pts.length;
   let d = `M ${f(pts[0][0])} ${f(pts[0][1])}`;
   for (let i = 0; i < n; i++) {
@@ -32,7 +32,7 @@ const smooth = (pts: P[], k = 1): string => {
 };
 
 /** A closed outline made of outward bulges between the points (a lobed cloud). */
-const cloud = (pts: P[], bulge = 0.22): string => {
+export const cloud = (pts: P[], bulge = 0.22): string => {
   const n = pts.length;
   const cx = pts.reduce((s, p) => s + p[0], 0) / n;
   const cy = pts.reduce((s, p) => s + p[1], 0) / n;
@@ -501,3 +501,4 @@ export const OrgansA: React.FC = () => (
     })}
   </Board>
 );
+export {COL as ORGAN_COL};

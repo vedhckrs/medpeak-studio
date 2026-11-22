@@ -98,6 +98,11 @@ Do these once on a new machine. None of it needs the old machine except step 6.
   a patch".
 - **Inside the body means microscopic**: among cells, with foreground, middle and background planes for
   depth. Not a far-away diagram of an organ.
+- **An organ's big moment shows the WHOLE organ, like the reference videos** (2026-11-22: "when big organ frame come i want
+  full view of organs like ref video"): the organ fills the 1080 x 1920 frame, its face on its own wall (eyes about 170 px), tiny
+  arms, its surroundings around it (the diaphragm and gut round the liver; lips, palate, teeth round the tongue), and the
+  organ itself changes state with the story (fat patches shrink, taste buds light up). Not a small mascot on a micro background.
+  Micro places stay for cells, blood and germs. Example: `src/toons/v8/sugar-organs.tsx`.
 - **Text on the picture is laid on the screen after the camera**, so a zoom never cuts it. Captions are
   one word at a time, no box, the key word bigger and yellow (2026-11-20).
 - **Final videos are 1080 x 1920, 60 frames a second.**

@@ -1,0 +1,178 @@
+{
+  "voice": "Joey - Upbeat Popular News Host",
+  "voiceId": "mUfWEBhcigm8YlCDbmGP",
+  "text": "Quitting sugar: know this. Juice and honey count as sugar too. Don't swap sugar for sweeteners. Keep it under twelve teaspoons a day. Follow MedPeak Health for more health tips that keep you safe.",
+  "seconds": 12.82,
+  "words": [
+    {
+      "w": "Quitting",
+      "start": 0,
+      "end": 0.36
+    },
+    {
+      "w": "sugar:",
+      "start": 0.418,
+      "end": 0.94
+    },
+    {
+      "w": "know",
+      "start": 1.149,
+      "end": 1.347
+    },
+    {
+      "w": "this.",
+      "start": 1.416,
+      "end": 1.939
+    },
+    {
+      "w": "Juice",
+      "start": 2.322,
+      "end": 2.682
+    },
+    {
+      "w": "and",
+      "start": 2.728,
+      "end": 2.821
+    },
+    {
+      "w": "honey",
+      "start": 2.891,
+      "end": 3.123
+    },
+    {
+      "w": "count",
+      "start": 3.193,
+      "end": 3.425
+    },
+    {
+      "w": "as",
+      "start": 3.471,
+      "end": 3.541
+    },
+    {
+      "w": "sugar",
+      "start": 3.599,
+      "end": 3.889
+    },
+    {
+      "w": "too.",
+      "start": 3.947,
+      "end": 4.389
+    },
+    {
+      "w": "Don't",
+      "start": 4.714,
+      "end": 4.957
+    },
+    {
+      "w": "swap",
+      "start": 5.016,
+      "end": 5.294
+    },
+    {
+      "w": "sugar",
+      "start": 5.364,
+      "end": 5.608
+    },
+    {
+      "w": "for",
+      "start": 5.654,
+      "end": 5.759
+    },
+    {
+      "w": "sweeteners.",
+      "start": 5.817,
+      "end": 6.467
+    },
+    {
+      "w": "Keep",
+      "start": 6.85,
+      "end": 7.07
+    },
+    {
+      "w": "it",
+      "start": 7.117,
+      "end": 7.175
+    },
+    {
+      "w": "under",
+      "start": 7.221,
+      "end": 7.396
+    },
+    {
+      "w": "twelve",
+      "start": 7.454,
+      "end": 7.767
+    },
+    {
+      "w": "teaspoons",
+      "start": 7.802,
+      "end": 8.313
+    },
+    {
+      "w": "a",
+      "start": 8.348,
+      "end": 8.382
+    },
+    {
+      "w": "day.",
+      "start": 8.429,
+      "end": 8.87
+    },
+    {
+      "w": "Follow",
+      "start": 9.253,
+      "end": 9.613
+    },
+    {
+      "w": "MedPeak",
+      "start": 9.694,
+      "end": 10.112
+    },
+    {
+      "w": "Health",
+      "start": 10.17,
+      "end": 10.426
+    },
+    {
+      "w": "for",
+      "start": 10.6,
+      "end": 10.762
+    },
+    {
+      "w": "more",
+      "start": 10.82,
+      "end": 10.983
+    },
+    {
+      "w": "health",
+      "start": 11.041,
+      "end": 11.273
+    },
+    {
+      "w": "tips",
+      "start": 11.32,
+      "end": 11.587
+    },
+    {
+      "w": "that",
+      "start": 11.622,
+      "end": 11.738
+    },
+    {
+      "w": "keep",
+      "start": 11.784,
+      "end": 11.947
+    },
+    {
+      "w": "you",
+      "start": 11.993,
+      "end": 12.074
+    },
+    {
+      "w": "safe.",
+      "start": 12.156,
+      "end": 12.817
+    }
+  ]
+}

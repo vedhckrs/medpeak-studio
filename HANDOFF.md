@@ -6,6 +6,129 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-22 (24) - MacBook (local Claude Code) - branch `video/quit-sugar` - quit-sugar UPLOADED PRIVATE
+
+- The owner: "Yes, upload private". `upload.py quit-sugar toon` (venv Python, dry run first, then `--approve`):
+  https://youtu.be/zXcUcOiN39s (private, not for kids, cover set). The AI-use answer was not stored by the upload, so
+  `after_upload.py quit-sugar toon --label --approve` set it (answered True; YouTube does not show it on read: check Studio,
+  Details, "Altered content").
+- Topic bank #4 marked `quit-sugar (uploaded private 2026-11-22)`. Branch merged into main.
+- Next: the owner checks it in Studio and makes it public on his word; the next topic in the bank.
+
+---
+
+## 2026-11-22 (23) - MacBook (local Claude Code) - branch `video/quit-sugar` - quit-sugar FINISHED, waiting for the owner to watch (NOT uploaded)
+
+- The owner: "Yes, spend it" (up to about 1,400 credits). Spent by the receipts: lines 282, Joey's card 176, music 732 = **1,190**.
+  Balance 47,302 before, 46,344 read after (the counter lags; receipts are the truth). The music tool's `--max-credits 600` did not
+  stop a single bed that cost 732 (it only stops a SET that projects over the cap): within the approved total, but note it.
+- Key 2's subscription payment failed (401 payment_required): `eleven.mjs` now treats that like an empty key and moves on
+  (it stopped the run before). The owner may want to fix key 2's billing in ElevenLabs.
+- Music: the new bed had three 0.3-0.4 s dips inside its loop; one fell in a breath between two words (earshot: a 0.3 s drop at
+  41.05 s). Fixed for every video: `director.ts` BED.gap 0.2 (placement) apart from BED.hole 0.5 (is a track steady), placement on
+  exact word times (the padding hid the breath). And the dips were filled in the track itself (free): each dip replaced by the same
+  spot one bar earlier at 104 BPM, 40 ms crossfades (`assets/toons-music/quit-sugar.mp3`; re-scanned: no rest inside the loop).
+- Frame-by-frame against the real voices, fixed: Sweetie's name tag moved out of the hook line (house rule) to the brain shot;
+  Sweetie on screen as his lines start on Day 20 and Day 30 (he spoke unseen); tiny Sweetie walks across the tongue in G3 (the
+  camera could not go low enough for the lip), stops and turns on "I'll", hops and points on "back." (the never-still check).
+  Cover moved to 2.4 s (Dad's angry close-up; at 1.2 s the cover text sat on Sweetie's mouth).
+- Final: `videos/quit-sugar/renders/toon-v8.mp4` 65.2 s (story 51.0 s), 1080x1920 60 fps, -14.1 LUFS, true peak -0.8 dBTP, no
+  holes, 8 of 10 planned sounds heard (pop at 23.4 s and bubble-pop at 31.5 s sit under the voice). toon:check, camera, motion,
+  staging, sound ALL PASS; look ALL PASS (still 49%, small motion 44%, edges 9.2%, outlines 6.4%, bright 147); npm test 50/50.
+  Package READY (`videos/quit-sugar/package/`), cover `renders/toon-cover.jpg`.
+- Next: the owner watches with sound; upload private only on his word; then merge `video/quit-sugar` (and mark topic bank #4).
+
+---
+
+## 2026-11-22 (22) - MacBook (local Claude Code) - branch `video/quit-sugar` - frame-by-frame fixes, voices picked, WAITING on the cost OK
+
+- The owner: "Need to check every frame timing and voice and fix and give me final render".
+- Frame-by-frame (5 fps sheets of the silent draft). Fixed: lines started during the calendar rips (Days 3, 7, 10): those shots now
+  have `lead: 0.6` (silent rip first); `director.ts` steady camera: a shot's first picture starts with the SHOT, not its first line
+  (no video used `lead` before, the camera test called it a wrong picture); Day 30 F1 framing showed only part of Dad's head
+  (now z 1.18); the scale's drop gets a small yellow burst on "kilo"; tiny Sweetie in G3 bigger (290); Dad gets a visible start (a
+  take) on "swap" in E2.
+- Voices picked FREE by listening to the library's sample clips with earshot (no audition spend): Sweetie = Valf "Young, Playful &
+  Sarcastic" (library voice, publicOwnerId set), Dad = Brian, Tongue = Hope (pitch 1). Careful: a search for "Valf" returns
+  several different voices with that name; the right id is loY1uopAz31XyhAEhNSa.
+- Dry runs (free): lines 701 characters (quote <= 701 credits; creatine's receipts suggest about 300), CTA about 200, music about 500.
+  Balance 47,302 (keys 2: 2,728, 1: 72, 4: 35,301, 3 payg: 9,201).
+- npm test 50/50, toon:check --all pass. NOT spent yet: waiting for the owner's OK on the cost.
+
+---
+
+## 2026-11-22 (21) - MacBook (local Claude Code) - branch `video/quit-sugar` - quit-sugar SILENT PREVIEW sent, WAITING (nothing voiced)
+
+- The owner: "Yes, go ahead" (the polished organ frames).
+- Script: `plans/quit-sugar-script.py` -> `videos/quit-sugar/toon.json` (+ `SCRIPT.md`). 7 shots, 16 lines, about 47 s + Joey's card.
+  `toon:check` passes (also `--all`). Changes from the plan, all forced by the gate: hook A cut to "Quit sugar? You'll be back!"
+  (2 s rule; the owner's longer wording took 2.7 s); Dad "No sugar for a month? Watch me."; F1 "So... did I lose weight?";
+  G1 "And me? Sweet food tastes just the same."; G2 "No sugar for a month? Not yet. Three months? Forty percent sweeter!";
+  G3 "You quit sugar? ...I'll be back." (loop). The hook dives into Dad's belly: the Day 1 fatty liver (first frame = consequence).
+- New: `src/toons/v8/quit-sugar.tsx` (shots A-G, CTA card with estimated beats), `BrainFull` in `sugar-organs.tsx`, `lift` on
+  `LiverFull`; registered in `video.tsx`. Each body shot opens on a 0.62 s calendar rip (`RipInsert`). Macro dials `fat`, `pull`,
+  `buds` (director.ts). Layout-check stand-ins: `sweetie`, `tongue` blueprints (characters.tsx), `dad` in the old SPECS (humans.tsx).
+  Cast placeholders `sweetie`, `dad`, `tongue` in toons-cast.json (voice null: AUDITION before voicing).
+- Run: typecheck pass; `npm test` 50/50; toon:camera, motion, staging ALL PASS. Look on the story (0-47.3 s, measured with
+  `toon_look.py --to=47.3` because there is no cta-timings.json yet): still 47.5%, small motion 45%, edges 8.9%, dark 6.3%,
+  bright 146: all inside the limits. (`npm run toon:look` without --to includes the card and reads bright 135 until Joey is voiced.)
+- Silent preview: `renders/toon-v8-draft.mp4` (61.4 s with the card); storyboard `plans/review-quit-sugar/storyboard-silent.jpg`.
+- Next on the owner's OK of the motion: voice auditions (Sweetie, Dad, Tongue), cost and balance shown first; then voices, Joey's
+  card, music, full render, look check, package. Upload only on his word.
+
+---
+
+## 2026-11-22 (20) - MacBook (local Claude Code) - branch `video/quit-sugar` - organ frames polished (owner: "need more polished visual and details"), WAITING
+
+- `sugar-organs.tsx` detail pass. Liver: diaphragm muscle bands + pale tendon, lobule speckle, pale ligament band, darker underside
+  rim, fat patches with rim and shine, wet shine on the edge, gallbladder shine, portal vein / artery / bile duct at the gate (drawn in
+  the background so they run behind the colon), colon with pouches, plump gut loops, stomach folds, thin vessels on the back wall.
+  Mouth: cheek walls with folds, throat in depth with bumps, tonsils, palate ridges + centre seam, canines, clear biting edges, tooth
+  shines, gum scallops, sugar crystals with a glint, tongue rim, 190 papillae, deep groove, raised buds, wet shine, lips with a wet
+  inner band and shines. Shade crescents scaled up (`shadow` 3-5) on frame-size shapes so they read.
+- Removed after the look check: self-crossing gut tubes (read as donuts), a pale wedge "shadow", the long vessel stalks (liver on sticks),
+  a saliva strand (read as a crack); the gap between the front teeth closed.
+- typecheck pass. Nothing voiced or spent. Next on the owner's OK: script, `toon:check`, the silent video.
+
+---
+
+## 2026-11-22 (19) - MacBook (local Claude Code) - branch `video/quit-sugar` - full-organ frames (owner's note), sheets re-sent, WAITING
+
+- The owner on sheet 2: "when big organ frame come i want full view of organs like ref video". Now a standing rule in `CLAUDE.md`.
+- `sugar-places.tsx` (micro mouth and liver) removed; new `sugar-organs.tsx`: `LiverFull` (the cast Liver's outline x6.2 under the
+  diaphragm, gut below, stomach at right; `fat` shrinks the yellow patches and turns the colour from pale to healthy) and `MouthFull`
+  (lips, palate, soft palate + uvula, upper/lower teeth, the tongue; `view` tooth = closer, the face on the left front tooth;
+  `view` tongue = the face on the tongue; `bits`, `buds`). `organs-a.tsx` now exports `smooth` and `ORGAN_COL` (no drawing change).
+- typecheck pass. Sheets re-rendered into `plans/review-quit-sugar/`. Nothing voiced or spent.
+- Next on the owner's OK: script into `videos/quit-sugar/toon.json`, `toon:check`, the silent video.
+
+---
+
+## 2026-11-22 (18) - MacBook (local Claude Code) - branch `video/quit-sugar` - quit-sugar: four look sheets sent, WAITING
+
+- The owner: "Yes, hook A, Dad" (recorded in `plans/quit-sugar-2026-11-22.md`, Decided).
+- Built (free): `src/toons/v8/sugar-cast.tsx` (Sweetie: a sugar cube, `wear` none/juice/diet, `arms` hips/wave/point/droop;
+  `BurstCan`), `sugar-places.tsx` (`MouthPlace` view tooth/tongue, `bits`, `buds`; `LiverPlace` `fat`), `sugar-kitchen.tsx`
+  (`NightKitchen` open/day/scaleAt; `WallCalendar`, `BathScale`, `DAD_HOME` in a navy tee), `entry-sugar.tsx` (sheets + a
+  `SugarCheck` close-up board, not in the sheet list). Sheets in `plans/review-quit-sugar/`.
+- Bug class to remember: `Put` (an absolutely placed svg) does nothing inside a `Layer` svg: it lands at 0,0. Inside a Layer use
+  `<g transform>`. And spread `{...OUTLINE}` BEFORE `fill=` (OUTLINE carries `fill: 'none'`).
+- `npm run typecheck` pass, `npm test` 50/50. Nothing voiced or spent.
+- Next, on the owner's OK of the looks: the script into `videos/quit-sugar/toon.json`, `toon:check`, the silent video with the acting kit.
+
+---
+
+## 2026-11-22 (17) - MacBook (local Claude Code) - branch `video/quit-sugar` - quit-sugar: plan and script draft sent, WAITING
+
+- Topic bank #4 ("What Happens If You Quit Sugar for 30 Days") marked `taken (Mac, 2026-11-22)` and pushed first.
+- Sources read on PubMed and WHO (free): who-diet, temorenga-2013, schwarz-2017, wise-2016, westwater-2016, moynihan-2014.
+- Plan: `plans/quit-sugar-2026-11-22.md`. Shape `fight` (Dad vs Sweetie, a sugar-cube villain, over a 30-day wall
+  calendar), no Dr. Mira, 16 lines, about 48 s. New drawings: Sweetie + costumes, inside the mouth, inside the liver,
+  the kitchen at night. Estimate about 1,075 ElevenLabs credits (not spent; balance not read this session).
+- Nothing drawn, voiced or spent. Next, on the owner's word: hook (A/B/C), lead (Dad), F2 wording, then the four sheets.
+
+---
+
 ## 2026-11-21 (16) - MacBook (local Claude Code) - branch `video/creatine` - creatine: UPLOADED private (dKQm2aRKyTs)
 
 - On the owner's word ("Yes, upload private"): **https://youtu.be/dKQm2aRKyTs**, private, not made for kids (id in

@@ -50,6 +50,11 @@ export const SHEETS = [
   ['entry-crea.tsx', 'CreaPlace', 'crea-place'],
   ['entry-crea.tsx', 'CreaPlace2', 'crea-place-close'],
   ['entry-crea.tsx', 'CreaGym', 'crea-gym'],
+  // quit-sugar (2026-11-22)
+  ['entry-sugar.tsx', 'SugarCast', 'sugar-cast'],
+  ['entry-sugar.tsx', 'SugarPlace', 'sugar-place'],
+  ['entry-sugar.tsx', 'SugarPlace2', 'sugar-place-close'],
+  ['entry-sugar.tsx', 'SugarKitchen', 'sugar-kitchen'],
 ];
 
 // The scene frames of the rabies video (rooms, the arm, inside the body): [entry file, still id, output name]

@@ -55,7 +55,7 @@ export const checkSound = (toon, timings, {sfxDir = path.join(ROOT, 'assets', 't
     const stops = r.spans.filter(([a, b]) => a < r.end - 0.05 && b - a >= BED.hole - 1e-9);
     add('A steady bed', !stops.length, stops.length ? `"${toon.music}" stops for ${stops.map(([a, b]) => `${(b - a).toFixed(1)} s at ${a.toFixed(1)} s`).join(', ')}: use a bed that never goes quiet (toon:music:scan lists them)` : `"${toon.music}" never goes quiet for ${BED.hole} s inside its loop`);
   }
-  if (bed) add('No hole in a pause', !bed.holes.length, bed.holes.length ? `the music rests with no voice over it at ${bed.holes.map(([a, b]) => `${a.toFixed(1)}-${b.toFixed(1)} s`).join(', ')} (${BED.hole} s or more is heard as the sound cutting out): use another bed` : `the bed starts ${bed.start.toFixed(2)} s into its track: every rest falls under a voice`);
+  if (bed) add('No hole in a pause', !bed.holes.length, bed.holes.length ? `the music rests with no voice over it at ${bed.holes.map(([a, b]) => `${a.toFixed(1)}-${b.toFixed(1)} s`).join(', ')} (${BED.gap} s or more is heard as the sound cutting out): use another bed` : `the bed starts ${bed.start.toFixed(2)} s into its track: every rest falls under a voice`);
 
   // ---- measured layers (only when the voices are on this machine)
   const voices = L.lines.filter((l) => l.file && fs.existsSync(path.join(publicDir, l.file))).map((l) => ({file: path.join(publicDir, l.file), at: l.from / TOON_FPS, vol: 1}));

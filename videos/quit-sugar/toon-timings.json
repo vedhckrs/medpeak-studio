@@ -1,0 +1,815 @@
+{
+  "lines": {
+    "A1": {
+      "who": "sweetie",
+      "text": "Quit sugar? You'll be back!",
+      "voiceId": "loY1uopAz31XyhAEhNSa",
+      "pitch": 0,
+      "tempo": 1.1,
+      "file": "toons/quit-sugar/voice/A1.mp3",
+      "duration": 1.75,
+      "words": [
+        {
+          "w": "Quit",
+          "start": 0,
+          "end": 0.201
+        },
+        {
+          "w": "sugar?",
+          "start": 0.264,
+          "end": 0.717
+        },
+        {
+          "w": "You'll",
+          "start": 0.865,
+          "end": 1.066
+        },
+        {
+          "w": "be",
+          "start": 1.097,
+          "end": 1.161
+        },
+        {
+          "w": "back!",
+          "start": 1.204,
+          "end": 1.689
+        }
+      ]
+    },
+    "A2": {
+      "who": "dad",
+      "text": "No sugar for a month? Watch me.",
+      "voiceId": "nPczCjzI2devNBz1zQrb",
+      "pitch": 0,
+      "tempo": 1,
+      "file": "toons/quit-sugar/voice/A2.mp3",
+      "duration": 2.279,
+      "words": [
+        {
+          "w": "No",
+          "start": 0,
+          "end": 0.197
+        },
+        {
+          "w": "sugar",
+          "start": 0.279,
+          "end": 0.58
+        },
+        {
+          "w": "for",
+          "start": 0.639,
+          "end": 0.755
+        },
+        {
+          "w": "a",
+          "start": 0.801,
+          "end": 0.824
+        },
+        {
+          "w": "month?",
+          "start": 0.894,
+          "end": 1.277
+        },
+        {
+          "w": "Watch",
+          "start": 1.44,
+          "end": 1.695
+        },
+        {
+          "w": "me.",
+          "start": 1.753,
+          "end": 2.229
+        }
+      ]
+    },
+    "B1": {
+      "who": "sweetie",
+      "text": "You're hooked on me! Here come the cravings!",
+      "voiceId": "loY1uopAz31XyhAEhNSa",
+      "pitch": 0,
+      "tempo": 1,
+      "file": "toons/quit-sugar/voice/B1.mp3",
+      "duration": 2.836,
+      "words": [
+        {
+          "w": "You're",
+          "start": 0,
+          "end": 0.302
+        },
+        {
+          "w": "hooked",
+          "start": 0.337,
+          "end": 0.615
+        },
+        {
+          "w": "on",
+          "start": 0.697,
+          "end": 0.778
+        },
+        {
+          "w": "me!",
+          "start": 0.836,
+          "end": 1.161
+        },
+        {
+          "w": "Here",
+          "start": 1.3,
+          "end": 1.498
+        },
+        {
+          "w": "come",
+          "start": 1.544,
+          "end": 1.753
+        },
+        {
+          "w": "the",
+          "start": 1.8,
+          "end": 1.881
+        },
+        {
+          "w": "cravings!",
+          "start": 1.939,
+          "end": 2.786
+        }
+      ]
+    },
+    "B2": {
+      "who": "brain",
+      "text": "Hooked? Studies find little proof sugar is addictive in people.",
+      "voiceId": "iP95p4xoKVk53GoZ742B",
+      "pitch": 1,
+      "tempo": 1,
+      "file": "toons/quit-sugar/voice/B2.mp3",
+      "duration": 3.756,
+      "words": [
+        {
+          "w": "Hooked?",
+          "start": 0,
+          "end": 0.464
+        },
+        {
+          "w": "Studies",
+          "start": 0.871,
+          "end": 1.242
+        },
+        {
+          "w": "find",
+          "start": 1.289,
+          "end": 1.498
+        },
+        {
+          "w": "little",
+          "start": 1.579,
+          "end": 1.811
+        },
+        {
+          "w": "proof",
+          "start": 1.858,
+          "end": 2.09
+        },
+        {
+          "w": "sugar",
+          "start": 2.148,
+          "end": 2.415
+        },
+        {
+          "w": "is",
+          "start": 2.461,
+          "end": 2.531
+        },
+        {
+          "w": "addictive",
+          "start": 2.589,
+          "end": 2.972
+        },
+        {
+          "w": "in",
+          "start": 3.007,
+          "end": 3.053
+        },
+        {
+          "w": "people.",
+          "start": 3.1,
+          "end": 3.715
+        }
+      ]
+    },
+    "C1": {
+      "who": "sweetie",
+      "text": "Relax. I'm juice now. Healthy!",
+      "voiceId": "loY1uopAz31XyhAEhNSa",
+      "pitch": 0,
+      "tempo": 1,
+      "file": "toons/quit-sugar/voice/C1.mp3",
+      "duration": 1.954,
+      "words": [
+        {
+          "w": "Relax.",
+          "start": 0,
+          "end": 0.511
+        },
+        {
+          "w": "I'm",
+          "start": 0.534,
+          "end": 0.639
+        },
+        {
+          "w": "juice",
+          "start": 0.685,
+          "end": 0.906
+        },
+        {
+          "w": "now.",
+          "start": 0.94,
+          "end": 1.161
+        },
+        {
+          "w": "Healthy!",
+          "start": 1.184,
+          "end": 1.904
+        }
+      ]
+    },
+    "C2": {
+      "who": "tooth",
+      "text": "Juice, honey, syrup: still sugar to me. Out!",
+      "voiceId": "Xb7hH8MSUJpSbSDYk0k2",
+      "pitch": 3,
+      "tempo": 1,
+      "file": "toons/quit-sugar/voice/C2.mp3",
+      "duration": 2.866,
+      "words": [
+        {
+          "w": "Juice,",
+          "start": 0,
+          "end": 0.325
+        },
+        {
+          "w": "honey,",
+          "start": 0.348,
+          "end": 0.673
+        },
+        {
+          "w": "syrup:",
+          "start": 0.755,
+          "end": 1.138
+        },
+        {
+          "w": "still",
+          "start": 1.219,
+          "end": 1.451
+        },
+        {
+          "w": "sugar",
+          "start": 1.509,
+          "end": 1.741
+        },
+        {
+          "w": "to",
+          "start": 1.776,
+          "end": 1.834
+        },
+        {
+          "w": "me.",
+          "start": 1.892,
+          "end": 2.09
+        },
+        {
+          "w": "Out!",
+          "start": 2.148,
+          "end": 2.833
+        }
+      ]
+    },
+    "C3": {
+      "who": "tooth",
+      "text": "Under twelve teaspoons a day, and I get fewer holes.",
+      "voiceId": "Xb7hH8MSUJpSbSDYk0k2",
+      "pitch": 3,
+      "tempo": 1,
+      "file": "toons/quit-sugar/voice/C3.mp3",
+      "duration": 3.106,
+      "words": [
+        {
+          "w": "Under",
+          "start": 0,
+          "end": 0.267
+        },
+        {
+          "w": "twelve",
+          "start": 0.313,
+          "end": 0.592
+        },
+        {
+          "w": "teaspoons",
+          "start": 0.627,
+          "end": 1.115
+        },
+        {
+          "w": "a",
+          "start": 1.149,
+          "end": 1.184
+        },
+        {
+          "w": "day,",
+          "start": 1.242,
+          "end": 1.521
+        },
+        {
+          "w": "and",
+          "start": 1.556,
+          "end": 1.683
+        },
+        {
+          "w": "I",
+          "start": 1.741,
+          "end": 1.765
+        },
+        {
+          "w": "get",
+          "start": 1.834,
+          "end": 1.962
+        },
+        {
+          "w": "fewer",
+          "start": 2.02,
+          "end": 2.276
+        },
+        {
+          "w": "holes.",
+          "start": 2.334,
+          "end": 3.065
+        }
+      ]
+    },
+    "D1": {
+      "who": "liver",
+      "text": "In kids with obesity who swapped sugar for starch...",
+      "voiceId": "cjVigY5qzO86Huf0OWal",
+      "pitch": -1,
+      "tempo": 1,
+      "file": "toons/quit-sugar/voice/D1.mp3",
+      "duration": 2.9,
+      "words": [
+        {
+          "w": "In",
+          "start": 0,
+          "end": 0.128
+        },
+        {
+          "w": "kids",
+          "start": 0.186,
+          "end": 0.395
+        },
+        {
+          "w": "with",
+          "start": 0.418,
+          "end": 0.534
+        },
+        {
+          "w": "obesity",
+          "start": 0.58,
+          "end": 1.022
+        },
+        {
+          "w": "who",
+          "start": 1.068,
+          "end": 1.173
+        },
+        {
+          "w": "swapped",
+          "start": 1.231,
+          "end": 1.544
+        },
+        {
+          "w": "sugar",
+          "start": 1.579,
+          "end": 1.846
+        },
+        {
+          "w": "for",
+          "start": 1.904,
+          "end": 2.009
+        },
+        {
+          "w": "starch...",
+          "start": 2.067,
+          "end": 2.833
+        }
+      ]
+    },
+    "D2": {
+      "who": "liver",
+      "text": "...liver fat nearly halved in nine days! Same calories!",
+      "voiceId": "cjVigY5qzO86Huf0OWal",
+      "pitch": -1,
+      "tempo": 1,
+      "file": "toons/quit-sugar/voice/D2.mp3",
+      "duration": 3.167,
+      "words": [
+        {
+          "w": "...liver",
+          "start": 0,
+          "end": 0.395
+        },
+        {
+          "w": "fat",
+          "start": 0.441,
+          "end": 0.639
+        },
+        {
+          "w": "nearly",
+          "start": 0.697,
+          "end": 0.952
+        },
+        {
+          "w": "halved",
+          "start": 1.022,
+          "end": 1.265
+        },
+        {
+          "w": "in",
+          "start": 1.312,
+          "end": 1.37
+        },
+        {
+          "w": "nine",
+          "start": 1.44,
+          "end": 1.66
+        },
+        {
+          "w": "days!",
+          "start": 1.707,
+          "end": 2.009
+        },
+        {
+          "w": "Same",
+          "start": 2.032,
+          "end": 2.241
+        },
+        {
+          "w": "calories!",
+          "start": 2.276,
+          "end": 3.111
+        }
+      ]
+    },
+    "E1": {
+      "who": "sweetie",
+      "text": "Fine. Have my sweet cousin. Zero sugar!",
+      "voiceId": "loY1uopAz31XyhAEhNSa",
+      "pitch": 0,
+      "tempo": 1,
+      "file": "toons/quit-sugar/voice/E1.mp3",
+      "duration": 2.604,
+      "words": [
+        {
+          "w": "Fine.",
+          "start": 0,
+          "end": 0.395
+        },
+        {
+          "w": "Have",
+          "start": 0.464,
+          "end": 0.639
+        },
+        {
+          "w": "my",
+          "start": 0.673,
+          "end": 0.743
+        },
+        {
+          "w": "sweet",
+          "start": 0.778,
+          "end": 0.998
+        },
+        {
+          "w": "cousin.",
+          "start": 1.033,
+          "end": 1.393
+        },
+        {
+          "w": "Zero",
+          "start": 1.556,
+          "end": 1.881
+        },
+        {
+          "w": "sugar!",
+          "start": 1.939,
+          "end": 2.554
+        }
+      ]
+    },
+    "E2": {
+      "who": "brain",
+      "text": "The WHO says: don't swap sugar for sweeteners.",
+      "voiceId": "iP95p4xoKVk53GoZ742B",
+      "pitch": 1,
+      "tempo": 1,
+      "file": "toons/quit-sugar/voice/E2.mp3",
+      "duration": 2.731,
+      "words": [
+        {
+          "w": "The",
+          "start": 0,
+          "end": 0.174
+        },
+        {
+          "w": "WHO",
+          "start": 0.232,
+          "end": 0.662
+        },
+        {
+          "w": "says:",
+          "start": 0.72,
+          "end": 0.987
+        },
+        {
+          "w": "don't",
+          "start": 1.091,
+          "end": 1.289
+        },
+        {
+          "w": "swap",
+          "start": 1.324,
+          "end": 1.521
+        },
+        {
+          "w": "sugar",
+          "start": 1.579,
+          "end": 1.788
+        },
+        {
+          "w": "for",
+          "start": 1.823,
+          "end": 1.916
+        },
+        {
+          "w": "sweeteners.",
+          "start": 1.95,
+          "end": 2.694
+        }
+      ]
+    },
+    "F1": {
+      "who": "dad",
+      "text": "So... did I lose weight?",
+      "voiceId": "nPczCjzI2devNBz1zQrb",
+      "pitch": 0,
+      "tempo": 1,
+      "file": "toons/quit-sugar/voice/F1.mp3",
+      "duration": 1.629,
+      "words": [
+        {
+          "w": "So...",
+          "start": 0,
+          "end": 0.255
+        },
+        {
+          "w": "did",
+          "start": 0.522,
+          "end": 0.662
+        },
+        {
+          "w": "I",
+          "start": 0.708,
+          "end": 0.731
+        },
+        {
+          "w": "lose",
+          "start": 0.801,
+          "end": 0.998
+        },
+        {
+          "w": "weight?",
+          "start": 1.045,
+          "end": 1.579
+        }
+      ]
+    },
+    "F2": {
+      "who": "sweetie",
+      "text": "In trials, about one kilo... only because you ate less.",
+      "voiceId": "loY1uopAz31XyhAEhNSa",
+      "pitch": 0,
+      "tempo": 1,
+      "file": "toons/quit-sugar/voice/F2.mp3",
+      "duration": 3.765,
+      "words": [
+        {
+          "w": "In",
+          "start": 0,
+          "end": 0.163
+        },
+        {
+          "w": "trials,",
+          "start": 0.221,
+          "end": 0.801
+        },
+        {
+          "w": "about",
+          "start": 0.871,
+          "end": 1.161
+        },
+        {
+          "w": "one",
+          "start": 1.231,
+          "end": 1.393
+        },
+        {
+          "w": "kilo...",
+          "start": 1.44,
+          "end": 2.02
+        },
+        {
+          "w": "only",
+          "start": 2.09,
+          "end": 2.334
+        },
+        {
+          "w": "because",
+          "start": 2.392,
+          "end": 2.659
+        },
+        {
+          "w": "you",
+          "start": 2.694,
+          "end": 2.786
+        },
+        {
+          "w": "ate",
+          "start": 2.891,
+          "end": 3.077
+        },
+        {
+          "w": "less.",
+          "start": 3.135,
+          "end": 3.715
+        }
+      ]
+    },
+    "G1": {
+      "who": "tongue",
+      "text": "And me? Sweet food tastes just the same.",
+      "voiceId": "WZlYpi1yf6zJhNWXih74",
+      "pitch": 1,
+      "tempo": 1,
+      "file": "toons/quit-sugar/voice/G1.mp3",
+      "duration": 2.735,
+      "words": [
+        {
+          "w": "And",
+          "start": 0,
+          "end": 0.186
+        },
+        {
+          "w": "me?",
+          "start": 0.255,
+          "end": 0.557
+        },
+        {
+          "w": "Sweet",
+          "start": 0.824,
+          "end": 1.091
+        },
+        {
+          "w": "food",
+          "start": 1.149,
+          "end": 1.347
+        },
+        {
+          "w": "tastes",
+          "start": 1.393,
+          "end": 1.707
+        },
+        {
+          "w": "just",
+          "start": 1.765,
+          "end": 1.962
+        },
+        {
+          "w": "the",
+          "start": 1.997,
+          "end": 2.067
+        },
+        {
+          "w": "same.",
+          "start": 2.113,
+          "end": 2.694
+        }
+      ]
+    },
+    "G2": {
+      "who": "tongue",
+      "text": "No sugar for a month? Not yet. Three months? Forty percent sweeter!",
+      "voiceId": "WZlYpi1yf6zJhNWXih74",
+      "pitch": 1,
+      "tempo": 1,
+      "file": "toons/quit-sugar/voice/G2.mp3",
+      "duration": 4.591,
+      "words": [
+        {
+          "w": "No",
+          "start": 0,
+          "end": 0.186
+        },
+        {
+          "w": "sugar",
+          "start": 0.244,
+          "end": 0.488
+        },
+        {
+          "w": "for",
+          "start": 0.534,
+          "end": 0.65
+        },
+        {
+          "w": "a",
+          "start": 0.708,
+          "end": 0.731
+        },
+        {
+          "w": "month?",
+          "start": 0.778,
+          "end": 1.138
+        },
+        {
+          "w": "Not",
+          "start": 1.498,
+          "end": 1.695
+        },
+        {
+          "w": "yet.",
+          "start": 1.741,
+          "end": 2.043
+        },
+        {
+          "w": "Three",
+          "start": 2.31,
+          "end": 2.577
+        },
+        {
+          "w": "months?",
+          "start": 2.624,
+          "end": 3.03
+        },
+        {
+          "w": "Forty",
+          "start": 3.262,
+          "end": 3.587
+        },
+        {
+          "w": "percent",
+          "start": 3.646,
+          "end": 4.005
+        },
+        {
+          "w": "sweeter!",
+          "start": 4.063,
+          "end": 4.551
+        }
+      ]
+    },
+    "G3": {
+      "who": "sweetie",
+      "text": "You quit sugar? ...I'll be back.",
+      "voiceId": "loY1uopAz31XyhAEhNSa",
+      "pitch": 0,
+      "tempo": 1,
+      "file": "toons/quit-sugar/voice/G3.mp3",
+      "duration": 2.465,
+      "words": [
+        {
+          "w": "You",
+          "start": 0,
+          "end": 0.174
+        },
+        {
+          "w": "quit",
+          "start": 0.244,
+          "end": 0.441
+        },
+        {
+          "w": "sugar?",
+          "start": 0.511,
+          "end": 1.022
+        },
+        {
+          "w": "...I'll",
+          "start": 1.184,
+          "end": 1.556
+        },
+        {
+          "w": "be",
+          "start": 1.614,
+          "end": 1.707
+        },
+        {
+          "w": "back.",
+          "start": 1.753,
+          "end": 2.415
+        }
+      ]
+    }
+  }
+}

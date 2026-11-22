@@ -718,6 +718,8 @@ export const SPECS: Record<string, HumanSpec> = {
   grandpa: {name: 'grandpa', role: 'Grandpa: old habits, old remedies, a good heart.', skin: '#e8b28c', eye: '#5d7fa0', height: 0.95, hair: {style: 'balding', color: '#eceef4'}, top: {kind: 'cardigan', color: '#8d7bd1', under: '#f4f1e8'}, bottom: {kind: 'trousers', color: '#7b6a5a'}, shoes: '#5a4a3f', moustache: '#eceef4', glasses: 'square'},
   baby: {name: 'baby', role: 'The toddler: cannot explain what hurts, so the body does it for him.', skin: '#ffd9c2', eye: '#4a80b8', height: 0.64, head: 1.45, legs: 0.45, torso: 0.8, hair: {style: 'baby', color: '#b9825a'}, top: {kind: 'onesie', color: '#bfe3ff'}, bottom: {kind: 'trousers', color: '#bfe3ff'}, shoes: '#ffffff'},
 };
-export type PersonName = 'doctor' | 'patient' | 'mom' | 'kid' | 'grandpa' | 'baby';
+// quit-sugar (2026-11-22): Dad is drawn in look v8 (the people rig); the old player borrows the patient's build for the layout checks.
+SPECS.dad = {...SPECS.patient, name: 'dad', role: 'Dad: steady, a little tired, a sweet tooth.'};
+export type PersonName = 'doctor' | 'patient' | 'mom' | 'kid' | 'grandpa' | 'baby' | 'dad';
 export const PEOPLE = Object.fromEntries(Object.entries(SPECS).map(([k, sp]) => [k, makeHuman(sp)])) as Record<PersonName, Person>;
 void Mark;

@@ -1,0 +1,794 @@
+{
+ "slug": "quit-sugar",
+ "title": "What Happens If You Quit Sugar for 30 Days",
+ "format": 5,
+ "shape": "fight",
+ "music": "quit-sugar",
+ "camera": "steady",
+ "episode": 12,
+ "hooks": [
+  {
+   "line": "Quit sugar? You'll be back!",
+   "why": "the owner's pick A (2026-11-22: \"Yes, hook A, Dad\"), cut to 5 words for the 2-second hook rule (\"Quit me for thirty days? Ha! You'll be back!\" took 2.7 s)"
+  },
+  {
+   "line": "Quit sugar, and your juice still counts!",
+   "why": "B: Dad proudly pours juice, Sweetie pops out of the glass"
+  },
+  {
+   "line": "Quit sugar? Your tongue isn't done yet.",
+   "why": "C: the taste buds, dark, one blinks awake"
+  }
+ ],
+ "rooms": {
+  "home": {
+   "kind": "kitchen",
+   "palette": "forest",
+   "wall": "stripes",
+   "floor": "wood",
+   "window": {
+    "style": "tall",
+    "side": "left",
+    "view": "night"
+   },
+   "layout": "stove-left",
+   "time": "night"
+  }
+ },
+ "package": {
+  "title": "What Happens If You Quit Sugar for 30 Days",
+  "phrase": "what happens if you quit sugar for 30 days",
+  "opener": "What happens if you quit sugar for 30 days? Little evidence says sugar is addictive in people, so the cravings are not a drug withdrawal. Juice, honey and syrups still count as free sugar; the WHO's limit is under 10% of daily energy, about 12 teaspoons for someone eating about 2,000 calories, and caries are lower below it. In a 9-day study of children with obesity, swapping sugar for starch at the same calories nearly halved liver fat (7.2% to 3.8%). The WHO advises not to swap sugar for sweeteners. In trials of adults, eating less sugar took off about 0.8 kg, because people ate fewer calories. And in one small trial, after three months on less sugar, sweet foods tasted about 40% sweeter.",
+  "question": "Could you quit sugar for 30 days?",
+  "tags": [
+   "what happens if you quit sugar for 30 days",
+   "quit sugar",
+   "no sugar for 30 days",
+   "sugar detox",
+   "sugar cravings",
+   "is fruit juice healthy",
+   "sugar and fatty liver",
+   "artificial sweeteners",
+   "how much sugar per day",
+   "health cartoon"
+  ],
+  "hashtags": "#nosugar #health #shorts",
+  "cover": {
+   "at": 2.4,
+   "text": "Quit sugar?",
+   "accent": "sugar"
+  }
+ },
+ "retention": {
+  "noIntro": {
+   "scene": "A1",
+   "line": "Quit sugar? You'll be back!"
+  },
+  "promise": {
+   "scene": "A1",
+   "line": "Quit sugar? You'll be back!"
+  },
+  "question": {
+   "scene": "A2",
+   "line": "No sugar for a month? Watch me."
+  },
+  "answer": {
+   "scene": "G2",
+   "line": "No sugar for a month? Not yet. Three months? Forty percent sweeter!"
+  },
+  "change3s": {
+   "scene": "all",
+   "line": "steady camera: something happens in the picture at least every 3 s (stickers do not count)"
+  },
+  "twist": {
+   "scene": "E2",
+   "line": "The WHO says: don't swap sugar for sweeteners."
+  },
+  "bestLast": {
+   "scene": "G2",
+   "line": "No sugar for a month? Not yet. Three months? Forty percent sweeter!"
+  },
+  "loop": {
+   "scene": "G3",
+   "line": "You quit sugar? ...I'll be back."
+  }
+ },
+ "sources": [
+  {
+   "id": "who-diet",
+   "label": "World Health Organization. Healthy diet (fact sheet)",
+   "url": "https://www.who.int/news-room/fact-sheets/detail/healthy-diet",
+   "note": "'free sugars should be limited to less than 10% of total daily energy intake, which is equivalent to 50 g (or about 12 level teaspoons) for a person of healthy body weight consuming about 2000 calories per day'; free sugars include sugars 'added to foods and beverages by the manufacturer, cook or consumer, and sugars naturally present in honey, syrups, fruit juices and fruit juice concentrates'; 'Reducing consumption of free sugars ... should be accomplished without the use of non-sugar sweeteners.'"
+  },
+  {
+   "id": "temorenga-2013",
+   "label": "Te Morenga L, Mallard S, Mann J. Dietary sugars and body weight: systematic review and meta-analyses of randomised controlled trials and cohort studies. BMJ 2013;346:e7492",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/23321486/",
+   "note": "'In trials of adults with ad libitum diets ... reduced intake of dietary sugars was associated with a decrease in body weight (0.80 kg, 95% CI 0.39 to 1.21)'; 'Isoenergetic exchange of dietary sugars with other carbohydrates showed no change in body weight'; the change 'seems to be mediated via changes in energy intakes'. The video rounds 0.8 kg to 'about one kilo'."
+  },
+  {
+   "id": "schwarz-2017",
+   "label": "Schwarz JM et al. Effects of dietary fructose restriction on liver fat, de novo lipogenesis, and insulin kinetics in children with obesity. Gastroenterology 2017;153:743-52",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/28579536/",
+   "note": "41 children aged 9-18 with obesity, 9 days, the same calories with starch in place of sugar: 'liver fat decreased from a median of 7.2% ... to 3.8%'; 'insulin kinetics improved'."
+  },
+  {
+   "id": "wise-2016",
+   "label": "Wise PM, Nattress L, Flammer LJ, Beauchamp GK. Reduced dietary intake of simple sugars alters perceived sweet taste intensity but not perceived pleasantness. Am J Clin Nutr 2016;103:50-60",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/26607941/",
+   "note": "Low-sugar group 16 (13 completed key parts), control 17: 'no systematic differences ... during the baseline or first diet month'; 'During the third diet month, the low-sugar subjects rated both low and high concentrations in puddings as ∼40% sweeter than did the control group'. One small trial; two authors worked at PepsiCo (declared)."
+  },
+  {
+   "id": "westwater-2016",
+   "label": "Westwater ML, Fletcher PC, Ziauddeen H. Sugar addiction: the state of the science. Eur J Nutr 2016;55(Suppl 2):55-69",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/27372453/",
+   "note": "'We find little evidence to support sugar addiction in humans'. No conflicts."
+  },
+  {
+   "id": "moynihan-2014",
+   "label": "Moynihan PJ, Kelly SA. Effect on caries of restricting sugars intake: systematic review to inform WHO guidelines. J Dent Res 2014;93:8-18",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/24323509/",
+   "note": "55 studies; 'evidence of moderate quality showing that caries is lower when free-sugars intake is < 10% E'."
+  }
+ ],
+ "shots": [
+  {
+   "id": "A",
+   "set": "macro",
+   "cast": [
+    {
+     "who": "sweetie",
+     "x": 640,
+     "size": 620,
+     "emotion": "happy",
+     "pose": "rest"
+    },
+    {
+     "who": "liver",
+     "x": 540,
+     "size": 1080,
+     "stage": true,
+     "emotion": "sleepy",
+     "pose": "rest"
+    },
+    {
+     "who": "dad",
+     "x": 380,
+     "size": 960,
+     "emotion": "angry",
+     "pose": "rest",
+     "y": 979
+    }
+   ],
+   "state": {
+    "view": 0,
+    "fat": 1
+   },
+   "events": [
+    {
+     "at": "start",
+     "act": "sweetie: bursts out of the soda can at the lens",
+     "sfx": "pop",
+     "fx": "flash"
+    },
+    {
+     "at": "A1",
+     "act": "sweetie: points at Dad, grinning",
+     "word": "back!",
+     "sfx": "boing"
+    },
+    {
+     "at": "A2",
+     "act": "dad: turns on Sweetie and swipes the can into the bin",
+     "sfx": "swish"
+    },
+    {
+     "at": "A2",
+     "act": "dad: the camera dives into his belly to the fatty liver",
+     "word": "me.",
+     "set": {
+      "fat": 1
+     },
+     "over": 12,
+     "sfx": "whoosh-fast"
+    }
+   ],
+   "lines": [
+    {
+     "id": "A1",
+     "who": "sweetie",
+     "text": "Quit sugar? You'll be back!",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "back",
+     "chat": true,
+     "cam": "ecu 50 push",
+     "react": {
+      "dad": "angry"
+     },
+     "tempo": 1.1
+    },
+    {
+     "id": "A2",
+     "who": "dad",
+     "text": "No sugar for a month? Watch me.",
+     "emotion": "angry",
+     "pose": "rest",
+     "key": "watch",
+     "chat": true,
+     "cam": "mcu lock"
+    }
+   ],
+   "props": []
+  },
+  {
+   "id": "B",
+   "set": "macro",
+   "lead": 0.6,
+   "cast": [
+    {
+     "who": "brain",
+     "x": 540,
+     "size": 1080,
+     "stage": true,
+     "emotion": "smug",
+     "pose": "rest"
+    },
+    {
+     "who": "sweetie",
+     "x": 780,
+     "size": 300,
+     "emotion": "happy",
+     "pose": "rest"
+    }
+   ],
+   "state": {
+    "view": 1,
+    "pull": 0.5
+   },
+   "events": [
+    {
+     "at": "start",
+     "act": "dad: rips the calendar page, DAY 3; cut inside his brain",
+     "sfx": "swish"
+    },
+    {
+     "at": "B1",
+     "act": "sweetie: casts a fishing line, a candy on the hook swings in front of the brain",
+     "word": "hooked",
+     "set": {
+      "pull": 1
+     },
+     "over": 10,
+     "sfx": "whoosh-air"
+    },
+    {
+     "at": "B1",
+     "act": "sweetie: waggles the candy",
+     "word": "cravings!",
+     "sfx": "sparkle"
+    },
+    {
+     "at": "B2",
+     "act": "brain: rolls its eyes, unimpressed",
+     "word": "Hooked?"
+    },
+    {
+     "at": "B2",
+     "act": "brain: flicks the line away; sweetie tumbles off",
+     "word": "little",
+     "set": {
+      "pull": 0
+     },
+     "over": 8,
+     "sfx": "bonk"
+    }
+   ],
+   "lines": [
+    {
+     "id": "B1",
+     "who": "sweetie",
+     "text": "You're hooked on me! Here come the cravings!",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "cravings",
+     "chat": true,
+     "cam": "ews whip"
+    },
+    {
+     "id": "B2",
+     "who": "brain",
+     "text": "Hooked? Studies find little proof sugar is addictive in people.",
+     "emotion": "smug",
+     "pose": "rest",
+     "key": "little",
+     "src": [
+      "westwater-2016"
+     ],
+     "cam": "mcu push"
+    }
+   ],
+   "props": []
+  },
+  {
+   "id": "C",
+   "set": "macro",
+   "lead": 0.6,
+   "cast": [
+    {
+     "who": "tooth",
+     "x": 420,
+     "size": 1080,
+     "stage": true,
+     "emotion": "angry",
+     "pose": "rest"
+    },
+    {
+     "who": "sweetie",
+     "x": 760,
+     "size": 360,
+     "emotion": "happy",
+     "pose": "rest"
+    }
+   ],
+   "state": {
+    "view": 2,
+    "bits": 1
+   },
+   "events": [
+    {
+     "at": "start",
+     "act": "dad: rips the calendar page, DAY 7; cut into his mouth",
+     "sfx": "swish"
+    },
+    {
+     "at": "C1",
+     "act": "sweetie: slides in wearing his juice box, sipping the straw",
+     "word": "juice",
+     "sfx": "slide-whistle-up"
+    },
+    {
+     "at": "C2",
+     "act": "tooth: glares, cracks its knuckles",
+     "word": "Juice,"
+    },
+    {
+     "at": "C2",
+     "act": "tooth: kicks sweetie out of the mouth",
+     "word": "Out!",
+     "sfx": "bonk",
+     "fx": "flash"
+    },
+    {
+     "at": "C3",
+     "act": "tooth: shakes the sugar crystals off its gum line",
+     "word": "fewer",
+     "set": {
+      "bits": 0
+     },
+     "over": 20,
+     "sfx": "sparkle"
+    }
+   ],
+   "lines": [
+    {
+     "id": "C1",
+     "who": "sweetie",
+     "text": "Relax. I'm juice now. Healthy!",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "juice",
+     "chat": true,
+     "cam": "ews whip"
+    },
+    {
+     "id": "C2",
+     "who": "tooth",
+     "text": "Juice, honey, syrup: still sugar to me. Out!",
+     "emotion": "angry",
+     "pose": "rest",
+     "key": "out",
+     "src": [
+      "who-diet"
+     ],
+     "cam": "cu push"
+    },
+    {
+     "id": "C3",
+     "who": "tooth",
+     "text": "Under twelve teaspoons a day, and I get fewer holes.",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "holes",
+     "src": [
+      "who-diet",
+      "moynihan-2014"
+     ],
+     "cam": "ews"
+    }
+   ],
+   "props": [
+    {
+     "kind": "tag",
+     "text": "12 teaspoons",
+     "x": 540,
+     "y": 330,
+     "size": 300,
+     "from": "C3",
+     "to": "C3",
+     "word": "twelve"
+    }
+   ]
+  },
+  {
+   "id": "D",
+   "set": "macro",
+   "lead": 0.6,
+   "cast": [
+    {
+     "who": "liver",
+     "x": 540,
+     "size": 1080,
+     "stage": true,
+     "emotion": "happy",
+     "pose": "rest"
+    }
+   ],
+   "state": {
+    "view": 0,
+    "fat": 1
+   },
+   "events": [
+    {
+     "at": "start",
+     "act": "dad: rips the calendar page, DAY 10; cut to his liver",
+     "sfx": "swish"
+    },
+    {
+     "at": "D1",
+     "act": "liver: a sugar cube on a plate is swapped for a slice of bread",
+     "word": "swapped",
+     "sfx": "pop",
+     "fx": "flash"
+    },
+    {
+     "at": "D2",
+     "act": "liver: its fat patches shrink one after another",
+     "word": "halved",
+     "set": {
+      "fat": 0.5
+     },
+     "over": 40,
+     "sfx": "bubble-pop"
+    },
+    {
+     "at": "D2",
+     "act": "liver: hops for joy",
+     "word": "calories!",
+     "sfx": "success-chime"
+    }
+   ],
+   "lines": [
+    {
+     "id": "D1",
+     "who": "liver",
+     "text": "In kids with obesity who swapped sugar for starch...",
+     "emotion": "neutral",
+     "pose": "rest",
+     "key": "kids",
+     "src": [
+      "schwarz-2017"
+     ],
+     "cam": "ews whip"
+    },
+    {
+     "id": "D2",
+     "who": "liver",
+     "text": "...liver fat nearly halved in nine days! Same calories!",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "halved",
+     "src": [
+      "schwarz-2017"
+     ],
+     "cam": "cu push"
+    }
+   ],
+   "props": []
+  },
+  {
+   "id": "E",
+   "set": "home",
+   "cast": [
+    {
+     "who": "dad",
+     "x": 360,
+     "size": 960,
+     "emotion": "neutral",
+     "pose": "rest",
+     "y": 979
+    },
+    {
+     "who": "sweetie",
+     "x": 830,
+     "size": 300,
+     "emotion": "happy",
+     "pose": "rest"
+    },
+    {
+     "who": "brain",
+     "x": 540,
+     "size": 300,
+     "emotion": "neutral",
+     "pose": "rest"
+    }
+   ],
+   "events": [
+    {
+     "at": "start",
+     "act": "dad: rips the calendar page, DAY 20",
+     "sfx": "swish"
+    },
+    {
+     "at": "E1",
+     "act": "sweetie: pops up in the ZERO can on the counter, winking",
+     "word": "Zero",
+     "sfx": "pop"
+    },
+    {
+     "at": "E1",
+     "act": "dad: reaches toward the can",
+     "word": "sugar!"
+    },
+    {
+     "at": "E2",
+     "act": "brain: pops up in a thought bubble over dad's head",
+     "sfx": "bubble-pop"
+    },
+    {
+     "at": "E2",
+     "act": "dad: freezes, hand in the air",
+     "word": "swap"
+    },
+    {
+     "at": "E2",
+     "act": "dad: pulls his hand back and pushes the can away",
+     "word": "sweeteners.",
+     "sfx": "skid",
+     "fx": "flash"
+    }
+   ],
+   "lines": [
+    {
+     "id": "E1",
+     "who": "sweetie",
+     "text": "Fine. Have my sweet cousin. Zero sugar!",
+     "emotion": "smug",
+     "pose": "rest",
+     "key": "zero",
+     "chat": true,
+     "cam": "ms lock"
+    },
+    {
+     "id": "E2",
+     "who": "brain",
+     "text": "The WHO says: don't swap sugar for sweeteners.",
+     "emotion": "neutral",
+     "pose": "rest",
+     "key": "sweeteners",
+     "src": [
+      "who-diet"
+     ],
+     "cam": "mcu lock"
+    }
+   ],
+   "props": []
+  },
+  {
+   "id": "F",
+   "set": "home",
+   "cast": [
+    {
+     "who": "dad",
+     "x": 470,
+     "size": 960,
+     "emotion": "neutral",
+     "pose": "rest",
+     "y": 979
+    },
+    {
+     "who": "sweetie",
+     "x": 860,
+     "size": 260,
+     "emotion": "sad",
+     "pose": "rest"
+    }
+   ],
+   "events": [
+    {
+     "at": "start",
+     "act": "dad: rips the last page, DAY 30, and steps onto the scale",
+     "sfx": "thud-soft"
+    },
+    {
+     "at": "F1",
+     "act": "dad: wobbles on the scale, arms out",
+     "word": "did",
+     "fx": "flash"
+    },
+    {
+     "at": "F1",
+     "act": "dad: looks down at the scale",
+     "word": "weight?"
+    },
+    {
+     "at": "F2",
+     "act": "sweetie: peeks over the counter's edge",
+     "word": "trials,"
+    },
+    {
+     "at": "F2",
+     "act": "dad: the scale's screen shows a small drop",
+     "word": "kilo",
+     "sfx": "ding",
+     "fx": "flash"
+    },
+    {
+     "at": "F2",
+     "act": "sweetie: shrugs and sulks",
+     "word": "less.",
+     "sfx": "sad-trombone"
+    }
+   ],
+   "lines": [
+    {
+     "id": "F1",
+     "who": "dad",
+     "text": "So... did I lose weight?",
+     "emotion": "neutral",
+     "pose": "rest",
+     "key": "weight",
+     "chat": true,
+     "cam": "ms lock"
+    },
+    {
+     "id": "F2",
+     "who": "sweetie",
+     "text": "In trials, about one kilo... only because you ate less.",
+     "emotion": "sad",
+     "pose": "rest",
+     "key": "less",
+     "src": [
+      "temorenga-2013"
+     ],
+     "cam": "mcu lock"
+    }
+   ],
+   "props": []
+  },
+  {
+   "id": "G",
+   "set": "macro",
+   "cast": [
+    {
+     "who": "tongue",
+     "x": 540,
+     "size": 1080,
+     "stage": true,
+     "emotion": "neutral",
+     "pose": "rest"
+    },
+    {
+     "who": "sweetie",
+     "x": 880,
+     "size": 160,
+     "emotion": "sad",
+     "pose": "rest"
+    }
+   ],
+   "state": {
+    "view": 3,
+    "buds": 0
+   },
+   "events": [
+    {
+     "at": "start",
+     "act": "tongue: looks up as the whole mouth opens",
+     "sfx": "whoosh-soft"
+    },
+    {
+     "at": "G1",
+     "act": "tongue: shrugs; the taste buds stay dark",
+     "word": "same."
+    },
+    {
+     "at": "G2",
+     "act": "tongue: its taste buds light up one after another",
+     "word": "Three",
+     "set": {
+      "buds": 1
+     },
+     "over": 40,
+     "sfx": "sparkle"
+    },
+    {
+     "at": "G2",
+     "act": "tongue: throws its arms up",
+     "word": "sweeter!",
+     "sfx": "tada"
+    },
+    {
+     "at": "G3",
+     "act": "sweetie: tiny, trudges in across the tongue, grumbling",
+     "sfx": "footsteps-tiny"
+    },
+    {
+     "at": "G3",
+     "act": "sweetie: stops and turns to the lens",
+     "word": "I'll",
+     "fx": "flash"
+    },
+    {
+     "at": "G3",
+     "act": "sweetie: hops and points at the viewer",
+     "word": "back."
+    }
+   ],
+   "lines": [
+    {
+     "id": "G1",
+     "who": "tongue",
+     "text": "And me? Sweet food tastes just the same.",
+     "emotion": "neutral",
+     "pose": "rest",
+     "key": "same",
+     "src": [
+      "wise-2016"
+     ],
+     "cam": "ews whip"
+    },
+    {
+     "id": "G2",
+     "who": "tongue",
+     "text": "No sugar for a month? Not yet. Three months? Forty percent sweeter!",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "sweeter",
+     "src": [
+      "wise-2016"
+     ],
+     "cam": "cu push"
+    },
+    {
+     "id": "G3",
+     "who": "sweetie",
+     "text": "You quit sugar? ...I'll be back.",
+     "emotion": "sad",
+     "pose": "rest",
+     "key": "back",
+     "chat": true,
+     "cam": "mcu lock"
+    }
+   ],
+   "props": [
+    {
+     "kind": "tag",
+     "text": "40% sweeter",
+     "x": 540,
+     "y": 330,
+     "size": 300,
+     "from": "G2",
+     "to": "G2",
+     "word": "forty"
+    }
+   ]
+  }
+ ],
+ "cta": {
+  "text": "Quitting sugar: know this. Juice and honey count as sugar too. Don't swap sugar for sweeteners. Keep it under twelve teaspoons a day. Follow MedPeak Health for more health tips that keep you safe.",
+  "src": [
+   "who-diet"
+  ]
+ },
+ "musicPrompt": "A steady, continuous playful cartoon caper groove at 104 BPM that never stops or drops out: a constant tight drum beat, a bouncy plucked bass line and a held warm organ pad under everything from the first second to the last, no breaks, no silences, no stop-time stabs. A sneaky pizzicato and clarinet melody on top, mischievous like a villain tiptoeing, with a bright triumphant brass lift near the end. Background music under dialogue."
+}

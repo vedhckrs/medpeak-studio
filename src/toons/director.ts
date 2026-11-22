@@ -57,7 +57,9 @@ export const STAGE_KEYS: Partial<Record<SetName, string[]>> = {
   // 1 asleep (the channels open). wash: brain fluid streams through. dirt: waste stuck in the channels.
   // creatine (2026-11-21, src/toons/v8/crea-places.tsx): crea (grains in the blood stream), flex (the muscle contracts),
   // drain (the batteries empty), charge (they refill), water (water drifts into the cell), bits (creatinine in the kidney filter).
-  macro: ['view', 'slide', 'speed', 'grip', 'snap', 'gap', 'wash', 'dirt', 'crea', 'flex', 'drain', 'charge', 'water', 'bits'],
+  // quit-sugar (2026-11-22, src/toons/v8/sugar-organs.tsx, the whole-organ frames): fat (the liver's fat patches, 1 = Day 1,
+  // 0.5 = nearly halved), pull (Sweetie's fishing line in front of the brain), buds (the tongue's taste buds light up).
+  macro: ['view', 'slide', 'speed', 'grip', 'snap', 'gap', 'wash', 'dirt', 'crea', 'flex', 'drain', 'charge', 'water', 'bits', 'fat', 'pull', 'buds'],
   arm: ['bite', 'climb', 'days', 'vaccine', 'wall', 'wash', 'dizzy'],
   molar: ['night', 'guards', 'sleep', 'sugar', 'snack', 'wash', 'fight', 'party', 'acid', 'chalk', 'brush', 'shield'],
   // gum: a swallowed piece of gum comes down and floats with the food. pass: what is in the stomach
@@ -330,6 +332,7 @@ export const layoutToon = (toon: Toon, timings: ToonTimings | null) => {
         return;
       }
       let open: Seg | null = null;
+      const first = segs.length; // the shot's first picture starts with the SHOT, also when a `lead` plays before its first line
       for (const l of own) {
         const c = parseCam(l.line.cam);
         if (c.shot || c.lens || c.move) {
@@ -342,6 +345,7 @@ export const layoutToon = (toon: Toon, timings: ToonTimings | null) => {
           segs.push(open);
         }
       }
+      if (segs[first]) segs[first].from = sh.from;
     });
     return {lines, shots, segs, cuts: segs, total, steady};
   }
@@ -567,8 +571,11 @@ export type BedShape = {step: number; seconds: number; db: number[]};
  * stops). A HOLE is a rest with no voice over it for `hole` seconds or more: the whole sound nearly
  * stops, and the ear hears it as the sound cutting out. The first listen with earshot found holes
  * in all three videos (2026-11-16); nothing had looked for them.
+ * `hole` (0.5 s) says whether a TRACK is steady. `gap` (0.3 s) is for PLACING it: 2026-11-22 (quit-sugar) a 0.3 s rest that fell
+ * in a 0.27 s breath between two words was still heard as the sound dropping (earshot, 41.05 s), so the bed is placed so that no
+ * rest of `gap` or more falls outside the words, measured on the exact word times (no padding: the padding hid that breath).
  */
-export const BED = {drop: 10, rest: 0.3, hole: 0.5, tryEvery: 0.25};
+export const BED = {drop: 10, rest: 0.3, hole: 0.5, gap: 0.2, tryEvery: 0.05};
 export const bedRests = (shape: BedShape) => {
   const sorted = [...shape.db].sort((a, b) => a - b);
   const usual = sorted[Math.floor(sorted.length / 2)];
@@ -597,7 +604,7 @@ export const bedHoles = (L: Layout, shape: BedShape, start = 0): [number, number
   const {quiet, end} = bedRests(shape);
   const loop = Math.max(1, Math.round(end / shape.step));
   // a voice is sounding while a word is spoken (the real word times, once the voices are made); before that, during the whole line
-  const said = L.lines.flatMap((l) => (l.words.length ? l.words.map((w) => [l.from / TOON_FPS + w.start - 0.04, l.from / TOON_FPS + w.end + 0.08]) : [[l.from / TOON_FPS, (l.from + l.frames) / TOON_FPS - GAP]]));
+  const said = L.lines.flatMap((l) => (l.words.length ? l.words.map((w) => [l.from / TOON_FPS + w.start, l.from / TOON_FPS + w.end]) : [[l.from / TOON_FPS, (l.from + l.frames) / TOON_FPS - GAP]]));
   const talking = (fr: number) => { const t = fr / TOON_FPS; return said.some(([a, b]) => t >= a && t < b); };
   const steps = Math.ceil(L.total / TOON_FPS / shape.step);
   const holes: [number, number][] = [];
@@ -606,7 +613,7 @@ export const bedHoles = (L: Layout, shape: BedShape, start = 0): [number, number
     const t = i * shape.step;
     const q = i < steps && quiet[Math.floor((start + t) / shape.step + 1e-6) % loop] && !talking(Math.round(t * TOON_FPS));
     if (q && from < 0) from = i;
-    if (!q && from >= 0) { if ((i - from) * shape.step >= BED.hole - 1e-9) holes.push([from * shape.step, i * shape.step]); from = -1; }
+    if (!q && from >= 0) { if ((i - from) * shape.step >= BED.gap - 1e-9) holes.push([from * shape.step, i * shape.step]); from = -1; }
   }
   return holes;
 };
