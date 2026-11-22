@@ -6,6 +6,20 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-22 (20) - MacBook (local Claude Code) - branch `video/quit-sugar` - organ frames polished (owner: "need more polished visual and details"), WAITING
+
+- `sugar-organs.tsx` detail pass. Liver: diaphragm muscle bands + pale tendon, lobule speckle, pale ligament band, darker underside
+  rim, fat patches with rim and shine, wet shine on the edge, gallbladder shine, portal vein / artery / bile duct at the gate (drawn in
+  the background so they run behind the colon), colon with pouches, plump gut loops, stomach folds, thin vessels on the back wall.
+  Mouth: cheek walls with folds, throat in depth with bumps, tonsils, palate ridges + centre seam, canines, clear biting edges, tooth
+  shines, gum scallops, sugar crystals with a glint, tongue rim, 190 papillae, deep groove, raised buds, wet shine, lips with a wet
+  inner band and shines. Shade crescents scaled up (`shadow` 3-5) on frame-size shapes so they read.
+- Removed after the look check: self-crossing gut tubes (read as donuts), a pale wedge "shadow", the long vessel stalks (liver on sticks),
+  a saliva strand (read as a crack); the gap between the front teeth closed.
+- typecheck pass. Nothing voiced or spent. Next on the owner's OK: script, `toon:check`, the silent video.
+
+---
+
 ## 2026-11-22 (19) - MacBook (local Claude Code) - branch `video/quit-sugar` - full-organ frames (owner's note), sheets re-sent, WAITING
 
 - The owner on sheet 2: "when big organ frame come i want full view of organs like ref video". Now a standing rule in `CLAUDE.md`.
