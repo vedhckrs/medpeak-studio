@@ -82,7 +82,7 @@ const Mini: React.FC<{name: StageName; st: State; x: number; y: number; t?: numb
   return (
     <div style={{position: 'absolute', left: x, top: y, width: 1080 * K, height: 1920 * K, overflow: 'hidden', borderRadius: 10, boxShadow: `0 0 0 3px ${INK}`}}>
       <div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, transform: `scale(${K})`, transformOrigin: '0 0'}}>
-        <S t={t} state={st.state} faces={st.faces}>{st.extra}</S>
+        <S t={t} state={st.state} faces={st.faces} layer={st.extra} />
       </div>
     </div>
   );
@@ -118,7 +118,7 @@ const FULL: Record<StageName, number> = {chest: 0, vesselInside: 0, tissue: 1, u
 const Full: React.FC<{name: StageName}> = ({name}) => {
   const st = BOARD[name].states[FULL[name]];
   const S = STAGES[name].Stage;
-  return <S t={2} state={st.state} faces={st.faces}>{st.extra}</S>;
+  return <S t={2} state={st.state} faces={st.faces} layer={st.extra} />;
 };
 const mk = (n: StageName) => { const C: React.FC = () => <StageBoard name={n} />; const F: React.FC = () => <Full name={n} />; return [C, F] as const; };
 const [BChest, FChest] = mk('chest'), [BVessel, FVessel] = mk('vesselInside'), [BTissue, FTissue] = mk('tissue'), [BBelly, FBelly] = mk('upperBelly');
