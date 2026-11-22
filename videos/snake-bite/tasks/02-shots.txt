@@ -1,0 +1,41 @@
+You are working in the medpeak-studio repo. READ FIRST: CLAUDE.md, skill/medpeak-health/references/toons-v8-style.md, the checklist at the
+top of skill/medpeak-health/references/toons-known-issues.md, and src/toons/v8/fasting.tsx (the model to copy: helpers, one framing per
+place, `view` functions, Screen layers, CTA badges). The script is FINAL: videos/snake-bite/toon.json (do NOT change it or
+plans/snake-bite-script.py). The looks are approved: src/toons/v8/snake-cast.tsx and snake-places.tsx (you may add props/dials to them).
+
+TASK: write src/toons/v8/snake-bite.tsx with SNAKE_BITE_SHOTS (A..G, one ShotDef each) and SNAKE_BITE_CTA (title 'SNAKE BITE: KNOW THIS',
+three points with round badge icons: NEVER CUT, SUCK OR TIE / STAY CALM, KEEP IT STILL / GET EVERY BITE CHECKED), register them in
+src/toons/v8/video.tsx (V8_VIDEOS and V8_CTA under 'snake-bite'), exactly like fasting.
+
+The pictures (each shot's events in toon.json say what happens on each word; use since()/at() on those words):
+- A: t < A2 start: INSIDE the leg (LegInside): two fangs punch down from the top at t=0 (a burst, a shake), Numb/Bleed/Crush burst out at
+  the lens, Numb big in front; "ride!" they scatter. From A2: a hard cut to the TRAIL (TrailScene): Sam hops on one foot holding his
+  ankle ("Ow!"), stares at the tail slipping under the rock ("snake").
+- B (inside the leg): B0 a crowd of tiny drops floods in on "million"; B1 (cut, Numb close at the nerve cable: dial `nerve`, sparks then
+  dark); B2 (cut, Bleed close in the blood river: dial `clot`, a little clot plug tossed away); B3 (back to the whole leg: Crush stamps,
+  dial `swell` makes the flesh bulge).
+- C (trail): Sam sits on the rock, calm, leg flat; C2 (cut, Sam close) waves the tail away.
+- D (trail): Mom runs in, knife up on "Cut", leans in on "Suck", rope out on "Tie"; D2 (cut, close on a thought-style bubble with the gang
+  cheering in it, Bleed in front); D3 (back) Sam holds up both hands, the bubble POPS on "suck", Mom drops knife and rope on "tie"; D4 Mom
+  slides a ring off his finger on "Rings", phone to her ear on "calling".
+- E (inside the blood, pale gold drip drops pouring in from the top): Numb hides on "drip?"; Antivenom lands shining on "Antivenom." and
+  on "best" one punch: the gang flies off, knocked (dial `knock`).
+- F (HospitalBed): Sam in the bed with the drip; Dr. Mira (castById('doctor')) beside him; F1 (cut, medium on Mira) holds up a clipboard;
+  F2 (cut, close on Mira) shrugs on "tell", two little snake pictures with a "?" between them pop up on "venomous.", Sam thumbs-up on
+  "checked.".
+- G (inside the blood): Numb lies knocked out, stars spinning; lifts his head on "snake" (dial `knock` 0.6), flops on "again!".
+
+THE RULES (each one broke a past video; check every one yourself before you finish):
+1. ONE framing per place. A shot's `view` may change ONLY on a line whose script line has a `cam` word, and then by AT LEAST 1.5x in size
+   (or to another place). `node --import tsx --test pipeline/test/views.test.mjs` must pass.
+2. Key poses that HOLD; one clear action per word event; nothing sways on its own; no jitter of a whole big character (squash/hop instead).
+3. Name tags (CharTag via the shot's view) for Numb, Bleed, Crush, Antivenom the first time each is seen, NOT during the hook line A1;
+   never on a face; Screen layers follow the cut's framing. The "over 5 million a year" yellow NumTag on B0 from the word "Over".
+4. No face, hand or label in the caption band (y 1324..1434, caption: 2). Nothing cut at the frame's edge. Hands never overlap hands.
+5. Captions, watermark and end card are drawn by the player: do not draw them. Joey's end-card voice is automatic.
+6. Run: `npx tsc --noEmit -p .`, `npm test`, `node pipeline/toon-check.mjs snake-bite`, `npm run toon:camera -- snake-bite`,
+   `npm run toon:motion -- snake-bite`, `npm run toon:staging -- snake-bite`, then `node pipeline/toon-v8-render.mjs snake-bite --stills
+   --silent` and READ every still in videos/snake-bite/renders/toon-v8-stills/ (each line's -a and -b) at full size. Fix every face
+   covered, every cut-off character, every overlap. Then `node pipeline/toon-v8-render.mjs snake-bite --draft --silent`.
+7. Commit on the current branch (git add/commit). Do not push. Reply with what you checked and anything left open.
+Be economical: this run has a small budget. Reuse fasting.tsx's helpers by copying them; do not explore unrelated files.
