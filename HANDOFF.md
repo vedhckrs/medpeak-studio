@@ -6,6 +6,17 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-22 (24) - MacBook (local Claude Code) - branch `video/quit-sugar` - quit-sugar UPLOADED PRIVATE
+
+- The owner: "Yes, upload private". `upload.py quit-sugar toon` (venv Python, dry run first, then `--approve`):
+  https://youtu.be/zXcUcOiN39s (private, not for kids, cover set). The AI-use answer was not stored by the upload, so
+  `after_upload.py quit-sugar toon --label --approve` set it (answered True; YouTube does not show it on read: check Studio,
+  Details, "Altered content").
+- Topic bank #4 marked `quit-sugar (uploaded private 2026-11-22)`. Branch merged into main.
+- Next: the owner checks it in Studio and makes it public on his word; the next topic in the bank.
+
+---
+
 ## 2026-11-22 (23) - MacBook (local Claude Code) - branch `video/quit-sugar` - quit-sugar FINISHED, waiting for the owner to watch (NOT uploaded)
 
 - The owner: "Yes, spend it" (up to about 1,400 credits). Spent by the receipts: lines 282, Joey's card 176, music 732 = **1,190**.
