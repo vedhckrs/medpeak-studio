@@ -6,14 +6,18 @@
  *   node --import tsx pipeline/toon-staging.mjs <slug>     (or: npm run toon:staging -- <slug>)
  *   node --import tsx pipeline/toon-staging.mjs --all
  *
- * Exit code 1 when a graphic covers a head, leaves the picture, sits on another graphic or on the
- * caption line, when a wall chart, clock or picture is behind a head, or when a person half hides a
- * small thing of the room (a monitor, a plant, a lamp).
+ * Look v8 videos (engine v9, 2026-11-23): the checks L1-L14 on the LAYOUT LOG, what the real component tree drew
+ * (pipeline/lib/toon-layout.mjs writes videos/<slug>/renders/layout.json; `--fresh` probes again). The old engine's
+ * videos keep the old check (it reads src/toons/Player.tsx, rooms.tsx, stages.tsx and the script).
+ *
+ * Exit code 1 when a check fails.
  */
+import {isV8, layoutOf} from './lib/toon-layout.mjs'; // first: it prepares the JSX runtime for the layout probe
 import fs from 'node:fs';
 import path from 'node:path';
 import {args, readJson, VIDEOS, videoDir} from './lib/util.mjs';
-import {scanStaging} from './lib/toon-staging.mjs';
+import {scanLayout, scanStaging} from './lib/toon-staging.mjs';
+import {printChecks} from './lib/toon-geom.mjs';
 
 const a = args();
 const slugs = a.all ? fs.readdirSync(VIDEOS).filter((d) => fs.existsSync(path.join(VIDEOS, d, 'toon.json'))) : a._;
@@ -21,6 +25,14 @@ if (!slugs.length) { console.error('Give a slug or --all.'); process.exit(2); }
 let ok = true;
 for (const slug of slugs) {
   const toon = readJson(path.join(videoDir(slug), 'toon.json'));
+  if (await isV8(slug)) {
+    const log = await layoutOf(slug, {fresh: !!a.fresh});
+    const r = scanLayout(log);
+    printChecks(`STAGING (layout log)  ${toon.title}  (${log.probes.length} probes, ${log.voiced ? 'voiced' : 'estimated'} ${log.story.toFixed(1)} s)`, r.checks);
+    if (r.shimmed) console.log('  note  some boxes are estimated by the probe from the components\' props until they report themselves (07-layout-log-wiring.md)');
+    ok &&= r.ok;
+    continue;
+  }
   const stored = readJson(path.join(videoDir(slug), 'toon-timings.json'), null);
   const voiced = stored && toon.shots.every((s) => (s.lines ?? []).every((l) => stored.lines[l.id]?.text === l.text));
   const r = await scanStaging(toon, voiced ? stored : null);
@@ -33,5 +45,5 @@ for (const slug of slugs) {
   if (r.leftOut.length) console.log(`  note  left out of the room         ${r.leftOut.join('; ')}`);
   ok &&= r.ok;
 }
-console.log(ok ? '\nALL PASS' : '\nFAILED: move the graphic (a thought bubble takes "of": "<who>" and places itself); a wall item behind a head is fixed in src/toons/rooms.tsx (wallItems).');
+console.log(ok ? '\nALL PASS' : '\nFAILED: move the graphic or the face (v8: see the rows above; old engine: a thought bubble takes "of": "<who>", a wall item behind a head is fixed in src/toons/rooms.tsx).');
 process.exit(ok ? 0 : 1);

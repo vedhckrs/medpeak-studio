@@ -121,6 +121,14 @@ If any box is empty, the script is fixed before it goes on; it is never approved
 
 ---
 
+## MedPeak Toons (the cartoon Shorts), from 2026-11-23
+
+The owner approved the engine study (decision 4) for Toons ONLY; the long videos and every other channel keep the 7 points
+as written above. In a format-6 Toon: point 2 (promise) is met by a character's story question by 6 s; point 4 ("3-sec
+change") becomes "one action, then a hold" (something enters the held frame, then a hold of 1.5 s or more: checks M2 and
+C2); point 7 (loop) may also be met by ending on the person's own question or mid-line. Details:
+`toons-script.md`, "Format 6: one story".
+
 ## Where it is enforced
 
 - Remotion (Explivolt, `remotion-video-producer`): `scripts/lib/retention.mjs` checks every point; `pipeline.mjs

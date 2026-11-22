@@ -1,5 +1,9 @@
 # MedPeak Toons: the ink look (approved 2026-11-17)
 
+> **History.** This page is the ink look of 2026-11-17 and the old engine. Look v8 (2026-11-20) is in `toons-v8-style.md`;
+> engine v9 (2026-11-23) changed two rules here, marked below: "Flow never stops" and "The look check". The target numbers
+> of every new Toon: `toons-target.md`.
+
 The owner on the earlier look: "cheap, poor, worst"; then "every video looks same"; then, after seeing
 the look sheet, **"Yes, this look"**; then on the first video in it: "no animation and motion inside
 body view and looks flat". This file is the result. The study behind it, with every number:
@@ -56,12 +60,31 @@ The reference holds still in 63% of its frames, but the body never looks dead. S
   and lean; eyes blink.
 - **Flow never stops:** blood in a vessel streams all the time (a thin dashed line moving along it), a
   little faster on each beat. A flow that stops between beats reads as a bug (owner, 2026-11-18).
+  **From engine v9 (2026-11-23, decision 19):** it still never stops, but as a few small particles in a band covering 5% of
+  the frame or less, never the whole background (creatine's tunnel kept 54% of the picture moving).
 - **Impacts move the world:** the nip shakes the skin and fat; drops land with a ring.
 - **People talk calmly:** arms and head beat less on stressed words (`talkBeat: 0.3`); caption words
   swap rather than grow in (`captionPop: false`).
 
 ## The look check (`npm run toon:look -- <slug>`)
-Reads every frame of the render (30 a second) and compares it with the reference:
+
+**From engine v9 (2026-11-23, decision 17)** the look check measures the PICTURE of the FINAL render with the caption band
+left out (the whole-frame numbers below counted the caption as motion: 52-60% "still" was really 33-67% on the picture
+against the references' 89%). The new checks (`pipeline/lib/toon_picture.py`, bands of `toons-target.md`):
+
+| # | Check | Pass |
+|---|---|---|
+| C1 | Cuts (cards not counted) and holds | 6 a minute or fewer; median hold 6 s+; a body place 8 s+; 1 re-frame at most, never reversed |
+| C2 | Holds still, not dead | picture still 78-94%; visible-action seconds 25% or less; big action 5% or less; 40 or fewer big-change frames a minute; pixels moving in 5%+ of frames 5% or less; a 4 s fully still stretch; every shot of 8 s+ has one action |
+| M2 | One action, then a hold | no two big actions in a shot closer than 1.5 s |
+| C3 | Flash and shake | 1 each at most, no flash on a cut |
+| C4 | One-frame pops | 0 (outside cuts) |
+| C5 | Zoom jumps | 6% a frame at most |
+| C6 | Line weight | 4-7 px in every shot |
+| C7 | Colour | body: 60%+ warm, any other family 8% or less, no flat non-tissue field over 12%; rooms: saturation 0.22 or less, brightness 165+ |
+| C8 | Time cards | 0.8-1.2 s each, the same framing after, 3 at most |
+
+The table below is the 2026-11-17 version, printed for history only:
 | Rule | Band | Reference |
 |---|---|---|
 | Holds still, but not dead | 45 to 80% of frames still | 63% |

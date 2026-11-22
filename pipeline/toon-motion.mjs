@@ -6,12 +6,18 @@
  *   node --import tsx pipeline/toon-motion.mjs <slug>     (or: npm run toon:motion -- <slug>)
  *   node --import tsx pipeline/toon-motion.mjs --all
  *
- * Exit code 1 when a foot slides, a leg or an arm jumps, or a joint pops.
+ * Look v8 videos (engine v9, 2026-11-23): the checks M1, M3-M5 on the LAYOUT LOG (heads and hands of people and body
+ * characters as the real tree drew them; pipeline/lib/toon-layout.mjs). M2 is measured on the picture (npm run toon:look).
+ * The old engine's videos keep the old check (src/toons/Player.tsx `bodiesAt`).
+ *
+ * Exit code 1 when a check fails.
  */
+import {isV8, layoutOf} from './lib/toon-layout.mjs'; // first: it prepares the JSX runtime for the layout probe
 import fs from 'node:fs';
 import path from 'node:path';
 import {args, readJson, VIDEOS, videoDir} from './lib/util.mjs';
-import {LIMITS, scanMotion} from './lib/toon-motion.mjs';
+import {LIMITS, scanLayoutMotion, scanMotion} from './lib/toon-motion.mjs';
+import {printChecks} from './lib/toon-geom.mjs';
 
 const a = args();
 const slugs = a.all ? fs.readdirSync(VIDEOS).filter((d) => fs.existsSync(path.join(VIDEOS, d, 'toon.json'))) : a._;
@@ -19,6 +25,13 @@ if (!slugs.length) { console.error('Give a slug or --all.'); process.exit(2); }
 let ok = true;
 for (const slug of slugs) {
   const toon = readJson(path.join(videoDir(slug), 'toon.json'));
+  if (await isV8(slug)) {
+    const log = await layoutOf(slug, {fresh: !!a.fresh});
+    const r = scanLayoutMotion(log);
+    printChecks(`MOTION (layout log)  ${toon.title}  (${log.probes.length} probes)`, r.checks);
+    ok &&= r.ok;
+    continue;
+  }
   const stored = readJson(path.join(videoDir(slug), 'toon-timings.json'), null);
   const voiced = stored && toon.shots.every((s) => (s.lines ?? []).every((l) => stored.lines[l.id]?.text === l.text));
   const r = await scanMotion(toon, voiced ? stored : null);
@@ -30,5 +43,5 @@ for (const slug of slugs) {
   }
   ok &&= r.ok;
 }
-console.log(ok ? '\nALL PASS' : '\nFAILED: a body jumps; fix the rig or the acting.');
+console.log(ok ? '\nALL PASS' : '\nFAILED: a body jumps or acts while it should hold; fix the rig or the acting.');
 process.exit(ok ? 0 : 1);

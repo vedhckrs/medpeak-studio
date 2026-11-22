@@ -102,15 +102,34 @@ Do these once on a new machine. None of it needs the old machine except step 6.
 - **People need a real nose in every view; hands are one piece with the forearm; a hand lying on the body
   has its fingers together; hands never overlap hands.** He called the old versions "not proper" and "like
   a patch".
-- **Inside the body means microscopic**: among cells, with foreground, middle and background planes for
-  depth. Not a far-away diagram of an organ.
+- **Engine v9 and script format 6** (2026-11-23): the owner approved every recommendation of the engine study
+  (`plans/engine-upgrade-2026-11-23/05-blueprint.md`, Part 3, decisions 1-28) in his words: "All 28 recommend and start 2 to 3
+  agents to fix and upgrade engine and everything i want proper as per report" (`06-owner-decisions.md`). The numbers every
+  Toon is measured against: `skill/medpeak-health/references/toons-target.md`. New videos pause until the rebuild is reviewed.
+  Five items are built AND shown to him as a sample before a pilot uses them: organ eyes (10), Dad's stubble (15), impacts
+  (18), the music level (23), the caption tilt (27). Everything new is switched on by `"format": 6` in toon.json; videos
+  already out (format 5 and older: rabies, no-sleep, creatine, quit-sugar, fasting, snake-bite) keep their rules and shot files.
+- **Inside the body means INSIDE the region** (2026-11-23, decision 6; it replaces "inside the body means microscopic" of
+  2026-11-17): an anatomy stage (`src/toons/v8/anatomy.tsx`), the organ in its real place with its real neighbours around it
+  (3 or more), in depth planes; the micro scale only for cells, blood and germs (still in depth planes, standing on a tissue
+  floor with contact shadows). Not a far-away diagram of an organ, not a mascot floating on a flat colour.
 - **An organ's big moment shows the WHOLE organ, like the reference videos** (2026-11-22: "when big organ frame come i want
-  full view of organs like ref video"): the organ fills the 1080 x 1920 frame, its face on its own wall (eyes about 170 px), tiny
+  full view of organs like ref video"): the organ fills the 1080 x 1920 frame, its face high on its own wall (above y 800), tiny
   arms, its surroundings around it (the diaphragm and gut round the liver; lips, palate, teeth round the tongue), and the
-  organ itself changes state with the story (fat patches shrink, taste buds light up). Not a small mascot on a micro background.
-  Micro places stay for cells, blood and germs. Example: `src/toons/v8/sugar-organs.tsx`.
+  organ itself changes state with the story (fat patches shrink, taste buds light up). Example: `src/toons/v8/sugar-organs.tsx`.
+  From 2026-11-23 (decisions 7, 9, 10): **one eye is 120-170 px** in a whole-organ frame (never over 190; the small cast
+  60-110), upright ovals, the far eye 8-12% smaller on a turned face, pupils that reach the rim (a before/after sheet of the
+  whole cast first); **the story is drawn ON the organ** (contents, a liquid level, a cut window, sores, dark patches): no
+  gauges, meters or clocks inside the body, at most ONE number plate a video, at most 2 texts on screen besides the caption
+  and the watermark; **one warm flesh family** inside the body (60%+ of a body shot warm, any other colour family 8% or
+  less, kept for the intruder; no flat orange, teal or lilac places), and pale, quiet rooms (saturation 0.22 or less,
+  brightness 165+; still unique per video). Three soft exceptions to "no gradients" only (decision 8): see-through liquid,
+  the soft redness of a swelling, one far soft background layer; plus a flat contact shadow. Gloss streaks stay banned.
 - **Text on the picture is laid on the screen after the camera**, so a zoom never cuts it. Captions are
   one word at a time, no box, the key word bigger and yellow (2026-11-20). **From 2026-11-22 the caption sits 5% higher (y 1374) and is 40% smaller** (the owner: "caption make shift above 5% and small 40%"): every new toon.json sets `"caption": 2`; videos already out keep the first line.
+  The caption stays where he put it (2026-11-23, decision 27): the staging keeps every face, eye and mouth OUT of the caption
+  band (1324-1434 for `caption: 2`) and check L3 fails any frame where one is in it; a per-word tilt of -2 to +2 degrees is
+  offered on a sample sheet first.
 - **Final videos are 1080 x 1920, 60 frames a second.**
 - **Work directly, deliver fast** (2026-11-20): do fixes yourself in the main session and give him the
   render; do not hand the work to subagents unless he asks for them.
@@ -120,27 +139,69 @@ Do these once on a new machine. None of it needs the old machine except step 6.
   three times, once per act: act 1 top right, act 2 bottom left, act 3 top middle. **Not on the CTA end card** (2026-11-21):
   it fades out as the card comes in. In look v8 it is
   `Watermark` in `src/toons/v8/hud.tsx`, drawn by the player.
+  From 2026-11-23 (decision 26): act 2 sits at y 1180-1220 (at 1330 it read as a second caption line), act 3 takes the first
+  of top-left / top-middle / top-right that is clear of heads in that shot, the mark turns ink-coloured (same opacity) on light
+  backgrounds, and there is no watermark on the cover still. Check L5 fails a watermark on a head or within 120 px of the caption.
 - **End every video with a CTA card: three strong points, each a big icon with short bold text** (2026-11-20).
   The headline on one line; the channel logo (`assets/brand/logo.png`) top centre in a circle with "MedPeak Health"
   typed below; the background in the logo's royal blue. A **professional male narrator, the same voice in every video** (Joey, `narrator` in `skill/medpeak-health/toons-cast.json`, the owner's pick 2026-11-20),
   speaks the CTA and ends with: "Follow MedPeak Health for more health tips that keep you safe." **Every line on the card
   is ONE line** (the headline and each point's bold text; 2026-11-21): `CtaCardV4` sizes the three points together to fit.
+  **From format 6 the card is short** (2026-11-23, decision 25, option A): 5-6 s, a hard cut in (no slide-up), the headline and
+  the three points come up together, Joey says only the follow line; the story ends on the answer or a loop line. Read the
+  retention after two weeks against the older long cards.
 - **No jiggle** (2026-11-21): a talking character does not squash on every syllable; mouths are smoothed (`talkSmooth`);
   the room camera's smoothing samples a fixed time grid (a moving one stepped 5 times a second).
 - **No transitions: every scene change is a hard cut** (2026-11-21: "it looks fake"). **Music 10% lower** (`MUSIC_LEVEL`
   0.9 in video.tsx). **The hook opens on the person and comes at the lens** (no-sleep: Sam at 2 a.m., the dive into his
   brain inside the first shot, Gunk splats on the glass); no tag or number during the hook line. Details in
   `skill/medpeak-health/references/toons-v8-style.md`.
-- **The look check must pass before the owner sees a video** (2026-11-21, after the creatine video went out with it failing):
-  `npm run toon:look -- <slug> --file videos/<slug>/renders/toon-v8.mp4` measures the STORY (the end card is left out) at 30 fps
-  against the 20 viral Shorts: still frames 45-80%, small movement 15-55%, bold outlines, brightness. A failing look is not sent.
+  From 2026-11-23 (format 6): **time cards come back** (decision 20): a black card with one short line ("3 DAYS LATER"),
+  0.8-1.2 s, hard cut in and out, the watermark kept, the SAME framing after it with only the state changed, at most 3 a video
+  (a cut, not a transition). **The music** (decisions 22-24): a new track for every video, always from one family (playful
+  funk, slap bass, 130-165 BPM, a brighter half from the doctor's answer); the bed about 5 dB up in the pauses (music about
+  6 dB under the voice) with a 3 dB dip under words (an A/B slice to him first, then `MUSIC_LEVEL` follows it); at most 2
+  planned music stops on a gag (`"stop": true`), never on a word. **The hook** (decisions 3, 21): it still opens on the
+  person and comes at the lens, but the first line is said INSIDE the story (a character's reaction or demand, first word
+  at 0.3-1.2 s, the topic named by 3.0 s; "you" only between characters; one of the three hook choices may still be the
+  "to the viewer" kind); one shared dive of 0.9 s with an even zoom, inside the body by about 2 s.
+- **The look check must pass before the owner sees a video** (2026-11-21, after the creatine video went out with it failing).
+  **From 2026-11-23 (decision 17) every check runs on the FINAL render**, measured on the picture with the caption band left
+  out: `npm run toon:look -- <slug>` (picture checks C1-C8: picture still 78-94%, visible-action seconds 25% or less, big
+  action 5% or less, 40 or fewer big-change frames a minute, a 4 s fully still stretch somewhere, and "not dead": every
+  shot of 8 s or more has one action; 1 flash and 1 shake at most; no one-frame pop; outline 4-7 px), then
+  `node --import tsx pipeline/toon-staging.mjs <slug>` and `toon-motion.mjs` (the layout log: nothing on a face, no text on
+  text, the caption off every face, no half head at the edge, listeners look at the speaker...), and the scoreboard
+  `node --import tsx pipeline/toon-score.mjs <slug>` (every number of the target against the 20 references; a 16:9 sheet in
+  `renders/scoreboard.jpg`; the final render runs it on its own). **The scoreboard must say PASS before he sees a video.**
+  Still is not the same as dead (he said "looks flat" on 2026-11-17 and "animation weak" on 2026-11-21): hold, then one action, then hold.
 - **Icons only when the words say it**; non-human characters get a name tag held **2.5 seconds** (2026-11-21; arrow + tag box above the head)
   the first time they appear; no tags on humans; **no circle or halo around the character at all** (2026-11-21: "this circle
-  I don't want, remove completely everywhere"; it was two white rings), no glow; a tag never covers a face. The camera moves smoothly (one eased move per shot, a continuous dive
-  inside the body); hard cuts between scenes (no transitions). No flicker: nothing appears or
-  vanishes in one frame. The story stays under 60 s; the narrator's end card may run past one minute (never cut or
-  speed up the narrator). Clothes changes must read at phone
-  size. All the version 4 rules, with the code: `skill/medpeak-health/references/toons-v8-style.md`. (2026-11-20)
+  I don't want, remove completely everywhere"; it was two white rings), no glow; a tag never covers a face. From 2026-11-23
+  (decision 13) a job character (a little worker in uniform: guard, cleaner, courier...) or a chemical may wear its name on a
+  paper band round its body (`BandLabel`) and then gets no extra tag; a tag's arrow ends on its own character's body.
+  **The camera** (2026-11-23, decision 16; it replaces "one eased move per shot, a continuous dive inside the body"): locked;
+  one framing for the whole of a body shot; at most ONE punch-in a video (2x or more, held 3 s+, never reversed); at most 6
+  cuts a minute (aim 4, time cards not counted), a median hold of 6 s+, a body place held 8 s+; macros are no longer
+  required. What keeps the eye is something entering the held frame. **Impacts** (decision 18, a before/after slice to him
+  first): no automatic shake, at most 1 flash, 1 shake and 2 bursts a video, never on or near a face; a fight cloud instead.
+  **Flow** (decision 19) never stops, but as a few particles in a band of 5% of the frame or less. **Characters look at each
+  other** (decision 11): after the hook the listener looks at the speaker and the speaker at the listener; only the hook looks
+  into the lens. Two-person room shots are framed tighter (decision 12: a head at least 190 px wide, a crop at the knees is
+  fine). The patient shows the symptom on his body (decision 14: a mild mark in the kit line, no blood). Hard cuts between
+  scenes (no transitions). No flicker: nothing appears or vanishes in one frame. The story stays under 60 s (format 6: 50-60 s);
+  the narrator is never cut or sped up. Clothes changes must read at phone size. All the version 4 rules, with the code:
+  `skill/medpeak-health/references/toons-v8-style.md`. (2026-11-20, 2026-11-23)
+- **The script, format 6** (2026-11-23, decisions 1-5): one story with one question and one answer, at most 3 sourced facts
+  in the whole story (at least 2 in the answer; the rest go to the description), at most 4 speaking characters plus the doctor,
+  each with 3 lines or more; Dr. Mira in most videos (shape `visit`, about 7 in 10) with one calm, slower answer block of
+  35-60 words at 55-80% of the story that names the condition, the cause and one thing to do; faster lines and real pauses
+  (body cast 3.0-3.6 words a second, the doctor 0.3 slower; 3+ pauses of 0.5 s a minute, 2+ of 1 s; the same voices, only
+  the pace changes); Retention 7 is read for Toons as in `toons-script.md` (the long videos keep it as written). All in
+  `skill/medpeak-health/references/toons-script.md`, "Format 6: one story".
+- **The engine rebuild** (2026-11-23, decision 28): written by agents in the session (2-3 in parallel, each owning its own
+  files, `plans/engine-upgrade-2026-11-23/06-owner-decisions.md`), no spend on his Anthropic key; new videos pause until he
+  has reviewed the samples, then the pilot (#7, quit smoking).
 - **Work split** (updated 2026-11-20): **the session writes the code itself**; the owner's Anthropic key (env var
   `MEDPEAK_ANTHROPIC_KEY` of the `medpeak-studio` cloud environment; `ANTHROPIC_API_KEY` is not passed into cloud
   sessions) is used only where he asks for it, and then only through `pipeline/claude-run.mjs` (the $5 cap below).
@@ -176,14 +237,20 @@ Do these once on a new machine. None of it needs the old machine except step 6.
 - Cast: `people-rig.tsx` (one rig, 8 people; animatable: `talk`, `blink`, pose blends, `facing`, `bob`,
   `handAt`, `headAt`), `organs-a.tsx`, `organs-b.tsx`, `cells.tsx`, `germs.tsx`, `animals.tsx`; props in
   `props.tsx`. Each has its own `entry-*.tsx`, so one file's mistake cannot break another's render.
-- Scenes: `scene.tsx` (shared scene pieces), `scenes-rooms.tsx` (kitchen, clinic), `scenes-body.tsx`
-  (inside the body, microscopic).
+- Scenes: `scene.tsx` (shared scene pieces; `Put` tells the layout log where it is), `scenes-rooms.tsx` (kitchen, clinic),
+  `scenes-body.tsx` (inside the body, micro places), and from engine v9 `anatomy.tsx` (the anatomy stages: an organ in its
+  real place, built to hold 20 s and change state).
 - Video: `play.tsx` (the contract: a shot is a pure function of `ShotNow`, time in seconds), `video.tsx`
   (the 60 fps player: camera, captions, voices, sound, music, transitions, the end card), `rabies.tsx` (one video's
   shots by id and its end card), `entry-video.tsx`.
 - Version 4 (2026-11-20): `hud.tsx` (captions, icons, watermark, `CharTag` name tags, `CtaCardV4`), `micro3.tsx`
   (the five micro places in depth planes, `DiveCtx`), `shots-v3.tsx` (the body shots, tags, icons), `sheets-v4.tsx`
   and `entry-*-v4.tsx` (the v4 look sheets).
+- Engine v9 (2026-11-23): **the layout log** in `play.tsx` (`LayoutCtx`, `FrameCtx`, `useReport`, `FrameMove`): every component
+  that draws a face, a hand, a tag, a burst or a text reports where it is, and the checks read it
+  (`pipeline/lib/toon-layout.mjs` probes a video into `renders/layout.json`; who reports what:
+  `plans/engine-upgrade-2026-11-23/07-layout-log-wiring.md`). Coming with the rebuild: `TimeCard` (hud), `MiniWorker` (cells),
+  `Intruder` and the hero prop (props), the shared `Dive` and `FightCloud` (act).
 
 ### Commands (all free, all local)
 
@@ -199,6 +266,17 @@ Do these once on a new machine. None of it needs the old machine except step 6.
     node --import tsx pipeline/toon-v8-board.mjs rabies   the storyboard from the finished video -> renders/storyboard/
     node pipeline/toon-v8-sheets.mjs v4-            the version 4 look sheets
     node pipeline/claude-run.mjs rabies --status    the Anthropic spend of a video (the $5 cap)
+
+    Engine v9 checks (2026-11-23; all on the FINAL render, all free):
+    npm run toon:look -- <slug>                                  picture checks C1-C8 + M2 (caption band left out)
+    node --import tsx pipeline/toon-staging.mjs <slug>           layout checks L1-L14 (writes renders/layout.json)
+    node --import tsx pipeline/toon-motion.mjs <slug>            motion checks M1, M3-M5
+    node --import tsx pipeline/toon-camera.mjs <slug>            camera checks V1-V3
+    node --import tsx pipeline/toon-score.mjs <slug> [<slug>..]  the scoreboard (renders/scoreboard.jpg; must say PASS)
+    node --import tsx pipeline/lib/toon-layout.mjs <slug>        the layout log alone
+    python pipeline/tools/toon-layout-overlay.py <mp4> <layout.json> out.jpg <t> ...   the log's boxes drawn on real frames
+    node pipeline/toon-v8-sheets.mjs anatomy                     the anatomy stage boards (phase 3)
+    (`npm run toon:score` and `npm run toon:layout` are the same commands once package.json has them.)
 
 Before showing the owner a frame, look at it yourself at full size, and at close crops of every face and
 hand.

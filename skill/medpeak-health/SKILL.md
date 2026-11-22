@@ -49,6 +49,14 @@ The owner is not technical: run everything yourself, explain in plain words, nev
    2026-11-21), music 10% lower (`MUSIC_LEVEL`), a hook that opens on the person and comes at the lens,
    no flicker, detailed micro places, clothes that read at phone size. All of it, with the code that does it, is in
    `references/toons-v8-style.md` ("Version 4 rules"). Read it before a new Toon.
+   **From 2026-11-23 every new Toon is engine v9, script format 6** (the owner approved all 28 decisions of
+   `plans/engine-upgrade-2026-11-23/05-blueprint.md`: "All 28 recommend and start 2 to 3 agents to fix and upgrade engine and
+   everything i want proper as per report"). Read `references/toons-target.md` FIRST (the numbers a Toon is measured
+   against), then `references/toons-script.md` "Format 6: one story". What changed from version 4: one story with 3 facts at
+   most and the doctor's answer block; a locked camera, one framing per body shot, one punch-in a video, 6 cuts a minute at
+   most (no continuous creeping dive inside the body); the organ in its real place (anatomy stages) in one warm flesh family;
+   time cards; far fewer impacts; a short 5-6 s end card; music from one funk family, louder in the pauses. **Every check
+   runs on the FINAL render and `node --import tsx pipeline/toon-score.mjs <slug>` must say PASS before the owner sees it.**
 
 ## The workflow (one video)
 
@@ -78,6 +86,10 @@ MedPeak Toons (the cartoon Shorts) have their own steps; the order of work is in
 `references/toons-script.md`: `toon-check` (script, Retention 7, own and unique rooms, accuracy) ->
 `toon:camera`, `toon:motion`, `toon:staging` and `toon:sound` (measured, all required) -> silent preview and rooms board ->
 owner's yes -> `toon-voice` -> the same checks on the real timings -> `toon-render` ->
+the engine v9 checks on the FINAL render (2026-11-23): `toon:look` (picture checks C1-C8), `toon-staging` / `toon-motion` /
+`toon-camera` (they read the v8 LAYOUT LOG, `renders/layout.json`, what the real component tree drew; for v8 videos they no
+longer read the old engine) and `toon-score` (the scoreboard sheet, `renders/scoreboard.jpg`; the final render runs it on
+its own; a failing row means "not for the owner yet") ->
 `toon:listen` (earshot reads the finished sound: loudness, which planned sounds are heard, what each sounds like) ->
 `toon-package` (title, description, tags, cover; no caption track: the words are on screen) -> `publish/schedule.py` (next free slots) ->
 `publish/upload.py <slug> toon --approve --slot` only after the owner's yes. After the upload, each with its own yes from the owner:
@@ -117,6 +129,7 @@ the first 15 made first. Mark a topic `taken` there before starting it.
 - `references/posting-schedule.md` - the channel's daily posting slots for both pipelines (5 Shorts a day; MedPeak 12:30 + 21:30 IST, long videos Wed/Sat 05:30). Same file as `~/Desktop/New/POSTING-SCHEDULE.md`.
 - `references/medical-accuracy.md` - sourcing rules, wording that is not allowed, how to cite.
 - `references/scene-types.md` - every visual type with its fields.
+- `references/toons-target.md` - **what a MedPeak Toon is after the engine v9 rebuild (2026-11-23): every number (place, colour, line, face, cuts, motion, script, voice, sound, finish) with the reference median, the pass band and our aim, and the check that measures it.** Read it first for any new Toon.
 - `references/toons.md` - MedPeak Toons: the cartoon talking-organ Shorts format, our own look, roadmap.
 - `references/toons-v8-style.md` - **the Toons look in use since 2026-11-20 (look v8): everything drawn in code in `src/toons/v8/`.** The ten drawing rules, the cast identities, the scene rules, what the owner approved. Read this FIRST for any Toons drawing or video; the older look files below describe the old engine, which still plays the older videos. The approved sheets and storyboard are in `references/toons-boards/v8/`. The repo's `CLAUDE.md` holds the owner's standing rules and the setup for a new machine.
 - `references/toons-style.md` - the Toons look (v6): volume paint, materials, coloured eyes, real anatomy, body acting; thin coloured lines, clean hands, jointed arms and legs on people, no wobble.

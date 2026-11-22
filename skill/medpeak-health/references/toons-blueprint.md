@@ -153,3 +153,29 @@ the expression. Options sheet: `toons-boards/caps.jpg` (`ToonCaps`).
 ## Reference boards
 Rendered examples live in `toons-boards/` (blueprint page, cast, camera and lenses, sets, model sheets).
 Re-render with `node pipeline/toon-sheets.mjs` and copy over when the cast changes.
+
+## Engine v9 (2026-11-23): stages, mini workers, intruders, and the layout log
+
+The owner approved the engine study (`plans/engine-upgrade-2026-11-23/05-blueprint.md`, Part 4): "All 28 recommend and start 2 to 3 agents to fix and upgrade engine and everything i want proper as per report". Look v8 pieces are
+built with the kit in `src/toons/v8/` (this page's older sections describe the v6 cast); the rules of look v8 are in
+`toons-v8-style.md`. Three new kinds of piece, and one rule for every piece:
+
+**An anatomy stage** (`src/toons/v8/anatomy.tsx`, `StageDef`): a full 1080 x 1920 place in three planes (the cavity behind, the
+hero organ and its 3+ real neighbours, a cropped near edge), drawn with the kit's tissue pieces (`Wall`, `Folds`, `Lobes`,
+`Speckle`, one `Highlight`), built to HOLD 20 s and change state through its `dials` (0..1, documented: `tar`, `fill`,
+`airway`...). It names its `slots` (where intruders enter), its `faces` (each face's centre and radius at rest), its
+`faceRoom` (boxes nothing may enter) and its `neighbours`. Targets: no flat non-tissue field over 12%; organ eye 120-170 px,
+face above y 800; mouth 40-70 px; nothing in the caption band at the face; outline 5-6 px on screen. Acceptance: a 16:9
+board with four states and a full still (`node pipeline/toon-v8-sheets.mjs anatomy`), colour check C7 on each still.
+
+**A mini worker** (`MiniWorker` in `cells.tsx`): two heads tall, kit eyes, small real hands (the rig's `Hand` at small scale),
+a uniform and ONE prop (guard, cleaner, firefighter, courier, builder), a contact shadow; a `BandLabel` instead of a tag.
+
+**An intruder / hero prop** (`Intruder` in `props.tsx`): enters from a frame edge or a stage slot with `enter()`, overlaps the
+organ, may get kit eyes; the one hero prop of a video is drawn a level richer (3 tones, 1 highlight line, 2-4 construction
+details) in the same kit line. Held props: `handProp` only, drawn behind the person.
+
+**Every piece reports to the layout log.** A face, an eye, a mouth, a hand, a tag, a label, a burst, a text, a prop, a wall
+item: call `useReport()` (`src/toons/v8/play.tsx`) with its box in its own units; a wrapper that moves its children wraps them
+in `FrameMove`. Outside a probe it costs nothing. The exact call for each kind: `plans/engine-upgrade-2026-11-23/07-layout-log-wiring.md`.
+A piece that does not report is invisible to the layout checks (the picture checks are the second net).

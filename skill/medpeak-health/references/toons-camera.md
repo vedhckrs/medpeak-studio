@@ -1,4 +1,29 @@
-# MedPeak Toons camera and lenses
+# MedPeak Toons camera: the v9 camera (2026-11-23), then the old engine's lenses
+
+## The v9 camera (engine v9, format 6; the owner approved it 2026-11-23: "All 28 recommend ...")
+
+Everything below "Old engine only" describes the OLD director (`src/toons/camera.tsx`, `Player.tsx`: lenses, blur, whips, a
+cut every 2.9 s). Look v8 shots own their framing (`view` on the ShotDef, `src/toons/v8/play.tsx`), and from format 6:
+
+- **Locked.** One framing for the whole of a body shot (`view` returns the same value; no lean, no creep, no continuous dive
+  inside the body). Rooms: one held framing per shot; a new framing is a cut.
+- **One punch-in a video** at most: 2x or more, held 3 s or more, never followed by the reverse (`punch: {line, z}` on the ShotDef).
+- **The cut budget:** at most 6 cuts a minute (aim 4; time cards not counted), a median hold of 6 s or more, a body place
+  held 8 s or more before cutting away. The references cut 3.3 times a minute and hold a picture about 15 s.
+- **What keeps the eye** is something entering the held frame (`enter`, `fill`, `reveal`, an intruder from a slot), then a hold.
+- **The dive:** one shared `Dive` of 0.9 s, even on a log scale (6% a frame at most at 60 fps); the person 1 s or less on
+  screen, inside the body by about 2 s.
+- **Time cards:** black, one line, 0.8-1.2 s, hard cuts; the SAME framing returns after (`same` in the script, `pass: 2`).
+- **No automatic shake** (the player used to shake 9 px on every flash): 1 shake of 12 px, 0.25 s, at most a video.
+- **Hard cuts** between scenes; no transitions (the owner, 2026-11-21).
+
+**Measured, not planned:** `npm run toon:look` C1 (cuts, holds, re-frames in the picture), C3 (shake), C5 (zoom jumps);
+`node --import tsx pipeline/toon-camera.mjs <slug>` V1-V3 (the real `view` of every v8 shot from the layout log: re-frames
+inside a shot, zoom jumps, "one framing per body shot"). For v8 videos the camera check no longer reads the old director.
+
+---
+
+## Old engine only (videos before look v8): camera and lenses
 
 How a Toons Short is shot. The camera lives in `src/toons/camera.tsx`; the director that chooses
 the pictures lives in `src/toons/Player.tsx` (`layoutToon`). The reference board is
