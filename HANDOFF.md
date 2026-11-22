@@ -6,6 +6,22 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-22 (25) - MacBook (local Claude Code) - branch `feat/posting-schedule-slots` - the posting schedule in the scripts
+
+- The owner: "save this rule, upgrade skill" (the shared `~/Desktop/New/POSTING-SCHEDULE.md`). Built on the other session's
+  `feat/posting-schedule` (the reference file and SKILL lines, PR #17), and added:
+  - `publish/schedule.py`: reads the channel's last 50 uploads, prints the schedule and our next free slots (Shorts 12:30 / 21:30
+    IST, long Wed/Sat 05:30 IST; max 5 Shorts a day on the IST date, 3 h between Shorts, 2 h long-to-Short).
+  - `publish/upload.py --slot`: takes the next free slot, uploads private with publishAt, reads the time back and fixes it.
+  - CLAUDE.md standing rule; command notes in SKILL.md and posting-schedule.md.
+- Tested: the slot rules on made-up schedules (gap, 5 a day, long day) and `schedule.py` on the real channel.
+  `--slot` has not done a real upload yet.
+- Seen on the channel: Quit Sugar (zXcUcOiN39s) went PUBLIC at 19:39 IST (uploaded private; changed outside this session).
+  "Hold Your Pee Too Long" (cartoon pipeline) is scheduled at 21:30 IST tonight, which is a MedPeak slot (left alone).
+- Next free slots at writing: Mon 23 Nov 12:30 and 21:30 IST; long Wed 25 Nov 05:30.
+
+---
+
 ## 2026-11-22 (24) - MacBook (local Claude Code) - branch `video/quit-sugar` - quit-sugar UPLOADED PRIVATE
 
 - The owner: "Yes, upload private". `upload.py quit-sugar toon` (venv Python, dry run first, then `--approve`):

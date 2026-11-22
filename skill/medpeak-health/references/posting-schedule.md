@@ -63,6 +63,13 @@ Cartoon Shorts, 3 a day = about 90 episodes a month. Per episode (measured on ep
 - before choosing the slot, apply rule 4 (read the channel's real schedule) and rules 2–3;
 - send `publishAt` in UTC with `privacyStatus: private`.
 
+All of this is done by the scripts (2026-11-22), run with `~/.config/youtube-analytics/venv/bin/python`, network on:
+- `python publish/schedule.py [--days N]`: reads the last 50 uploads, lists what is scheduled or public from 2 days ago,
+  and prints the next free MedPeak Short slots and long-video slots (reads only).
+- `python publish/upload.py <slug> <cut> --slot` (dry run) / `--approve --slot`: takes the next free slot that passes
+  rules 1-4 (a `long` cut gets a Wed/Sat slot, every other cut a Short slot), uploads private with `publishAt`, reads the
+  time back and fixes it if YouTube stored something else (rule 5). It never touches another video (rules 4 and 7).
+
 ## Instructions to give the MedPeak 3D session
 Paste this into the MedPeak session:
 

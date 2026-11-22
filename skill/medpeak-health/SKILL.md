@@ -22,7 +22,7 @@ The owner is not technical: run everything yourself, explain in plain words, nev
    `videos/<slug>/research/`), WHO/NIH/ICMR pages. Read the abstract and copy the exact figure into the
    source's `note`. Never round a number into a different claim (2.75x is "nearly three times", not
    "three times"); prediabetes is not diabetes. See `references/medical-accuracy.md`.
-4. **Nothing goes public on its own.** Uploads are private or scheduled (`--publish-at`); public only
+4. **Nothing goes public on its own.** Uploads are private or scheduled (`--slot` picks the next free slot; `--publish-at` for a time he names); public only
    when the owner says so. **Schedule by `references/posting-schedule.md`** (shared with the talking-organ cartoon
    pipeline on this channel): MedPeak Shorts at **12:30 and 21:30 IST**, long videos **Wed + Sat 05:30 IST**; the cartoons
    own 08:00, 15:30 and 18:30 IST. Max 5 Shorts a day on the channel, 3 h between Shorts, 2 h between a long video and a
@@ -67,8 +67,9 @@ The owner is not technical: run everything yourself, explain in plain words, nev
 8  render     node pipeline/render.mjs <slug>           long + Shorts + thumbnails, mastered to -14 LUFS
 9  qc         node pipeline/qc.mjs <slug>               QC PASS or fix
 10 package    node pipeline/package.mjs <slug>          title, chapters, sources, tags, AI label
-11 upload     python publish/upload.py <slug> all --approve [--publish-at ISO]   (after the owner's yes)
-             slots: Shorts 12:30 / 21:30 IST, long Wed+Sat 05:30 IST (references/posting-schedule.md)
+   slots      python publish/schedule.py                the channel's real schedule + our next free slots (reads only)
+11 upload     python publish/upload.py <slug> all --approve --slot   (after the owner's yes; next free slot,
+             Shorts 12:30 / 21:30 IST, long Wed+Sat 05:30 IST; the time is read back; references/posting-schedule.md)
 12 link       in YouTube Studio set each Short's Related video to the long video (no API for it)
 13 learn      after 7 days: analytics for the new video -> notes in references/channel.md
 ```
@@ -78,8 +79,8 @@ MedPeak Toons (the cartoon Shorts) have their own steps; the order of work is in
 `toon:camera`, `toon:motion`, `toon:staging` and `toon:sound` (measured, all required) -> silent preview and rooms board ->
 owner's yes -> `toon-voice` -> the same checks on the real timings -> `toon-render` ->
 `toon:listen` (earshot reads the finished sound: loudness, which planned sounds are heard, what each sounds like) ->
-`toon-package` (title, description, tags, cover; no caption track: the words are on screen) -> `publish/upload.py <slug> toon`
-only after the owner's yes. After the upload, each with its own yes from the owner:
+`toon-package` (title, description, tags, cover; no caption track: the words are on screen) -> `publish/schedule.py` (next free slots) ->
+`publish/upload.py <slug> toon --approve --slot` only after the owner's yes. After the upload, each with its own yes from the owner:
 `publish/after_upload.py <slug> toon --comment` (posts the
 package's question from the channel; pinning is done by hand, the API cannot pin), `--public`.
 `publish/recent.py` reads the newest uploads' views and, 1 to 3 days later, watch share and traffic
