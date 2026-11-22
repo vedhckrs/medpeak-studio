@@ -6,6 +6,35 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-23 (33) - MacBook (local Claude Code, the integration agent) - branch `engine/v9` - engine v9 wired together: a format-6 video now plays with all of v9; the old videos are pixel-identical
+
+- **Player** (`src/toons/v8/video.tsx`), format 6 only: the whole picture inside `<V9>`; the camera div uses the kit's ink-zoom
+  (class `ink-zoom` + `--ink-k`, kit.tsx `INK_ZOOM_CSS`): agent C's unused `--ink-out/--ink-in` vars are gone, ONE mechanism;
+  `CtaCardV9` (5.5 s, hard cut, one pop, no whoosh, no chime) and `ctaSeconds` = max(5.5, the narrator); `WatermarkV9` (act 3
+  takes the first top spot clear of the shot's head boxes, `shotHeads`; ink-coloured on room shots or a shot with `light`);
+  `captionShows` (cleared in pauses over 0.4 s and on cuts) and the -2..+2 degree caption tilt (decision 27 = the recommendation);
+  `s.v9` makes `bodyFace` return a continuous blink `lid` (play.tsx `blinkLid`, the 0.2 s blink) and a flat angry mouth
+  (`FACE_OF9`). New exports: `frameState`, `cameraOf`, `captionAt`, `actsOf`, `shotHeads`, `PlayerScreen` (caption + watermark in
+  `<ScreenSpace>`).
+- **One TimeCard**: `hud.tsx` (agent C's look and `TIME_CARD` with `bg #0d0a09`, `most: 3`); `time-card.tsx` removed.
+- **play.tsx**: `ShotNow.pass/state/v9`, `LineNow.key`, `ShotDef.kind/stage/punch/faces/light` (`ShotNow9`/`ShotDef9` stay as aliases).
+- **Layout log**: every component of `07-layout-log-wiring.md` reports itself (kit Eyes/Mouth/TinyArm/Fig/BandLabel, `FaceOwned` for
+  the people rig, PersonAt/HeadAt with the real hand shapes, hud caption/watermark/tag/icon/StayLabel/TimeCard, act
+  Burst/FightCloud/Sweat/Marks/Stamp/SpeedLines, MiniWorker hands, Intruder, anatomy faces by name + neighbours + face rooms).
+  `toon-layout.mjs` lost its shims and its copies of the caption and watermark rules: it uses the player's own camera
+  (`frameState`) and renders `PlayerScreen`. `LAYOUT_VERSION` 3. The scoreboard row "Neighbours around the hero organ" is measured.
+- **08-c-to-a.md items**: music prompt from `MUSIC_TEMPLATE` (`toon-music.mjs --slug`, format 6), the music-family scan by ear
+  (`toon-music-scan.mjs`, A3; `--family <mp3>`), the format-6 mix and planned stops (`toon:sound`, A1/A2), role speeds from
+  `roleSpeed` (`toon-voice.mjs`, format 6 only), voices apart (`toon:listen --voices`, A4: pitch per line), the short card in
+  `toon-check`; the scoreboard reads the music family, voices apart and the format-6 gate (S1-S12).
+- **Motion test** redone on the chest stage with the full v9 look: `out/engine-v9-samples/motion-test-chest.mp4` and
+  `motion-test-chest-sheet.jpg` (not in git; `src/toons/v8/motion9.tsx`). Checked frame by frame: no one-frame pops, big changes only
+  in the dive and at the card's two cuts; fixed a NO SUGAR calendar in the kitchen and a raised arm that touched the frame edge.
+- **Identity**: stills of rabies, no-sleep, creatine, quit-sugar, fasting, snake-bite at 4, 20 and 35 s before and after: the same
+  bytes. `tsc` clean, `npm test` 80/80, `npm run toon:score -- fasting` runs (the old video fails v9 bands, as expected).
+- **Open**: no real format-6 video exists yet (the pilot); the symptom `mark` does not report yet (L14 n/m); music in the pauses needs
+  a voiced format-6 video; not pushed, not merged.
+
 ## 2026-11-23 (32) - MacBook (local Claude Code, agent A of three) - branch `worktree-agent-a3d0ff26a526ea3d8` - engine v9 phases 0 and 1: the owner's 28 answers written into the rules; the checks now measure the PICTURE
 
 - The owner on the blueprint (`plans/engine-upgrade-2026-11-23/05-blueprint.md`): "All 28 recommend and start 2 to 3 agents to fix

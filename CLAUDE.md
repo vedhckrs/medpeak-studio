@@ -249,7 +249,7 @@ Do these once on a new machine. None of it needs the old machine except step 6.
 - Engine v9 (2026-11-23): **the layout log** in `play.tsx` (`LayoutCtx`, `FrameCtx`, `useReport`, `FrameMove`): every component
   that draws a face, a hand, a tag, a burst or a text reports where it is, and the checks read it
   (`pipeline/lib/toon-layout.mjs` probes a video into `renders/layout.json`; who reports what:
-  `plans/engine-upgrade-2026-11-23/07-layout-log-wiring.md`). Coming with the rebuild: `TimeCard` (hud), `MiniWorker` (cells),
+  `plans/engine-upgrade-2026-11-23/07-layout-log-wiring.md`). With the rebuild: `TimeCard` (hud), `MiniWorker` (cells),
   `Intruder` and the hero prop (props), the shared `Dive` and `FightCloud` (act).
 
 ### Commands (all free, all local)
