@@ -19,6 +19,7 @@ import {
   shade, smoothD, openD, Sore, Speckle, Swelling, tint, V9, Wall, Wound, seeded, type Box, type FaceExtras, type V8Props,
 } from './kit';
 import {OrganArm, type ArmPose, type Gesture} from './organ-act';
+import {FrameMove, IDENTITY, useReport} from './play';
 
 type P = [number, number];
 export type StageName = 'chest' | 'upperBelly' | 'throatSide' | 'skullSide' | 'vesselInside' | 'tissue' | 'skinSection';
@@ -82,13 +83,16 @@ const Canvas: React.FC<{bg: string; layer?: React.ReactNode; kids?: React.ReactN
   </V9>
 );
 /** A stage face: the v9 kit eyes and mouth at a focus, with its acting. Mouth at most 0.6 of one eye wide. */
-const Face: React.FC<{at: Focus; f?: StageFace; mouthDy?: number}> = ({at, f, mouthDy = 1.75}) => {
+const Face: React.FC<{at: Focus; f?: StageFace; mouthDy?: number; who?: string}> = ({at, f, mouthDy = 1.75, who}) => {
   if (!f) return null;
+  // the layout log: the face belongs to the stage character named by its key (lungR, stomach...), a figure of its own
   return (
-    <Acting lid={f.lid} turn={f.turn} overlap={f.overlap}>
-      <Eyes x={at.x} y={at.y} r={at.r} mood={f.mood ?? 'open'} look={f.look} lookAt={f.lookAt} />
-      <Mouth x={at.x + (f.turn ?? 0) * at.r * 0.35} y={at.y + at.r * mouthDy} w={at.r * 0.95} kind={f.mouth ?? 'flat'} />
-    </Acting>
+    <FrameMove m={IDENTITY} who={who} body={!!who}>
+      <Acting lid={f.lid} turn={f.turn} overlap={f.overlap}>
+        <Eyes x={at.x} y={at.y} r={at.r} mood={f.mood ?? 'open'} look={f.look} lookAt={f.lookAt} />
+        <Mouth x={at.x + (f.turn ?? 0) * at.r * 0.35} y={at.y + at.r * mouthDy} w={at.r * 0.95} kind={f.mouth ?? 'flat'} />
+      </Acting>
+    </FrameMove>
   );
 };
 /** Organ arms at stage scale (the cast arm, drawn in a 4x group so its line stays the kit's). */
@@ -194,8 +198,8 @@ export const ChestStage: React.FC<StageProps> = ({t, state, faces, layer, childr
       <g transform={squeeze}>
         <StageArm at={[120, 980]} s={-1} pose={faces?.lungR?.armR} fill={lung} />
         <StageArm at={[966, 990]} s={1} pose={faces?.lungL?.armL} fill={lung} />
-        <Face at={CHEST_FACES.lungR} f={faces?.lungR} />
-        <Face at={CHEST_FACES.lungL} f={faces?.lungL} />
+        <Face who="lungR" at={CHEST_FACES.lungR} f={faces?.lungR} />
+        <Face who="lungL" at={CHEST_FACES.lungL} f={faces?.lungL} />
       </g>
     </Canvas>
   );
@@ -254,7 +258,7 @@ export const VesselStage: React.FC<StageProps> = ({t, state, faces, layer, child
       {/* a branch opening in the far wall (the slot the intruder comes through) */}
       <ellipse cx={890} cy={520} rx={90} ry={130} fill={shade(plasma, 0.3)} {...EDGE} />
       <ellipse cx={898} cy={530} rx={64} ry={104} fill={shade(plasma, 0.45)} />
-      {faces?.cell && <g><RedDisc x={300} y={1080} w={300} c={cell} /><Face at={{x: 300, y: 1050, r: 36}} f={faces.cell} mouthDy={1.4} /></g>}
+      {faces?.cell && <g><RedDisc x={300} y={1080} w={300} c={cell} /><Face who="cell" at={{x: 300, y: 1050, r: 36}} f={faces.cell} mouthDy={1.4} /></g>}
     </Canvas>
   );
 };
@@ -334,7 +338,7 @@ export const BellyStage: React.FC<StageProps> = ({t, state, faces, layer, childr
       )}
       <StageArm at={[995, 760]} s={1} pose={faces?.stomach?.armR} fill={F.wall} />
       <StageArm at={[480, 820]} s={-1} pose={faces?.stomach?.armL} fill={F.wall} />
-      <Face at={BELLY_FACE} f={faces?.stomach} />
+      <Face who="stomach" at={BELLY_FACE} f={faces?.stomach} />
     </Canvas>
   );
 };
@@ -407,7 +411,7 @@ export const ThroatStage: React.FC<StageProps> = ({t, state, faces, layer, child
       {sore > 0.02 && <Swelling x={330} y={760} r={140} k={sore} />}
       {sore > 0.02 && <Sore x={320} y={780} r={18 + 12 * sore} />}
       <StageArm at={[1000, 800]} s={1} pose={faces?.tongue?.armR} fill={F.wall} />
-      <Face at={{...TONGUE_FACE, y: TONGUE_FACE.y - lift}} f={faces?.tongue} />
+      <Face who="tongue" at={{...TONGUE_FACE, y: TONGUE_FACE.y - lift}} f={faces?.tongue} />
     </Canvas>
   );
 };
@@ -449,7 +453,7 @@ export const SkullStage: React.FC<StageProps> = ({t, state, faces, layer, childr
       {fog > 0.02 && [[300, 600, 130], [720, 520, 110], [480, 860, 150], [860, 880, 90]].map(([x, y, r], i) => <ellipse key={i} cx={x + Math.sin(t * 0.6 + i) * 20} cy={y} rx={r} ry={r * 0.55} fill="#d9d2d6" opacity={0.6 * fog} />)}
       {glow > 0.02 && [[880, 440], [940, 560], [180, 560]].map(([x, y], i) => <path key={i} d={`M ${x} ${y} l ${i === 2 ? -36 : 36} -30 M ${x + 6} ${y + 26} l ${i === 2 ? -44 : 44} 4`} stroke={INK} strokeWidth={5.6} strokeLinecap="round" opacity={glow} vectorEffect="non-scaling-stroke" />)}
       <StageArm at={[985, 900]} s={1} pose={faces?.brain?.armR} fill={brainC} />
-      <Face at={BRAIN_FACE} f={faces?.brain} />
+      <Face who="brain" at={BRAIN_FACE} f={faces?.brain} />
     </Canvas>
   );
 };
@@ -542,4 +546,21 @@ export const STAGES: Record<StageName, StageDef> = {
     neighbours: ['surface', 'dermis', 'fat', 'muscle', 'vessel'],
   },
 };
+/**
+ * The layout log of a stage (07-layout-log-wiring.md): each named neighbour as a `body` (id 'neighbour:<name>', the whole
+ * frame: the scoreboard counts them) and each face room ('faceRoom:<who>', a box nothing of the contents may enter).
+ * Every stage of the table reports through this wrapper; nothing changes on the page.
+ */
+const StageReport: React.FC<{def: Omit<StageDef, 'Stage'>}> = ({def}) => {
+  const report = useReport();
+  for (const n of def.neighbours) report({kind: 'body', id: 'neighbour:' + n, box: {x0: 0, y0: 0, x1: 1080, y1: 1920}});
+  for (const [who, box] of Object.entries(def.faceRoom)) report({kind: 'body', id: 'faceRoom:' + who, box});
+  return null;
+};
+for (const def of Object.values(STAGES)) {
+  const Inner = def.Stage;
+  const Wrapped: React.FC<StageProps> = (p) => <><StageReport def={def} /><Inner {...p} /></>;
+  Wrapped.displayName = `Stage(${Inner.displayName ?? Inner.name})`;
+  def.Stage = Wrapped;
+}
 void OUTLINE; void EDGE_IN;

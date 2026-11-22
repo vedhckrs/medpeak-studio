@@ -17,6 +17,7 @@
  */
 import React, {createContext, useContext, useId} from 'react';
 import {theme} from '../../brand/theme';
+import {circleBox, FrameMove, matMul, matScale, matTranslate, useReport} from './play';
 
 // ------------------------------------------------------------------ constants
 export const INK = '#2b1a17'; // the one outline colour
@@ -71,7 +72,8 @@ export const EDGE_IN = {stroke: INK, strokeWidth: IN, strokeLinejoin: 'round', s
  */
 export const Fig: React.FC<{x: number; y: number; size: number; children: React.ReactNode; flip?: boolean}> = ({x, y, size, children, flip}) => (
   <svg style={{position: 'absolute', left: x - size / 2, top: y - size / 2, overflow: 'visible'}} width={size} height={size} viewBox="-100 -100 200 200">
-    <g transform={flip ? 'scale(-1 1)' : undefined}>{children}</g>
+    {/* the layout log: the figure space into the parent's pixels (the same as scene.tsx putMatrix; nothing on the page) */}
+    <g transform={flip ? 'scale(-1 1)' : undefined}><FrameMove m={matMul(matMul(matTranslate(x, y), matScale(size / 200)), flip ? matScale(-1, 1) : matScale(1))} body>{children}</FrameMove></g>
   </svg>
 );
 
@@ -112,11 +114,25 @@ export type Mood = 'open' | 'happy' | 'sad' | 'angry' | 'sleepy' | 'bored' | 'sc
  *   look: where the pupils look, x and y from -1 to 1
  * A mood changes lids and brows only; the eye stays a circle.
  */
+/**
+ * A face whose eyes are drawn by a person (the people rig) is reported once, by the person: the rig's own Eyes report
+ * only the eyes (07-layout-log-wiring.md). The rig wraps its drawing in <FaceOwned>.
+ */
+export const FaceOwnedCtx = createContext(false);
+export const FaceOwned: React.FC<{children?: React.ReactNode}> = ({children}) => <FaceOwnedCtx.Provider value>{children}</FaceOwnedCtx.Provider>;
+/** The layout log of a pair of eyes: each eye, and the face (eyes plus a mouth band) unless a person reports it. */
+const useEyesReport = (x: number, y: number, r: number, gap: number, cx: number[], rs: number[], look: [number, number], open: boolean, oval = 1) => {
+  const report = useReport();
+  const owned = useContext(FaceOwnedCtx);
+  cx.forEach((c, i) => report({kind: 'eye', box: circleBox(c, y, rs[i], rs[i] * oval), dir: look, open}));
+  if (!owned) report({kind: 'face', box: {x0: x - 2 * r - gap / 2 - 0.3 * r, y0: y - 1.4 * r, x1: x + 2 * r + gap / 2 + 0.3 * r, y1: y + 2.6 * r}, dir: look, open});
+};
 const OLD_MOOD: Partial<Record<Mood, Mood>> = {pain: 'sad', side: 'bored', squint: 'bored', shock: 'scared'};
 const EyesV8: React.FC<EyesProps> = ({x, y, r = 13, gap = 0, look = [0, 0], mood: mood0 = 'open', brows}) => {
   const mood = OLD_MOOD[mood0] ?? mood0;
   const id = 'e' + useId().replace(/:/g, '');
   const cx = [x - r - gap / 2, x + r + gap / 2];
+  useEyesReport(x, y, r, gap, cx, [r, r], look, mood !== 'closed');
   const pr = mood === 'scared' ? r * 0.16 : r * 0.24;
   const px = look[0] * r * 0.5;
   const py = look[1] * r * 0.5;
@@ -444,6 +460,7 @@ const EyesV9: React.FC<EyesProps> = ({x, y, r = 13, gap = 0, look, mood = 'open'
   const m = Math.hypot(lk[0], lk[1]);
   if (m > 1) lk = [lk[0] / m, lk[1] / m];
   const ml = LID[mood];
+  useEyesReport(x, y, r, gap, cx, rs, lk, mood !== 'closed' && lidK < 0.8, 1.12);
   const one = (i: number) => {
     const c = cx[i], rx = rs[i], ry = rx * 1.12;
     const inner = i === 0 ? 1 : -1; // +x is the inner side of the left eye
@@ -509,6 +526,8 @@ export const Eyes: React.FC<EyesProps> = (p) => (useV9() ? <EyesV9 {...p} /> : <
 /** THE mouth. v9: no teeth-grid `grit` on body characters (it becomes `flat`; A1 #5, decision 10). */
 export const Mouth: React.FC<{x: number; y: number; w?: number; kind?: MouthKind}> = (p) => {
   const v9 = useV9();
+  const w = p.w ?? 14;
+  useReport()({kind: 'mouth', box: {x0: p.x - w / 2, y0: p.y - w / 2, x1: p.x + w / 2, y1: p.y + w * 0.8}, open: ['open', 'big', 'o'].includes(p.kind ?? 'smile')});
   return <MouthV8 {...p} kind={v9 && p.kind === 'grit' ? 'flat' : p.kind} />;
 };
 
@@ -612,7 +631,12 @@ const TinyLegV9: React.FC<TinyLegProps> = ({from, to, fill, w = 5.5, foot = 1}) 
  * The arm of a body character (v8: a thin tube with a mitten; v9: an outlined shape with the body's own line).
  * Draw an arm BEFORE the body when it goes behind it, AFTER when it is in front.
  */
-export const TinyArm: React.FC<TinyArmProps> = (p) => (useV9() ? <TinyArmV9 {...p} /> : <TinyArmV8 {...p} />);
+export const TinyArm: React.FC<TinyArmProps> = (p) => {
+  const report = useReport();
+  const hand = p.hand ?? 'mitten';
+  if (hand !== 'none') report({kind: 'hand', box: circleBox(p.to[0], p.to[1], (p.w ?? 5.5) * 2), open: hand === 'open'});
+  return useV9() ? <TinyArmV9 {...p} /> : <TinyArmV8 {...p} />;
+};
 /** The leg of a body character (v8 tube; v9 outlined shape). */
 export const TinyLeg: React.FC<TinyLegProps> = (p) => (useV9() ? <TinyLegV9 {...p} /> : <TinyLegV8 {...p} />);
 
@@ -804,6 +828,8 @@ export const BandLabel: React.FC<{x: number; y: number; w: number; text: string;
   const id = 'bl' + useId().replace(/:/g, '');
   const fs = size ?? Math.min(w * 0.17, (w * 1.4) / Math.max(4, text.length));
   const h = fs * 1.55, b = w * curve;
+  const rr = Math.abs(rot) > 45 ? Math.max(w, h + b) : 0; // a steep band: its hull is the turned box
+  useReport()({kind: 'label', box: rr ? circleBox(x, y, rr / 2) : {x0: x - w / 2, y0: y - h / 2, x1: x + w / 2, y1: y + h / 2 + Math.max(0, b)}, text});
   const band = `M ${r2(-w / 2)} ${r2(-h / 2)} Q 0 ${r2(-h / 2 + b)} ${r2(w / 2)} ${r2(-h / 2)} L ${r2(w / 2)} ${r2(h / 2)} Q 0 ${r2(h / 2 + b)} ${r2(-w / 2)} ${r2(h / 2)} Z`;
   const mid = `M ${r2(-w / 2 + fs * 0.3)} ${r2(fs * 0.36)} Q 0 ${r2(fs * 0.36 + b)} ${r2(w / 2 - fs * 0.3)} ${r2(fs * 0.36)}`;
   return (

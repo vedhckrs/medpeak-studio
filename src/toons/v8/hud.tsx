@@ -11,6 +11,7 @@
 import React, {useId} from 'react';
 import {Img, staticFile} from 'remotion';
 import {CLOTH, EDGE, EDGE_IN, FONT, INK, INLINE, OUTLINE, shade, tint} from './kit';
+import {circleBox, useReport} from './play';
 import {Dog} from './animals';
 import {Brain} from './organs-a';
 import {Virus} from './germs';
@@ -47,8 +48,12 @@ export const captionShows = (o: {t: number; start: number; end: number; nextStar
   return o.t < o.end + 0.4;
 };
 export const WordCaption: React.FC<{word: string; t: number; isKey?: boolean; y?: number; scale?: number; tilt?: boolean}> = ({word, t, isKey, y = CAPTION_Y, scale: CAPTION_SCALE = 1, tilt}) => {
+  const report = useReport();
   const k = popIn(t, isKey ? 0.14 : 0.08); // quicker (acting kit, 2026-11-21): the word lands and HOLDS; the long pop kept 9% of frames moving
   const size = (isKey ? 132 : 108) * CAPTION_SCALE;
+  // the layout log (07-layout-log-wiring.md): the word's box at full size, centred on (540, y), the flat drop included
+  const stroke = (isKey ? 14 : 12) * CAPTION_SCALE, ww = word.length * size * 0.7 + stroke * 2, hh = size + stroke * 2;
+  report({kind: 'caption', box: {x0: 540 - ww / 2, y0: y - hh / 2, x1: 540 + ww / 2, y1: y + hh / 2 + (isKey ? 10 : 8) * CAPTION_SCALE}, text: word});
   return (
     <div style={{position: 'absolute', left: 0, right: 0, top: y, display: 'flex', justifyContent: 'center', pointerEvents: 'none'}}>
       <div style={{
@@ -209,12 +214,14 @@ export const settleIn = (t: number, dur = 0.3) => {
  * and fades out over 0.25 s from `out`. */
 export const IconBadge: React.FC<{icon: IconName; t: number; x?: number; y?: number; size?: number; out?: number}> = ({icon, t, x = 540, y = 300, size = 330, out}) => {
   const I = ICONS[icon];
+  const report = useReport();
   if (t < 0) return null;
   const fade = out === undefined ? 0 : clamp01((t - out) / 0.25);
   const ease = fade * fade * (3 - 2 * fade);
   const k = settleIn(t, 0.3) * (1 - ease * 0.12);
   const op = clamp01(t / 0.12) * (1 - ease);
   if (op <= 0.001) return null;
+  report({kind: 'icon', box: circleBox(x, y, size / 2), id: 'icon:' + icon});
   return (
     <svg style={{position: 'absolute', left: x - size / 2, top: y - size / 2, overflow: 'visible', pointerEvents: 'none', opacity: op}} width={size} height={size} viewBox="-100 -100 200 200">
       <g transform={`scale(${(0.55 + 0.45 * k).toFixed(4)})`}><I t={t} /></g>
@@ -252,10 +259,18 @@ export const WatermarkV3: React.FC<{act: number; t: number}> = ({act, t}) => {
 export const WM_SIZE = 26;
 export const WM_OPACITY = 0.44;
 /** `out` (seconds since it started leaving) fades it away over 0.35 s; the end card has no watermark (the owner, 2026-11-21). */
+/** The watermark's box on the screen (the layout log; about 0.56 em a character at 26 px). */
+const wmBoxOf = (p: {x: number; y: number; align: 'left' | 'right' | 'center'}) => {
+  const w = WATERMARK.length * WM_SIZE * 0.56, h = 32;
+  const x0 = p.align === 'right' ? p.x - w : p.align === 'center' ? p.x - w / 2 : p.x;
+  return {x0, y0: p.y - h / 2, x1: x0 + w, y1: p.y + h / 2};
+};
 export const Watermark: React.FC<{act: number; t: number; out?: number}> = ({act, t, out}) => {
+  const report = useReport();
   const p = WM_AT[Math.max(0, Math.min(2, act))];
   const k = clamp01(t / 0.35) * (out === undefined ? 1 : 1 - clamp01(out / 0.35));
   if (k <= 0) return null;
+  report({kind: 'watermark', box: wmBoxOf(p), id: 'act' + act});
   const tx = p.align === 'right' ? '-100%' : p.align === 'center' ? '-50%' : '0';
   return (
     <div style={{position: 'absolute', left: p.x, top: p.y, transform: `translate(${tx}, -50%)`, opacity: WM_OPACITY * k, pointerEvents: 'none',
@@ -330,6 +345,7 @@ export const CharTag: React.FC<{label: string; x: number; y: number; r: number; 
   /** v9: the arrow tip lands exactly here (the character's BODY centre from the layout log), never on a face or a prop */ arrowTo?: [number, number];
   /** v9: the character wears its name on a BandLabel: no tag at all (decision 13) */ band?: boolean;
   /** v9: a busy background behind the box: a wider white margin (px) */ margin?: number}> = ({label, x, y, r, t, dur = TAG_SECONDS, arrowTo, band, margin = 0}) => {
+  const report = useReport();
   if (band) return null;
   if (t < 0 || t > dur) return null;
   const {side, bx, by, w: w0, h: h0, fs} = tagBox(label, x, y, r);
@@ -346,6 +362,8 @@ export const CharTag: React.FC<{label: string; x: number; y: number; r: number; 
   const a2 = Math.atan2(tip[1] - mid[1], tip[0] - mid[0]);
   const head = (s: number) => `M ${tip[0] + Math.cos(a2) * 4} ${tip[1] + Math.sin(a2) * 4} L ${tip[0] - Math.cos(a2 - 0.5) * s} ${tip[1] - Math.sin(a2 - 0.5) * s} L ${tip[0] - Math.cos(a2 + 0.5) * s} ${tip[1] - Math.sin(a2 + 0.5) * s} Z`;
   const arc = `M ${from[0]} ${from[1]} Q ${mid[0]} ${mid[1]} ${tip[0]} ${tip[1]}`;
+  // the layout log: the tag box (+ its 7 px flat shadow) and where its arrow ends (check L4: on its own character's body)
+  report({kind: 'tag', box: {x0: bx - w / 2, y0: by - h / 2, x1: bx + w / 2, y1: by + h / 2 + 7}, text: label, owner: label, tip: to, id: 'tag:' + label});
   return (
     <div style={{position: 'absolute', inset: 0, opacity: op, pointerEvents: 'none'}}>
       <svg style={{position: 'absolute', left: 0, top: 0, overflow: 'visible'}} width={1080} height={1920} viewBox="0 0 1080 1920">
@@ -477,10 +495,12 @@ const hits = (a: HudBox, b: HudBox, pad = 0) => a.x0 < b.x1 + pad && a.x1 > b.x0
  * A place label that STAYS for the whole shot (A1 #11): a small white box, thin black border, plain capitals, no arrow,
  * set on the tissue and may tilt ("TRACHEA", "LUNGS"). Not a character tag (those keep their 2.5 s and arrow).
  */
-export const StayLabel: React.FC<{text: string; x: number; y: number; rot?: number; size?: number}> = ({text, x, y, rot = 0, size = 34}) => (
-  <div style={{position: 'absolute', left: x, top: y, transform: `translate(-50%, -50%) rotate(${rot}deg)`, background: '#ffffff', border: `4px solid ${INK}`, borderRadius: 6,
-    padding: `${size * 0.14}px ${size * 0.42}px`, fontFamily: FONT, fontWeight: 900, fontSize: size, letterSpacing: 1.2, color: INK, whiteSpace: 'nowrap', pointerEvents: 'none'}}>{text.toUpperCase()}</div>
-);
+export const StayLabel: React.FC<{text: string; x: number; y: number; rot?: number; size?: number}> = ({text, x, y, rot = 0, size = 34}) => {
+  const w = text.length * size * 0.68 + size * 0.84 + 8, h = size * 1.28 + 8;
+  useReport()({kind: 'label', box: {x0: x - w / 2, y0: y - h / 2, x1: x + w / 2, y1: y + h / 2}, text});
+  return <div style={{position: 'absolute', left: x, top: y, transform: `translate(-50%, -50%) rotate(${rot}deg)`, background: '#ffffff', border: `4px solid ${INK}`, borderRadius: 6,
+    padding: `${size * 0.14}px ${size * 0.42}px`, fontFamily: FONT, fontWeight: 900, fontSize: size, letterSpacing: 1.2, color: INK, whiteSpace: 'nowrap', pointerEvents: 'none'}}>{text.toUpperCase()}</div>;
+};
 
 // ------------------------------------------------------------------ the v9 watermark place (decision 26)
 /** Act 1 top right; act 2 bottom left at y 1200 (120 px clear of the caption); act 3 the first free top spot. */
@@ -503,10 +523,12 @@ export const wmSpot = (act: number, heads: HudBox[] = []) => {
  * background (`light`: the picture behind it is brighter than 200). `cover`: never drawn on the cover.
  */
 export const WatermarkV9: React.FC<{act: number; t: number; out?: number; heads?: HudBox[]; light?: boolean; cover?: boolean}> = ({act, t, out, heads, light, cover}) => {
+  const report = useReport();
   if (cover) return null;
   const p = wmSpot(act, heads);
   const k = clamp01(t / 0.35) * (out === undefined ? 1 : 1 - clamp01(out / 0.35));
   if (k <= 0) return null;
+  report({kind: 'watermark', box: wmBox(p), id: 'act' + act});
   const tx = p.align === 'right' ? '-100%' : p.align === 'center' ? '-50%' : '0';
   return (
     <div style={{position: 'absolute', left: p.x, top: p.y, transform: `translate(${tx}, -50%)`, opacity: WM_OPACITY * k, pointerEvents: 'none',
@@ -516,14 +538,28 @@ export const WatermarkV9: React.FC<{act: number; t: number; out?: number; heads?
 };
 
 // ------------------------------------------------------------------ the time card (decision 20)
-/** A black card with one short line in the caption font ("3 DAYS LATER"), 0.8-1.2 s, hard cut in and out. */
-export const TIME_CARD = {min: 0.8, max: 1.2};
-export const TimeCard: React.FC<{text: string; t?: number; bg?: string}> = ({text, bg = '#140d0c'}) => (
-  <div style={{position: 'absolute', inset: 0, background: bg, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none'}}>
-    <div style={{fontFamily: FONT, fontWeight: 900, fontSize: Math.min(110, Math.floor(980 / (text.length * 0.66))), color: '#ffffff', letterSpacing: 2, whiteSpace: 'nowrap',
-      WebkitTextStroke: `10px ${INK}`, paintOrder: 'stroke fill'}}>{text.toUpperCase()}</div>
-  </div>
-);
+/**
+ * A black full frame with one short line in the caption font ("3 DAYS LATER"), 0.8-1.2 s, a hard cut in and out (it is a cut,
+ * not a transition, so "no transitions" holds). The watermark stays on (the player draws it on top). The picture after the
+ * card has the SAME framing as before it; only the state changed (the shot plays again with `pass: 2`).
+ * `bg` is near black (mean brightness well under 30) so the picture checks C1/C8 find a card as an all-dark run of frames.
+ * (The ONE time card: agent C's time-card.tsx and agent B's first draft here were merged into this one, 2026-11-23.)
+ */
+export const TIME_CARD = {min: 0.8, max: 1.2, most: 3, bg: '#0d0a09'};
+/** The card itself. `t` is seconds since the card began: the text is there from its first frame (no pop, no fade: a cut). */
+export const TimeCard: React.FC<{text: string; t?: number; bg?: string}> = ({text, bg = TIME_CARD.bg}) => {
+  const words = text.trim().toUpperCase();
+  // one line: the size shrinks for a longer line so it never wraps (about 18 characters fit at 118 px)
+  const size = Math.min(118, Math.floor(1900 / Math.max(8, words.length)));
+  const w = words.length * size * 0.7, h = size * 1.2;
+  useReport()({kind: 'text', box: {x0: 540 - w / 2, y0: 960 - h / 2, x1: 540 + w / 2, y1: 960 + h / 2}, text: words, id: 'timecard'});
+  return (
+    <div style={{position: 'absolute', inset: 0, background: bg, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none'}}>
+      <div style={{fontFamily: FONT, fontWeight: 900, fontSize: size, lineHeight: 1, letterSpacing: 2, color: '#ffffff', whiteSpace: 'nowrap',
+        WebkitTextStroke: `${Math.round(size * 0.1)}px ${INK}`, paintOrder: 'stroke fill'}}>{words}</div>
+    </div>
+  );
+};
 
 // ------------------------------------------------------------------ the v9 end card (decision 25, option A)
 /** 5.5 s; a hard cut in (the card is whole from frame 0: no slide); headline and points together, 0.15 s apart. */

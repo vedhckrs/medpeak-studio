@@ -8,6 +8,7 @@
  * scalloped puff, a two-stroke outlined line) live in this file.
  */
 import React from 'react';
+import {circleBox, useReport} from './play';
 import {Acting, BandLabel, Board, Caption, CLOTH, ContactShadow, EDGE, EDGE_IN, Eyes, Fig, FLESH, INK, INLINE, Mouth, NameTag, OUTLINE, Panel, Shape, shade, tint, TinyArm, TinyLeg, type FaceExtras, type V8Props} from './kit';
 import {capsule, Hand} from './people-rig';
 
@@ -634,6 +635,10 @@ export const MiniWorker: React.FC<V8Props & FaceExtras & {job: Job; uniform?: st
   };
   const propAt: P = pose === 'sweep' ? [10, 30] : pose === 'up' ? [wr[0] + 6, wr[1] - 6] : [wr[0] + 8, wr[1] + 2];
   const propRot = pose === 'sweep' ? -24 : 0;
+  // the layout log: both small real hands (the kit Eyes and Mouth report the face); the Put around it names the worker
+  const report = useReport();
+  report({kind: 'hand', id: 'L', box: circleBox(wl[0], wl[1], 10)});
+  report({kind: 'hand', id: 'R', box: circleBox(wr[0], wr[1], 10)});
   return (
     <Acting lid={lid} turn={turn}>
       <g>

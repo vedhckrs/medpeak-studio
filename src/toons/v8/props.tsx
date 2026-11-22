@@ -10,6 +10,7 @@
  */
 import React, {useId} from 'react';
 import {Board, Caption, CLOTH, EDGE, EDGE_IN, Eyes, Fig, FONT, INK, INLINE, Mouth, OUTLINE, Panel, Shape, shade, tint, type V8Props} from './kit';
+import {FrameMove, matMul, matRotate, matScale, matTranslate, useReport} from './play';
 
 // ------------------------------------------------------------------ path helpers
 const rr = (x: number, y: number, w: number, h: number, r: number) => {
@@ -822,12 +823,16 @@ export const Intruder: React.FC<{from: IntruderFrom | {x: number; y: number}; at
   // ease out with a small overshoot (4% at most), then settle
   const e = u >= 1 ? 1 : 1 - Math.pow(1 - u, 3) + Math.sin(u * Math.PI) * 0.04;
   const x = start[0] + (at[0] - start[0]) * e, y = start[1] + (at[1] - start[1]) * e;
+  const report = useReport();
   if (t < t0) return null;
+  report({kind: 'prop', who: 'intruder', box: {x0: x - size / 2, y0: y - size / 2, x1: x + size / 2, y1: y + size / 2}, id: 'intruder'});
   return (
     <svg style={{position: 'absolute', left: x - size / 2, top: y - size / 2, overflow: 'visible', pointerEvents: 'none'}} width={size} height={size} viewBox="-100 -100 200 200">
       <g transform={`rotate(${rot})`}>
-        {children}
-        {eyes && <><Eyes x={eyes.x ?? 0} y={eyes.y ?? -10} r={eyes.r ?? 12} mood={eyes.mood} look={eyes.look} /><Mouth x={eyes.x ?? 0} y={(eyes.y ?? -10) + (eyes.r ?? 12) * 1.7} w={(eyes.r ?? 12) * 0.95} kind={eyes.mouth ?? 'flat'} /></>}
+        <FrameMove m={matMul(matMul(matTranslate(x, y), matScale(size / 200)), matRotate(rot))} who="intruder" body>
+          {children}
+          {eyes && <><Eyes x={eyes.x ?? 0} y={eyes.y ?? -10} r={eyes.r ?? 12} mood={eyes.mood} look={eyes.look} /><Mouth x={eyes.x ?? 0} y={(eyes.y ?? -10) + (eyes.r ?? 12) * 1.7} w={(eyes.r ?? 12) * 0.95} kind={eyes.mouth ?? 'flat'} /></>}
+        </FrameMove>
       </g>
     </svg>
   );

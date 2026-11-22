@@ -10,7 +10,7 @@
  */
 import React from 'react';
 import {INK, OUT} from './kit';
-import {active, type LineNow, type ShotNow} from './play';
+import {active, circleBox, useReport, type LineNow, type ShotNow} from './play';
 
 export const clamp01 = (v: number) => Math.max(0, Math.min(1, v));
 const lerp = (a: number, b: number, k: number) => a + (b - a) * k;
@@ -95,10 +95,12 @@ export const arc = (a: [number, number], b: [number, number], h: number, k: numb
  * for `dur` seconds from t0. Drawn in the kit's style (flat, outlined, no glow).
  */
 export const Burst: React.FC<{t: number; t0: number; x: number; y: number; r?: number; dur?: number; col?: string; keep?: boolean}> = ({t, t0, x, y, r: r0 = 120, dur = 0.32, col = '#ffffff', keep = false}) => {
+  const report = useReport();
   if (IMPACTS === 'v9' && !keep) return null; // v9: only the (at most two) bursts the script keeps
   const r = IMPACTS === 'v9' ? Math.min(r0, BURST_MAX_R) : r0;
   const u = (t - t0) / dur;
   if (u < 0 || u > 1) return null;
+  report({kind: 'fx', box: circleBox(x, y, r * 1.15), id: `burst@${t0.toFixed(2)}@${Math.round(x)},${Math.round(y)}`}); // check L7 counts distinct ids
   const k = u < 0.35 ? easeOut(u / 0.35) * 1.15 : lerp(1.15, 0.6, (u - 0.35) / 0.65);
   const o = u < 0.7 ? 1 : 1 - (u - 0.7) / 0.3;
   const n = 9;
@@ -122,10 +124,12 @@ export const Burst: React.FC<{t: number; t0: number; x: number; y: number; r?: n
 
 /** Speed lines behind a fast mover, pointing back along its direction (frame or screen pixels). */
 export const SpeedLines: React.FC<{x: number; y: number; dir: [number, number]; len?: number; o?: number}> = ({x, y, dir, len = 160, o = 1}) => {
+  const report = useReport();
   const L = Math.hypot(dir[0], dir[1]) || 1;
   const [dx, dy] = [dir[0] / L, dir[1] / L];
   const [nx, ny] = [-dy, dx];
   if (o <= 0.01) return null;
+  { const ex = x - dx * (40 + len), ey = y - dy * (40 + len); report({kind: 'fx', box: {x0: Math.min(x, ex) - 64, y0: Math.min(y, ey) - 64, x1: Math.max(x, ex) + 64, y1: Math.max(y, ey) + 64}, id: 'speed'}); }
   return (
     <svg style={{position: 'absolute', left: 0, top: 0, overflow: 'visible', pointerEvents: 'none'}} width={1080} height={1920} viewBox="0 0 1080 1920" opacity={o}>
       {[-1, -0.35, 0.35, 1].map((s, i) => {
@@ -142,8 +146,10 @@ export const SpeedLines: React.FC<{x: number; y: number; dir: [number, number]; 
  * with its line. For a number the script says (the hook's "+2 KG"). Laid on the screen, after the camera.
  */
 export const Stamp: React.FC<{t: number; t0: number; t1: number; x: number; y: number; text: string; size?: number; rot?: number; bg?: string; fg?: string}> = ({t, t0, t1, x, y, text, size = 150, rot = -8, bg = '#ffd23f', fg = INK}) => {
+  const report = useReport();
   const u = t - t0;
   if (u < 0 || t > t1 + 0.2) return null;
+  { const w = text.length * size * 0.72 + size * 0.6 + 18, h = size * 1.16 + 32; report({kind: 'plate', box: {x0: x - w / 2, y0: y - h / 2, x1: x + w / 2, y1: y + h / 2 + 14}, text, id: 'stamp:' + text}); }
   const k = u < 0.12 ? lerp(2.2, 0.92, easeOut(u / 0.12)) : u < 0.3 ? lerp(0.92, 1, smooth((u - 0.12) / 0.18)) : 1;
   const o = clamp01(u / 0.05) * clamp01((t1 + 0.2 - t) / 0.2);
   return (
@@ -292,11 +298,13 @@ const hash = (n: number) => { const x = Math.sin(n * 127.1 + 311.7) * 43758.5453
  * Flat: no glow, no blur. (x, y) its centre and r its radius in frame or screen pixels.
  */
 export const FightCloud: React.FC<{t: number; t0: number; dur?: number; x: number; y: number; r?: number; seed?: number; col?: string; limb?: string}> = ({t, t0, dur = 1.5, x, y, r = 220, seed = 0, col = '#ffffff', limb = '#f2b8a0'}) => {
+  const report = useReport();
   const len = Math.max(1, Math.min(2, dur));
   const u = (t - t0) / len;
   if (u < 0 || u > 1) return null;
   const grow = u < 0.1 ? easeOutSoft(u / 0.1) : u > 0.85 ? 1 - smoothStep((u - 0.85) / 0.15) : 1;
   if (grow <= 0.01) return null;
+  report({kind: 'fx', box: circleBox(x, y, r * grow * 1.15, r * grow * 1.0), id: `cloud@${t0.toFixed(2)}`});
   const tick = Math.floor((t - t0) * 20); // a new boil every 3 frames at 60 fps
   const n = 6 + Math.floor(hash(seed * 7 + 1) * 4); // 6-9 lobes
   const R = r * grow;
@@ -333,9 +341,11 @@ export const FightCloud: React.FC<{t: number; t0: number; dur?: number; x: numbe
 };
 
 /** One sweat drop beside a face (frame or screen pixels), sliding down a little over its `life` (0..1). */
-export const Sweat: React.FC<{x: number; y: number; size?: number; life?: number; col?: string}> = ({x, y, size = 40, life = 0, col = '#bfe3f2'}) => {
+export const Sweat: React.FC<{x: number; y: number; size?: number; life?: number; col?: string; /** whose face it is on (the layout log: allowed on its own face) */ who?: string}> = ({x, y, size = 40, life = 0, col = '#bfe3f2', who}) => {
+  const report = useReport();
   const k = clamp01(life);
   const s = size / 18;
+  report({kind: 'fx', box: {x0: x - 6 * s, y0: y - 9 * s + k * size * 0.8, x1: x + 6 * s, y1: y + 9 * s + k * size * 0.8}, id: 'sweat', who});
   return (
     <svg style={{position: 'absolute', left: 0, top: 0, overflow: 'visible', pointerEvents: 'none'}} width={1080} height={1920} viewBox="0 0 1080 1920" opacity={1 - k * 0.5}>
       <path transform={`translate(${x} ${y + k * size * 0.8}) scale(${s})`} d="M 0 -9 C 3 -4 6 0 6 3 A 6 6 0 0 1 -6 3 C -6 0 -3 -4 0 -9 Z" fill={col} stroke={INK} strokeWidth={OUT / s} strokeLinejoin="round" />
@@ -343,8 +353,9 @@ export const Sweat: React.FC<{x: number; y: number; size?: number; life?: number
   );
 };
 /** Small face marks: `lines` (three short strain lines), `bump` (a round lump), `anger` (the four-arc vein). */
-export const Marks: React.FC<{kind: 'lines' | 'bump' | 'anger'; x: number; y: number; size?: number; rot?: number; col?: string}> = ({kind, x, y, size = 60, rot = 0, col = '#f08a8a'}) => {
+export const Marks: React.FC<{kind: 'lines' | 'bump' | 'anger'; x: number; y: number; size?: number; rot?: number; col?: string; /** whose face (the layout log) */ who?: string}> = ({kind, x, y, size = 60, rot = 0, col = '#f08a8a', who}) => {
   const s = size / 60;
+  useReport()({kind: 'fx', box: circleBox(x, y, 30 * s), id: 'marks:' + kind, who});
   return (
     <svg style={{position: 'absolute', left: 0, top: 0, overflow: 'visible', pointerEvents: 'none'}} width={1080} height={1920} viewBox="0 0 1080 1920">
       <g transform={`translate(${x} ${y}) rotate(${rot}) scale(${s})`}>

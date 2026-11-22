@@ -36,7 +36,8 @@
  *   headAt(spec, {pose, view, facing, x, y, scale, bob}) -> {x, y, r}  (the face centre and a radius)
  */
 import React, {useId} from 'react';
-import {INK, OUT, IN, OUTLINE, INLINE, EDGE, EDGE_IN, shade, tint, SKIN, CLOTH, FLESH, Eyes, Mouth, useV9, type Mood, type MouthKind} from './kit';
+import {INK, OUT, IN, OUTLINE, INLINE, EDGE, EDGE_IN, shade, tint, SKIN, CLOTH, FLESH, Eyes, FaceOwned, Mouth, useV9, type Mood, type MouthKind} from './kit';
+import {circleBox, FrameMove, IDENTITY, useReport} from './play';
 
 // ================================================================== small geometry
 type P = [number, number];
@@ -1651,7 +1652,7 @@ const HAIR_QM: Partial<Record<HairStyle, HairDraw>> = {
 };
 
 // ================================================================== hand and face positions for scenes
-export type HandPoint = {wrist: [number, number]; palm: [number, number]; dir: [number, number]};
+export type HandPoint = {wrist: [number, number]; palm: [number, number]; dir: [number, number]; /** the hand shape drawn */ hand?: HandKind};
 type PlaceOpts = {pose?: PoseIn; view?: View; facing?: Facing; x: number; y: number; scale: number; bob?: number};
 /**
  * Where both hands are, in frame pixels, for a person placed like <PersonAt x y scale ...>: the wrist, the
@@ -1668,7 +1669,7 @@ export const handAt = (spec: PersonSpec, o: PlaceOpts): {R: HandPoint; L: HandPo
     const a = ((f.ang + f.bend) * Math.PI) / 180;
     const palm = add(g.w, [Math.cos(a) * 11 * Lo.handK, Math.sin(a) * 11 * Lo.handK]);
     const d = nrm(sub(g.w, g.e));
-    return {wrist: X(g.w), palm: X(palm), dir: [mir ? -d[0] : d[0], d[1]]};
+    return {wrist: X(g.w), palm: X(palm), dir: [mir ? -d[0] : d[0], d[1]], hand: g.ap.hand};
   };
   // the mirror twin's left arm is the character's own right arm
   return mir ? {R: one(1), L: one(-1)} : {R: one(-1), L: one(1)};
@@ -1803,15 +1804,38 @@ export const lookFrom = (spec: PersonSpec, o: PlaceOpts, at: [number, number]): 
   const dx = at[0] - h.x, dy = at[1] - h.y, l = Math.hypot(dx, dy) || 1;
   return [((mir ? -dx : dx) / l) * 0.8, (dy / l) * 0.8];
 };
+/** The layout log of a placed person (07-layout-log-wiring.md): head, face (with the pupils' real direction) and both hands. */
+const usePersonReport = (spec: PersonSpec, o: PlaceOpts, look: [number, number] | undefined) => {
+  const report = useReport();
+  const h = headAt(spec, o);
+  report({kind: 'head', box: circleBox(h.x, h.y, h.r)});
+  report({kind: 'face', box: {x0: h.x - 0.55 * h.r, y0: h.y - 0.45 * h.r, x1: h.x + 0.55 * h.r, y1: h.y + 0.6 * h.r}, dir: look ?? [0, 0.05], id: look ? 'look' : 'default-look'});
+  const hands = handAt(spec, o);
+  const hr = 0.32 * spec.build.R * o.scale;
+  for (const id of ['R', 'L'] as const) report({kind: 'hand', id, box: circleBox(hands[id].palm[0], hands[id].palm[1], hr), open: hands[id].hand === 'open'});
+};
+const PersonReport: React.FC<{spec: PersonSpec; o: PlaceOpts; look?: [number, number]}> = ({spec, o, look}) => { usePersonReport(spec, o, look); return null; };
 export const PersonAt: React.FC<PersonProps & {x: number; y: number; scale: number; flip?: boolean; lookAt?: [number, number]}> = ({x, y, scale, flip, lookAt, ...p}) => {
-  const look = lookAt ? lookFrom(p.spec, {pose: p.pose, view: p.view, facing: p.facing, x, y, scale, bob: p.bob}, lookAt) : p.look;
+  const o: PlaceOpts = {pose: p.pose, view: p.view, facing: p.facing, x, y, scale, bob: p.bob};
+  const look = lookAt ? lookFrom(p.spec, o, lookAt) : p.look;
   return (
-    <svg style={{position: 'absolute', left: x, top: y, overflow: 'visible'}} width={1} height={1}>
-      <g transform={`scale(${scale * (flip ? -1 : 1)} ${scale})`}>
-        <Person {...p} look={look} px={scale} />
-      </g>
-    </svg>
+    <FrameMove m={IDENTITY} who={p.spec.id} body>
+      <PersonReport spec={p.spec} o={o} look={look} />
+      <FaceOwned>
+        <svg style={{position: 'absolute', left: x, top: y, overflow: 'visible'}} width={1} height={1}>
+          <g transform={`scale(${scale * (flip ? -1 : 1)} ${scale})`}>
+            <Person {...p} look={look} px={scale} />
+          </g>
+        </svg>
+      </FaceOwned>
+    </FrameMove>
   );
+};
+const HeadReport: React.FC<{x: number; y: number; px: number; look?: [number, number]}> = ({x, y, px, look}) => {
+  const report = useReport();
+  report({kind: 'head', box: circleBox(x, y, px)});
+  report({kind: 'face', box: {x0: x - 0.75 * px, y0: y - 0.55 * px, x1: x + 0.75 * px, y1: y + 0.75 * px}, dir: look ?? [0, 0.05]});
+  return null;
 };
 /** Just the head, centred on (x, y), for expression rows. size = px of the head radius. */
 export const HeadAt: React.FC<{spec: PersonSpec; x: number; y: number; px: number; expr?: Expr; view?: View; look?: [number, number]; talk?: number; blink?: number; facing?: Facing; mark?: Mark[]; lookAt?: [number, number]}> = ({spec, x, y, px, expr, view = 'front', look: look0, talk, blink, facing, mark, lookAt}) => {
@@ -1819,6 +1843,7 @@ export const HeadAt: React.FC<{spec: PersonSpec; x: number; y: number; px: numbe
   const k = px / spec.build.R;
   const Ht = spec.build.heads * 2.15 * spec.build.R;
   return (
+    <FrameMove m={IDENTITY} who={spec.id} body><HeadReport x={x} y={y} px={px} look={look} /><FaceOwned>
     <svg style={{position: 'absolute', left: x, top: y, overflow: 'visible'}} width={1} height={1}>
       <defs><clipPath id={`hc-${spec.id}-${expr}-${view}`}><rect x={-3 * px} y={-3 * px} width={6 * px} height={3 * px + 1.72 * px} rx={0} /></clipPath></defs>
       <g clipPath={`url(#hc-${spec.id}-${expr}-${view})`}>
@@ -1827,6 +1852,7 @@ export const HeadAt: React.FC<{spec: PersonSpec; x: number; y: number; px: numbe
         </g>
       </g>
     </svg>
+    </FaceOwned></FrameMove>
   );
 };
 /** A hand drawn large on a board (for the hands sheet). */
