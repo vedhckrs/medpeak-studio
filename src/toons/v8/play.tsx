@@ -27,6 +27,7 @@ export type LineNow = {
   pose?: string; // the script's word (old engine names); a shot may use it as a hint
   react?: Record<string, string>; // who -> emotion, for those who listen during this line
   words: Word[];
+  key?: string; // engine v9: the script's caption key word (`onKey` in act.tsx lands a gesture on it)
 };
 
 /** Everything a shot may know about "now". */
@@ -36,6 +37,12 @@ export type ShotNow = {
   dur: number; // seconds this shot lasts
   lines: LineNow[]; // this shot's lines, in order
   cur: LineNow | null; // the line whose time it is now (also during its closing gap); null only before the first
+  /** engine v9: 1 the first time a shot id plays, 2 when it comes back after a time card (same framing, new state) */
+  pass?: number;
+  /** engine v9: the shot's stage dials now (toon.json `state` + `events`, eased: director.ts stateAt) */
+  state?: Record<string, number>;
+  /** engine v9: true for a format-6 video (the player sets it); `bodyFace` then gives a continuous `lid` and no teeth grid */
+  v9?: boolean;
 };
 
 export type Focus = {x: number; y: number; r: number}; // a face in frame pixels: centre and radius
@@ -56,6 +63,16 @@ export type ShotDef = {
   view?: (s: ShotNow) => {x: number; y: number; z: number};
   /** v4: the point (frame pixels) a transition dives into or pulls back out of: the Kid's scratch in a room. */
   portal?: (s: ShotNow) => [number, number];
+  /** engine v9: what the place is (else the director's `kindOf` works it out from the set) */
+  kind?: 'body' | 'micro' | 'room' | 'card';
+  /** engine v9: the anatomy stage the shot is set on (anatomy.tsx STAGES) */
+  stage?: string;
+  /** engine v9: the ONE allowed re-frame of a video (decision 16): from that line on, that framing (a hard cut, held) */
+  punch?: {line: string; z: number; x?: number; y?: number};
+  /** engine v9: where each character's face is now (frame pixels), when `focus` is not enough (two faces, a turned head) */
+  faces?: (s: ShotNow) => Record<string, Focus>;
+  /** engine v9 (decision 26): the picture behind the watermark is light (an ink-coloured mark); default: a room shot */
+  light?: boolean;
 };
 
 // ------------------------------------------------------------------ small pure helpers for shots
@@ -113,6 +130,19 @@ export const blink = (t: number, seed = 0) => {
 };
 
 /**
+ * Engine v9 (blueprint 4.3): the 0.2 s blink as a CONTINUOUS upper lid 0..1 (open, half, shut, half, open; no threshold
+ * switch), at its own rhythm for each `seed` (3-5 s apart). Feeds the kit's `lid` (Eyes / Acting / a stage face).
+ */
+export const BLINK9 = {dur: 0.2, min: 3, spread: 2};
+export const blinkLid = (t: number, seed = 0) => {
+  const period = BLINK9.min + ((seed * 0.73) % BLINK9.spread);
+  const x = (((t + seed * 1.31) % period) + period) % period;
+  if (x >= BLINK9.dur) return 0;
+  const u = x / BLINK9.dur; // 0..1 over the blink: down fast, up a little slower
+  return u < 0.4 ? Math.sin((u / 0.4) * Math.PI * 0.5) : Math.cos(((u - 0.4) / 0.6) * Math.PI * 0.5);
+};
+
+/**
  * The feeling `who` shows now: their own line's emotion while it is their line; while someone else speaks,
  * what the script says they `react` with; otherwise the feeling of their last own line; else `rest`.
  */
@@ -146,7 +176,15 @@ export const talkSmooth = (s: ShotNow, who: string) => {
   for (const dt of [-0.05, -0.025, 0, 0.025, 0.05]) sum += talk({...s, t: s.t + dt}, who);
   return sum / 5;
 };
-export const bodyFace = (s: ShotNow, who: string, seed = 0, rest = 'neutral'): {mood: Mood; mouth: MouthKind} => {
+/** Engine v9 (decision 10): body characters lose the teeth-grid mouth; angry is a flat, set mouth. */
+export const FACE_OF9: Record<string, {mood: Mood; mouth: MouthKind}> = {...FACE_OF, angry: {mood: 'angry', mouth: 'flat'}};
+export const bodyFace = (s: ShotNow, who: string, seed = 0, rest = 'neutral'): {mood: Mood; mouth: MouthKind; lid?: number} => {
+  if (s.v9) {
+    // v9: the feeling's own eyes with a continuous blink lid (the kit's Eyes / Acting take `lid`); no 'closed' switch
+    const f9 = FACE_OF9[feel(s, who, rest)] ?? FACE_OF9.neutral;
+    const o9 = talkSmooth(s, who);
+    return {mood: f9.mood, mouth: o9 > 0.5 ? 'open' : o9 > 0.18 ? 'o' : f9.mouth, lid: f9.mood === 'happy' || f9.mood === 'dizzy' ? 0 : blinkLid(s.t, seed)};
+  }
   const f = FACE_OF[feel(s, who, rest)] ?? FACE_OF.neutral;
   const open = talkSmooth(s, who);
   const shut = blink(s.t, seed) > 0.5 && f.mood !== 'happy' && f.mood !== 'dizzy';
