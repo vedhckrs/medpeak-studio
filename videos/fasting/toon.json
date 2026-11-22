@@ -1,0 +1,819 @@
+{
+ "slug": "fasting",
+ "title": "What Happens to Your Body When You Fast",
+ "format": 5,
+ "shape": "clock",
+ "music": "fasting",
+ "camera": "steady",
+ "episode": 13,
+ "hooks": [
+  {
+   "line": "When you fast, I scream!",
+   "why": "the owner's pick A (2026-11-22: \"Hook A, Grandpa\"), cut to 5 words for the 2-second hook rule (\"No food for sixteen hours? I'll scream in four!\" took 2.7 s)"
+  },
+  {
+   "line": "You fast? Hour twelve, your body switches fuel!",
+   "why": "B: the liver's sugar jar, the last bead drops"
+  },
+  {
+   "line": "When you fast, hunger starts in your brain.",
+   "why": "C: the Brain winks while the Stomach screams"
+  }
+ ],
+ "rooms": {
+  "home": {
+   "kind": "living",
+   "palette": "blush",
+   "wall": "wainscot",
+   "floor": "carpet",
+   "window": {
+    "style": "round",
+    "side": "centre",
+    "view": "night"
+   },
+   "layout": "sofa-left",
+   "time": "night"
+  }
+ },
+ "package": {
+  "title": "What Happens to Your Body When You Fast",
+  "phrase": "what happens to your body when you fast",
+  "opener": "What happens to your body when you fast for 16 hours? Hunger comes in waves at your usual meal times and drops again on its own. After about 12 hours or more without food, the liver's sugar store runs low and the body switches to burning fat. But in a year-long trial, fasting every other day lost about the same weight as simply eating less every day, and eating in an 8-hour window did no better either. Fasting isn't for everyone: researchers advise against it in pregnancy and for anyone with a history of eating disorders. Ask a doctor first.",
+  "question": "Have you ever tried a 16-hour fast?",
+  "tags": [
+   "what happens to your body when you fast",
+   "intermittent fasting",
+   "16 hour fast",
+   "fasting benefits",
+   "what happens when you fast",
+   "ketosis",
+   "fasting for weight loss",
+   "hunger",
+   "metabolic switch",
+   "health cartoon"
+  ],
+  "hashtags": "#fasting #health #shorts",
+  "cover": {
+   "at": 1.2,
+   "text": "When you fast",
+   "accent": "fast"
+  }
+ },
+ "retention": {
+  "noIntro": {
+   "scene": "A1",
+   "line": "When you fast, I scream!"
+  },
+  "promise": {
+   "scene": "A1",
+   "line": "When you fast, I scream!"
+  },
+  "question": {
+   "scene": "A2",
+   "line": "Sixteen hours. Scared of a little hunger, stomach?"
+  },
+  "answer": {
+   "scene": "G2",
+   "line": "Me! When you fast, the brain makes you scream, little stomach!"
+  },
+  "change3s": {
+   "scene": "all",
+   "line": "steady camera: something happens in the picture at least every 3 s (stickers do not count)"
+  },
+  "twist": {
+   "scene": "E3",
+   "line": "...lost about the same as just eating less."
+  },
+  "bestLast": {
+   "scene": "G2",
+   "line": "Me! When you fast, the brain makes you scream, little stomach!"
+  },
+  "loop": {
+   "scene": "G2",
+   "line": "Me! When you fast, the brain makes you scream, little stomach!"
+  }
+ },
+ "sources": [
+  {
+   "id": "niddk-if",
+   "label": "National Institute of Diabetes and Digestive and Kidney Diseases (NIH). What Can You Tell Your Patients About Intermittent Fasting and Type 2 Diabetes?",
+   "url": "https://www.niddk.nih.gov/health-information/professionals/diabetes-discoveries-practice/patients-intermittent-fasting",
+   "note": "Interview with an NIH-funded fasting researcher: 'I don't think people with a history of eating disorders should do fasting regimens.'; 'certain people probably shouldn't do intermittent fasting, like pregnant women since no studies have been conducted in this group just yet.'; 'You don't really get significant increases in ketones after fasting for 16 hours.' (so the video does not mention ketones); 'Both diets resulted in about 5% weight loss over 12 months.'"
+  },
+  {
+   "id": "anton-2018",
+   "label": "Anton SD et al. Flipping the Metabolic Switch: Understanding and Applying the Health Benefits of Fasting. Obesity 2018;26:254-68",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/29086496/",
+   "note": "'the metabolic switch: the point of negative energy balance at which liver glycogen stores are depleted and fatty acids are mobilized (typically beyond 12 hours after cessation of food intake)'; 'the metabolic switch from glucose to fatty acid-derived ketones'. No conflicts."
+  },
+  {
+   "id": "natalucci-2005",
+   "label": "Natalucci G et al. Spontaneous 24-h ghrelin secretion pattern in fasting subjects: maintenance of a meal-related pattern. Eur J Endocrinol 2005;152:845-50",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/15941923/",
+   "note": "Six healthy volunteers, a 24-hour fast: 'An increase and spontaneous decrease in ghrelin were seen at the timepoints of customary meals'; 'An overall decrease in ghrelin levels was observed'; 'it is the brain that is primarily involved in the regulation of meal initiation.' A small pilot study."
+  },
+  {
+   "id": "trepanowski-2017",
+   "label": "Trepanowski JF et al. Effect of Alternate-Day Fasting on Weight Loss, Weight Maintenance, and Cardioprotection Among Metabolically Healthy Obese Adults: A Randomized Clinical Trial. JAMA Intern Med 2017;177:930-8",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/28459931/",
+   "note": "100 adults with obesity, 1 year; month 12: -6.0% vs -5.3% of body weight; 'Alternate-day fasting did not produce superior adherence, weight loss, weight maintenance, or cardioprotection vs daily calorie restriction.' The last author wrote an alternate-day diet book (declared)."
+  },
+  {
+   "id": "lowe-2020",
+   "label": "Lowe DA et al. Effects of Time-Restricted Eating on Weight Loss and Other Metabolic Parameters in Women and Men With Overweight and Obesity: The TREAT Randomized Clinical Trial. JAMA Intern Med 2020;180:1491-9",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/32986097/",
+   "note": "116 adults, 12 weeks of 16:8 eating: 'Time-restricted eating, in the absence of other interventions, is not more effective in weight loss than eating throughout the day.'"
+  }
+ ],
+ "shots": [
+  {
+   "id": "A",
+   "set": "macro",
+   "cast": [
+    {
+     "who": "stomach",
+     "x": 540,
+     "size": 1080,
+     "stage": true,
+     "emotion": "angry",
+     "pose": "rest"
+    },
+    {
+     "who": "grandpa",
+     "x": 560,
+     "size": 960,
+     "emotion": "happy",
+     "pose": "rest",
+     "y": 979
+    }
+   ],
+   "state": {
+    "view": 0,
+    "growl": 1
+   },
+   "events": [
+    {
+     "at": "start",
+     "act": "stomach: bursts on screen at the lens, fists up",
+     "sfx": "pop",
+     "fx": "flash"
+    },
+    {
+     "at": "A1",
+     "act": "stomach: shakes both fists at grandpa",
+     "word": "scream",
+     "sfx": "gurgle-stomach"
+    },
+    {
+     "at": "A2",
+     "act": "grandpa: pushes his dinner plate away and points at the clock",
+     "word": "Sixteen",
+     "sfx": "swish"
+    },
+    {
+     "at": "A2",
+     "act": "grandpa: the camera dives into his belly to the growling stomach",
+     "word": "stomach?",
+     "set": {
+      "growl": 1
+     },
+     "over": 12,
+     "sfx": "whoosh-fast"
+    }
+   ],
+   "lines": [
+    {
+     "id": "A1",
+     "who": "stomach",
+     "text": "When you fast, I scream!",
+     "emotion": "angry",
+     "pose": "rest",
+     "key": "scream",
+     "chat": true,
+     "cam": "ecu 50 push",
+     "react": {
+      "grandpa": "happy"
+     },
+     "tempo": 1.15
+    },
+    {
+     "id": "A2",
+     "who": "grandpa",
+     "text": "Sixteen hours. Scared of a little hunger, stomach?",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "hunger",
+     "chat": true,
+     "cam": "mcu lock"
+    }
+   ],
+   "props": []
+  },
+  {
+   "id": "B",
+   "set": "macro",
+   "lead": 0.6,
+   "cast": [
+    {
+     "who": "stomach",
+     "x": 540,
+     "size": 1080,
+     "stage": true,
+     "emotion": "angry",
+     "pose": "rest"
+    },
+    {
+     "who": "brain",
+     "x": 820,
+     "size": 340,
+     "emotion": "neutral",
+     "pose": "rest"
+    }
+   ],
+   "state": {
+    "view": 0,
+    "growl": 0
+   },
+   "events": [
+    {
+     "at": "start",
+     "act": "grandpa: the clock jumps to 4 h; cut inside to his stomach",
+     "sfx": "swish"
+    },
+    {
+     "at": "B1",
+     "act": "stomach: growls and shakes",
+     "word": "Feed",
+     "set": {
+      "growl": 1
+     },
+     "over": 6,
+     "sfx": "gurgle-stomach"
+    },
+    {
+     "at": "B1",
+     "act": "stomach: pounds the wall with both fists",
+     "word": "FEED",
+     "fx": "flash"
+    },
+    {
+     "at": "B2",
+     "act": "brain: peeks down from the top of the frame",
+     "word": "Hunger",
+     "sfx": "bubble-pop"
+    },
+    {
+     "at": "B2",
+     "act": "brain: draws a wave in the air; the growl swells with it",
+     "word": "waves,",
+     "set": {
+      "growl": 0.6
+     },
+     "over": 10,
+     "sfx": "whoosh-air"
+    },
+    {
+     "at": "B2",
+     "act": "stomach: the growl swells again, then eases",
+     "word": "meal",
+     "set": {
+      "growl": 0.9
+     },
+     "over": 10
+    },
+    {
+     "at": "B3",
+     "act": "stomach: the growl dies down, it blinks, surprised",
+     "word": "drops",
+     "set": {
+      "growl": 0
+     },
+     "over": 20,
+     "sfx": "whoosh-soft"
+    }
+   ],
+   "lines": [
+    {
+     "id": "B1",
+     "who": "stomach",
+     "text": "Feed me! FEED ME!",
+     "emotion": "angry",
+     "pose": "rest",
+     "key": "feed",
+     "chat": true,
+     "cam": "ews whip"
+    },
+    {
+     "id": "B2",
+     "who": "brain",
+     "text": "Hunger comes in waves, at your usual meal times...",
+     "emotion": "neutral",
+     "pose": "rest",
+     "key": "waves",
+     "src": [
+      "natalucci-2005"
+     ],
+     "cam": "mcu push"
+    },
+    {
+     "id": "B3",
+     "who": "brain",
+     "text": "...and it drops again on its own.",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "drops",
+     "src": [
+      "natalucci-2005"
+     ],
+     "cam": "ews"
+    }
+   ],
+   "props": []
+  },
+  {
+   "id": "C",
+   "set": "macro",
+   "lead": 0.6,
+   "cast": [
+    {
+     "who": "liver",
+     "x": 540,
+     "size": 1080,
+     "stage": true,
+     "emotion": "scared",
+     "pose": "rest"
+    }
+   ],
+   "state": {
+    "view": 1,
+    "store": 1
+   },
+   "events": [
+    {
+     "at": "start",
+     "act": "grandpa: the clock jumps to 12 h; cut to his liver",
+     "sfx": "swish"
+    },
+    {
+     "at": "C1",
+     "act": "liver: taps its sugar jar",
+     "word": "sugar",
+     "sfx": "ding"
+    },
+    {
+     "at": "C1",
+     "act": "liver: the beads in its jar drop away",
+     "word": "low...",
+     "set": {
+      "store": 0.3
+     },
+     "over": 30,
+     "sfx": "drip"
+    },
+    {
+     "at": "C2",
+     "act": "liver: the last beads go",
+     "word": "twelve",
+     "set": {
+      "store": 0
+     },
+     "over": 20
+    },
+    {
+     "at": "C2",
+     "act": "liver: stares at the empty jar, shocked",
+     "word": "dry!",
+     "sfx": "record-scratch",
+     "fx": "flash"
+    }
+   ],
+   "lines": [
+    {
+     "id": "C1",
+     "who": "liver",
+     "text": "I keep sugar for between meals. Running low...",
+     "emotion": "scared",
+     "pose": "rest",
+     "key": "sugar",
+     "src": [
+      "anton-2018"
+     ],
+     "cam": "ews whip"
+    },
+    {
+     "id": "C2",
+     "who": "liver",
+     "text": "Past about twelve hours, my store runs dry!",
+     "emotion": "shocked",
+     "pose": "rest",
+     "key": "dry",
+     "src": [
+      "anton-2018"
+     ],
+     "cam": "cu push"
+    }
+   ],
+   "props": [
+    {
+     "kind": "tag",
+     "text": "about 12 hours",
+     "x": 540,
+     "y": 300,
+     "size": 300,
+     "from": "C2",
+     "to": "C2",
+     "word": "about"
+    }
+   ]
+  },
+  {
+   "id": "D",
+   "set": "macro",
+   "cast": [
+    {
+     "who": "lardo",
+     "x": 820,
+     "size": 420,
+     "emotion": "happy",
+     "pose": "rest"
+    },
+    {
+     "who": "liver",
+     "x": 540,
+     "size": 1080,
+     "stage": true,
+     "emotion": "happy",
+     "pose": "rest"
+    }
+   ],
+   "state": {
+    "view": 2,
+    "drops": 0
+   },
+   "events": [
+    {
+     "at": "start",
+     "act": "lardo: pops up beside the liver",
+     "sfx": "boing"
+    },
+    {
+     "at": "D1",
+     "act": "lardo: throws his arms up",
+     "word": "turn!",
+     "sfx": "tada"
+    },
+    {
+     "at": "D1",
+     "act": "lardo: fuel drops pop off his top",
+     "word": "fat!",
+     "set": {
+      "drops": 1
+     },
+     "over": 20,
+     "sfx": "sparkle"
+    },
+    {
+     "at": "D2",
+     "act": "liver: flips a big switch on its side from SUGAR to FAT",
+     "word": "switches",
+     "sfx": "toot",
+     "fx": "flash"
+    },
+    {
+     "at": "D2",
+     "act": "liver: catches a fuel drop and hops for joy",
+     "word": "fat!",
+     "sfx": "success-chime"
+    }
+   ],
+   "lines": [
+    {
+     "id": "D1",
+     "who": "lardo",
+     "text": "My turn! Burning fat!",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "fat",
+     "src": [
+      "anton-2018"
+     ],
+     "cam": "ms lock"
+    },
+    {
+     "id": "D2",
+     "who": "liver",
+     "text": "No sugar left, so the body switches fuel: fat!",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "switches",
+     "src": [
+      "anton-2018"
+     ],
+     "cam": "cu push"
+    }
+   ],
+   "props": []
+  },
+  {
+   "id": "E",
+   "set": "home",
+   "cast": [
+    {
+     "who": "grandpa",
+     "x": 560,
+     "size": 960,
+     "emotion": "happy",
+     "pose": "rest",
+     "y": 979
+    },
+    {
+     "who": "lardo",
+     "x": 900,
+     "size": 300,
+     "emotion": "neutral",
+     "pose": "rest"
+    }
+   ],
+   "events": [
+    {
+     "at": "start",
+     "act": "grandpa: the clock rings 16 h; breakfast on the table",
+     "sfx": "ding",
+     "fx": "flash"
+    },
+    {
+     "at": "E1",
+     "act": "grandpa: gives a big thumbs-up",
+     "word": "Sixteen"
+    },
+    {
+     "at": "E1",
+     "act": "grandpa: pats his belly, grinning",
+     "word": "faster?"
+    },
+    {
+     "at": "E2",
+     "act": "lardo: pops up on the side table",
+     "word": "year-long",
+     "sfx": "pop"
+    },
+    {
+     "at": "E2",
+     "act": "lardo: counts days on his fingers",
+     "word": "every"
+    },
+    {
+     "at": "E3",
+     "act": "lardo: shrugs",
+     "word": "same",
+     "sfx": "boing"
+    },
+    {
+     "at": "E3",
+     "act": "grandpa: his grin drops",
+     "word": "less.",
+     "sfx": "sad-trombone",
+     "fx": "flash"
+    }
+   ],
+   "lines": [
+    {
+     "id": "E1",
+     "who": "grandpa",
+     "text": "Sixteen hours! So fasting melts fat faster?",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "faster",
+     "chat": true,
+     "cam": "ms lock"
+    },
+    {
+     "id": "E2",
+     "who": "lardo",
+     "text": "In a year-long trial, fasting every other day...",
+     "emotion": "neutral",
+     "pose": "rest",
+     "key": "trial",
+     "src": [
+      "trepanowski-2017"
+     ],
+     "cam": "mcu lock"
+    },
+    {
+     "id": "E3",
+     "who": "lardo",
+     "text": "...lost about the same as just eating less.",
+     "emotion": "neutral",
+     "pose": "rest",
+     "key": "same",
+     "src": [
+      "trepanowski-2017",
+      "lowe-2020"
+     ],
+     "cam": "ews"
+    }
+   ],
+   "props": []
+  },
+  {
+   "id": "F",
+   "set": "macro",
+   "cast": [
+    {
+     "who": "brain",
+     "x": 540,
+     "size": 1080,
+     "stage": true,
+     "emotion": "neutral",
+     "pose": "rest"
+    }
+   ],
+   "state": {
+    "view": 3,
+    "lean": 0
+   },
+   "events": [
+    {
+     "at": "start",
+     "act": "brain: looks straight at the lens",
+     "sfx": "whoosh-soft"
+    },
+    {
+     "at": "F1",
+     "act": "brain: wags a finger",
+     "word": "isn't",
+     "sfx": "wobble"
+    },
+    {
+     "at": "F1",
+     "act": "brain: shakes its head",
+     "word": "everyone."
+    },
+    {
+     "at": "F2",
+     "act": "brain: holds up one hand",
+     "word": "Pregnant?",
+     "sfx": "pop"
+    },
+    {
+     "at": "F2",
+     "act": "brain: holds up the other hand",
+     "word": "disorder?",
+     "fx": "flash"
+    },
+    {
+     "at": "F2",
+     "act": "brain: leans in to the lens",
+     "word": "doctor",
+     "set": {
+      "lean": 1
+     },
+     "over": 18,
+     "sfx": "ding"
+    }
+   ],
+   "lines": [
+    {
+     "id": "F1",
+     "who": "brain",
+     "text": "Fasting isn't for everyone.",
+     "emotion": "neutral",
+     "pose": "rest",
+     "key": "everyone",
+     "chat": true,
+     "cam": "cu push"
+    },
+    {
+     "id": "F2",
+     "who": "brain",
+     "text": "Pregnant? Had an eating disorder? Ask a doctor first.",
+     "emotion": "neutral",
+     "pose": "rest",
+     "key": "doctor",
+     "src": [
+      "niddk-if"
+     ],
+     "cam": "ews"
+    }
+   ],
+   "props": []
+  },
+  {
+   "id": "G",
+   "set": "macro",
+   "cast": [
+    {
+     "who": "stomach",
+     "x": 540,
+     "size": 1080,
+     "stage": true,
+     "emotion": "angry",
+     "pose": "rest"
+    },
+    {
+     "who": "brain",
+     "x": 820,
+     "size": 340,
+     "emotion": "happy",
+     "pose": "rest"
+    }
+   ],
+   "state": {
+    "view": 0,
+    "growl": 0
+   },
+   "events": [
+    {
+     "at": "start",
+     "act": "stomach: full and calm after breakfast, then frowns",
+     "sfx": "burp-small"
+    },
+    {
+     "at": "G1",
+     "act": "stomach: looks around, suspicious; a little growl",
+     "word": "screaming",
+     "set": {
+      "growl": 0.5
+     },
+     "over": 6,
+     "sfx": "record-scratch"
+    },
+    {
+     "at": "G1",
+     "act": "stomach: folds its arms",
+     "word": "night?",
+     "sfx": "swish"
+    },
+    {
+     "at": "G2",
+     "act": "brain: peeks down from the top and winks; the growl stops",
+     "word": "Me!",
+     "set": {
+      "growl": 0
+     },
+     "over": 8,
+     "sfx": "boing",
+     "fx": "flash"
+    },
+    {
+     "at": "G2",
+     "act": "brain: taps its head",
+     "word": "fast,"
+    },
+    {
+     "at": "G2",
+     "act": "brain: does a tiny scream face; the stomach rattles",
+     "word": "scream,",
+     "set": {
+      "growl": 0.4
+     },
+     "over": 6,
+     "sfx": "boing"
+    },
+    {
+     "at": "G2",
+     "act": "stomach: drops its jaw; the rattle stops",
+     "word": "stomach!",
+     "set": {
+      "growl": 0
+     },
+     "over": 6
+    }
+   ],
+   "lines": [
+    {
+     "id": "G1",
+     "who": "stomach",
+     "text": "So who was screaming at me all night?",
+     "emotion": "angry",
+     "pose": "rest",
+     "key": "screaming",
+     "chat": true,
+     "cam": "ews whip"
+    },
+    {
+     "id": "G2",
+     "who": "brain",
+     "text": "Me! When you fast, the brain makes you scream, little stomach!",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "brain",
+     "src": [
+      "natalucci-2005"
+     ],
+     "cam": "cu push"
+    }
+   ],
+   "props": []
+  }
+ ],
+ "cta": {
+  "text": "Fasting: know this. Hunger comes in waves, and it passes. Fasting is no faster than eating less. Pregnant, or had an eating disorder? Ask a doctor first. Follow MedPeak Health for more health tips that keep you safe.",
+  "src": [
+   "natalucci-2005",
+   "trepanowski-2017",
+   "niddk-if"
+  ]
+ },
+ "musicPrompt": "A steady, continuous warm cartoon groove at 96 BPM that never stops or drops out: a constant soft drum beat with a ticking woodblock like a clock, a round plucked bass line and a held mellow organ pad under everything from the first second to the last, no breaks, no silences, no stop-time stabs. A playful bassoon and glockenspiel melody on top, a little grumpy and comic like a hungry tummy, with a bright cheerful lift near the end. Background music under dialogue."
+}

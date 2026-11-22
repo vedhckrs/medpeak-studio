@@ -735,8 +735,9 @@ const muscle: Blueprint = {...heart, name: 'muscle', role: 'One muscle fibre: st
 // quit-sugar (2026-11-22): Sweetie and the Tongue are drawn in look v8 (src/toons/v8/sugar-cast.tsx, sugar-organs.tsx). As above,
 // these entries only give the layout checks a face and feet, borrowing an old drawing of about the same shape.
 const sweetie: Blueprint = {...pill, name: 'sweetie', role: 'A sly sugar cube who wants Dad back.', color: '#fbf8f2', ground: {y: 90, w: 46}};
+const lardo: Blueprint = {...pill, name: 'lardo', role: 'A fat cell who takes over when the sugar runs out.', color: '#fbe3a0', ground: {y: 90, w: 46}};
 const tongue: Blueprint = {...stomach, name: 'tongue', role: 'The tongue: its taste buds wake up after months of less sugar.', color: '#ee8f93'};
-export const BLUEPRINTS = {stomach, intestine, liver, kidney, bladder, lungs, heart, brain, tooth, bone, pill, poop, redcell, whitecell, platelet, virus, bacteria, egg, sperm, gunk, melatonin, crew, crea, battery, muscle, sweetie, tongue};
+export const BLUEPRINTS = {stomach, intestine, liver, kidney, bladder, lungs, heart, brain, tooth, bone, pill, poop, redcell, whitecell, platelet, virus, bacteria, egg, sperm, gunk, melatonin, crew, crea, battery, muscle, sweetie, tongue, lardo};
 export type CastName = keyof typeof BLUEPRINTS;
 export const CAST = Object.fromEntries(Object.entries(BLUEPRINTS).map(([k, bp]) => [k, makeCharacter(bp)])) as Record<CastName, Character>;
 // `tone` stays exported from ink for older call sites; body characters use shade/lift (hue-shifted paint).

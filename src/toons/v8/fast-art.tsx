@@ -252,7 +252,7 @@ export const DinnerPlate: React.FC<{empty?: boolean; breakfast?: boolean}> = ({e
   </g>
 );
 
-export const FastRoom: React.FC<{hours?: number; plate?: 'full' | 'away' | 'breakfast'; lamp?: boolean}> = ({hours = 0, plate = 'full', lamp = true}) => (
+export const FastRoom: React.FC<{hours?: number; plate?: 'full' | 'away' | 'breakfast'; lamp?: boolean; plateX?: number; clockShake?: number}> = ({hours = 0, plate = 'full', lamp = true, plateX, clockShake = 0}) => (
   <Layer>
     <rect x={0} y={0} width={1080} height={FLOOR_Y} fill={FAST_ROOM.wall} />
     {/* a wide stripe of wallpaper with a small diamond pattern */}
@@ -275,7 +275,7 @@ export const FastRoom: React.FC<{hours?: number; plate?: 'full' | 'away' | 'brea
     </Shape>
 
     {/* the big wall clock, middle-right, high */}
-    <g transform="translate(830 330) scale(1.15)"><FastClock hours={hours} /></g>
+    <g transform={`translate(830 330) rotate(${clockShake.toFixed(2)}) scale(1.15)`}><FastClock hours={hours} /></g>
 
     {/* the armchair, left of middle, behind where Grandpa stands */}
     <Shape d="M 230 980 Q 230 880 330 880 L 560 880 Q 660 880 660 980 L 660 1420 L 230 1420 Z" fill={FAST_ROOM.chair} shadow={0.6}>
@@ -290,6 +290,6 @@ export const FastRoom: React.FC<{hours?: number; plate?: 'full' | 'away' | 'brea
     <path d="M 800 1230 L 790 1520 M 1000 1230 L 1010 1520" stroke={INK} strokeWidth={16} strokeLinecap="round" />
     <path d="M 800 1230 L 790 1520 M 1000 1230 L 1010 1520" stroke={FAST_ROOM.wood} strokeWidth={10} strokeLinecap="round" />
     {/* the plate: in the middle of the table, or pushed away to its far edge */}
-    <g transform={`translate(${plate === 'away' ? 958 : 900} 1186) scale(0.95)`}><DinnerPlate breakfast={plate === 'breakfast'} /></g>
+    <g transform={`translate(${plateX ?? (plate === 'away' ? 958 : 900)} 1186) scale(0.95)`}><DinnerPlate breakfast={plate === 'breakfast'} /></g>
   </Layer>
 );
