@@ -578,7 +578,7 @@ const TinyArmV9: React.FC<TinyArmProps> = ({from, to, bend, fill, w = 5.5, hand 
   const mid: P2 = bend ?? [(from[0] + to[0]) / 2, (from[1] + to[1]) / 2];
   const tb = tubeD(from, mid, to, W, 8);
   const deg = (Math.atan2(to[1] - mid[1], to[0] - mid[0]) * 180) / Math.PI;
-  const hr = W * 1.0;
+  const hr = Math.min(W, 9.2); // one hand size for the cast: a thick arm does not get a giant glove
   const h = hand === 'none' ? null : tinyHand(hand, hr);
   const ht = `translate(${r2(to[0])} ${r2(to[1])}) rotate(${r2(deg)})`;
   return (

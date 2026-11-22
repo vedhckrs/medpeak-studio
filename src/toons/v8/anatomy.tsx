@@ -24,7 +24,11 @@ type P = [number, number];
 export type StageName = 'chest' | 'upperBelly' | 'throatSide' | 'skullSide' | 'vesselInside' | 'tissue' | 'skinSection';
 /** A face's acting on a stage: the kit face (mood, mouth, look) plus v9 extras and, for organs with arms, gestures. */
 export type StageFace = V8Props & FaceExtras & {lookAt?: [number, number]; armL?: ArmPose | Gesture; armR?: ArmPose | Gesture};
-export type StageProps = {t: number; state?: Record<string, number>; faces?: Record<string, StageFace>; children?: React.ReactNode};
+/**
+ * `children`: things placed in frame pixels as HTML (Put, PersonAt, Intruder, IconBadge...), over the stage.
+ * `layer`: SVG content in frame pixels (a CoEgg, a Patch) drawn inside the stage's own SVG, over the stage.
+ */
+export type StageProps = {t: number; state?: Record<string, number>; faces?: Record<string, StageFace>; layer?: React.ReactNode; children?: React.ReactNode};
 export type Focus = {x: number; y: number; r: number};
 export type Slot = {x: number; y: number; dir: [number, number]};
 export type StageDef = {
@@ -65,12 +69,16 @@ const bandD = (a: P, c: P, b: P, w: number, w2 = w) => {
 const qPt = (a: P, c: P, b: P, u: number): P => [(1 - u) ** 2 * a[0] + 2 * (1 - u) * u * c[0] + u * u * b[0], (1 - u) ** 2 * a[1] + 2 * (1 - u) * u * c[1] + u * u * b[1]];
 const padBox = (f: Focus, k = 1.6): Box => ({x0: f.x - f.r * 2 * k, y0: f.y - f.r * 1.6 * k, x1: f.x + f.r * 2 * k, y1: f.y + f.r * 2.6 * k});
 /** The stage's SVG canvas: 1080 x 1920 in frame pixels, its own <V9>. */
-const Canvas: React.FC<{bg: string; children: React.ReactNode}> = ({bg, children}) => (
+const Canvas: React.FC<{bg: string; layer?: React.ReactNode; kids?: React.ReactNode; children: React.ReactNode}> = ({bg, layer, kids, children}) => (
   <V9>
-    <svg style={{position: 'absolute', left: 0, top: 0, overflow: 'hidden'}} width={1080} height={1920} viewBox="0 0 1080 1920">
-      <rect x={-20} y={-20} width={1120} height={1960} fill={bg} />
-      {children}
-    </svg>
+    <div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, overflow: 'hidden'}}>
+      <svg style={{position: 'absolute', left: 0, top: 0, overflow: 'hidden'}} width={1080} height={1920} viewBox="0 0 1080 1920">
+        <rect x={-20} y={-20} width={1120} height={1960} fill={bg} />
+        {children}
+        {layer}
+      </svg>
+      {kids}
+    </div>
   </V9>
 );
 /** A stage face: the v9 kit eyes and mouth at a focus, with its acting. Mouth at most 0.6 of one eye wide. */
@@ -93,7 +101,7 @@ const StageArm: React.FC<{at: P; s: -1 | 1; pose?: ArmPose | Gesture; fill: stri
 const CHEST_FACES = {lungR: {x: 290, y: 640, r: 62}, lungL: {x: 800, y: 650, r: 62}};
 const LUNG_R: P[] = [[470, 392], [360, 420], [236, 548], [146, 752], [100, 978], [94, 1176], [158, 1286], [298, 1312], [428, 1292], [488, 1222], [500, 1000], [494, 700]];
 const LUNG_L: P[] = [[610, 392], [720, 420], [846, 548], [936, 752], [982, 978], [988, 1176], [920, 1286], [782, 1312], [694, 1292], [646, 1250], [664, 1128], [602, 1046], [586, 700]];
-export const ChestStage: React.FC<StageProps> = ({t, state, faces, children}) => {
+export const ChestStage: React.FC<StageProps> = ({t, state, faces, layer, children}) => {
   const tar = dial(state, 'tar'), mucus = dial(state, 'mucus'), airway = dial(state, 'airway', 1), cough = dial(state, 'cough');
   const pink = dial(state, 'pink', 1), cilia = dial(state, 'cilia', 1);
   const lung = mix('#9a8486', F.wall, pink);
@@ -129,7 +137,7 @@ export const ChestStage: React.FC<StageProps> = ({t, state, faces, children}) =>
     return <ellipse key={seed + 'm' + i} cx={r2(p[0])} cy={r2(p[1])} rx={r} ry={r * 0.8} fill={F.bile} {...EDGE_IN} />;
   });
   return (
-    <Canvas bg={F.cavity}>
+    <Canvas bg={F.cavity} layer={layer} kids={children}>
       {/* the back: the apex hollows at the top corners and the ribs behind the lungs */}
       <path d="M -20 -20 L 400 -20 Q 380 150 250 210 Q 120 262 -20 262 Z" fill={F.cavityDeep} {...EDGE} />
       <path d="M 1100 -20 L 680 -20 Q 700 150 830 210 Q 960 262 1100 262 Z" fill={F.cavityDeep} {...EDGE} />
@@ -189,7 +197,6 @@ export const ChestStage: React.FC<StageProps> = ({t, state, faces, children}) =>
         <Face at={CHEST_FACES.lungR} f={faces?.lungR} />
         <Face at={CHEST_FACES.lungL} f={faces?.lungL} />
       </g>
-      {children}
     </Canvas>
   );
 };
@@ -214,7 +221,7 @@ export const CoEgg: React.FC<{x: number; y: number; s?: number; face?: StageFace
     {face && <Face at={{x: 0, y: -14, r: 15}} f={face} mouthDy={1.2} />}
   </g>
 );
-export const VesselStage: React.FC<StageProps> = ({t, state, faces, children}) => {
+export const VesselStage: React.FC<StageProps> = ({t, state, faces, layer, children}) => {
   const flow = dial(state, 'flow', 1), co = dial(state, 'co'), pink = dial(state, 'pink', 1);
   const plasma = mix('#b97f86', '#e89a9a', pink);
   const cell = mix('#9c4a5a', '#d9434f', pink);
@@ -228,7 +235,7 @@ export const VesselStage: React.FC<StageProps> = ({t, state, faces, children}) =
     return {x, y, i};
   });
   return (
-    <Canvas bg={plasma}>
+    <Canvas bg={plasma} layer={layer} kids={children}>
       {/* the far wall: one soft lighter centre (decision 8 c), then faint far cells */}
       <defs><radialGradient id="vs-far" cx="50%" cy="42%" r="55%"><stop offset="0%" stopColor={tint(plasma, 0.35)} /><stop offset="100%" stopColor={plasma} /></radialGradient></defs>
       <rect x={0} y={0} width={1080} height={1920} fill="url(#vs-far)" />
@@ -248,19 +255,18 @@ export const VesselStage: React.FC<StageProps> = ({t, state, faces, children}) =
       <ellipse cx={890} cy={520} rx={90} ry={130} fill={shade(plasma, 0.3)} {...EDGE} />
       <ellipse cx={898} cy={530} rx={64} ry={104} fill={shade(plasma, 0.45)} />
       {faces?.cell && <g><RedDisc x={300} y={1080} w={300} c={cell} /><Face at={{x: 300, y: 1050, r: 36}} f={faces.cell} mouthDy={1.4} /></g>}
-      {children}
     </Canvas>
   );
 };
 
 // ==================================================================== 3. TISSUE (a floor for cells and germs)
 const T_FLOOR = 1230;
-export const TissueStage: React.FC<StageProps> = ({t, state, children}) => {
+export const TissueStage: React.FC<StageProps> = ({t, state, layer, children}) => {
   const damage = dial(state, 'damage'), swelling = dial(state, 'swelling');
   const wall = F.wall, deep = F.cavity;
   void t;
   return (
-    <Canvas bg={deep}>
+    <Canvas bg={deep} layer={layer} kids={children}>
       {/* far background: faint blurred pale vessels (decision 8 c, the one soft layer) */}
       <defs><filter id="ts-blur" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="9" /></filter></defs>
       <g filter="url(#ts-blur)" opacity={0.45}>
@@ -283,7 +289,6 @@ export const TissueStage: React.FC<StageProps> = ({t, state, children}) => {
         {damage > 0.05 && [[220, 1500], [760, 1620]].map(([x, y], i) => <Sore key={i} x={x} y={y} r={26 + 20 * damage} />)}
       </Shape>
       {swelling > 0.01 && <Swelling x={540} y={900} r={460} k={swelling} />}
-      {children}
     </Canvas>
   );
 };
@@ -291,7 +296,7 @@ export const TissueStage: React.FC<StageProps> = ({t, state, children}) => {
 // ==================================================================== 4. UPPER BELLY
 const BELLY_FACE = {x: 650, y: 690, r: 62};
 const STOMACH: P[] = [[480, 450], [610, 395], [790, 415], [930, 520], [1000, 700], [990, 910], [915, 1085], [780, 1205], [590, 1262], [390, 1258], [230, 1205], [130, 1120], [150, 1040], [280, 1040], [400, 990], [470, 870], [480, 680]];
-export const BellyStage: React.FC<StageProps> = ({t, state, faces, children}) => {
+export const BellyStage: React.FC<StageProps> = ({t, state, faces, layer, children}) => {
   const fill = dial(state, 'fill', 0.4), contents = dial(state, 'contents'), acid = dial(state, 'acid'), gas = dial(state, 'gas');
   const damage = dial(state, 'damage'), cut = dial(state, 'cut', 1);
   const body = smoothD(STOMACH);
@@ -300,7 +305,7 @@ export const BellyStage: React.FC<StageProps> = ({t, state, faces, children}) =>
   const win = smoothD([[330, 1140], [470, 1040], [660, 1010], [860, 1040], [910, 1120], [790, 1200], [580, 1232], [400, 1210]].map(([x, y]) => [620 + (x - 620) * (0.4 + 0.6 * cut), 1120 + (y - 1120) * (0.4 + 0.6 * cut)] as P));
   const foods = Math.round(contents * 4);
   return (
-    <Canvas bg={F.cavity}>
+    <Canvas bg={F.cavity} layer={layer} kids={children}>
       {/* the liver, big and dark behind, top left; the spleen edge right */}
       <Shape d={smoothD([[-60, -40], [700, -40], [780, 120], [640, 330], [420, 420], [180, 520], [-60, 560]])} fill={F.organRed} shadow={2}>
         <Folds box={{x0: 0, y0: 40, x1: 640, y1: 420}} seed={31} density={0.5} len={[80, 150]} angle={20} />
@@ -330,7 +335,6 @@ export const BellyStage: React.FC<StageProps> = ({t, state, faces, children}) =>
       <StageArm at={[995, 760]} s={1} pose={faces?.stomach?.armR} fill={F.wall} />
       <StageArm at={[480, 820]} s={-1} pose={faces?.stomach?.armL} fill={F.wall} />
       <Face at={BELLY_FACE} f={faces?.stomach} />
-      {children}
     </Canvas>
   );
 };
@@ -357,13 +361,13 @@ export const FoodBit: React.FC<{kind: 'burger' | 'egg' | 'bread' | 'drum'; x: nu
 
 // ==================================================================== 5. THROAT, SIDE CUT
 const TONGUE_FACE = {x: 720, y: 690, r: 60};
-export const ThroatStage: React.FC<StageProps> = ({t, state, faces, children}) => {
+export const ThroatStage: React.FC<StageProps> = ({t, state, faces, layer, children}) => {
   const stuck = dial(state, 'stuck'), sore = dial(state, 'sore'), swallow = dial(state, 'swallow');
   void t;
   const lift = swallow * 60;
   const tongue = smoothD([[330, 1000], [360, 760], [470, 560], [680, 500 - lift], [900, 540 - lift], [1010, 640], [1030, 820], [960, 940], [760, 1000], [520, 1040]]);
   return (
-    <Canvas bg={F.cavity}>
+    <Canvas bg={F.cavity} layer={layer} kids={children}>
       {/* the spine: a column of bones with discs, at the back (left) */}
       {Array.from({length: 9}, (_, i) => (
         <g key={i}>
@@ -404,20 +408,19 @@ export const ThroatStage: React.FC<StageProps> = ({t, state, faces, children}) =
       {sore > 0.02 && <Sore x={320} y={780} r={18 + 12 * sore} />}
       <StageArm at={[1000, 800]} s={1} pose={faces?.tongue?.armR} fill={F.wall} />
       <Face at={{...TONGUE_FACE, y: TONGUE_FACE.y - lift}} f={faces?.tongue} />
-      {children}
     </Canvas>
   );
 };
 
 // ==================================================================== 6. SKULL, SIDE CUT
 const BRAIN_FACE = {x: 720, y: 720, r: 64};
-export const SkullStage: React.FC<StageProps> = ({t, state, faces, children}) => {
+export const SkullStage: React.FC<StageProps> = ({t, state, faces, layer, children}) => {
   const fog = dial(state, 'fog'), glow = dial(state, 'glow'), sleep = dial(state, 'sleep');
   const brainC = mix(mix('#eaa2b0', '#f6b7c3', glow), '#b98f9c', sleep * 0.6);
   const brain = smoothD([[70, 800], [130, 560], [330, 400], [600, 370], [850, 440], [990, 640], [1000, 880], [900, 1060], [680, 1120], [440, 1110], [220, 1060], [100, 960]]);
   const space = mix(F.cavity, '#7d5d62', sleep);
   return (
-    <Canvas bg={space}>
+    <Canvas bg={space} layer={layer} kids={children}>
       {/* the skull: a bone shell with a marrow band, the meninges inside it */}
       <Shape d="M -60 1260 Q -80 200 540 160 Q 1160 200 1140 1260 L 1140 1060 Q 1080 330 540 300 Q 0 330 -60 1060 Z" fill={F.bone} shadow={0.6}>
         <Speckle box={{x0: -60, y0: 160, x1: 1140, y1: 420}} seed={5} n={60} color={shade(F.bone, 0.14)} />
@@ -447,19 +450,18 @@ export const SkullStage: React.FC<StageProps> = ({t, state, faces, children}) =>
       {glow > 0.02 && [[880, 440], [940, 560], [180, 560]].map(([x, y], i) => <path key={i} d={`M ${x} ${y} l ${i === 2 ? -36 : 36} -30 M ${x + 6} ${y + 26} l ${i === 2 ? -44 : 44} 4`} stroke={INK} strokeWidth={5.6} strokeLinecap="round" opacity={glow} vectorEffect="non-scaling-stroke" />)}
       <StageArm at={[985, 900]} s={1} pose={faces?.brain?.armR} fill={brainC} />
       <Face at={BRAIN_FACE} f={faces?.brain} />
-      {children}
     </Canvas>
   );
 };
 
 // ==================================================================== 7. SKIN IN SECTION
 const SKIN_Y = 250; // the surface
-export const SkinStage: React.FC<StageProps> = ({t, state, children}) => {
+export const SkinStage: React.FC<StageProps> = ({t, state, layer, children}) => {
   const wound = dial(state, 'wound'), swelling = dial(state, 'swelling');
   void t;
   const skin = '#e9b48f';
   return (
-    <Canvas bg="#f1ebe0">
+    <Canvas bg="#f1ebe0" layer={layer} kids={children}>
       {/* outside: a thin band of air above the skin (under 12% of the frame), a few hairs */}
       {[130, 340, 700, 930].map((x, i) => <path key={i} d={`M ${x} ${SKIN_Y + 10} Q ${x + 30} ${SKIN_Y - 90} ${x + 8} ${SKIN_Y - 170 + i * 8}`} stroke={INK} strokeWidth={6} fill="none" strokeLinecap="round" />)}
       {/* the layers: muscle at the bottom, fat lobules, the dermis with folds, the surface */}
@@ -483,7 +485,6 @@ export const SkinStage: React.FC<StageProps> = ({t, state, children}) => {
         <Wound x={540} y={SKIN_Y + 14} len={180} rot={0} open={wound} />
       </>}
       {swelling > 0.01 && <Swelling x={540} y={SKIN_Y + 200} r={380} k={swelling} />}
-      {children}
     </Canvas>
   );
 };
