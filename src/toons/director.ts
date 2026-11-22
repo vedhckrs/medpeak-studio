@@ -323,8 +323,10 @@ export const parseCam = (s: string | undefined): {shot?: ShotName; lens?: LensNa
 };
 
 /** How long a line lasts in seconds: the real voice when it exists, else an estimate from the word count. */
-export const lineSeconds = (line: ToonLine, timings: ToonTimings | null) =>
-  timings?.lines[line.id]?.duration ?? Math.max(0.9, line.text.split(/\s+/).filter(Boolean).length / WPS);
+export const lineSeconds = (line: ToonLine, timings: ToonTimings | null, wps = WPS) =>
+  timings?.lines[line.id]?.duration ?? Math.max(0.9, line.text.split(/\s+/).filter(Boolean).length / wps);
+/** Format 6 talks faster (decision 5: body voices 1.12-1.2, the reference 3.2 words/s inside a sentence): the estimate before voicing. */
+export const WPS6 = 3.3;
 
 /** Lay a script out in time and let the director choose every picture. */
 export const layoutToon = (toon: Toon, timings: ToonTimings | null) => {
@@ -349,7 +351,7 @@ export const layoutToon = (toon: Toon, timings: ToonTimings | null) => {
         at += Math.round((line.pause !== undefined ? clamp3(line.pause) : auto) * TOON_FPS);
       }
       const tm = timings?.lines[line.id];
-      const sec = lineSeconds(line, timings);
+      const sec = lineSeconds(line, timings, v9 ? WPS6 : WPS);
       const frames = Math.round((sec + gap + clamp3(line.beat)) * TOON_FPS); // `beat`: a silent moment after the line, so a gag can play
       lines.push({line, si, li, from: at, frames, words: tm?.words ?? guessWords(line.text, sec), file: tm?.file});
       at += frames;

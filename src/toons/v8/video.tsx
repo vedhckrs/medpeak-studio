@@ -6,7 +6,7 @@
  */
 import React, {useMemo} from 'react';
 import {AbsoluteFill, Audio, Sequence, staticFile, useCurrentFrame} from 'remotion';
-import {bedAt, captionStyle, frameOf, isV9, layoutToon, lineSeconds, soundPlan, stateAt, TOON_FPS, type Layout, type Toon, type ToonTimings} from '../director';
+import {bedAt, captionStyle, frameOf, isV9, layoutToon, lineSeconds, soundPlan, stateAt, TOON_FPS, WPS6, type Layout, type Toon, type ToonTimings} from '../director';
 import {setImpacts, type ImpactMode} from './act';
 import {IN, OUT} from './kit';
 import {TimeCard} from './time-card';
@@ -80,7 +80,7 @@ export const shotNow = (L: Layout, toon: Toon, timings: ToonTimings | null, sec:
     id: l.line.id, who: l.line.who, text: l.line.text, key: l.line.key,
     from: l.from / TOON_FPS - t0,
     to: (mine[i + 1]?.from ?? at.from + at.frames) / TOON_FPS - t0,
-    voice: lineSeconds(l.line, timings),
+    voice: lineSeconds(l.line, timings, isV9(toon) ? WPS6 : undefined),
     emotion: l.line.emotion, pose: l.line.pose, react: (l.line as {react?: Record<string, string>}).react,
     words: l.words,
   }));

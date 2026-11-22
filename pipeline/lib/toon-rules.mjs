@@ -6,7 +6,7 @@
 // It uses the same director as the player (src/toons/director.ts), so the picture changes it
 // measures are the ones that get rendered.
 import {checkCut} from './retention.mjs';
-import {AUTO_SFX, checkRoom, EMOTION_NAMES, ENTRANCES, frameOf, layoutToon, longestStill, parseCam, PROP_NAMES, roomsClash, roomSignature, SET_NAMES, STAGE_KEYS, TOON_FPS} from '../../src/toons/director.ts';
+import {AUTO_SFX, checkRoom, EMOTION_NAMES, ENTRANCES, frameOf, kindOf, layoutToon, longestStill, parseCam, PROP_NAMES, roomsClash, roomSignature, SET_NAMES, STAGE_KEYS, TOON_FPS} from '../../src/toons/director.ts';
 import {POSES} from '../../src/toons/poses.ts';
 
 /** Where a medical fact may come from (medical-accuracy.md): research databases, WHO, national health bodies. */
@@ -181,13 +181,15 @@ export const checkToon = (toon, timings, known) => {
   const HL = coldLine ? L.lines.slice(1) : L.lines; // the lines from the hook on
   const scenes = HL.map((p) => ({id: p.line.id, text: p.line.text, sources: p.line.src ?? [], visual: {panels: segsOf(p.line.id)}}));
   const t7 = {scenes: Object.fromEntries(L.lines.map((p) => [p.line.id, {duration: p.frames / TOON_FPS}]))};
-  const cut = checkCut({scenes, retention: toon.retention, isShort: true, sources: toon.sources ?? [], timings: t7, label: toon.slug});
+  const f6 = toon.format >= 6; // engine v9: one story (checkFormat6 below); the older formats are checked exactly as before
+  const cut = checkCut({scenes, retention: toon.retention, isShort: true, sources: toon.sources ?? [], timings: t7, label: toon.slug, toons6: f6});
   const v3 = toon.format >= 3; // story shapes (the fight, the journey, the clock, the crew at work, the visit): things happen, stickers stop
   const v2 = toon.format >= 2; // the second script shape: a cold open, a hook to the viewer, an open question instead of the counting
   for (const r of cut.results) {
     const group = /^\d|plan/.test(r.point) ? 'retention' : 'accuracy';
     if (v2 && r.point === '3 Counting') continue; // replaced by the open question, below
     if (r.point === '4 3-sec change') {
+      if (f6) continue; // format 6: "one action, then a hold" (checkFormat6) and the render's picture checks replace it
       if (L.steady) { // steady camera: the change is what HAPPENS in the picture, not a cut
         const st = longestStill(L, {stickers: !v3});
         add('retention', r.point, st.seconds <= 3.0, `something new ${v3 ? 'HAPPENS' : 'appears'} ${st.changes} times in ${total.toFixed(0)} s (a place, a cut, ${v3 ? 'a thing arriving, a change of the stage; text stickers do not count' : 'a prop, a change of the stage'}); the longest wait is ${st.seconds.toFixed(1)} s (from ${st.from.toFixed(1)} s)`);
@@ -200,14 +202,18 @@ export const checkToon = (toon, timings, known) => {
     // ---- the hook (owner, 2026-11-17: "remove 3 point, make better hook")
     const first = HL[0];
     const said = first.frames / TOON_FPS - 0.14; // the line itself, without the air after it
-    const faults = hookFaults(first.line.text, toon.title);
-    if (said > HOOK.seconds + 0.05) faults.push(`takes ${said.toFixed(1)} s to say (at most ${HOOK.seconds})`);
-    add('retention', '1 Hook: short, to the viewer, about the title', !faults.length, faults.length ? `"${first.line.text}": ${faults.join('; ')}` : `"${first.line.text}" (${wordsOf(first.line.text).length} words, ${said.toFixed(1)} s, says "you", says the title's words)`);
-    const opening = shots[0];
-    const shown = Object.entries(opening?.state ?? {}).filter(([, v]) => v >= 0.5).map(([k]) => k);
-    add('retention', '1 Hook: the first frame shows the consequence', !!STAGE_KEYS[opening?.set] && shown.length > 0, shown.length ? `the video opens on the ${opening.set} with ${shown.join(', ')} already there` : 'the first scene must be a body stage that starts with the damage (a "state" with a dial at 0.5 or more), then goes back to how it began');
+    if (!f6) { // format 6: the hook is IN the story (S1 in checkFormat6) and opens on the person, not on the damage
+      const faults = hookFaults(first.line.text, toon.title);
+      if (said > HOOK.seconds + 0.05) faults.push(`takes ${said.toFixed(1)} s to say (at most ${HOOK.seconds})`);
+      add('retention', '1 Hook: short, to the viewer, about the title', !faults.length, faults.length ? `"${first.line.text}": ${faults.join('; ')}` : `"${first.line.text}" (${wordsOf(first.line.text).length} words, ${said.toFixed(1)} s, says "you", says the title's words)`);
+      const opening = shots[0];
+      const shown = Object.entries(opening?.state ?? {}).filter(([, v]) => v >= 0.5).map(([k]) => k);
+      add('retention', '1 Hook: the first frame shows the consequence', !!STAGE_KEYS[opening?.set] && shown.length > 0, shown.length ? `the video opens on the ${opening.set} with ${shown.join(', ')} already there` : 'the first scene must be a body stage that starts with the damage (a "state" with a dial at 0.5 or more), then goes back to how it began');
+    }
     const others = (toon.hooks ?? []).map((h) => (typeof h === 'string' ? h : h.line));
-    const badOthers = others.map((h) => [h, hookFaults(h, toon.title)]).filter(([, f]) => f.length);
+    // format 6: a hook choice is "story" (a character's reaction, 8 words at most) unless it is marked "kind": "viewer"
+    const faultsOf = (h, i) => (f6 && (toon.hooks[i]?.kind ?? 'story') !== 'viewer' ? (wordsOf(h).length > F6.hookWords ? [`${wordsOf(h).length} words (at most ${F6.hookWords})`] : []) : hookFaults(h, toon.title));
+    const badOthers = others.map((h, i) => [h, faultsOf(h, i)]).filter(([, f]) => f.length);
     add('retention', '1 Hook: three choices for the owner', others.length >= 3 && others.includes(first.line.text) && !badOthers.length, others.length < 3 ? `${others.length} hook choice(s) in "hooks" (3 needed, the script's own first line among them)` : !others.includes(first.line.text) ? 'the script\'s first line is not one of the "hooks"' : badOthers.length ? badOthers.map(([h, f]) => `"${h}": ${f.join('; ')}`).join(' | ') : `${others.length} choices, each short, to the viewer and about the title`);
     // ---- the open question: asked early, answered late (it replaces the counting)
     const at = (id) => L.lines.find((p) => p.line.id === id);
@@ -217,10 +223,11 @@ export const checkToon = (toon, timings, known) => {
     const aAt = a ? a.from / L.total : null;
     const picked = q && a ? keysOf(q.line.text).filter((w) => keysOf(a.line.text).includes(w)) : [];
     const qFaults = [];
+    const qBy = f6 ? F6.questionBy : HOOK.questionBy, aFrom = f6 ? F6.answerFrom : HOOK.answerFrom; // format 6: asked by 6 s, the answer block from 55%
     if (!q) qFaults.push('"retention.question" must name the line that asks it');
-    else { if (!q.line.text.includes('?')) qFaults.push(`${q.line.id} is not a question`); if (qAt > HOOK.questionBy) qFaults.push(`it is asked at ${qAt.toFixed(1)} s (by ${HOOK.questionBy} s)`); }
+    else { if (!q.line.text.includes('?')) qFaults.push(`${q.line.id} is not a question`); if (qAt > qBy) qFaults.push(`it is asked at ${qAt.toFixed(1)} s (by ${qBy} s)`); }
     if (!a) qFaults.push('"retention.answer" must name the line that answers it');
-    else { if (aAt < HOOK.answerFrom) qFaults.push(`it is answered at ${Math.round(aAt * 100)}% (hold it back to the last quarter)`); if (q && picked.length < 2) qFaults.push(`the answer shares ${picked.length} key word(s) with the question (at least 2, so it really answers it)`); }
+    else { if (aAt < aFrom) qFaults.push(`it is answered at ${Math.round(aAt * 100)}% (hold it back to ${f6 ? 'the answer block, 55% on' : 'the last quarter'})`); if (q && picked.length < 2) qFaults.push(`the answer shares ${picked.length} key word(s) with the question (at least 2, so it really answers it)`); }
     add('retention', '3 Open question', !qFaults.length, qFaults.length ? qFaults.join('; ') : `asked at ${qAt.toFixed(1)} s ("${q.line.text}"), answered at ${Math.round(aAt * 100)}% ("${a.line.text}"; shared words: ${picked.join(', ')})`);
     const counted = lines.filter((l) => /\b(first|firstly|second|secondly|third|thirdly|number (one|two|three))\b/i.test(l.text)).map((l) => l.id);
     add('retention', '3 No counting', counted.length < 2, counted.length < 2 ? 'the story is told as one chain of cause and effect, not as a numbered list' : `numbered beats in ${counted.join(', ')}: tell it as one story`);
@@ -267,7 +274,7 @@ export const checkToon = (toon, timings, known) => {
     const twice = Object.entries(shots.flatMap((s) => (s.props ?? []).filter((p) => !['tag', 'chip', 'pain'].includes(p.kind))).reduce((m, p) => ({...m, [p.kind]: (m[p.kind] ?? 0) + 1}), {})).filter(([, n]) => n > 1).map(([k, n]) => `${k} x${n}`);
     add('format', 'No icon twice', !twice.length, twice.length ? `the same icon more than once: ${twice.join(', ')}` : 'no picture icon is used twice');
   }
-  if (toon.format >= 4) { // the macro, the hero visual (owner, 2026-11-18): 2-3 extreme close-ups: the hook, the middle, the end
+  if (toon.format >= 4 && !f6) { // the macro (format 6: a macro is just one possible place; decision 16), the hero visual (owner, 2026-11-18): 2-3 extreme close-ups: the hook, the middle, the end
     const at = places.map((s, i) => ({s, i, f: places.length > 1 ? i / (places.length - 1) : 0}));
     const macros = at.filter((x) => x.s.set === 'macro');
     const runs = macros.filter((x, k) => k === 0 || macros[k - 1].i !== x.i - 1); // back-to-back macro shots are one macro
@@ -316,7 +323,7 @@ export const checkToon = (toon, timings, known) => {
     // ---- the hook hits at once
     const first = HL[0];
     const said = first.frames / TOON_FPS - 0.14;
-    add('retention', '1 Hook: said in 2 s', said <= ENGAGE.hookSeconds + 0.05, `"${first.line.text}" takes ${said.toFixed(1)} s (at most ${ENGAGE.hookSeconds})`);
+    if (!f6) add('retention', '1 Hook: said in 2 s', said <= ENGAGE.hookSeconds + 0.05, `"${first.line.text}" takes ${said.toFixed(1)} s (at most ${ENGAGE.hookSeconds})`);
     const moving = motionSpans(L);
     const firstMove = moving.filter(([a, b]) => b - a > 1)[0]?.[0] ?? Infinity; // a real movement, not the opening cut
     add('retention', '1 Hook: something big moves at once', firstMove / TOON_FPS <= ENGAGE.firstMotion, Number.isFinite(firstMove) ? `the first movement starts at ${(firstMove / TOON_FPS).toFixed(2)} s (within ${ENGAGE.firstMotion} s)` : 'nothing moves: start an event at "start" in the first scene');
@@ -324,7 +331,7 @@ export const checkToon = (toon, timings, known) => {
     add('retention', '1 Hook: no still opening', open.seconds <= ENGAGE.openStill, `in the first ${ENGAGE.openSeconds} s the longest still is ${open.seconds.toFixed(1)} s (at most ${ENGAGE.openStill}), from ${open.from.toFixed(1)} s`);
     // ---- the picture never sits still for long
     const all = longestGap(moving, 0, L.total);
-    add('format', 'Never still', all.seconds <= ENGAGE.still, `the longest stretch with no movement, cut, camera move or new thing is ${all.seconds.toFixed(1)} s (at most ${ENGAGE.still}), from ${all.from.toFixed(1)} s`);
+    if (!f6) add('format', 'Never still', all.seconds <= ENGAGE.still, `the longest stretch with no movement, cut, camera move or new thing is ${all.seconds.toFixed(1)} s (at most ${ENGAGE.still}), from ${all.from.toFixed(1)} s`);
   }
   const bodyTalk = L.lines.filter((p) => !PEOPLE.includes(p.line.who)).reduce((n, p) => n + p.frames, 0) / L.total;
   add('format', 'Body scene', bodyTalk >= 0.3, `body characters speak for ${Math.round(bodyTalk * 100)}% of the video (30% or more: they are the show)`);
@@ -332,8 +339,12 @@ export const checkToon = (toon, timings, known) => {
   add('format', 'Short lines', !long.length, long.length ? `over 20 words: ${long.join(', ')}` : `the longest line is ${Math.max(...lines.map((l) => wordsOf(l.text).length))} words`);
   let run = 1;
   let maxRun = 1;
-  lines.forEach((l, i) => { run = i && lines[i - 1].who === l.who && lines[i - 1].shot === l.shot ? run + 1 : 1; maxRun = Math.max(maxRun, run); });
-  add('format', 'Banter', maxRun <= 3, `at most ${maxRun} lines in a row by one speaker (3 or fewer)`);
+  let answerRun = 0;
+  lines.forEach((l, i) => {
+    run = i && lines[i - 1].who === l.who && lines[i - 1].shot === l.shot ? run + 1 : 1;
+    if (f6 && l.answer) answerRun = Math.max(answerRun, run); else maxRun = Math.max(maxRun, run); // format 6: the answer block may run up to 6
+  });
+  add('format', 'Banter', maxRun <= 3 && answerRun <= F6.answerLines[1], `at most ${maxRun} lines in a row by one speaker (3 or fewer)${f6 ? `; the answer block ${answerRun} in a row (${F6.answerLines[1]} at most)` : ''}`);
 
   // ---------------------------------------------------------------- 4 medical accuracy
   const sources = toon.sources ?? [];
@@ -354,6 +365,8 @@ export const checkToon = (toon, timings, known) => {
   add('accuracy', 'No dosing advice', !dosing.length, dosing.length ? `doses or "stop taking" in: ${dosing.join(', ')}` : 'no doses, no "stop taking your medicine"');
   const unused = sources.filter((s) => !lines.some((l) => (l.src ?? []).includes(s.id))).map((s) => s.id);
   if (unused.length) add('accuracy', 'Unused sources', true, `listed but not used by any line: ${unused.join(', ')}`, true);
+
+  if (f6) checkFormat6(toon, L, {voiced: !!timings, known, add});
 
   return {ok: res.every((r) => r.pass), total, results: res, layout: L};
 };
@@ -399,4 +412,236 @@ export const scriptSheet = (toon, check) => {
   }
   return out.join('\n');
 };
+// ================================================================== FORMAT 6: one story (engine v9)
+// plans/engine-upgrade-2026-11-23/05-blueprint.md Part 5, script checks S1-S12 (the owner said yes to every decision,
+// 2026-11-23). A script with "format": 6 gets these on top of the checks above; the scripts already out (format 5 and
+// older) are checked exactly as before. Before voicing the times are estimates (WPS); after voicing they are the real word
+// times, so the talk-speed check S6 only runs then.
+export const F6 = {
+  hookWords: 8, topicBy: 3.0, firstWord: [0.3, 1.2], questionBy: 6, answerFrom: 0.55,
+  factsBefore: 3, factsWarnUpTo: 6, speakers: 4, linesEach: 3,
+  answerWords: [35, 60], answerAt: [0.55, 0.8], answerLines: [3, 6],
+  talking: [0.8, 0.93], pauses05: 3, pauses10: 2, beatMax: 3,
+  bodyWps: [3.0, 3.6], doctorWps: [2.6, 3.0], doctorSlower: 0.3, lineWps: [2.4, 4.0],
+  numbers: 1, sourceWords: 1, reactions: 2, sentence: [5, 7.5],
+  bodyPlaces: [2, 4], rooms: 2, inside: 0.6, switches: 3, placeSeconds: 8,
+  endCard: 6, endShare: 0.12, cards: 3, cardSeconds: [0.8, 1.2], flashes: 1, stops: 2, hold: 1.5,
+  bpm: [130, 165],
+};
+/** The verbs (or "that's why") the answer block must use to give ONE thing to do. */
+export const ACTION_WORDS = ['take', 'drink', 'cut', 'keep', 'ask', 'wait', 'see', 'stop', 'call', 'quit', 'wash', 'eat', 'sleep', 'walk', 'get', 'try', 'use', 'check'];
+export const REACTION_WORDS = ['huh', 'whoa', 'hey', 'ow', 'ouch', 'ugh', 'hmm', 'oh', 'wow', 'yikes', 'eek', 'uh', 'phew', 'oops', 'aah', 'ah', 'yay', 'ew', 'gah', 'pfft'];
+const SOURCE_WORDS = /\b(study|studies|trial|trials|research|researchers|who says|the who|scientists)\b/i;
+const NUMBER_TOKEN = /^(\d[\d,.]*%?|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|million|billion|percent|half|double|triple)$/;
+/** Props that tell a state with a dial instead of drawing it on the organ (decision 9): never inside the body. */
+export const GAUGE_PROPS = ['gauge', 'meter', 'clock', 'chip'];
+/**
+ * THE MUSIC TEMPLATE (decision 22): every video still gets a NEW track of its own, always from one family. A script's
+ * `musicPrompt` starts from this; `musicPrompt6` fills it in. The family gate (`Music family` below, and earshot's scan of the
+ * made track in toon-music-scan.mjs) wants "funk" and a tempo of 130-165 BPM in it.
+ */
+export const MUSIC_TEMPLATE = 'Playful funk instrumental, slap bass, tight light percussion, bright clavinet stabs, {bpm} BPM, no lead melody in the voice range, short rests between phrases; {colour}; from {answer} seconds a brighter, confident second half for the doctor\'s answer; no vocals, ends on a clean button.';
+/** The template filled in: the topic's own colour (an instrument or a mood: "a cheeky muted trumpet", "a wobbly synth for the fizz"), the tempo, and the second the answer block starts. */
+export const musicPrompt6 = ({colour, answerAt, bpm = 150}) => MUSIC_TEMPLATE.replace('{bpm}', String(Math.max(F6.bpm[0], Math.min(F6.bpm[1], Math.round(bpm))))).replace('{colour}', colour).replace('{answer}', String(Math.round(answerAt)));
+
+const bareW = (w) => w.toLowerCase().replace(/[^a-z0-9%']/g, '');
+const median = (xs) => { const v = [...xs].sort((a, b) => a - b); return v.length ? (v.length % 2 ? v[(v.length - 1) / 2] : (v[v.length / 2 - 1] + v[v.length / 2]) / 2) : NaN; };
+
+/**
+ * The format-6 checks. `L` the layout (director.ts), `voiced` true when the word times are the real ones. Results go through
+ * `add(group, point, pass, detail, warn)` like every other check.
+ */
+export const checkFormat6 = (toon, L, {voiced, known, add}) => {
+  const T = L.total / TOON_FPS;
+  const shots = toon.shots ?? [];
+  const all = L.lines; // placed lines, in order
+  const people = new Set([...PEOPLE, 'dad', 'narrator']);
+  const isPerson = (who) => people.has(who);
+  // every line's speech, in story seconds: its first word's start to its last word's end (voiced); before voicing the whole
+  // estimated clip, as a voice clip's words fill it (the even-spread guess words leave 0.35 s gaps a clip that real clips do not)
+  const speech = all.map((p) => {
+    const t0 = p.from / TOON_FPS, n = wordsOf(p.line.text).length;
+    if (!voiced || !p.words.length) return {p, a: t0, b: t0 + p.frames / TOON_FPS - GAP_OF(L) - Math.max(0, Math.min(3, p.line.beat ?? 0)), n};
+    return {p, a: t0 + p.words[0].start, b: t0 + p.words[p.words.length - 1].end, n};
+  });
+  const answer = all.filter((p) => p.line.answer);
+  const answerAt = answer.length ? answer[0].from / L.total : null;
+  const title = keysOf(toon.title);
+  const term = [toon.term, toon.topic].flat().filter(Boolean).map((x) => bareW(String(x)));
+  const topicWords = new Set([...title, ...term]);
+  const saysTopic = (w) => { const b = bareW(w); return topicWords.has(b) || topicWords.has(b.replace(/s$/, '')) || [...topicWords].some((t) => t.length > 4 && b.startsWith(t)); };
+
+  // ---- S1 the hook is in the story
+  const hook = all.find((p) => !p.line.cold) ?? all[0];
+  const first = speech[0];
+  // when the topic word is said: its real start (voiced), else its place in the line's estimated clip
+  const topicAt = (() => { for (const sp of speech) for (const w of sp.p.words) if (saysTopic(w.w)) return voiced ? sp.p.from / TOON_FPS + w.start : sp.a + (w.start / Math.max(0.1, sp.p.words[sp.p.words.length - 1].end)) * (sp.b - sp.a); return null; })();
+  const s1 = [];
+  if (wordsOf(hook.line.text).length > F6.hookWords) s1.push(`${wordsOf(hook.line.text).length} words (at most ${F6.hookWords})`);
+  if (!(first.a >= F6.firstWord[0] - 1e-6 && first.a <= F6.firstWord[1] + 1e-6)) s1.push(`the first word comes at ${first.a.toFixed(2)} s (${F6.firstWord[0]}-${F6.firstWord[1]} s: the picture and a sound hit first; set the first scene's "lead")`);
+  if (topicAt === null || topicAt > F6.topicBy + 1e-6) s1.push(topicAt === null ? `the topic (${[...topicWords].join(', ')}) is never said` : `the topic is first said at ${topicAt.toFixed(1)} s (by ${F6.topicBy} s)`);
+  add('format', 'S1 Hook in the story', !s1.length, s1.length ? `"${hook.line.text}": ${s1.join('; ')}` : `"${hook.line.text}": first word at ${first.a.toFixed(2)} s, the topic said at ${topicAt.toFixed(1)} s`);
+  if (wordsOf(hook.line.text).some((w) => /^(you|your|you'll|you're|yours)$/.test(bare(w)))) add('format', 'S1 Hook in the story: no "you" to the camera', true, `"${hook.line.text}" says "you": fine between characters, not to the viewer (a note while the owner compares hook kinds)`, true);
+
+  // ---- S2 one story: few facts before the answer
+  const facts = (ps) => ps.filter((p) => !p.line.chat && (p.line.src ?? []).length);
+  const before = facts(all.filter((p) => !p.line.answer && (!answer.length || p.from < answer[0].from)));
+  const inAnswer = facts(answer);
+  const nb = before.length;
+  add('format', 'S2 One story', nb <= F6.factsWarnUpTo, `${nb} sourced fact line(s) before the answer block (${F6.factsBefore} or fewer; ${F6.factsBefore + 1}-${F6.factsWarnUpTo} is a note, over ${F6.factsWarnUpTo} fails)${nb ? `: ${before.map((p) => p.line.id).join(', ')}` : ''}; ${inAnswer.length} in the answer (2 or more). Extra facts go to the description`, nb > F6.factsBefore || (answer.length > 0 && inAnswer.length < 2));
+
+  // ---- S3 the cast returns
+  const count = {};
+  for (const p of all) count[p.line.who] = (count[p.line.who] ?? 0) + 1;
+  const speakers = Object.keys(count).filter((w) => w !== 'doctor' && w !== 'narrator');
+  const once = Object.entries(count).filter(([w, n]) => w !== 'narrator' && n < F6.linesEach).map(([w, n]) => `${w} ${n}`);
+  add('format', 'S3 Cast returns', speakers.length <= F6.speakers && !once.length, `${speakers.length} speaking character(s) besides the doctor (${F6.speakers} at most): ${Object.entries(count).map(([w, n]) => `${w} ${n}`).join(', ')}${once.length ? `; under ${F6.linesEach} lines: ${once.join(', ')} (make them silent or give them more)` : ''}`);
+
+  // ---- S4 the answer block
+  const s4 = [];
+  if (!answer.length) s4.push('no answer block (mark 3-6 lines "answer": true)');
+  else {
+    const ids = all.map((p) => p.line.id);
+    const idx = answer.map((p) => ids.indexOf(p.line.id));
+    if (idx.some((v, i) => i && v !== idx[i - 1] + 1)) s4.push('the answer lines are not one block in a row');
+    if (answer.length < F6.answerLines[0] || answer.length > F6.answerLines[1]) s4.push(`${answer.length} lines (${F6.answerLines.join('-')})`);
+    const words = answer.reduce((n, p) => n + wordsOf(p.line.text).length, 0);
+    if (words < F6.answerWords[0] || words > F6.answerWords[1]) s4.push(`${words} words (${F6.answerWords.join('-')})`);
+    if (answerAt < F6.answerAt[0] || answerAt > F6.answerAt[1]) s4.push(`starts at ${Math.round(answerAt * 100)}% of the story (${F6.answerAt.map((x) => x * 100).join('-')}%)`);
+    const text = answer.map((p) => p.line.text).join(' ');
+    if (!wordsOf(text).some(saysTopic)) s4.push(`does not name the condition (a word of the title or the "term": ${[...topicWords].join(', ')})`);
+    if (!wordsOf(text).some((w) => ACTION_WORDS.includes(bareW(w))) && !/that'?s why/i.test(text)) s4.push(`no one thing to do (${ACTION_WORDS.slice(0, 8).join(', ')}... or "that's why")`);
+    const bareA = answer.filter((p) => !(p.line.src ?? []).length).map((p) => p.line.id);
+    if (bareA.length) s4.push(`lines without a source: ${bareA.join(', ')}`);
+    const care = answer.findIndex((p) => p.line.care);
+    if (care < 0) s4.push('no care line (mark it "care": true)');
+    else if (care < answer.length - 2) s4.push('the care line must be the last or second-last of the block');
+  }
+  add('format', 'S4 Answer block', !s4.length, s4.length ? s4.join('; ') : `${answer.length} lines, ${answer.reduce((n, p) => n + wordsOf(p.line.text).length, 0)} words by ${[...new Set(answer.map((p) => p.line.who))].join(', ')}, from ${Math.round(answerAt * 100)}% of the story; names the condition, gives one thing to do, sourced, care line in place`);
+
+  // ---- S5 breath: talk, then stop and let the picture act
+  const spans = [...speech].sort((x, y) => x.a - y.a);
+  let talked = 0, end = -1;
+  for (const sp of spans) { const a = Math.max(sp.a, end); if (sp.b > a) talked += sp.b - a; end = Math.max(end, sp.b); }
+  const share = talked / T;
+  const gaps = spans.slice(1).map((sp, i) => ({from: spans[i].b, to: sp.a, s: sp.a - spans[i].b})).filter((g) => g.s > 0);
+  const g05 = gaps.filter((g) => g.s >= 0.5 - 1e-6).length, g10 = gaps.filter((g) => g.s >= 1.0 - 1e-6).length;
+  const evF = L.shots.flatMap((sh, si) => (sh.shot.events ?? []).filter((e) => e.set || e.act || e.fx).map((e) => frameOf(L, si, e.at, e.word, e.delay) / TOON_FPS));
+  const cardSpans = L.shots.filter((sh) => sh.shot.card !== undefined).map((sh) => [sh.from / TOON_FPS, (sh.from + sh.frames) / TOON_FPS]);
+  const deadBeats = speech.filter((sp, i) => (sp.p.line.beat ?? 0) > 0 && i + 1 < speech.length).map((sp, i0) => {
+    const i = speech.indexOf(sp); const to = speech[i + 1].a;
+    const ok = evF.some((t) => t >= sp.b - 0.05 && t <= to) || cardSpans.some(([a, b]) => a < to && b > sp.b);
+    return ok ? null : sp.p.line.id; void i0;
+  }).filter(Boolean);
+  const long = gaps.filter((g) => g.s > F6.beatMax && !cardSpans.some(([a, b]) => a >= g.from - 0.6 && b <= g.to + 0.6)).map((g) => `${g.s.toFixed(1)} s at ${g.from.toFixed(1)} s`);
+  const s5 = [];
+  if (share < F6.talking[0] || share > F6.talking[1]) s5.push(`someone talks ${Math.round(share * 100)}% of the story (${F6.talking.map((x) => x * 100).join('-')}%)`);
+  if (g05 < F6.pauses05) s5.push(`${g05} pause(s) of 0.5 s or more (${F6.pauses05}+)`);
+  if (g10 < F6.pauses10) s5.push(`${g10} pause(s) of 1 s or more (${F6.pauses10}+)`);
+  if (deadBeats.length) s5.push(`a silent beat with no picture event after: ${deadBeats.join(', ')}`);
+  if (long.length) s5.push(`a silence over ${F6.beatMax} s: ${long.join(', ')}`);
+  add('format', 'S5 Breath', !s5.length, s5.length ? s5.join('; ') : `talking ${Math.round(share * 100)}% of the story; ${g05} pauses of 0.5 s+, ${g10} of 1 s+; every beat has a picture event`);
+
+  // ---- S6 talk speed (real word times only) and no "..." inside a line
+  const dots = all.filter((p) => /\.\.\.|…/.test(p.line.text.trim().replace(/(\.\.\.|…)$/, ''))).map((p) => p.line.id);
+  if (dots.length) add('format', 'S6 No "..." inside a line', false, `split it into two lines by two speakers instead: ${dots.join(', ')}`);
+  if (!voiced) add('format', 'S6 Talk speed', true, 'measured on the real word times after voicing (body 3.0-3.6 words/s, the doctor 2.6-3.0 and 0.3 slower)', true);
+  else {
+    const rate = speech.filter((sp) => sp.n >= 4 && sp.b > sp.a).map((sp) => ({who: sp.p.line.who, id: sp.p.line.id, w: sp.n / (sp.b - sp.a)}));
+    const body = rate.filter((r) => r.who !== 'doctor' && !isPerson(r.who)).map((r) => r.w);
+    const doc = rate.filter((r) => r.who === 'doctor').map((r) => r.w);
+    const mb = median(body), md = median(doc);
+    const s6 = [];
+    if (body.length && (mb < F6.bodyWps[0] || mb > F6.bodyWps[1])) s6.push(`body lines ${mb.toFixed(2)} words/s (${F6.bodyWps.join('-')})`);
+    if (doc.length && (md < F6.doctorWps[0] || md > F6.doctorWps[1])) s6.push(`the doctor ${md.toFixed(2)} words/s (${F6.doctorWps.join('-')})`);
+    if (doc.length && body.length && mb - md < F6.doctorSlower - 1e-6) s6.push(`the doctor is only ${(mb - md).toFixed(2)} words/s slower than the body cast (${F6.doctorSlower}+)`);
+    const off = rate.filter((r) => r.w < F6.lineWps[0] || r.w > F6.lineWps[1]).map((r) => `${r.id} ${r.w.toFixed(1)}`);
+    if (off.length) s6.push(`lines outside ${F6.lineWps.join('-')} words/s: ${off.join(', ')}`);
+    add('format', 'S6 Talk speed', !s6.length, s6.length ? s6.join('; ') : `body ${Number.isFinite(mb) ? mb.toFixed(2) : '-'} words/s, doctor ${Number.isFinite(md) ? md.toFixed(2) : '-'}`);
+  }
+
+  // ---- S7 numbers, source words, reactions, sentence length
+  const tokens = all.flatMap((p) => wordsOf(p.line.text).map(bareW));
+  const nums = tokens.filter((w) => NUMBER_TOKEN.test(w)).length;
+  add('format', 'S7 Numbers said', nums <= F6.numbers + 1, `${nums} number(s) said aloud (${F6.numbers}, in the answer; ${F6.numbers + 1} is a note, more fails)`, nums > F6.numbers);
+  const srcW = all.filter((p) => SOURCE_WORDS.test(p.line.text)).length;
+  add('format', 'S7 Source words said', true, `"study / trial / WHO" said in ${srcW} line(s) (${F6.sourceWords} at most, only where honesty needs it; the sources go in the description)`, srcW > F6.sourceWords);
+  const reacts = tokens.filter((w) => REACTION_WORDS.includes(w.replace(/'/g, ''))).length;
+  add('format', 'S7 Reaction words', true, `${reacts} reaction word(s) (huh, whoa, ugh...: ${F6.reactions}+ keep it a scene, not a lecture)`, reacts < F6.reactions);
+  const sentences = all.flatMap((p) => p.line.text.split(/[.!?]+/).map((x) => wordsOf(x).length).filter((n) => n > 0));
+  const mean = sentences.reduce((a, b) => a + b, 0) / Math.max(1, sentences.length);
+  add('format', 'S7 Sentence length', true, `${mean.toFixed(1)} words a sentence (${F6.sentence.join('-')})`, mean < F6.sentence[0] || mean > F6.sentence[1]);
+
+  // ---- S8 places: few, inside the body, held long
+  const kinds = L.shots.map((sh) => ({sh, kind: kindOf(sh.shot)}));
+  const notCard = kinds.filter((k) => k.kind !== 'card');
+  const bodyIds = [...new Set(notCard.filter((k) => k.kind !== 'room').map((k) => k.sh.shot.id))];
+  const roomRuns = notCard.filter((k, i) => k.kind === 'room' && (i === 0 || notCard[i - 1].kind !== 'room')).length;
+  const switches = notCard.filter((k, i) => i > 0 && (k.kind === 'room') !== (notCard[i - 1].kind === 'room')).length;
+  const inside = kinds.filter((k) => k.kind === 'body' || k.kind === 'micro').reduce((n, k) => n + k.sh.frames, 0) / L.total;
+  const held = bodyIds.map((id) => ({id, s: kinds.filter((k) => k.sh.shot.id === id).reduce((n, k) => n + k.sh.frames, 0) / TOON_FPS}));
+  const short = held.filter((h) => h.s < F6.placeSeconds - 1e-6).map((h) => `${h.id} ${h.s.toFixed(1)} s`);
+  const s8 = [];
+  if (bodyIds.length < F6.bodyPlaces[0] || bodyIds.length > F6.bodyPlaces[1]) s8.push(`${bodyIds.length} body place(s) (${F6.bodyPlaces.join('-')})`);
+  if (roomRuns > F6.rooms) s8.push(`${roomRuns} room scenes (one each side at most)`);
+  if (switches > F6.switches) s8.push(`${switches} body/room switches (${F6.switches} at most)`);
+  if (inside < F6.inside) s8.push(`inside the body ${Math.round(inside * 100)}% of the story (${F6.inside * 100}%+)`);
+  if (short.length) s8.push(`a body place held under ${F6.placeSeconds} s: ${short.join(', ')}`);
+  add('format', 'S8 Places', !s8.length, s8.length ? s8.join('; ') : `${bodyIds.length} body places (${held.map((h) => `${h.id} ${h.s.toFixed(1)} s`).join(', ')}), ${roomRuns} room scene(s), ${switches} switches, inside ${Math.round(inside * 100)}%`);
+
+  // ---- S9 the end card (decision 25, option A)
+  if (known.ctaSeconds) {
+    const share9 = known.ctaSeconds / (T + known.ctaSeconds);
+    add('format', 'S9 End card', known.ctaSeconds <= F6.endCard + 1e-6 && share9 <= F6.endShare + 1e-6, `the end card runs ${known.ctaSeconds.toFixed(1)} s, ${Math.round(share9 * 100)}% of the video (${F6.endCard} s and ${F6.endShare * 100}% at most: Joey says only the follow line)`);
+  } else add('format', 'S9 End card', true, `measured once the narrator's clip exists (${F6.endCard} s and ${F6.endShare * 100}% of the video at most)`, true);
+
+  // ---- S10 one real intruder
+  add('format', 'S10 One real intruder', typeof toon.intruder === 'string' && toon.intruder.trim().length > 0, toon.intruder ? `the hero prop "${toon.intruder}" enters the body` : 'name the ONE real object that comes into the body ("intruder": "cigarette")');
+
+  // ---- S11 no gauges inside the body
+  const gauges = shots.filter((s) => ['body', 'micro'].includes(kindOf(s))).flatMap((s) => (s.props ?? []).filter((p) => GAUGE_PROPS.includes(p.kind)).map((p) => `${s.id}: ${p.kind}`));
+  add('format', 'S11 No gauges inside the body', !gauges.length, gauges.length ? `draw the state ON the organ instead: ${gauges.join(', ')}` : 'the state is drawn on the organ (no gauge, meter, clock or chip in a body shot)');
+
+  // ---- S12 time cards
+  const s12 = [];
+  const cards = shots.map((s, i) => ({s, i})).filter((x) => x.s.card !== undefined);
+  if (cards.length > F6.cards) s12.push(`${cards.length} cards (${F6.cards} at most)`);
+  const srcIds = new Set((toon.sources ?? []).map((x) => x.id));
+  for (const {s, i} of cards) {
+    const sec = s.seconds ?? 1.0;
+    if (sec < F6.cardSeconds[0] - 1e-6 || sec > F6.cardSeconds[1] + 1e-6) s12.push(`${s.id}: ${sec} s (${F6.cardSeconds.join('-')})`);
+    if (!s.same) s12.push(`${s.id}: name the shot whose framing comes back after it ("same")`);
+    else {
+      if (!shots.slice(0, i).some((x) => x.id === s.same)) s12.push(`${s.id}: "same" ${s.same} is not a shot before the card`);
+      if (shots[i + 1]?.id !== s.same) s12.push(`${s.id}: the shot after the card must be ${s.same} again (the same framing, a new state), not ${shots[i + 1]?.id ?? 'nothing'}`);
+    }
+    if (!(s.src ?? []).length) s12.push(`${s.id}: the change across the card needs a source ("src")`);
+    else for (const id of s.src) if (!srcIds.has(id)) s12.push(`${s.id}: unknown source "${id}"`);
+  }
+  add('format', 'S12 Time cards', !s12.length, s12.length ? s12.join('; ') : `${cards.length} card(s): ${cards.map(({s}) => `"${s.card}" back to ${s.same}`).join(', ') || 'none'}`);
+
+  // ---- impacts, music stops, one action then a hold, the music family
+  const flashes = shots.flatMap((s) => (s.events ?? []).filter((e) => e.fx).map((e) => ({s, e})));
+  const onCut = flashes.filter(({e}) => e.at === 'start' && !e.delay).map(({s}) => s.id);
+  add('format', 'Impacts: one flash at most', flashes.length <= F6.flashes && !onCut.length, `${flashes.length} flash(es) (${F6.flashes} at most, never on a cut${onCut.length ? `; on the cut into ${onCut.join(', ')}` : ''}); no screen shake on a flash`);
+  const stopEv = L.shots.flatMap((sh, si) => (sh.shot.events ?? []).filter((e) => e.stop).map((e) => {
+    const a = frameOf(L, si, e.at, e.word, e.delay) / TOON_FPS;
+    const len = typeof e.stop === 'number' ? e.stop : 0.6;
+    return {id: sh.shot.id, a, b: a + len, len};
+  }));
+  const wordsAt = voiced ? speech.flatMap((sp) => sp.p.words.map((w) => [sp.p.from / TOON_FPS + w.start, sp.p.from / TOON_FPS + w.end])) : speech.map((sp) => [sp.a, sp.b]);
+  const onWord = stopEv.filter((x) => wordsAt.some(([a, b]) => a < x.b && b > x.a)).map((x) => `${x.id} at ${x.a.toFixed(1)} s`);
+  const badLen = stopEv.filter((x) => x.len < 0.4 - 1e-6 || x.len > 0.8 + 1e-6).map((x) => `${x.id} ${x.len} s`);
+  add('format', 'Music stops', stopEv.length <= F6.stops && !onWord.length && !badLen.length, `${stopEv.length} planned stop(s) (${F6.stops} at most, 0.4-0.8 s, never on a word)${onWord.length ? `; on a word: ${onWord.join(', ')}` : ''}${badLen.length ? `; length: ${badLen.join(', ')}` : ''}`);
+  const crowd = [];
+  L.shots.forEach((sh, si) => {
+    const ts = [...new Set((sh.shot.events ?? []).filter((e) => e.set || e.act).map((e) => frameOf(L, si, e.at, e.word, e.delay)))].sort((a, b) => a - b).map((f) => f / TOON_FPS);
+    ts.forEach((t, i) => { if (i && t - ts[i - 1] < F6.hold - 1e-6) crowd.push(`${sh.shot.id} at ${ts[i - 1].toFixed(1)} and ${t.toFixed(1)} s`); });
+  });
+  add('format', 'One action, then a hold', !crowd.length, crowd.length ? `two actions in one place closer than ${F6.hold} s: ${crowd.join('; ')}` : `every action in a place is followed by a hold of ${F6.hold} s or more (the render's picture checks measure the rest)`);
+  const prompt = String(toon.musicPrompt ?? '');
+  const bpm = Number(prompt.match(/(\d{2,3})\s*bpm/i)?.[1] ?? NaN);
+  add('format', 'Music family', /funk/i.test(prompt) && bpm >= F6.bpm[0] && bpm <= F6.bpm[1], `the track's prompt ${/funk/i.test(prompt) ? 'is funk' : 'must say funk'} at ${Number.isFinite(bpm) ? `${bpm} BPM` : 'no tempo'} (${F6.bpm.join('-')} BPM; start from MUSIC_TEMPLATE)`);
+};
+const GAP_OF = (L) => L.gap ?? 0.14;
 export {AUTO_SFX};

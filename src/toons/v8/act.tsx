@@ -402,3 +402,29 @@ export const latched = (t: number, valueAt: (t: number) => number, up = 0.45, do
   const before = at(t - look), after = at(t + look);
   return before === after ? before : at(t);
 };
+
+// ------------------------------------------------------------------ flow in a band (decision 19)
+/** The most of the frame a flow may cover (5%: the old full-frame streams kept half the picture moving). */
+export const FLOW_MAX_AREA = 0.05 * 1080 * 1920;
+/**
+ * A FLOW that never stops but stays small: a few particles moving along a band (frame px), never the whole background.
+ * The band's area is kept to FLOW_MAX_AREA (it gets thinner if it is drawn too big). `speed` px a second along x (negative:
+ * to the left); `n` particles; `beat` 0..1 a little extra speed on a heartbeat. Particles are kit-flat with the ink line.
+ */
+export const FlowBand: React.FC<{t: number; x0: number; x1: number; y: number; h?: number; n?: number; speed?: number; r?: number; col?: string; beat?: number; seed?: number}> = ({t, x0, x1, y, h = 80, n = 7, speed = 160, r = 14, col = '#e25a5a', beat = 0, seed = 0}) => {
+  const w = Math.max(1, Math.abs(x1 - x0));
+  const band = Math.min(h, FLOW_MAX_AREA / w);
+  const left = Math.min(x0, x1);
+  const dist = t * speed + beat * 20;
+  return (
+    <svg style={{position: 'absolute', left: 0, top: 0, overflow: 'visible', pointerEvents: 'none'}} width={1080} height={1920} viewBox="0 0 1080 1920">
+      {Array.from({length: n}, (_, i) => {
+        const off = hash(i * 31 + seed) * w;
+        const x = left + ((((off + dist) % w) + w) % w);
+        const yy = y + (hash(i * 7 + seed + 3) - 0.5) * Math.max(0, band - r * 2);
+        const rr = Math.min(r, band / 2) * (0.75 + hash(i * 5 + seed) * 0.35);
+        return <ellipse key={i} cx={x} cy={yy} rx={rr * 1.25} ry={rr} fill={col} stroke={INK} strokeWidth={OUT * 0.6} />;
+      })}
+    </svg>
+  );
+};
