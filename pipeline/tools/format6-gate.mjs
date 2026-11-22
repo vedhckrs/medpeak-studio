@@ -21,7 +21,7 @@ export const gate6 = (slug) => {
   const voiced = timings && toon.shots.every((s) => s.lines.every((l) => timings.lines[l.id]?.text === undefined || timings.lines[l.id]?.text === l.text));
   const others = fs.readdirSync(VIDEOS).filter((d) => fs.existsSync(path.join(VIDEOS, d, 'toon.json'))).map((d) => readJson(path.join(VIDEOS, d, 'toon.json'))).map((t) => ({slug: t.slug, episode: t.episode, rooms: t.rooms}));
   const cta = readJson(path.join(videoDir(slug), 'cta-timings.json'), null);
-  const ctaSeconds = cta?.words?.length ? cta.words[cta.words.length - 1].end + 0.04 + 1.6 : 0;
+  const ctaSeconds = cta?.words?.length ? Math.max(5.5, cta.words[cta.words.length - 1].end + 0.04 + 1.6) : 0; // the short card: CTA9_SECONDS (hud.tsx)
   const known = {cast: Object.keys(loadCast().cast), sfx: LIBRARY.map(([n]) => n), beds: BEDS.map(([n]) => n), others, ctaSeconds};
   return {toon, voiced: !!voiced, check: checkToon(toon, voiced ? timings : null, known)};
 };

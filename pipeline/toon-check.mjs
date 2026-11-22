@@ -22,7 +22,9 @@ import {BEDS} from './toon-music.mjs';
 const others = () => fs.readdirSync(VIDEOS).filter((d) => fs.existsSync(path.join(VIDEOS, d, 'toon.json'))).map((d) => readJson(path.join(VIDEOS, d, 'toon.json'))).map((t) => ({slug: t.slug, episode: t.episode, rooms: t.rooms}));
 /** Keep in step with CTA_LEAD + CTA_TAIL in src/toons/v8/video.tsx. */
 export const CTA_PAD = 1.6;
-const known = () => ({cast: Object.keys(loadCast().cast), sfx: LIBRARY.map(([n]) => n), beds: BEDS.map(([n]) => n), others: others()});
+/** Format 6 (decision 25, option A): the short card lasts at least this long. Keep in step with CTA9_SECONDS in src/toons/v8/hud.tsx. */
+export const CTA9_SECONDS = 5.5;
+export const known = () => ({cast: Object.keys(loadCast().cast), sfx: LIBRARY.map(([n]) => n), beds: BEDS.map(([n]) => n), others: others()});
 const GROUPS = {script: 'SCRIPT', retention: 'RETENTION 7', format: 'TOONS FORMAT', accuracy: 'MEDICAL ACCURACY'};
 
 const checkUrls = async (toon) => {
@@ -55,7 +57,7 @@ export const runCheck = async (slug, a = {}) => {
   const voiced = timings && toon.shots.every((s) => s.lines.every((l) => timings.lines[l.id]?.text === l.text));
   // the narrator's end card (v4): its clip plus the card's lead and tail (CTA_LEAD + CTA_TAIL in src/toons/v8/video.tsx)
   const cta = readJson(path.join(videoDir(slug), 'cta-timings.json'), null);
-  const ctaSeconds = cta?.words?.length ? cta.words[cta.words.length - 1].end + 0.04 + CTA_PAD : 0;
+  const ctaSeconds = cta?.words?.length ? Math.max((toon.format ?? 0) >= 6 ? CTA9_SECONDS : 0, cta.words[cta.words.length - 1].end + 0.04 + CTA_PAD) : 0;
   const c = checkToon(toon, voiced ? timings : null, {...known(), ctaSeconds});
   console.log(`\nTOON  ${toon.title}  (${voiced ? 'voiced' : 'estimated'} length ${c.total.toFixed(1)} s)`);
   for (const group of Object.keys(GROUPS)) {

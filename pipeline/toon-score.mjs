@@ -21,6 +21,9 @@ import {findPython, pictureChecks, pictureOf} from './lib/toon-picture.mjs';
 import {scanLayout} from './lib/toon-staging.mjs';
 import {scanLayoutMotion} from './lib/toon-motion.mjs';
 import {scanLayoutCamera} from './lib/toon-camera.mjs';
+import {checkToon} from './lib/toon-rules.mjs';
+import {musicFamily} from './toon-music-scan.mjs';
+import {CTA_PAD, CTA9_SECONDS, known} from './toon-check.mjs';
 
 const PEOPLE = new Set(['doctor', 'patient', 'mom', 'dad', 'kid', 'grandpa', 'grandma', 'baby', 'narrator']);
 const STOP = new Set(['what', 'happens', 'when', 'you', 'your', 'to', 'the', 'a', 'an', 'of', 'in', 'on', 'for', 'and', 'or', 'after', 'why', 'how', 'do', 'does', 'is', 'are', 'it', 'body', 'take', 'stop', 'every', 'day', 'this', 'that', 'can', 'i', 'my', 'get', 'if', 'with']);
@@ -88,7 +91,7 @@ const studyVoice = (slug) => {
  * The rows of the scoreboard. status: 'pass' | 'fail' | 'n/m'. `owner`: a fault the owner already saw.
  * Each row: {area, measure, ref, pass, aim, value, status, owner?, note?}
  */
-export const scoreRows = ({log, pic, staging, motion, camera, script: S, media, sound, voice, toon}) => {
+export const scoreRows = ({log, pic, staging, motion, camera, script: S, media, sound, voice, toon, music = null, gate = null}) => {
   const rows = [];
   const add = (area, measure, ref, pass, aim, value, ok, extra = {}) => { const nm = ok === null || ok === undefined; rows.push({area, measure, ref, pass, aim, value: nm ? 'not measured' : value, status: nm ? 'n/m' : ok ? 'pass' : 'fail', ...extra}); };
   const chk = (list, id) => list.find((c) => c.id === id);
@@ -100,7 +103,14 @@ export const scoreRows = ({log, pic, staging, motion, camera, script: S, media, 
   // Place
   add('Place', 'Time inside the body', '72%', '60%+', '70%', pct(inside), inside >= 0.6);
   add('Place', 'Body/room switches', '1', '3 or fewer', '2', String(switches), switches <= 3);
-  add('Place', 'Neighbours around the hero organ', '3+', '3+', '4', 'not measured', null, {note: 'anatomy stages report them (phase 3)'});
+  // the anatomy stages report each named neighbour (anatomy.tsx StageReport): the fewest in any body shot that is on a stage
+  const nb = new Map();
+  for (const p of log.probes.filter((q) => q.kind === 'body')) {
+    const n = new Set(p.items.filter((i) => i.kind === 'body' && String(i.id ?? '').startsWith('neighbour:')).map((i) => i.id)).size;
+    if (n) nb.set(p.shot, Math.max(nb.get(p.shot) ?? 0, n));
+  }
+  const nbMin = nb.size ? Math.min(...nb.values()) : null;
+  add('Place', 'Neighbours around the hero organ', '3+', '3+', '4', nbMin === null ? '-' : String(nbMin), nbMin === null ? null : nbMin >= 3, nbMin === null ? {note: 'no anatomy stage in this video'} : {});
   add('Place', 'Largest flat non-tissue field (body)', 'none', '12% or less', '8%', pct(C7.flat_max), C7.flat_max === null ? null : C7.flat_max <= 0.12);
   // Colour
   add('Colour', 'Body shots warm', '67%', '60%+', '65%', pct(C7.body_warm), C7.body_warm === null ? null : C7.body_warm >= 0.6);
@@ -139,9 +149,15 @@ export const scoreRows = ({log, pic, staging, motion, camera, script: S, media, 
   add('Script', "Doctor's answer block", '50 w, 69%', '35-60 w, 55-80%', '50 at 68%', S.docWords ? `${S.docWords}w ${pct(S.docAt)}` : 'none', S.docWords >= 35 && S.docWords <= 60 && S.docAt >= 0.55 && S.docAt <= 0.8);
   add('Script', 'Doctor slower than the body cast', '0.4 w/s', '0.3 w/s slower', '0.4 slower', S.wpsDoc === null ? 'none' : `${r1(S.wpsBody - S.wpsDoc)} w/s`, S.wpsDoc === null ? false : S.wpsBody - S.wpsDoc >= 0.3);
   // Voice and sound
-  add('Voice', 'Sentences above 250 Hz', '41%', '30-55%', '40%', voice ? pct(voice.share_high) : 'not measured', voice ? voice.share_high >= 0.3 && voice.share_high <= 0.55 : null, {note: voice ? 'study measure (agent 3); toon:listen --voices in phase 5' : 'toon:listen --voices (phase 5)'});
-  add('Voice', 'Speakers in one scene, pitch apart', 'clear', '3+ semitones', '4+', 'not measured', null, {note: 'toon:listen --voices (phase 5)'});
-  add('Sound', 'Music style / tempo', 'funk 154', 'funk 130-165', '150', 'not measured', null, {note: 'toon:music:scan family gate (phase 5)'});
+  // A4 (toon:listen --voices writes renders/listen/voices.json with its `voicesApart`): the real pitch of every voiced line
+  const va = voice?.apart;
+  const high = va?.high ?? voice?.share_high;
+  add('Voice', 'Body lines above 250 Hz', '41%', '30-55%', '40%', Number.isFinite(high) ? pct(high) : 'not measured', Number.isFinite(high) ? high >= 0.3 && high <= 0.55 : null, {note: va ? 'toon:listen --voices' : voice ? 'study measure (agent 3)' : 'npm run toon:listen -- <slug> --voices'});
+  add('Voice', 'Speakers in one scene, pitch apart', 'clear', '3+ semitones', '4+', va ? `${va.close.length} pairs close` : 'not measured', va ? va.close.length === 0 : null, {note: va ? undefined : 'npm run toon:listen -- <slug> --voices'});
+  // A3: the track by ear (toon-music-scan.mjs musicFamily: earshot's tempo and genre/mood)
+  add('Sound', 'Music style / tempo', 'funk 154', 'funk 130-165', '150', music ? (music.ok === null ? 'not measured' : `${music.hints?.[0] ?? '?'} ${music.bpm}`) : 'not measured', music ? music.ok : null, {note: music?.ok === null ? music.why : music ? undefined : 'no track'});
+  // the format-6 script gate (toon-rules.mjs: S1-S12, impacts, music stops, one action then a hold, the music family)
+  if (gate) add('Script', 'Format 6 script gate (S1-S12)', '-', 'all pass', 'all', `${gate.pass} / ${gate.n} pass`, gate.n ? gate.pass === gate.n : null, gate.fails.length ? {note: gate.fails.slice(0, 3).join('; ')} : {});
   add('Sound', 'Music in pauses, under the voice', '2.7 dB', '4-8 dB', '6 dB', voice?.voice_over_gap ? `${r1(voice.voice_over_gap)} dB` : 'not measured', voice?.voice_over_gap ? voice.voice_over_gap >= 4 && voice.voice_over_gap <= 8 : null, {note: 'needs real pauses; the mix check (phase 5)'});
   add('Sound', 'Loudness / true peak', '-9.4', '-14±1 / -1', 'beat: -14, 0 clips', sound.lufs === null ? '-' : `${r1(sound.lufs)}/${r1(sound.tp)}`, sound.lufs === null ? null : Math.abs(sound.lufs + 14) <= 1 && sound.tp <= -0.9);
   add('Sound', 'Loudness range', '5.9 LU', '4-8 LU', '6', sound.lra === null ? '-' : `${r1(sound.lra)} LU`, sound.lra === null ? null : sound.lra >= 4 && sound.lra <= 8);
@@ -163,6 +179,30 @@ export const scoreRows = ({log, pic, staging, motion, camera, script: S, media, 
   return rows;
 };
 
+/** The track's music family by ear (A3), cached in renders/music-family.json while the track file is unchanged. */
+const musicOf = (toon, dir) => {
+  if (!toon.music) return null;
+  const file = path.join(ROOT, 'assets', 'toons-music', `${toon.music}.mp3`);
+  if (!fs.existsSync(file)) return null;
+  const cacheFile = path.join(dir, 'music-family.json');
+  const stamp = `${toon.music}:${fs.statSync(file).size}:${Math.round(fs.statSync(file).mtimeMs)}`;
+  const cached = readJson(cacheFile, null);
+  if (cached?.stamp === stamp && cached.ok !== null) return cached;
+  const r = musicFamily(file);
+  writeJson(cacheFile, {...r, stamp});
+  return r;
+};
+/** The format-6 script gate's own results (toon-rules.mjs checkToon, group `format`): passes, total, and the failures. */
+const gateOf = (toon, slug) => {
+  const timings = readJson(path.join(videoDir(slug), 'toon-timings.json'), null);
+  const voiced = timings && toon.shots.every((s) => s.lines.every((l) => timings.lines[l.id]?.text === l.text));
+  const cta = readJson(path.join(videoDir(slug), 'cta-timings.json'), null);
+  const ctaSeconds = cta?.words?.length ? Math.max(CTA9_SECONDS, cta.words[cta.words.length - 1].end + 0.04 + CTA_PAD) : 0;
+  const c = checkToon(toon, voiced ? timings : null, {...known(), ctaSeconds});
+  const f = c.results.filter((r) => r.group === 'format' && !r.warn);
+  return {n: f.length, pass: f.filter((r) => r.pass).length, fails: f.filter((r) => !r.pass).map((r) => r.point)};
+};
+
 /** Score one video: measure everything (free) and return {slug, title, rows, checks}. */
 export const scoreVideo = async (slug, opts = {}) => {
   const dir = path.join(videoDir(slug), 'renders');
@@ -176,7 +216,10 @@ export const scoreVideo = async (slug, opts = {}) => {
   const media = probe(file);
   const sound = loudness(file);
   const voice = studyVoice(slug);
-  const rows = scoreRows({log, pic, staging, motion, camera, script, media, sound, voice, toon});
+  const listened = readJson(path.join(dir, 'listen', 'voices.json'), null)?.voicesApart;
+  const music = musicOf(toon, dir);
+  const gate = (toon.format ?? 0) >= 6 ? gateOf(toon, slug) : null;
+  const rows = scoreRows({log, pic, staging, motion, camera, script, media, sound, voice: listened ? {...(voice ?? {}), apart: listened} : voice, toon, music, gate});
   const out = {slug, title: toon.title, file: path.relative(ROOT, file), at: new Date().toISOString(), rows,
     checks: {picture: pictureChecks(pic), staging: staging.checks, motion: motion.checks, camera: camera.checks}};
   writeJson(path.join(dir, 'score.json'), out);
