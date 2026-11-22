@@ -10,6 +10,18 @@ export const SHOT_GAP = 0.25;
 export const SEG = 78; // frames: the usual longest stretch of one picture (2.6 s)
 export const SEG_MAX = SEG + 10; // a line that ends within 2.9 s keeps its one picture
 export const WPS = 2.94; // words a second, pauses included: measured on our own 47 voiced lines (386 words in 131.4 s)
+/**
+ * Engine v9, script FORMAT 6 (plans/engine-upgrade-2026-11-23/05-blueprint.md Part 4.11; the owner said yes to all of it,
+ * 2026-11-23). Only a script with `"format": 6` (or more) gets these; the videos already out keep GAP and SHOT_GAP above.
+ *   gap      air between two lines (0.14 -> 0.22 s: real breaths, not wall-to-wall talk)
+ *   shotGap  air at the end of a scene (0.25 -> 0.5 s)
+ *   pause    automatic silences BEFORE a line: after a shocked or scared line, before the doctor's answer block, and
+ *            after a scene's first event (the picture acts first). A line's own `pause` wins.
+ *   card     a time card's default length (decision 20: 0.8-1.2 s)
+ */
+export const FORMAT6 = {gap: 0.22, shotGap: 0.5, pause: {shock: 0.6, answer: 0.6, firstEvent: 0.4}, card: 1.0} as const;
+/** Is this script format 6 or newer (engine v9)? */
+export const isV9 = (toon: {format?: number}) => (toon.format ?? 0) >= 6;
 
 export const SET_NAMES = ['throat', 'gut', 'stomach', 'mouth', 'blood', 'lungs', 'office', 'bathroom', 'bedroom', 'foodpipe', 'tooth', 'tummy', 'molar', 'arm', 'macro', 'clinic', 'home'] as const;
 export type SetName = (typeof SET_NAMES)[number];
@@ -182,6 +194,9 @@ export type ToonLine = {
   cam?: string; // optional camera, e.g. "cu 85 push" (see toons-camera.md)
   src?: string[]; // source ids that back a medical statement in this line
   chat?: boolean; // a doctor line that states no medical fact (a greeting, a joke): needs no source
+  pause?: number; // format 6: seconds of silence BEFORE this line (0 to 3); without it the director adds the automatic pauses (FORMAT6.pause)
+  answer?: boolean; // format 6: one of the 3-6 lines of the ANSWER block (the doctor's calm payoff, 35-60 words)
+  care?: boolean; // format 6: the care line ("see a doctor if ..."): the last or second-last line of the answer block
 };
 /** `stage`: this character is part of the stage (the organ's own face, the lodged pill): the stage draws it. */
 /**
@@ -213,13 +228,23 @@ export type ToonProp = {hold?: boolean; kind: PropName; x?: number; y?: number; 
  * the shot's own code; it counts as "something happens" like a stage change. It names who acts and what, e.g. "mom: jumps in panic".
  * The shot must really do it: the look check and the owner's eye are the test.
  */
-export type ToonEvent = {at: string; word?: string; delay?: number; set?: Record<string, number>; over?: number; sfx?: string; fx?: 'flash'; act?: string};
+/**
+ * `stop` (format 6, decision 24): a PLANNED music stop on this event: the bed cuts out for `stop` seconds (true = 0.6; 0.4 to
+ * 0.8) with 40 ms fades, on an impact or a gag. At most 2 a video and never on a word (the gate checks both).
+ */
+export type ToonEvent = {at: string; word?: string; delay?: number; set?: Record<string, number>; over?: number; sfx?: string; fx?: 'flash'; act?: string; stop?: boolean | number};
 /**
  * A shot is one place. `card` makes it a time card instead ("LATER THAT NIGHT..."), lasting
  * `seconds`. `state` is where the stage's dials start; `events` change them.
  */
 /** `lead`: seconds of picture before the shot's first line (0 to 3): a silent visual hook (rabies v4). */
-export type ToonShot = {id: string; set: SetName; cast: ToonActor[]; lines: ToonLine[]; lead?: number; desk?: boolean; props?: ToonProp[]; card?: string; seconds?: number; label?: string; state?: Record<string, number>; events?: ToonEvent[]};
+/**
+ * Format 6: `kind` says what the place is (body / micro / room / card; else `kindOf` works it out from the set), `same` on a
+ * time card names the shot whose framing comes back after it (the shot after the card has that id again: the same picture,
+ * played a second time with its new state), `src` the source of what changed across the card.
+ */
+export type ShotKind = 'body' | 'micro' | 'room' | 'card';
+export type ToonShot = {id: string; set: SetName; cast: ToonActor[]; lines: ToonLine[]; lead?: number; desk?: boolean; props?: ToonProp[]; card?: string; seconds?: number; label?: string; state?: Record<string, number>; events?: ToonEvent[]; kind?: ShotKind; same?: string; src?: string[]};
 /** The owner's Retention 7 plan: which line carries each point (see retention-7.md). */
 export type ToonRetention = Record<'noIntro' | 'promise' | 'counting' | 'change3s' | 'twist' | 'bestLast' | 'loop', {scene: string; line: string}>;
 export type ToonSource = {id: string; label: string; url: string; note: string};
@@ -228,7 +253,7 @@ export type ToonSource = {id: string; label: string; url: string; note: string};
  * asks for one (the style of the reference Shorts); 'cinematic' (default) = the director cuts.
  */
 /** `episode`: the video's number in the series (rooms are compared with the six episodes either side). `rooms`: the recipes for this video's own clinic and home. */
-export type Toon = {slug: string; title: string; test?: boolean; /** 2: the caption line of 2026-11-22 on (5% higher, 40% smaller); left out: the first one (videos already out keep it) */ caption?: 2; music?: string; camera?: 'steady' | 'cinematic'; episode?: number; rooms?: Partial<Record<RoomRole, RoomLook>>; retention?: ToonRetention; shots: ToonShot[]; sources?: ToonSource[]};
+export type Toon = {slug: string; title: string; test?: boolean; /** the script format: 6 = engine v9 (one story, pauses, the answer block, time cards) */ format?: number; /** 2: the caption line of 2026-11-22 on (5% higher, 40% smaller); left out: the first one (videos already out keep it) */ caption?: 2; music?: string; camera?: 'steady' | 'cinematic'; episode?: number; rooms?: Partial<Record<RoomRole, RoomLook>>; retention?: ToonRetention; shots: ToonShot[]; sources?: ToonSource[]};
 export type ToonTimings = {lines: Record<string, {file: string; duration: number; words: SpokenWord[]}>};
 
 /** How far a graphic reaches from its centre, in prop units (200 units = its `size`): [left, up, right, down]. A bubble's tail is not counted. */
@@ -305,18 +330,32 @@ export const lineSeconds = (line: ToonLine, timings: ToonTimings | null) =>
 export const layoutToon = (toon: Toon, timings: ToonTimings | null) => {
   const lines: Placed[] = [];
   const shots: {shot: ToonShot; from: number; frames: number}[] = [];
+  const v9 = isV9(toon);
+  const gap = v9 ? FORMAT6.gap : GAP;
+  const shotGap = v9 ? FORMAT6.shotGap : SHOT_GAP;
+  const clamp3 = (v: number | undefined) => Math.max(0, Math.min(3, v ?? 0));
   let at = 0;
+  let prev: ToonLine | null = null; // the line before (any shot), for the automatic pauses of format 6
   toon.shots.forEach((shot, si) => {
     const from = at;
-    at += Math.round(Math.max(0, Math.min(3, shot.lead ?? 0)) * TOON_FPS); // `lead`: a silent picture before the first line
+    // `lead`: a silent picture before the first line; format 6: a scene whose first event is at its start lets the picture act first
+    const startsWithEvent = v9 && (shot.events ?? []).some((e) => e.at === 'start');
+    at += Math.round(Math.max(clamp3(shot.lead), startsWithEvent ? FORMAT6.pause.firstEvent : 0) * TOON_FPS);
     (shot.lines ?? []).forEach((line, li) => {
+      if (v9) {
+        // the automatic pause BEFORE a line (a line's own `pause` wins): before the answer block, after a shock
+        const p = prev as ToonLine | null;
+        const auto = line.answer && !p?.answer ? FORMAT6.pause.answer : p && li > 0 && (p.emotion === 'shocked' || p.emotion === 'scared') ? FORMAT6.pause.shock : 0;
+        at += Math.round((line.pause !== undefined ? clamp3(line.pause) : auto) * TOON_FPS);
+      }
       const tm = timings?.lines[line.id];
       const sec = lineSeconds(line, timings);
-      const frames = Math.round((sec + GAP + Math.max(0, Math.min(3, line.beat ?? 0))) * TOON_FPS); // `beat`: a silent moment after the line, so a gag can play
+      const frames = Math.round((sec + gap + clamp3(line.beat)) * TOON_FPS); // `beat`: a silent moment after the line, so a gag can play
       lines.push({line, si, li, from: at, frames, words: tm?.words ?? guessWords(line.text, sec), file: tm?.file});
       at += frames;
+      prev = line;
     });
-    at += shot.card ? Math.round((shot.seconds ?? 1.4) * TOON_FPS) : Math.round(SHOT_GAP * TOON_FPS);
+    at += shot.card ? Math.round((shot.seconds ?? (v9 ? FORMAT6.card : 1.4)) * TOON_FPS) : Math.round(shotGap * TOON_FPS);
     shots.push({shot, from, frames: at - from});
   });
   const steady = toon.camera === 'steady';
@@ -353,7 +392,7 @@ export const layoutToon = (toon: Toon, timings: ToonTimings | null) => {
       }
       if (segs[first]) segs[first].from = sh.from;
     });
-    return {lines, shots, segs, cuts: segs, total, steady};
+    return {lines, shots, segs, cuts: segs, total, steady, format: toon.format ?? 0, gap, sound: soundOf(toon)};
   }
   lines.forEach((l, idx) => {
     const shot = toon.shots[l.si];
@@ -430,10 +469,14 @@ export const layoutToon = (toon: Toon, timings: ToonTimings | null) => {
     });
     void idx;
   });
-  return {lines, shots, segs, cuts: segs, total, steady};
+  return {lines, shots, segs, cuts: segs, total, steady, format: toon.format ?? 0, gap, sound: soundOf(toon)};
 };
 
 export type Layout = ReturnType<typeof layoutToon>;
+/** The rooms (sets that are a place in the world, not inside the body). */
+export const ROOM_SETS: SetName[] = ['office', 'bathroom', 'bedroom', 'clinic', 'home'];
+/** What a shot is, for the place budget and the picture checks: its own `kind`, else from its set. */
+export const kindOf = (shot: ToonShot): ShotKind => shot.kind ?? (shot.card !== undefined ? 'card' : ROOM_SETS.includes(shot.set) ? 'room' : shot.set === 'macro' || shot.set === 'blood' ? 'micro' : 'body');
 const ease = (t: number) => { const u = Math.max(0, Math.min(1, t)); return u < 0.5 ? 4 * u * u * u : 1 - (-2 * u + 2) ** 3 / 2; };
 const cleanWord = (w: string) => w.toLowerCase().replace(/[^a-z0-9']/g, '');
 /** The frame on which a line (optionally one word of it, plus a delay in seconds) starts. `start` = the start of the shot. */
@@ -523,6 +566,17 @@ export const SOUND = {
   minGap: 0.7, // seconds: two sounds never start closer than this
   perMinute: 12, // the most sounds a minute of video may have
 };
+/**
+ * Format 6 (decision 23, the owner's "listen first" item: an A/B slice was made for him): with real pauses in the script a
+ * low bed leaves holes, so the music sits about 5 dB higher between lines (about 6 dB under the voice) and dips a real 3 dB
+ * under words, the dip spread over 0.25 s (`dip`: seconds each side). `music` is the player's master level (MUSIC_LEVEL).
+ * The effect budget rises to 14 a minute (only in the pauses; minGap stays).
+ */
+export const SOUND6 = {...SOUND, bed: 1.0, bedUnderVoice: 0.71, perMinute: 14, dip: 0.125, music: 0.9};
+/** The mix levels of a script: SOUND for the videos already out (dip 0.5 s, music 0.9), SOUND6 for format 6. */
+export const soundOf = (toon: {format?: number}) => (isV9(toon) ? SOUND6 : {...SOUND, dip: 0.5, music: 0.9});
+/** A planned music stop (format 6 `stop` event): its length, its fades, and how many a video may have. */
+export const STOP = {seconds: 0.6, min: 0.4, max: 0.8, fade: 0.04, most: 2};
 export type SoundEvent = {at: number; name: string; vol: number; why: string; rank: number};
 /** Every sound effect of a Toon, in time order. A sound that would start within `minGap` of another loses to the more important one (story sound > new place > cut). */
 export const soundPlan = (L: Layout): SoundEvent[] => {
@@ -549,7 +603,7 @@ export const soundPlan = (L: Layout): SoundEvent[] => {
   // The budget (perMinute): over it, the least important sound goes first (a cut, then a place change, never
   // a story sound while another kind is left); among equals, the one with the closest neighbours. The planner
   // keeps the rule itself, so no script can fail toon:sound by having many places (rabies, 2026-11-18).
-  const budget = Math.floor((SOUND.perMinute * L.total) / TOON_FPS / 60);
+  const budget = Math.floor(((L.sound?.perMinute ?? SOUND.perMinute) * L.total) / TOON_FPS / 60);
   while (kept.length > budget) {
     const low = Math.min(...kept.map((e) => e.rank));
     const crowd = (i: number) => Math.min(i > 0 ? kept[i].at - kept[i - 1].at : Infinity, i < kept.length - 1 ? kept[i + 1].at - kept[i].at : Infinity);
@@ -559,14 +613,29 @@ export const soundPlan = (L: Layout): SoundEvent[] => {
   }
   return kept;
 };
-/** How loud the music is on frame `f`: steady, a little lower under a voice, the change spread over a second. */
+/** The planned music stops of a video (format 6 `stop` events), in frames [from, to). */
+export const stopsOf = (L: Layout): [number, number][] => L.shots.flatMap((sh, si) => (sh.shot.events ?? []).filter((e) => e.stop).map((e): [number, number] => {
+  const f = frameOf(L, si, e.at, e.word, e.delay);
+  const sec = typeof e.stop === 'number' ? Math.max(STOP.min, Math.min(STOP.max, e.stop)) : STOP.seconds;
+  return [f, f + sec * TOON_FPS];
+}));
+/**
+ * How loud the music is on frame `f` (30 a second, may be fractional): steady, lower under a voice, the change spread over a
+ * second (format 6: a deeper dip over a quarter second, and silent in a planned stop, with 40 ms fades).
+ */
 export const bedAt = (L: Layout, f: number) => {
-  const talking = (fr: number) => L.lines.some((l) => fr >= l.from && fr < l.from + l.frames - Math.round(GAP * TOON_FPS));
+  const lv = L.sound ?? {...SOUND, dip: 0.5};
+  const gapF = Math.round((L.gap ?? GAP) * TOON_FPS);
+  const talking = (fr: number) => L.lines.some((l) => fr >= l.from && fr < l.from + l.frames - gapF);
+  // the dip: the share of talking samples in a window of +-dip seconds (11 samples; the first mix used +-0.5 s)
   let n = 0;
-  for (let i = -15; i <= 15; i += 3) n += talking(f + i) ? 1 : 0;
+  if (lv.dip >= 0.5) for (let i = -15; i <= 15; i += 3) n += talking(f + i) ? 1 : 0; // exactly the old samples (videos already out)
+  else { const half = lv.dip * TOON_FPS; for (let i = 0; i <= 10; i++) n += talking(f - half + (i * 2 * half) / 10) ? 1 : 0; }
   const duck = n / 11;
   const fade = Math.min(1, f / 12, (L.total - f) / 24);
-  return (SOUND.bed + (SOUND.bedUnderVoice - SOUND.bed) * duck) * Math.max(0, fade);
+  const fadeF = STOP.fade * TOON_FPS;
+  const gate = (L.format ?? 0) >= 6 ? stopsOf(L).reduce((m, [a, b]) => Math.min(m, f <= a - fadeF || f >= b + fadeF ? 1 : f < a ? (a - f) / fadeF : f > b ? (f - b) / fadeF : 0), 1) : 1;
+  return (lv.bed + (lv.bedUnderVoice - lv.bed) * duck) * Math.max(0, fade) * gate;
 };
 
 // ------------------------------------------------------------------ the bed's rests
