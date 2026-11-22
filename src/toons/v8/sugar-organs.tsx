@@ -143,7 +143,7 @@ export const LiverFull: React.FC<V8Props & {t: number; fat?: number; lift?: numb
             {/* the darker lower rim: the underside turning away */}
             <path d="M -86 4 Q -80 36 -54 52 Q -20 48 12 26 Q 40 10 90 -20" stroke={shade(body, 0.16)} strokeWidth={8} fill="none" />
             {/* fat patches: each a soft blob with a darker rim crescent and a shine */}
-            {FAT.map(([x, y, r], i) => {
+            {k > 0.01 && FAT.map(([x, y, r], i) => {
               const rr = r * (0.25 + 0.75 * k);
               const pts = Array.from({length: 7}, (_, j): P => {
                 const a = (j / 7) * Math.PI * 2, q = 1 + (rnd(j, i + 40) - 0.5) * 0.3;
