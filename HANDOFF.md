@@ -6,6 +6,17 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-22 (28) - MacBook (local Claude Code) - branch `video/fasting` - fasting SCHEDULED (Mon 23 Nov 12:30 IST)
+
+- The owner: "Yes, schedule it". `upload.py fasting toon --slot --approve` (first real use of --slot): https://youtu.be/mQQy3CIbXF0,
+  private, publishAt 2026-11-23T07:00:00Z, read back from YouTube.
+- BUG found and fixed: `after_upload.py --label` updated the status WITHOUT publishAt, which CANCELS a schedule on YouTube. The time was
+  put back (read back: 2026-11-23T07:00:00Z) and the script now keeps publishAt and warns if it changes.
+- AI label: update answered; YouTube does not show it on read (check Studio, "Altered content"). Topic #5 marked scheduled.
+- Open: Quit Sugar (public) has a silent end card; the owner decides on a re-upload with Joey. Next free slots: Mon 21:30, Tue 12:30 IST.
+
+---
+
 ## 2026-11-22 (27) - MacBook (local Claude Code) - branch `video/fasting` - fasting SECOND CUT after the owner's notes (NOT uploaded)
 
 - Owner on the first final: no narrator on the end card, not interesting / not visual / confusing, the hook failed, camera jumps.
