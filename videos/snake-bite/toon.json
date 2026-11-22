@@ -143,7 +143,8 @@
      "x": 540,
      "size": 700,
      "emotion": "happy",
-     "pose": "rest"
+     "pose": "rest",
+     "stage": true
     },
     {
      "who": "patient",
@@ -162,6 +163,10 @@
     {
      "at": "start",
      "act": "numb: the fangs punch down through the skin; the gang bursts out at the lens",
+     "set": {
+      "swell": 1
+     },
+     "over": 12,
      "sfx": "pop",
      "fx": "flash"
     },
@@ -237,7 +242,8 @@
      "x": 540,
      "size": 460,
      "emotion": "angry",
-     "pose": "rest"
+     "pose": "rest",
+     "stage": true
     }
    ],
    "state": {
@@ -251,6 +257,18 @@
      "at": "start",
      "act": "numb: the three drops land in the leg and split three ways",
      "sfx": "whoosh-air"
+    },
+    {
+     "at": "B0",
+     "act": "numb: a crowd of tiny venom drops floods in behind the gang",
+     "word": "million",
+     "fx": "flash"
+    },
+    {
+     "at": "B0",
+     "act": "numb: the gang high-fives",
+     "word": "busy!",
+     "sfx": "pop"
     },
     {
      "at": "B1",
@@ -305,6 +323,17 @@
    ],
    "lines": [
     {
+     "id": "B0",
+     "who": "numb",
+     "text": "Over five million bites a year. We're busy!",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "million",
+     "src": [
+      "who-snakebite"
+     ]
+    },
+    {
      "id": "B1",
      "who": "numb",
      "text": "I go for the nerves. Breathing gets hard.",
@@ -313,7 +342,8 @@
      "key": "nerves",
      "src": [
       "who-snakebite"
-     ]
+     ],
+     "cam": "cu lock"
     },
     {
      "id": "B2",
@@ -339,7 +369,18 @@
      ]
     }
    ],
-   "props": []
+   "props": [
+    {
+     "kind": "tag",
+     "text": "over 5 million a year",
+     "x": 540,
+     "y": 300,
+     "size": 300,
+     "from": "B0",
+     "to": "B0",
+     "word": "Over"
+    }
+   ]
   },
   {
    "id": "C",
@@ -567,7 +608,8 @@
      "x": 320,
      "size": 520,
      "emotion": "happy",
-     "pose": "rest"
+     "pose": "rest",
+     "stage": true
     }
    ],
    "state": {
@@ -725,7 +767,8 @@
      "x": 540,
      "size": 600,
      "emotion": "sad",
-     "pose": "rest"
+     "pose": "rest",
+     "stage": true
     }
    ],
    "state": {

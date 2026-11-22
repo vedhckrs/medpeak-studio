@@ -32,11 +32,11 @@ shots = [
   # A: the hook, INSIDE the leg: two fangs punch down through the skin from above, the venom gang bursts out AT the lens;
   # then (A2) a hard cut to the trail: Sam hops on one foot, a snake's tail slipping under the rock.
   {"id": "A", "set": "macro",
-   "cast": [{"who": "numb", "x": 540, "size": 700, "emotion": "happy", "pose": "rest"},
+   "cast": [{"who": "numb", "x": 540, "size": 700, "emotion": "happy", "pose": "rest", "stage": True},
             {"who": "patient", "x": 520, "size": 960, "emotion": "scared", "pose": "rest", "y": 979}],
    "state": {"view": 0, "swell": 0.6},
    "events": [
-     E("start", act="numb: the fangs punch down through the skin; the gang bursts out at the lens", sfx="pop", fx="flash"),
+     E("start", act="numb: the fangs punch down through the skin; the gang bursts out at the lens", set={"swell": 1}, over=12, sfx="pop", fx="flash"),
      E("A1", word="bites", act="numb: grins at the lens, fangs showing"),
      E("A1", word="ride!", act="numb: the gang whoops and scatters", sfx="whoosh-fast"),
      E("A2", word="Ow!", act="patient: hops on one foot on the trail, clutching his ankle", sfx="boing", fx="flash"),
@@ -50,10 +50,12 @@ shots = [
   {"id": "B", "set": "macro",
    "cast": [{"who": "numb", "x": 300, "size": 420, "emotion": "smug", "pose": "rest"},
             {"who": "bleed", "x": 780, "size": 420, "emotion": "happy", "pose": "rest"},
-            {"who": "crush", "x": 540, "size": 460, "emotion": "angry", "pose": "rest"}],
+            {"who": "crush", "x": 540, "size": 460, "emotion": "angry", "pose": "rest", "stage": True}],
    "state": {"view": 1, "swell": 0, "nerve": 0, "clot": 0},
    "events": [
      E("start", act="numb: the three drops land in the leg and split three ways", sfx="whoosh-air"),
+     E("B0", word="million", act="numb: a crowd of tiny venom drops floods in behind the gang", fx="flash"),
+     E("B0", word="busy!", act="numb: the gang high-fives", sfx="pop"),
      E("B1", word="nerves.", act="numb: grabs the nerve cable; it sparks", set={"nerve": 0.5}, over=10, sfx="zip-away", fx="flash"),
      E("B1", word="Breathing", act="numb: the sparks along the nerve go dark one by one", set={"nerve": 1}, over=20),
      E("B2", word="blood", act="bleed: dives into the blood river with a splash", sfx="splash-small"),
@@ -62,10 +64,11 @@ shots = [
      E("B3", word="here!", act="crush: flexes, smug"),
    ],
    "lines": [
-     L("B1", "numb", "I go for the nerves. Breathing gets hard.", "smug", "nerves", src=[WHO]),
+     L("B0", "numb", "Over five million bites a year. We're busy!", "happy", "million", src=[WHO]),
+     L("B1", "numb", "I go for the nerves. Breathing gets hard.", "smug", "nerves", src=[WHO], cam="cu lock"),
      L("B2", "bleed", "I stop your blood from clotting!", "happy", "clotting", src=[WHO], cam="cu lock"),
      L("B3", "crush", "And I wreck the flesh right here!", "angry", "wreck", src=[WHO]),
-   ], "props": []},
+   ], "props": [{"kind": "tag", "text": "over 5 million a year", "x": 540, "y": 300, "size": 300, "from": "B0", "to": "B0", "word": "Over"}]},
   # C: the trail, Sam does the right thing first: he sits on the rock, calm, and keeps his leg still.
   {"id": "C", "set": "home",
    "cast": [{"who": "patient", "x": 460, "size": 960, "emotion": "neutral", "pose": "rest", "y": 979}],
@@ -106,7 +109,7 @@ shots = [
   # E: inside the blood at the hospital: the drip line pours in, Antivenom arrives and knocks the gang out.
   {"id": "E", "set": "macro",
    "cast": [{"who": "numb", "x": 760, "size": 420, "emotion": "scared", "pose": "rest"},
-            {"who": "antivenom", "x": 320, "size": 520, "emotion": "happy", "pose": "rest"}],
+            {"who": "antivenom", "x": 320, "size": 520, "emotion": "happy", "pose": "rest", "stage": True}],
    "state": {"view": 2, "knock": 0},
    "events": [
      E("start", act="numb: a drip line pours golden drops into the blood", sfx="drip"),
@@ -136,7 +139,7 @@ shots = [
    ], "props": []},
   # G: the drip again (the loop): Numb, knocked out, dizzy: "Next time a snake bites you... we ride again!"
   {"id": "G", "set": "macro",
-   "cast": [{"who": "numb", "x": 540, "size": 600, "emotion": "sad", "pose": "rest"}],
+   "cast": [{"who": "numb", "x": 540, "size": 600, "emotion": "sad", "pose": "rest", "stage": True}],
    "state": {"view": 2, "knock": 1},
    "events": [
      E("start", act="numb: lies knocked out, stars spinning", sfx="wobble"),
