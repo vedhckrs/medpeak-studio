@@ -8,11 +8,13 @@
  *   node --import tsx pipeline/lib/toon-layout.mjs <slug> [--every 0.0333]   -> videos/<slug>/renders/layout.json
  *
  * How: each probe renders the shot's Scene and Screen with react-dom/server in Node (free, no browser, about 5 ms a
- * probe) inside a `LayoutCtx` collector (src/toons/v8/play.tsx). Components report with `useReport()`; `Put` already
- * does. Until the kit, people, hud and act files report for themselves (07-layout-log-wiring.md), a SHIM here reports
- * for them from their own props (Eyes, Mouth, PersonAt, HeadAt, TinyArm, Burst, CharTag, IconBadge) and carries the
- * dive planes' transform (Depth). A shim item is dropped as soon as the component reports the same thing itself.
- * The player's own layer (the caption word, the watermark) is measured here from the same rules the player uses.
+ * probe) inside a `LayoutCtx` collector (src/toons/v8/play.tsx). Components report with `useReport()` (since the engine
+ * v9 integration of 2026-11-23 every one listed in 07-layout-log-wiring.md does: the kit's Eyes, Mouth, TinyArm and Fig,
+ * the people rig, hud, act, cells, props and the anatomy stages), so the old shims are gone; what stays here only follows
+ * the plain SVG and HTML transforms on the way down (a <g transform>, a nested <svg viewBox>, a moved <div>) for drawings
+ * that do not push a FrameMove themselves. The camera is the player's own (video.tsx `frameState`: smoothing, shake,
+ * punch, the v9 lock), and the player's screen layer (the caption word, the watermark) is the player's own component
+ * (`PlayerScreen`), rendered here inside the same collector.
  *
  * Every item is in SCREEN pixels (after the camera), 1080 x 1920. Probe record:
  *   {t, shot, si, kind: 'body'|'room'|'card', cam: {x, y, z}, line, speaker, cast, items: [{kind, who, box, dir, ...}]}
@@ -106,9 +108,9 @@ export const cssTransform = (s, w, h, P) => {
   }
   return m;
 };
-const installShims = ({React, play, kit, people, hud, act, micro3}) => {
+const installShims = ({React, play, micro3}) => {
   const h = React.createElement;
-  const {useReport, circleBox, FrameMove} = play;
+  const {FrameMove} = play;
   // ---- every SVG and HTML transform on the way down (so a piece drawn inside a <g transform>, a nested <svg viewBox>
   // or a moved <div> reports where it really is). Put pushes its own transform (FrameMove), so its svg and g are skipped.
   const putsOwn = (children) => children && typeof children === 'object' && !Array.isArray(children) && children.type === FrameMove;
@@ -147,82 +149,13 @@ const installShims = ({React, play, kit, people, hud, act, micro3}) => {
   tag('svg', svgM, (p) => !(p.children && putsOwn(p.children.props?.children)));
   tag('g', (p) => svgTransform(p.transform, play), (p) => !!p.transform && !putsOwn(p.children));
   tag('div', divM, (p) => { const st = p.style ?? {}; return !!(st.transform || num(st.left) || num(st.top)); });
-  // a person's own pieces (the rig's eyes and mouth) belong to that person: the person's shim reports the face once
-  const PersonCtx = React.createContext(null);
-  /** A shim that reports, then draws the real component (wrapped by `wrap` when given). */
-  const reporter = (fn, wrap) => (props, type) => {
-    const report = useReport();
-    const inPerson = React.useContext(PersonCtx);
-    for (const r of fn(props, inPerson) ?? []) report({...r, src: 'shim'});
-    const el = jsxOrig.jsx(type, props);
-    return wrap ? wrap(props, el) : el;
-  };
-  const asPerson = (props, el) => h(PersonCtx.Provider, {value: props.spec.id}, h(FrameMove, {m: play.IDENTITY, who: props.spec.id, body: true}, el));
-  if (kit.Eyes) SHIMS.set(kit.Eyes, reporter(({x, y, r = 13, gap = 0, look = [0, 0], mood = 'open'}, inPerson) => {
-    const cx = [x - r - gap / 2, x + r + gap / 2];
-    const open = mood !== 'closed';
-    return [
-      ...cx.map((c) => ({kind: 'eye', box: circleBox(c, y, r), dir: look, open})),
-      ...(inPerson ? [] : [{kind: 'face', box: box(x - 2 * r - gap / 2 - 0.3 * r, y - 1.4 * r, x + 2 * r + gap / 2 + 0.3 * r, y + 2.6 * r), dir: look, open}]),
-    ];
-  }));
-  if (kit.Mouth) SHIMS.set(kit.Mouth, reporter(({x, y, w = 14, kind = 'smile'}) => [{kind: 'mouth', box: box(x - w / 2, y - w / 2, x + w / 2, y + w * 0.8), open: ['open', 'big', 'o'].includes(kind)}]));
-  if (kit.TinyArm) SHIMS.set(kit.TinyArm, reporter(({to, w = 5.5, hand = 'mitten'}) => (hand === 'none' ? [] : [{kind: 'hand', box: circleBox(to[0], to[1], w * 2), open: hand === 'open'}])));
-  const handOpen = (pose, side) => {
-    const p = typeof pose === 'object' && pose ? pose : null;
-    const hand = p && (p[side]?.hand ?? p.pose?.[side]?.hand);
-    return hand === 'open';
-  };
-  if (people.PersonAt) SHIMS.set(people.PersonAt, reporter(({spec, x, y, scale, view, pose, facing, bob, look}) => {
-    const o = {x, y, scale, view, pose, facing, bob};
-    const hd = people.headAt(spec, o);
-    const hands = people.handAt(spec, o);
-    const hr = 0.32 * spec.build.R * scale;
-    const who = spec.id;
-    return [
-      {kind: 'head', who, box: circleBox(hd.x, hd.y, hd.r)},
-      {kind: 'face', who, box: box(hd.x - 0.55 * hd.r, hd.y - 0.45 * hd.r, hd.x + 0.55 * hd.r, hd.y + 0.6 * hd.r), dir: look ?? [0, 0.05], id: look ? 'look' : 'default-look'},
-      {kind: 'hand', who, box: circleBox(hands.R.palm[0], hands.R.palm[1], hr), id: 'R', open: handOpen(pose, 'R')},
-      {kind: 'hand', who, box: circleBox(hands.L.palm[0], hands.L.palm[1], hr), id: 'L', open: handOpen(pose, 'L')},
-    ];
-  }, asPerson));
-  if (people.HeadAt) SHIMS.set(people.HeadAt, reporter(({spec, x, y, px, look}) => [
-    {kind: 'head', who: spec.id, box: circleBox(x, y, px)},
-    {kind: 'face', who: spec.id, box: box(x - 0.75 * px, y - 0.55 * px, x + 0.75 * px, y + 0.75 * px), dir: look ?? [0, 0.05]},
-  ], asPerson));
-  if (act.Burst) SHIMS.set(act.Burst, reporter(({t, t0, x, y, r = 120, dur = 0.32}) => {
-    const u = (t - t0) / dur;
-    return u < 0 || u > 1 ? [] : [{kind: 'fx', box: circleBox(x, y, r * 1.15), id: `burst@${t0.toFixed(2)}@${Math.round(x)},${Math.round(y)}`}];
-  }));
-  if (hud.CharTag) SHIMS.set(hud.CharTag, reporter(({label, x, y, r, t, dur = hud.TAG_SECONDS}) => {
-    if (t < 0 || t > dur) return [];
-    const {side, bx, by, w, h: hh} = hud.tagBox(label, x, y, r);
-    const from = side === 'up' ? [bx, by + hh / 2] : side === 'down' ? [bx, by - hh / 2] : side === 'left' ? [bx + w / 2, by] : [bx - w / 2, by];
-    const ang = Math.atan2(y - from[1], x - from[0]);
-    const tip = [x - Math.cos(ang) * (r + 18), y - Math.sin(ang) * (r + 18)];
-    return [{kind: 'tag', box: box(bx - w / 2, by - hh / 2, bx + w / 2, by + hh / 2 + 7), owner: label, text: label, tip, id: `tag:${label}`, target: [x, y, r]}];
-  }));
-  if (hud.IconBadge) SHIMS.set(hud.IconBadge, reporter(({icon, t, x = 540, y = 300, size = 330, out}) => (t < 0 || (out !== undefined && t - out > 0.25) ? [] : [{kind: 'icon', box: circleBox(x, y, size / 2), id: `icon:${icon}`}])));
   // (the dive's depth planes, micro3 `Depth`, are moved divs: the 'div' tag above follows them)
   void micro3;
 };
 
 // ------------------------------------------------------------------ the player's own layer, as the player draws it
-/** The watermark's three places (src/toons/v8/hud.tsx WM_AT; keep in step until the player reports it itself). */
-const WM_AT = [{x: 960, y: 178, align: 'right'}, {x: 96, y: 1330, align: 'left'}, {x: 540, y: 178, align: 'center'}];
-const WM_W = 14 * 26 * 0.56, WM_H = 32;
-const wmBox = (act) => {
-  const p = WM_AT[Math.max(0, Math.min(2, act))];
-  const x0 = p.align === 'right' ? p.x - WM_W : p.align === 'center' ? p.x - WM_W / 2 : p.x;
-  return box(x0, p.y - WM_H / 2, x0 + WM_W, p.y + WM_H / 2);
-};
-const ROOMS = new Set(['home', 'clinic']);
-/** body / room / card: what kind of picture a shot is (the director's `kindOf` will replace this). */
-export const kindOfShot = (shot) => (shot.card !== undefined || shot.kind === 'card' ? 'card' : ROOMS.has(shot.set ?? '') || shot.kind === 'room' ? 'room' : shot.kind === 'micro' ? 'micro' : 'body');
-const clampCam = (c) => {
-  const hw = 540 / c.z, hh = 960 / c.z;
-  return {z: c.z, x: Math.min(1080 - hw, Math.max(hw, c.x)), y: Math.min(1920 - hh, Math.max(hh, c.y))};
-};
+/** body / micro / room / card: what kind of picture a shot is (the director's `kindOf`, src/toons/director.ts). */
+export const kindOfShot = (shot) => M.director.kindOf(shot);
 const toScreen = (b, cam) => ({x0: 540 + (b.x0 - cam.x) * cam.z, y0: 960 + (b.y0 - cam.y) * cam.z, x1: 540 + (b.x1 - cam.x) * cam.z, y1: 960 + (b.y1 - cam.y) * cam.z});
 const r1 = (v) => Math.round(v * 10) / 10;
 const rbox = (b) => [r1(b.x0), r1(b.y0), r1(b.x1), r1(b.y1)];
@@ -247,6 +180,15 @@ export const probeShot = async (def, s, cam = {x: 540, y: 960, z: 1}) => {
   const out = items.map((it) => ({...it, box: it.space === 'frame' ? toScreen(it.box, cam) : it.box, dir: it.dir, tip: it.tip && (it.space === 'frame' ? [540 + (it.tip[0] - cam.x) * cam.z, 960 + (it.tip[1] - cam.y) * cam.z] : it.tip), src: it.src ?? 'report'}));
   // a shim item gives way to the component's own report of the same thing
   return out.filter((it) => it.src !== 'shim' || !out.some((o) => o.src === 'report' && o.kind === it.kind && iou(o.box, it.box) > 0.3));
+};
+
+/** Render a screen-space element (the player's caption and watermark) with a collector; its reports are screen pixels. */
+const probeScreen = async (el) => {
+  const {React, renderToStaticMarkup, play} = await load();
+  const items = [];
+  let n = 0;
+  renderToStaticMarkup(React.createElement(play.LayoutCtx.Provider, {value: {add: (it) => items.push(it), next: () => `s${n++}`}}, el));
+  return items;
 };
 
 /** Who each face and eye belongs to, when the drawing did not say: the cast member whose `focus` is nearest (only when focus tells them apart). */
@@ -283,45 +225,29 @@ export const probeLayout = async (slug, opts = {}) => {
   const story = L.total / D.TOON_FPS;
   const every = opts.every ?? 1 / 30;
   const cs = D.captionStyle(toon);
-  // the three acts of the watermark (the player's rule in video.tsx)
-  const isRoom = (i) => ROOMS.has(L.shots[i].shot.set ?? '');
-  const actStarts = L.shots.map((_, i) => i).filter((i) => i === 0 || isRoom(i) !== isRoom(i - 1)).map((i) => L.shots[i].from / D.TOON_FPS);
-  const acts = actStarts.length === 3 ? actStarts : [0, story / 3, (2 * story) / 3];
-  const clean = (w) => w.replace(/[^\p{L}\p{N}'’!?-]/gu, '');
+  const heads = new Map(); // v9: the act-3 watermark's head boxes, once a shot (the player's own `shotHeads`)
   const probes = [];
   const t0 = opts.from ?? 0, t1 = Math.min(story, opts.to ?? story);
   for (let k = 0; ; k++) {
     const sec = t0 + k * every;
     if (sec >= t1 - 1e-9) break;
-    const {s, si} = V.shotNow(L, toon, timings, sec);
+    // the player's own decisions for this moment: the shot, the camera (smoothing, shake, punch, the v9 lock), the caption
+    const st = V.frameState(L, toon, timings, sec);
+    const {s, si} = st;
     const def = shots[s.id];
     const shot = L.shots[si].shot;
     const kind = kindOfShot(shot);
-    const cam = def?.view ? clampCam(def.view(s)) : {x: 540, y: 960, z: 1, approx: true};
+    const cam = st.cam;
     let items = def ? await probeShot(def, s, cam) : [];
     const cast = (shot.cast ?? []).map((c) => c.who);
     if (def) attribute(items, def, s, cast, cam);
-    // the caption word (the player's WordCaption: centred on x 540 at y cs.y, one word, the key word bigger)
-    const f30 = sec * D.TOON_FPS;
-    const cur = L.lines.find((l) => l.si === si && f30 >= l.from && f30 < l.from + l.frames);
-    if (cur) {
-      const tl = (f30 - cur.from) / D.TOON_FPS;
-      const wi = cur.words.findIndex((w, i) => tl >= w.start && tl < (cur.words[i + 1]?.start ?? w.end + 0.25));
-      if (wi >= 0) {
-        const w = clean(cur.words[wi].w);
-        const key = (cur.line.key ?? clean(cur.words[cur.words.length - 1]?.w ?? '')).toLowerCase().replace(/[!?'’]/g, '');
-        const isKey = w.toLowerCase().replace(/[!?'’]/g, '') === key;
-        const size = (isKey ? 132 : 108) * cs.scale, stroke = (isKey ? 14 : 12) * cs.scale;
-        const ww = w.length * size * 0.7 + stroke * 2, hh = size * 1.0 + stroke * 2;
-        items.push({kind: 'caption', box: box(540 - ww / 2, cs.y - hh / 2, 540 + ww / 2, cs.y + hh / 2 + 10 * cs.scale), text: w, src: 'player'});
-      }
-    }
-    const act = acts.filter((a) => sec >= a).length - 1;
-    if (sec - acts[act] >= 0) items.push({kind: 'watermark', box: wmBox(act), src: 'player', id: `act${act}`});
+    // the caption word and the watermark: the player's own screen layer, reporting in screen pixels
+    if (D.isV9(toon) && !heads.has(si)) heads.set(si, V.shotHeads(L, toon, timings, si));
+    items.push(...(await probeScreen(m.React.createElement(V.PlayerScreen, {L, toon, st, sec, heads: heads.get(si)}))).map((it) => ({...it, src: 'player'})));
     const line = s.cur;
     const speaker = line && s.t >= line.from && s.t < line.from + line.voice ? line.who : null;
     probes.push({
-      t: +sec.toFixed(4), shot: s.id, si, kind, cam: {x: r1(cam.x), y: r1(cam.y), z: +cam.z.toFixed(4), ...(cam.approx ? {approx: true} : {})},
+      t: +sec.toFixed(4), shot: s.id, si, kind, cam: {x: r1(cam.x), y: r1(cam.y), z: +cam.z.toFixed(4)},
       line: line?.id ?? null, speaker, cast,
       items: items.map((it) => {
         const o = {kind: it.kind, box: rbox(it.box)};
@@ -349,7 +275,7 @@ export const probeLayout = async (slug, opts = {}) => {
 };
 
 /** Bump when the log's shape changes: an older layout.json is probed again. */
-export const LAYOUT_VERSION = 2;
+export const LAYOUT_VERSION = 3; // 3 (2026-11-23): the components report themselves (no shims), the player's camera and screen layer
 export const layoutPath = (slug) => path.join(videoDir(slug), 'renders', 'layout.json');
 /** Probe and write videos/<slug>/renders/layout.json; returns the log. */
 export const writeLayout = async (slug, opts = {}) => {

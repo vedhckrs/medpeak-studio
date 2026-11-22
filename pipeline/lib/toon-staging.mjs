@@ -207,7 +207,8 @@ export const scanLayout = (log) => {
     for (const tg of p.items.filter((i) => i.kind === 'tag' && i.tip)) {
       const wrong = p.items.find((o) => (o.kind === 'face' || o.kind === 'eye' || o.kind === 'prop' || o.kind === 'mouth') && contains(o.box, tg.tip) && !(tg.target && contains(pad([tg.target[0] - tg.target[2], tg.target[1] - tg.target[2], tg.target[0] + tg.target[2], tg.target[1] + tg.target[2]], 0), centre(o.box))));
       if (wrong) l4.push({t: p.t, shot: p.shot, what: `the ${tg.text} tag's arrow ends on ${name(wrong)}`});
-      const onBody = p.items.some((o) => (o.kind === 'body' || o.kind === 'face') && contains(o.box, tg.tip) && (!tg.target || contains(o.box, [tg.target[0], tg.target[1]])));
+      // a stage's neighbour and face-room boxes (anatomy.tsx StageReport) are not a character's body
+      const onBody = p.items.some((o) => (o.kind === 'body' || o.kind === 'face') && !/^(neighbour|faceRoom):/.test(o.id ?? '') && contains(o.box, tg.tip) && (!tg.target || contains(o.box, [tg.target[0], tg.target[1]])));
       if (!onBody && tg.target && dist(tg.tip, tg.target) > tg.target[2] * 1.6) l4.push({t: p.t, shot: p.shot, what: `the ${tg.text} tag's arrow stops short of its character`});
     }
   }
