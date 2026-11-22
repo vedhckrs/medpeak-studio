@@ -19,7 +19,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {spawnSync} from 'node:child_process';
-import {args, isMain, readJson, videoDir, writeJson, ROOT} from './lib/util.mjs';
+import {args, isMain, loadEnv, readJson, videoDir, writeJson, ROOT} from './lib/util.mjs';
 
 export const CAP_USD = 5;
 export const MARGIN_USD = 0.75;
@@ -27,7 +27,11 @@ export const MIN_RUN_USD = 0.75;
 export const MODEL = 'claude-opus-5-5';
 export const EFFORT = 'medium';
 export const TOOLS = ['Read', 'Edit', 'Write', 'Glob', 'Grep', 'Bash(npm run typecheck)', 'Bash(npm test)', 'Bash(npx tsc:*)',
-  'Bash(ls:*)', 'Bash(grep:*)', 'Bash(cat:*)', 'Bash(head:*)', 'Bash(sed -n:*)', 'Bash(wc:*)'];
+  'Bash(ls:*)', 'Bash(grep:*)', 'Bash(cat:*)', 'Bash(head:*)', 'Bash(sed -n:*)', 'Bash(wc:*)',
+  // 2026-11-22: the first snake-bite run could not render its own sheets or commit, so it could not look at what it drew. Free local
+  // renders, the checks and local commits are allowed; pushing stays with the main session.
+  'Bash(node pipeline/toon-v8-sheets.mjs:*)', 'Bash(node pipeline/toon-v8-render.mjs:*)', 'Bash(node pipeline/toon-check.mjs:*)',
+  'Bash(npm run toon:*)', 'Bash(ffmpeg:*)', 'Bash(git status:*)', 'Bash(git diff:*)', 'Bash(git add:*)', 'Bash(git commit:*)'];
 
 const r2 = (n) => Math.round(n * 100) / 100;
 export const spent = (ledger) => r2((ledger.runs || []).reduce((s, r) => s + (Number(r.costUsd) || 0), 0));
@@ -52,6 +56,7 @@ const status = (slug, l = loadLedger(slug)) =>
 const run = (slug, taskFile, label) => {
   const budget = runBudget(loadLedger(slug));
   if (!budget) throw new Error(`HARD CAP: ${status(slug)}. No run may start (needs $${(MIN_RUN_USD + MARGIN_USD).toFixed(2)} left). Ask the owner.`);
+  loadEnv(); // the repo's .env (never committed) or MEDPEAK_ENV_FILES, as the ElevenLabs keys; never printed
   const key = process.env.MEDPEAK_ANTHROPIC_KEY || process.env.ANTHROPIC_API_KEY;
   if (!key) throw new Error('No key: set MEDPEAK_ANTHROPIC_KEY (cloud) or ANTHROPIC_API_KEY (machine).');
   const lock = path.join(videoDir(slug), '.claude-run.lock');

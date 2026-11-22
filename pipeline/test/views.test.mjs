@@ -23,7 +23,8 @@ test('no jump cut inside a shot: a new framing changes the size 1.5 times or mor
         const a = views[i - 1], b = views[i];
         if (a.x === b.x && a.y === b.y && a.z === b.z) continue;
         const r = Math.max(a.z, b.z) / Math.min(a.z, b.z);
-        assert.ok(r >= 1.5, `${slug} shot ${sh.id}: a jump cut before ${sh.lines[i - 1]?.id ?? 'the first line'} (size x${r.toFixed(2)})`);
+        const moved = Math.hypot(a.x - b.x, a.y - b.y) >= 300; // a cut to another subject (another character, another place)
+        assert.ok(r >= 1.5 || moved, `${slug} shot ${sh.id}: a jump cut before ${sh.lines[i - 1]?.id ?? 'the first line'} (size x${r.toFixed(2)})`);
       }
     }
   }

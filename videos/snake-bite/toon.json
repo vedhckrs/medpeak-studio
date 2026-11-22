@@ -1,0 +1,826 @@
+{
+ "slug": "snake-bite",
+ "title": "What Happens When a Snake Bites You",
+ "format": 5,
+ "shape": "journey",
+ "music": "snake-bite",
+ "camera": "steady",
+ "episode": 14,
+ "caption": 2,
+ "hooks": [
+  {
+   "line": "A snake bites you. We ride!",
+   "why": "the owner's pick A (2026-11-22: \"Hook A, Mom\"): inside the leg, the fangs punch in and the venom gang bursts out at the lens"
+  },
+  {
+   "line": "When a snake bites you, don't cut it.",
+   "why": "B: Mom's knife coming down, freezing in the air"
+  },
+  {
+   "line": "A snake bites you. Do you suck it?",
+   "why": "C: Mom leaning in to suck the bite, the gang cheering"
+  }
+ ],
+ "rooms": {
+  "home": {
+   "kind": "living",
+   "palette": "sage",
+   "wall": "paint",
+   "floor": "wood",
+   "window": {
+    "style": "wide",
+    "side": "right",
+    "view": "hills"
+   },
+   "layout": "sofa-left",
+   "time": "day"
+  },
+  "clinic": {
+   "palette": "lilac",
+   "wall": "paint",
+   "floor": "checker",
+   "window": {
+    "style": "round",
+    "side": "left",
+    "view": "city"
+   },
+   "layout": "shelves",
+   "chart": "body",
+   "time": "day"
+  }
+ },
+ "package": {
+  "title": "What Happens When a Snake Bites You",
+  "phrase": "what happens when a snake bites you",
+  "opener": "What happens when a snake bites you? Venom from a venomous snake can cause paralysis that can stop breathing, bleeding problems, kidney failure and tissue damage (WHO). What to do while you wait for help (NHS): stay calm, keep the bitten part of your body as still as you can, take off rings and other jewellery in case it swells, and call your emergency number. Do NOT cut or suck the bite, do NOT tie anything tightly around it, and do not go near the snake. At the hospital, antivenom is the most effective treatment. Some bites from venomous snakes carry no venom at all, but you cannot tell, so get every snake bite checked. Worldwide, about 5.4 million people are bitten by snakes every year (WHO).",
+  "question": "Did you know you should never cut or suck a snake bite?",
+  "tags": [
+   "what happens when a snake bites you",
+   "snake bite",
+   "snake bite first aid",
+   "what to do if a snake bites you",
+   "venom",
+   "antivenom",
+   "snake bite myths",
+   "dry bite",
+   "venomous snake",
+   "health cartoon"
+  ],
+  "hashtags": "#snakebite #health #shorts",
+  "cover": {
+   "at": 0.8,
+   "text": "A snake bites you",
+   "accent": "snake"
+  }
+ },
+ "retention": {
+  "noIntro": {
+   "scene": "A1",
+   "line": "A snake bites you. We ride!"
+  },
+  "promise": {
+   "scene": "A1",
+   "line": "A snake bites you. We ride!"
+  },
+  "question": {
+   "scene": "A2",
+   "line": "Ow! Was that snake venomous?"
+  },
+  "answer": {
+   "scene": "F2",
+   "line": "...but you can't tell which snake is venomous. Get every bite checked."
+  },
+  "change3s": {
+   "scene": "all",
+   "line": "steady camera: something happens in the picture at least every 3 s (stickers do not count)"
+  },
+  "twist": {
+   "scene": "D3",
+   "line": "No, Mom! Don't cut it, suck it, or tie it."
+  },
+  "bestLast": {
+   "scene": "F2",
+   "line": "...but you can't tell which snake is venomous. Get every bite checked."
+  },
+  "loop": {
+   "scene": "G1",
+   "line": "Next time a snake bites you... we ride again!"
+  }
+ },
+ "sources": [
+  {
+   "id": "who-snakebite",
+   "label": "World Health Organization. Snakebite envenoming (fact sheet)",
+   "url": "https://www.who.int/news-room/fact-sheets/detail/snakebite-envenoming",
+   "note": "'An estimated 5.4 million people worldwide are bitten by snakes each year'; 'Bites by venomous snakes can cause paralysis that may prevent breathing, bleeding disorders that can lead to a fatal haemorrhage, irreversible kidney failure and tissue damage'; 'High-quality snake antivenoms are the most effective treatment to prevent or reverse most of the venomous effects of snake bites'."
+  },
+  {
+   "id": "nhs-snakebite",
+   "label": "NHS. Snake bites",
+   "url": "https://www.nhs.uk/conditions/snake-bites/",
+   "note": "Do: 'stay calm'; 'keep the part of your body that was bitten as still as you can'; 'take off any jewellery and loosen clothes near the bite, in case the skin swells'. Don't: 'do not try to suck or cut the venom (toxin) out of the bite'; 'do not tie anything tightly round the part of the body where the bite is'. 'you should get all snake bites checked as soon as possible'. Read in the browser on 2026-11-22."
+  },
+  {
+   "id": "gutierrez-2017",
+   "label": "Gutierrez JM et al. Snakebite envenoming. Nat Rev Dis Primers 2017;3:17063",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/28905944/",
+   "note": "'Intravenous administration of antivenom is the only specific treatment to counteract envenoming.'"
+  },
+  {
+   "id": "naik-2017",
+   "label": "Naik BS. \"Dry bite\" in venomous snakes: a review. Toxicon 2017;133:63-67",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/28456535/",
+   "note": "'A good percentage of venomous snake bites in humans do occur without venom injection.' No percentage is given in the video."
+  }
+ ],
+ "shots": [
+  {
+   "id": "A",
+   "set": "macro",
+   "cast": [
+    {
+     "who": "numb",
+     "x": 540,
+     "size": 700,
+     "emotion": "happy",
+     "pose": "rest",
+     "stage": true
+    },
+    {
+     "who": "patient",
+     "x": 520,
+     "size": 960,
+     "emotion": "scared",
+     "pose": "rest",
+     "y": 979
+    }
+   ],
+   "state": {
+    "view": 0,
+    "swell": 0.6
+   },
+   "events": [
+    {
+     "at": "start",
+     "act": "numb: the fangs punch down through the skin; the gang bursts out at the lens",
+     "set": {
+      "swell": 1
+     },
+     "over": 12,
+     "sfx": "pop",
+     "fx": "flash"
+    },
+    {
+     "at": "A1",
+     "act": "numb: grins at the lens, fangs showing",
+     "word": "bites"
+    },
+    {
+     "at": "A1",
+     "act": "numb: the gang whoops and scatters",
+     "word": "ride!",
+     "sfx": "whoosh-fast"
+    },
+    {
+     "at": "A2",
+     "act": "patient: hops on one foot on the trail, clutching his ankle",
+     "word": "Ow!",
+     "sfx": "boing",
+     "fx": "flash"
+    },
+    {
+     "at": "A2",
+     "act": "patient: stares at a tail slipping under the rock",
+     "word": "snake",
+     "sfx": "swish"
+    }
+   ],
+   "lines": [
+    {
+     "id": "A1",
+     "who": "numb",
+     "text": "A snake bites you. We ride!",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "ride",
+     "chat": true,
+     "tempo": 1.15
+    },
+    {
+     "id": "A2",
+     "who": "patient",
+     "text": "Ow! Was that snake venomous?",
+     "emotion": "scared",
+     "pose": "rest",
+     "key": "venomous",
+     "chat": true,
+     "cam": "ms lock"
+    }
+   ],
+   "props": []
+  },
+  {
+   "id": "B",
+   "set": "macro",
+   "cast": [
+    {
+     "who": "numb",
+     "x": 300,
+     "size": 420,
+     "emotion": "smug",
+     "pose": "rest"
+    },
+    {
+     "who": "bleed",
+     "x": 780,
+     "size": 420,
+     "emotion": "happy",
+     "pose": "rest"
+    },
+    {
+     "who": "crush",
+     "x": 540,
+     "size": 460,
+     "emotion": "angry",
+     "pose": "rest",
+     "stage": true
+    }
+   ],
+   "state": {
+    "view": 1,
+    "swell": 0,
+    "nerve": 0,
+    "clot": 0
+   },
+   "events": [
+    {
+     "at": "start",
+     "act": "numb: the three drops land in the leg and split three ways",
+     "sfx": "whoosh-air"
+    },
+    {
+     "at": "B0",
+     "act": "numb: a crowd of tiny venom drops floods in behind the gang",
+     "word": "million",
+     "fx": "flash"
+    },
+    {
+     "at": "B0",
+     "act": "numb: the gang high-fives",
+     "word": "busy!",
+     "sfx": "pop"
+    },
+    {
+     "at": "B1",
+     "act": "numb: grabs the nerve cable; it sparks",
+     "word": "nerves.",
+     "set": {
+      "nerve": 0.5
+     },
+     "over": 10,
+     "sfx": "zip-away",
+     "fx": "flash"
+    },
+    {
+     "at": "B1",
+     "act": "numb: the sparks along the nerve go dark one by one",
+     "word": "Breathing",
+     "set": {
+      "nerve": 1
+     },
+     "over": 20
+    },
+    {
+     "at": "B2",
+     "act": "bleed: dives into the blood river with a splash",
+     "word": "blood",
+     "sfx": "splash-small"
+    },
+    {
+     "at": "B2",
+     "act": "bleed: tosses away a little clot plug, grinning",
+     "word": "clotting!",
+     "set": {
+      "clot": 1
+     },
+     "over": 10
+    },
+    {
+     "at": "B3",
+     "act": "crush: stamps; the flesh around him swells",
+     "word": "wreck",
+     "set": {
+      "swell": 1
+     },
+     "over": 24,
+     "sfx": "squish"
+    },
+    {
+     "at": "B3",
+     "act": "crush: flexes, smug",
+     "word": "here!"
+    }
+   ],
+   "lines": [
+    {
+     "id": "B0",
+     "who": "numb",
+     "text": "Over five million bites a year. We're busy!",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "million",
+     "src": [
+      "who-snakebite"
+     ]
+    },
+    {
+     "id": "B1",
+     "who": "numb",
+     "text": "I go for the nerves. Breathing gets hard.",
+     "emotion": "smug",
+     "pose": "rest",
+     "key": "nerves",
+     "src": [
+      "who-snakebite"
+     ],
+     "cam": "cu lock"
+    },
+    {
+     "id": "B2",
+     "who": "bleed",
+     "text": "I stop your blood from clotting!",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "clotting",
+     "src": [
+      "who-snakebite"
+     ],
+     "cam": "cu lock"
+    },
+    {
+     "id": "B3",
+     "who": "crush",
+     "text": "And I wreck the flesh right here!",
+     "emotion": "angry",
+     "pose": "rest",
+     "key": "wreck",
+     "src": [
+      "who-snakebite"
+     ]
+    }
+   ],
+   "props": [
+    {
+     "kind": "tag",
+     "text": "over 5 million a year",
+     "x": 540,
+     "y": 300,
+     "size": 300,
+     "from": "B0",
+     "to": "B0",
+     "word": "Over"
+    }
+   ]
+  },
+  {
+   "id": "C",
+   "set": "home",
+   "cast": [
+    {
+     "who": "patient",
+     "x": 460,
+     "size": 960,
+     "emotion": "neutral",
+     "pose": "rest",
+     "y": 979
+    }
+   ],
+   "events": [
+    {
+     "at": "start",
+     "act": "patient: sits down on the rock, slowly",
+     "sfx": "whoosh-soft"
+    },
+    {
+     "at": "C1",
+     "act": "patient: one slow breath",
+     "word": "calm.",
+     "fx": "flash"
+    },
+    {
+     "at": "C1",
+     "act": "patient: rests his leg flat and stops moving it",
+     "word": "still."
+    },
+    {
+     "at": "C2",
+     "act": "patient: waves the snake's tail away under the rock",
+     "word": "snake.",
+     "sfx": "swish",
+     "fx": "flash"
+    }
+   ],
+   "lines": [
+    {
+     "id": "C1",
+     "who": "patient",
+     "text": "Stay calm. Keep the bitten leg still.",
+     "emotion": "neutral",
+     "pose": "rest",
+     "key": "still",
+     "src": [
+      "nhs-snakebite"
+     ]
+    },
+    {
+     "id": "C2",
+     "who": "patient",
+     "text": "And don't go near the snake.",
+     "emotion": "neutral",
+     "pose": "rest",
+     "key": "snake",
+     "src": [
+      "nhs-snakebite"
+     ],
+     "cam": "cu lock"
+    }
+   ],
+   "props": []
+  },
+  {
+   "id": "D",
+   "set": "home",
+   "cast": [
+    {
+     "who": "mom",
+     "x": 360,
+     "size": 960,
+     "emotion": "scared",
+     "pose": "rest",
+     "y": 979
+    },
+    {
+     "who": "bleed",
+     "x": 820,
+     "size": 300,
+     "emotion": "happy",
+     "pose": "rest"
+    },
+    {
+     "who": "patient",
+     "x": 760,
+     "size": 960,
+     "emotion": "neutral",
+     "pose": "rest",
+     "y": 979
+    }
+   ],
+   "events": [
+    {
+     "at": "start",
+     "act": "mom: runs in along the trail",
+     "sfx": "footsteps-tiny"
+    },
+    {
+     "at": "D1",
+     "act": "mom: raises a knife",
+     "word": "Cut",
+     "sfx": "swish",
+     "fx": "flash"
+    },
+    {
+     "at": "D1",
+     "act": "mom: leans toward the bite",
+     "word": "Suck"
+    },
+    {
+     "at": "D1",
+     "act": "mom: pulls out a rope",
+     "word": "Tie",
+     "sfx": "swish"
+    },
+    {
+     "at": "D2",
+     "act": "bleed: pops up in a bubble, cheering",
+     "word": "Yes!",
+     "sfx": "pop"
+    },
+    {
+     "at": "D2",
+     "act": "bleed: the whole gang dances in the bubble",
+     "word": "love",
+     "sfx": "tada"
+    },
+    {
+     "at": "D3",
+     "act": "patient: holds up both hands: stop",
+     "word": "No,",
+     "sfx": "record-scratch",
+     "fx": "flash"
+    },
+    {
+     "at": "D3",
+     "act": "bleed: the gang's bubble POPS",
+     "word": "suck",
+     "sfx": "pop",
+     "fx": "flash"
+    },
+    {
+     "at": "D3",
+     "act": "mom: drops the knife and the rope",
+     "word": "tie",
+     "sfx": "thud-soft"
+    },
+    {
+     "at": "D4",
+     "act": "mom: slides a ring off his finger",
+     "word": "Rings",
+     "sfx": "ding"
+    },
+    {
+     "at": "D4",
+     "act": "mom: phone to her ear",
+     "word": "calling",
+     "sfx": "alarm-beep",
+     "fx": "flash"
+    }
+   ],
+   "lines": [
+    {
+     "id": "D1",
+     "who": "mom",
+     "text": "Cut it! Suck it out! Tie it tight!",
+     "emotion": "scared",
+     "pose": "rest",
+     "key": "cut",
+     "chat": true
+    },
+    {
+     "id": "D2",
+     "who": "bleed",
+     "text": "Yes! Do all of that! We love it!",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "love",
+     "chat": true,
+     "cam": "cu lock"
+    },
+    {
+     "id": "D3",
+     "who": "patient",
+     "text": "No, Mom! Don't cut it, suck it, or tie it.",
+     "emotion": "neutral",
+     "pose": "rest",
+     "key": "don't",
+     "src": [
+      "nhs-snakebite"
+     ],
+     "cam": "ms lock"
+    },
+    {
+     "id": "D4",
+     "who": "mom",
+     "text": "Rings off. I'm calling for help!",
+     "emotion": "neutral",
+     "pose": "rest",
+     "key": "help",
+     "src": [
+      "nhs-snakebite"
+     ],
+     "cam": "ms lock"
+    }
+   ],
+   "props": []
+  },
+  {
+   "id": "E",
+   "set": "macro",
+   "cast": [
+    {
+     "who": "numb",
+     "x": 760,
+     "size": 420,
+     "emotion": "scared",
+     "pose": "rest"
+    },
+    {
+     "who": "antivenom",
+     "x": 320,
+     "size": 520,
+     "emotion": "happy",
+     "pose": "rest",
+     "stage": true
+    }
+   ],
+   "state": {
+    "view": 2,
+    "knock": 0
+   },
+   "events": [
+    {
+     "at": "start",
+     "act": "numb: a drip line pours golden drops into the blood",
+     "sfx": "drip"
+    },
+    {
+     "at": "E1",
+     "act": "numb: hides behind Bleed",
+     "word": "drip?",
+     "fx": "flash"
+    },
+    {
+     "at": "E2",
+     "act": "antivenom: lands, shining",
+     "word": "Antivenom.",
+     "sfx": "success-chime",
+     "fx": "flash"
+    },
+    {
+     "at": "E2",
+     "act": "antivenom: one punch; the gang goes flying, knocked out",
+     "word": "best",
+     "set": {
+      "knock": 1
+     },
+     "over": 12,
+     "sfx": "bonk",
+     "fx": "flash"
+    }
+   ],
+   "lines": [
+    {
+     "id": "E1",
+     "who": "numb",
+     "text": "Uh oh. What's in that drip?",
+     "emotion": "scared",
+     "pose": "rest",
+     "key": "drip",
+     "chat": true
+    },
+    {
+     "id": "E2",
+     "who": "antivenom",
+     "text": "Antivenom. The best treatment there is.",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "antivenom",
+     "src": [
+      "who-snakebite",
+      "gutierrez-2017"
+     ]
+    }
+   ],
+   "props": []
+  },
+  {
+   "id": "F",
+   "set": "clinic",
+   "cast": [
+    {
+     "who": "doctor",
+     "x": 760,
+     "size": 960,
+     "emotion": "neutral",
+     "pose": "rest",
+     "y": 979
+    },
+    {
+     "who": "patient",
+     "x": 360,
+     "size": 960,
+     "emotion": "neutral",
+     "pose": "rest",
+     "y": 979
+    }
+   ],
+   "events": [
+    {
+     "at": "start",
+     "act": "patient: in the hospital bed, the drip in his arm",
+     "sfx": "whoosh-soft"
+    },
+    {
+     "at": "F1",
+     "act": "doctor: holds up the clipboard: two fang marks, no venom",
+     "word": "venom",
+     "sfx": "pop"
+    },
+    {
+     "at": "F1",
+     "act": "doctor: shakes her head",
+     "word": "no",
+     "fx": "flash"
+    },
+    {
+     "at": "F2",
+     "act": "doctor: shrugs",
+     "word": "tell"
+    },
+    {
+     "at": "F2",
+     "act": "doctor: two snake pictures pop up beside her, a big question mark between them",
+     "word": "venomous.",
+     "sfx": "pop",
+     "fx": "flash"
+    },
+    {
+     "at": "F2",
+     "act": "patient: gives a thumbs-up",
+     "word": "checked.",
+     "sfx": "ding"
+    }
+   ],
+   "lines": [
+    {
+     "id": "F1",
+     "who": "doctor",
+     "text": "Some snake bites carry no venom at all...",
+     "emotion": "neutral",
+     "pose": "rest",
+     "key": "no",
+     "src": [
+      "naik-2017"
+     ],
+     "cam": "ms lock"
+    },
+    {
+     "id": "F2",
+     "who": "doctor",
+     "text": "...but you can't tell which snake is venomous. Get every bite checked.",
+     "emotion": "neutral",
+     "pose": "rest",
+     "key": "checked",
+     "src": [
+      "nhs-snakebite"
+     ],
+     "cam": "cu lock"
+    }
+   ],
+   "props": []
+  },
+  {
+   "id": "G",
+   "set": "macro",
+   "cast": [
+    {
+     "who": "numb",
+     "x": 540,
+     "size": 600,
+     "emotion": "sad",
+     "pose": "rest",
+     "stage": true
+    }
+   ],
+   "state": {
+    "view": 2,
+    "knock": 1
+   },
+   "events": [
+    {
+     "at": "start",
+     "act": "numb: lies knocked out, stars spinning",
+     "sfx": "wobble"
+    },
+    {
+     "at": "G1",
+     "act": "numb: lifts his head, dizzy",
+     "word": "snake",
+     "set": {
+      "knock": 0.6
+     },
+     "over": 10
+    },
+    {
+     "at": "G1",
+     "act": "numb: flops back down",
+     "word": "again!",
+     "set": {
+      "knock": 1
+     },
+     "over": 8,
+     "sfx": "thud-soft",
+     "fx": "flash"
+    }
+   ],
+   "lines": [
+    {
+     "id": "G1",
+     "who": "numb",
+     "text": "Next time a snake bites you... we ride again!",
+     "emotion": "sad",
+     "pose": "rest",
+     "key": "again",
+     "chat": true
+    }
+   ],
+   "props": []
+  }
+ ],
+ "cta": {
+  "text": "Snake bite: know this. Never cut, suck or tie the bite. Stay calm and keep it still. Get every bite checked. Follow MedPeak Health for more health tips that keep you safe.",
+  "src": [
+   "nhs-snakebite"
+  ]
+ },
+ "musicPrompt": "A steady, continuous adventure-comedy cartoon groove at 100 BPM that never stops or drops out: a constant driving drum beat with shakers, a bouncy plucked bass line and a held warm string pad under everything from the first second to the last, no breaks, no silences, no stop-time stabs. A sneaky, slinky clarinet and marimba melody on top like a villain gang on the move, with a bright heroic brass lift near the end. Background music under dialogue."
+}

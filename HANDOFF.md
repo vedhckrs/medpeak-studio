@@ -6,6 +6,53 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-22 (29) - MacBook (local Claude Code, headless) - branch `video/snake-bite` - snake-bite look drawn, sheets NOT rendered yet
+
+- New: `src/toons/v8/snake-cast.tsx` (the venom gang Numb / Bleed / Crush as venom drops with two small fangs, the
+  Antivenom hero as a rounded gold Y; props mood, mouth, look, arms incl. 'cheer' and 'punch', knocked 0..1; `SnakeCastBoard`),
+  `src/toons/v8/snake-places.tsx` (TrailScene, LegInside with `swell`, HospitalBed; moments: hook, split, myths, drip, punch),
+  `src/toons/v8/entry-snake.tsx` (SnakeCast, SnakePlace, SnakeCheck), added to SHEETS in `pipeline/toon-v8-sheets.mjs`.
+  Placeholder blueprints in `src/toons/characters.tsx` and cast entries (voice "TBD") in `skill/medpeak-health/toons-cast.json`.
+  kit.tsx untouched.
+- Run: `npm run typecheck` passes, `npm test` passes (52/52).
+- NOT run: `node pipeline/toon-v8-sheets.mjs snake-` (the permission mode of that session refused to start the render). So
+  NOBODY HAS LOOKED at these drawings yet. Positions in the moments (Mom's pointing hand vs the shout bubble, Sam's sit pose in
+  the bed and the drip line reaching his forearm, the hook gang near the fangs) are first guesses and will likely need nudging.
+- Mom's knife and rope are drawn in her shout bubble ("CUT IT! TIE IT!"), not in her hands, to keep hands clean; change if the
+  owner wants them held. The myths moment shows Mom + Crush cheering (Sam off frame), keeping to two characters.
+- Next: render `snake-`, look at every sheet and the SnakeCheck crops at full size, fix overlaps/edges/hands, then show the owner
+  `out/toons/sheets-v8/snake-cast.jpg` and `snake-place.jpg`.
+
+## 2026-11-23 (31) - MacBook (local Claude Code) - branch `video/snake-bite` - snake-bite SCHEDULED (Mon 23 Nov 21:30 IST)
+
+- The owner: "Yes, schedule it". https://youtu.be/xnnOatChD8U, private, publishAt 2026-11-23T16:00:00Z; read back after the AI-label
+  step too (the fixed after_upload kept the schedule). AI label: update answered, not shown on read (check Studio). Topic #6 marked.
+- Next free MedPeak slots: Tue 24 Nov 12:30 and 21:30 IST. Next topic in the bank: #7 "What Happens When You Quit Smoking".
+
+---
+
+## 2026-11-23 (30) - MacBook (local Claude Code) - branch `video/snake-bite` - snake-bite FINISHED, waiting for the owner (NOT uploaded)
+
+- Final `videos/snake-bite/renders/toon-v8.mp4` 61.7 s (story about 48 s), -14.0 LUFS, -1.0 dBTP, no holes, END CARD speech 83%,
+  look ALL PASS (still 60%, bright 148, outlines 2.8%), every check passes, npm test 52/52, package READY, cover at 0.8 s.
+- The checklist on the final: real cuts are all place changes or designed subject cuts; every line's still checked at full size;
+  fixed: a burst on Numb's face, Antivenom in the caption band, the snake cards on Mira's hair.
+- Next: the owner watches; upload on his word in the next free slot (`upload.py snake-bite toon --approve --slot`).
+
+---
+
+## 2026-11-22 (29) - MacBook (local Claude Code) - branch `video/snake-bite` - snake-bite VOICED, not yet rendered (usage limit)
+
+- Topic #6. Plan `plans/snake-bite-2026-11-22.md` (hook A, Mom), script `plans/snake-bite-script.py`, shots `src/toons/v8/snake-bite.tsx`.
+- Anthropic: $2.90 of $5 (look sheets $2.05, a shot run that stopped $0.85); the owner then chose "code them yourself".
+- Voices (free picks with earshot): numb Seraphina, bleed Little Dude II, crush Maverick, antivenom Noku. Spent 789 credits
+  (lines 269, card 153, music 367); balance 35,653 before (about 7,300 lower than after fasting: not spent from this session).
+- On real timings: toon:check, camera, motion, staging, sound ALL PASS; music has no rest inside its loop.
+- NEXT: `node pipeline/toon-v8-render.mjs snake-bite`, then the checklist on the FINAL (toon:look, toon:listen incl. END CARD,
+  real cut list, full-size stills of every line, cover), `node pipeline/toon-package.mjs snake-bite`, send to the owner. Not uploaded.
+
+---
+
 ## 2026-11-22 (28) - MacBook (local Claude Code) - branch `video/fasting` - fasting SCHEDULED (Mon 23 Nov 12:30 IST)
 
 - The owner: "Yes, schedule it". `upload.py fasting toon --slot --approve` (first real use of --slot): https://youtu.be/mQQy3CIbXF0,

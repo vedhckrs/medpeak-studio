@@ -59,7 +59,7 @@ export const STAGE_KEYS: Partial<Record<SetName, string[]>> = {
   // drain (the batteries empty), charge (they refill), water (water drifts into the cell), bits (creatinine in the kidney filter).
   // quit-sugar (2026-11-22, src/toons/v8/sugar-organs.tsx, the whole-organ frames): fat (the liver's fat patches, 1 = Day 1,
   // 0.5 = nearly halved), pull (Sweetie's fishing line in front of the brain), buds (the tongue's taste buds light up).
-  macro: ['view', 'slide', 'speed', 'grip', 'snap', 'gap', 'wash', 'dirt', 'crea', 'flex', 'drain', 'charge', 'water', 'bits', 'fat', 'pull', 'buds', 'growl', 'store', 'drops', 'lean'],
+  macro: ['view', 'slide', 'speed', 'grip', 'snap', 'gap', 'wash', 'dirt', 'crea', 'flex', 'drain', 'charge', 'water', 'bits', 'fat', 'pull', 'buds', 'growl', 'store', 'drops', 'lean', 'swell', 'knock', 'nerve', 'clot'],
   arm: ['bite', 'climb', 'days', 'vaccine', 'wall', 'wash', 'dizzy'],
   molar: ['night', 'guards', 'sleep', 'sugar', 'snack', 'wash', 'fight', 'party', 'acid', 'chalk', 'brush', 'shield'],
   // gum: a swallowed piece of gum comes down and floats with the food. pass: what is in the stomach

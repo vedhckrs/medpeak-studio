@@ -1,0 +1,31 @@
+You are working in the medpeak-studio repo (read CLAUDE.md and skill/medpeak-health/references/toons-v8-style.md and
+skill/medpeak-health/references/toons-known-issues.md FIRST; follow every standing rule). Video: snake-bite. Plan:
+plans/snake-bite-2026-11-22.md (hook A, Mom shouts the myths).
+
+TASK: draw the NEW look of this video in look v8 (code only, the shared kit in src/toons/v8/kit.tsx; never change kit.tsx), and make
+the look sheets for the owner. Do NOT write shots, scripts or voices; do NOT spend anything else.
+
+1. src/toons/v8/snake-cast.tsx:
+   - the venom gang, three venom DROPS with small fang teeth in a sly grin, the kit eyes, tiny arms and legs, one shade crescent,
+     the kit outline: Numb (blue, `#6fa8dc` family, attacks nerves), Bleed (red, `#d9534f` family, stops clotting), Crush (green,
+     `#58b56e` family, wrecks tissue). Props: mood, mouth, look, arms ('hips' | 'wave' | 'point' | 'cheer' | 'droop'), knocked (0..1:
+     dizzy, tilted, little stars).
+   - Antivenom: a calm hero, a rounded Y-shaped antibody (like a shield with two arms), pale gold with a soft white shine, the kit
+     face. Props as above plus 'punch'.
+   - SnakeCastBoard: a 1920x1080 sheet like SugarCastBoard in sugar-cast.tsx (moods row; then the cast at one size with Sam, Mom
+     (castById) heads/bodies via PersonAt and Dr. Mira).
+2. src/toons/v8/snake-places.tsx, ONE colour per place, quiet tone-on-tone backgrounds (see `place` in fast-art.tsx / PlainBack in
+   sugar-organs.tsx), one or two characters per frame:
+   - TrailScene (warm green day; a dirt path, a few big simple leaves, a rock where the snake hid; NO snake drawn in detail: a tail
+     slipping away under the rock is enough)
+   - LegInside (deep red-brown tissue filling the frame; the two fang holes as a big shaft of light from above; one big nerve cable
+     on the left, one red blood river on the right; dial `swell` 0..1 makes the tissue bulge)
+   - HospitalBed (pale blue; Sam in bed with a drip stand; the drip line goes into his arm)
+   Each with moment components for the sheet: the hook (fangs punching down, the gang bursting at the lens), the split, the myths
+   (Mom with a knife and a rope, the gang cheering), the hospital drip.
+3. src/toons/v8/entry-snake.tsx registering the boards (SnakeCast, SnakePlace, SnakeCheck: faces and hands at full size), and add
+   them to SHEETS in pipeline/toon-v8-sheets.mjs. Placeholder blueprints for new characters in src/toons/characters.tsx (as `lardo`)
+   and cast entries in skill/medpeak-health/toons-cast.json with voice "TBD".
+4. Render: `node pipeline/toon-v8-sheets.mjs snake-`, look at EVERY sheet and crop at full size yourself (Read the jpgs), fix
+   anything that overlaps a face, is cut at the edge, or crosses a hand; `npm run typecheck` and `npm test` must pass.
+5. Commit on the current branch with a clear message and push. Reply with the sheet paths and anything you could not do.
