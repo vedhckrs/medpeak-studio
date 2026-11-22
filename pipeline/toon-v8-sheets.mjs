@@ -63,6 +63,34 @@ export const SHEETS = [
   ['entry-fast.tsx', 'FastCast', 'fast-cast'],
   ['entry-fast.tsx', 'FastPlace', 'fast-place'],
   ['entry-fast.tsx', 'FastRoom', 'fast-room'],
+  // engine v9 / format 6 samples (agent B, 2026-11-23): `node pipeline/toon-v8-sheets.mjs v9-`
+  ['entry-v9.tsx', 'V9Eyes', 'v9-closeup-eyes'],
+  ['entry-v9.tsx', 'V9Hands', 'v9-closeup-hands-line'],
+  ['entry-v9.tsx', 'V9PeopleFaces', 'v9-closeup-people-marks'],
+  ['entry-v9.tsx', 'V9Stubble', 'v9-dad-stubble-ab'],
+  ['entry-v9.tsx', 'V9CastOrgansA', 'v9-cast-1-organs-a'],
+  ['entry-v9.tsx', 'V9CastOrgansA2', 'v9-cast-2-organs-a'],
+  ['entry-v9.tsx', 'V9CastOrgansB', 'v9-cast-3-organs-b'],
+  ['entry-v9.tsx', 'V9CastOrgansB2', 'v9-cast-4-organs-b'],
+  ['entry-v9.tsx', 'V9CastCells', 'v9-cast-5-cells'],
+  ['entry-v9.tsx', 'V9CastCells2', 'v9-cast-6-cells'],
+  ['entry-v9.tsx', 'V9CastGerms', 'v9-cast-7-germs'],
+  ['entry-v9.tsx', 'V9CastGerms2', 'v9-cast-8-germs'],
+  ['entry-v9.tsx', 'V9CastPeople', 'v9-cast-9-people'],
+  ['entry-v9.tsx', 'V9Crew', 'v9-crew'],
+  ['entry-v9.tsx', 'V9Prop', 'v9-hero-prop'],
+  ['entry-v9.tsx', 'V9Room', 'v9-pale-room'],
+  ['entry-v9.tsx', 'V9EndCard', 'v9-end-card'],
+  ['entry-v9.tsx', 'V9Watermark', 'v9-watermark'],
+  ['entry-v9.tsx', 'V9Caption', 'v9-caption'],
+  ['entry-v9.tsx', 'V9Cover', 'v9-cover'],
+  ['entry-anatomy.tsx', 'AnatBoardChest', 'v9-stage-chest'],
+  ['entry-anatomy.tsx', 'AnatBoardVessel', 'v9-stage-vessel'],
+  ['entry-anatomy.tsx', 'AnatBoardTissue', 'v9-stage-tissue'],
+  ['entry-anatomy.tsx', 'AnatBoardBelly', 'v9-stage-upper-belly'],
+  ['entry-anatomy.tsx', 'AnatBoardThroat', 'v9-stage-throat'],
+  ['entry-anatomy.tsx', 'AnatBoardSkull', 'v9-stage-skull'],
+  ['entry-anatomy.tsx', 'AnatBoardSkin', 'v9-stage-skin'],
 ];
 
 // The scene frames of the rabies video (rooms, the arm, inside the body): [entry file, still id, output name]
@@ -82,6 +110,15 @@ export const SCENES = [
   ['entry-scenes-body.tsx', 'V8PlaceJunction', 'place-junction'],
   ['entry-scenes-body.tsx', 'V8PlaceAxon', 'place-axon'],
   ['entry-scenes-body.tsx', 'V8PlaceTissue', 'place-tissue'],
+  // engine v9 stages, full 1080 x 1920 (agent B, 2026-11-23): `node pipeline/toon-v8-sheets.mjs --scenes v9-`
+  ['entry-anatomy.tsx', 'AnatFullChest', 'v9-stage-chest'],
+  ['entry-anatomy.tsx', 'AnatFullVessel', 'v9-stage-vessel'],
+  ['entry-anatomy.tsx', 'AnatFullTissue', 'v9-stage-tissue'],
+  ['entry-anatomy.tsx', 'AnatFullBelly', 'v9-stage-upper-belly'],
+  ['entry-anatomy.tsx', 'AnatFullThroat', 'v9-stage-throat'],
+  ['entry-anatomy.tsx', 'AnatFullSkull', 'v9-stage-skull'],
+  ['entry-anatomy.tsx', 'AnatFullSkin', 'v9-stage-skin'],
+  ['entry-anatomy.tsx', 'AnatFullRoom', 'v9-stage-room'],
 ];
 
 const renderList = (all, dir, only) => {
