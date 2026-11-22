@@ -143,8 +143,8 @@ shots = [
    "state": {"view": 2, "knock": 1},
    "events": [
      E("start", act="numb: lies knocked out, stars spinning", sfx="wobble"),
-     E("G1", word="snake", act="numb: lifts his head, dizzy"),
-     E("G1", word="again!", act="numb: flops back down", sfx="thud-soft", fx="flash"),
+     E("G1", word="snake", act="numb: lifts his head, dizzy", set={"knock": 0.6}, over=10),
+     E("G1", word="again!", act="numb: flops back down", set={"knock": 1}, over=8, sfx="thud-soft", fx="flash"),
    ],
    "lines": [
      L("G1", "numb", "Next time a snake bites you... we ride again!", "sad", "again", chat=True),

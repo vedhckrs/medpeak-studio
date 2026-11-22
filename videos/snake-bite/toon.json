@@ -784,12 +784,20 @@
     {
      "at": "G1",
      "act": "numb: lifts his head, dizzy",
-     "word": "snake"
+     "word": "snake",
+     "set": {
+      "knock": 0.6
+     },
+     "over": 10
     },
     {
      "at": "G1",
      "act": "numb: flops back down",
      "word": "again!",
+     "set": {
+      "knock": 1
+     },
+     "over": 8,
      "sfx": "thud-soft",
      "fx": "flash"
     }
