@@ -20,6 +20,26 @@ measures it on every script (they all run in `npm test`).
 | listening | the finished file as a listener gets it: loudness, each planned sound (heard or lost), holes, clipping; each library effect against its description | `npm run toon:listen -- <slug>` / `-- --library` (needs earshot on the machine, toons-listening.md) |
 | upload read-back | what YouTube really stored (privacy, AI-use answer, cover) | printed by `publish/upload.py` |
 
+## Before ANY video goes to the owner: the 2026-11-22 checklist (quit-sugar and fasting)
+
+The owner on the fasting final: "why last CTA dont have voiceover narrator you forget ... not interesting and not visual, confusion,
+hook is not good failed, camera jump bugs", then "make sure dont make mistake again". Every one of these passed the checks of the day.
+Each now has a check; run ALL of them on the FINAL render, not on a draft:
+
+| Mistake | Cause | What stops it now |
+|---|---|---|
+| End card with music but no narrator (quit-sugar, public; fasting) | the clip was named by hand in each video's code; two videos missed it | the render puts every paid clip in (`toon.ctaClip`); `toon:listen` prints END CARD and fails without speech; `pipeline/test/cta.test.mjs` |
+| 9 jump cuts in 45 s | the shots' own framings (`view`) were never checked: toon:camera reads script cam words | `pipeline/test/views.test.mjs` reads the real framings (1.5x or no reframe); ONE framing per place; measure real cuts on the final (frames where > 30% of pixels change) and name each one: a new place or a 1.5x size change, nothing else |
+| A weak hook | the first 2 s were a calm room with a small character | open on the CONSEQUENCE, the main character filling the frame, coming at the lens; judge the first frame as the cover |
+| Not visual, confusing | four places in one pink, ten things in a frame, abstract ideas (a jar, a switch) | one colour per place (`place` prop), quiet tone-on-tone backgrounds, one or two characters per frame, a big physical metaphor per idea (a gauge to EMPTY with an alarm, a furnace), the lead person acts in silent beats |
+| A schedule silently cancelled | `after_upload --label` updated the status without `publishAt` | the script keeps `publishAt` and warns; read the status back after EVERY change to a video |
+| A burst on a face; the watermark on a prop | placed by hand, not measured | look at full-size stills of every line and crop every face before sending |
+| Captions | the owner: 5% higher, 40% smaller | `"caption": 2` in every new toon.json |
+| The look check measured the draft with the still end card | the draft has no cta-timings | run `toon:look` on the FINAL voiced render (story only) |
+
+Coding and kit work runs through the owner's Anthropic key (the owner, 2026-11-22: "for coding and making kit use anthropic API"):
+`node pipeline/claude-run.mjs <slug> --task <file> --label "<what>"`, $5 cap a video, cost shown at the start and the end.
+
 ## Fixed, with the cause
 | # | What the owner saw | Root cause | Fix | Stops it now |
 |---|---|---|---|---|

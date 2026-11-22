@@ -19,7 +19,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {spawnSync} from 'node:child_process';
-import {args, isMain, readJson, videoDir, writeJson, ROOT} from './lib/util.mjs';
+import {args, isMain, loadEnv, readJson, videoDir, writeJson, ROOT} from './lib/util.mjs';
 
 export const CAP_USD = 5;
 export const MARGIN_USD = 0.75;
@@ -52,6 +52,7 @@ const status = (slug, l = loadLedger(slug)) =>
 const run = (slug, taskFile, label) => {
   const budget = runBudget(loadLedger(slug));
   if (!budget) throw new Error(`HARD CAP: ${status(slug)}. No run may start (needs $${(MIN_RUN_USD + MARGIN_USD).toFixed(2)} left). Ask the owner.`);
+  loadEnv(); // the repo's .env (never committed) or MEDPEAK_ENV_FILES, as the ElevenLabs keys; never printed
   const key = process.env.MEDPEAK_ANTHROPIC_KEY || process.env.ANTHROPIC_API_KEY;
   if (!key) throw new Error('No key: set MEDPEAK_ANTHROPIC_KEY (cloud) or ANTHROPIC_API_KEY (machine).');
   const lock = path.join(videoDir(slug), '.claude-run.lock');
