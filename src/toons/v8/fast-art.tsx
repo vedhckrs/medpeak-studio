@@ -23,6 +23,7 @@ import {Layer, Scene} from './scene';
 import {f, open, rnd, type P} from './scenes-body';
 import {ORGAN_COL, smooth} from './organs-a';
 import {FLOOR_Y} from './scenes-rooms';
+import {bodyTx, OrganArm, type ArmPose, type Gesture} from './organ-act';
 
 const clamp01 = (v: number) => Math.max(0, Math.min(1, v));
 const Shine: React.FC<{d: string; w?: number; o?: number}> = ({d, w = 10, o = 0.85}) => <path d={d} stroke="#ffffff" strokeWidth={w} strokeLinecap="round" fill="none" opacity={o} />;
@@ -92,7 +93,7 @@ const STOMACH_BODY: P[] = [[-2, -48], [10, -58], [26, -68], [48, -69], [66, -54]
 // the folds (rugae) on its wall, in its own units, kept off the face (around 36, -20)
 const RUGAE = ['M -54 30 Q -36 24 -18 30 Q 0 36 16 30', 'M -40 44 Q -16 38 8 46 Q 26 52 40 42', 'M 0 -40 Q 4 -20 0 0 Q -4 14 2 26', 'M 60 20 Q 44 34 24 38', 'M 70 -6 Q 64 8 52 16', 'M 12 -58 Q 6 -48 8 -38'];
 
-export const StomachFull: React.FC<V8Props & {t: number; growl?: number}> = ({t, growl = 0, mood = 'angry', mouth = 'open', look = [-0.4, 0.2]}) => {
+export const StomachFull: React.FC<V8Props & {t: number; growl?: number; armL?: ArmPose | Gesture; armR?: ArmPose | Gesture; sq?: number; rot?: number}> = ({t, growl = 0, mood = 'angry', mouth = 'open', look = [-0.4, 0.2], armL, armR, sq = 0, rot = 0}) => {
   const g = clamp01(growl);
   const S = 6.0;
   const sx = g * Math.sin(t * 61) * 10, sy = g * Math.cos(t * 47) * 6;
@@ -138,13 +139,13 @@ export const StomachFull: React.FC<V8Props & {t: number; growl?: number}> = ({t,
           const r = 520 + k * 220;
           return <path key={i} d={`M ${f(540 - r * 0.86)} ${f(1000 + r * 0.2)} A ${r} ${r * 0.9} 0 0 1 ${f(540 + r * 0.86)} ${f(1000 + r * 0.2)}`} stroke="#ffffff" strokeWidth={14} strokeLinecap="round" fill="none" opacity={g * (1 - k) * 0.8} />;
         })}
-        <g transform={`translate(${f(500 + sx)} ${f(1040 + sy)}) scale(${S})`}>
+        <g transform={`translate(${f(500 + sx)} ${f(1040 + sy)}) scale(${S}) ${bodyTx(sq + g * 0.035 * Math.sin(t * 19), rot, 60)}`}>
           {/* the gullet down into the top, the duodenum out low left */}
           <path d="M -10 -200 C -12 -140 -8 -90 2 -54" stroke={INK} strokeWidth={24} strokeLinecap="round" fill="none" />
           <path d="M -10 -200 C -12 -140 -8 -90 2 -54" stroke={STOMACH_FULL.gullet} strokeWidth={19} strokeLinecap="round" fill="none" />
           <path d="M -58 34 C -80 40 -92 60 -88 84 C -84 104 -70 120 -72 160" stroke={INK} strokeWidth={21} strokeLinecap="round" fill="none" />
           <path d="M -58 34 C -80 40 -92 60 -88 84 C -84 104 -70 120 -72 160" stroke={STOMACH_FULL.gullet} strokeWidth={16} strokeLinecap="round" fill="none" />
-          <TinyArm from={[-36, 56]} bend={[-46, 76]} to={[-28, 84]} fill={STOMACH_FULL.wall} hand="fist" />
+          {armL ? <OrganArm from={[-36, 56]} s={-1} pose={armL} fill={STOMACH_FULL.wall} /> : <TinyArm from={[-36, 56]} bend={[-46, 76]} to={[-28, 84]} fill={STOMACH_FULL.wall} hand="fist" />}
           <Shape d={smooth(STOMACH_BODY)} fill={STOMACH_FULL.wall}>
             {RUGAE.map((d, i) => <path key={'r' + i} d={d} stroke={tint(STOMACH_FULL.wall, 0.3)} strokeWidth={2.4} fill="none" transform="translate(-1 -1)" />)}
             {RUGAE.map((d, i) => <path key={'g' + i} d={d} {...INLINE} />)}
@@ -154,7 +155,7 @@ export const StomachFull: React.FC<V8Props & {t: number; growl?: number}> = ({t,
             <Shine d="M 70 -30 Q 74 -14 72 0" w={2} o={0.6} />
             <circle cx={-2} cy={-40} r={1.5} fill="#ffffff" opacity={0.9} />
           </Shape>
-          <TinyArm from={[71, 6]} bend={[g > 0 ? 88 : 90, g > 0 ? -6 : 8]} to={[g > 0 ? 84 : 88, g > 0 ? -34 : -16]} fill={STOMACH_FULL.wall} hand={g > 0 ? 'fist' : 'mitten'} />
+          {armR ? <OrganArm from={[71, 6]} s={1} pose={armR} fill={STOMACH_FULL.wall} len={0.9} /> : <TinyArm from={[71, 6]} bend={[g > 0 ? 88 : 90, g > 0 ? -6 : 8]} to={[g > 0 ? 84 : 88, g > 0 ? -34 : -16]} fill={STOMACH_FULL.wall} hand={g > 0 ? 'fist' : 'mitten'} />}
           <Eyes x={36} y={-30} r={14} mood={mood} look={look} brows />
           <Mouth x={36} y={-4} w={15} kind={mouth} />
         </g>
@@ -209,7 +210,7 @@ export const FAST_ROOM = {
   pool: '#8a6e86', lamp: '#f7e1a6', chair: '#c0563f', chair2: '#a84a37', wood: '#8a5a3c', clock: '#fbf6ea',
 };
 /** The big wall clock with the red FAST ring: `hours` of 16 filled, the hours in its middle. */
-export const FastClock: React.FC<{hours: number}> = ({hours}) => {
+export const FastClock: React.FC<{hours: number; sec?: number}> = ({hours, sec}) => {
   const k = clamp01(hours / 16);
   const R = 118;
   const a1 = -Math.PI / 2 + k * Math.PI * 2;
@@ -223,6 +224,7 @@ export const FastClock: React.FC<{hours: number}> = ({hours}) => {
         const a = -Math.PI / 2 + (i / 16) * Math.PI * 2, r1 = i % 4 ? 112 : 104;
         return <path key={i} d={`M ${f(Math.cos(a) * r1)} ${f(Math.sin(a) * r1)} L ${f(Math.cos(a) * 124)} ${f(Math.sin(a) * 124)}`} stroke={INK} strokeWidth={i % 4 ? 4 : 8} strokeLinecap="round" />;
       })}
+      {sec !== undefined && (() => { const a = (sec / 60) * Math.PI * 2 - Math.PI / 2; return <g><path d={`M ${f(-Math.cos(a) * 14)} ${f(-Math.sin(a) * 14)} L ${f(Math.cos(a) * 118)} ${f(Math.sin(a) * 118)}`} stroke={INK} strokeWidth={9} strokeLinecap="round" /><path d={`M ${f(-Math.cos(a) * 14)} ${f(-Math.sin(a) * 14)} L ${f(Math.cos(a) * 118)} ${f(Math.sin(a) * 118)}`} stroke={CLOTH.red} strokeWidth={4} strokeLinecap="round" /></g>; })()}
       <circle cx={0} cy={0} r={74} fill={FAST_ROOM.clock} {...EDGE_IN} />
       <text x={0} y={-24} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={24} fill={CLOTH.red} letterSpacing={2}>FAST</text>
       <text x={0} y={34} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={hours >= 10 ? 58 : 64} fill={INK}>{Math.round(hours)}h</text>
@@ -252,7 +254,7 @@ export const DinnerPlate: React.FC<{empty?: boolean; breakfast?: boolean}> = ({e
   </g>
 );
 
-export const FastRoom: React.FC<{hours?: number; plate?: 'full' | 'away' | 'breakfast'; lamp?: boolean; plateX?: number; clockShake?: number}> = ({hours = 0, plate = 'full', lamp = true, plateX, clockShake = 0}) => (
+export const FastRoom: React.FC<{hours?: number; plate?: 'full' | 'away' | 'breakfast'; lamp?: boolean; plateX?: number; clockShake?: number; sec?: number}> = ({hours = 0, plate = 'full', lamp = true, plateX, clockShake = 0, sec}) => (
   <Layer>
     <rect x={0} y={0} width={1080} height={FLOOR_Y} fill={FAST_ROOM.wall} />
     {/* a wide stripe of wallpaper with a small diamond pattern */}
@@ -275,7 +277,7 @@ export const FastRoom: React.FC<{hours?: number; plate?: 'full' | 'away' | 'brea
     </Shape>
 
     {/* the big wall clock, middle-right, high */}
-    <g transform={`translate(830 330) rotate(${clockShake.toFixed(2)}) scale(1.15)`}><FastClock hours={hours} /></g>
+    <g transform={`translate(830 330) rotate(${clockShake.toFixed(2)}) scale(1.15)`}><FastClock hours={hours} sec={sec} /></g>
 
     {/* the armchair, left of middle, behind where Grandpa stands */}
     <Shape d="M 230 980 Q 230 880 330 880 L 560 880 Q 660 880 660 980 L 660 1420 L 230 1420 Z" fill={FAST_ROOM.chair} shadow={0.6}>

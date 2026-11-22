@@ -31,6 +31,9 @@ import {Put, Layer, Scene} from './scene';
 import {f, open, rnd, tube, type P} from './scenes-body';
 import {cloud, ORGAN_COL, smooth} from './organs-a';
 import {Sweetie} from './sugar-cast';
+import {bodyTx, OrganArm, type ArmPose, type Gesture} from './organ-act';
+/** Optional acting for a whole organ (organ-act.tsx): its arms' gestures and a body squash / lean. Left out, it stands as drawn. */
+export type OrganActing = {armL?: ArmPose | Gesture; armR?: ArmPose | Gesture; sq?: number; rot?: number};
 
 const clamp01 = (v: number) => Math.max(0, Math.min(1, v));
 /** Mix two #rrggbb colours (k = 0 gives a, 1 gives b). */
@@ -68,7 +71,7 @@ const FAT: [number, number, number][] = [[28, -40, 11], [54, -28, 8], [8, -12, 1
 // a faint speckle of lobules over the surface
 const SPECK: P[] = Array.from({length: 70}, (_, i): P => [-80 + rnd(i, 71) * 168, -60 + rnd(i, 72) * 108]);
 
-export const LiverFull: React.FC<V8Props & {t: number; fat?: number; lift?: number}> = ({fat = 1, mood = 'sleepy', mouth = 'smile', look = [0, 0.2], lift = 0}) => {
+export const LiverFull: React.FC<V8Props & OrganActing & {t: number; fat?: number; lift?: number}> = ({fat = 1, mood = 'sleepy', mouth = 'smile', look = [0, 0.2], lift = 0, armL, armR, sq = 0, rot = 0}) => {
   const k = clamp01(fat);
   const fatty = clamp01((k - 0.4) / 0.6); // how far the colour leans to the pale, fatty liver
   const body = mix(LIVER_FULL.healthy, LIVER_FULL.fatty, fatty);
@@ -127,8 +130,8 @@ export const LiverFull: React.FC<V8Props & {t: number; fat?: number; lift?: numb
 
       {/* the liver itself, its face on its wall */}
       <svg style={{position: 'absolute', left: 0, top: 0, overflow: 'visible'}} width={1080} height={1920} viewBox="0 0 1080 1920">
-        <g transform={`translate(540 ${960 + lift}) scale(${S})`}>
-          <TinyArm from={[-74, 32]} bend={[-90, 46]} to={[-78, 64]} fill={body} hand="mitten" />
+        <g transform={`translate(540 ${960 + lift}) scale(${S}) ${bodyTx(sq, rot, 50)}`}>
+          {armL ? <OrganArm from={[-74, 32]} s={-1} pose={armL} fill={body} /> : <TinyArm from={[-74, 32]} bend={[-90, 46]} to={[-78, 64]} fill={body} hand="mitten" />}
           {/* the gallbladder, tucked under, with its own shine */}
           <Shape d={smooth([[-26, 36], [-10, 34], [-4, 50], [-12, 62], [-24, 58]])} fill={ORGAN_COL.gall} shadow={0.5}>
             <Shine d="M -20 42 Q -14 40 -10 44" w={2} o={0.7} />
@@ -163,7 +166,7 @@ export const LiverFull: React.FC<V8Props & {t: number; fat?: number; lift?: numb
             <Dot x={-14} y={-55} r={1.6} />
             <Dot x={82} y={-31} r={1.2} />
           </Shape>
-          <TinyArm from={[22, 18]} bend={[34, 38]} to={[22, 54]} fill={body} hand="mitten" />
+          {armR ? <OrganArm from={[22, 18]} s={1} pose={armR} fill={body} /> : <TinyArm from={[22, 18]} bend={[34, 38]} to={[22, 54]} fill={body} hand="mitten" />}
           <Eyes x={-36} y={-28} r={14} mood={mood} look={look} brows />
           <Mouth x={-36} y={-2} w={14} kind={mouth} />
         </g>
@@ -342,7 +345,7 @@ const FOLDS: string[] = [
   'M 64 -22 q -10 6 -6 18', 'M -66 4 q 8 -8 18 -4', 'M 30 -22 q 10 -2 14 8', 'M 26 -60 q 8 8 2 18', 'M 52 -36 q 10 4 8 16', 'M 70 -6 q -8 8 0 16',
   'M 36 0 q 8 6 18 2', 'M -12 -64 q -4 10 4 18', 'M -30 -66 q 2 8 -6 14', 'M -76 -8 q 8 4 6 14', 'M -6 28 q 8 -6 16 0', 'M -36 30 q 6 -6 14 -2',
 ];
-export const BrainFull: React.FC<V8Props & {t: number}> = ({mood = 'bored', mouth = 'flat', look = [0.6, 0]}) => {
+export const BrainFull: React.FC<V8Props & OrganActing & {t: number}> = ({mood = 'bored', mouth = 'flat', look = [0.6, 0], armL, armR, sq = 0, rot = 0}) => {
   const S = 6.8;
   return (
     <Scene bg={BRAIN_FULL.space}>
@@ -356,7 +359,7 @@ export const BrainFull: React.FC<V8Props & {t: number}> = ({mood = 'bored', mout
         <path d="M 0 1500 Q 540 1440 1080 1500 L 1080 1920 L 0 1920 Z" fill={BRAIN_FULL.space2} opacity={0.6} />
       </Layer>
       <svg style={{position: 'absolute', left: 0, top: 0, overflow: 'visible'}} width={1080} height={1920} viewBox="0 0 1080 1920">
-        <g transform={`translate(540 830) scale(${S})`}>
+        <g transform={`translate(540 830) scale(${S}) ${bodyTx(sq, rot, 40)}`}>
           <TubeShape pts={[[12, 26], [12, 60], [10, 100], [8, 140]]} w={[22, 20, 18, 17]} fill={BRAIN_FULL.stem} shadow={0.6} seed={21} />
           <Shape d={smooth(CEREBELLUM)} fill={BRAIN_FULL.brain}>
             {[30, 36, 42, 48].map((y, i) => <path key={i} d={`M ${30 + i} ${y} Q 54 ${y - 4} ${76 - i * 2} ${y + 2}`} {...INLINE} />)}
@@ -374,8 +377,8 @@ export const BrainFull: React.FC<V8Props & {t: number}> = ({mood = 'bored', mout
             <Shine d="M 34 -66 Q 54 -60 66 -48" w={2} o={0.6} />
             <Dot x={-4} y={-70} r={1.6} />
           </Shape>
-          <TinyArm from={[-62, 26]} bend={[-84, 44]} to={[-72, 62]} fill={BRAIN_FULL.brain} hand="mitten" />
-          <TinyArm from={[-20, 38]} bend={[-14, 58]} to={[-28, 70]} fill={BRAIN_FULL.brain} hand="mitten" />
+          {armL ? <OrganArm from={[-62, 26]} s={-1} pose={armL} fill={BRAIN_FULL.brain} /> : <TinyArm from={[-62, 26]} bend={[-84, 44]} to={[-72, 62]} fill={BRAIN_FULL.brain} hand="mitten" />}
+          {armR ? <OrganArm from={[-20, 38]} s={1} pose={armR} fill={BRAIN_FULL.brain} /> : <TinyArm from={[-20, 38]} bend={[-14, 58]} to={[-28, 70]} fill={BRAIN_FULL.brain} hand="mitten" />}
           <Eyes x={-22} y={-32} r={14} mood={mood} look={look} brows />
           <Mouth x={-20} y={-6} w={14} kind={mouth} />
         </g>
