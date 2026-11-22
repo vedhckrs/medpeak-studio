@@ -1,0 +1,258 @@
+1. Annu Rev Nutr. 2006;26:1-22. doi: 10.1146/annurev.nutr.26.061505.111258.
+
+Fuel metabolism in starvation.
+
+Cahill GF Jr(1).
+
+Author information:
+(1)Department of Medicine, Harvard Medical School, Boston, Massachusetts 02115, 
+USA. gcahill1@cheshire.net
+
+This article, which is partly biographical and partly scientific, summarizes a 
+life in academic medicine. It relates my progress from benchside to bedside and 
+then to academic and research administration, and concludes with the teaching of 
+human biology to college undergraduates. My experience as an intern (anno 1953) 
+treating a youngster in diabetic ketoacidosis underscored our ignorance of the 
+controls in human fuel metabolism. Circulating free fatty acids were then 
+unknown, insulin could not be measured in biologic fluids, and 
+beta-hydroxybutyric acid, which was difficult to measure, was considered by many 
+a metabolic poison. The central role of insulin and the metabolism of free fatty 
+acids, glycerol, glucose, lactate, and pyruvate, combined with indirect 
+calorimetry, needed characterization in a near-steady state, namely prolonged 
+starvation. This is the main topic of this chapter. Due to its use by brain, 
+D-beta-hydroxybutyric acid not only has permitted man to survive prolonged 
+starvation, but also may have therapeutic potential owing to its greater 
+efficiency in providing cellular energy in ischemic states such as stroke, 
+myocardial insufficiency, neonatal stress, genetic mitochondrial problems, and 
+physical fatigue.
+
+DOI: 10.1146/annurev.nutr.26.061505.111258
+PMID: 16848698 [Indexed for MEDLINE]=====16848698
+1. Obesity (Silver Spring). 2018 Feb;26(2):254-268. doi: 10.1002/oby.22065. Epub 
+2017 Oct 31.
+
+Flipping the Metabolic Switch: Understanding and Applying the Health Benefits of 
+Fasting.
+
+Anton SD(1)(2), Moehl K(3), Donahoo WT(4), Marosi K(3), Lee SA(1)(2), Mainous AG 
+3rd(5)(6), Leeuwenburgh C(1)(2), Mattson MP(3)(7).
+
+Author information:
+(1)Department of Aging and Geriatric Research, Institute on Aging, University of 
+Florida, Gainesville, Florida, USA.
+(2)Department of Clinical and Health Psychology, University of Florida, 
+Gainesville, Florida, USA.
+(3)Laboratory of Neurosciences, National Institute on Aging Intramural Research 
+Program, Baltimore, Maryland, USA.
+(4)Division of Endocrinology, Diabetes and Metabolism, College of Medicine, 
+University of Florida, Gainesville, Florida, USA.
+(5)Department of Health Services Research, Management and Policy, University of 
+Florida, Gainesville, Florida, USA.
+(6)Department of Community Health and Family Medicine, University of Florida, 
+Gainesville, Florida, USA.
+(7)Department of Neuroscience, School of Medicine, Johns Hopkins University, 
+Baltimore, Maryland, USA.
+
+Comment in
+    Obesity (Silver Spring). 2018 Jul;26(7):1111. doi: 10.1002/oby.22215.
+
+OBJECTIVE: Intermittent fasting (IF) is a term used to describe a variety of 
+eating patterns in which no or few calories are consumed for time periods that 
+can range from 12 hours to several days, on a recurring basis. This review is 
+focused on the physiological responses of major organ systems, including the 
+musculoskeletal system, to the onset of the metabolic switch: the point of 
+negative energy balance at which liver glycogen stores are depleted and fatty 
+acids are mobilized (typically beyond 12 hours after cessation of food intake).
+RESULTS AND CONCLUSIONS: Emerging findings suggest that the metabolic switch 
+from glucose to fatty acid-derived ketones represents an evolutionarily 
+conserved trigger point that shifts metabolism from lipid/cholesterol synthesis 
+and fat storage to mobilization of fat through fatty acid oxidation and fatty 
+acid-derived ketones, which serve to preserve muscle mass and function. Thus, IF 
+regimens that induce the metabolic switch have the potential to improve body 
+composition in overweight individuals. Moreover, IF regimens also induce the 
+coordinated activation of signaling pathways that optimize physiological 
+function, enhance performance, and slow aging and disease processes. Future 
+randomized controlled IF trials should use biomarkers of the metabolic switch 
+(e.g., plasma ketone levels) as a measure of compliance and of the magnitude of 
+negative energy balance during the fasting period.
+
+© 2017 The Obesity Society.
+
+DOI: 10.1002/oby.22065
+PMCID: PMC5783752
+PMID: 29086496 [Indexed for MEDLINE]
+
+Conflict of interest statement: Disclosure: The authors declare no conflict of 
+interest=====29086496
+1. J Clin Invest. 1988 Apr;81(4):968-75. doi: 10.1172/JCI113450.
+
+Fasting enhances growth hormone secretion and amplifies the complex rhythms of 
+growth hormone secretion in man.
+
+Ho KY(1), Veldhuis JD, Johnson ML, Furlanetto R, Evans WS, Alberti KG, Thorner 
+MO.
+
+Author information:
+(1)Department of Internal Medicine, University of Virginia Medical School, 
+Charlottesville 22908.
+
+Studies in man have shown that the episodic release of growth hormone (GH) is 
+infrequent and erratic, and unlike that in the rat does not appear to have 
+discernible ultradian periodicities. However, these observations in nonfasted 
+subjects may be invalid since mixed nutrients have unpredictable effects on GH 
+release. Moreover, in the fed state basal GH levels are frequently undetectable, 
+thus rendering the identification of low amplitude pulses unreliable. 
+Accordingly, the 24-h pulsatile pattern of GH secretion obtained from repetitive 
+venous sampling in six normal adult male subjects was examined during a control 
+fed day and during the first and fifth days of a 5-d fast. The GH data were 
+analyzed using two distinct methods: a discrete pulse detection algorithm 
+(Cluster analysis) and Fourier expansion time-series, which allows fixed 
+periodicities of secretory activity to be resolved. The 5-d fast resulted in a 
+significant increase in discrete GH pulse frequency (5.8 +/- 0.7 vs. 9.9 +/- 0.7 
+pulses/24 h, P = 0.028), 24 h integrated GH concentration (2.82 +/- 0.50 vs. 
+8.75 +/- 0.82 micrograms.min/ml; P = 0.0002), and maximal pulse amplitude (5.9 
++/- 1.1 vs. 12.3 +/- 1.6 ng/ml, P less than 0.005). While multiple low-amplitude 
+sinusoidal periodicities were present on the control fed day, time-series 
+analysis revealed enhancement of circadian and ultradian cycles on the first and 
+fifth days of fasting. Concomitantly, fasting resulted in a decline (day 1 vs. 
+day 5) in serum concentrations of somatomedin C (1.31 +/- 0.22 vs. 0.77 +/- 0.18 
+U/ml) and glucose (4.9 +/- 0.2 vs. 3.2 +/- 0.2 mmol/liter), and a marked rise in 
+free fatty acid (0.43 +/- 0.12 vs. 1.55 +/- 0.35 mmol/liter) and acetoacetate 
+(35 +/- 6 vs. 507 +/- 80 nmol/liter). We conclude that the acute nutritional 
+status is an important determinant of spontaneous pulsatile GH secretion in man. 
+Fast-induced enhancement of GH release is achieved through combined frequency 
+(discrete pulses) and amplitude (sinusoidal periodicities) modulation. Such 
+alterations in somatotropic hormone release may play an important role in 
+substrate homeostasis during starvation.
+
+DOI: 10.1172/JCI113450
+PMCID: PMC329619
+PMID: 3127426 [Indexed for MEDLINE]=====3127426
+1. Circulation. 2005 Dec 6;112(23):3654-60; discussion 3666. doi: 
+10.1161/CIRCULATIONAHA.105.540443.
+
+Should ethnicity serve as the basis for clinical trial design? Importance of 
+race/ethnicity in clinical trials: lessons from the African-American Heart 
+Failure Trial (A-HeFT), the African-American Study of Kidney Disease and 
+Hypertension (AASK), and the Antihypertensive and Lipid-Lowering Treatment to 
+Prevent Heart Attack Trial (ALLHAT).
+
+Taylor AL(1), Wright JT Jr.
+
+Author information:
+(1)National Center of Excellence in Women's Health, University of Minnesota 
+Medical School, Minneapolis, MN 55455, USA. taylo135@umn.edu
+
+DOI: 10.1161/CIRCULATIONAHA.105.540443
+PMID: 16330707 [Indexed for MEDLINE]=====16330707
+1. JAMA Intern Med. 2020 Nov 1;180(11):1491-1499. doi: 
+10.1001/jamainternmed.2020.4153.
+
+Effects of Time-Restricted Eating on Weight Loss and Other Metabolic Parameters 
+in Women and Men With Overweight and Obesity: The TREAT Randomized Clinical 
+Trial.
+
+Lowe DA(1), Wu N(2)(3), Rohdin-Bibby L(2), Moore AH(2)(4), Kelly N(5), Liu 
+YE(5), Philip E(6), Vittinghoff E(2), Heymsfield SB(7), Olgin JE(2), Shepherd 
+JA(5), Weiss EJ(1)(2).
+
+Author information:
+(1)Cardiovascular Research Institute, University of California, San Francisco, 
+San Francisco.
+(2)Cardiology Division, University of California, San Francisco, San Francisco.
+(3)Center for Vulnerable Populations, University of California, San Francisco, 
+San Francisco.
+(4)Clovis Oncology Inc, Boulder, Colorado.
+(5)University of Hawai'i Cancer Center, Honolulu.
+(6)University of California School of Medicine, San Francisco.
+(7)Pennington Biomedical Research Center, Baton Rouge, Louisiana.
+
+Erratum in
+    JAMA Intern Med. 2020 Nov 1;180(11):1555. doi: 
+10.1001/jamainternmed.2020.6728.
+    JAMA Intern Med. 2021 Jun 1;181(6):883. doi: 
+10.1001/jamainternmed.2020.8941.
+
+Comment in
+    Nat Rev Endocrinol. 2020 Dec;16(12):677. doi: 10.1038/s41574-020-00434-5.
+    JAMA Intern Med. 2021 Jun 1;181(6):878. doi: 
+10.1001/jamainternmed.2020.8928.
+    JAMA Intern Med. 2021 Jun 1;181(6):876-877. doi: 
+10.1001/jamainternmed.2020.8931.
+    JAMA Intern Med. 2021 Jun 1;181(6):877-878. doi: 
+10.1001/jamainternmed.2020.8934.
+
+IMPORTANCE: The efficacy and safety of time-restricted eating have not been 
+explored in large randomized clinical trials.
+OBJECTIVE: To determine the effect of 16:8-hour time-restricted eating on weight 
+loss and metabolic risk markers.
+INTERVENTIONS: Participants were randomized such that the consistent meal timing 
+(CMT) group was instructed to eat 3 structured meals per day, and the 
+time-restricted eating (TRE) group was instructed to eat ad libitum from 12:00 
+pm until 8:00 pm and completely abstain from caloric intake from 8:00 pm until 
+12:00 pm the following day.
+DESIGN, SETTING, AND PARTICIPANTS: This 12-week randomized clinical trial 
+including men and women aged 18 to 64 years with a body mass index (BMI, 
+calculated as weight in kilograms divided by height in meters squared) of 27 to 
+43 was conducted on a custom mobile study application. Participants received a 
+Bluetooth scale. Participants lived anywhere in the United States, with a subset 
+of 50 participants living near San Francisco, California, who underwent 
+in-person testing.
+MAIN OUTCOMES AND MEASURES: The primary outcome was weight loss. Secondary 
+outcomes from the in-person cohort included changes in weight, fat mass, lean 
+mass, fasting insulin, fasting glucose, hemoglobin A1c levels, estimated energy 
+intake, total energy expenditure, and resting energy expenditure.
+RESULTS: Overall, 116 participants (mean [SD] age, 46.5 [10.5] years; 70 [60.3%] 
+men) were included in the study. There was a significant decrease in weight in 
+the TRE (-0.94 kg; 95% CI, -1.68 to -0.20; P = .01), but no significant change 
+in the CMT group (-0.68 kg; 95% CI, -1.41 to 0.05, P = .07) or between groups 
+(-0.26 kg; 95% CI, -1.30 to 0.78; P = .63). In the in-person cohort (n = 25 TRE, 
+n = 25 CMT), there was a significant within-group decrease in weight in the TRE 
+group (-1.70 kg; 95% CI, -2.56 to -0.83; P < .001). There was also a significant 
+difference in appendicular lean mass index between groups (-0.16 kg/m2; 95% CI, 
+-0.27 to -0.05; P = .005). There were no significant changes in any of the other 
+secondary outcomes within or between groups. There were no differences in 
+estimated energy intake between groups.
+CONCLUSIONS AND RELEVANCE: Time-restricted eating, in the absence of other 
+interventions, is not more effective in weight loss than eating throughout the 
+day.
+TRIAL REGISTRATION: ClinicalTrials.gov Identifiers: NCT03393195 and NCT03637855.
+
+DOI: 10.1001/jamainternmed.2020.4153
+PMCID: PMC7522780
+PMID: 32986097 [Indexed for MEDLINE]
+
+Conflict of interest statement: Conflict of Interest Disclosures: Dr Lowe 
+reported personal fees from Keyto outside the submitted work. Dr Vittinghoff 
+reported personal fees from UCSF during the conduct of the study. Dr Heymsfield 
+reported personal fees from Medifast Medical Advisory Board and personal fees 
+from Tanita Medical Advisory Board outside the submitted work. Dr Weiss reported 
+grants from NIH, grants from James Peter Read Foundation, nonfinancial support 
+from Mocacare Inc, and nonfinancial support from IHealth labs during the conduct 
+of the study; he also is a cofounder and equity stake holder of Keyto, Inc; and 
+owns stock and was formerly on the board of Virta, Inc. No other disclosures 
+were reported.=====32986097
+1. N Engl J Med. 2019 Dec 26;381(26):2541-2551. doi: 10.1056/NEJMra1905136.
+
+Effects of Intermittent Fasting on Health, Aging, and Disease.
+
+de Cabo R(1), Mattson MP(1).
+
+Author information:
+(1)From the Translational Gerontology Branch (R.C.) and the Laboratory of 
+Neurosciences (M.P.M.), Intramural Research Program, National Institute on 
+Aging, National Institutes of Health, and the Department of Neuroscience, Johns 
+Hopkins University School of Medicine (M.P.M.) - both in Baltimore.
+
+Erratum in
+    N Engl J Med. 2020 Jan 16;382(3):298. doi: 10.1056/NEJMx190038.
+    N Engl J Med. 2020 Mar 5;382(10):978. doi: 10.1056/NEJMx200002.
+
+Comment in
+    N Engl J Med. 2020 Apr 30;382(18):1771. doi: 10.1056/NEJMc2001176.
+    N Engl J Med. 2020 Apr 30;382(18):1771-1772. doi: 10.1056/NEJMc2001176.
+    N Engl J Med. 2020 Apr 30;382(18):1772. doi: 10.1056/NEJMc2001176.
+    N Engl J Med. 2020 Apr 30;382(18):1773. doi: 10.1056/NEJMc2001176.
+
+DOI: 10.1056/NEJMra1905136
+PMID: 31881139 [Indexed for MEDLINE]=====31881139

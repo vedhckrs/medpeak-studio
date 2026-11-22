@@ -1,0 +1,115 @@
+1. Eur J Endocrinol. 2005 Jun;152(6):845-50. doi: 10.1530/eje.1.01919.
+
+Spontaneous 24-h ghrelin secretion pattern in fasting subjects: maintenance of a 
+meal-related pattern.
+
+Natalucci G(1), Riedl S, Gleiss A, Zidek T, Frisch H.
+
+Author information:
+(1)Department of Pediatrics, Medical University of Vienna, Vienna, Austria.
+
+OBJECTIVE: Ghrelin stimulates GH release and causes weight gain through 
+increased food intake and reduced fat utilization. Ghrelin levels were shown to 
+rise in the preprandial period and decrease shortly after meal consumption, 
+suggesting a role as a possible meal initiator. However, ghrelin secretion in 
+fasting subjects has not yet been studied in detail.
+DESIGN: 24-h ghrelin profiles were studied in six healthy volunteers (three 
+females; 25.5 years; body mass index 22.8 kg/m(2)) and compared with GH, insulin 
+and glucose levels.
+METHODS: Blood samples were taken every 20 min during a 24-h fasting period and 
+total ghrelin levels were measured by RIA using a polyclonal rabbit antibody. 
+The circadian pattern of ghrelin secretion and pulsatility (Cluster analysis) 
+were evaluated.
+RESULTS: An increase and spontaneous decrease in ghrelin were seen at the 
+timepoints of customary meals. Ghrelin was secreted in a pulsatile manner with 
+approximately 8 peaks/24 h. An overall decrease in ghrelin levels was observed 
+during the study period. There was no correlation of ghrelin with GH, insulin or 
+blood glucose levels.
+CONCLUSIONS: This pilot study indicates that fasting ghrelin profiles display a 
+circadian pattern similar to that described in people eating three times per 
+day. In a fasting condition, GH, insulin and glucose do not appear to be 
+involved in ghrelin regulation. In addition, we found that ghrelin is secreted 
+in a pulsatile pattern. The variation in ghrelin independently of meals in 
+fasting subjects supports previous observations that it is the brain that is 
+primarily involved in the regulation of meal initiation.
+
+DOI: 10.1530/eje.1.01919
+PMID: 15941923 [Indexed for MEDLINE]=====15941923
+1. JAMA Intern Med. 2017 Jul 1;177(7):930-938. doi: 
+10.1001/jamainternmed.2017.0936.
+
+Effect of Alternate-Day Fasting on Weight Loss, Weight Maintenance, and 
+Cardioprotection Among Metabolically Healthy Obese Adults: A Randomized Clinical 
+Trial.
+
+Trepanowski JF(1), Kroeger CM(2), Barnosky A(1), Klempel MC(1), Bhutani S(1), 
+Hoddy KK(1), Gabel K(1), Freels S(3), Rigdon J(4), Rood J(5), Ravussin E(5), 
+Varady KA(1).
+
+Author information:
+(1)Department of Kinesiology and Nutrition, University of Illinois at Chicago.
+(2)Department of Kinesiology and Nutrition, University of Illinois at 
+Chicago2Nutrition Obesity Research Center, University of Alabama at Birmingham.
+(3)Department of Epidemiology and Biostatistics, University of Illinois at 
+Chicago.
+(4)Quantitative Sciences Unit, Stanford University, Stanford, California.
+(5)Nutrition Obesity Research Center, Pennington Biomedical Research Center, 
+Baton Rouge, Louisiana.
+
+Comment in
+    JAMA Intern Med. 2017 Nov 1;177(11):1700-1701. doi: 
+10.1001/jamainternmed.2017.5850.
+    JAMA Intern Med. 2017 Nov 1;177(11):1701. doi: 
+10.1001/jamainternmed.2017.5866.
+
+IMPORTANCE: Alternate-day fasting has become increasingly popular, yet, to date, 
+no long-term randomized clinical trials have evaluated its efficacy.
+OBJECTIVE: To compare the effects of alternate-day fasting vs daily calorie 
+restriction on weight loss, weight maintenance, and risk indicators for 
+cardiovascular disease.
+DESIGN, SETTING, AND PARTICIPANTS: A single-center randomized clinical trial of 
+obese adults (18 to 64 years of age; mean body mass index, 34) was conducted 
+between October 1, 2011, and January 15, 2015, at an academic institution in 
+Chicago, Illinois.
+INTERVENTIONS: Participants were randomized to 1 of 3 groups for 1 year: 
+alternate-day fasting (25% of energy needs on fast days; 125% of energy needs on 
+alternating "feast days"), calorie restriction (75% of energy needs every day), 
+or a no-intervention control. The trial involved a 6-month weight-loss phase 
+followed by a 6-month weight-maintenance phase.
+MAIN OUTCOMES AND MEASURES: The primary outcome was change in body weight. 
+Secondary outcomes were adherence to the dietary intervention and risk 
+indicators for cardiovascular disease.
+RESULTS: Among the 100 participants (86 women and 14 men; mean [SD] age, 44 [11] 
+years), the dropout rate was highest in the alternate-day fasting group (13 of 
+34 [38%]), vs the daily calorie restriction group (10 of 35 [29%]) and control 
+group (8 of 31 [26%]). Mean weight loss was similar for participants in the 
+alternate-day fasting group and those in the daily calorie restriction group at 
+month 6 (-6.8% [95% CI, -9.1% to -4.5%] vs -6.8% [95% CI, -9.1% to -4.6%]) and 
+month 12 (-6.0% [95% CI, -8.5% to -3.6%] vs -5.3% [95% CI, -7.6% to -3.0%]) 
+relative to those in the control group. Participants in the alternate-day 
+fasting group ate more than prescribed on fast days, and less than prescribed on 
+feast days, while those in the daily calorie restriction group generally met 
+their prescribed energy goals. There were no significant differences between the 
+intervention groups in blood pressure, heart rate, triglycerides, fasting 
+glucose, fasting insulin, insulin resistance, C-reactive protein, or 
+homocysteine concentrations at month 6 or 12. Mean high-density lipoprotein 
+cholesterol levels at month 6 significantly increased among the participants in 
+the alternate-day fasting group (6.2 mg/dL [95% CI, 0.1-12.4 mg/dL]), but not at 
+month 12 (1.0 mg/dL [95% CI, -5.9 to 7.8 mg/dL]), relative to those in the daily 
+calorie restriction group. Mean low-density lipoprotein cholesterol levels were 
+significantly elevated by month 12 among the participants in the alternate-day 
+fasting group (11.5 mg/dL [95% CI, 1.9-21.1 mg/dL]) compared with those in the 
+daily calorie restriction group.
+CONCLUSIONS AND RELEVANCE: Alternate-day fasting did not produce superior 
+adherence, weight loss, weight maintenance, or cardioprotection vs daily calorie 
+restriction.
+TRIAL REGISTRATION: clinicaltrials.gov Identifier: NCT00960505.
+
+DOI: 10.1001/jamainternmed.2017.0936
+PMCID: PMC5680777
+PMID: 28459931 [Indexed for MEDLINE]
+
+Conflict of interest statement: Conflict of Interest Disclosures: Dr Varady 
+reported receiving an advance for the book The Every-Other-Day Diet: The Diet 
+That Lets You Eat All You Want (Half the Time) and Keep the Weight Off, 
+published by Hachette Book Group. No other disclosures were reported.=====28459931
