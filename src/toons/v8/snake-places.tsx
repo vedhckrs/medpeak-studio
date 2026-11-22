@@ -8,13 +8,13 @@
  * The moments (for the sheet): the hook, the split, the myths, the hospital drip.
  */
 import React from 'react';
-import {CLOTH, EDGE_IN, FONT, INK, INLINE, OUTLINE, Shape, shade, tint} from './kit';
+import {CLOTH, EDGE, EDGE_IN, FONT, INK, INLINE, OUTLINE, Shape, shade, tint} from './kit';
 import {Layer, Put, Scene} from './scene';
 import {FEET_Y, PEOPLE_SCALE} from './scenes-rooms';
 import {castById, handAt, PersonAt} from './people-rig';
 import {Antivenom, Bleed, Crush, Numb} from './snake-cast';
 
-export const SNAKE_PLACE = {trail: '#a9cf7a', leg: '#7a3a32', ward: '#cfe3f1'};
+export const SNAKE_PLACE = {trail: '#a9cf7a', leg: '#b0625a', ward: '#cfe3f1'};
 
 // ================================================================== the trail
 export const TrailScene: React.FC<{tail?: number}> = ({tail = 1}) => {
@@ -22,10 +22,10 @@ export const TrailScene: React.FC<{tail?: number}> = ({tail = 1}) => {
   return (
     <Layer>
       {/* far trees: soft rounded shapes, one tone lighter */}
-      {[[80, 520, 240], [360, 470, 260], [700, 500, 250], [1000, 520, 240]].map(([x, y, r], i) => <circle key={i} cx={x} cy={y} r={r} fill={tint(c, 0.16)} />)}
-      <path d="M -40 760 Q 540 680 1120 760 L 1120 1960 L -40 1960 Z" fill={shade(c, 0.06)} />
+      {[[80, 520, 240], [360, 470, 260], [700, 500, 250], [1000, 520, 240]].map(([x, y, r], i) => <circle key={i} cx={x} cy={y} r={r} fill={tint(c, 0.16)} {...EDGE} />)}
+      <path d="M -40 760 Q 540 680 1120 760 L 1120 1960 L -40 1960 Z" fill={shade(c, 0.06)} {...EDGE} />
       {/* the dirt path, wide at the front, narrowing to the back */}
-      <path d="M 200 1960 Q 420 1300 500 760 L 600 760 Q 720 1300 960 1960 Z" fill="#d8b98a" />
+      <path d="M 200 1960 Q 420 1300 500 760 L 600 760 Q 720 1300 960 1960 Z" fill="#d8b98a" {...EDGE} />
       <path d="M 360 1700 Q 380 1600 420 1560 M 690 1500 Q 720 1440 700 1380" {...INLINE} stroke={shade('#d8b98a', 0.25)} />
       {/* big simple leaves at the edges */}
       {[[-30, 1020, 30, 1], [1110, 980, -30, -1], [-20, 1500, 10, 1], [1100, 1560, -10, -1]].map(([x, y, rot, s], i) => (
@@ -59,11 +59,11 @@ export const LegInside: React.FC<{swell?: number; light?: number}> = ({swell = 0
     <Layer>
       {/* the tissue: big soft bulges, tone on tone; they grow with the swelling */}
       {[[160, 520, 230], [900, 620, 250], [300, 1180, 260], [820, 1300, 240], [520, 1760, 300]].map(([x, y, r], i) => (
-        <circle key={i} cx={x} cy={y} r={r * b} fill={tint(c, 0.08 + (i % 2) * 0.04)} />
+        <circle key={i} cx={x} cy={y} r={r * b} fill={tint(c, 0.08 + (i % 2) * 0.04)} {...EDGE} />
       ))}
       {/* the nerve cable, left: a pale yellow bundle with its fibres */}
       <Shape d="M 60 -40 Q 170 600 120 1100 Q 80 1500 150 1980 L 30 1980 Q -40 1500 0 1100 Q 40 600 -60 -40 Z" fill="#f2d98d" shadow={1}>
-        {[20, 60, 100].map((x) => <path key={x} d={`M ${x - 60} 0 Q ${x + 50} 600 ${x} 1100 Q ${x - 40} 1500 ${x + 30} 1960`} {...INLINE} opacity={0.5} />)}
+        {[20, 60, 100].map((x) => <path key={x} d={`M ${x - 60} 0 Q ${x + 50} 600 ${x} 1100 Q ${x - 40} 1500 ${x + 30} 1960`} {...INLINE} />)}
       </Shape>
       {/* the blood river, right */}
       <Shape d="M 900 -40 Q 1010 600 940 1100 Q 880 1500 960 1980 L 1140 1980 L 1140 -40 Z" fill="#c8342e" shadow={1}>
@@ -82,7 +82,7 @@ export const LegInside: React.FC<{swell?: number; light?: number}> = ({swell = 0
 };
 
 /** The two fangs punching down through the skin (the hook). */
-const Fangs: React.FC<{y: number}> = ({y}) => (
+export const Fangs: React.FC<{y: number}> = ({y}) => (
   <Layer>
     {[440, 640].map((x) => (
       <Shape key={x} d={`M ${x - 56} -60 L ${x + 56} -60 Q ${x + 40} ${y - 160} ${x} ${y} Q ${x - 40} ${y - 160} ${x - 56} -60 Z`} fill="#fbf6ea" shadow={0.8} />
@@ -144,13 +144,13 @@ export const HospitalBed: React.FC<{expr?: 'worried' | 'happy' | 'neutral'}> = (
 };
 
 // ================================================================== the moments for the sheet
-const Knife: React.FC = () => (
+export const Knife: React.FC = () => (
   <g>
     <Shape d="M -20 -10 L 90 -10 Q 70 14 -20 14 Z" fill={tint(CLOTH.grey, 0.6)} shadow={0.4} />
     <Shape d="M -90 -14 L -20 -14 L -20 18 L -90 18 Q -100 2 -90 -14 Z" fill="#7a4e36" shadow={0.4} />
   </g>
 );
-const Rope: React.FC = () => (
+export const Rope: React.FC = () => (
   <g>
     <path d="M -80 30 Q -40 -60 20 -10 Q 70 30 40 70 Q 10 100 -30 70 Q -60 40 -10 20 Q 50 0 90 -50" stroke={INK} strokeWidth={22} strokeLinecap="round" fill="none" />
     <path d="M -80 30 Q -40 -60 20 -10 Q 70 30 40 70 Q 10 100 -30 70 Q -60 40 -10 20 Q 50 0 90 -50" stroke="#d6b27a" strokeWidth={13} strokeLinecap="round" fill="none" />
