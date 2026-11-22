@@ -23,12 +23,13 @@ export const popIn = (t: number, dur = 0.22) => {
 };
 
 // ------------------------------------------------------------------ the caption
+/** The first caption line; a video with `caption: 2` (2026-11-22 on) passes y 1374 and scale 0.6 (captionStyle in director.ts). */
 export const CAPTION_Y = 1470;
 export const CAPTION_KEY = '#ffd23f';
 
-export const WordCaption: React.FC<{word: string; t: number; isKey?: boolean; y?: number}> = ({word, t, isKey, y = CAPTION_Y}) => {
+export const WordCaption: React.FC<{word: string; t: number; isKey?: boolean; y?: number; scale?: number}> = ({word, t, isKey, y = CAPTION_Y, scale: CAPTION_SCALE = 1}) => {
   const k = popIn(t, isKey ? 0.14 : 0.08); // quicker (acting kit, 2026-11-21): the word lands and HOLDS; the long pop kept 9% of frames moving
-  const size = isKey ? 132 : 108;
+  const size = (isKey ? 132 : 108) * CAPTION_SCALE;
   return (
     <div style={{position: 'absolute', left: 0, right: 0, top: y, display: 'flex', justifyContent: 'center', pointerEvents: 'none'}}>
       <div style={{
@@ -36,8 +37,8 @@ export const WordCaption: React.FC<{word: string; t: number; isKey?: boolean; y?
         opacity: clamp01(k * 3),
         fontFamily: FONT, fontWeight: 900, fontSize: size, lineHeight: 1, letterSpacing: 1,
         color: isKey ? CAPTION_KEY : '#ffffff',
-        WebkitTextStroke: `${isKey ? 14 : 12}px ${INK}`, paintOrder: 'stroke fill',
-        textShadow: `0 ${isKey ? 10 : 8}px 0 ${INK}`,
+        WebkitTextStroke: `${((isKey ? 14 : 12) * CAPTION_SCALE).toFixed(1)}px ${INK}`, paintOrder: 'stroke fill',
+        textShadow: `0 ${((isKey ? 10 : 8) * CAPTION_SCALE).toFixed(1)}px 0 ${INK}`,
         whiteSpace: 'nowrap',
       }}>{word.toUpperCase()}</div>
     </div>

@@ -12,6 +12,7 @@
  */
 import React from 'react';
 import {Board, Caption, EDGE_IN, Eyes, Fig, FLESH, INLINE, Mouth, Panel, Shape, shade, TinyArm, type V8Props} from './kit';
+import {OrganArm, type ArmPose, type Gesture} from './organ-act';
 
 type P = [number, number];
 
@@ -165,7 +166,7 @@ const R = 11; // the one eye size for an organ the width of the figure
 const MW = 11; // the one mouth width
 
 // ------------------------------------------------------------------ 1. stomach
-export const Stomach: React.FC<V8Props> = ({mood = 'open', mouth = 'flat', look = [-0.4, 0.1]}) => {
+export const Stomach: React.FC<V8Props & {armL?: ArmPose | Gesture; armR?: ArmPose | Gesture}> = ({mood = 'open', mouth = 'flat', look = [-0.4, 0.1], armL, armR}) => {
   const body = smooth([[-2, -48], [10, -58], [26, -68], [48, -69], [66, -54], [75, -28], [73, 4], [63, 30], [43, 50], [14, 61], [-16, 61], [-42, 53], [-60, 44], [-71, 33], [-68, 20], [-52, 18], [-32, 15], [-17, 5], [-9, -13], [-7, -33]]);
   return (
     <g>
@@ -177,8 +178,8 @@ export const Stomach: React.FC<V8Props> = ({mood = 'open', mouth = 'flat', look 
         <path d="M -12 53 Q 6 47 22 53" {...INLINE} />
         <path d="M 14 -55 Q 4 -40 6 -26" {...INLINE} />
       </Shape>
-      <TinyArm from={[-36, 56]} bend={[-46, 76]} to={[-28, 84]} fill={COL.stomach} hand="fist" />
-      <TinyArm from={[71, 6]} bend={[90, 8]} to={[88, -16]} fill={COL.stomach} hand="mitten" />
+      {armL ? <OrganArm from={[-36, 56]} s={-1} pose={armL} fill={COL.stomach} /> : <TinyArm from={[-36, 56]} bend={[-46, 76]} to={[-28, 84]} fill={COL.stomach} hand="fist" />}
+      {armR ? <OrganArm from={[71, 6]} s={1} pose={armR} fill={COL.stomach} len={0.9} /> : <TinyArm from={[71, 6]} bend={[90, 8]} to={[88, -16]} fill={COL.stomach} hand="mitten" />}
       <Eyes x={36} y={-30} r={R} mood={mood} look={look} />
       <Mouth x={36} y={-8} w={MW} kind={mouth} />
     </g>

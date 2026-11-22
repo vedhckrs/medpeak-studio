@@ -6,6 +6,54 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-22 (28) - MacBook (local Claude Code) - branch `video/fasting` - fasting SCHEDULED (Mon 23 Nov 12:30 IST)
+
+- The owner: "Yes, schedule it". `upload.py fasting toon --slot --approve` (first real use of --slot): https://youtu.be/mQQy3CIbXF0,
+  private, publishAt 2026-11-23T07:00:00Z, read back from YouTube.
+- BUG found and fixed: `after_upload.py --label` updated the status WITHOUT publishAt, which CANCELS a schedule on YouTube. The time was
+  put back (read back: 2026-11-23T07:00:00Z) and the script now keeps publishAt and warns if it changes.
+- AI label: update answered; YouTube does not show it on read (check Studio, "Altered content"). Topic #5 marked scheduled.
+- Open: Quit Sugar (public) has a silent end card; the owner decides on a re-upload with Joey. Next free slots: Mon 21:30, Tue 12:30 IST.
+
+---
+
+## 2026-11-22 (27) - MacBook (local Claude Code) - branch `video/fasting` - fasting SECOND CUT after the owner's notes (NOT uploaded)
+
+- Owner on the first final: no narrator on the end card, not interesting / not visual / confusing, the hook failed, camera jumps.
+  Plan `plans/fasting-fix-2026-11-22.md`; the owner: "Hook A, go ahead".
+- END CARD (a class bug, also in quit-sugar, which is PUBLIC with a silent card): the player played Joey only when a video's code named
+  the clip by hand. Now `toon-v8-render.mjs` passes every paid clip in (`toon.ctaClip` from cta-timings.json) and `ctaOf` in video.tsx
+  plays it with beats from his real words; `toon:listen` fails a card without speech; `pipeline/test/cta.test.mjs`.
+- CAMERA: the shots' own framings were never checked (toon:camera reads script cam words). `pipeline/test/views.test.mjs` reads the real
+  framings (a reframe must change size 1.5x); fasting holds ONE framing per place, three cuts to another character at 1.6x.
+- PICTURES: one colour per place (`PLACE` in fast-art.tsx; quiet tone-on-tone backgrounds: `place` prop on StomachFull, LiverFull, BrainFull),
+  the hook opens inside (the stomach screaming at the lens), the hunger WAVE, the liver's FUEL GAUGE with an alarm, the body's FURNACE
+  that Lardo shovels fat into, Grandpa's silent beats (biscuit tin + alarm at 4 h, asleep to 12 h, dash to breakfast at 16 h), an hour
+  badge on body shots. The hook line stays "When you fast, I scream!" (the longer one took 2.4 s, over the 2 s rule): no new voices.
+- Final: 65.2 s (story 48 s), -14.0 LUFS, END CARD speech 81%, look ALL PASS (still 53%, bright 152), all checks pass, npm test 52/52.
+- Open: the owner decides on re-uploading Quit Sugar with its narrator; upload fasting on his word (`upload.py fasting toon --approve --slot`).
+
+---
+
+## 2026-11-22 (26) - MacBook (local Claude Code) - branch `video/fasting` - fasting FINISHED, waiting for the owner to watch (NOT uploaded)
+
+- Topic #5 "What Happens to Your Body When You Fast" (slug `fasting`, episode 13, shape `clock`): plan `plans/fasting-2026-11-22.md`,
+  script `plans/fasting-script.py`. Owner: hook A, Grandpa; looks approved; "refine character animation and visual first"; "yes spent it".
+- Sources: NIDDK (NIH) for who should not fast (Johns Hopkins was read but is not an allowed source; its page refuses scripts, read in
+  the browser); Anton 2018, Natalucci 2005, Trepanowski 2017, Lowe 2020. NIDDK's expert: ketones do not rise much at 16 h, so no ketone line.
+- New: Lardo the fat cell (voice: library "Dr. Quibble", picked free with earshot), StomachFull, SugarJar, FastRoom (`fast-art.tsx`);
+  `organ-act.tsx`: whole organs (StomachFull, LiverFull, BrainFull, the cast Stomach) take arm gestures that blend and hold, plus
+  squash/lean (optional props; quit-sugar unchanged and still passes).
+- Captions (owner: "caption make shift above 5% and small 40%"): `"caption": 2` in toon.json puts the word at y 1374, 40% smaller
+  (`captionStyle`/`captionBox` in director.ts); videos already out keep the first line (rabies' virus sits on the new line).
+- Spent by receipts: lines 256, Joey's card 194, music 500 = 950. Balance 43,923 before, 42,973 after (key 2 is out of credits).
+- Final `videos/fasting/renders/toon-v8.mp4` 60.2 s (story 45.6 s), -14.3 LUFS, -0.9 dBTP, 9/9 sounds, no holes. toon:check, camera,
+  motion, staging, sound ALL PASS; look ALL PASS (still 45% after calming the growl jitter, ripples, head shake and fist pumping;
+  small motion 44%); npm test 50/50. Package READY, cover at 3.2 s.
+- Next: the owner watches with sound; upload on his word in the next free MedPeak slot (`upload.py fasting toon --approve --slot`).
+
+---
+
 ## 2026-11-22 (25) - MacBook (local Claude Code) - branch `feat/posting-schedule-slots` - the posting schedule in the scripts
 
 - The owner: "save this rule, upgrade skill" (the shared `~/Desktop/New/POSTING-SCHEDULE.md`). Built on the other session's

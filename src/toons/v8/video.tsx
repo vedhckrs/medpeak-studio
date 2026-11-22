@@ -6,7 +6,7 @@
  */
 import React, {useMemo} from 'react';
 import {AbsoluteFill, Audio, Sequence, staticFile, useCurrentFrame} from 'remotion';
-import {bedAt, SOUND, frameOf, layoutToon, lineSeconds, soundPlan, TOON_FPS, type Layout, type Toon, type ToonTimings} from '../director';
+import {bedAt, captionStyle, SOUND, frameOf, layoutToon, lineSeconds, soundPlan, TOON_FPS, type Layout, type Toon, type ToonTimings} from '../director';
 import {CtaCardV4, Watermark, WordCaption, type CtaAt, type CtaPoint} from './hud';
 import {FONT} from './kit';
 import {clamp01, go, lerp, V8_FPS, type Focus, type LineNow, type ShotDef, type ShotNow} from './play';
@@ -14,24 +14,47 @@ import {RABIES_CTA, RABIES_SHOTS} from './rabies';
 import {NO_SLEEP_CTA, NO_SLEEP_SHOTS} from './no-sleep';
 import {CREATINE_CTA, CREATINE_SHOTS} from './creatine';
 import {QUIT_SUGAR_CTA, QUIT_SUGAR_SHOTS} from './quit-sugar';
+import {FASTING_CTA, FASTING_SHOTS} from './fasting';
 
 export type V8VideoProps = {toon: Toon; timings: ToonTimings | null; sfx: string[]; music: string | null; bare?: boolean; /** a still (the cover): draw this frame, whatever frame is being rendered */ frameAt?: number};
 
 /** The shots of each video, by the video's slug and the shot's id. */
-export const V8_VIDEOS: Record<string, Record<string, ShotDef>> = {rabies: RABIES_SHOTS, 'no-sleep': NO_SLEEP_SHOTS, creatine: CREATINE_SHOTS, 'quit-sugar': QUIT_SUGAR_SHOTS};
+export const V8_VIDEOS: Record<string, Record<string, ShotDef>> = {rabies: RABIES_SHOTS, 'no-sleep': NO_SLEEP_SHOTS, creatine: CREATINE_SHOTS, 'quit-sugar': QUIT_SUGAR_SHOTS, fasting: FASTING_SHOTS};
 /** The CTA end card of each video (three strong points). */
 /** v4 (2026-11-20): the narrator (Joey, the same voice in every video) reads the card; `at` holds the second
  * of each beat in his clip (headline, the three points, the follow line), `voice` the clip, `seconds` its length. */
 export type V8Cta = {title: string; points: CtaPoint[]; voice?: string; seconds?: number; at?: CtaAt};
-export const V8_CTA: Record<string, V8Cta> = {rabies: RABIES_CTA, 'no-sleep': NO_SLEEP_CTA, creatine: CREATINE_CTA, 'quit-sugar': QUIT_SUGAR_CTA};
+export const V8_CTA: Record<string, V8Cta> = {rabies: RABIES_CTA, 'no-sleep': NO_SLEEP_CTA, creatine: CREATINE_CTA, 'quit-sugar': QUIT_SUGAR_CTA, fasting: FASTING_CTA};
 /** The narrator starts after the card has slid in; the card holds a moment after his last word. */
 /** The music bed 10% lower than the director's levels (the owner, 2026-11-21: "background music 10% decrease"). */
 export const MUSIC_LEVEL = 0.9;
 export const CTA_LEAD = 0.4, CTA_TAIL = 1.2; // the narrator's last word is never cut; keep the sum in step with CTA_PAD in pipeline/toon-check.mjs
 export const ctaSeconds = (c: V8Cta | undefined) => (!c ? 0 : CTA_LEAD + (c.seconds ?? 4) + CTA_TAIL);
+type CtaClip = {voice: string; seconds: number; words: {w: string; start: number}[]};
+/**
+ * A video's end card WITH its narrator: the card's look from the video's code, the voice and its real beats from the paid clip
+ * (toon.ctaClip, put in by the render from videos/<slug>/cta-timings.json). The beats: each point lands on the first word of its
+ * bold text that Joey says after the last beat; the follow line on "Follow".
+ */
+export const ctaOf = (toon: Toon): V8Cta | undefined => {
+  const c = V8_CTA[toon.slug];
+  const clip = (toon as Toon & {ctaClip?: CtaClip}).ctaClip;
+  if (!c || !clip) return c;
+  const bare = (w: string) => w.toLowerCase().replace(/[^a-z0-9']/g, '');
+  const W = clip.words.map((w) => ({w: bare(w.w), t: w.start}));
+  let from = 0;
+  const find = (cands: string[], dflt: number) => {
+    for (let i = from; i < W.length; i++) if (cands.includes(W[i].w)) { from = i + 1; return W[i].t; }
+    return dflt;
+  };
+  const small = new Set(['a', 'an', 'the', 'no', 'of', 'to', 'in', 'is', 'and', 'than']);
+  const points = c.points.map((p, i) => find(p.big.split(/\s+/).map(bare).filter((w) => w && !small.has(w)), c.at ? c.at.points[i] : 2 + i * 2.6)) as [number, number, number];
+  const follow = find(['follow'], c.at ? c.at.follow : clip.seconds - 3);
+  return {...c, voice: clip.voice, seconds: clip.seconds, at: {head: 0, points, follow}};
+};
 
 const K = V8_FPS / TOON_FPS; // the layout counts 30 frames a second; the video runs at 60
-export const v8Frames = (toon: Toon, timings: ToonTimings | null) => Math.round((layoutToon(toon, timings).total / TOON_FPS + ctaSeconds(V8_CTA[toon.slug])) * V8_FPS);
+export const v8Frames = (toon: Toon, timings: ToonTimings | null) => Math.round((layoutToon(toon, timings).total / TOON_FPS + ctaSeconds(ctaOf(toon))) * V8_FPS);
 
 /** A shot's "now" (play.tsx) at second `sec` of the video. */
 export const shotNow = (L: Layout, toon: Toon, timings: ToonTimings | null, sec: number): {s: ShotNow; si: number} => {
@@ -219,7 +242,7 @@ export const ToonV8: React.FC<V8VideoProps> = ({toon, timings, sfx, music, bare 
   const ends = L.total / TOON_FPS;
   const acts = actStarts.length === 3 ? actStarts : [0, ends / 3, (2 * ends) / 3];
   const act = sec >= ends ? 2 : acts.filter((a) => sec >= a).length - 1;
-  const cta = V8_CTA[toon.slug];
+  const cta = ctaOf(toon);
   const inCta = !!cta && sec >= ends;
   // the card's beats, in seconds from the card's start (the narrator begins at CTA_LEAD)
   const ctaAt: CtaAt | undefined = cta?.at && {head: CTA_LEAD + cta.at.head, points: cta.at.points.map((p) => CTA_LEAD + p) as [number, number, number], follow: CTA_LEAD + cta.at.follow};
@@ -273,7 +296,8 @@ export const ToonV8: React.FC<V8VideoProps> = ({toon, timings, sfx, music, bare 
       {cur && wi >= 0 && !bare && !inCta && (() => {
         // one word at a time, no box (the owner, 2026-11-20); the line's key word is yellow and bigger
         const w = clean(cur.words[wi].w);
-        return <WordCaption key={cur.line.id + wi} word={w} t={tl - cur.words[wi].start} isKey={w.toLowerCase().replace(/[!?'’]/g, '') === keyWord.replace(/[!?'’]/g, '')} />;
+        const cs = captionStyle(toon);
+        return <WordCaption key={cur.line.id + wi} word={w} t={tl - cur.words[wi].start} isKey={w.toLowerCase().replace(/[!?'’]/g, '') === keyWord.replace(/[!?'’]/g, '')} y={cs.y} scale={cs.scale} />;
       })()}
       {inCta && (
         <div style={{position: 'absolute', inset: 0, transform: `translateY(${((1 - clamp01((sec - ends) / 0.35)) ** 3 * 1920).toFixed(1)}px)`}}>

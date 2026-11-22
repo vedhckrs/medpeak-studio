@@ -86,7 +86,8 @@ top of the ten above:
   outline. No faces on a background.
 - Rooms are flat, front-on stages (a wall, a floor line near y 1380). People stand with feet near y 1740.
 - Keep the top 190 px and the bottom 330 px free of anything important; no face, hand action or label in
-  the caption band (y 1380..1560). The yellow tag sits around y 330 on plain wall.
+  the caption band (y 1380..1560; with `"caption": 2`, every video from 2026-11-22: y 1324..1434, the word 40% smaller
+  and centred on y 1374). The yellow tag sits around y 330 on plain wall.
 - Never mirror a character that has a one-sided detail (Dr. Mira, Mom). Hands never overlap hands.
   A hand that lies on the body or on a thing uses the hand kind `rest` (fingers together), never the
   splayed open hand.

@@ -27,7 +27,7 @@ export const scanStaging = async (toon, timings, opts = {}) => {
   const {headBox, headSeen, peopleBoxes, propSpot} = await import('../../src/toons/Player.tsx');
   const {roomThings, wallItems} = await import('../../src/toons/rooms.tsx');
   const {stageThings} = await import('../../src/toons/stages.tsx');
-  const cap = captionBox(toon.camera === 'steady');
+  const cap = captionBox(toon.camera === 'steady', toon.caption);
   const L = layoutToon(toon, timings);
   const out = {graphics: 0, wallItems: 0, things: 0, onHeads: [], outside: [], stacked: [], onCaption: [], hidden: [], onWall: [], halfHidden: [], leftOut: [], onStageFace: [], stagesNotMeasured: []};
   toon.shots.forEach((shot, si) => {

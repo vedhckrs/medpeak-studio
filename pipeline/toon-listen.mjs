@@ -241,3 +241,21 @@ if (report.clipping?.samples) console.log(`  CLIPPING: ${report.clipping.samples
 for (const x of sections) if (x.music) console.log(`  the music from ${x.from.toFixed(0)} to ${x.to.toFixed(0)} s reads as: ${x.music} (a hint, not a fact)`);
 if (typeof report.summary === 'string') console.log(`\n  earshot's own words:\n  ${report.summary}`);
 console.log(`\n  sheet: ${report.sheet}\n  report: ${path.relative(ROOT, path.join(outDir, 'report.json'))}`);
+
+// the end card must carry the narrator (2026-11-22: quit-sugar and fasting went out with a music-only card and no check saw it)
+const ctaT = readJson(path.join(videoDir(slug), 'cta-timings.json'), null);
+const ctaLen = ctaT ? (ctaT.seconds ?? ctaT.words?.at(-1)?.end) : null;
+if (ctaLen) {
+  const cut = path.join(outDir, 'end-card.wav');
+  const from = L.total / TOON_FPS + 0.4;
+  execFileSync('ffmpeg', ['-v', 'error', '-y', '-ss', from.toFixed(2), '-t', ctaLen.toFixed(2), '-i', file, '-vn', cut]);
+  let said = 0;
+  try {
+    const out = execFileSync('earshot', ['describe', cut], {stdio: ['ignore', 'pipe', 'ignore']}).toString();
+    const m = out.match(/AudioSet:[^\n]*?\bSpeech ([0-9.]+)/) ?? out.match(/audioset:[^\n]*?\bSpeech ([0-9.]+)/);
+    said = m ? Number(m[1]) : 0;
+  } catch { said = -1; }
+  const ok = said >= 0.3;
+  console.log(`\n  END CARD  ${ok ? 'ok   ' : 'FAIL '} the narrator ${ok ? 'is heard' : said < 0 ? 'could not be checked' : 'is NOT heard (music only)'} (speech ${said < 0 ? '?' : Math.round(said * 100) + '%'})`);
+  if (!ok) process.exitCode = 1;
+}

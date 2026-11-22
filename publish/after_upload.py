@@ -88,8 +88,11 @@ def main():
         elif not go:
             print("  label: dry run, would answer the AI-use question with Yes")
         else:
-            keep = {k: status[k] for k in ("privacyStatus", "embeddable", "license", "publicStatsViewable", "selfDeclaredMadeForKids") if k in status}
+            # keep publishAt: an update without it CANCELS the schedule (2026-11-22: fasting lost its 12:30 slot this way)
+            keep = {k: status[k] for k in ("privacyStatus", "publishAt", "embeddable", "license", "publicStatsViewable", "selfDeclaredMadeForKids") if k in status}
             r = yt.videos().update(part="status", body={"id": vid, "status": {**keep, "containsSyntheticMedia": True}}).execute()
+            if keep.get("publishAt") and r["status"].get("publishAt") != keep["publishAt"]:
+                print(f"  WARNING: the schedule changed to {r['status'].get('publishAt')}: set it back to {keep['publishAt']}")
             status = r["status"]
             pkg["labelSet"] = bool(status.get("containsSyntheticMedia"))
             # The update call answers with the field set, but a fresh read of the video does not show it
