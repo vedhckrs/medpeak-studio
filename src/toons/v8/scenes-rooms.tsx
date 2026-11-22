@@ -16,7 +16,7 @@
  * six stills are the same shots drawn at one good moment.
  */
 import React from 'react';
-import {CLOTH, EDGE, EDGE_IN, INK, INLINE, OUTLINE, Shape, shade, tint} from './kit';
+import {CLOTH, EDGE, EDGE_IN, INK, INLINE, OUTLINE, ROOM, Shape, shade, tint, V9} from './kit';
 import {Layer, Put, Scene, Tag} from './scene';
 import {IconBadge} from './hud';
 import {castById, handAt, headAt, PersonAt, type Expr, type Facing, type HandPoint, type PoseIn, type PoseName, type View} from './people-rig';
@@ -523,3 +523,79 @@ export const V8SceneC2: React.FC = () => { const s = nowAt('C', 6.77, C_LINES, 4
 export const V8SceneD1: React.FC = () => <ClinicShot s={nowAt('D', 12.07, D_LINES, 1.3)} />;
 /** D3: "...treatment works almost every time." (both thumbs up) */
 export const V8SceneD3: React.FC = () => <ClinicShot s={nowAt('D', 12.07, D_LINES, 11.4)} />;
+
+// =====================================================================================================================
+// ENGINE v9 (format 6, 2026-11-23): pale, quiet rooms and tighter two-person framing (decisions 7, 12; A1 #2, #12).
+// The rooms above are untouched (videos already out). A format-6 room takes its walls from the kit's ROOM palette
+// (saturation 0.22 or less, brightness 165+), keeps at most 5 props, nothing strongly coloured behind a head, and frames
+// a two-shot at PEOPLE_SCALE_TWO (a head about 300 px wide; the frame cuts at the knees). Rooms stay unique per video:
+// `PaleClinicRoom` takes a wall colour, a floor colour and which wall items to hang, so each video picks its own.
+// =====================================================================================================================
+/** A two-person shot: heads at least 190 px wide (decision 12). */
+export const PEOPLE_SCALE_TWO = 4.0;
+/** Feet below the frame: the two-shot cuts at the knees. */
+export const FEET_Y_TWO = 2150;
+export type PaleRoomOpts = {wall?: keyof typeof ROOM; floor?: string; items?: ('door' | 'frame' | 'chart' | 'clock' | 'plant')[]; floorY?: number};
+/** A pale clinic (or any room): a flat wall, a floor line, a door, one or two framed things. Max 5 props. */
+export const PaleClinicRoom: React.FC<PaleRoomOpts> = ({wall = 'mint', floor = ROOM.floor, items = ['door', 'frame', 'chart'], floorY = 1500}) => {
+  const W = ROOM[wall];
+  return (
+    <Layer>
+      <rect x={-10} y={-10} width={1100} height={1940} fill={W} />
+      {/* a soft wainscot band low on the wall, tone on tone */}
+      <rect x={-10} y={floorY - 230} width={1100} height={230} fill={shade(W, 0.03)} />
+      <path d={`M -10 ${floorY - 230} H 1090`} {...faint(shade(W, 0.1))} />
+      <rect x={-10} y={floorY} width={1100} height={1940 - floorY} fill={floor} />
+      <Shape d={box(-10, floorY - 18, 1100, 18)} fill={ROOM.trim} shadow={0} line="in" />
+      {items.includes('door') && (
+        <g>
+          <Shape d={rr(770, 520, 300, floorY - 520, 6)} fill={ROOM.cream} shadow={0.4} />
+          <path d={rr(800, 560, 240, 380, 4)} {...INLINE} />
+          <path d={rr(800, 980, 240, floorY - 1010, 4)} {...INLINE} />
+          <circle cx={810} cy={1000} r={11} fill={ROOM.deepest} {...EDGE_IN} />
+        </g>
+      )}
+      {items.includes('frame') && (
+        <g>
+          <Shape d={rr(60, 300, 250, 190, 6)} fill={ROOM.cream} shadow={0.4} />
+          <path d={rr(84, 324, 202, 142, 3)} fill={ROOM.sky} {...EDGE_IN} />
+          <path d="M 84 440 Q 150 390 200 420 T 286 410 V 466 H 84 Z" fill={tint(ROOM.deepest, 0.35)} />
+        </g>
+      )}
+      {items.includes('chart') && (
+        <g>
+          <Shape d={rr(380, 260, 170, 240, 4)} fill="#ffffff" shadow={0.4} />
+          {[300, 340, 380, 420, 460].map((y, i) => <path key={y} d={`M 404 ${y} H ${i % 2 ? 500 : 526}`} {...faint(ROOM.deepest)} />)}
+        </g>
+      )}
+      {items.includes('clock') && (
+        <g><circle cx={640} cy={300} r={62} fill="#ffffff" {...EDGE} /><path d="M 640 300 V 262 M 640 300 L 664 312" {...OUTLINE} /></g>
+      )}
+      {items.includes('plant') && (
+        <g>
+          <Shape d="M 60 1500 L 80 1380 L 200 1380 L 220 1500 Z" fill={ROOM.wood} shadow={0.5} />
+          {[[-40, -120], [10, -160], [60, -110]].map(([dx, dy], i) => <Shape key={i} d={`M 140 1380 Q ${140 + dx} ${1380 + dy * 0.6} ${140 + dx * 1.2} ${1380 + dy} Q ${140 + dx * 0.4} ${1380 + dy * 0.7} 140 1380 Z`} fill={tint('#8fae8b', 0.2)} shadow={0} line="in" />)}
+        </g>
+      )}
+    </Layer>
+  );
+};
+/**
+ * The pale-room sample (1080 x 1920): Dr. Mira and Dad in a two-shot at PEOPLE_SCALE_TWO, cut at the knees, looking at
+ * each other; Dad has a hand on his chest. No caption, no watermark (the player adds them).
+ */
+export const PaleRoomFull: React.FC = () => {
+  const mira = castById('doctor'), dad = castById('dad');
+  const m = {pose: 'clipboard' as PoseName, view: VIEW, facing: 'right' as Facing, x: 265, y: FEET_Y_TWO, scale: PEOPLE_SCALE_TWO};
+  const d = {pose: 'worried' as PoseName, view: VIEW, facing: 'left' as Facing, x: 835, y: FEET_Y_TWO, scale: PEOPLE_SCALE_TWO};
+  const hm = headAt(mira, m), hd = headAt(dad, d);
+  return (
+    <V9>
+      <Scene bg={ROOM.mint}>
+        <PaleClinicRoom wall="mint" items={['door', 'frame', 'chart']} />
+        <PersonAt spec={mira} {...m} expr="talking" lookAt={[hd.x, hd.y]} />
+        <PersonAt spec={dad} {...d} expr="worried" lookAt={[hm.x, hm.y]} />
+      </Scene>
+    </V9>
+  );
+};
