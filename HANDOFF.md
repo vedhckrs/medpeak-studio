@@ -6,6 +6,17 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-22 (17) - MacBook (local Claude Code) - branch `video/quit-sugar` - quit-sugar: plan and script draft sent, WAITING
+
+- Topic bank #4 ("What Happens If You Quit Sugar for 30 Days") marked `taken (Mac, 2026-11-22)` and pushed first.
+- Sources read on PubMed and WHO (free): who-diet, temorenga-2013, schwarz-2017, wise-2016, westwater-2016, moynihan-2014.
+- Plan: `plans/quit-sugar-2026-11-22.md`. Shape `fight` (Dad vs Sweetie, a sugar-cube villain, over a 30-day wall
+  calendar), no Dr. Mira, 16 lines, about 48 s. New drawings: Sweetie + costumes, inside the mouth, inside the liver,
+  the kitchen at night. Estimate about 1,075 ElevenLabs credits (not spent; balance not read this session).
+- Nothing drawn, voiced or spent. Next, on the owner's word: hook (A/B/C), lead (Dad), F2 wording, then the four sheets.
+
+---
+
 ## 2026-11-21 (16) - MacBook (local Claude Code) - branch `video/creatine` - creatine: UPLOADED private (dKQm2aRKyTs)
 
 - On the owner's word ("Yes, upload private"): **https://youtu.be/dKQm2aRKyTs**, private, not made for kids (id in
