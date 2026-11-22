@@ -50,7 +50,7 @@ export const BathScale: React.FC<{kg?: string}> = ({kg}) => (
 );
 
 const FRIDGE = {x: 0, w: 330, y: 380};
-export const NightKitchen: React.FC<{open?: boolean; day?: number; kg?: string; scaleAt?: number}> = ({open = true, day = 1, kg, scaleAt}) => {
+export const NightKitchen: React.FC<{open?: boolean; day?: number; kg?: string; scaleAt?: number; /** false: no "NO SUGAR" calendar (another topic in this kitchen) */ calendar?: boolean}> = ({open = true, day = 1, kg, scaleAt, calendar = true}) => {
   const fr = FRIDGE;
   return (
     <Layer>
@@ -79,7 +79,7 @@ export const NightKitchen: React.FC<{open?: boolean; day?: number; kg?: string; 
       <Shape d={rr(540, 1086, 560, 30, 6)} fill={NIGHT.top} shadow={0} />
 
       {/* the calendar on the wall, middle */}
-      <g transform="translate(780 360) scale(1.2)"><WallCalendar day={day} /></g>
+      {calendar && <g transform="translate(780 360) scale(1.2)"><WallCalendar day={day} /></g>}
 
       {/* the fridge's light on the floor: one flat pale wedge */}
       {open && <path d={`M ${fr.w} ${FLOOR_Y} L 760 1920 L ${fr.w - 80} 1920 Z`} fill={NIGHT.lightFloor} />}
