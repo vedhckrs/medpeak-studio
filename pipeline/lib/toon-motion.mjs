@@ -92,7 +92,7 @@ export const scanMotion = async (toon, timings) => {
 // picture (toon_picture.py, C2 `action_gaps`). Results have the shape of scanLayout's (toon-staging.mjs).
 import {centre as cOf, episodes as epOf, fmt as fmtS} from './toon-geom.mjs';
 
-export const LAYOUT_MOTION = {cutJump: 120, still: 0.6, speaker: 0.3, listener: 0.1, arm: 85, pop: 4, popFloor: 14, flip: 20, open: 1.5, openStill: 2};
+export const LAYOUT_MOTION = {cutJump: 120, minBody: 80, still: 0.6, speaker: 0.3, listener: 0.1, arm: 85, pop: 4, popFloor: 14, flip: 30, open: 1.5, openStill: 2};
 
 export const scanLayoutMotion = (log) => {
   const X = LAYOUT_MOTION;
@@ -137,7 +137,7 @@ export const scanLayoutMotion = (log) => {
 
   // M3 joint speed (hands of people AND body characters), M4 a pose that flips and flips back (one-probe pops)
   const m3 = [], m4 = [];
-  const hist = new Map(); // key -> last positions
+  const hist = new WeakMap(); // a hand of the log -> its last positions (relative to its body)
   // a hand is measured against its own body (a person's head, a figure's box): a character flying in is an action, not a joint
   const owner = (i) => i.who ?? (i.body ? `#${i.body}` : null);
   const anchorItem = (p, o) => p.items.find((i) => (i.kind === 'head' || (i.kind === 'body' && i.id === 'put')) && owner(i) === o);
@@ -145,13 +145,15 @@ export const scanLayoutMotion = (log) => {
   const sizeChange = (a, b, o) => { const x = anchorItem(a, o), y = anchorItem(b, o); return x && y ? Math.abs((y.box[2] - y.box[0]) / Math.max(1, x.box[2] - x.box[0]) - 1) : 0; };
   for (let k = 1; k < ps.length; k++) {
     const a = ps[k - 1], b = ps[k];
-    if (a.si !== b.si) { hist.clear(); continue; }
+    if (a.si !== b.si) continue;
     const prevHands = a.items.filter((i) => i.kind === 'hand');
     for (const h of b.items.filter((i) => i.kind === 'hand')) {
       const o = owner(h);
       if (!o) continue;
       const ab = anchor(b, o), aa = anchor(a, o);
       if (!ab || !aa) continue;
+      const ai = anchorItem(b, o);
+      if (ai.box[2] - ai.box[0] < X.minBody) continue; // a background extra
       // a cut inside the shot (a new picture) or a dive (everything grows): not a joint moving
       if (Math.hypot(ab[0] - aa[0], ab[1] - aa[1]) * scale > X.cutJump || Math.abs(b.cam.z / a.cam.z - 1) > 0.01 || sizeChange(a, b, o) > 0.03) continue;
       const c = [cOf(h.box)[0] - ab[0], cOf(h.box)[1] - ab[1]];
@@ -160,11 +162,16 @@ export const scanLayoutMotion = (log) => {
       const rel = (g) => [cOf(g.box)[0] - aa[0], cOf(g.box)[1] - aa[1]];
       const g = own.reduce((x, y) => (Math.hypot(rel(y)[0] - c[0], rel(y)[1] - c[1]) < Math.hypot(rel(x)[0] - c[0], rel(x)[1] - c[1]) ? y : x));
       const v = Math.hypot(rel(g)[0] - c[0], rel(g)[1] - c[1]) * scale;
-      const key = `${o}:${h.id ?? Math.round(c[0] / 40)}`;
       if (v > X.arm) m3.push({t: b.t, shot: b.shot, what: `${h.who ?? 'a body character'}'s hand moves ${Math.round(v)} px in one frame (at most ${X.arm})`});
-      const l = hist.get(key) ?? [];
-      l.push({t: b.t, v}); if (l.length > 3) l.shift(); hist.set(key, l);
-      if (l.length === 3 && l[1].v > X.popFloor && l[1].v > X.pop * Math.max(l[0].v, l[2].v, 0.4) && l[2].v > X.flip * 0.5) m4.push({t: l[1].t, shot: b.shot, what: `${h.who ?? 'a body character'}'s hand jumps ${Math.round(l[1].v)} px and back`});
+      // M4: there and back: the hand leaves for one frame and returns (a pose flipped by a threshold). Its trail follows the match.
+      const l = [...(hist.get(g) ?? [{t: a.t, p: rel(g)}]), {t: b.t, p: c}].slice(-4);
+      hist.set(h, l);
+      for (const span of [2]) { // out for ONE frame and back
+        if (l.length <= span) continue;
+        const p0 = l[l.length - 1 - span].p, p1 = l[l.length - span].p, p2 = l[l.length - 1].p;
+        const out = Math.hypot(p1[0] - p0[0], p1[1] - p0[1]), back = Math.hypot(p2[0] - p0[0], p2[1] - p0[1]);
+        if (out * scale > X.flip && back < 0.25 * out) { m4.push({t: l[l.length - span].t, shot: b.shot, what: `${h.who ?? 'a body character'}'s hand jumps ${Math.round(out)} px and back`}); l.splice(0, l.length - 1); break; }
+      }
     }
   }
   res('M3', 'Joints move no faster than a gesture', m3);

@@ -30,7 +30,7 @@ def frame(path, t):
 
 
 def main():
-    path, lay, out = sys.argv[1], sys.argv[2], sys.argv[3]
+    path, lay, out = sys.argv[1], sys.argv[2], sys.argv[3]  # VIDEO and LAYOUT may be '-' when every time is VIDEO@LAYOUT@T
     rest = sys.argv[4:]
     title = ''; notes = {}
     times = []
@@ -42,9 +42,10 @@ def main():
                 if '=' in part:
                     k, v = part.split('=', 1); notes[round(float(k), 2)] = v
             i += 2
-        else: times.append(float(rest[i])); i += 1
-    L = json.load(open(lay))
-    probes = L['probes']
+        elif '@' in rest[i]:  # VIDEO@LAYOUT@T: frames from several videos on one sheet
+            v, l_, t_ = rest[i].split('@'); times.append((v, l_, float(t_))); i += 1
+        else: times.append((path, lay, float(rest[i]))); i += 1
+    logs = {}
     cols = min(4, len(times)); rows = (len(times) + cols - 1) // cols
     tw, th = 405, 720
     top = 90 if title else 20
@@ -52,9 +53,11 @@ def main():
     d = ImageDraw.Draw(sheet)
     if title:
         d.text((24, 24), title, fill=(255, 255, 255), font=font(36))
-    for k, t in enumerate(times):
-        p = min(probes, key=lambda q: abs(q['t'] - t))
-        im = frame(path, p['t'])
+    for k, (vid, lay_, t) in enumerate(times):
+        if lay_ not in logs:
+            logs[lay_] = json.load(open(lay_))
+        p = min(logs[lay_]['probes'], key=lambda q: abs(q['t'] - t))
+        im = frame(vid, p['t'])
         dr = ImageDraw.Draw(im)
         for it in p['items']:
             if it['kind'] == 'body':
@@ -66,7 +69,7 @@ def main():
         im = im.resize((tw, th))
         x = 20 + (k % cols) * (tw + 20); y = top + (k // cols) * (th + 90)
         sheet.paste(im, (x, y))
-        d.text((x, y + th + 8), f"{p['t']:.1f} s  shot {p['shot']}  ({p['kind']})", fill=(255, 255, 255), font=font(22))
+        d.text((x, y + th + 8), f"{logs[lay_].get('slug', '')}  {p['t']:.1f} s  shot {p['shot']}", fill=(255, 255, 255), font=font(22))
         n = notes.get(round(t, 2)) or notes.get(round(p['t'], 2))
         if n:
             d.text((x, y + th + 40), n[:44], fill=(255, 120, 110), font=font(20, False))

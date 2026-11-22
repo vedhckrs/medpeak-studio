@@ -46,6 +46,9 @@ const installJsx = () => {
     }
     return w;
   };
+  const React = require('react');
+  const ce = React.createElement;
+  React.createElement = (type, ...rest) => ce(wrapType(type), ...rest); // a file compiled with the classic JSX transform
   rt.jsx = (type, props, key) => jsxOrig.jsx(wrapType(type), props, key);
   rt.jsxs = (type, props, key) => jsxOrig.jsxs(wrapType(type), props, key);
   try {
@@ -338,12 +341,15 @@ export const probeLayout = async (slug, opts = {}) => {
       }),
     });
   }
-  return {slug: toon.slug ?? slug, title: toon.title, format: toon.format ?? 1, caption: toon.caption ?? 1, captionY: cs.y, every, story: +story.toFixed(3), voiced: !!timings,
+  return {version: LAYOUT_VERSION, slug: toon.slug ?? slug, title: toon.title, format: toon.format ?? 1, caption: toon.caption ?? 1, captionY: cs.y, every, story: +story.toFixed(3), voiced: !!timings,
     shots: L.shots.map((sh) => ({id: sh.shot.id, from: +(sh.from / D.TOON_FPS).toFixed(3), to: +((sh.from + sh.frames) / D.TOON_FPS).toFixed(3), kind: kindOfShot(sh.shot), set: sh.shot.set ?? null})),
-    lines: L.lines.map((l) => ({id: l.line.id, who: l.line.who, si: l.si, from: +(l.from / D.TOON_FPS).toFixed(3), voice: +((l.words.at(-1)?.end ?? l.frames / D.TOON_FPS)).toFixed(3), text: l.line.text})),
+    lines: L.lines.map((l) => ({id: l.line.id, who: l.line.who, si: l.si, from: +(l.from / D.TOON_FPS).toFixed(3), voice: +((l.words.at(-1)?.end ?? l.frames / D.TOON_FPS)).toFixed(3), text: l.line.text,
+      words: l.words.map((w) => [w.w, +w.start.toFixed(3), +w.end.toFixed(3)]), src: l.line.src ?? null, chat: !!l.line.chat})),
     probes};
 };
 
+/** Bump when the log's shape changes: an older layout.json is probed again. */
+export const LAYOUT_VERSION = 2;
 export const layoutPath = (slug) => path.join(videoDir(slug), 'renders', 'layout.json');
 /** Probe and write videos/<slug>/renders/layout.json; returns the log. */
 export const writeLayout = async (slug, opts = {}) => {
@@ -358,10 +364,13 @@ export const layoutOf = async (slug, opts = {}) => {
   if (!opts.fresh && fs.existsSync(p)) {
     const at = fs.statSync(p).mtimeMs;
     const dir = videoDir(slug);
-    const deps = [path.join(dir, 'toon.json'), path.join(dir, 'toon-timings.json')].filter((f) => fs.existsSync(f));
+    // the script, the timings, the shot code and the probe itself
+    const v8 = new URL('../../src/toons/v8/', import.meta.url);
+    const code = fs.readdirSync(v8).filter((f) => f.endsWith('.tsx')).map((f) => new URL(f, v8));
+    const deps = [path.join(dir, 'toon.json'), path.join(dir, 'toon-timings.json'), ...code, new URL(import.meta.url), new URL('../../src/toons/director.ts', import.meta.url)].filter((f) => fs.existsSync(f));
     if (deps.every((f) => fs.statSync(f).mtimeMs <= at)) {
       const log = JSON.parse(fs.readFileSync(p, 'utf8'));
-      if (!opts.every || Math.abs(log.every - opts.every) < 1e-6) return log;
+      if (log.version === LAYOUT_VERSION && (!opts.every || Math.abs(log.every - opts.every) < 1e-6)) return log;
     }
   }
   return writeLayout(slug, opts);

@@ -7,7 +7,7 @@
  *
  * Time is in SECONDS (fractional; the video runs at 60 frames a second). Never count frames in a shot.
  */
-import React, {createContext, useContext} from 'react';
+import React, {createContext, useContext, useId} from 'react';
 import type {Mood, MouthKind} from './kit';
 import type {Expr} from './people-rig';
 
@@ -248,8 +248,8 @@ export const useProbing = () => useContext(LayoutCtx) !== null;
 export const FrameMove: React.FC<{m: Mat; who?: string; body?: boolean; children?: React.ReactNode}> = ({m, who, body, children}) => {
   const sink = useContext(LayoutCtx);
   const fr = useContext(FrameCtx);
+  const id = useId(); // stable from one probe to the next (the tree position), so a figure keeps its name over time
   if (!sink) return <>{children}</>;
-  const id = sink.next();
   return <FrameCtx.Provider value={{m: matMul(fr.m, m), space: fr.space, chain: [...fr.chain, id], who: who ?? fr.who, body: body ? who ?? id : fr.body}}>{children}</FrameCtx.Provider>;
 };
 /** Children laid on the SCREEN after the camera (a shot's `Screen`, the player's caption): their reports are screen pixels. */

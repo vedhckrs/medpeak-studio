@@ -66,7 +66,7 @@ export const v8Props = (slug, {silent = false, music: other} = {}) => {
   return {toon, timings, sfx, music};
 };
 
-const main = () => {
+const main = async () => {
   const a = args();
   const slug = a._[0];
   if (!slug) throw new Error('usage: node pipeline/toon-v8-render.mjs <slug> [--draft | --stills | --at <seconds>] [--silent]');
@@ -111,6 +111,16 @@ const main = () => {
   else fs.copyFileSync(raw, final);
   fs.rmSync(raw);
   console.log(`MILESTONE toon v8 done: ${path.relative(ROOT, final)}${voiced ? '' : ' (silent preview: no voice yet)'}`);
+  // engine v9 (2026-11-23, owner decision 17): every check runs on the FINAL render; a failing scoreboard is not for the owner
+  if (!slice && !a.draft && !a['no-score']) {
+    try {
+      const {scoreVideo, drawSheet} = await import('./toon-score.mjs');
+      const s = await scoreVideo(slug, {file: final, fresh: true});
+      const fails = s.rows.filter((r) => r.status === 'fail');
+      drawSheet([s], path.join(outDir, 'scoreboard.jpg'), `Scoreboard: ${s.title}`);
+      console.log(fails.length ? `\x1b[31mSCORE: ${fails.length} rows FAIL (${fails.map((r) => r.measure).join('; ')}): NOT FOR THE OWNER yet. See renders/scoreboard.jpg\x1b[0m` : 'SCORE: ALL PASS (renders/scoreboard.jpg)');
+    } catch (e) { console.log(`score not run: ${e.message} (npm run toon:score -- ${slug})`); }
+  }
 };
 
 if (isMain(import.meta.url)) main();
