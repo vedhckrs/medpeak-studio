@@ -13,6 +13,8 @@
  */
 import React from 'react';
 import {TinyArm} from './kit';
+import {onKey} from './act';
+import type {ShotNow} from './play';
 
 type P = [number, number];
 export type Gesture = 'rest' | 'up' | 'pound' | 'point' | 'wave' | 'shrug' | 'hips' | 'fold' | 'tap' | 'reach' | 'cheek' | 'count';
@@ -73,3 +75,18 @@ export const pounding = (t: number, t0: number, dur: number, rate = 3.2, phase =
 /** A body squash/stretch and lean as an SVG transform around the organ's base (`base` y in organ units). */
 export const bodyTx = (sq = 0, rot = 0, base = 50) =>
   `rotate(${rot.toFixed(2)} 0 ${base}) translate(0 ${base}) scale(${(1 + sq).toFixed(4)} ${(1 - sq).toFixed(4)}) translate(0 ${-base})`;
+
+// ------------------------------------------------------------------ engine v9 (format 6): gestures only on the key word
+/** The longest a fist may pump in format 6 (seconds): a beat, not a loop (blueprint 4.8). */
+export const POUND_MAX = 0.8;
+/** `pounding` for format 6: the same pump, never longer than POUND_MAX. */
+export const poundingV9 = (t: number, t0: number, dur: number, rate = 3.2, phase = 0) => pounding(t, t0, Math.min(dur, POUND_MAX), rate, phase);
+/**
+ * The line's ONE gesture, on its key word (format 6: the face talks, the body holds): `who`'s arm blends from `rest` to
+ * `gesture` as the key word comes, holds while it is said and goes back after (`onKey` in act.tsx). While someone else talks
+ * the arm stays at `rest`.
+ */
+export const keyGesture = (s: ShotNow, who: string, gesture: Gesture, rest: Gesture = 'rest'): ArmPose => {
+  const k = onKey(s, who);
+  return k <= 0 ? {a: rest} : k >= 1 ? {a: gesture} : {a: rest, b: gesture, k};
+};

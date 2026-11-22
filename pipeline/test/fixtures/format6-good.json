@@ -1,0 +1,438 @@
+{
+ "slug": "format6-fixture",
+ "title": "What Happens When You Quit Smoking",
+ "fixture": "A TEST FIXTURE for the format-6 gate (pipeline/test/format6.test.mjs): a script shaped like the pilot. Its sources and notes are placeholders written for the test, not research; it is never voiced or published.",
+ "format": 6,
+ "shape": "visit",
+ "music": "format6-fixture",
+ "musicPrompt": "Playful funk instrumental, slap bass, tight light percussion, bright clavinet stabs, 150 BPM, no lead melody in the voice range; a cheeky muted trumpet; from 36 seconds a brighter, confident second half.",
+ "camera": "steady",
+ "episode": 900,
+ "intruder": "cigarette",
+ "term": "smoking",
+ "hooks": [
+  {
+   "line": "Last one, I quit smoking! Done!",
+   "why": "in the story: Dad snaps the cigarette"
+  },
+  {
+   "line": "Hey! Who switched off the smoke?",
+   "why": "in the story: the lungs notice"
+  },
+  {
+   "line": "Quit smoking? Your lungs start cleaning!",
+   "kind": "viewer",
+   "why": "the old kind, to the viewer"
+  }
+ ],
+ "rooms": {
+  "home": {
+   "kind": "living",
+   "palette": "cream",
+   "wall": "paint",
+   "floor": "wood",
+   "window": {
+    "style": "wide",
+    "side": "right",
+    "view": "night"
+   },
+   "layout": "sofa-left",
+   "time": "night"
+  },
+  "clinic": {
+   "palette": "mint",
+   "wall": "tiles",
+   "floor": "carpet",
+   "window": {
+    "style": "tall",
+    "side": "left",
+    "view": "garden"
+   },
+   "layout": "desk",
+   "chart": "lungs"
+  }
+ },
+ "retention": {
+  "noIntro": {
+   "scene": "A1",
+   "line": "Last one, I quit smoking! Done!"
+  },
+  "question": {
+   "scene": "B1",
+   "line": "Huh? He quit smoking? So why do I still cough?"
+  },
+  "answer": {
+   "scene": "D3",
+   "line": "That cough is your lungs sweeping out old tar after you quit smoking."
+  },
+  "change3s": {
+   "scene": "all",
+   "line": "one action, then a hold"
+  },
+  "twist": {
+   "scene": "V6",
+   "line": "Yep, the boss coughs it all out now!"
+  },
+  "bestLast": {
+   "scene": "D5",
+   "line": "A cough lasting weeks? Come and see me."
+  },
+  "loop": {
+   "scene": "D6",
+   "line": "So, keep coughing and keep going?",
+   "kind": "question"
+  }
+ },
+ "sources": [
+  {
+   "id": "fx-cilia",
+   "label": "Placeholder source A (test fixture)",
+   "url": "https://www.nhs.uk/better-health/quit-smoking/",
+   "note": "Fixture note: after you stop smoking the small hairs in your airways start to clear mucus again (placeholder wording for the test)."
+  },
+  {
+   "id": "fx-cough",
+   "label": "Placeholder source B (test fixture)",
+   "url": "https://www.nhs.uk/conditions/cough/",
+   "note": "Fixture note: a cough can get worse for a while after stopping smoking as the lungs clear (placeholder wording for the test)."
+  },
+  {
+   "id": "fx-help",
+   "label": "Placeholder source C (test fixture)",
+   "url": "https://www.cdc.gov/tobacco/",
+   "note": "Fixture note: free stop-smoking support makes quitting more likely to last (placeholder wording for the test)."
+  }
+ ],
+ "shots": [
+  {
+   "id": "A",
+   "set": "home",
+   "kind": "room",
+   "cast": [
+    {
+     "who": "dad",
+     "x": 540,
+     "size": 600
+    }
+   ],
+   "events": [
+    {
+     "at": "start",
+     "act": "dad: snaps the cigarette in half",
+     "over": 30,
+     "sfx": "pop"
+    },
+    {
+     "at": "A1",
+     "word": "Done!",
+     "act": "dad: the dive into his chest starts",
+     "over": 27
+    }
+   ],
+   "lines": [
+    {
+     "id": "A1",
+     "who": "dad",
+     "text": "Last one, I quit smoking! Done!",
+     "emotion": "angry",
+     "chat": true,
+     "key": "done"
+    }
+   ]
+  },
+  {
+   "id": "B",
+   "set": "lungs",
+   "kind": "body",
+   "cast": [
+    {
+     "who": "lungs",
+     "x": 540,
+     "size": 700
+    },
+    {
+     "who": "crew",
+     "x": 300,
+     "size": 200
+    }
+   ],
+   "events": [
+    {
+     "at": "start",
+     "act": "lungs: the dive lands, a dusty cough",
+     "over": 20
+    },
+    {
+     "at": "B2",
+     "act": "crew: the sweepers sit up in the tar",
+     "over": 18
+    },
+    {
+     "at": "B4",
+     "act": "crew: one sweeper stands and shakes off the tar",
+     "over": 18
+    }
+   ],
+   "lines": [
+    {
+     "id": "B1",
+     "who": "lungs",
+     "text": "Huh? He quit smoking? So why do I still cough?",
+     "emotion": "shocked",
+     "chat": true,
+     "key": "cough"
+    },
+    {
+     "id": "B2",
+     "who": "crew",
+     "text": "We are stuck under this sticky tar, boss.",
+     "emotion": "sad",
+     "chat": true,
+     "key": "tar"
+    },
+    {
+     "id": "B3",
+     "who": "lungs",
+     "text": "Then get up and sweep it out!",
+     "emotion": "angry",
+     "chat": true,
+     "key": "sweep"
+    },
+    {
+     "id": "B4",
+     "who": "crew",
+     "text": "No way. Our brooms slept for years.",
+     "emotion": "sleepy",
+     "chat": true,
+     "key": "slept"
+    },
+    {
+     "id": "B5",
+     "who": "lungs",
+     "text": "Ugh. Then I keep coughing till you start!",
+     "emotion": "angry",
+     "chat": true,
+     "key": "coughing"
+    },
+    {
+     "id": "B6",
+     "who": "crew",
+     "text": "Fine, fine! Brooms up, team, let us go!",
+     "emotion": "happy",
+     "chat": true,
+     "key": "brooms"
+    }
+   ]
+  },
+  {
+   "id": "V",
+   "set": "blood",
+   "kind": "body",
+   "cast": [
+    {
+     "who": "redcell",
+     "x": 540,
+     "size": 360
+    },
+    {
+     "who": "crew",
+     "x": 800,
+     "size": 200
+    }
+   ],
+   "state": {},
+   "events": [
+    {
+     "at": "V1",
+     "word": "riders!",
+     "delay": 1.0,
+     "act": "redcell: shoves a smoky rider off its back",
+     "over": 24,
+     "stop": 0.6
+    },
+    {
+     "at": "V3",
+     "act": "crew: waves from the window",
+     "over": 18
+    }
+   ],
+   "lines": [
+    {
+     "id": "V1",
+     "who": "redcell",
+     "text": "Whoa! Off my seats, smoky riders!",
+     "emotion": "angry",
+     "chat": true,
+     "key": "seats",
+     "beat": 1.2
+    },
+    {
+     "id": "V2",
+     "who": "crew",
+     "text": "Hang on, red, we start sweeping today.",
+     "emotion": "happy",
+     "chat": true,
+     "key": "sweeping"
+    },
+    {
+     "id": "V3",
+     "who": "redcell",
+     "text": "Good. I want my oxygen seats back.",
+     "emotion": "happy",
+     "chat": true,
+     "key": "oxygen"
+    }
+   ]
+  },
+  {
+   "id": "K",
+   "set": "blood",
+   "card": "3 DAYS LATER",
+   "seconds": 1.0,
+   "same": "V",
+   "src": [
+    "fx-cilia"
+   ],
+   "cast": [],
+   "lines": []
+  },
+  {
+   "id": "V",
+   "set": "blood",
+   "kind": "body",
+   "cast": [
+    {
+     "who": "redcell",
+     "x": 540,
+     "size": 360
+    },
+    {
+     "who": "crew",
+     "x": 800,
+     "size": 200
+    }
+   ],
+   "state": {},
+   "events": [
+    {
+     "at": "V4",
+     "act": "crew: sweepers march past with brooms up",
+     "over": 24
+    },
+    {
+     "at": "V6",
+     "act": "redcell: does a little spin",
+     "over": 18
+    }
+   ],
+   "lines": [
+    {
+     "id": "V4",
+     "who": "crew",
+     "text": "Tar is going! The sweepers are awake again!",
+     "emotion": "happy",
+     "src": [
+      "fx-cilia"
+     ],
+     "key": "awake"
+    },
+    {
+     "id": "V5",
+     "who": "redcell",
+     "text": "So that is why the lungs cough so much?",
+     "emotion": "neutral",
+     "chat": true,
+     "key": "cough"
+    },
+    {
+     "id": "V6",
+     "who": "crew",
+     "text": "Yep, the boss coughs it all out now!",
+     "emotion": "happy",
+     "chat": true,
+     "key": "out"
+    }
+   ]
+  },
+  {
+   "id": "D",
+   "set": "clinic",
+   "kind": "room",
+   "cast": [
+    {
+     "who": "dad",
+     "x": 380,
+     "size": 600
+    },
+    {
+     "who": "doctor",
+     "x": 720,
+     "size": 600
+    }
+   ],
+   "lines": [
+    {
+     "id": "D1",
+     "who": "dad",
+     "text": "Doc, I quit. Why more coughing?",
+     "emotion": "scared",
+     "chat": true,
+     "key": "cough"
+    },
+    {
+     "id": "D2",
+     "who": "doctor",
+     "text": "Good news: quitting smoking wakes the tiny hairs in your airways.",
+     "emotion": "happy",
+     "src": [
+      "fx-cilia"
+     ],
+     "answer": true,
+     "key": "hairs"
+    },
+    {
+     "id": "D3",
+     "who": "doctor",
+     "text": "That cough is your lungs sweeping out old tar after you quit smoking.",
+     "emotion": "neutral",
+     "src": [
+      "fx-cough"
+     ],
+     "answer": true,
+     "key": "tar"
+    },
+    {
+     "id": "D4",
+     "who": "doctor",
+     "text": "Free stop smoking help makes it last, so ask.",
+     "emotion": "neutral",
+     "src": [
+      "fx-help"
+     ],
+     "answer": true,
+     "key": "ask"
+    },
+    {
+     "id": "D5",
+     "who": "doctor",
+     "text": "A cough lasting weeks? Come and see me.",
+     "emotion": "neutral",
+     "src": [
+      "fx-cough"
+     ],
+     "answer": true,
+     "care": true,
+     "key": "see"
+    },
+    {
+     "id": "D6",
+     "who": "dad",
+     "text": "So, keep coughing and keep going?",
+     "emotion": "happy",
+     "chat": true,
+     "key": "going"
+    }
+   ]
+  }
+ ]
+}

@@ -22,7 +22,7 @@ import {Battery, Crea, Fat, Grain, Muscle, Spark, roundPoly} from './crea-cast';
 import {CLINIC, CreaClinic, Dumbbell, GYM, GymRoom, LIFTER, SCALE, Shaker} from './crea-gym';
 import {RedCell} from './cells';
 import {Syringe} from './props';
-import {arc as arcPt, Burst, easeOut, hop, keyed, shake, SpeedLines, Stamp, take} from './act';
+import {arc as arcPt, Burst, easeOut, hop, keyed, latched, shake, SpeedLines, Stamp, take} from './act';
 import {FEET_Y, PEOPLE_SCALE} from './scenes-rooms';
 import {castById, handAt, HandAt, headAt, PersonAt, type Expr, type PoseIn, type PoseName} from './people-rig';
 import {Kidney} from './organs-a';
@@ -352,7 +352,7 @@ const ShotD: React.FC<{s: ShotNow}> = ({s}) => {
       <MuscleCellPlace t={t} flex={d.flex} drain={d.drain} charge={d.charge} />
       {musIn > 0.01 && (
         <Put x={540} y={lerp(-200, MUS_Y, musIn) - jog + slump * 40} size={560} rot={slump * 12} sq={repFlex(t, k.reps) * 0.12 - (jog > 20 ? 0.05 : 0) + slump * 0.08}>
-          <Muscle flex={band ? 0.2 : Math.max(0.3, repFlex(t, k.reps))} band={band} sweat={sweat} mood={slump > 0.5 ? 'sad' : mf.mood} mouth={slump > 0.5 ? 'wavy' : mf.mouth} look={[0, 0.4]} />
+          <Muscle flex={band ? 0.2 : Math.max(0.3, repFlex(t, k.reps))} arm={!band && latched(t, (u) => repFlex(u, k.reps), 0.4, 0.4)} band={band} sweat={sweat} mood={slump > 0.5 ? 'sad' : mf.mood} mouth={slump > 0.5 ? 'wavy' : mf.mouth} look={[0, 0.4]} />
         </Put>
       )}
       <Put x={540 + shk} y={BAT_Y + batHop.dy} size={440} sq={batHop.sq}>
