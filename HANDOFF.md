@@ -6,6 +6,20 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-22 (18) - MacBook (local Claude Code) - branch `video/quit-sugar` - quit-sugar: four look sheets sent, WAITING
+
+- The owner: "Yes, hook A, Dad" (recorded in `plans/quit-sugar-2026-11-22.md`, Decided).
+- Built (free): `src/toons/v8/sugar-cast.tsx` (Sweetie: a sugar cube, `wear` none/juice/diet, `arms` hips/wave/point/droop;
+  `BurstCan`), `sugar-places.tsx` (`MouthPlace` view tooth/tongue, `bits`, `buds`; `LiverPlace` `fat`), `sugar-kitchen.tsx`
+  (`NightKitchen` open/day/scaleAt; `WallCalendar`, `BathScale`, `DAD_HOME` in a navy tee), `entry-sugar.tsx` (sheets + a
+  `SugarCheck` close-up board, not in the sheet list). Sheets in `plans/review-quit-sugar/`.
+- Bug class to remember: `Put` (an absolutely placed svg) does nothing inside a `Layer` svg: it lands at 0,0. Inside a Layer use
+  `<g transform>`. And spread `{...OUTLINE}` BEFORE `fill=` (OUTLINE carries `fill: 'none'`).
+- `npm run typecheck` pass, `npm test` 50/50. Nothing voiced or spent.
+- Next, on the owner's OK of the looks: the script into `videos/quit-sugar/toon.json`, `toon:check`, the silent video with the acting kit.
+
+---
+
 ## 2026-11-22 (17) - MacBook (local Claude Code) - branch `video/quit-sugar` - quit-sugar: plan and script draft sent, WAITING
 
 - Topic bank #4 ("What Happens If You Quit Sugar for 30 Days") marked `taken (Mac, 2026-11-22)` and pushed first.

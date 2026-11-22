@@ -162,3 +162,8 @@ after 9 days). It would add a sixth fact; the script already has enough.
 1. The hook: A, B or C (my pick A).
 2. Dad as the lead (my pick), or another person from the cast.
 3. F2: "about one kilo" or the exact "under a kilo".
+
+## Decided
+
+- Hook A and Dad as the lead (the owner, 2026-11-22: "Yes, hook A, Dad"). F2 keeps "about one kilo"
+  (my pick, not objected to).
