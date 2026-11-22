@@ -37,9 +37,9 @@
     "crea": {"voice": "Will", "voiceId": "bIHbv24MWmeRgasZH58o", "pitch": 2, "speed": 1.1, "why": "creatine (2026-11-21): one crystal grain of creatine, cheeky and proud; the owner picked it as made on 2026-11-21"},
     "battery": {"voice": "Jessica", "voiceId": "cgSgspJ2msm6clMCkdW9", "pitch": 3, "speed": 1.12, "why": "creatine (2026-11-21): the muscle's tiny battery (ATP), jumpy and dramatic; the owner picked it as made (not the faster take) on 2026-11-21"},
     "muscle": {"voice": "George", "voiceId": "JBFqnCBsd6RMkjVDRZzb", "pitch": 0, "speed": 1.05, "why": "creatine (2026-11-21): a muscle fibre, strong and honest; the owner picked it as made on 2026-11-21"},
-    "sweetie": {"voice": null, "voiceId": null, "pitch": 0, "speed": 1.08, "why": "quit-sugar (2026-11-22): a sly sugar cube, the villain; voice to be auditioned before voicing"},
-    "dad": {"voice": null, "voiceId": null, "pitch": 0, "speed": 1.05, "why": "the father: steady, a little tired; voice to be auditioned before voicing (first time Dad speaks)"},
-    "tongue": {"voice": null, "voiceId": null, "pitch": 0, "speed": 1.05, "why": "quit-sugar (2026-11-22): the tongue, calm then delighted; voice to be auditioned before voicing"}
+    "sweetie": {"voice": "Valf - Young, Playful & Sarcastic", "voiceId": "loY1uopAz31XyhAEhNSa", "publicOwnerId": "edb29bf3ecacd3634096c4bc62c0537e04cbfb94cf27cd2babced5c1709800d6", "pitch": 0, "speed": 1.08, "why": "quit-sugar (2026-11-22): a sly sugar cube, the villain; picked by listening to the free library samples (earshot: best match for sly, cheeky, sarcastic)"},
+    "dad": {"voice": "Brian", "voiceId": "nPczCjzI2devNBz1zQrb", "pitch": 0, "speed": 1.05, "why": "the father: steady, a little tired (first spoken in quit-sugar, 2026-11-22); deep, resonant, unused by any other character"},
+    "tongue": {"voice": "Hope", "voiceId": "WZlYpi1yf6zJhNWXih74", "pitch": 1, "speed": 1.05, "why": "quit-sugar (2026-11-22): the tongue, calm then delighted; bright young female voice, unused by any other character"}
   },
   "acting": {
     "neutral": {"stability": 0.5, "style": 0.2},

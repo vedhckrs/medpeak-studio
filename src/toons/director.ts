@@ -332,6 +332,7 @@ export const layoutToon = (toon: Toon, timings: ToonTimings | null) => {
         return;
       }
       let open: Seg | null = null;
+      const first = segs.length; // the shot's first picture starts with the SHOT, also when a `lead` plays before its first line
       for (const l of own) {
         const c = parseCam(l.line.cam);
         if (c.shot || c.lens || c.move) {
@@ -344,6 +345,7 @@ export const layoutToon = (toon: Toon, timings: ToonTimings | null) => {
           segs.push(open);
         }
       }
+      if (segs[first]) segs[first].from = sh.from;
     });
     return {lines, shots, segs, cuts: segs, total, steady};
   }

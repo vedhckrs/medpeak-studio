@@ -81,7 +81,7 @@ const FlyingPage: React.FC<{day: number; u: number}> = ({day, u}) => {
   );
 };
 /** The first half second of a body shot: close on the calendar, the old page rips off, the new day shows; then the cut. */
-const RIP = 0.62;
+const RIP = 0.6; // the shot's `lead` in toon.json: the rip plays in silence, the first line starts after it
 const RipInsert: React.FC<{t: number; from: number; to: number}> = ({t, from, to}) => (
   <div style={{position: 'absolute', inset: 0, background: NIGHT.wall, overflow: 'hidden'}}>
     <div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, transformOrigin: '0 0', transform: frameOf(2.5, [780, 400], [540, 820])}}>
@@ -353,6 +353,7 @@ const ShotE: React.FC<{s: ShotNow}> = ({s}) => {
   const bf = openFace(s, 'brain', 2, 'neutral');
   const sf = openFace(s, 'sweetie', 1, 'smug');
   const freeze = t > k.swap && t < k.sweet;
+  const jolt = take(t, k.swap - 0.05, 0.45);
   return (
     <>
       <Scene bg={NIGHT.wall}>
@@ -363,7 +364,9 @@ const ShotE: React.FC<{s: ShotNow}> = ({s}) => {
             <Sweetie wear="diet" mood={skid > 0 ? 'scared' : sf.mood} mouth={skid > 0 ? 'o' : sf.mouth} arms={skid > 0 ? 'droop' : 'wave'} look={[-0.7, 0.1]} />
           </Put>
         )}
+        <div style={{position: 'absolute', inset: 0, transform: `translateY(${jolt.dy.toFixed(1)}px)`}}>
         <PersonAt spec={DAD_HOME} {...o} expr={freeze ? 'surprised' : 'neutral'} look={freeze ? [-0.2, -0.8] : [0.8, 0.1]} talk={talkSmooth(s, 'dad')} blink={freeze ? 0 : blink(t, 3)} />
+        </div>
         {/* the thought bubble with the Brain */}
         {bub > 0.01 && (
           <>
@@ -408,12 +411,13 @@ const ShotF: React.FC<{s: ShotNow}> = ({s}) => {
         <div style={{position: 'absolute', inset: 0, transform: `translateY(${on.dy.toFixed(1)}px) rotate(${wob.toFixed(2)}deg)`, transformOrigin: `${dadF.x}px ${dadF.y}px`}}>
           <PersonAt spec={DAD_HOME} {...dadF} pose={pose} expr={t > k.kilo ? 'surprised' : 'worried'} look={t > k.did + 0.5 ? [0.2, 0.95] : [0.6, 0.1]} talk={talkSmooth(s, 'dad')} blink={blink(t, 3)} />
         </div>
+        <Burst t={t} t0={k.kilo} x={470} y={FEET_Y - 4} r={70} col={CLOTH.yellow} />
         {peek > 0.01 && <Put x={880} y={lerp(1200, 1010, peek) + slump * 30} size={260} rot={slump * 10}><Sweetie mood={slump > 0.5 ? 'sad' : sf.mood} mouth={slump > 0.5 ? 'frown' : sf.mouth} arms={slump > 0.5 ? 'droop' : 'hips'} look={[-0.8, 0.4]} /></Put>}
       </Scene>
     </>
   );
 };
-const viewF = byLine({F2: {x: 600, y: 1000, z: 1.05}}, {x: 470, y: 980, z: 1.3});
+const viewF = byLine({F2: {x: 600, y: 1000, z: 1.05}}, {x: 470, y: 900, z: 1.18}); // F1: Dad's whole head inside the picture
 
 // =================================================================== G: the whole mouth, the tongue (the answer and the loop)
 //   G1   "same." the tongue shrugs; the taste buds stay dark
@@ -434,11 +438,11 @@ const ShotG: React.FC<{s: ShotNow}> = ({s}) => {
     <>
       <MouthFull t={t} view="tongue" buds={buds} tongue={{mood: t > k.sweeter ? 'happy' : tf.mood, mouth: t > k.sweeter && active(s, 'tongue') < 0.3 ? 'big' : tf.mouth, look: [0, -0.3]}} />
       {[[300, 1130, 0], [780, 1130, 0.15], [540, 1660, 0.3], [250, 1330, 0.45]].map(([x, y, d], i) => <Burst key={i} t={t} t0={k.sweeter + d} x={x} y={y} r={70} col={CLOTH.yellow} />)}
-      {t > k.g3 - 0.3 && <Put x={lerp(1060, 700, walk)} y={1800 - step} size={190} rot={-4}><Sweetie mood={sf.mood} mouth={sf.mouth} arms="droop" look={[-0.6, 0.4]} /></Put>}
+      {t > k.g3 - 0.3 && <Put x={lerp(1040, 720, walk)} y={1770 - step} size={290} rot={-4}><Sweetie mood={sf.mood} mouth={sf.mouth} arms="droop" look={[-0.6, 0.4]} /></Put>}
     </>
   );
 };
-const viewG = byLine({G2: {x: 540, y: 1180, z: 1.12}, G3: {x: 760, y: 1640, z: 1.55}}, WIDE);
+const viewG = byLine({G2: {x: 540, y: 1180, z: 1.12}, G3: {x: 800, y: 1560, z: 1.45}}, WIDE);
 const TagG = tagVia(viewG);
 const ScreenG: React.FC<{s: ShotNow}> = ({s}) => {
   const k = timesG(s);

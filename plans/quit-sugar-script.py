@@ -55,7 +55,7 @@ shots = [
    ], "props": []},
   # B: Day 3, the brain (the whole brain, its face on the front): Sweetie dangles a candy on a fishing hook in front of it
   # ("hooked"); the Brain, unimpressed, flicks the line away and Sweetie tumbles off.
-  {"id": "B", "set": "macro",
+  {"id": "B", "set": "macro", "lead": 0.6,
    "cast": [{"who": "brain", "x": 540, "size": 1080, "stage": True, "emotion": "smug", "pose": "rest"},
             {"who": "sweetie", "x": 780, "size": 300, "emotion": "happy", "pose": "rest"}],
    "state": {"view": 1, "pull": 0.5},
@@ -72,7 +72,7 @@ shots = [
    ], "props": []},
   # C: Day 7, the mouth (close on the front teeth): Sweetie in his juice box slides in; the front tooth (the bouncer) kicks him
   # out on "Out!"; the sugar crystals at the gum line fall away on "fewer holes".
-  {"id": "C", "set": "macro",
+  {"id": "C", "set": "macro", "lead": 0.6,
    "cast": [{"who": "tooth", "x": 420, "size": 1080, "stage": True, "emotion": "angry", "pose": "rest"},
             {"who": "sweetie", "x": 760, "size": 360, "emotion": "happy", "pose": "rest"}],
    "state": {"view": 2, "bits": 1},
@@ -89,7 +89,7 @@ shots = [
      L("C3", "tooth", "Under twelve teaspoons a day, and I get fewer holes.", "happy", "holes", src=[WHO, MO], cam="ews"),
    ], "props": [tag("12 teaspoons", "C3", "twelve")]},
   # D: Day 10, the liver again (Day 1 was the hook): the fat patches shrink, one after another, to about half.
-  {"id": "D", "set": "macro",
+  {"id": "D", "set": "macro", "lead": 0.6,
    "cast": [{"who": "liver", "x": 540, "size": 1080, "stage": True, "emotion": "happy", "pose": "rest"}],
    "state": {"view": 0, "fat": 1},
    "events": [

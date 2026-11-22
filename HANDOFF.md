@@ -6,6 +6,23 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-22 (22) - MacBook (local Claude Code) - branch `video/quit-sugar` - frame-by-frame fixes, voices picked, WAITING on the cost OK
+
+- The owner: "Need to check every frame timing and voice and fix and give me final render".
+- Frame-by-frame (5 fps sheets of the silent draft). Fixed: lines started during the calendar rips (Days 3, 7, 10): those shots now
+  have `lead: 0.6` (silent rip first); `director.ts` steady camera: a shot's first picture starts with the SHOT, not its first line
+  (no video used `lead` before, the camera test called it a wrong picture); Day 30 F1 framing showed only part of Dad's head
+  (now z 1.18); the scale's drop gets a small yellow burst on "kilo"; tiny Sweetie in G3 bigger (290); Dad gets a visible start (a
+  take) on "swap" in E2.
+- Voices picked FREE by listening to the library's sample clips with earshot (no audition spend): Sweetie = Valf "Young, Playful &
+  Sarcastic" (library voice, publicOwnerId set), Dad = Brian, Tongue = Hope (pitch 1). Careful: a search for "Valf" returns
+  several different voices with that name; the right id is loY1uopAz31XyhAEhNSa.
+- Dry runs (free): lines 701 characters (quote <= 701 credits; creatine's receipts suggest about 300), CTA about 200, music about 500.
+  Balance 47,302 (keys 2: 2,728, 1: 72, 4: 35,301, 3 payg: 9,201).
+- npm test 50/50, toon:check --all pass. NOT spent yet: waiting for the owner's OK on the cost.
+
+---
+
 ## 2026-11-22 (21) - MacBook (local Claude Code) - branch `video/quit-sugar` - quit-sugar SILENT PREVIEW sent, WAITING (nothing voiced)
 
 - The owner: "Yes, go ahead" (the polished organ frames).

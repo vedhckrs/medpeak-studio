@@ -224,6 +224,7 @@
   {
    "id": "B",
    "set": "macro",
+   "lead": 0.6,
    "cast": [
     {
      "who": "brain",
@@ -312,6 +313,7 @@
   {
    "id": "C",
    "set": "macro",
+   "lead": 0.6,
    "cast": [
     {
      "who": "tooth",
@@ -421,6 +423,7 @@
   {
    "id": "D",
    "set": "macro",
+   "lead": 0.6,
    "cast": [
     {
      "who": "liver",
