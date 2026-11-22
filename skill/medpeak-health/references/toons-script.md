@@ -4,7 +4,75 @@ A Toon is one file, `videos/<slug>/toon.json`. Before a single credit is spent i
 `node pipeline/toon-check.mjs <slug>` (free, instant). The gate uses the same director as the
 player (`src/toons/director.ts`), so what it measures is what gets rendered.
 
-## Macros, the hero visual (`"format": 4`, owner, 2026-11-18)
+## Format 6: one story (`"format": 6`, engine v9, the owner, 2026-11-23)
+
+The owner approved every recommendation of `plans/engine-upgrade-2026-11-23/05-blueprint.md` ("All 28 recommend and start
+2 to 3 agents to fix and upgrade engine and everything i want proper as per report"). For every NEW script this section
+replaces, from the older formats below: format 4's required macros and "a new picture every 6 s", format 5's "Never still",
+"No time card", "Text on the picture is for a number", "Impacts take flash" and the 12-a-minute sound budget. Everything
+else below still holds where this section says nothing. The older formats stay for the videos already out. The numbers a
+format-6 Toon is measured against are in `toons-target.md`; the script checks S1-S12 run in `toon-check` (`toon-rules.mjs`).
+
+**The shape.** One question and one answer. The problem happens in 2-4 body places for the first 55-75% of the story (the
+organ in its real place, held, changing state), then the answer. About 55 s of story (50-60). Shape `visit` is the usual
+one (about 7 videos in 10, decision 2): near the end the patient asks "Doc, why...?" in Dr. Mira's room and she answers;
+`fight`, `clock`, `crew` stay for the rest, where the wisest body character gives the answer. At most 3 body/room switches,
+inside the body 60%+ of the story, each body place held 8 s+ (S8).
+
+**The fact budget (decision 1).** Every fact still has a source (allowed sources, exact words in `note`), but a story
+carries at most **3 sourced facts**, at least 2 of them in the answer block (S2: warn at 4, fail over 6). Extra facts go to
+the description with their sources. At most 4 speaking characters plus the doctor, each with 3 lines or more (S3).
+
+**The hook (decision 3, kind `story`).** Frame 0 is the person and a real action with a sound hit (0.4-1.0 s before the
+first word). The first line is said INSIDE the story: a character's reaction or demand about the intruder or the damage,
+8 words or fewer, the first word at 0.3-1.2 s; the topic object is named by 3.0 s (not necessarily in line 1); a character
+asks the story question by 6 s. "You" only between characters. The script sheet keeps three hook choices; one may be the
+older "to the viewer" kind, and retention decides (S1 warns until two videos have compared).
+
+**Retention 7 for Toons (decision 4; the long videos keep `retention-7.md` as written).** Point 2 (promise) is met by the
+character's story question; point 4 ("3-sec change") becomes "one action, then a hold" (checks M2, C2: something enters the
+held frame, then a hold of 1.5 s+); point 7 (loop) may also be met by ending on the person's own question or mid-line.
+
+**Pace, pauses and beats (decision 5).** The same voices, faster delivery: body characters speed 1.12-1.2 (or a per-line
+`tempo` up to 1.15 on clips we own), people 1.05-1.1, Dr. Mira 0.92-0.95 (S6: body lines 3.0-3.6 words a second, the doctor
+0.3 slower). Air between lines 0.22 s; 0.5-0.8 s after a shock (`pause`), 0.6 s before the answer, 2-3 silent `beat`s of
+1-2.5 s on picture actions. Talking 80-93% of the story; 3+ pauses of 0.5 s and 2+ of 1 s (S5). No "..." inside a line.
+
+**Line style.** Short, fast demands and refusals between characters, real reactions (huh, whoa, ugh: 2+), one "no" before
+the midpoint, a joke on the damage; 5-7.5 words a sentence; numbers said aloud: 1 at most; "study / trial / WHO" said at
+most once, where honesty needs it (S7).
+
+**The answer block (decision 2).** 3-6 lines marked `answer: true`, 35-60 words, by Dr. Mira (or the wisest body
+character), starting at 55-80% of the story, slower and calmer: it names the condition (a title word or the `term`), the
+cause in plain words, one action (take, drink, cut, keep, ask, wait, see, stop) or "that's why", every line sourced, the care
+line last or second-last (S4). The description's first line is the answer.
+
+**The picture is the story (decisions 9, 16).** The organ shows its state itself (contents, a liquid level, a cut window,
+sores, dark patches): no gauges, meters, clocks or chips inside the body (S11); clocks only as real objects in a room; at
+most ONE number plate a video (the answer's one number) and at most 2 texts on screen besides the caption and the watermark.
+One real intruder (a cigarette, a probe, a pill) enters the body (S10). One framing per body shot, one punch-in a video.
+
+**Time cards (decision 20).** `{"card": "3 DAYS LATER", "seconds": 1.0, "same": "B"}`: 0.8-1.2 s, black, one line, hard cut in
+and out; `same` names the shot whose framing returns after it with the new state; at most 3 a video; the change it implies
+is sourced (S12, C8).
+
+**Impacts and sound (decisions 18, 22-24).** No `"fx": "flash"` by default: at most 1 flash, 1 shake and 2 bursts a video,
+never near a face; a `FightCloud` for a fight. Story sounds only, in the pauses: 14 a minute at most, 0.7 s apart, never on a
+word. Music: a new track every video from the funk family (the template in `toon-music.mjs`: playful funk, slap bass, light
+percussion, 130-165 BPM, a brighter half from the answer, the topic's colour); the bed fuller in the pauses and dipping 3 dB
+under words; at most 2 planned stops (`"stop": true` on an event), never on a word.
+
+**The end card (decision 25, option A).** 5-6 s, a hard cut in, Joey says only the follow line (S9: 6 s and 12% of the
+video at most).
+
+**The order of work (format 6).** Topic -> research (each candidate fact on an allowed source, or cut) -> the script sheet
+with three hook choices -> `toon-check` (S1-S12) -> look sheets (the stages in the video's states, the cast, the rooms) ->
+a silent draft with its scoreboard (`node --import tsx pipeline/toon-score.mjs <slug> --file renders/toon-v8-draft.mp4`) ->
+the owner's yes -> the voice and music quote (balance before and after) -> voice and music -> `toon-check` on the real
+timings -> the final render (it runs the scoreboard) -> `npm run toon:look`, `toon-staging`, `toon-motion`, `toon-camera`,
+`toon:sound`, `toon:listen --voices` -> **the scoreboard says PASS** -> the owner, with `renders/scoreboard.jpg`.
+
+## Macros, the hero visual (`"format": 4`, owner, 2026-11-18; videos already out)
 The owner: "macro shot is my hero visual: start (hook), mid and last". From format 4 every video has
 **2 to 3 macro close-ups**: an extreme close-up drawn as its own detailed scene (set `macro`,
 `src/toons/stage-macro.tsx`, drawings in `look-macro.tsx`). Checked by `toon:check`:
@@ -345,7 +413,7 @@ Each one: body stage -> time card -> the person -> Dr. Mira -> the same stage, d
 Estimated length is about 15% longer than the voiced length (the body voices speak fast), so run
 `toon-check` again after voicing: a quiet stretch or the twist's position can move.
 
-## Format 5: engage (owner, 2026-11-18)
+## Format 5: engage (owner, 2026-11-18; videos already out, replaced for new scripts by Format 6 above)
 
 The owner's notes on rabies: weak hook, text that does not match the voice, nothing moves, one word
 captions with no box. `"format": 5` adds these rules to format 4. `toon:check` measures all of them.

@@ -19,21 +19,40 @@ measures it on every script (they all run in `npm test`).
 | sound | how many effects, how far apart, effects and music against the voice | `npm run toon:sound -- <slug>` |
 | listening | the finished file as a listener gets it: loudness, each planned sound (heard or lost), holes, clipping; each library effect against its description | `npm run toon:listen -- <slug>` / `-- --library` (needs earshot on the machine, toons-listening.md) |
 | upload read-back | what YouTube really stored (privacy, AI-use answer, cover) | printed by `publish/upload.py` |
+| **picture (engine v9)** | the FINAL render, caption band left out: cuts and holds, still vs dead, flash and shake, one-frame pops, zoom jumps, line weight, colour, time cards (C1-C8, M2) | `npm run toon:look -- <slug>` |
+| **layout log (engine v9)** | what the v8 component tree drew, 30 times a second: nothing on a face, no text on text, the caption off faces, tag arrows, the watermark, half heads at the edge, bursts, texts on screen, eye size, gaze, hands (L1-L14); bodies (M1, M3-M5); the real framings (V1-V3) | `node --import tsx pipeline/toon-staging.mjs <slug>` (and `toon-motion`, `toon-camera`) |
+| **scoreboard (engine v9)** | every number of `toons-target.md` against the 20 references, one 16:9 sheet; must say PASS before the owner sees a video | `node --import tsx pipeline/toon-score.mjs <slug>` |
+
+## R2 (found 2026-11-23): the checks measured the plan, not the picture
+
+**What happened.** `toon:staging` said "ALL PASS" on creatine, quit-sugar, fasting and snake-bite with ONE graphic found per
+video, while the frames had the caption on eyes, bursts on faces, the watermark on heads and half people at the edge
+(the engine study, agent 4). `toon:look` passed restless videos because the caption counted as motion.
+**Cause.** `toon:camera`, `toon:motion` and `toon:staging` imported the OLD engine (`src/toons/Player.tsx`, `rooms.tsx`,
+`stages.tsx`) and read `toon.json`; look v8 shots place almost everything in code, so the checks saw nearly nothing.
+`toon_look.py` measured the whole frame against loose bands.
+**Fix (engine v9, phase 1).** A layout log filled by the real component tree (`useReport` in `src/toons/v8/play.tsx`,
+`pipeline/lib/toon-layout.mjs`), the layout checks L1-L14 / M1-M5 / V1-V3 reading it, picture checks C1-C8 on the final
+MP4 (`pipeline/lib/toon_picture.py`), and the scoreboard. Proof: `plans/engine-upgrade-2026-11-23/phase1-scoreboard.jpg`
+(the four videos, red where the owner saw problems) and `phase1-proof-caught.jpg` (the boxes on the real frames).
+**What stops it now.** `pipeline/test/layout.test.mjs` (a known box to 2 px; each check fails its known-bad frame) and
+`pipeline/test/picture.test.mjs` (each picture check fails an ffmpeg-made bad clip). A component that does not report is
+covered by a probe shim until it does (`07-layout-log-wiring.md`).
 
 ## Before ANY video goes to the owner: the 2026-11-22 checklist (quit-sugar and fasting)
 
 The owner on the fasting final: "why last CTA dont have voiceover narrator you forget ... not interesting and not visual, confusion,
 hook is not good failed, camera jump bugs", then "make sure dont make mistake again". Every one of these passed the checks of the day.
-Each now has a check; run ALL of them on the FINAL render, not on a draft:
+Each now has a check; run ALL of them on the FINAL render, not on a draft (from 2026-11-23 the scoreboard collects them all):
 
 | Mistake | Cause | What stops it now |
 |---|---|---|
 | End card with music but no narrator (quit-sugar, public; fasting) | the clip was named by hand in each video's code; two videos missed it | the render puts every paid clip in (`toon.ctaClip`); `toon:listen` prints END CARD and fails without speech; `pipeline/test/cta.test.mjs` |
 | 9 jump cuts in 45 s | the shots' own framings (`view`) were never checked: toon:camera reads script cam words | `pipeline/test/views.test.mjs` reads the real framings (1.5x or no reframe); ONE framing per place; measure real cuts on the final (frames where > 30% of pixels change) and name each one: a new place or a 1.5x size change, nothing else |
 | A weak hook | the first 2 s were a calm room with a small character | open on the CONSEQUENCE, the main character filling the frame, coming at the lens; judge the first frame as the cover |
-| Not visual, confusing | four places in one pink, ten things in a frame, abstract ideas (a jar, a switch) | one colour per place (`place` prop), quiet tone-on-tone backgrounds, one or two characters per frame, a big physical metaphor per idea (a gauge to EMPTY with an alarm, a furnace), the lead person acts in silent beats |
+| Not visual, confusing | four places in one pink, ten things in a frame, abstract ideas (a jar, a switch) | **changed 2026-11-23 (decisions 6, 7, 9):** one warm flesh family inside the body (no per-place flat colours; C7), the organ in its real place (anatomy stages), quiet backgrounds, one or two characters per frame, the story drawn ON the organ (contents, a level, damage; no gauges, meters or clocks inside the body; one number plate a video), the lead person acts in silent beats |
 | A schedule silently cancelled | `after_upload --label` updated the status without `publishAt` | the script keeps `publishAt` and warns; read the status back after EVERY change to a video |
-| A burst on a face; the watermark on a prop | placed by hand, not measured | look at full-size stills of every line and crop every face before sending |
+| A burst on a face; the watermark on a prop | placed by hand, not measured | measured since 2026-11-23: L1, L5, L7 on the layout log; still look at full-size stills and crop every face before sending |
 | Captions | the owner: 5% higher, 40% smaller | `"caption": 2` in every new toon.json |
 | The look check measured the draft with the still end card | the draft has no cta-timings | run `toon:look` on the FINAL voiced render (story only) |
 

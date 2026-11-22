@@ -23,3 +23,13 @@
 ## Visuals
 - Never an AI image or video of a real, identifiable person. Organs and cells are stylised.
 - AI-made visuals are disclosed on upload (`containsSyntheticMedia: true`).
+
+## Toons, format 6 (2026-11-23)
+
+The owner approved the engine study (decisions 1, 2, 20): "All 28 recommend and start 2 to 3 agents to fix and upgrade engine and everything i want proper as per report".
+- A Toon carries at most 3 sourced facts in the story, at least 2 of them in the answer block; the rest go to the
+  description, each with its source. Every fact still has an allowed source with its exact words in `note`.
+- The answer block names the condition (a title word or the `term`), the cause in plain words and ONE action, and ends with
+  (or is followed by) the care line. Association wording unchanged ("linked to"), no doses, no "stop taking".
+- One spoken source word at most ("a study", "WHO"), only where honesty needs it. One number said aloud at most.
+- A time card's claim ("8 HOURS LATER" the carbon monoxide falls) is a fact like any other: sourced, or cut.
