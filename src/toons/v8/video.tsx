@@ -6,7 +6,7 @@
  */
 import React, {useMemo} from 'react';
 import {AbsoluteFill, Audio, Sequence, staticFile, useCurrentFrame} from 'remotion';
-import {bedAt, SOUND, frameOf, layoutToon, lineSeconds, soundPlan, TOON_FPS, type Layout, type Toon, type ToonTimings} from '../director';
+import {bedAt, captionStyle, SOUND, frameOf, layoutToon, lineSeconds, soundPlan, TOON_FPS, type Layout, type Toon, type ToonTimings} from '../director';
 import {CtaCardV4, Watermark, WordCaption, type CtaAt, type CtaPoint} from './hud';
 import {FONT} from './kit';
 import {clamp01, go, lerp, V8_FPS, type Focus, type LineNow, type ShotDef, type ShotNow} from './play';
@@ -274,7 +274,8 @@ export const ToonV8: React.FC<V8VideoProps> = ({toon, timings, sfx, music, bare 
       {cur && wi >= 0 && !bare && !inCta && (() => {
         // one word at a time, no box (the owner, 2026-11-20); the line's key word is yellow and bigger
         const w = clean(cur.words[wi].w);
-        return <WordCaption key={cur.line.id + wi} word={w} t={tl - cur.words[wi].start} isKey={w.toLowerCase().replace(/[!?'’]/g, '') === keyWord.replace(/[!?'’]/g, '')} />;
+        const cs = captionStyle(toon);
+        return <WordCaption key={cur.line.id + wi} word={w} t={tl - cur.words[wi].start} isKey={w.toLowerCase().replace(/[!?'’]/g, '') === keyWord.replace(/[!?'’]/g, '')} y={cs.y} scale={cs.scale} />;
       })()}
       {inCta && (
         <div style={{position: 'absolute', inset: 0, transform: `translateY(${((1 - clamp01((sec - ends) / 0.35)) ** 3 * 1920).toFixed(1)}px)`}}>

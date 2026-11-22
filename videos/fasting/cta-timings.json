@@ -1,0 +1,198 @@
+{
+  "voice": "Joey - Upbeat Popular News Host",
+  "voiceId": "mUfWEBhcigm8YlCDbmGP",
+  "text": "Fasting: know this. Hunger comes in waves, and it passes. Fasting is no faster than eating less. Pregnant, or had an eating disorder? Ask a doctor first. Follow MedPeak Health for more health tips that keep you safe.",
+  "seconds": 15.19,
+  "words": [
+    {
+      "w": "Fasting:",
+      "start": 0,
+      "end": 0.755
+    },
+    {
+      "w": "know",
+      "start": 0.929,
+      "end": 1.138
+    },
+    {
+      "w": "this.",
+      "start": 1.219,
+      "end": 1.741
+    },
+    {
+      "w": "Hunger",
+      "start": 1.892,
+      "end": 2.229
+    },
+    {
+      "w": "comes",
+      "start": 2.31,
+      "end": 2.566
+    },
+    {
+      "w": "in",
+      "start": 2.624,
+      "end": 2.694
+    },
+    {
+      "w": "waves,",
+      "start": 2.81,
+      "end": 3.332
+    },
+    {
+      "w": "and",
+      "start": 3.355,
+      "end": 3.506
+    },
+    {
+      "w": "it",
+      "start": 3.564,
+      "end": 3.622
+    },
+    {
+      "w": "passes.",
+      "start": 3.692,
+      "end": 4.551
+    },
+    {
+      "w": "Fasting",
+      "start": 4.76,
+      "end": 5.236
+    },
+    {
+      "w": "is",
+      "start": 5.306,
+      "end": 5.41
+    },
+    {
+      "w": "no",
+      "start": 5.48,
+      "end": 5.608
+    },
+    {
+      "w": "faster",
+      "start": 5.689,
+      "end": 6.072
+    },
+    {
+      "w": "than",
+      "start": 6.13,
+      "end": 6.258
+    },
+    {
+      "w": "eating",
+      "start": 6.339,
+      "end": 6.594
+    },
+    {
+      "w": "less.",
+      "start": 6.676,
+      "end": 7.21
+    },
+    {
+      "w": "Pregnant,",
+      "start": 7.419,
+      "end": 7.999
+    },
+    {
+      "w": "or",
+      "start": 8.092,
+      "end": 8.255
+    },
+    {
+      "w": "had",
+      "start": 8.324,
+      "end": 8.487
+    },
+    {
+      "w": "an",
+      "start": 8.533,
+      "end": 8.591
+    },
+    {
+      "w": "eating",
+      "start": 8.661,
+      "end": 8.905
+    },
+    {
+      "w": "disorder?",
+      "start": 8.951,
+      "end": 9.567
+    },
+    {
+      "w": "Ask",
+      "start": 9.845,
+      "end": 10.112
+    },
+    {
+      "w": "a",
+      "start": 10.17,
+      "end": 10.194
+    },
+    {
+      "w": "doctor",
+      "start": 10.252,
+      "end": 10.565
+    },
+    {
+      "w": "first.",
+      "start": 10.635,
+      "end": 11.146
+    },
+    {
+      "w": "Follow",
+      "start": 11.32,
+      "end": 11.668
+    },
+    {
+      "w": "MedPeak",
+      "start": 11.749,
+      "end": 12.144
+    },
+    {
+      "w": "Health",
+      "start": 12.202,
+      "end": 12.481
+    },
+    {
+      "w": "for",
+      "start": 12.655,
+      "end": 12.817
+    },
+    {
+      "w": "more",
+      "start": 12.887,
+      "end": 13.061
+    },
+    {
+      "w": "health",
+      "start": 13.108,
+      "end": 13.328
+    },
+    {
+      "w": "tips",
+      "start": 13.386,
+      "end": 13.746
+    },
+    {
+      "w": "that",
+      "start": 13.862,
+      "end": 14.036
+    },
+    {
+      "w": "keep",
+      "start": 14.083,
+      "end": 14.269
+    },
+    {
+      "w": "you",
+      "start": 14.315,
+      "end": 14.396
+    },
+    {
+      "w": "safe.",
+      "start": 14.478,
+      "end": 15.186
+    }
+  ]
+}

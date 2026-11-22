@@ -44,6 +44,7 @@ shots = [
      E("start", act="stomach: bursts on screen at the lens, fists up", sfx="pop", fx="flash"),
      E("A1", word="scream", act="stomach: shakes both fists at grandpa", sfx="gurgle-stomach"),
      E("A2", word="Sixteen", act="grandpa: pushes his dinner plate away and points at the clock", sfx="swish"),
+     E("A2", word="Scared", act="grandpa: turns and points down at his stomach, teasing", fx="flash"),
      E("A2", word="stomach?", act="grandpa: the camera dives into his belly to the growling stomach", sfx="whoosh-fast", set={"growl": 1}, over=12),
    ],
    "lines": [
@@ -108,9 +109,10 @@ shots = [
    "events": [
      E("start", act="grandpa: the clock rings 16 h; breakfast on the table", sfx="ding", fx="flash"),
      E("E1", word="Sixteen", act="grandpa: gives a big thumbs-up"),
-     E("E1", word="faster?", act="grandpa: pats his belly, grinning"),
+     E("E1", word="melts", act="grandpa: spreads his arm out proudly", fx="flash"),
+     E("E1", word="faster?", act="grandpa: rubs his chin, grinning"),
      E("E2", word="year-long", act="lardo: pops up on the side table", sfx="pop"),
-     E("E2", word="every", act="lardo: counts days on his fingers"),
+     E("E2", word="every", act="lardo: counts days on his fingers", sfx="pop", fx="flash"),
      E("E3", word="same", act="lardo: shrugs", sfx="boing"),
      E("E3", word="less.", act="grandpa: his grin drops", sfx="sad-trombone", fx="flash"),
    ],
@@ -157,7 +159,7 @@ shots = [
 
 toon = {
   "slug": "fasting", "title": "What Happens to Your Body When You Fast", "format": 5, "shape": "clock",
-  "music": "fasting", "camera": "steady", "episode": 13,
+  "music": "fasting", "camera": "steady", "episode": 13, "caption": 2,
   "hooks": [
     {"line": "When you fast, I scream!", "why": "the owner's pick A (2026-11-22: \"Hook A, Grandpa\"), cut to 5 words for the 2-second hook rule (\"No food for sixteen hours? I'll scream in four!\" took 2.7 s)"},
     {"line": "You fast? Hour twelve, your body switches fuel!", "why": "B: the liver's sugar jar, the last bead drops"},
@@ -175,7 +177,7 @@ toon = {
     "tags": ["what happens to your body when you fast", "intermittent fasting", "16 hour fast", "fasting benefits", "what happens when you fast",
              "ketosis", "fasting for weight loss", "hunger", "metabolic switch", "health cartoon"],
     "hashtags": "#fasting #health #shorts",
-    "cover": {"at": 1.2, "text": "When you fast", "accent": "fast"},
+    "cover": {"at": 3.2, "text": "When you fast", "accent": "fast"},
   },
   "retention": {
     "noIntro": {"scene": "A1", "line": "When you fast, I scream!"},

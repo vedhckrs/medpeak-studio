@@ -21,6 +21,7 @@ import {Put, Scene} from './scene';
 import {CharTag, type CtaPoint} from './hud';
 import {arc, Burst, easeOut, hop, keyed, shake, take} from './act';
 import {gestureAt, pounding, type ArmPose} from './organ-act';
+void pounding;
 import {FEET_Y, PEOPLE_SCALE} from './scenes-rooms';
 import {castById, handAt, headAt, PersonAt, type PoseIn, type PoseName} from './people-rig';
 import {Brain, Stomach} from './organs-a';
@@ -74,13 +75,13 @@ const NumTag: React.FC<{s: ShotNow; text: string; id: string; word: string; x?: 
 
 // ------------------------------------------------------------------ the clock jump (the first 0.6 s of B and C)
 const LEAD = 0.6; // the shot's `lead` in toon.json: the clock jumps in silence, the first line starts after it
-const CLOCK: [number, number] = [830, 330];
+const CLOCK: [number, number] = [860, 385];
 const ClockInsert: React.FC<{t: number; from: number; to: number}> = ({t, from, to}) => {
   const k = easeOut(clamp01((t - 0.06) / 0.4));
   const [sx, sy] = shake(t, 0.46, 10, 0.2);
   return (
     <div style={{position: 'absolute', inset: 0, background: FAST_ROOM.wall, overflow: 'hidden'}}>
-      <div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, transformOrigin: '0 0', transform: `translate(${sx}px, ${sy}px) ${frameOf(2.6, CLOCK, [540, 860])}`}}>
+      <div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, transformOrigin: '0 0', transform: `translate(${sx}px, ${sy}px) ${frameOf(3.0, CLOCK, [540, 860])}`}}>
         <Scene bg={FAST_ROOM.wall}><FastRoom hours={lerp(from, to, k)} plate="away" sec={k * 180} /></Scene>
       </div>
     </div>
@@ -95,7 +96,7 @@ const ClockInsert: React.FC<{t: number; from: number; to: number}> = ({t, from, 
 const gpA = {view: 'three-quarter' as const, facing: 'right' as const, x: 620, y: FEET_Y - 22, scale: PEOPLE_SCALE};
 const timesA = (s: ShotNow) => {
   const a2 = at(s, 'A2', undefined, 1.5);
-  return {scream: at(s, 'A1', 'scream', 1.0), a2, sixteen: at(s, 'A2', 'sixteen', a2), stomach: at(s, 'A2', 'stomach', a2 + 2.6)};
+  return {scream: at(s, 'A1', 'scream', 1.0), a2, sixteen: at(s, 'A2', 'sixteen', a2), scared: at(s, 'A2', 'scared', a2 + 1.4), stomach: at(s, 'A2', 'stomach', a2 + 2.6)};
 };
 const bellyA = (): [number, number] => { const h = headAt(GRANDPA, {...gpA, pose: 'rest'}); return [h.x + h.r * 0.1, h.y + h.r * 3.2]; };
 const RoomA: React.FC<{s: ShotNow}> = ({s}) => {
@@ -103,7 +104,7 @@ const RoomA: React.FC<{s: ShotNow}> = ({s}) => {
   const fly = keyed(t, 0, [[0, 1, 0.36, 'back']]);
   const stf = openFace(s, 'stomach', 3, 'angry');
   const slide = keyed(t, 0, [[k.sixteen, 1, 0.4, 'out']]);
-  const pose = poseAt(t, [[-9, 'rest'], [k.sixteen - 0.1, 'offer', 0.2], [k.sixteen + 0.55, 'point', 0.25]]);
+  const pose = poseAt(t, [[-9, 'rest'], [k.sixteen - 0.1, 'offer', 0.2], [k.sixteen + 0.55, 'point', 0.25], [k.scared - 0.1, 'explainLow', 0.25]]);
   const tk = take(t, k.scream + 0.05, 0.5);
   const [shx, shy] = shake(t, k.scream, 14, 0.4);
   const fists = t > k.scream && t < k.scream + 0.6 ? Math.sin((t - k.scream) * 30) * 6 : 0;
@@ -120,7 +121,7 @@ const RoomA: React.FC<{s: ShotNow}> = ({s}) => {
       <Scene bg={FAST_ROOM.wall}>
         <FastRoom hours={0} plate="full" plateX={plateX} sec={Math.floor(t)} />
         <div style={{position: 'absolute', inset: 0, transform: `translateY(${tk.dy.toFixed(1)}px)`}}>
-          <PersonAt spec={GRANDPA} {...gpA} pose={pose} expr={t < k.a2 ? 'happy' : 'talking'} look={t > k.sixteen + 0.5 ? [0.7, -0.8] : [-0.6, 0.5]} talk={talkSmooth(s, 'grandpa')} blink={blink(t, 3)} />
+          <PersonAt spec={GRANDPA} {...gpA} pose={pose} expr={t < k.a2 ? 'happy' : 'talking'} look={t > k.scared - 0.1 ? [-0.7, 0.8] : t > k.sixteen + 0.5 ? [0.7, -0.8] : [-0.6, 0.5]} talk={talkSmooth(s, 'grandpa')} blink={blink(t, 3)} />
         </div>
         {/* the Stomach at the lens: in from the bottom left, big, then it holds down there */}
         <Put x={lerp(160, 300, fly)} y={lerp(2100, 1480, fly) + fists} size={lerp(300, 700, fly)} rot={lerp(-30, -8, fly) + fists * 0.6}>
@@ -141,7 +142,7 @@ const ShotA: React.FC<{s: ShotNow}> = ({s}) => {
   const Z = 1 + ee * ee * 9, R = ee * 2300;
   return (
     <>
-      {e > 0 && <div style={{position: 'absolute', inset: 0}}><StomachFull t={t} growl={1} mood="angry" mouth="big" look={[-0.3, 0.3]} /></div>}
+      {e > 0 && <div style={{position: 'absolute', inset: 0}}><StomachFull t={t} growl={0} mood="angry" mouth="big" look={[-0.3, 0.3]} armL="up" armR="up" /></div>}
       {e < 1 && (
         <div style={{position: 'absolute', inset: 0, transformOrigin: `${sxp}px ${syp}px`, transform: `scale(${Z.toFixed(4)})`,
           WebkitMaskImage: e > 0 ? `radial-gradient(circle at ${sxp}px ${syp}px, transparent ${(R / Z).toFixed(1)}px, black ${(R / Z + 1).toFixed(1)}px)` : undefined}}>
@@ -176,7 +177,7 @@ const BrainPeek: React.FC<{t: number; t0: number; mood?: string; mouth?: string;
   if (k < 0.01) return null;
   // it drops in on its thread and SWINGS, the swing dying away (a pendulum from the top of the frame)
   const u = Math.max(0, t - t0 - 0.2);
-  const sw = 14 * Math.exp(-u * 1.6) * Math.sin(u * 6.5);
+  const sw = 12 * Math.exp(-u * 3.2) * Math.sin(u * 7);
   return (
     <Put x={BRAIN_PEEK[0] + sw * 6} y={lerp(-220, BRAIN_PEEK[1], k)} size={size} rot={lerp(20, -6, k) + sw}>
       {/* a thread from the top, like a spider coming down */}
@@ -195,9 +196,9 @@ const ShotB: React.FC<{s: ShotNow}> = ({s}) => {
   const calm = t > k.drops;
   const [sx, sy] = shake(t, k.feed2, 22, 0.35);
   // "Feed me! FEED ME!": both fists pound the wall; listening to the Brain it folds its arms; on "drops" they fall slack
-  const pR = pounding(t, k.feed - 0.05, k.b2 - k.feed, 3.2), pL = pounding(t, k.feed - 0.05, k.b2 - k.feed, 3.2, 0.5);
-  const armR: ArmPose = pR ?? gestureAt(t, [[-9, 'rest'], [k.b2 - 0.1, 'fold', 0.3], [k.drops, 'rest', 0.4]]);
-  const armL: ArmPose = pL ?? gestureAt(t, [[-9, 'rest'], [k.b2 - 0.1, 'hips', 0.3], [k.drops, 'rest', 0.4]]);
+  // two clear punches, each HELD: the right fist on "Feed", the left on "FEED"
+  const armR: ArmPose = gestureAt(t, [[-9, 'up'], [k.feed - 0.05, 'pound', 0.1], [k.feed + 0.35, 'up', 0.2], [k.b2 - 0.1, 'fold', 0.3], [k.drops, 'rest', 0.4]]);
+  const armL: ArmPose = gestureAt(t, [[-9, 'up'], [k.feed2 - 0.05, 'pound', 0.1], [k.feed2 + 0.35, 'up', 0.2], [k.b2 - 0.1, 'hips', 0.3], [k.drops, 'rest', 0.4]]);
   const big = keyed(t, 0, [[k.feed2, 0.08, 0.08, 'out'], [k.feed2 + 0.12, 0, 0.3, 'back']]);
   const deflate = keyed(t, 0, [[k.drops, -0.04, 0.5]]);
   return (
@@ -305,7 +306,7 @@ const ShotD: React.FC<{s: ShotNow}> = ({s}) => {
   const armR: ArmPose = gestureAt(t, [[-9, 'rest'], [k.sw - 0.25, 'tap', 0.25], [k.sw + 0.5, 'rest', 0.3]]);
   const armL: ArmPose = gestureAt(t, [[-9, 'rest'], [k.fat2 - 0.1, 'up', 0.15]]);
   // fuel drops: each leaves Lardo's top and arcs up into the liver
-  const drops2 = t > k.fat1 ? Array.from({length: 6}, (_, i) => k.fat1 + 0.2 + i * 0.45) : [];
+  const drops2 = t > k.fat1 ? Array.from({length: 3}, (_, i) => k.fat1 + 0.2 + i * 0.7) : [];
   return (
     <>
       <LiverFull t={t} fat={0} mood={t > k.fat2 ? 'happy' : lf.mood} mouth={t > k.fat2 && active(s, 'liver') < 0.3 ? 'big' : lf.mouth} look={t < k.d2 ? [-0.6, 0.8] : t < k.sw + 0.5 ? [0.9, 0.7] : [-0.4, 0.6]} lift={hp.dy} armL={armL} armR={armR} />
@@ -338,12 +339,12 @@ const gpE = {view: 'three-quarter' as const, facing: 'right' as const, x: 520, y
 const LARDO_E: [number, number] = [850, 1078];
 const timesE = (s: ShotNow) => {
   const e2 = at(s, 'E2', undefined, 2.6), e3 = at(s, 'E3', undefined, 5.2);
-  return {sixteen: at(s, 'E1', 'sixteen', 0.1), faster: at(s, 'E1', 'faster', 1.9), e2, year: at(s, 'E2', 'year-long', e2 + 0.4), every: at(s, 'E2', 'every', e2 + 1.4), e3, same: at(s, 'E3', 'same', e3 + 0.8), less: at(s, 'E3', 'less', e3 + 1.9)};
+  return {sixteen: at(s, 'E1', 'sixteen', 0.1), melts: at(s, 'E1', 'melts', 1.6), faster: at(s, 'E1', 'faster', 1.9), e2, year: at(s, 'E2', 'year-long', e2 + 0.4), every: at(s, 'E2', 'every', e2 + 1.4), e3, same: at(s, 'E3', 'same', e3 + 0.8), less: at(s, 'E3', 'less', e3 + 1.9)};
 };
 const ShotE: React.FC<{s: ShotNow}> = ({s}) => {
   const t = s.t, k = timesE(s);
   const ring = t < 0.6 ? Math.sin(t * 60) * 6 * (1 - t / 0.6) : 0;
-  const pose = poseAt(t, [[-9, 'rest'], [k.sixteen - 0.15, 'thumbsUp', 0.25], [k.faster - 0.1, 'think', 0.25], [k.less - 0.05, 'cheeks', 0.15]]);
+  const pose = poseAt(t, [[-9, 'rest'], [k.sixteen - 0.15, 'thumbsUp', 0.25], [k.melts - 0.1, 'explain', 0.25], [k.faster - 0.1, 'think', 0.25], [k.less - 0.05, 'cheeks', 0.15]]);
   const up = keyed(t, 0, [[k.year - 0.45, 1, 0.5, 'out']]);
   const la = openFace(s, 'lardo', 7, 'neutral');
   const lhp = hop(t, k.same, 46, 0.3);
@@ -380,8 +381,8 @@ const ShotF: React.FC<{s: ShotNow}> = ({s}) => {
   const t = s.t, k = timesF(s);
   const bf = openFace(s, 'brain', 2, 'neutral');
   const wag = t > k.isnt && t < k.isnt + 1.0 ? Math.sin((t - k.isnt) * 14) * 3 * (1 - (t - k.isnt)) : 0;
-  const no = t > k.every && t < k.every + 0.6 ? Math.sin((t - k.every) * 30) * 14 * (1 - (t - k.every) / 0.6) : 0;
-  const hp = hop(t, k.preg, 50, 0.3);
+  const no = 0; // (a whole-brain head shake moved most of the frame: the wagging finger carries "not everyone")
+  const hp = {dy: 0};
   const lean = keyed(t, 1, [[k.doc, 1.08, 0.3, 'back']]);
   return (
     <>
@@ -420,9 +421,9 @@ const ShotG: React.FC<{s: ShotNow}> = ({s}) => {
   const rattle = t > k.scream && t < k.scream + 0.5 ? Math.sin((t - k.scream) * 50) * 0.04 : 0;
   return (
     <>
-      <StomachFull t={t} growl={growl} mood={jaw ? 'scared' : calm ? 'happy' : sf.mood} mouth={jaw && active(s, 'stomach') < 0.3 ? 'o' : calm ? 'smile' : sf.mouth} look={look} armL={armL} armR={armR} sq={burp + rattle} rot={t > k.scr && t < k.me ? Math.sin(t * 4) * 3 : 0} />
+      <StomachFull t={t} growl={growl} mood={jaw ? 'scared' : calm ? 'happy' : sf.mood} mouth={jaw && active(s, 'stomach') < 0.3 ? 'o' : calm ? 'smile' : sf.mouth} look={look} armL={armL} armR={armR} sq={burp + rattle} rot={0} />
       <BrainPeek t={t} t0={k.me} mood={bm.mood} mouth={bm.mouth} look={[-0.6, 0.6]} />
-      <Burst t={t} t0={k.me} x={BRAIN_PEEK[0]} y={BRAIN_PEEK[1]} r={150} col={CLOTH.yellow} />
+      <Burst t={t} t0={k.me} x={BRAIN_PEEK[0] - 230} y={BRAIN_PEEK[1] + 40} r={110} col={CLOTH.yellow} />
     </>
   );
 };

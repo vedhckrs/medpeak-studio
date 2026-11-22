@@ -96,7 +96,8 @@ const RUGAE = ['M -54 30 Q -36 24 -18 30 Q 0 36 16 30', 'M -40 44 Q -16 38 8 46 
 export const StomachFull: React.FC<V8Props & {t: number; growl?: number; armL?: ArmPose | Gesture; armR?: ArmPose | Gesture; sq?: number; rot?: number}> = ({t, growl = 0, mood = 'angry', mouth = 'open', look = [-0.4, 0.2], armL, armR, sq = 0, rot = 0}) => {
   const g = clamp01(growl);
   const S = 6.0;
-  const sx = g * Math.sin(t * 61) * 10, sy = g * Math.cos(t * 47) * 6;
+  // the growl is a squash pulse of the body (below), not a jitter of the whole organ (2026-11-22: the jitter kept most of the frame moving)
+  const sx = 0, sy = 0;
   return (
     <Scene bg={STOMACH_FULL.cavity}>
       <Layer>
@@ -134,12 +135,12 @@ export const StomachFull: React.FC<V8Props & {t: number; growl?: number; armL?: 
 
       <svg style={{position: 'absolute', left: 0, top: 0, overflow: 'visible'}} width={1080} height={1920} viewBox="0 0 1080 1920">
         {/* the growl: ripple arcs spreading out from the wall */}
-        {g > 0 && [0, 1, 2].map((i) => {
+        {false && g > 0.3 && [0, 1].map((i) => { // the ripple rings: off (2026-11-22, they kept a third of the frame moving)
           const k = ((t * 1.6 + i / 3) % 1);
           const r = 520 + k * 220;
           return <path key={i} d={`M ${f(540 - r * 0.86)} ${f(1000 + r * 0.2)} A ${r} ${r * 0.9} 0 0 1 ${f(540 + r * 0.86)} ${f(1000 + r * 0.2)}`} stroke="#ffffff" strokeWidth={14} strokeLinecap="round" fill="none" opacity={g * (1 - k) * 0.8} />;
         })}
-        <g transform={`translate(${f(500 + sx)} ${f(1040 + sy)}) scale(${S}) ${bodyTx(sq + g * 0.035 * Math.sin(t * 19), rot, 60)}`}>
+        <g transform={`translate(${f(500 + sx)} ${f(1040 + sy)}) scale(${S}) ${bodyTx(sq + g * 0.03 * Math.max(0, Math.sin(t * 11)), rot, 60)}`}>
           {/* the gullet down into the top, the duodenum out low left */}
           <path d="M -10 -200 C -12 -140 -8 -90 2 -54" stroke={INK} strokeWidth={24} strokeLinecap="round" fill="none" />
           <path d="M -10 -200 C -12 -140 -8 -90 2 -54" stroke={STOMACH_FULL.gullet} strokeWidth={19} strokeLinecap="round" fill="none" />
@@ -277,7 +278,7 @@ export const FastRoom: React.FC<{hours?: number; plate?: 'full' | 'away' | 'brea
     </Shape>
 
     {/* the big wall clock, middle-right, high */}
-    <g transform={`translate(830 330) rotate(${clockShake.toFixed(2)}) scale(1.15)`}><FastClock hours={hours} sec={sec} /></g>
+    <g transform={`translate(860 385) rotate(${clockShake.toFixed(2)}) scale(1.0)`}><FastClock hours={hours} sec={sec} /></g>
 
     {/* the armchair, left of middle, behind where Grandpa stands */}
     <Shape d="M 230 980 Q 230 880 330 880 L 560 880 Q 660 880 660 980 L 660 1420 L 230 1420 Z" fill={FAST_ROOM.chair} shadow={0.6}>

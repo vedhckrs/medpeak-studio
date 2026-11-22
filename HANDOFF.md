@@ -6,6 +6,25 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-22 (26) - MacBook (local Claude Code) - branch `video/fasting` - fasting FINISHED, waiting for the owner to watch (NOT uploaded)
+
+- Topic #5 "What Happens to Your Body When You Fast" (slug `fasting`, episode 13, shape `clock`): plan `plans/fasting-2026-11-22.md`,
+  script `plans/fasting-script.py`. Owner: hook A, Grandpa; looks approved; "refine character animation and visual first"; "yes spent it".
+- Sources: NIDDK (NIH) for who should not fast (Johns Hopkins was read but is not an allowed source; its page refuses scripts, read in
+  the browser); Anton 2018, Natalucci 2005, Trepanowski 2017, Lowe 2020. NIDDK's expert: ketones do not rise much at 16 h, so no ketone line.
+- New: Lardo the fat cell (voice: library "Dr. Quibble", picked free with earshot), StomachFull, SugarJar, FastRoom (`fast-art.tsx`);
+  `organ-act.tsx`: whole organs (StomachFull, LiverFull, BrainFull, the cast Stomach) take arm gestures that blend and hold, plus
+  squash/lean (optional props; quit-sugar unchanged and still passes).
+- Captions (owner: "caption make shift above 5% and small 40%"): `"caption": 2` in toon.json puts the word at y 1374, 40% smaller
+  (`captionStyle`/`captionBox` in director.ts); videos already out keep the first line (rabies' virus sits on the new line).
+- Spent by receipts: lines 256, Joey's card 194, music 500 = 950. Balance 43,923 before, 42,973 after (key 2 is out of credits).
+- Final `videos/fasting/renders/toon-v8.mp4` 60.2 s (story 45.6 s), -14.3 LUFS, -0.9 dBTP, 9/9 sounds, no holes. toon:check, camera,
+  motion, staging, sound ALL PASS; look ALL PASS (still 45% after calming the growl jitter, ripples, head shake and fist pumping;
+  small motion 44%); npm test 50/50. Package READY, cover at 3.2 s.
+- Next: the owner watches with sound; upload on his word in the next free MedPeak slot (`upload.py fasting toon --approve --slot`).
+
+---
+
 ## 2026-11-22 (25) - MacBook (local Claude Code) - branch `feat/posting-schedule-slots` - the posting schedule in the scripts
 
 - The owner: "save this rule, upgrade skill" (the shared `~/Desktop/New/POSTING-SCHEDULE.md`). Built on the other session's

@@ -110,7 +110,7 @@ Do these once on a new machine. None of it needs the old machine except step 6.
   organ itself changes state with the story (fat patches shrink, taste buds light up). Not a small mascot on a micro background.
   Micro places stay for cells, blood and germs. Example: `src/toons/v8/sugar-organs.tsx`.
 - **Text on the picture is laid on the screen after the camera**, so a zoom never cuts it. Captions are
-  one word at a time, no box, the key word bigger and yellow (2026-11-20).
+  one word at a time, no box, the key word bigger and yellow (2026-11-20). **From 2026-11-22 the caption sits 5% higher (y 1374) and is 40% smaller** (the owner: "caption make shift above 5% and small 40%"): every new toon.json sets `"caption": 2`; videos already out keep the first line.
 - **Final videos are 1080 x 1920, 60 frames a second.**
 - **Work directly, deliver fast** (2026-11-20): do fixes yourself in the main session and give him the
   render; do not hand the work to subagents unless he asks for them.

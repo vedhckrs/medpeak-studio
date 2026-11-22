@@ -6,6 +6,7 @@
  "music": "fasting",
  "camera": "steady",
  "episode": 13,
+ "caption": 2,
  "hooks": [
   {
    "line": "When you fast, I scream!",
@@ -54,7 +55,7 @@
   ],
   "hashtags": "#fasting #health #shorts",
   "cover": {
-   "at": 1.2,
+   "at": 3.2,
    "text": "When you fast",
    "accent": "fast"
   }
@@ -169,6 +170,12 @@
      "act": "grandpa: pushes his dinner plate away and points at the clock",
      "word": "Sixteen",
      "sfx": "swish"
+    },
+    {
+     "at": "A2",
+     "act": "grandpa: turns and points down at his stomach, teasing",
+     "word": "Scared",
+     "fx": "flash"
     },
     {
      "at": "A2",
@@ -548,7 +555,13 @@
     },
     {
      "at": "E1",
-     "act": "grandpa: pats his belly, grinning",
+     "act": "grandpa: spreads his arm out proudly",
+     "word": "melts",
+     "fx": "flash"
+    },
+    {
+     "at": "E1",
+     "act": "grandpa: rubs his chin, grinning",
      "word": "faster?"
     },
     {
@@ -560,7 +573,9 @@
     {
      "at": "E2",
      "act": "lardo: counts days on his fingers",
-     "word": "every"
+     "word": "every",
+     "sfx": "pop",
+     "fx": "flash"
     },
     {
      "at": "E3",

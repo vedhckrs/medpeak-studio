@@ -109,7 +109,13 @@ export const roomKind = (role: RoomRole, look: RoomLook): RoomKind => (role === 
 export const roomTone = (look?: RoomLook): [number, number, number] | null =>
   look?.time === 'night' ? [0.78, 0.8, 0.93] : look?.time === 'evening' ? [1, 0.95, 0.9] : null;
 /** Where the one-word caption sits (steady videos: low and plain; the first style: a little higher), so graphics can keep off it. */
-export const captionBox = (steady: boolean) => { const y = steady ? 1470 : 1400; return {y, x0: 110, x1: 970, y0: y - 10, y1: y + 130}; }; // wide enough for the 3-word boxed caption [220-860, +116]
+export const captionBox = (steady: boolean, caption?: 2) => {
+  // from 2026-11-22 (the owner: "caption make shift above 5% and small 40%"): the one-word caption centred 96 px higher, 40% smaller
+  if (caption === 2) { const y = 1374; return {y, x0: 110, x1: 970, y0: y - 50, y1: y + 60}; }
+  const y = steady ? 1470 : 1400; return {y, x0: 110, x1: 970, y0: y - 10, y1: y + 130}; // wide enough for the 3-word boxed caption [220-860, +116]
+};
+/** The v8 caption's line and size for a video (`caption: 2` from 2026-11-22; the videos already out keep the first one). */
+export const captionStyle = (toon: {caption?: 2}) => (toon.caption === 2 ? {y: 1374, scale: 0.6} : {y: 1470, scale: 1});
 /** Everything that makes a room what it is, as one line (two rooms with the same line are the same room). */
 export const roomSignature = (role: RoomRole, look: RoomLook) =>
   [roomKind(role, look), look.palette, look.wall, look.floor, `${look.window.style}@${look.window.side}`, look.window.view, look.layout, look.chart ?? '-', look.time ?? 'day'].join('|');
@@ -222,7 +228,7 @@ export type ToonSource = {id: string; label: string; url: string; note: string};
  * asks for one (the style of the reference Shorts); 'cinematic' (default) = the director cuts.
  */
 /** `episode`: the video's number in the series (rooms are compared with the six episodes either side). `rooms`: the recipes for this video's own clinic and home. */
-export type Toon = {slug: string; title: string; test?: boolean; music?: string; camera?: 'steady' | 'cinematic'; episode?: number; rooms?: Partial<Record<RoomRole, RoomLook>>; retention?: ToonRetention; shots: ToonShot[]; sources?: ToonSource[]};
+export type Toon = {slug: string; title: string; test?: boolean; /** 2: the caption line of 2026-11-22 on (5% higher, 40% smaller); left out: the first one (videos already out keep it) */ caption?: 2; music?: string; camera?: 'steady' | 'cinematic'; episode?: number; rooms?: Partial<Record<RoomRole, RoomLook>>; retention?: ToonRetention; shots: ToonShot[]; sources?: ToonSource[]};
 export type ToonTimings = {lines: Record<string, {file: string; duration: number; words: SpokenWord[]}>};
 
 /** How far a graphic reaches from its centre, in prop units (200 units = its `size`): [left, up, right, down]. A bubble's tail is not counted. */

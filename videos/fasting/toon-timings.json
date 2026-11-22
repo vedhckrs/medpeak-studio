@@ -1,0 +1,765 @@
+{
+  "lines": {
+    "A1": {
+      "who": "stomach",
+      "text": "When you fast, I scream!",
+      "voiceId": "N2lVS1w4EtoT3dr4eOWO",
+      "pitch": -1,
+      "tempo": 1.15,
+      "file": "toons/fasting/voice/A1.mp3",
+      "duration": 1.606,
+      "words": [
+        {
+          "w": "When",
+          "start": 0,
+          "end": 0.182
+        },
+        {
+          "w": "you",
+          "start": 0.222,
+          "end": 0.293
+        },
+        {
+          "w": "fast,",
+          "start": 0.383,
+          "end": 0.727
+        },
+        {
+          "w": "I",
+          "start": 0.777,
+          "end": 0.828
+        },
+        {
+          "w": "scream!",
+          "start": 0.919,
+          "end": 1.535
+        }
+      ]
+    },
+    "A2": {
+      "who": "grandpa",
+      "text": "Sixteen hours. Scared of a little hunger, stomach?",
+      "voiceId": "pqHfZKP75CvOlQylNhV4",
+      "pitch": -1,
+      "tempo": 1,
+      "file": "toons/fasting/voice/A2.mp3",
+      "duration": 3.683,
+      "words": [
+        {
+          "w": "Sixteen",
+          "start": 0,
+          "end": 0.464
+        },
+        {
+          "w": "hours.",
+          "start": 0.511,
+          "end": 1.045
+        },
+        {
+          "w": "Scared",
+          "start": 1.382,
+          "end": 1.788
+        },
+        {
+          "w": "of",
+          "start": 1.823,
+          "end": 1.869
+        },
+        {
+          "w": "a",
+          "start": 1.904,
+          "end": 1.927
+        },
+        {
+          "w": "little",
+          "start": 1.974,
+          "end": 2.206
+        },
+        {
+          "w": "hunger,",
+          "start": 2.241,
+          "end": 2.67
+        },
+        {
+          "w": "stomach?",
+          "start": 2.856,
+          "end": 3.622
+        }
+      ]
+    },
+    "B1": {
+      "who": "stomach",
+      "text": "Feed me! FEED ME!",
+      "voiceId": "N2lVS1w4EtoT3dr4eOWO",
+      "pitch": -1,
+      "tempo": 1,
+      "file": "toons/fasting/voice/B1.mp3",
+      "duration": 1.732,
+      "words": [
+        {
+          "w": "Feed",
+          "start": 0,
+          "end": 0.302
+        },
+        {
+          "w": "me!",
+          "start": 0.36,
+          "end": 0.627
+        },
+        {
+          "w": "FEED",
+          "start": 0.789,
+          "end": 1.091
+        },
+        {
+          "w": "ME!",
+          "start": 1.149,
+          "end": 1.672
+        }
+      ]
+    },
+    "B2": {
+      "who": "brain",
+      "text": "Hunger comes in waves, at your usual meal times...",
+      "voiceId": "iP95p4xoKVk53GoZ742B",
+      "pitch": 1,
+      "tempo": 1,
+      "file": "toons/fasting/voice/B2.mp3",
+      "duration": 2.685,
+      "words": [
+        {
+          "w": "Hunger",
+          "start": 0,
+          "end": 0.302
+        },
+        {
+          "w": "comes",
+          "start": 0.337,
+          "end": 0.511
+        },
+        {
+          "w": "in",
+          "start": 0.557,
+          "end": 0.615
+        },
+        {
+          "w": "waves,",
+          "start": 0.673,
+          "end": 1.033
+        },
+        {
+          "w": "at",
+          "start": 1.057,
+          "end": 1.138
+        },
+        {
+          "w": "your",
+          "start": 1.173,
+          "end": 1.289
+        },
+        {
+          "w": "usual",
+          "start": 1.347,
+          "end": 1.649
+        },
+        {
+          "w": "meal",
+          "start": 1.707,
+          "end": 1.904
+        },
+        {
+          "w": "times...",
+          "start": 1.962,
+          "end": 2.647
+        }
+      ]
+    },
+    "B3": {
+      "who": "brain",
+      "text": "...and it drops again on its own.",
+      "voiceId": "iP95p4xoKVk53GoZ742B",
+      "pitch": 1,
+      "tempo": 1,
+      "file": "toons/fasting/voice/B3.mp3",
+      "duration": 1.945,
+      "words": [
+        {
+          "w": "...and",
+          "start": 0,
+          "end": 0.488
+        },
+        {
+          "w": "it",
+          "start": 0.534,
+          "end": 0.592
+        },
+        {
+          "w": "drops",
+          "start": 0.615,
+          "end": 0.848
+        },
+        {
+          "w": "again",
+          "start": 0.882,
+          "end": 1.115
+        },
+        {
+          "w": "on",
+          "start": 1.173,
+          "end": 1.254
+        },
+        {
+          "w": "its",
+          "start": 1.3,
+          "end": 1.405
+        },
+        {
+          "w": "own.",
+          "start": 1.451,
+          "end": 1.904
+        }
+      ]
+    },
+    "C1": {
+      "who": "liver",
+      "text": "I keep sugar for between meals. Running low...",
+      "voiceId": "cjVigY5qzO86Huf0OWal",
+      "pitch": -1,
+      "tempo": 1,
+      "file": "toons/fasting/voice/C1.mp3",
+      "duration": 2.464,
+      "words": [
+        {
+          "w": "I",
+          "start": 0,
+          "end": 0.081
+        },
+        {
+          "w": "keep",
+          "start": 0.174,
+          "end": 0.325
+        },
+        {
+          "w": "sugar",
+          "start": 0.372,
+          "end": 0.592
+        },
+        {
+          "w": "for",
+          "start": 0.65,
+          "end": 0.766
+        },
+        {
+          "w": "between",
+          "start": 0.824,
+          "end": 1.103
+        },
+        {
+          "w": "meals.",
+          "start": 1.149,
+          "end": 1.486
+        },
+        {
+          "w": "Running",
+          "start": 1.602,
+          "end": 1.858
+        },
+        {
+          "w": "low...",
+          "start": 1.916,
+          "end": 2.415
+        }
+      ]
+    },
+    "C2": {
+      "who": "liver",
+      "text": "Past about twelve hours, my store runs dry!",
+      "voiceId": "cjVigY5qzO86Huf0OWal",
+      "pitch": -1,
+      "tempo": 1,
+      "file": "toons/fasting/voice/C2.mp3",
+      "duration": 2.131,
+      "words": [
+        {
+          "w": "Past",
+          "start": 0,
+          "end": 0.255
+        },
+        {
+          "w": "about",
+          "start": 0.279,
+          "end": 0.453
+        },
+        {
+          "w": "twelve",
+          "start": 0.476,
+          "end": 0.72
+        },
+        {
+          "w": "hours,",
+          "start": 0.743,
+          "end": 0.987
+        },
+        {
+          "w": "my",
+          "start": 1.022,
+          "end": 1.091
+        },
+        {
+          "w": "store",
+          "start": 1.149,
+          "end": 1.37
+        },
+        {
+          "w": "runs",
+          "start": 1.393,
+          "end": 1.591
+        },
+        {
+          "w": "dry!",
+          "start": 1.649,
+          "end": 2.09
+        }
+      ]
+    },
+    "D1": {
+      "who": "lardo",
+      "text": "My turn! Burning fat!",
+      "voiceId": "RDSy0QN68yhrjuOgqzQ4",
+      "pitch": 0,
+      "tempo": 1,
+      "file": "toons/fasting/voice/D1.mp3",
+      "duration": 1.768,
+      "words": [
+        {
+          "w": "My",
+          "start": 0,
+          "end": 0.186
+        },
+        {
+          "w": "turn!",
+          "start": 0.255,
+          "end": 0.592
+        },
+        {
+          "w": "Burning",
+          "start": 0.65,
+          "end": 0.987
+        },
+        {
+          "w": "fat!",
+          "start": 1.068,
+          "end": 1.718
+        }
+      ]
+    },
+    "D2": {
+      "who": "liver",
+      "text": "No sugar left, so the body switches fuel: fat!",
+      "voiceId": "cjVigY5qzO86Huf0OWal",
+      "pitch": -1,
+      "tempo": 1,
+      "file": "toons/fasting/voice/D2.mp3",
+      "duration": 2.794,
+      "words": [
+        {
+          "w": "No",
+          "start": 0,
+          "end": 0.186
+        },
+        {
+          "w": "sugar",
+          "start": 0.255,
+          "end": 0.511
+        },
+        {
+          "w": "left,",
+          "start": 0.569,
+          "end": 0.824
+        },
+        {
+          "w": "so",
+          "start": 0.848,
+          "end": 0.952
+        },
+        {
+          "w": "the",
+          "start": 0.998,
+          "end": 1.068
+        },
+        {
+          "w": "body",
+          "start": 1.103,
+          "end": 1.289
+        },
+        {
+          "w": "switches",
+          "start": 1.324,
+          "end": 1.649
+        },
+        {
+          "w": "fuel:",
+          "start": 1.707,
+          "end": 2.043
+        },
+        {
+          "w": "fat!",
+          "start": 2.078,
+          "end": 2.74
+        }
+      ]
+    },
+    "E1": {
+      "who": "grandpa",
+      "text": "Sixteen hours! So fasting melts fat faster?",
+      "voiceId": "pqHfZKP75CvOlQylNhV4",
+      "pitch": -1,
+      "tempo": 1,
+      "file": "toons/fasting/voice/E1.mp3",
+      "duration": 3.592,
+      "words": [
+        {
+          "w": "Sixteen",
+          "start": 0,
+          "end": 0.476
+        },
+        {
+          "w": "hours!",
+          "start": 0.522,
+          "end": 1.045
+        },
+        {
+          "w": "So",
+          "start": 1.335,
+          "end": 1.521
+        },
+        {
+          "w": "fasting",
+          "start": 1.602,
+          "end": 2.032
+        },
+        {
+          "w": "melts",
+          "start": 2.078,
+          "end": 2.31
+        },
+        {
+          "w": "fat",
+          "start": 2.38,
+          "end": 2.635
+        },
+        {
+          "w": "faster?",
+          "start": 2.705,
+          "end": 3.529
+        }
+      ]
+    },
+    "E2": {
+      "who": "lardo",
+      "text": "In a year-long trial, fasting every other day...",
+      "voiceId": "RDSy0QN68yhrjuOgqzQ4",
+      "pitch": 0,
+      "tempo": 1,
+      "file": "toons/fasting/voice/E2.mp3",
+      "duration": 3.022,
+      "words": [
+        {
+          "w": "In",
+          "start": 0,
+          "end": 0.151
+        },
+        {
+          "w": "a",
+          "start": 0.186,
+          "end": 0.232
+        },
+        {
+          "w": "year-long",
+          "start": 0.313,
+          "end": 0.836
+        },
+        {
+          "w": "trial,",
+          "start": 0.906,
+          "end": 1.382
+        },
+        {
+          "w": "fasting",
+          "start": 1.463,
+          "end": 1.869
+        },
+        {
+          "w": "every",
+          "start": 1.927,
+          "end": 2.101
+        },
+        {
+          "w": "other",
+          "start": 2.159,
+          "end": 2.322
+        },
+        {
+          "w": "day...",
+          "start": 2.38,
+          "end": 2.972
+        }
+      ]
+    },
+    "E3": {
+      "who": "lardo",
+      "text": "...lost about the same as just eating less.",
+      "voiceId": "RDSy0QN68yhrjuOgqzQ4",
+      "pitch": 0,
+      "tempo": 1,
+      "file": "toons/fasting/voice/E3.mp3",
+      "duration": 2.651,
+      "words": [
+        {
+          "w": "...lost",
+          "start": 0,
+          "end": 0.43
+        },
+        {
+          "w": "about",
+          "start": 0.476,
+          "end": 0.697
+        },
+        {
+          "w": "the",
+          "start": 0.743,
+          "end": 0.824
+        },
+        {
+          "w": "same",
+          "start": 0.882,
+          "end": 1.219
+        },
+        {
+          "w": "as",
+          "start": 1.254,
+          "end": 1.335
+        },
+        {
+          "w": "just",
+          "start": 1.393,
+          "end": 1.567
+        },
+        {
+          "w": "eating",
+          "start": 1.625,
+          "end": 1.869
+        },
+        {
+          "w": "less.",
+          "start": 1.962,
+          "end": 2.601
+        }
+      ]
+    },
+    "F1": {
+      "who": "brain",
+      "text": "Fasting isn't for everyone.",
+      "voiceId": "iP95p4xoKVk53GoZ742B",
+      "pitch": 1,
+      "tempo": 1,
+      "file": "toons/fasting/voice/F1.mp3",
+      "duration": 1.383,
+      "words": [
+        {
+          "w": "Fasting",
+          "start": 0,
+          "end": 0.372
+        },
+        {
+          "w": "isn't",
+          "start": 0.406,
+          "end": 0.569
+        },
+        {
+          "w": "for",
+          "start": 0.592,
+          "end": 0.673
+        },
+        {
+          "w": "everyone.",
+          "start": 0.72,
+          "end": 1.347
+        }
+      ]
+    },
+    "F2": {
+      "who": "brain",
+      "text": "Pregnant? Had an eating disorder? Ask a doctor first.",
+      "voiceId": "iP95p4xoKVk53GoZ742B",
+      "pitch": 1,
+      "tempo": 1,
+      "file": "toons/fasting/voice/F2.mp3",
+      "duration": 3.109,
+      "words": [
+        {
+          "w": "Pregnant?",
+          "start": 0,
+          "end": 0.511
+        },
+        {
+          "w": "Had",
+          "start": 0.65,
+          "end": 0.789
+        },
+        {
+          "w": "an",
+          "start": 0.836,
+          "end": 0.906
+        },
+        {
+          "w": "eating",
+          "start": 0.964,
+          "end": 1.196
+        },
+        {
+          "w": "disorder?",
+          "start": 1.242,
+          "end": 1.718
+        },
+        {
+          "w": "Ask",
+          "start": 1.858,
+          "end": 2.043
+        },
+        {
+          "w": "a",
+          "start": 2.09,
+          "end": 2.113
+        },
+        {
+          "w": "doctor",
+          "start": 2.159,
+          "end": 2.403
+        },
+        {
+          "w": "first.",
+          "start": 2.461,
+          "end": 3.065
+        }
+      ]
+    },
+    "G1": {
+      "who": "stomach",
+      "text": "So who was screaming at me all night?",
+      "voiceId": "N2lVS1w4EtoT3dr4eOWO",
+      "pitch": -1,
+      "tempo": 1,
+      "file": "toons/fasting/voice/G1.mp3",
+      "duration": 2.238,
+      "words": [
+        {
+          "w": "So",
+          "start": 0,
+          "end": 0.174
+        },
+        {
+          "w": "who",
+          "start": 0.221,
+          "end": 0.36
+        },
+        {
+          "w": "was",
+          "start": 0.406,
+          "end": 0.546
+        },
+        {
+          "w": "screaming",
+          "start": 0.604,
+          "end": 1.045
+        },
+        {
+          "w": "at",
+          "start": 1.103,
+          "end": 1.184
+        },
+        {
+          "w": "me",
+          "start": 1.242,
+          "end": 1.358
+        },
+        {
+          "w": "all",
+          "start": 1.416,
+          "end": 1.556
+        },
+        {
+          "w": "night?",
+          "start": 1.614,
+          "end": 2.183
+        }
+      ]
+    },
+    "G2": {
+      "who": "brain",
+      "text": "Me! When you fast, the brain makes you scream, little stomach!",
+      "voiceId": "iP95p4xoKVk53GoZ742B",
+      "pitch": 1,
+      "tempo": 1,
+      "file": "toons/fasting/voice/G2.mp3",
+      "duration": 3.473,
+      "words": [
+        {
+          "w": "Me!",
+          "start": 0,
+          "end": 0.418
+        },
+        {
+          "w": "When",
+          "start": 0.639,
+          "end": 0.801
+        },
+        {
+          "w": "you",
+          "start": 0.836,
+          "end": 0.917
+        },
+        {
+          "w": "fast,",
+          "start": 1.022,
+          "end": 1.335
+        },
+        {
+          "w": "the",
+          "start": 1.358,
+          "end": 1.44
+        },
+        {
+          "w": "brain",
+          "start": 1.498,
+          "end": 1.741
+        },
+        {
+          "w": "makes",
+          "start": 1.776,
+          "end": 1.927
+        },
+        {
+          "w": "you",
+          "start": 1.95,
+          "end": 2.032
+        },
+        {
+          "w": "scream,",
+          "start": 2.101,
+          "end": 2.473
+        },
+        {
+          "w": "little",
+          "start": 2.496,
+          "end": 2.705
+        },
+        {
+          "w": "stomach!",
+          "start": 2.74,
+          "end": 3.437
+        }
+      ]
+    }
+  }
+}
