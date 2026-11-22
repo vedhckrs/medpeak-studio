@@ -139,3 +139,7 @@ in the first minutes: it disagrees with the NHS, so we follow the NHS).
 1. The hook: A, B or C (my pick A).
 2. Who shouts the myths: Mom or the Kid (my pick Mom: a parent panicking reads clearly).
 3. The Anthropic key on this Mac (see the message).
+
+## Decided
+
+- Hook A and Mom shouting the myths (the owner, 2026-11-22: "Hook A, Mom").
