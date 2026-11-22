@@ -7,7 +7,7 @@
  *
  * Time is in SECONDS (fractional; the video runs at 60 frames a second). Never count frames in a shot.
  */
-import React from 'react';
+import React, {createContext, useContext} from 'react';
 import type {Mood, MouthKind} from './kit';
 import type {Expr} from './people-rig';
 
@@ -151,4 +151,110 @@ export const bodyFace = (s: ShotNow, who: string, seed = 0, rest = 'neutral'): {
   const open = talkSmooth(s, who);
   const shut = blink(s.t, seed) > 0.5 && f.mood !== 'happy' && f.mood !== 'dizzy';
   return {mood: shut ? 'closed' : f.mood, mouth: open > 0.5 ? 'open' : open > 0.18 ? 'o' : f.mouth};
+};
+
+// ------------------------------------------------------------------ the layout log (engine v9, phase 1; 2026-11-23)
+/**
+ * Where things ARE in the picture, told by the components that draw them (blueprint 05, Part 4.3). The checks
+ * (`pipeline/lib/toon-layout.mjs`, `toon-staging`, `toon-motion`, `toon-score`) read this log instead of guessing
+ * from the script or from the old engine: "nothing on a face", "no text on text", "the caption off the eyes" are
+ * measured on what the real component tree drew.
+ *
+ * How it works: the probe renders a shot with a `LayoutCtx` collector. `Put` (scene.tsx), and any other wrapper
+ * that moves its children, pushes its transform with `FrameMove`, so a piece reports in its OWN drawing units and
+ * the log turns that into frame pixels; the probe then applies the camera to get screen pixels.
+ * Outside a probe the collector is null: `useReport()` returns a no-op and `FrameMove` adds nothing to the page,
+ * so a normal render is exactly what it was. A component that never reports still works (it is only unseen by
+ * the layout checks; the picture checks on the final MP4 are the second net).
+ * Who must call what: plans/engine-upgrade-2026-11-23/07-layout-log-wiring.md.
+ */
+export type Box = {x0: number; y0: number; x1: number; y1: number};
+export type ReportKind = 'face' | 'eye' | 'mouth' | 'head' | 'body' | 'hand' | 'text' | 'tag' | 'label' | 'fx' | 'prop' | 'wallItem' | 'bubble' | 'watermark' | 'caption' | 'icon' | 'plate';
+/** What a component reports, in its own drawing units (the log maps them). */
+export type Report = {
+  kind: ReportKind;
+  who?: string; // the character it belongs to ('liver', 'mom'); the enclosing FrameMove's `who` when missing
+  box: Box;
+  dir?: [number, number]; // a gaze (the pupil's offset) or an arrow's direction, in the same units
+  owner?: string; // whose it is when that is not `who` (a tag's character, a bubble's speaker)
+  open?: boolean; // a hand: spread open (check M5); a mouth: open
+  id?: string; // a stable name inside the shot (a burst's start time), so one thing is counted once
+  tip?: [number, number]; // a tag's or a bubble's arrow tip, in the same units
+  text?: string; // what a text piece says
+};
+/** One item of the log: the report with its box in frame (or screen) pixels. */
+export type LayoutItem = Report & {space: 'frame' | 'screen'; chain: string[]; body?: string; src?: string};
+export type LayoutSink = {add: (item: LayoutItem) => void; next: () => string};
+/** [a, b, c, d, e, f]: x' = a x + c y + e, y' = b x + d y + f (the SVG matrix order). */
+export type Mat = [number, number, number, number, number, number];
+export const IDENTITY: Mat = [1, 0, 0, 1, 0, 0];
+export const matMul = (m: Mat, n: Mat): Mat => [
+  m[0] * n[0] + m[2] * n[1], m[1] * n[0] + m[3] * n[1],
+  m[0] * n[2] + m[2] * n[3], m[1] * n[2] + m[3] * n[3],
+  m[0] * n[4] + m[2] * n[5] + m[4], m[1] * n[4] + m[3] * n[5] + m[5],
+];
+export const matTranslate = (x: number, y: number): Mat => [1, 0, 0, 1, x, y];
+export const matScale = (sx: number, sy = sx): Mat => [sx, 0, 0, sy, 0, 0];
+export const matRotate = (deg: number): Mat => { const a = (deg * Math.PI) / 180, c = Math.cos(a), s = Math.sin(a); return [c, s, -s, c, 0, 0]; };
+export const applyMat = (m: Mat, x: number, y: number): [number, number] => [m[0] * x + m[2] * y + m[4], m[1] * x + m[3] * y + m[5]];
+/** The box that holds a box after the matrix (a rotation grows it to the axis-aligned hull). */
+export const mapBox = (m: Mat, b: Box): Box => {
+  const p = [applyMat(m, b.x0, b.y0), applyMat(m, b.x1, b.y0), applyMat(m, b.x0, b.y1), applyMat(m, b.x1, b.y1)];
+  return {x0: Math.min(...p.map((q) => q[0])), y0: Math.min(...p.map((q) => q[1])), x1: Math.max(...p.map((q) => q[0])), y1: Math.max(...p.map((q) => q[1]))};
+};
+export const circleBox = (x: number, y: number, rx: number, ry = rx): Box => ({x0: x - rx, y0: y - ry, x1: x + rx, y1: y + ry});
+
+/** The collector: null in every normal render (zero cost). */
+export const LayoutCtx = createContext<LayoutSink | null>(null);
+/**
+ * The transform from the current drawing units to frame pixels; `chain` the moves on the way down (outermost first);
+ * `who` the named character drawn here; `body` the innermost figure (a Put, a person) this piece belongs to, so a face and
+ * its own hand or body are known to be one character even without a name.
+ */
+export type Frame = {m: Mat; space: 'frame' | 'screen'; chain: string[]; who?: string; body?: string};
+export const FrameCtx = createContext<Frame>({m: IDENTITY, space: 'frame', chain: []});
+
+const noReport = () => {};
+/** `report(...)` inside a component, during render (pure: the same props give the same report). Does nothing outside a probe. */
+export const useReport = (): ((r: Report) => void) => {
+  const sink = useContext(LayoutCtx);
+  const fr = useContext(FrameCtx);
+  if (!sink) return noReport;
+  return (r: Report) => {
+    // a direction turns and flips with the drawing but keeps its length (a gaze of 0.1 stays a small gaze)
+    const k = Math.sqrt(Math.abs(fr.m[0] * fr.m[3] - fr.m[1] * fr.m[2])) || 1;
+    const lin: Mat = [fr.m[0] / k, fr.m[1] / k, fr.m[2] / k, fr.m[3] / k, 0, 0];
+    sink.add({
+      ...r,
+      who: r.who ?? fr.who,
+      box: mapBox(fr.m, r.box),
+      dir: r.dir && applyMat(lin, r.dir[0], r.dir[1]),
+      tip: r.tip && applyMat(fr.m, r.tip[0], r.tip[1]),
+      space: fr.space,
+      chain: fr.chain,
+      body: fr.body,
+    });
+  };
+};
+/** True inside a probe: a component may skip work that only feeds the log. */
+export const useProbing = () => useContext(LayoutCtx) !== null;
+
+/**
+ * Children drawn in units that `m` turns into the parent's units (a Put's figure space, a dive's zoom about a point).
+ * It only TELLS the log; the caller still draws its own transform. `who` names the character drawn inside; `body` marks
+ * a new figure (a Put, a person): what is drawn inside belongs to it.
+ * Outside a probe it renders the children unchanged (no element, no cost).
+ */
+export const FrameMove: React.FC<{m: Mat; who?: string; body?: boolean; children?: React.ReactNode}> = ({m, who, body, children}) => {
+  const sink = useContext(LayoutCtx);
+  const fr = useContext(FrameCtx);
+  if (!sink) return <>{children}</>;
+  const id = sink.next();
+  return <FrameCtx.Provider value={{m: matMul(fr.m, m), space: fr.space, chain: [...fr.chain, id], who: who ?? fr.who, body: body ? who ?? id : fr.body}}>{children}</FrameCtx.Provider>;
+};
+/** Children laid on the SCREEN after the camera (a shot's `Screen`, the player's caption): their reports are screen pixels. */
+export const ScreenSpace: React.FC<{children?: React.ReactNode}> = ({children}) => {
+  const sink = useContext(LayoutCtx);
+  if (!sink) return <>{children}</>;
+  return <FrameCtx.Provider value={{m: IDENTITY, space: 'screen', chain: []}}>{children}</FrameCtx.Provider>;
 };
