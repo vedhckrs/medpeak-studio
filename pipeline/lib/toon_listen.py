@@ -62,8 +62,9 @@ def voices(job):
     for it in job['items']:
         row = {'id': it['id'], 'who': it['who']}
         try:
-            m = api.measure(it['file'], light=True)
-            row['measure'] = {k: m.get(k) for k in ('duration', 'lufs', 'true_peak_dbtp', 'clipped_samples', 'noise_floor_dbfs', 'attack_at', 'brightness_hz', 'centroid_hz')}
+            # engine v9 (check A4): the full measure, for the line's pitch (f0, Hz); a voice clip is short, so it stays quick
+            m = api.measure(it['file'], light=False)
+            row['measure'] = {k: m.get(k) for k in ('duration', 'lufs', 'true_peak_dbtp', 'clipped_samples', 'noise_floor_dbfs', 'attack_at', 'brightness_hz', 'centroid_hz', 'f0_hz')}
             # earshot's text match is not validated for voices (it says so itself); its AudioSet labels are
             # the part that knows speech: "Speech", "Female speech", "Speech synthesizer", "Gasp"...
             d = api.describe(it['file'], top=6)

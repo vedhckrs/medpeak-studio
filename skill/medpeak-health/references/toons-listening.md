@@ -159,3 +159,14 @@ Limits: a word said slightly wrong but still recognisable is often written corre
 judge acting; the download needs a single process (two writers into one file corrupt it: check the
 finished size and sha256).
 
+## Engine v9 (2026-11-23): voices apart and the mix, measured
+
+The owner approved the engine study (decisions 5, 22-24): "All 28 recommend and start 2 to 3 agents to fix and upgrade engine and everything i want proper as per report". Coming in phase 5 (`toon-listen --voices`, `toon:sound`):
+- **Voices apart (A4):** a free pitch measure per character (librosa `pyin`, from agent 3's `voice.py`): speakers in one scene
+  3+ semitones apart (median pitch); 30-55% of body lines above 250 Hz (cartoon high; the references 41%). Small or young
+  body characters +3 to +6 semitones or a young voice; the doctor the calmest.
+- **The mix (A1, A2):** music in the pauses 4-8 dB under the voice, a 2-4 dB dip under words, loudness range 4-8 LU,
+  -14 +-1 LUFS, true peak -1.0 dBTP or lower, 0 clipped samples; every beat of 0.8 s+ has a story sound or a planned stop;
+  no sound "lost".
+- Until then the scoreboard (`node --import tsx pipeline/toon-score.mjs <slug>`) shows loudness, true peak and range measured
+  on the final file (ffmpeg ebur128), the study's voice numbers where they exist, and "not measured yet" for the rest.

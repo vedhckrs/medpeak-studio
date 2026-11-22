@@ -5,11 +5,17 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {spawnSync} from 'node:child_process';
-import {BED, bedAt, bedRests, bedStart, layoutToon, SOUND, soundPlan, TOON_FPS} from '../../src/toons/director.ts';
+import {BED, bedAt, bedRests, bedStart, layoutToon, SOUND, soundPlan, STOP, stopsOf, TOON_FPS} from '../../src/toons/director.ts';
 import {ROOT} from './util.mjs';
 
 /** What the mix must keep to (loudness in LU = dB as the ear hears it). */
 export const RULES = {perMinute: SOUND.perMinute, minGap: SOUND.minGap, effectsUnderVoice: 9, musicUnderVoice: [7, 13], sameSoundAgain: 4};
+/**
+ * Format 6 (engine v9, decisions 23-24; checks A1, A2): the levels come from the script's own mix (director.ts `soundOf`:
+ * SOUND6, 14 effects a minute), the music in the PAUSES sits 4-8 dB under the voice (about 6), and at most 2 planned stops
+ * of 0.4-0.8 s, never on a word.
+ */
+export const RULES6 = {...RULES, perMinute: 14, pauseUnderVoice: [4, 8]};
 
 const lufs = (args) => {
   const err = spawnSync('ffmpeg', ['-hide_banner', '-nostats', ...args, '-f', 'null', '-'], {encoding: 'utf8', maxBuffer: 1 << 26}).stderr;
@@ -29,20 +35,33 @@ const layer = (clips, seconds) => {
 
 export const checkSound = (toon, timings, {sfxDir = path.join(ROOT, 'assets', 'toons-sfx'), musicDir = path.join(ROOT, 'assets', 'toons-music'), publicDir = path.join(ROOT, 'public')} = {}) => {
   const L = layoutToon(toon, timings);
+  const six = (L.format ?? 0) >= 6;
+  const R = six ? {...RULES6, perMinute: L.sound.perMinute, minGap: L.sound.minGap} : RULES;
   const seconds = L.total / TOON_FPS;
   const plan = soundPlan(L);
   const res = [];
   const add = (point, pass, detail) => res.push({point, pass: !!pass, detail});
   const perMin = (plan.length / seconds) * 60;
-  add('Few sounds', perMin <= RULES.perMinute, `${plan.length} sound effects in ${seconds.toFixed(0)} s = ${perMin.toFixed(1)} a minute (at most ${RULES.perMinute})`);
+  add('Few sounds', perMin <= R.perMinute, `${plan.length} sound effects in ${seconds.toFixed(0)} s = ${perMin.toFixed(1)} a minute (at most ${R.perMinute})`);
   const gaps = plan.slice(1).map((e, i) => (e.at - plan[i].at) / TOON_FPS);
-  add('Kept apart', !gaps.length || Math.min(...gaps) >= RULES.minGap - 0.01, gaps.length ? `the closest two start ${Math.min(...gaps).toFixed(2)} s apart (at least ${RULES.minGap})` : 'one sound or none');
+  add('Kept apart', !gaps.length || Math.min(...gaps) >= R.minGap - 0.01, gaps.length ? `the closest two start ${Math.min(...gaps).toFixed(2)} s apart (at least ${R.minGap})` : 'one sound or none');
   const count = {};
   for (const e of plan.filter((x) => x.rank === 2)) count[e.name] = (count[e.name] ?? 0) + 1;
-  const worn = Object.entries(count).filter(([, n]) => n >= RULES.sameSoundAgain).map(([n, k]) => `${n} x${k}`);
+  const worn = Object.entries(count).filter(([, n]) => n >= R.sameSoundAgain).map(([n, k]) => `${n} x${k}`);
   add('Not the same sound over and over', !worn.length, worn.length ? `used too often: ${worn.join(', ')}` : `${Object.keys(count).length} different story sounds`);
   const missing = [...new Set(plan.map((e) => e.name))].filter((n) => !fs.existsSync(path.join(sfxDir, `${n}.mp3`)));
   add('Sounds exist', !missing.length, missing.length ? `not in the library: ${missing.join(', ')}` : 'every sound is in the library');
+
+  // ---- format 6: the planned music stops (A2): at most 2, each 0.4-0.8 s, never while someone speaks
+  if (six) {
+    const st = stopsOf(L);
+    // the spoken words (the real word times once voiced, the estimate before), as the script gate reads them
+    const words = L.lines.flatMap((l) => l.words.map((w) => [l.from + w.start * TOON_FPS, l.from + w.end * TOON_FPS]));
+    const onWord = st.filter(([a, b]) => words.some(([wa, wb]) => a < wb && b > wa));
+    const lens = st.map(([a, b]) => (b - a) / TOON_FPS);
+    add('Music stops (planned)', st.length <= STOP.most && !onWord.length && lens.every((x) => x >= STOP.min - 1e-6 && x <= STOP.max + 1e-6),
+      st.length ? `${st.length} stop(s) (at most ${STOP.most}), ${lens.map((x) => x.toFixed(2)).join(', ')} s (${STOP.min}-${STOP.max})${onWord.length ? `; ${onWord.length} on a word: move it into a pause` : ', all in pauses'}` : 'no planned stop');
+  }
 
   // ---- the bed's rests: none may fall in a pause between lines (the bed's shape is on file next to it)
   const shapeFile = toon.music ? path.join(musicDir, `${toon.music}.shape.json`) : null;
@@ -71,11 +90,19 @@ export const checkSound = (toon, timings, {sfxDir = path.join(ROOT, 'assets', 't
     const b = bedFile && fs.existsSync(bedFile) ? lufs(['-stream_loop', '-1', '-t', seconds.toFixed(2), '-i', bedFile, '-af', `volume=${bedVol.toFixed(3)},ebur128=peak=true`]) : {I: null, peak: null};
     levels = {voice: v, effects: e, music: b};
     if (e.I !== null) {
-      add('Effects under the voice', v.I - e.I >= RULES.effectsUnderVoice && e.peak <= v.peak - 4, `voices ${v.I.toFixed(1)} LUFS, effects ${e.I.toFixed(1)} LUFS: ${(v.I - e.I).toFixed(1)} under (at least ${RULES.effectsUnderVoice}); loudest effect peak ${e.peak.toFixed(1)} dB against the voice's ${v.peak.toFixed(1)} dB`);
+      add('Effects under the voice', v.I - e.I >= R.effectsUnderVoice && e.peak <= v.peak - 4, `voices ${v.I.toFixed(1)} LUFS, effects ${e.I.toFixed(1)} LUFS: ${(v.I - e.I).toFixed(1)} under (at least ${R.effectsUnderVoice}); loudest effect peak ${e.peak.toFixed(1)} dB against the voice's ${v.peak.toFixed(1)} dB`);
     }
-    if (b.I !== null) {
+    if (b.I !== null && !six) {
       const under = v.I - b.I;
       add('Music under the voice', under >= RULES.musicUnderVoice[0] && under <= RULES.musicUnderVoice[1], `music ${b.I.toFixed(1)} LUFS: ${under.toFixed(1)} under the voice (between ${RULES.musicUnderVoice[0]} and ${RULES.musicUnderVoice[1]}: heard, never in the way)`);
+    }
+    if (six && bedFile && fs.existsSync(bedFile)) {
+      // A1: the bed at its PAUSE level (SOUND6.bed x the master `music`) against the voice: about 6 dB under, 4-8 dB
+      const p = lufs(['-stream_loop', '-1', '-t', seconds.toFixed(2), '-i', bedFile, '-af', `volume=${(L.sound.bed * L.sound.music).toFixed(3)},ebur128=peak=true`]);
+      if (p.I !== null) {
+        const under = v.I - p.I;
+        add('Music in the pauses', under >= RULES6.pauseUnderVoice[0] && under <= RULES6.pauseUnderVoice[1], `music in the pauses ${p.I.toFixed(1)} LUFS: ${under.toFixed(1)} dB under the voice (${RULES6.pauseUnderVoice.join('-')}; a loud track needs a per-video trim)`);
+      }
     }
   }
   return {ok: res.every((r) => r.pass), seconds, plan, results: res, measured, levels, bedStart: bed?.start ?? 0};

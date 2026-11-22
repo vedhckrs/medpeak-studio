@@ -8,7 +8,9 @@
  * scalloped puff, a two-stroke outlined line) live in this file.
  */
 import React from 'react';
-import {Board, Caption, CLOTH, EDGE, EDGE_IN, Eyes, Fig, FLESH, INK, INLINE, Mouth, NameTag, OUTLINE, Panel, Shape, shade, tint, TinyArm, TinyLeg, type V8Props} from './kit';
+import {circleBox, useReport} from './play';
+import {Acting, BandLabel, Board, Caption, CLOTH, ContactShadow, EDGE, EDGE_IN, Eyes, Fig, FLESH, INK, INLINE, Mouth, NameTag, OUTLINE, Panel, Shape, shade, tint, TinyArm, TinyLeg, type FaceExtras, type V8Props} from './kit';
+import {capsule, Hand} from './people-rig';
 
 // ------------------------------------------------------------------ local helpers
 type P = [number, number];
@@ -575,3 +577,98 @@ export const CellsBoard: React.FC = () => (
     })}
   </Board>
 );
+
+// =====================================================================================================================
+// ENGINE v9 (format 6): the MINI WORKER (decision 13; A1 #10). The body's job characters as little people in uniform: two
+// heads tall, the kit eyes, small REAL hands (the people rig's Hand, one piece with the forearm sleeve), a uniform, a hat
+// and ONE prop. Jobs: guard, cleaner, firefighter, courier, builder. A worker may wear its name on a paper band
+// (BandLabel): a character that wears its name gets no extra 2.5 s tag. Drawn in the 200-unit figure space, feet at y 88,
+// with its own flat contact shadow. Everyone shares one build, so a crew reads as one family.
+// =====================================================================================================================
+export type Job = 'guard' | 'cleaner' | 'firefighter' | 'courier' | 'builder';
+export type WorkerProp = 'broom' | 'sign' | 'phone' | 'hose' | 'box' | 'none';
+export type WorkerPose = 'rest' | 'hold' | 'up' | 'sweep';
+const JOB: Record<Job, {uniform: string; hat: string; trim: string; prop: WorkerProp}> = {
+  guard: {uniform: '#5d6f8c', hat: '#46556e', trim: '#f2d07a', prop: 'sign'},
+  cleaner: {uniform: '#4fa89a', hat: '#3f8c80', trim: '#f4ead2', prop: 'broom'},
+  firefighter: {uniform: '#c9574e', hat: '#d9534f', trim: '#f2d07a', prop: 'hose'},
+  courier: {uniform: '#b27a4b', hat: '#f6c85f', trim: '#f4ead2', prop: 'box'},
+  builder: {uniform: '#e38b3a', hat: '#f6c85f', trim: '#f4ead2', prop: 'phone'},
+};
+const WorkerHat: React.FC<{job: Job; c: string}> = ({job, c}) => {
+  if (job === 'firefighter') return <g><path d="M -40 -60 Q -36 -96 0 -98 Q 36 -96 40 -60 Z" fill={c} {...EDGE} /><path d="M -52 -58 L 52 -58 Q 54 -50 46 -48 L -46 -48 Q -54 -50 -52 -58 Z" fill={shade(c, 0.1)} {...EDGE} /><path d="M 0 -96 V -62" {...INLINE} /></g>;
+  if (job === 'builder') return <g><path d="M -38 -62 Q -36 -98 0 -100 Q 36 -98 38 -62 Z" fill={c} {...EDGE} /><path d="M -46 -62 L 46 -62 L 44 -54 L -44 -54 Z" fill={c} {...EDGE} /><path d="M -10 -98 L -8 -64 M 10 -98 L 8 -64" {...INLINE} /></g>;
+  // a soft cap with a visor (guard, cleaner, courier)
+  return <g><path d="M -36 -60 Q -34 -94 0 -94 Q 34 -94 36 -60 Z" fill={c} {...EDGE} /><path d="M 6 -62 Q 40 -66 54 -56 Q 40 -50 6 -54 Z" fill={shade(c, 0.12)} {...EDGE} />{job === 'guard' && <circle cx={0} cy={-80} r={6} fill="#f2d07a" {...EDGE_IN} />}</g>;
+};
+const WorkerProp_: React.FC<{prop: WorkerProp; at: P; rot: number}> = ({prop, at, rot}) => {
+  const g = (n: React.ReactNode) => <g transform={`translate(${at[0]} ${at[1]}) rotate(${rot})`}>{n}</g>;
+  if (prop === 'broom') return g(<><path d="M 0 -70 L 0 40" stroke={INK} strokeWidth={9} strokeLinecap="round" /><path d="M 0 -70 L 0 40" stroke={C.kraft} strokeWidth={5} strokeLinecap="round" /><path d="M -16 38 L 16 38 L 24 66 Q 0 72 -24 66 Z" fill={C.brass} {...EDGE} /><path d="M -8 44 L -11 64 M 0 44 L 0 67 M 8 44 L 11 64" {...INLINE} /></>);
+  if (prop === 'sign') return g(<><path d="M 0 -10 L 0 60" stroke={INK} strokeWidth={8} strokeLinecap="round" /><path d="M 0 -10 L 0 60" stroke="#c9ccd3" strokeWidth={4} strokeLinecap="round" /><path d="M -12 -66 L 12 -66 L 30 -48 L 30 -24 L 12 -6 L -12 -6 L -30 -24 L -30 -48 Z" fill="#d9534f" {...EDGE} /><text x={0} y={-30} textAnchor="middle" fontFamily="'Poppins', sans-serif" fontWeight={900} fontSize={15} fill="#ffffff">STOP</text></>);
+  if (prop === 'phone') return g(<><rect x={-9} y={-18} width={18} height={34} rx={4} fill="#3a3f4b" {...EDGE_IN} /><rect x={-6} y={-14} width={12} height={22} rx={2} fill="#a9d3ef" /></>);
+  if (prop === 'hose') return g(<><path d="M -40 30 Q -10 40 6 6" stroke={INK} strokeWidth={14} fill="none" strokeLinecap="round" /><path d="M -40 30 Q -10 40 6 6" stroke="#c9574e" strokeWidth={9} fill="none" strokeLinecap="round" /><path d="M 0 10 L 10 -20 L 22 -16 L 14 12 Z" fill="#c9ccd3" {...EDGE_IN} /></>);
+  if (prop === 'box') return g(<><path d="M -26 -22 L 26 -22 L 26 22 L -26 22 Z" fill={C.kraft} {...EDGE} /><path d="M -26 -6 L 26 -6 M 0 -22 V -6" {...INLINE} /></>);
+  return null;
+};
+/**
+ * A little person in uniform. `pose`: rest (arms down, hands closed), hold (the prop held up in front in the right hand),
+ * up (right arm raised: stop!), sweep (both hands on a broom, angled). `band` wears a name on a paper band round the chest.
+ */
+export const MiniWorker: React.FC<V8Props & FaceExtras & {job: Job; uniform?: string; hat?: boolean; prop?: WorkerProp; pose?: WorkerPose; skin?: string; band?: string; shadow?: boolean}> = ({
+  job, uniform, hat = true, prop, pose = 'hold', skin = '#e9b48f', band, shadow = true, mood = 'open', mouth = 'smile', look = [0.3, 0], lid, turn,
+}) => {
+  const J = JOB[job];
+  const U = uniform ?? J.uniform;
+  const P_ = prop ?? J.prop;
+  const sh: P = [-34, 2], sh2: P = [34, 2];
+  // wrist points per pose (left = the character's right on screen left)
+  const wrists: Record<WorkerPose, [P, P]> = {rest: [[-46, 46], [46, 46]], hold: [[-46, 46], [52, -6]], up: [[-46, 46], [56, -58]], sweep: [[-10, 34], [26, 18]]};
+  const [wl, wr] = wrists[pose];
+  const arm = (s: P, w: P, side: 1 | -1, key: string) => {
+    const ang = (Math.atan2(w[1] - s[1], w[0] - s[0]) * 180) / Math.PI;
+    return (
+      <g key={key}>
+        <path d={capsule(s, 11, w, 8.5)} fill={U} {...EDGE} />
+        <g transform={`translate(${w[0]} ${w[1]}) rotate(${ang}) scale(0.62 ${0.62 * side})`}><Hand kind={pose === 'rest' || (key === 'L' && pose !== 'sweep') ? 'rest' : 'hold'} skin={skin} wristR={9} grips /></g>
+      </g>
+    );
+  };
+  const propAt: P = pose === 'sweep' ? [10, 30] : pose === 'up' ? [wr[0] + 6, wr[1] - 6] : [wr[0] + 8, wr[1] + 2];
+  const propRot = pose === 'sweep' ? -24 : 0;
+  // the layout log: both small real hands (the kit Eyes and Mouth report the face); the Put around it names the worker
+  const report = useReport();
+  report({kind: 'hand', id: 'L', box: circleBox(wl[0], wl[1], 10)});
+  report({kind: 'hand', id: 'R', box: circleBox(wr[0], wr[1], 10)});
+  return (
+    <Acting lid={lid} turn={turn}>
+      <g>
+        {shadow && <ContactShadow x={0} y={89} w={110} />}
+        {/* legs and shoes */}
+        <path d={capsule([-16, 46], 12, [-18, 80], 11)} fill={shade(U, 0.18)} {...EDGE} />
+        <path d={capsule([16, 46], 12, [18, 80], 11)} fill={shade(U, 0.18)} {...EDGE} />
+        <path d="M -34 90 Q -34 76 -18 76 L -8 76 Q -4 90 -8 90 Z" fill="#3a3f4b" {...EDGE_IN} />
+        <path d="M 34 90 Q 34 76 18 76 L 8 76 Q 4 90 8 90 Z" fill="#3a3f4b" {...EDGE_IN} />
+        {P_ !== 'none' && pose === 'sweep' && <WorkerProp_ prop={P_} at={propAt} rot={propRot} />}
+        {/* the uniform: a rounded body, a belt, a trim */}
+        <Shape d="M -36 -2 Q -40 -14 -20 -16 L 20 -16 Q 40 -14 36 -2 L 38 52 Q 0 60 -38 52 Z" fill={U}>
+          <path d="M -38 36 Q 0 44 38 36 L 38 46 Q 0 54 -38 46 Z" fill={shade(U, 0.22)} />
+          <path d="M 0 -14 V 34" {...INLINE} />
+          {job === 'firefighter' && <path d="M -38 18 Q 0 26 38 18" stroke={J.trim} strokeWidth={7} fill="none" />}
+          {job === 'builder' && <path d="M -22 -14 L -22 36 M 22 -14 L 22 36" stroke={J.trim} strokeWidth={6} />}
+          {job === 'guard' && <rect x={12} y={-4} width={14} height={10} rx={2} fill={J.trim} {...EDGE_IN} />}
+        </Shape>
+        {band && <BandLabel x={0} y={14} w={80} text={band} curve={0.12} />}
+        {/* the head (round, the kit face), then the hat */}
+        <path d="M -12 -22 L 12 -22 L 10 -12 L -10 -12 Z" fill={skin} {...EDGE_IN} />
+        <Shape d="M 0 -96 C 26 -96 38 -78 38 -54 C 38 -32 22 -18 0 -18 C -22 -18 -38 -32 -38 -54 C -38 -78 -26 -96 0 -96 Z" fill={skin} shadow={0.6} />
+        {hat && <WorkerHat job={job} c={J.hat} />}
+        <Eyes x={2} y={-50} r={11} mood={mood} look={look} />
+        <Mouth x={4} y={-30} w={12} kind={mouth} />
+        {arm(sh, wl, -1, 'L')}
+        {arm(sh2, wr, 1, 'R')}
+        {P_ !== 'none' && pose !== 'sweep' && pose !== 'rest' && <WorkerProp_ prop={P_} at={propAt} rot={propRot} />}
+      </g>
+    </Acting>
+  );
+};
+export const JOBS: Job[] = ['guard', 'cleaner', 'firefighter', 'courier', 'builder'];

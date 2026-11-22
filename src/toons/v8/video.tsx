@@ -6,10 +6,11 @@
  */
 import React, {useMemo} from 'react';
 import {AbsoluteFill, Audio, Sequence, staticFile, useCurrentFrame} from 'remotion';
-import {bedAt, captionStyle, SOUND, frameOf, layoutToon, lineSeconds, soundPlan, TOON_FPS, type Layout, type Toon, type ToonTimings} from '../director';
-import {CtaCardV4, Watermark, WordCaption, type CtaAt, type CtaPoint} from './hud';
-import {FONT} from './kit';
-import {clamp01, go, lerp, V8_FPS, type Focus, type LineNow, type ShotDef, type ShotNow} from './play';
+import {bedAt, captionStyle, frameOf, isV9, kindOf, layoutToon, lineSeconds, soundPlan, stateAt, TOON_FPS, WPS6, type Layout, type Toon, type ToonTimings} from '../director';
+import {setImpacts, type ImpactMode} from './act';
+import {FONT, INK_ZOOM_CLASS, INK_ZOOM_CSS, inkZoomVars, V9} from './kit';
+import {captionShows, CTA9_AT, CTA9_SECONDS, CtaCardV4, CtaCardV9, TimeCard, Watermark, WatermarkV9, WordCaption, type CtaAt, type CtaPoint, type HudBox} from './hud';
+import {clamp01, go, lerp, ScreenSpace, V8_FPS, type Focus, type LineNow, type ShotDef, type ShotNow} from './play';
 import {RABIES_CTA, RABIES_SHOTS} from './rabies';
 import {NO_SLEEP_CTA, NO_SLEEP_SHOTS} from './no-sleep';
 import {CREATINE_CTA, CREATINE_SHOTS} from './creatine';
@@ -17,7 +18,15 @@ import {QUIT_SUGAR_CTA, QUIT_SUGAR_SHOTS} from './quit-sugar';
 import {FASTING_CTA, FASTING_SHOTS} from './fasting';
 import {SNAKE_BITE_CTA, SNAKE_BITE_SHOTS} from './snake-bite';
 
-export type V8VideoProps = {toon: Toon; timings: ToonTimings | null; sfx: string[]; music: string | null; bare?: boolean; /** a still (the cover): draw this frame, whatever frame is being rendered */ frameAt?: number};
+export type V8VideoProps = {toon: Toon; timings: ToonTimings | null; sfx: string[]; music: string | null; bare?: boolean; /** a still (the cover): draw this frame, whatever frame is being rendered */ frameAt?: number;
+  /** the impact policy (act.tsx): 'v9' for format 6; a video already out may be drawn with 'v9' for a before/after sample */ impacts?: ImpactMode};
+/**
+ * Engine v9 (format 6): play.tsx's ShotNow carries `pass`, `state`, `v9` and every line its `key` word, and ShotDef its
+ * `punch`, `kind`, `stage`, `faces` (plans/.../08-c-to-a.md items 1-3). These names stay so format-6 shot files that
+ * imported them keep working.
+ */
+export type ShotNow9 = ShotNow & {pass: number; state: Record<string, number>};
+export type ShotDef9 = ShotDef;
 
 /** The shots of each video, by the video's slug and the shot's id. */
 export const V8_VIDEOS: Record<string, Record<string, ShotDef>> = {rabies: RABIES_SHOTS, 'no-sleep': NO_SLEEP_SHOTS, creatine: CREATINE_SHOTS, 'quit-sugar': QUIT_SUGAR_SHOTS, fasting: FASTING_SHOTS, 'snake-bite': SNAKE_BITE_SHOTS};
@@ -30,7 +39,7 @@ export const V8_CTA: Record<string, V8Cta> = {rabies: RABIES_CTA, 'no-sleep': NO
 /** The music bed 10% lower than the director's levels (the owner, 2026-11-21: "background music 10% decrease"). */
 export const MUSIC_LEVEL = 0.9;
 export const CTA_LEAD = 0.4, CTA_TAIL = 1.2; // the narrator's last word is never cut; keep the sum in step with CTA_PAD in pipeline/toon-check.mjs
-export const ctaSeconds = (c: V8Cta | undefined) => (!c ? 0 : CTA_LEAD + (c.seconds ?? 4) + CTA_TAIL);
+export const ctaSeconds = (c: V8Cta | undefined, v9 = false) => (!c ? 0 : v9 ? Math.max(CTA9_SECONDS, CTA_LEAD + (c.seconds ?? 0) + CTA_TAIL) : CTA_LEAD + (c.seconds ?? 4) + CTA_TAIL);
 type CtaClip = {voice: string; seconds: number; words: {w: string; start: number}[]};
 /**
  * A video's end card WITH its narrator: the card's look from the video's code, the voice and its real beats from the paid clip
@@ -55,26 +64,28 @@ export const ctaOf = (toon: Toon): V8Cta | undefined => {
 };
 
 const K = V8_FPS / TOON_FPS; // the layout counts 30 frames a second; the video runs at 60
-export const v8Frames = (toon: Toon, timings: ToonTimings | null) => Math.round((layoutToon(toon, timings).total / TOON_FPS + ctaSeconds(ctaOf(toon))) * V8_FPS);
+export const v8Frames = (toon: Toon, timings: ToonTimings | null) => Math.round((layoutToon(toon, timings).total / TOON_FPS + ctaSeconds(ctaOf(toon), isV9(toon))) * V8_FPS);
 
 /** A shot's "now" (play.tsx) at second `sec` of the video. */
-export const shotNow = (L: Layout, toon: Toon, timings: ToonTimings | null, sec: number): {s: ShotNow; si: number} => {
+export const shotNow = (L: Layout, toon: Toon, timings: ToonTimings | null, sec: number): {s: ShotNow9; si: number} => {
   const f = sec * TOON_FPS;
   const at = [...L.shots].reverse().find((x) => f >= x.from) ?? L.shots[0];
   const si = L.shots.indexOf(at);
   const t0 = at.from / TOON_FPS;
   const mine = L.lines.filter((l) => l.si === si);
-  const lines: LineNow[] = mine.map((l, i) => ({
-    id: l.line.id, who: l.line.who, text: l.line.text,
+  const lines: (LineNow & {key?: string})[] = mine.map((l, i) => ({
+    id: l.line.id, who: l.line.who, text: l.line.text, key: l.line.key,
     from: l.from / TOON_FPS - t0,
     to: (mine[i + 1]?.from ?? at.from + at.frames) / TOON_FPS - t0,
-    voice: lineSeconds(l.line, timings),
+    voice: lineSeconds(l.line, timings, isV9(toon) ? WPS6 : undefined),
     emotion: l.line.emotion, pose: l.line.pose, react: (l.line as {react?: Record<string, string>}).react,
     words: l.words,
   }));
   const t = sec - t0;
   const past = lines.filter((l) => l.from <= t);
-  return {s: {id: at.shot.id, t, dur: at.frames / TOON_FPS, lines, cur: past.length ? past[past.length - 1] : null}, si};
+  const pass = L.shots.slice(0, si + 1).filter((x) => x.shot.id === at.shot.id).length;
+  const v9 = isV9(toon);
+  return {s: {id: at.shot.id, t, dur: at.frames / TOON_FPS, lines, cur: past.length ? past[past.length - 1] : null, pass, state: stateAt(L, si, f), ...(v9 ? {v9} : {})}, si};
 };
 
 // ------------------------------------------------------------------ the camera
@@ -168,40 +179,138 @@ const Missing: React.FC<{id: string}> = ({id}) => (
   <AbsoluteFill style={{background: '#2b1a17', color: '#ffffff', fontFamily: FONT, fontSize: 60, fontWeight: 800, alignItems: 'center', justifyContent: 'center'}}>shot {id}: not drawn yet</AbsoluteFill>
 );
 
-export const ToonV8: React.FC<V8VideoProps> = ({toon, timings, sfx, music, bare = false, frameAt}) => {
-  const now = useCurrentFrame();
-  const frame = frameAt ?? now;
-  const sec = frame / V8_FPS;
-  const L = useMemo(() => layoutToon(toon, timings), [toon, timings]);
+/**
+ * Everything the player decides for one moment of a video, as a pure function (the player draws it; the layout probe,
+ * pipeline/lib/toon-layout.mjs, reads the same camera, caption and watermark from it, so the checks measure what is drawn).
+ * `mode` is the impact policy (act.tsx): format 6 keeps only the impacts its shots ask to keep.
+ */
+export const frameState = (L: Layout, toon: Toon, timings: ToonTimings | null, sec: number, mode: ImpactMode = isV9(toon) ? 'v9' : 'v8') => {
+  const v9 = isV9(toon);
   const {s, si} = shotNow(L, toon, timings, sec);
   const def = V8_VIDEOS[toon.slug]?.[s.id];
-  const cam0 = useMemo(() => smoothCam(L, toon, timings, def, si, sec), [L, def, si, sec, toon, timings]);
-
-  // the caption: the phrase being spoken (the old player's box, the owner's choice)
+  const cam0 = smoothCam(L, toon, timings, def, si, sec);
   const f30 = sec * TOON_FPS;
   const cur = L.lines.find((l) => l.si === si && f30 >= l.from && f30 < l.from + l.frames);
   const tl = cur ? (f30 - cur.from) / TOON_FPS : 0;
-  const wi = cur ? cur.words.findIndex((w, i) => tl >= w.start && tl < (cur.words[i + 1]?.start ?? w.end + 0.25)) : -1;
-  const clean = (w: string) => w.replace(/[^\p{L}\p{N}'’!?-]/gu, '');
-  const keyWord = cur ? (cur.line.key ?? clean(cur.words[cur.words.length - 1]?.w ?? '')).toLowerCase() : '';
+  const keyWord = cur ? (cur.line.key ?? cleanWord(cur.words[cur.words.length - 1]?.w ?? '')).toLowerCase() : '';
 
   // a short white flash where the script asks for one
   const shot = L.shots[si].shot;
   // v4: the flash rises over 3 frames and fades over 12, softer (no one-frame white blink)
-  const flash = (shot.events ?? []).reduce((m, e) => { const n = f30 - frameOf(L, si, e.at, e.word, e.delay); return e.fx && n >= 0 && n < 15 ? Math.max(m, 0.6 * Math.min(n / 3, 1) * (1 - Math.max(0, n - 3) / 12)) : m; }, 0);
+  // v9 (decision 18): a flash is opt-in and rare: only the FIRST "fx": "flash" of the video, and never on a cut (a shot's first frame)
+  const firstFlash = mode === 'v9' ? L.shots.flatMap((x, i) => (x.shot.events ?? []).filter((e) => e.fx).map((e) => ({i, f: frameOf(L, i, e.at, e.word, e.delay)}))).find((x) => x.f > L.shots[x.i].from + 1) : undefined;
+  const flash = (shot.events ?? []).reduce((m, e) => {
+    const fe = frameOf(L, si, e.at, e.word, e.delay);
+    if (mode === 'v9' && !(firstFlash && firstFlash.i === si && firstFlash.f === fe)) return m;
+    const n = f30 - fe; return e.fx && n >= 0 && n < 15 ? Math.max(m, 0.6 * Math.min(n / 3, 1) * (1 - Math.max(0, n - 3) / 12)) : m;
+  }, 0);
 
   // the camera's punch on the line's key word, and a shake on every bite or hit (a flash event)
-  const ki = cur ? cur.words.findIndex((w) => clean(w.w).toLowerCase().replace(/[!?'’]/g, '') === keyWord.replace(/[!?'’]/g, '')) : -1;
+  const ki = cur ? cur.words.findIndex((w) => cleanWord(w.w).toLowerCase().replace(/[!?'’]/g, '') === keyWord.replace(/[!?'’]/g, '')) : -1;
   const kt = ki >= 0 && cur ? tl - cur.words[ki].start : -1;
   // v4 (the owner, 2026-11-20): no punch zoom on the key word (it looked jerky)
   const punch = 0 * kt;
-  const shake = flash > 0 && !['home', 'clinic'].includes(shot.set ?? '') ? Math.sin(sec * 40) * 9 * flash : 0; // v4: slower, smaller (no jitter) // a bite shakes; a good-news flash in a room does not
+  // v9 (decision 18): NO automatic shake on a flash (it moved every pixel of the frame 5-16 times a video); the videos already out keep it
+  const shake = mode === 'v8' && flash > 0 && !['home', 'clinic'].includes(shot.set ?? '') ? Math.sin(sec * 40) * 9 * flash : 0; // v4: slower, smaller (no jitter) // a bite shakes; a good-news flash in a room does not
   // the serious beat (a line marked "serious"): the picture darkens and the camera creeps in
   const grave = L.lines.filter((l) => (l.line as {serious?: boolean}).serious).reduce((m, l) => {
     const a = (f30 - l.from) / TOON_FPS, b = (l.from + l.frames - f30) / TOON_FPS;
     return Math.max(m, clamp01(a / 0.5) * clamp01((b + 0.4) / 0.5));
   }, 0);
-  const cam = {x: cam0.x + shake, y: cam0.y + shake * 0.4, z: cam0.z * (1 + punch + grave * 0.06)};
+  // v9 (decision 16): a locked camera. A shot with its own `view` keeps it; any other shot is the whole frame; the one `punch`
+  // of a video is a hard re-frame from its line on (no lean, no creep, no zoom on the serious beat)
+  const p9 = v9 ? def?.punch : undefined;
+  const punched = !!p9 && L.lines.some((l) => l.si === si && l.line.id === p9.line && f30 >= l.from);
+  const lock = v9 ? (punched ? {x: p9!.x ?? 540, y: p9!.y ?? 960, z: p9!.z} : def?.view ? cam0 : {x: 540, y: 960, z: 1}) : null;
+  const cam = lock ? clampCam(lock) : {x: cam0.x + shake, y: cam0.y + shake * 0.4, z: cam0.z * (1 + punch + grave * 0.06)};
+  return {v9, mode, s, si, def, shot, cam0, cam, flash, grave, f30, cur, tl, keyWord, isCard: shot.card !== undefined};
+};
+const cleanWord = (w: string) => w.replace(/[^\p{L}\p{N}'’!?-]/gu, '');
+/** The camera of the video at second `sec` (frame pixels in the middle of the screen, and the zoom): shake and punch included. */
+export const cameraOf = (L: Layout, toon: Toon, timings: ToonTimings | null, sec: number, mode?: ImpactMode): Cam => frameState(L, toon, timings, sec, mode).cam;
+
+/**
+ * The caption word on the screen at this moment (or null), as the player draws it. v8: a word holds until the next one
+ * (or 0.25 s past its end). v9 (format 6): `captionShows` (hud.tsx): cleared in any pause over 0.4 s and on every cut, the
+ * first word after a cut 2 frames late; each word tilts -2..+2 degrees (decision 27).
+ */
+export const captionAt = (L: Layout, toon: Toon, st: Pick<ReturnType<typeof frameState>, 'v9' | 'si' | 'cur' | 'tl' | 'keyWord'>) => {
+  const {cur, tl, v9, keyWord} = st;
+  if (!cur) return null;
+  const cut = (L.shots[st.si].from - cur.from) / TOON_FPS; // the shot's first frame, in seconds of this line
+  const wi = cur.words.findIndex((w, i) => v9
+    ? captionShows({t: tl, start: w.start, end: w.end, nextStart: cur.words[i + 1]?.start, cuts: [cut]})
+    : tl >= w.start && tl < (cur.words[i + 1]?.start ?? w.end + 0.25));
+  if (wi < 0) return null;
+  const w = cleanWord(cur.words[wi].w);
+  const cs = captionStyle(toon);
+  return {id: cur.line.id + wi, word: w, t: tl - cur.words[wi].start, isKey: w.toLowerCase().replace(/[!?'’]/g, '') === keyWord.replace(/[!?'’]/g, ''), y: cs.y, scale: cs.scale, tilt: v9};
+};
+
+/** The three acts of the watermark: groups of shots by place (body / rooms / body), else thirds of the story. */
+export const actsOf = (L: Layout) => {
+  const isRoom = (i: number) => ['home', 'clinic'].includes(L.shots[i].shot.set ?? '');
+  const actStarts = L.shots.map((_, i) => i).filter((i) => i === 0 || isRoom(i) !== isRoom(i - 1)).map((i) => L.shots[i].from / TOON_FPS);
+  const ends = L.total / TOON_FPS;
+  return actStarts.length === 3 ? actStarts : [0, ends / 3, (2 * ends) / 3];
+};
+/**
+ * v9 (decision 26): the head boxes a shot holds (screen pixels), for the act-3 watermark spot: every cast member's face
+ * from the shot's `faces` or `focus`, at the start, middle and end of the shot (so the mark keeps ONE spot a shot).
+ */
+export const shotHeads = (L: Layout, toon: Toon, timings: ToonTimings | null, si: number): HudBox[] => {
+  const sh = L.shots[si];
+  const def = V8_VIDEOS[toon.slug]?.[sh.shot.id];
+  if (!def) return [];
+  const out: HudBox[] = [];
+  for (const k of [0.05, 0.5, 0.95]) {
+    const sec = (sh.from + sh.frames * k) / TOON_FPS;
+    const st = frameState(L, toon, timings, sec);
+    const c = st.cam;
+    const all: Focus[] = def.faces ? Object.values(def.faces(st.s)) : sh.shot.cast.map((p) => def.focus(p.who, st.s));
+    for (const f of all) {
+      const x = 540 + (f.x - c.x) * c.z, y = 960 + (f.y - c.y) * c.z, r = f.r * c.z;
+      out.push({x0: x - r * 1.3, y0: y - r * 1.6, x1: x + r * 1.3, y1: y + r * 1.3});
+    }
+  }
+  return out;
+};
+
+/**
+ * What the player lays on the SCREEN after the camera: the caption word and the watermark (inside <ScreenSpace>, so the
+ * layout log reads them in screen pixels). The probe renders this same component.
+ */
+export const PlayerScreen: React.FC<{L: Layout; toon: Toon; st: ReturnType<typeof frameState>; sec: number; bare?: boolean; heads?: HudBox[]}> = ({L, toon, st, sec, bare = false, heads}) => {
+  const ends = L.total / TOON_FPS;
+  const acts = actsOf(L);
+  const act = sec >= ends ? 2 : acts.filter((a) => sec >= a).length - 1;
+  const cta = ctaOf(toon);
+  const inCta = !!cta && sec >= ends;
+  const cap = !bare && !inCta ? captionAt(L, toon, st) : null;
+  const light = st.def?.light ?? kindOf(st.shot) === 'room';
+  return (
+    <ScreenSpace>
+      {cap && <WordCaption key={cap.id} word={cap.word} t={cap.t} isKey={cap.isKey} y={cap.y} scale={cap.scale} tilt={cap.tilt} />}
+      {/* no watermark on the end card (the owner, 2026-11-21): the last act's mark fades out as the card comes in */}
+      {st.v9
+        ? <WatermarkV9 act={act} t={sec - acts[act]} out={inCta ? sec - ends : undefined} heads={act === 2 ? heads : undefined} light={!inCta && !st.isCard && light} />
+        : <Watermark act={act} t={sec - acts[act]} out={inCta ? sec - ends : undefined} />}
+    </ScreenSpace>
+  );
+};
+
+export const ToonV8: React.FC<V8VideoProps> = ({toon, timings, sfx, music, bare = false, frameAt, impacts}) => {
+  const v9 = isV9(toon);
+  // the impact policy for every shot drawn in this frame (act.tsx): format 6 keeps only the impacts its shots ask to keep
+  const mode: ImpactMode = impacts ?? (v9 ? 'v9' : 'v8');
+  setImpacts(mode);
+  const now = useCurrentFrame();
+  const frame = frameAt ?? now;
+  const sec = frame / V8_FPS;
+  const L = useMemo(() => layoutToon(toon, timings), [toon, timings]);
+  const st = frameState(L, toon, timings, sec, mode);
+  const {s, si, def, shot, cam0, cam, flash, grave, isCard} = st;
+  const heads = useMemo(() => (v9 ? shotHeads(L, toon, timings, si) : undefined), [v9, L, toon, timings, si]);
 
   // the transition from the shot before: a zoom-through between places, a whip pan between two rooms
   // v4: transitions follow the story: from a room into the body the camera DIVES into the Kid's scratch; from
@@ -237,23 +346,19 @@ export const ToonV8: React.FC<V8VideoProps> = ({toon, timings, sfx, music, bare 
   const farCorner = !trans?.portal ? 0 : Math.max(...[[0, 0], [1080, 0], [0, 1920], [1080, 1920]].map(([x, y]) => Math.hypot(x - trans.portal![0], y - trans.portal![1])));
   const ringR = !trans || !trans.portal ? 0 : trans.kind === 'dive' ? farCorner * Math.pow(trans.u, 2.2) : farCorner * 0.92 * Math.pow(1 - trans.u, 1.6);
 
-  // the three acts (watermark position): groups of shots by place, body / rooms / body; else thirds of the time
-  const isRoom = (i: number) => ['home', 'clinic'].includes(L.shots[i].shot.set ?? '');
-  const actStarts = L.shots.map((_, i) => i).filter((i) => i === 0 || isRoom(i) !== isRoom(i - 1)).map((i) => L.shots[i].from / TOON_FPS);
   const ends = L.total / TOON_FPS;
-  const acts = actStarts.length === 3 ? actStarts : [0, ends / 3, (2 * ends) / 3];
-  const act = sec >= ends ? 2 : acts.filter((a) => sec >= a).length - 1;
   const cta = ctaOf(toon);
   const inCta = !!cta && sec >= ends;
-  // the card's beats, in seconds from the card's start (the narrator begins at CTA_LEAD)
-  const ctaAt: CtaAt | undefined = cta?.at && {head: CTA_LEAD + cta.at.head, points: cta.at.points.map((p) => CTA_LEAD + p) as [number, number, number], follow: CTA_LEAD + cta.at.follow};
+  // the card's beats, in seconds from the card's start (the narrator begins at CTA_LEAD); v9: the short card's own beats
+  // (headline and points together, CTA9_AT), Joey says only the follow line
+  const ctaAt: CtaAt | undefined = v9 ? CTA9_AT : cta?.at && {head: CTA_LEAD + cta.at.head, points: cta.at.points.map((p) => CTA_LEAD + p) as [number, number, number], follow: CTA_LEAD + cta.at.follow};
 
   const has = (n: string | undefined): n is string => !!n && sfx.includes(n);
   const events = soundPlan(L);
   // extra story sounds of the player: a heartbeat under the serious beat
   const extra = L.lines.filter((l) => (l.line as {serious?: boolean}).serious).map((l) => ({at: l.from, name: 'heartbeat', vol: 0.5}));
 
-  return (
+  const picture = (
     <AbsoluteFill style={{background: '#2b1a17'}}>
       {trans && trans.kind === 'dive' && (
         // the room under the opening window: the camera rushes in at the scratch
@@ -261,10 +366,13 @@ export const ToonV8: React.FC<V8VideoProps> = ({toon, timings, sfx, music, bare 
           <div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, transformOrigin: '0 0', transform: view(trans.pcam)}}><trans.pdef.Scene s={trans.ps} /></div>
         </div>
       )}
-      {def ? (
+      {isCard ? <TimeCard text={String(shot.card)} t={s.t} /> : def ? (
         <div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, overflow: 'hidden',
           clipPath: trans?.kind === 'dive' ? `circle(${ringR.toFixed(1)}px at ${trans.portal![0].toFixed(1)}px ${trans.portal![1].toFixed(1)}px)` : undefined}}>
-          <div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, transformOrigin: '0 0', transform: view(cam, newT)}}>
+          {/* v9 (blueprint 4.1): the kit's line widths divided by the zoom (kit.tsx InkZoom: class + --ink-k), so a line stays
+              5-6 px on screen at any zoom; the videos already out keep their line as it was (no class) */}
+          <div className={v9 ? INK_ZOOM_CLASS : undefined} style={{position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, transformOrigin: '0 0', transform: view(cam, newT), ...(v9 ? inkZoomVars(cam.z) : {})}}>
+            {v9 && <style>{INK_ZOOM_CSS}</style>}
             <def.Scene s={s} />
           </div>
         </div>
@@ -292,35 +400,37 @@ export const ToonV8: React.FC<V8VideoProps> = ({toon, timings, sfx, music, bare 
         // the shot before keeps its icons for a moment and fades them out (no icon may blink off)
         <div style={{position: 'absolute', inset: 0, opacity: 1 - clamp01(trans.u / 0.35)}}><trans.pdef.Screen s={{...trans.ps, t: trans.ps.t - into}} /></div>
       )}
-      {def?.Screen && <def.Screen s={s} />}
+      {!isCard && def?.Screen && <def.Screen s={s} />}
       {flash > 0 && <AbsoluteFill style={{background: '#ffffff', opacity: flash * 0.3}} />}
-      {cur && wi >= 0 && !bare && !inCta && (() => {
-        // one word at a time, no box (the owner, 2026-11-20); the line's key word is yellow and bigger
-        const w = clean(cur.words[wi].w);
-        const cs = captionStyle(toon);
-        return <WordCaption key={cur.line.id + wi} word={w} t={tl - cur.words[wi].start} isKey={w.toLowerCase().replace(/[!?'’]/g, '') === keyWord.replace(/[!?'’]/g, '')} y={cs.y} scale={cs.scale} />;
-      })()}
       {inCta && (
-        <div style={{position: 'absolute', inset: 0, transform: `translateY(${((1 - clamp01((sec - ends) / 0.35)) ** 3 * 1920).toFixed(1)}px)`}}>
-          <CtaCardV4 t={sec - ends} title={cta!.title} points={cta!.points} at={ctaAt} />
-        </div>
+        // v9 (decision 25, option A): the short card (CtaCardV9, 5.5 s) comes in with a hard cut, no slide (the slide was our last transition)
+        v9 ? <CtaCardV9 t={sec - ends} title={cta!.title} points={cta!.points} at={ctaAt} />
+          : <div style={{position: 'absolute', inset: 0, transform: `translateY(${((1 - clamp01((sec - ends) / 0.35)) ** 3 * 1920).toFixed(1)}px)`}}>
+            <CtaCardV4 t={sec - ends} title={cta!.title} points={cta!.points} at={ctaAt} />
+          </div>
       )}
-      {/* no watermark on the end card (the owner, 2026-11-21): the last act's mark fades out as the card comes in */}
-      <Watermark act={act} t={sec - acts[act]} out={inCta ? sec - ends : undefined} />
-      {cta && [0, 1, 2].map((i) => <Sequence key={'cta' + i} from={Math.round((ends + (ctaAt ? ctaAt.points[i] : 0.45 + i * 0.55)) * V8_FPS)} durationInFrames={60 * K}><Audio src={staticFile('toons/sfx/pop.mp3')} volume={0.35} /></Sequence>)}
-      {cta && <Sequence from={Math.round((ends + (ctaAt ? ctaAt.follow : 2.3)) * V8_FPS)} durationInFrames={90 * K}><Audio src={staticFile('toons/sfx/success-chime.mp3')} volume={0.3} /></Sequence>}
+      {/* the caption word and the watermark, laid on the screen after the camera (one word at a time, no box: 2026-11-20) */}
+      <PlayerScreen L={L} toon={toon} st={st} sec={sec} bare={bare} heads={heads} />
+      {/* v9: the points come up together, so one pop; no whoosh (a hard cut) */}
+      {cta && v9 && <Sequence from={Math.round((ends + CTA9_AT.points[0]) * V8_FPS)} durationInFrames={60 * K}><Audio src={staticFile('toons/sfx/pop.mp3')} volume={0.35} /></Sequence>}
+      {cta && !v9 && [0, 1, 2].map((i) => <Sequence key={'cta' + i} from={Math.round((ends + (ctaAt ? ctaAt.points[i] : 0.45 + i * 0.55)) * V8_FPS)} durationInFrames={60 * K}><Audio src={staticFile('toons/sfx/pop.mp3')} volume={0.35} /></Sequence>)}
+      {cta && !v9 && <Sequence from={Math.round((ends + (ctaAt ? ctaAt.follow : 2.3)) * V8_FPS)} durationInFrames={90 * K}><Audio src={staticFile('toons/sfx/success-chime.mp3')} volume={0.3} /></Sequence>}
       {cta?.voice && <Sequence from={Math.round((ends + CTA_LEAD) * V8_FPS)} durationInFrames={Math.round(((cta.seconds ?? 4) + CTA_TAIL) * V8_FPS)}><Audio src={staticFile(cta.voice)} /></Sequence>}
-      {cta && <Sequence from={Math.round(ends * V8_FPS)} durationInFrames={40 * K}><Audio src={staticFile('toons/sfx/whoosh-air.mp3')} volume={0.4} /></Sequence>}
+      {cta && !v9 && <Sequence from={Math.round(ends * V8_FPS)} durationInFrames={40 * K}><Audio src={staticFile('toons/sfx/whoosh-air.mp3')} volume={0.4} /></Sequence>}
       {L.lines.map((l) => l.file && <Sequence key={l.line.id} from={Math.round(l.from * K)} durationInFrames={Math.round((l.frames + 12) * K)}><Audio src={staticFile(l.file)} /></Sequence>)}
       {events.filter((e) => has(e.name)).map((e, i) => <Sequence key={i} from={Math.round(e.at * K)} durationInFrames={90 * K}><Audio src={staticFile(`toons/sfx/${e.name}.mp3`)} volume={e.vol} /></Sequence>)}
       {extra.filter((e) => has(e.name)).map((e, i) => <Sequence key={'x' + i} from={Math.round(e.at * K)} durationInFrames={240 * K}><Audio src={staticFile(`toons/sfx/${e.name}.mp3`)} volume={e.vol} /></Sequence>)}
       {music && <Audio src={staticFile(`toons/music/${music}.mp3`)} loop volume={(fr) => {
         // v4: the bed stays low under the narrator on the end card, then fades out with it
         const t = fr / K;
-        if (!cta || t < L.total - 24) return MUSIC_LEVEL * bedAt(L, t);
-        const end = L.total + ctaSeconds(cta) * TOON_FPS;
-        return MUSIC_LEVEL * Math.max(Math.min(bedAt(L, L.total - 24), SOUND.bedUnderVoice * 1.2), 0) * clamp01((end - t) / 40);
+        // the master level: MUSIC_LEVEL for the videos already out, the format's own (director.ts SOUND6.music) for format 6
+        const lvl = v9 ? L.sound.music : MUSIC_LEVEL;
+        if (!cta || t < L.total - 24) return lvl * bedAt(L, t);
+        const end = L.total + ctaSeconds(cta, v9) * TOON_FPS;
+        return lvl * Math.max(Math.min(bedAt(L, L.total - 24), L.sound.bedUnderVoice * 1.2), 0) * clamp01((end - t) / 40);
       }} />}
     </AbsoluteFill>
   );
+  // v9: the whole engine-v9 look (kit.tsx <V9>: oval turned eyes, rim pupils, lids, outlined arms, the soft stubble...)
+  return v9 ? <V9>{picture}</V9> : picture;
 };

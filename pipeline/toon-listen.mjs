@@ -28,7 +28,7 @@ import os from 'node:os';
 import path from 'node:path';
 import {execFileSync} from 'node:child_process';
 import {args, PUBLIC, readJson, ROOT, videoDir, writeJson} from './lib/util.mjs';
-import {SFX_DIR} from './lib/toon-audio.mjs';
+import {roleOf, SFX_DIR} from './lib/toon-audio.mjs';
 import {layoutToon, soundPlan, TOON_FPS} from '../src/toons/director.ts';
 
 /** earshot's own Python (uv keeps each tool in its own environment). */
@@ -161,6 +161,8 @@ if (a.words) {
  * A line much brighter or duller than its character's others is a note, not a fault: the words and the acting change it.
  */
 export const VOICE = {speech: 0.6, synth: 0.65, level: 2.5, late: 0.3, bright: 0.35};
+/** Engine v9 check A4 (blueprint Part 5): speakers in one scene this many semitones apart; this share of body lines above `high` Hz. */
+export const VOICE6 = {apart: 3, high: 250, highShare: [0.3, 0.55]};
 if (a.voices) {
   // every voiced line on its own, then this mix against the last video the owner approved
   const dir = path.join(PUBLIC, 'toons', slug, 'voice');
@@ -197,6 +199,31 @@ if (a.voices) {
     if (tail > 0.6) why.push(`${s1(tail)} s of sound after the last word`);
     if (why.length) faults.push(`${it.id} (${it.who}): ${why.join('; ')}`);
     console.log(`  ${why.length ? 'CHECK' : 'ok   '} ${it.id.padEnd(4)} ${it.who.padEnd(9)} ${s1(m.duration).padStart(4)} s  ${s1(m.lufs).padStart(6)} LUFS  peak ${s1(m.true_peak_dbtp).padStart(5)}  bright ${String(Math.round(m.brightness_hz ?? 0)).padStart(5)} Hz  speech ${String(Math.round(speech * 100)).padStart(3)}%  synthetic ${String(Math.round(synth * 100)).padStart(2)}%${other ? `  also: ${other}` : ''}${note}`);
+  }
+  // engine v9, check A4 (voices apart): speakers of one scene 3+ semitones apart (median pitch of their lines), and 30-55% of
+  // the body cast's lines above 250 Hz. A fault for format 6; a note for the videos already out.
+  {
+    const toon6 = readJson(path.join(videoDir(slug), 'toon.json'));
+    const six = (toon6.format ?? 0) >= 6;
+    const f0 = {};
+    for (const it of r.items) if (Number.isFinite(it.measure?.f0_hz) && it.measure.f0_hz > 50) (f0[it.who] ??= []).push(it.measure.f0_hz);
+    const pitch = Object.fromEntries(Object.entries(f0).map(([w, xs]) => [w, med(xs)]));
+    const st = (p, q) => Math.abs(12 * Math.log2(p / q));
+    const close = [];
+    for (const sh of toon6.shots ?? []) {
+      const who = [...new Set((sh.lines ?? []).map((l) => l.who))].filter((w) => pitch[w]);
+      for (let i = 0; i < who.length; i++) for (let j = i + 1; j < who.length; j++) {
+        const d = st(pitch[who[i]], pitch[who[j]]);
+        if (d < VOICE6.apart) close.push(`${sh.id}: ${who[i]} and ${who[j]} ${d.toFixed(1)} semitones apart`);
+      }
+    }
+    const body = r.items.filter((it) => roleOf(it.who) === 'body' && Number.isFinite(it.measure?.f0_hz) && it.measure.f0_hz > 50);
+    const high = body.length ? body.filter((it) => it.measure.f0_hz > VOICE6.high).length / body.length : null;
+    const highOk = high === null || (high >= VOICE6.highShare[0] && high <= VOICE6.highShare[1]);
+    console.log(`\n  A4 voices apart: ${Object.entries(pitch).map(([w, p]) => `${w} ${Math.round(p)} Hz`).join(', ') || 'no pitch read'}`);
+    console.log(`     ${close.length ? `${close.length} pair(s) under ${VOICE6.apart} semitones: ${close.join('; ')}` : `every pair in a scene ${VOICE6.apart}+ semitones apart`}; body lines above ${VOICE6.high} Hz: ${high === null ? '-' : `${Math.round(high * 100)}%`} (${VOICE6.highShare.map((x) => x * 100).join('-')}%)`);
+    if (six && (close.length || !highOk)) faults.push(`A4 voices apart: ${[...close, ...(highOk ? [] : [`${Math.round(high * 100)}% of body lines above ${VOICE6.high} Hz`])].join('; ')}`);
+    r.voicesApart = {pitch, close, high};
   }
   if (r.ab) console.log(`\n  this mix against "${a.against}": ${r.ab.summary ?? JSON.stringify(r.ab).slice(0, 600)}`);
   if (r.ab_error) console.log(`\n  the comparison with "${a.against}" failed: ${r.ab_error}`);

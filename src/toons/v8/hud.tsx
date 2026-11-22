@@ -11,6 +11,7 @@
 import React, {useId} from 'react';
 import {Img, staticFile} from 'remotion';
 import {CLOTH, EDGE, EDGE_IN, FONT, INK, INLINE, OUTLINE, shade, tint} from './kit';
+import {circleBox, useReport} from './play';
 import {Dog} from './animals';
 import {Brain} from './organs-a';
 import {Virus} from './germs';
@@ -27,13 +28,36 @@ export const popIn = (t: number, dur = 0.22) => {
 export const CAPTION_Y = 1470;
 export const CAPTION_KEY = '#ffd23f';
 
-export const WordCaption: React.FC<{word: string; t: number; isKey?: boolean; y?: number; scale?: number}> = ({word, t, isKey, y = CAPTION_Y, scale: CAPTION_SCALE = 1}) => {
+/** v9 (decision 27, sheet first): a seeded per-word tilt of -2..+2 degrees, the same for a word every time it is shown. */
+export const captionTilt = (word: string) => {
+  let h = 2166136261;
+  for (const ch of word.toUpperCase()) h = Math.imul(h ^ ch.charCodeAt(0), 16777619) >>> 0;
+  return ((h % 401) / 100) - 2;
+};
+/**
+ * v9 caption clear rules (A3 #12, A4 T3), a pure function for the player: a word shows from its start; it is cleared in
+ * any pause over 0.4 s (0.4 s after the word ended), and on every cut (the next word pops in 2 frames after the cut).
+ */
+export const captionShows = (o: {t: number; start: number; end: number; nextStart?: number; cuts?: number[]; fps?: number}) => {
+  const fps = o.fps ?? 60;
+  if (o.t < o.start) return false;
+  const cut = (o.cuts ?? []).find((c) => c > o.start - 2 / fps && c <= o.t);
+  if (cut !== undefined && o.start < cut) return false; // a word never holds across a cut
+  if (cut !== undefined && o.t < cut + 2 / fps) return false; // the first word after a cut waits 2 frames
+  if (o.nextStart !== undefined && o.t >= o.nextStart) return false;
+  return o.t < o.end + 0.4;
+};
+export const WordCaption: React.FC<{word: string; t: number; isKey?: boolean; y?: number; scale?: number; tilt?: boolean}> = ({word, t, isKey, y = CAPTION_Y, scale: CAPTION_SCALE = 1, tilt}) => {
+  const report = useReport();
   const k = popIn(t, isKey ? 0.14 : 0.08); // quicker (acting kit, 2026-11-21): the word lands and HOLDS; the long pop kept 9% of frames moving
   const size = (isKey ? 132 : 108) * CAPTION_SCALE;
+  // the layout log (07-layout-log-wiring.md): the word's box at full size, centred on (540, y), the flat drop included
+  const stroke = (isKey ? 14 : 12) * CAPTION_SCALE, ww = word.length * size * 0.7 + stroke * 2, hh = size + stroke * 2;
+  report({kind: 'caption', box: {x0: 540 - ww / 2, y0: y - hh / 2, x1: 540 + ww / 2, y1: y + hh / 2 + (isKey ? 10 : 8) * CAPTION_SCALE}, text: word});
   return (
     <div style={{position: 'absolute', left: 0, right: 0, top: y, display: 'flex', justifyContent: 'center', pointerEvents: 'none'}}>
       <div style={{
-        transform: `translateY(-50%) scale(${(0.55 + 0.45 * k).toFixed(3)}) rotate(${isKey ? -3 : 0}deg)`,
+        transform: `translateY(-50%) scale(${(0.55 + 0.45 * k).toFixed(3)}) rotate(${(tilt ? captionTilt(word) + (isKey ? -1 : 0) : isKey ? -3 : 0).toFixed(2)}deg)`,
         opacity: clamp01(k * 3),
         fontFamily: FONT, fontWeight: 900, fontSize: size, lineHeight: 1, letterSpacing: 1,
         color: isKey ? CAPTION_KEY : '#ffffff',
@@ -190,12 +214,14 @@ export const settleIn = (t: number, dur = 0.3) => {
  * and fades out over 0.25 s from `out`. */
 export const IconBadge: React.FC<{icon: IconName; t: number; x?: number; y?: number; size?: number; out?: number}> = ({icon, t, x = 540, y = 300, size = 330, out}) => {
   const I = ICONS[icon];
+  const report = useReport();
   if (t < 0) return null;
   const fade = out === undefined ? 0 : clamp01((t - out) / 0.25);
   const ease = fade * fade * (3 - 2 * fade);
   const k = settleIn(t, 0.3) * (1 - ease * 0.12);
   const op = clamp01(t / 0.12) * (1 - ease);
   if (op <= 0.001) return null;
+  report({kind: 'icon', box: circleBox(x, y, size / 2), id: 'icon:' + icon});
   return (
     <svg style={{position: 'absolute', left: x - size / 2, top: y - size / 2, overflow: 'visible', pointerEvents: 'none', opacity: op}} width={size} height={size} viewBox="-100 -100 200 200">
       <g transform={`scale(${(0.55 + 0.45 * k).toFixed(4)})`}><I t={t} /></g>
@@ -233,10 +259,18 @@ export const WatermarkV3: React.FC<{act: number; t: number}> = ({act, t}) => {
 export const WM_SIZE = 26;
 export const WM_OPACITY = 0.44;
 /** `out` (seconds since it started leaving) fades it away over 0.35 s; the end card has no watermark (the owner, 2026-11-21). */
+/** The watermark's box on the screen (the layout log; about 0.56 em a character at 26 px). */
+const wmBoxOf = (p: {x: number; y: number; align: 'left' | 'right' | 'center'}) => {
+  const w = WATERMARK.length * WM_SIZE * 0.56, h = 32;
+  const x0 = p.align === 'right' ? p.x - w : p.align === 'center' ? p.x - w / 2 : p.x;
+  return {x0, y0: p.y - h / 2, x1: x0 + w, y1: p.y + h / 2};
+};
 export const Watermark: React.FC<{act: number; t: number; out?: number}> = ({act, t, out}) => {
+  const report = useReport();
   const p = WM_AT[Math.max(0, Math.min(2, act))];
   const k = clamp01(t / 0.35) * (out === undefined ? 1 : 1 - clamp01(out / 0.35));
   if (k <= 0) return null;
+  report({kind: 'watermark', box: wmBoxOf(p), id: 'act' + act});
   const tx = p.align === 'right' ? '-100%' : p.align === 'center' ? '-50%' : '0';
   return (
     <div style={{position: 'absolute', left: p.x, top: p.y, transform: `translate(${tx}, -50%)`, opacity: WM_OPACITY * k, pointerEvents: 'none',
@@ -307,21 +341,29 @@ export const tagBox = (label: string, x: number, y: number, r: number) => {
   bx = Math.max(TAG_SAFE.x0 + w / 2, Math.min(TAG_SAFE.x1 - w / 2, bx));
   return {side, bx, by, w, h, fs};
 };
-export const CharTag: React.FC<{label: string; x: number; y: number; r: number; t: number; dur?: number}> = ({label, x, y, r, t, dur = TAG_SECONDS}) => {
+export const CharTag: React.FC<{label: string; x: number; y: number; r: number; t: number; dur?: number;
+  /** v9: the arrow tip lands exactly here (the character's BODY centre from the layout log), never on a face or a prop */ arrowTo?: [number, number];
+  /** v9: the character wears its name on a BandLabel: no tag at all (decision 13) */ band?: boolean;
+  /** v9: a busy background behind the box: a wider white margin (px) */ margin?: number}> = ({label, x, y, r, t, dur = TAG_SECONDS, arrowTo, band, margin = 0}) => {
+  const report = useReport();
+  if (band) return null;
   if (t < 0 || t > dur) return null;
-  const {side, bx, by, w, h, fs} = tagBox(label, x, y, r);
+  const {side, bx, by, w: w0, h: h0, fs} = tagBox(label, x, y, r);
+  const w = w0 + margin * 2, h = h0 + margin * 2;
   const op = clamp01(t / 0.15) * (1 - clamp01((t - (dur - 0.2)) / 0.2));
   const k = settleIn(t, 0.25);
   // the arrow: from the box edge toward the head, ending short of it, a gentle curve
   const from: [number, number] = side === 'up' ? [bx, by + h / 2] : side === 'down' ? [bx, by - h / 2] : side === 'left' ? [bx + w / 2, by] : [bx - w / 2, by];
-  const ang = Math.atan2(y - from[1], x - from[0]);
-  const to: [number, number] = [x - Math.cos(ang) * (r + 18), y - Math.sin(ang) * (r + 18)];
+  const ang = arrowTo ? Math.atan2(arrowTo[1] - from[1], arrowTo[0] - from[0]) : Math.atan2(y - from[1], x - from[0]);
+  const to: [number, number] = arrowTo ?? [x - Math.cos(ang) * (r + 18), y - Math.sin(ang) * (r + 18)];
   const draw = settleIn(t - 0.08, 0.22);
   const tip: [number, number] = [from[0] + (to[0] - from[0]) * Math.min(1, draw), from[1] + (to[1] - from[1]) * Math.min(1, draw)];
   const mid: [number, number] = [(from[0] + tip[0]) / 2 + Math.sin(ang) * 24, (from[1] + tip[1]) / 2 - Math.cos(ang) * 24];
   const a2 = Math.atan2(tip[1] - mid[1], tip[0] - mid[0]);
   const head = (s: number) => `M ${tip[0] + Math.cos(a2) * 4} ${tip[1] + Math.sin(a2) * 4} L ${tip[0] - Math.cos(a2 - 0.5) * s} ${tip[1] - Math.sin(a2 - 0.5) * s} L ${tip[0] - Math.cos(a2 + 0.5) * s} ${tip[1] - Math.sin(a2 + 0.5) * s} Z`;
   const arc = `M ${from[0]} ${from[1]} Q ${mid[0]} ${mid[1]} ${tip[0]} ${tip[1]}`;
+  // the layout log: the tag box (+ its 7 px flat shadow) and where its arrow ends (check L4: on its own character's body)
+  report({kind: 'tag', box: {x0: bx - w / 2, y0: by - h / 2, x1: bx + w / 2, y1: by + h / 2 + 7}, text: label, owner: label, tip: to, id: 'tag:' + label});
   return (
     <div style={{position: 'absolute', inset: 0, opacity: op, pointerEvents: 'none'}}>
       <svg style={{position: 'absolute', left: 0, top: 0, overflow: 'visible'}} width={1080} height={1920} viewBox="0 0 1080 1920">
@@ -440,5 +482,173 @@ export const RaceBar: React.FC<{p: number; t: number; op?: number; wall?: number
       </g>
       {caught > 0.01 && <path d={`M ${x - 30} ${yOn(clamp01(p)) - 66} L ${x + 30} ${yOn(clamp01(p)) - 6} M ${x + 30} ${yOn(clamp01(p)) - 66} L ${x - 30} ${yOn(clamp01(p)) - 6}`} stroke="#ef5b5b" strokeWidth={9 * caught} strokeLinecap="round" />}
     </svg>
+  );
+};
+
+// =====================================================================================================================
+// ENGINE v9 (format 6; blueprint 4.9, decisions 20, 25-27). Added pieces; everything above keeps drawing as before.
+// =====================================================================================================================
+export type HudBox = {x0: number; y0: number; x1: number; y1: number};
+const hits = (a: HudBox, b: HudBox, pad = 0) => a.x0 < b.x1 + pad && a.x1 > b.x0 - pad && a.y0 < b.y1 + pad && a.y1 > b.y0 - pad;
+
+/**
+ * A place label that STAYS for the whole shot (A1 #11): a small white box, thin black border, plain capitals, no arrow,
+ * set on the tissue and may tilt ("TRACHEA", "LUNGS"). Not a character tag (those keep their 2.5 s and arrow).
+ */
+export const StayLabel: React.FC<{text: string; x: number; y: number; rot?: number; size?: number}> = ({text, x, y, rot = 0, size = 34}) => {
+  const w = text.length * size * 0.68 + size * 0.84 + 8, h = size * 1.28 + 8;
+  useReport()({kind: 'label', box: {x0: x - w / 2, y0: y - h / 2, x1: x + w / 2, y1: y + h / 2}, text});
+  return <div style={{position: 'absolute', left: x, top: y, transform: `translate(-50%, -50%) rotate(${rot}deg)`, background: '#ffffff', border: `4px solid ${INK}`, borderRadius: 6,
+    padding: `${size * 0.14}px ${size * 0.42}px`, fontFamily: FONT, fontWeight: 900, fontSize: size, letterSpacing: 1.2, color: INK, whiteSpace: 'nowrap', pointerEvents: 'none'}}>{text.toUpperCase()}</div>;
+};
+
+// ------------------------------------------------------------------ the v9 watermark place (decision 26)
+/** Act 1 top right; act 2 bottom left at y 1200 (120 px clear of the caption); act 3 the first free top spot. */
+export const WM_AT_V9 = {act1: {x: 960, y: 178, align: 'right' as const}, act2: {x: 96, y: 1200, align: 'left' as const}, act3: [
+  {x: 96, y: 178, align: 'left' as const}, {x: 540, y: 178, align: 'center' as const}, {x: 984, y: 178, align: 'right' as const},
+]};
+const WM_W = 214, WM_H = 34;
+const wmBox = (p: {x: number; y: number; align: 'left' | 'right' | 'center'}): HudBox => {
+  const x0 = p.align === 'left' ? p.x : p.align === 'right' ? p.x - WM_W : p.x - WM_W / 2;
+  return {x0, y0: p.y - WM_H / 2, x1: x0 + WM_W, y1: p.y + WM_H / 2};
+};
+/** Where the watermark sits in act 0, 1 or 2; act 3 takes top left / middle / right, the first clear of every head box. */
+export const wmSpot = (act: number, heads: HudBox[] = []) => {
+  if (act <= 0) return WM_AT_V9.act1;
+  if (act === 1) return WM_AT_V9.act2;
+  return WM_AT_V9.act3.find((p) => !heads.some((h) => hits(wmBox(p), h, 24))) ?? WM_AT_V9.act3[1];
+};
+/**
+ * The v9 watermark: same size, font and opacity as the v4 one; its place from `wmSpot`; INK coloured on a light
+ * background (`light`: the picture behind it is brighter than 200). `cover`: never drawn on the cover.
+ */
+export const WatermarkV9: React.FC<{act: number; t: number; out?: number; heads?: HudBox[]; light?: boolean; cover?: boolean}> = ({act, t, out, heads, light, cover}) => {
+  const report = useReport();
+  if (cover) return null;
+  const p = wmSpot(act, heads);
+  const k = clamp01(t / 0.35) * (out === undefined ? 1 : 1 - clamp01(out / 0.35));
+  if (k <= 0) return null;
+  report({kind: 'watermark', box: wmBox(p), id: 'act' + act});
+  const tx = p.align === 'right' ? '-100%' : p.align === 'center' ? '-50%' : '0';
+  return (
+    <div style={{position: 'absolute', left: p.x, top: p.y, transform: `translate(${tx}, -50%)`, opacity: WM_OPACITY * k, pointerEvents: 'none',
+      fontFamily: FONT, fontWeight: 400, fontSize: WM_SIZE, letterSpacing: 0.4, color: light ? INK : '#ffffff', whiteSpace: 'nowrap',
+      textShadow: light ? 'none' : '0 1px 0 rgba(43, 26, 23, 0.55)'}}>{WATERMARK}</div>
+  );
+};
+
+// ------------------------------------------------------------------ the time card (decision 20)
+/**
+ * A black full frame with one short line in the caption font ("3 DAYS LATER"), 0.8-1.2 s, a hard cut in and out (it is a cut,
+ * not a transition, so "no transitions" holds). The watermark stays on (the player draws it on top). The picture after the
+ * card has the SAME framing as before it; only the state changed (the shot plays again with `pass: 2`).
+ * `bg` is near black (mean brightness well under 30) so the picture checks C1/C8 find a card as an all-dark run of frames.
+ * (The ONE time card: agent C's time-card.tsx and agent B's first draft here were merged into this one, 2026-11-23.)
+ */
+export const TIME_CARD = {min: 0.8, max: 1.2, most: 3, bg: '#0d0a09'};
+/** The card itself. `t` is seconds since the card began: the text is there from its first frame (no pop, no fade: a cut). */
+export const TimeCard: React.FC<{text: string; t?: number; bg?: string}> = ({text, bg = TIME_CARD.bg}) => {
+  const words = text.trim().toUpperCase();
+  // one line: the size shrinks for a longer line so it never wraps (about 18 characters fit at 118 px)
+  const size = Math.min(118, Math.floor(1900 / Math.max(8, words.length)));
+  const w = words.length * size * 0.7, h = size * 1.2;
+  useReport()({kind: 'text', box: {x0: 540 - w / 2, y0: 960 - h / 2, x1: 540 + w / 2, y1: 960 + h / 2}, text: words, id: 'timecard'});
+  return (
+    <div style={{position: 'absolute', inset: 0, background: bg, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none'}}>
+      <div style={{fontFamily: FONT, fontWeight: 900, fontSize: size, lineHeight: 1, letterSpacing: 2, color: '#ffffff', whiteSpace: 'nowrap',
+        WebkitTextStroke: `${Math.round(size * 0.1)}px ${INK}`, paintOrder: 'stroke fill'}}>{words}</div>
+    </div>
+  );
+};
+
+// ------------------------------------------------------------------ the v9 end card (decision 25, option A)
+/** 5.5 s; a hard cut in (the card is whole from frame 0: no slide); headline and points together, 0.15 s apart. */
+export const CTA9_SECONDS = 5.5;
+export const CTA9_AT: CtaAt = {head: 0, points: [0.15, 0.3, 0.45], follow: 0.6};
+/**
+ * The short end card: the logo top centre in its circle with "MedPeak Health", the headline on one line, three points in
+ * white cards (each icon in a 170 px circle inside a 220 px card, drawn to fit, nothing touching the circle), the follow
+ * line in a yellow pill above y 1500. The whole stack is centred between y 200 and y 1500.
+ */
+export const CtaCardV9: React.FC<{t: number; title: string; points: CtaPoint[]; at?: CtaAt; follow?: string}> = ({t, title, points, at = CTA9_AT, follow = FOLLOW_LINE}) => {
+  const ap = (t0: number) => settleIn(t - t0, 0.2);
+  const headFs = Math.min(84, Math.floor(960 / (title.length * 0.64)));
+  const bigFs = Math.min(62, Math.floor(600 / (Math.max(...points.map((p) => p.big.length)) * 0.7)));
+  // the stack: logo 220 + name 60 + headline 100 + 3 cards (220 + 24) + follow 110 = 1222 tall, centred in 200..1500
+  const top = 200 + (1300 - 1222) / 2;
+  const yLogo = top, yName = top + 232, yHead = top + 304, yCards = top + 418, yFollow = yCards + 3 * 244 + 6;
+  return (
+    <div style={{position: 'absolute', inset: 0, background: BRAND_BLUE, overflow: 'hidden', fontFamily: FONT}}>
+      <svg style={{position: 'absolute', left: 0, top: 0}} width={1080} height={1920} viewBox="0 0 1080 1920">
+        {[1180, 960, 760, 580, 420].map((r, i) => <circle key={i} cx={540} cy={yLogo + 110} r={r} fill={i % 2 ? tint(BRAND_BLUE, 0.07) : tint(BRAND_BLUE, 0.03)} />)}
+        {[1180, 960, 760, 580, 420, 290].map((r, i) => <circle key={'l' + i} cx={540} cy={yLogo + 110} r={r} fill="none" stroke={tint(BRAND_BLUE, 0.22)} strokeWidth={3} />)}
+      </svg>
+      <div style={{position: 'absolute', left: 540, top: yLogo + 110, width: 220, height: 220, transform: 'translate(-50%, -50%)', borderRadius: '50%', background: '#ffffff',
+        boxShadow: `0 8px 0 ${shade(BRAND_BLUE, 0.3)}`, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+        <div style={{width: 194, height: 194, borderRadius: '50%', overflow: 'hidden'}}><Img src={staticFile('brand/logo.png')} style={{width: 194, height: 194, display: 'block'}} /></div>
+      </div>
+      <div style={{position: 'absolute', left: 0, right: 0, top: yName, textAlign: 'center', fontWeight: 800, fontSize: 52, color: '#ffffff', letterSpacing: 0.5, lineHeight: 1}}>MedPeak Health</div>
+      <div style={{position: 'absolute', left: 40, right: 40, top: yHead, textAlign: 'center', whiteSpace: 'nowrap', opacity: clamp01(ap(at.head) * 2.5), transform: `scale(${(0.8 + 0.2 * ap(at.head)).toFixed(4)})`,
+        fontWeight: 900, fontSize: headFs, color: CAPTION_KEY, lineHeight: 1.05, letterSpacing: 0.5, WebkitTextStroke: `8px ${INK}`, paintOrder: 'stroke fill', textShadow: `0 7px 0 ${INK}`}}>{title}</div>
+      {points.map((p, i) => {
+        const k = ap(at.points[i]);
+        return (
+          <div key={i} style={{position: 'absolute', left: 70, right: 70, top: yCards + i * 244, height: 220, boxSizing: 'border-box', opacity: clamp01(k * 2.5), transform: `scale(${(0.94 + 0.06 * k).toFixed(4)})`,
+            display: 'flex', alignItems: 'center', gap: 28, background: '#ffffff', border: `5px solid ${INK}`, borderRadius: 34, padding: '0 30px 0 20px', boxShadow: `0 10px 0 ${shade(BRAND_BLUE, 0.35)}`}}>
+            <div style={{width: 170, height: 170, flex: 'none', borderRadius: '50%', background: tint(BRAND_BLUE, 0.88), border: `4px solid ${INK}`, boxSizing: 'border-box', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+              <svg width={162} height={162} viewBox="-100 -100 200 200" style={{overflow: 'hidden'}}><g transform="scale(0.86)">{p.icon}</g></svg>
+            </div>
+            <div style={{display: 'flex', flexDirection: 'column'}}>
+              <div style={{fontWeight: 900, fontSize: bigFs, color: INK, lineHeight: 1.0, whiteSpace: 'nowrap'}}>{p.big}</div>
+              <div style={{fontWeight: 700, fontSize: 34, color: '#5f6676', marginTop: 10, whiteSpace: 'nowrap'}}>{p.small}</div>
+            </div>
+          </div>
+        );
+      })}
+      <div style={{position: 'absolute', left: 60, right: 60, top: yFollow, display: 'flex', justifyContent: 'center', opacity: clamp01(ap(at.follow) * 2.5)}}>
+        <div style={{transform: `scale(${(0.85 + 0.15 * ap(at.follow)).toFixed(4)})`, background: CAPTION_KEY, border: `5px solid ${INK}`, borderRadius: 40, padding: '18px 34px', boxShadow: `0 10px 0 ${INK}`,
+          color: INK, fontWeight: 900, fontSize: 38, lineHeight: 1.15, textAlign: 'center'}}>{follow}</div>
+      </div>
+    </div>
+  );
+};
+
+// ------------------------------------------------------------------ the cover (A4 C1)
+/**
+ * Where a cover title goes: the largest free spot clear of every face, hand and prop box (padded 30 px), inside the
+ * Shorts safe area (y 200-1500). Returns the title box's top-left and width, or null when nothing is free.
+ */
+export const coverTitleSpot = (avoid: HudBox[], w = 900, h = 260): {x: number; y: number} | null => {
+  let best: {x: number; y: number; d: number} | null = null;
+  for (const x0 of [540 - w / 2, 60, 1020 - w]) {
+    for (let y = 150; y + h <= 1500; y += 10) {
+      const b = {x0, y0: y, x1: x0 + w, y1: y + h};
+      if (avoid.some((a) => hits(a, b, 30))) continue;
+      const d = Math.min(...avoid.map((a) => Math.min(Math.abs(a.y0 - b.y1), Math.abs(b.y0 - a.y1))), 999) + (x0 === 540 - w / 2 ? 40 : 0);
+      if (!best || d > best.d) best = {x: b.x0, y, d};
+    }
+  }
+  return best && {x: best.x, y: best.y};
+};
+/**
+ * The cover title: up to two lines, big, white with the caption outline; the key word yellow. It tries 900, 760 and 640 px
+ * wide (centred, then left, then right) and takes the first that is clear of every face, hand and prop. No watermark.
+ */
+export const CoverTitle: React.FC<{lines: string[]; key9?: string; avoid?: HudBox[]}> = ({lines, key9, avoid = []}) => {
+  const fit = (w: number) => { const fs = Math.min(130, Math.floor(w / (Math.max(...lines.map((l) => l.length)) * 0.62))); return {w, fs, h: lines.length * fs * 1.08}; };
+  const tries = [900, 760, 640].map(fit);
+  let pick = tries[0];
+  let spot: {x: number; y: number} | null = null;
+  for (const tr of tries) { spot = coverTitleSpot(avoid, tr.w, tr.h); if (spot) { pick = tr; break; } }
+  const at = spot ?? {x: 540 - pick.w / 2, y: 160};
+  const {w, fs} = pick;
+  return (
+    <div style={{position: 'absolute', left: at.x, top: at.y, width: w, textAlign: 'center', fontFamily: FONT, fontWeight: 900, fontSize: fs, lineHeight: 1.04, pointerEvents: 'none'}}>
+      {lines.map((l, i) => (
+        <div key={i} style={{whiteSpace: 'nowrap', transform: `rotate(${captionTilt(l).toFixed(2)}deg)`}}>
+          {l.toUpperCase().split(' ').map((wd, j) => <span key={j} style={{color: key9 && wd === key9.toUpperCase() ? CAPTION_KEY : '#ffffff', WebkitTextStroke: `${Math.round(fs * 0.12)}px ${INK}`, paintOrder: 'stroke fill', textShadow: `0 ${Math.round(fs * 0.08)}px 0 ${INK}`}}>{wd}{j < l.split(' ').length - 1 ? ' ' : ''}</span>)}
+        </div>
+      ))}
+    </div>
   );
 };

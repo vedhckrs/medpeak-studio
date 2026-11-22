@@ -9,7 +9,8 @@
  * path helpers rr / ell / poly / oct.
  */
 import React, {useId} from 'react';
-import {Board, Caption, CLOTH, EDGE_IN, Fig, FONT, INK, INLINE, OUTLINE, Panel, Shape, shade, tint} from './kit';
+import {Board, Caption, CLOTH, EDGE, EDGE_IN, Eyes, Fig, FONT, INK, INLINE, Mouth, OUTLINE, Panel, Shape, shade, tint, type V8Props} from './kit';
+import {FrameMove, matMul, matRotate, matScale, matTranslate, useReport} from './play';
 
 // ------------------------------------------------------------------ path helpers
 const rr = (x: number, y: number, w: number, h: number, r: number) => {
@@ -749,3 +750,90 @@ export const PropsHome: React.FC = () => (
     <Grid items={HOME} />
   </Board>
 );
+
+// =====================================================================================================================
+// ENGINE v9 (format 6): the HERO PROP and the INTRUDER (blueprint 4.6; A1 #8, A4 P3, H5). The one real object of a video is
+// drawn a level up from the mascot props: 3 tones (light, mid, shade), 1 highlight line, 2-4 construction details, still
+// the kit line. It enters the body from a frame edge or a stage slot at 30-60% of the frame height and may get kit eyes.
+// =====================================================================================================================
+/** The pilot's hero: a cigarette at hero detail. Paper with a seam, the printed gold ring, a cork filter with flecks, the
+ * ash and a flat ember (no glow). `burn` 0..1 shortens it; `smoke` draws two flat smoke curls. Horizontal, about 180 units long. */
+export const CigaretteHero: React.FC<{burn?: number; smoke?: boolean; t?: number}> = ({burn = 0, smoke = true, t = 0}) => {
+  const len = 150 - 70 * Math.max(0, Math.min(1, burn));
+  const x0 = -90, x1 = x0 + 46 + len; // filter 46 units, then paper
+  const paper = '#fbf8f2', paperMid = '#efe9df', paperShade = '#d9d1c4';
+  const cork = '#e39a4f', corkShade = '#c37b36';
+  return (
+    <g>
+      {smoke && [0, 1].map((i) => <path key={i} d={`M ${x1 + 8} -12 C ${x1 - 4 + i * 10} ${-40 - Math.sin(t * 1.3 + i) * 6} ${x1 + 22} ${-60 + i * 4} ${x1 + 6 + i * 14} ${-92}`} stroke="#d9d4d0" strokeWidth={9} strokeLinecap="round" fill="none" opacity={0.85} />)}
+      {/* the filter: cork, flecks, its own shade band below */}
+      <path d={`M ${x0} -14 L ${x0 + 46} -14 L ${x0 + 46} 14 L ${x0} 14 Q ${x0 - 5} 0 ${x0} -14 Z`} fill={cork} />
+      <path d={`M ${x0} 6 L ${x0 + 46} 6 L ${x0 + 46} 14 L ${x0} 14 Z`} fill={corkShade} />
+      {[[-80, -6], [-72, 2], [-64, -8], [-56, 4], [-50, -2], [-84, 8], [-60, 9]].map(([x, y], i) => <circle key={i} cx={x} cy={y} r={1.7} fill={shade(corkShade, 0.25)} />)}
+      {/* the paper: light top, mid body, shade band, the seam line along it */}
+      <path d={`M ${x0 + 46} -14 L ${x1} -14 L ${x1} 14 L ${x0 + 46} 14 Z`} fill={paperMid} />
+      <path d={`M ${x0 + 46} -14 L ${x1} -14 L ${x1} -6 L ${x0 + 46} -6 Z`} fill={paper} />
+      <path d={`M ${x0 + 46} 7 L ${x1} 7 L ${x1} 14 L ${x0 + 46} 14 Z`} fill={paperShade} />
+      <path d={`M ${x0 + 52} 2 L ${x1 - 4} 2`} stroke={paperShade} strokeWidth={1.6} strokeDasharray="10 6" />
+      {/* the printed gold ring where filter meets paper */}
+      <path d={`M ${x0 + 46} -14 L ${x0 + 52} -14 L ${x0 + 52} 14 L ${x0 + 46} 14 Z`} fill="#e8bd5c" {...EDGE_IN} />
+      {/* the burning end: grey ash, a flat orange-red ember line */}
+      <path d={`M ${x1} -14 L ${x1 + 14} -12 Q ${x1 + 20} 0 ${x1 + 14} 12 L ${x1} 14 Z`} fill="#8e8a88" />
+      <path d={`M ${x1 + 6} -13 Q ${x1 + 12} 0 ${x1 + 6} 13`} stroke="#e2573f" strokeWidth={5} fill="none" />
+      {[[x1 + 9, -5], [x1 + 12, 4]].map(([x, y], i) => <circle key={i} cx={x} cy={y} r={1.6} fill="#5c5654" />)}
+      {/* one highlight, then the kit outline over the whole */}
+      <path d={`M ${x0 + 60} -9 L ${x0 + 60 + Math.min(70, len * 0.4)} -9`} stroke="#ffffff" strokeWidth={3} strokeLinecap="round" opacity={0.8} />
+      <path d={`M ${x0} -14 L ${x1} -14 L ${x1 + 14} -12 Q ${x1 + 20} 0 ${x1 + 14} 12 L ${x1} 14 L ${x0} 14 Q ${x0 - 5} 0 ${x0} -14 Z`} {...OUTLINE} />
+      <path d={`M ${x0 + 46} -14 V 14 M ${x1} -14 V 14`} {...INLINE} />
+    </g>
+  );
+};
+/** An ashtray: a round dish seen a little from above, notches on the rim, a stubbed-out end inside. */
+export const Ashtray: React.FC = () => (
+  <g transform="translate(0 20)">
+    <Shape d="M -86 0 Q -86 46 0 50 Q 86 46 86 0 Z" fill="#9fb4c4" shadow={0.8} />
+    <path d={ell(0, 0, 86, 28)} fill="#bfd0dc" {...EDGE} />
+    <path d={ell(0, 2, 62, 18)} fill="#8ea3b3" {...EDGE_IN} />
+    {[-70, 70].map((x) => <path key={x} d={`M ${x - 9} ${-13} Q ${x} ${-2} ${x + 9} ${-13}`} fill="#8ea3b3" {...EDGE_IN} />)}
+    <g transform="translate(-6 0) rotate(-14) scale(0.32)"><CigaretteHero burn={0.85} smoke={false} /></g>
+    <path d="M 16 -2 q 10 -4 18 2 q -6 6 -18 -2 Z" fill="#8e8a88" />
+  </g>
+);
+
+/** How a prop comes INTO a hand (A4 H5): over 0.15 s it scales in while the hand rises over 0.3 s; `start` = there from frame 0. */
+export const handProp = (t: number, t0: number, enter: 'below' | 'pocket' | 'start' = 'below') => {
+  if (enter === 'start') return {k: 1, op: 1, lift: 0};
+  const u = Math.max(0, Math.min(1, (t - t0) / 0.3));
+  const e = 1 - Math.pow(1 - u, 3);
+  const s = Math.max(0, Math.min(1, (t - t0 - 0.12) / 0.15));
+  return {k: 0.6 + 0.4 * s, op: s, lift: (1 - e) * (enter === 'below' ? 260 : 90)};
+};
+
+export type IntruderFrom = 'top' | 'left' | 'right' | 'bottom';
+/**
+ * A real object entering the body (A1 #8): it slides in from a frame edge (or from a stage slot: pass `from` as the slot's
+ * {x, y}) to `at`, eased out with a 4% overshoot at most, over `dur` seconds from `t0`, then holds. `height` is its size as
+ * a share of the 1920 frame (0.3-0.6). Children are drawn in the 200-unit figure space; `eyes` adds the kit face.
+ */
+export const Intruder: React.FC<{from: IntruderFrom | {x: number; y: number}; at: [number, number]; t: number; t0?: number; dur?: number; height?: number; rot?: number; eyes?: V8Props & {x?: number; y?: number; r?: number}; children: React.ReactNode}> = ({from, at, t, t0 = 0, dur = 0.6, height = 0.4, rot = 0, eyes, children}) => {
+  const size = 1920 * Math.max(0.2, Math.min(0.7, height));
+  const start: [number, number] = typeof from === 'object' ? [from.x, from.y]
+    : from === 'left' ? [-size * 0.6, at[1]] : from === 'right' ? [1080 + size * 0.6, at[1]] : from === 'top' ? [at[0], -size * 0.6] : [at[0], 1920 + size * 0.6];
+  const u = Math.max(0, Math.min(1, (t - t0) / dur));
+  // ease out with a small overshoot (4% at most), then settle
+  const e = u >= 1 ? 1 : 1 - Math.pow(1 - u, 3) + Math.sin(u * Math.PI) * 0.04;
+  const x = start[0] + (at[0] - start[0]) * e, y = start[1] + (at[1] - start[1]) * e;
+  const report = useReport();
+  if (t < t0) return null;
+  report({kind: 'prop', who: 'intruder', box: {x0: x - size / 2, y0: y - size / 2, x1: x + size / 2, y1: y + size / 2}, id: 'intruder'});
+  return (
+    <svg style={{position: 'absolute', left: x - size / 2, top: y - size / 2, overflow: 'visible', pointerEvents: 'none'}} width={size} height={size} viewBox="-100 -100 200 200">
+      <g transform={`rotate(${rot})`}>
+        <FrameMove m={matMul(matMul(matTranslate(x, y), matScale(size / 200)), matRotate(rot))} who="intruder" body>
+          {children}
+          {eyes && <><Eyes x={eyes.x ?? 0} y={eyes.y ?? -10} r={eyes.r ?? 12} mood={eyes.mood} look={eyes.look} /><Mouth x={eyes.x ?? 0} y={(eyes.y ?? -10) + (eyes.r ?? 12) * 1.7} w={(eyes.r ?? 12) * 0.95} kind={eyes.mouth ?? 'flat'} /></>}
+        </FrameMove>
+      </g>
+    </svg>
+  );
+};

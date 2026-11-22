@@ -18,17 +18,32 @@ changes the kit to suit one sheet: a missing piece is built in the sheet's own f
 
 ## The ten rules
 
+**Engine v9 (2026-11-23).** The owner approved every recommendation of `plans/engine-upgrade-2026-11-23/05-blueprint.md`
+("All 28 recommend and start 2 to 3 agents to fix and upgrade engine and everything i want proper as per report"). The
+changes are written into the rules below as "From format 6"; videos already out keep the older wording. The numbers every
+new Toon is measured against: `toons-target.md`.
+
 1. **One outline.** Colour `INK` (#2b1a17), thin and even, round joins and caps. `OUTLINE` (3.4 px) for the
    outside of a shape, `INLINE` (2.2 px) for lines inside it. Strokes never scale with the figure. No
    coloured outlines, no outline-free shapes (except a shadow shape or a band inside a shape).
 2. **Flat colour.** A shape has one fill. It may have ONE darker tone of the same colour (`shade()`), as a
    shadow shape on the lower right or a band along an edge, and ONE lighter tone (`tint()`) as a band.
    Nothing else: no gradients, no gloss streaks, no glow, no texture, no drop shadows, no blur.
+   From format 6 (engine v9, 2026-11-23, decision 8) exactly three soft exceptions, nothing more: (a) see-through liquid (one flat colour at
+   55-65% opacity with a few white wave lines, `Liquid`); (b) the soft redness of a swelling (`Swelling`); (c) one
+   far-background soft layer behind a tissue wall. Plus a flat 25% ink contact shadow under every character standing on a
+   floor (`ContactShadow`, flat, not blurred). Gloss streaks stay banned; one short pale highlight line per organ
+   (`Highlight`) is the only shine. Shown on the stage sheets before a video uses them.
 3. **The face.** Two big white round eyes that touch or almost touch, a small black pupil, a thin outline
    (`<Eyes>`). A tiny mouth (`<Mouth>`). Thin short brows only when the feeling needs them. No iris
    colour, no catchlight, no eyelashes on body characters, no blush, no nose on body characters.
    The face is SMALL on a big body: the two eyes together are about a quarter to a third of the body's
    width, and sit in the upper half.
+   From format 6 (engine v9, 2026-11-23, decision 10, a before/after sheet of the whole cast first): still one eye for the whole cast,
+   but upright ovals (1.12 times taller than wide), on a turned face the far eye 8-12% smaller (a three-quarter look,
+   never a mirror), pupils 0.18 of the eye that can touch the rim, a continuous lid (a 0.2 s blink with a half lid).
+   In a whole-organ frame one eye is 120-170 px on screen (never over 190), the face above y 800. Organs lose the
+   teeth-grid "grit" mouth. Characters look at each other (decision 11): the listener's pupils point at the speaker.
 4. **Body characters are anatomy, not mascots.** An organ looks like the real organ, simplified: real
    silhouette, real parts (the stomach's two openings and curve, the kidney's notch and tubes, the heart's
    vessels on top), a slightly uneven, hand-drawn outline (no perfect circles or ellipses for a whole
@@ -39,6 +54,9 @@ changes the kit to suit one sheet: a missing piece is built in the sheet's own f
    they are (a sugar cube, a capsule, a drop, a Y-shaped antibody), with ONE costume piece or ONE held
    prop for their job (a guard's cap, a shield, a key, a broom) and, where it helps, a small white name
    tag (`<NameTag>`).
+   From format 6 (engine v9, 2026-11-23, decision 13): a job may also be a little worker in uniform (`MiniWorker`: two heads tall, kit
+   eyes, small real hands, a uniform and one prop: guard, cleaner, firefighter, courier, builder), and a chemical may wear
+   its name on a paper band round its body (`BandLabel`); a character that wears its name gets no extra tag.
 7. **One colour family per character**, muted: the body family (`FLESH`) for tissue, `CLOTH` for clothes and
    objects, `SKIN` for people. No neon, no pure black fills except hair, pupils and shoes, no pure
    saturated primaries.
@@ -91,10 +109,19 @@ top of the ten above:
 - Never mirror a character that has a one-sided detail (Dr. Mira, Mom). Hands never overlap hands.
   A hand that lies on the body or on a thing uses the hand kind `rest` (fingers together), never the
   splayed open hand.
-- Inside the body means MICROSCOPIC (the owner's word): we are among cells, not looking at a diagram of an
-  organ. Cells are bigger than the virus (a nucleus about its size). Every place has three flat planes for
-  depth: small darker cells behind with thin lines, the action in the middle with the full outline, one or
-  two big dark cell edges cropped by the frame corners in front. No blur, no gradient.
+- Inside the body means INSIDE THE REGION (engine v9, 2026-11-23, decision 6; until then the rule was "MICROSCOPIC"): an anatomy
+  stage (`anatomy.tsx`: `chest`, `vesselInside`, `upperBelly`, `throatSide`, `skullSide`, `tissue`, `skinSection`), the hero
+  organ in its real place with 3+ real neighbours around it, in three planes (the cavity behind, the organ and its
+  neighbours, a cropped near edge), one warm flesh family (decision 7: 60%+ of a body shot warm, any other colour family
+  8% or less, kept for the intruder; no flat non-tissue field over 12%), built to HOLD 20 s and change state (its dials).
+  The micro scale only for cells, blood and germs, still with three flat planes for depth (small darker cells behind with
+  thin lines, the action in the middle with the full outline, big dark cell edges cropped by the corners in front), and
+  characters standing on a tissue floor with contact shadows. Cells are bigger than the virus. No blur, no gradient
+  (except the three soft exceptions of rule 2).
+- Rooms (engine v9, 2026-11-23, decision 7): walls from the pale `ROOM` palette (saturation 0.22 or less, brightness 165+), clothes a clear
+  step from the wall; still unique per video. Two-person shots framed tighter (decision 12): a head at least 190 px wide,
+  a crop at the knees is fine (`PEOPLE_SCALE` about 4.0 for two-shots). Every head and wall item is either over 85% or
+  under 15% inside the frame (no half person at the edge, check L6).
 - People have a real nose in every view (side: it sticks out of the profile; three-quarter: a small rounded
   shape below the eyes), never a bare line on an eye.
 - A cast figure is placed as approved (`<Put>`); a scene may pass a figure's own props, never redraw it.
@@ -114,6 +141,10 @@ Every Toon follows these from now on. Code: `src/toons/v8/hud.tsx`, `video.tsx`,
 - `CtaCardV4`: the logo's royal blue `#214ba1` with lighter flat rings; the logo (`assets/brand/logo.png`) top centre
   in a white circle, "MedPeak Health" typed below; the headline on ONE line (yellow, auto-sized); three white cards
   with big bold icons; the follow line in a yellow pill.
+- **From format 6 (engine v9, 2026-11-23, decision 25, option A): the card is 5-6 s**: a hard cut in (no push-up slide), the headline and
+  the three points come up together (0.15 s apart), Joey says only the follow line; the story ends on the answer or a loop
+  line. Layout: the stack centred between y 200 and 1500, icon circle 170 px in a 220 px card, icons drawn to fit (no
+  clipping), the follow box above y 1500, the drop icon's gloss streak gone. Retention read after two weeks.
 - **Never cut or speed up the narrator** (the owner, 2026-11-20): the story stays under 60 s, the end card may take
   the Short past one minute. The card holds 1.2 s after his last word.
 - The narrator's clip is added AFTER the story, so the script rules (loop, the answer in the last quarter) still pass.
@@ -121,6 +152,9 @@ Every Toon follows these from now on. Code: `src/toons/v8/hud.tsx`, `video.tsx`,
 **Watermark**: `@MedPeakHealth`, Inter Regular (400), 26 px, opacity 0.44 (half transparent), no outline (a 1 px
 flat drop only). Act 1 top right, act 2 bottom left, act 3 top middle. **No watermark on the end card** (the owner, 2026-11-21): it
 fades out over 0.35 s as the card comes in.
+From format 6 (engine v9, 2026-11-23, decision 26): act 2 sits at y 1180-1220 (at 1330 it read as a second caption line), act 3 takes the
+first of top-left / top-middle / top-right that is clear of heads in that shot, the mark turns ink-coloured (same opacity)
+on backgrounds brighter than 200, and there is no watermark on the cover still (check L5).
 
 **Icons only when the words say it**: a dog on "stray dog", a dog with a warning badge on "fatal", the stopwatch on
 "fifteen minutes", the calendar on "months", the shield ONLY where the vaccine is named ("shots"). No icon the words
@@ -134,7 +168,21 @@ completely everywhere"; the two white rings of 2026-11-20 are gone). Never on pe
 start a tag after a transition has finished.
 
 **Camera and transitions**
-- No punch zoom on key words. Rooms: one smooth move per shot (the lean is averaged over 2.4 s). Inside the body:
+- **From format 6 (engine v9, 2026-11-23, decision 16) the camera is LOCKED**: one framing for the whole of a body shot (no creeping dive,
+  no lean), at most ONE punch-in a video (2x or more, held 3 s+, never followed by the reverse, `punch` on the ShotDef);
+  at most 6 cuts a minute (aim 4; time cards not counted), a median hold of 6 s+, a body place held 8 s+ before cutting
+  away. Macros are no longer required. What keeps the eye is something ENTERING the held frame (an intruder, a level that
+  fills, damage that spreads), then a hold (checks C1, V1-V3, M2). The text below is the version 4 camera (videos already out).
+- **Time cards** (engine v9, 2026-11-23, decision 20): a black card with one short line in the caption font ("3 DAYS LATER"), 0.8-1.2 s,
+  hard cut in and out, the watermark kept; the picture after it has the SAME framing as before, only the state changed;
+  at most 3 a video (check C8). It is a cut, not a transition.
+- **The dive** (engine v9, 2026-11-23, decision 21): one shared `Dive` of 0.9 s with an even (log-scale) zoom (6% a frame at most at 60 fps),
+  so it reads as a dive and not a jump; the person on screen 1 s or less, inside the body by about 2 s.
+- **Impacts** (engine v9, 2026-11-23, decisions 18 and 19; a 10 s before/after slice to the owner first): no automatic shake (the player
+  shook the frame 9 px on every flash), at most 1 flash, 1 shake (12 px, 0.25 s) and 2 bursts a video, never on or near a
+  face (1.2 face radii); a `FightCloud` (white boiling cloud, 1-2 s) and small face marks instead. Flow never stops but is a
+  few particles in a band of 5% of the frame or less.
+- Version 4: no punch zoom on key words. Rooms: one smooth move per shot (the lean is averaged over 2.4 s). Inside the body:
   a continuous dive from the first frame to the last; every depth plane (`Depth d=0..1`) grows at its own rate,
   the near planes most (`DiveCtx`). Every new micro place is built in depth planes so it can dive.
 - **NO transitions between scenes: every change of scene is a clean CUT** (the owner, 2026-11-21: "I don't want
@@ -163,6 +211,10 @@ Show a BEFORE/AFTER sheet and a frame at video size for any clothes change.
 danger itself, with a big visual event every half second before anyone talks (rabies: a stray dog lunges at the lens,
 CHOMP, a saliva drop with the Virus grows on the fang, the camera dives into it, the Virus bursts out at the lens).
 A shot may hold its first line back with `"lead": <seconds>` (0-3) in the script, so the picture plays first.
+From format 6 (engine v9, 2026-11-23, decisions 3 and 21): frame 0 the person and a real action with a sound hit; the first line is said
+INSIDE the story (a character's reaction or demand about the intruder or the damage, 8 words or fewer, first word at
+0.3-1.2 s, the topic named by 3.0 s; "you" only between characters); the dive starts at the end of that line, 0.9 s;
+the hook keeps coming at the lens. One of the three hook choices on the script sheet may stay the "to the viewer" kind.
 
 **The race bar** (`RaceBar` in `hud.tsx`): the hook's question as a picture on the screen in the body shots: a nerve
 from the bite to the brain, the Virus riding it; it creeps, jumps, hits the antibody wall and is crossed out when
@@ -171,6 +223,10 @@ caught. A video with a chase question gets one.
 **Approval steps for a video**: 16:9 look sheets -> narrator clip (cost first) -> a 10 s motion test
 (`toon-v8-render --from A --to B`) -> the full video + the storyboard from the finished render
 (`node --import tsx pipeline/toon-v8-board.mjs <slug>`).
+From engine v9, 2026-11-23 (decision 17): the full video goes to the owner only with its **scoreboard** (`renders/scoreboard.jpg`, made by
+`node --import tsx pipeline/toon-score.mjs <slug>`, which the final render runs on its own) saying PASS: every check runs on
+the FINAL render (picture checks C1-C8, the layout log's L1-L14, motion M1-M5, camera V1-V3, script and sound). The layout
+log (`renders/layout.json`) is what the real component tree drew; every new piece reports to it (`useReport`, `play.tsx`).
 
 
 ## Owner's notes of 2026-11-21 (no-sleep), rules from now on
@@ -185,6 +241,11 @@ caught. A video with a chase question gets one.
 - **Scene changes are hard cuts** (later the same day the owner removed transitions everywhere; see Camera). Never a
   zoom-through crossfade that ghosts a big face over a room.
 - **Music 10% lower** than the director's levels: `MUSIC_LEVEL = 0.9` in video.tsx (the owner: "background music 10% decrease").
+  From format 6 (engine v9, 2026-11-23, decisions 22-24): every video still gets its own new track, but always from one family (playful funk,
+  slap bass, light percussion, 130-165 BPM, a brighter "confident" half from the doctor's answer, plus the topic's colour);
+  the bed about 5 dB up in the pauses (music about 6 dB under the voice) with a 3 dB dip under words over 0.25 s (an A/B
+  slice to the owner first, `MUSIC_LEVEL` then follows the director's new `SOUND` levels); at most 2 planned music stops of
+  0.4-0.8 s on a gag (`"stop": true` on an event), never on a word; accidental holes still fail.
 - **The hook (the owner chose this shape for no-sleep, after "there is no powerful hook")**: frame 0 is never an empty
   place. Open on the PERSON and the topic's cue (Sam's face at 2 a.m., lit by the phone, a clock slamming onto 2:00 with a
   beep), his line as a cold open, then inside the same first shot the camera dives through his face into the body place,

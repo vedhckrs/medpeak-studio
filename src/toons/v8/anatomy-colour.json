@@ -1,0 +1,65 @@
+{
+ "chest": {
+  "warm": 93,
+  "other": 0.0,
+  "flat": 0.3,
+  "sat": 0.36,
+  "bright": 159
+ },
+ "vesselInside": {
+  "warm": 98,
+  "other": 0.2,
+  "flat": 0.1,
+  "sat": 0.35,
+  "bright": 193
+ },
+ "tissue": {
+  "warm": 99,
+  "other": 0.0,
+  "flat": 0.0,
+  "sat": 0.47,
+  "bright": 208
+ },
+ "upperBelly": {
+  "warm": 95,
+  "other": 0.0,
+  "flat": 0.5,
+  "sat": 0.43,
+  "bright": 183
+ },
+ "throatSide": {
+  "warm": 92,
+  "other": 0.0,
+  "flat": 0.5,
+  "sat": 0.33,
+  "bright": 187
+ },
+ "skullSide": {
+  "warm": 94,
+  "other": 0.0,
+  "flat": 0.6,
+  "sat": 0.29,
+  "bright": 200
+ },
+ "skinSection": {
+  "warm": 84,
+  "other": 0.0,
+  "flat": 11.9,
+  "sat": 0.44,
+  "bright": 212
+ },
+ "room": {
+  "warm": 12,
+  "other": 13.8,
+  "flat": 32.0,
+  "sat": 0.17,
+  "bright": 199
+ },
+ "old_room": {
+  "warm": 7,
+  "other": 31.1,
+  "flat": 2.7,
+  "sat": 0.18,
+  "bright": 154
+ }
+}

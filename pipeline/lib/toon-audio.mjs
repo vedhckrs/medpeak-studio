@@ -8,6 +8,22 @@ export const CAST_FILE = path.join(ROOT, 'skill', 'medpeak-health', 'toons-cast.
 export const SFX_DIR = path.join(ROOT, 'assets', 'toons-sfx');
 export const MUSIC_DIR = path.join(ROOT, 'assets', 'toons-music');
 export const loadCast = () => readJson(CAST_FILE);
+/** The people of the cast (everyone else but the doctor and the narrator is a body character: an organ, a cell, a chemical). */
+export const PEOPLE = ['patient', 'mom', 'kid', 'grandpa', 'baby', 'dad'];
+/** A character's role for its speaking speed (decision 5): body / people / doctor / narrator. */
+export const roleOf = (who) => (who === 'doctor' ? 'doctor' : who === 'narrator' ? 'narrator' : PEOPLE.includes(who) ? 'people' : 'body');
+/**
+ * The ElevenLabs speed of a line. Format 6 (decision 5: "the same voices, only the pace changes"): the character's own speed
+ * moved into its role's band from toons-cast.json `roleSpeed` (body 1.12-1.2, people 1.05-1.1, the doctor 0.92-0.95); a
+ * line's own `speed` still wins. The videos already out keep the character's own speed.
+ */
+export const speedOf = (cast, who, {format = 0, line} = {}) => {
+  const own = cast.cast[who]?.speed ?? 1;
+  if (line !== undefined && line !== null) return Math.max(0.7, Math.min(1.2, line));
+  if (format < 6) return own;
+  const band = cast.roleSpeed?.[roleOf(who)];
+  return band ? Math.max(band[0], Math.min(band[1], own)) : own;
+};
 
 /**
  * A Toon's voice clips are paid for once, so they are kept in git in assets/toons-voice/<slug>/ (owner,

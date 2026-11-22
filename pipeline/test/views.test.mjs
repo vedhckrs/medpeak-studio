@@ -9,7 +9,7 @@ import path from 'node:path';
 import {V8_VIDEOS} from '../../src/toons/v8/video.tsx';
 
 const ROOT = path.resolve(import.meta.dirname, '..', '..');
-const OUT = new Set(['rabies', 'no-sleep', 'creatine', 'quit-sugar']);
+const OUT = new Set(['rabies', 'no-sleep', 'creatine', 'quit-sugar', 'fasting', 'snake-bite']); // videos already out (blueprint 05, Part 4)
 test('no jump cut inside a shot: a new framing changes the size 1.5 times or more', () => {
   for (const [slug, shots] of Object.entries(V8_VIDEOS)) {
     if (OUT.has(slug)) continue;

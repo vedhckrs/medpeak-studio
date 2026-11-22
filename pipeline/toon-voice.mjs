@@ -20,7 +20,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {args, PUBLIC, ROOT, readJson, videoDir, writeJson} from './lib/util.mjs';
 import {approved, balance, costOf, needApproval, post, printPool} from './lib/eleven.mjs';
-import {loadCast, seconds, voiceFx} from './lib/toon-audio.mjs';
+import {loadCast, seconds, speedOf, voiceFx} from './lib/toon-audio.mjs';
 import {toWords} from './voice.mjs';
 
 const AUDITION = 'Hello! This is my voice. Wait, what was that? Oh no, not again!';
@@ -133,7 +133,8 @@ const main = async () => {
   for (const l of todo) {
     const c = cast.cast[l.who];
     const raw = path.join(ROOT, 'out', 'toons', 'raw', slug, `${l.id}.mp3`);
-    const words = await speakLine(cast, l.who, l.text, l.emotion, raw, l.speed); // a line's own speaking speed (toon.json: "speed", 0.7-1.2; paid: a new take)
+    // a line's own speaking speed (toon.json: "speed", 0.7-1.2; paid: a new take); format 6: the role's band (toons-cast.json roleSpeed)
+    const words = await speakLine(cast, l.who, l.text, l.emotion, raw, speedOf(cast, l.who, {format: toon.format ?? 0, line: l.speed}));
     const file = path.join(outDir, `${l.id}.mp3`);
     const tempo = Math.max(0.9, Math.min(1.15, l.tempo ?? 1));
     voiceFx(raw, file, c.pitch, tempo, l.cut ?? null);

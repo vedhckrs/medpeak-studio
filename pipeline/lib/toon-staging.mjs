@@ -128,3 +128,206 @@ export const scanStaging = async (toon, timings, opts = {}) => {
   out.ok = !out.onHeads.length && !out.outside.length && !out.stacked.length && !out.onCaption.length && !out.hidden.length && !out.onWall.length && !out.halfHidden.length && !out.onStageFace.length;
   return out;
 };
+
+// =====================================================================================================================
+// Engine v9, phase 1 (2026-11-23): the LAYOUT checks L1-L14 on the layout log of a look v8 video (blueprint 05, Part 5).
+// `scanStaging` above reads the OLD engine (Player.tsx, rooms.tsx, stages.tsx) and the script: for a v8 video it measured
+// nothing that is drawn (it said "ALL PASS" with one graphic found a video). These read what the real component tree drew
+// (pipeline/lib/toon-layout.mjs -> videos/<slug>/renders/layout.json). Every result:
+//   {id, name, status: 'pass' | 'fail' | 'n/m' (nothing reports it yet), value, limit, rows, partial}
+// `partial`: the check rests on the probe's shims (estimated boxes) until the components report themselves
+// (plans/engine-upgrade-2026-11-23/07-layout-log-wiring.md).
+import * as G from './toon-geom.mjs';
+const {centre, contains, dist, episodes, fmt, inter, insideShare, pad, radius, sameOwner} = G;
+
+export const LAYOUT_LIMITS = {facePad: 20, faceCover: 0.05, textOnText: 0.02, wmCaption: 120, edge: [0.15, 0.85], burstFace: 1.2, bursts: 2, texts: 2, plates: 1,
+  eye: [110, 190], eyeBig: 110, faceTop: 800, gazeDeg: 30, gazeShare: 0.7, hands: 30, handFrames: 3, captionHit: 0.02, minFace: 40};
+const TEXT = new Set(['caption', 'tag', 'label', 'plate', 'text']);
+const COVER = new Set(['fx', 'tag', 'label', 'plate', 'text', 'icon', 'bubble', 'prop']);
+/** A face big enough to matter: background extras (a crowd of tiny cells) are left out of the face checks. */
+const wide = (i) => i.box[2] - i.box[0] >= LAYOUT_LIMITS.minFace;
+const shimmed = (items) => items.some((i) => i.src === 'shim');
+
+export const scanLayout = (log) => {
+  const L = LAYOUT_LIMITS;
+  const story = log.probes.filter((p) => p.kind !== 'card');
+  const R = [];
+  const res = (id, name, hits, extra = {}) => {
+    const eps = episodes(hits).filter((e) => !extra.minDur || e.to - e.from >= extra.minDur - 1e-6);
+    const measured = extra.measured ?? true;
+    R.push({id, name, status: !measured ? 'n/m' : eps.length ? 'fail' : 'pass', value: extra.value ?? eps.length, limit: extra.limit ?? 0, partial: !!extra.partial,
+      rows: eps.slice(0, 40).map((e) => `${fmt(e.from)}${e.to > e.from ? `-${fmt(e.to)}` : ''}, shot ${e.shot}: ${e.what}`), episodes: eps.length, frames: hits.length, note: extra.note});
+  };
+  const all = (k) => story.flatMap((p) => p.items.filter((i) => i.kind === k));
+  const anyShim = story.some((p) => shimmed(p.items));
+  const facesSeen = all('face').length + all('eye').length;
+  const name = (i) => `${i.kind}${i.text ? ` "${i.text}"` : ''}${i.who ? ` (${i.who})` : ''}`;
+
+  // L1 nothing on a face (the owner's own hand and body are fine)
+  const l1 = [];
+  for (const p of story) {
+    const faces = p.items.filter((i) => i.kind === 'face' && wide(i));
+    for (const f of faces) {
+      const fb = pad(f.box, L.facePad);
+      for (const o of p.items) {
+        if (o === f || sameOwner(o, f)) continue;
+        const cover = COVER.has(o.kind) || (o.kind === 'face' && wide(o)) || (o.kind === 'hand' && o.who && f.who && o.who !== f.who);
+        if (!cover) continue;
+        if (inter(fb, o.box) > L.faceCover * G.area(fb)) l1.push({t: p.t, shot: p.shot, what: `${name(o)} on ${f.who ?? 'a'} face`});
+      }
+    }
+  }
+  res('L1', 'Nothing on a face', l1, {partial: anyShim, measured: facesSeen > 0});
+
+  // L2 text on text
+  const l2 = [];
+  for (const p of story) {
+    const tx = p.items.filter((i) => TEXT.has(i.kind));
+    for (let a = 0; a < tx.length; a++) for (let b = a + 1; b < tx.length; b++) {
+      if (inter(tx[a].box, tx[b].box) > L.textOnText * Math.min(G.area(tx[a].box), G.area(tx[b].box))) l2.push({t: p.t, shot: p.shot, what: `${name(tx[a])} on ${name(tx[b])}`});
+    }
+  }
+  res('L2', 'No text on text', l2, {partial: anyShim});
+
+  // L3 a face, an eye or a mouth in the caption
+  const l3 = [];
+  for (const p of story) {
+    const cap = p.items.find((i) => i.kind === 'caption');
+    if (!cap) continue;
+    for (const f of p.items.filter((i) => ((i.kind === 'eye' || i.kind === 'mouth') && i.box[2] - i.box[0] >= L.minFace / 4) || (i.kind === 'face' && wide(i)))) {
+      const hit = f.kind === 'face' ? inter(f.box, cap.box) > 0.1 * G.area(f.box) : inter(f.box, cap.box) > L.captionHit * G.area(f.box);
+      if (hit) l3.push({t: p.t, shot: p.shot, what: `the caption on ${f.who ? `${f.who}'s` : 'a'} ${f.kind}`});
+    }
+  }
+  res('L3', 'Caption off every face', l3, {partial: anyShim, measured: facesSeen > 0});
+
+  // L4 a tag's arrow ends on the wrong thing (another face, a prop) or short of its character
+  const l4 = [];
+  for (const p of story) {
+    for (const tg of p.items.filter((i) => i.kind === 'tag' && i.tip)) {
+      const wrong = p.items.find((o) => (o.kind === 'face' || o.kind === 'eye' || o.kind === 'prop' || o.kind === 'mouth') && contains(o.box, tg.tip) && !(tg.target && contains(pad([tg.target[0] - tg.target[2], tg.target[1] - tg.target[2], tg.target[0] + tg.target[2], tg.target[1] + tg.target[2]], 0), centre(o.box))));
+      if (wrong) l4.push({t: p.t, shot: p.shot, what: `the ${tg.text} tag's arrow ends on ${name(wrong)}`});
+      // a stage's neighbour and face-room boxes (anatomy.tsx StageReport) are not a character's body
+      const onBody = p.items.some((o) => (o.kind === 'body' || o.kind === 'face') && !/^(neighbour|faceRoom):/.test(o.id ?? '') && contains(o.box, tg.tip) && (!tg.target || contains(o.box, [tg.target[0], tg.target[1]])));
+      if (!onBody && tg.target && dist(tg.tip, tg.target) > tg.target[2] * 1.6) l4.push({t: p.t, shot: p.shot, what: `the ${tg.text} tag's arrow stops short of its character`});
+    }
+  }
+  res('L4', 'Tag arrows end on their own character', l4, {partial: anyShim, measured: all('tag').length > 0, note: all('tag').length ? undefined : 'no tags on screen'});
+
+  // L5 the watermark on a head, or close above the caption (it reads as a second caption line)
+  const l5 = [];
+  const band = log.caption === 2 ? [1324, 1434] : [1380, 1560];
+  for (const p of story) {
+    const wm = p.items.find((i) => i.kind === 'watermark');
+    if (!wm) continue;
+    const head = p.items.find((i) => (i.kind === 'head' || i.kind === 'face') && inter(i.box, wm.box) > 0);
+    if (head) l5.push({t: p.t, shot: p.shot, what: `the watermark on ${head.who ?? 'a'} ${head.kind}`});
+    const gap = Math.max(band[0] - wm.box[3], wm.box[1] - band[1]);
+    if (gap < L.wmCaption) l5.push({t: p.t, shot: p.shot, what: `the watermark ${Math.round(Math.max(0, gap))} px from the caption line (keep ${L.wmCaption}+)`});
+  }
+  res('L5', 'Watermark clear of heads and caption', l5, {partial: anyShim});
+
+  // L6 half a head (or a wall item) at the edge of the picture
+  const l6 = [];
+  for (const p of story) for (const h of p.items.filter((i) => i.kind === 'head' || i.kind === 'wallItem' || (i.kind === 'face' && !i.who && wide(i)))) {
+    const k = insideShare(h.box);
+    if (k > L.edge[0] && k < L.edge[1]) l6.push({t: p.t, shot: p.shot, what: `${h.who ? `${h.who}'s ` : 'a '}${h.kind === 'wallItem' ? 'wall item' : h.kind} ${Math.round(k * 100)}% inside the picture`});
+  }
+  res('L6', 'No half heads at the edge', l6, {partial: anyShim, minDur: 0.5}); // held half in, not passing through the edge
+
+  // L7 bursts near faces; bursts a video
+  const l7 = [];
+  const bursts = new Set();
+  for (const p of story) for (const b of p.items.filter((i) => i.kind === 'fx')) {
+    bursts.add(`${p.shot}:${b.id ?? b.box.join(',')}`);
+    for (const f of p.items.filter((i) => i.kind === 'face' && wide(i))) {
+      const gap = dist(centre(b.box), centre(f.box)) - radius(b.box);
+      if (gap < L.burstFace * radius(f.box)) l7.push({t: p.t, shot: p.shot, what: `a burst on ${f.who ?? 'a'} face`});
+    }
+  }
+  if (bursts.size > L.bursts) l7.push({t: 0, shot: '-', what: `${bursts.size} bursts in the video (at most ${L.bursts})`});
+  res('L7', 'Bursts off faces, 2 a video at most', l7, {partial: anyShim, value: bursts.size, limit: L.bursts});
+
+  // L8 text elements besides the caption and the watermark; number plates a video
+  const l8 = [];
+  const plates = new Set();
+  for (const p of story) {
+    const tx = p.items.filter((i) => ['tag', 'label', 'plate', 'text'].includes(i.kind));
+    for (const pl of tx.filter((i) => i.kind === 'plate')) plates.add(pl.text ?? pl.box.join(','));
+    if (tx.length > L.texts) l8.push({t: p.t, shot: p.shot, what: `${tx.length} texts on screen (${tx.map((i) => i.text ?? i.kind).join(', ')})`});
+  }
+  if (plates.size > L.plates) l8.push({t: 0, shot: '-', what: `${plates.size} number plates in the video (${[...plates].join(', ')}; at most ${L.plates})`});
+  res('L8', 'Two texts at most, one number plate', l8, {partial: anyShim, value: plates.size, limit: L.plates});
+
+  // L9 the hero organ's eye in a body shot (screen pixels) and its face height
+  const l9 = [];
+  const perShot = {};
+  for (const p of story.filter((q) => q.kind === 'body')) {
+    const eyes = p.items.filter((i) => i.kind === 'eye');
+    if (!eyes.length) continue;
+    const big = eyes.reduce((a, b) => ((b.box[2] - b.box[0]) > (a.box[2] - a.box[0]) ? b : a));
+    const w = big.box[2] - big.box[0];
+    (perShot[p.shot] ??= []).push(w);
+    if (w > L.eye[1]) l9.push({t: p.t, shot: p.shot, what: `an eye ${Math.round(w)} px wide (110-190)`});
+    else if (w >= L.eyeBig && centre(big.box)[1] > L.faceTop) l9.push({t: p.t, shot: p.shot, what: `the hero face at y ${Math.round(centre(big.box)[1])} (above ${L.faceTop})`});
+  }
+  // the value: the biggest hero eye a body shot holds (the median over the shot, so a dive passing through does not count)
+  const heroMax = Math.max(0, ...Object.values(perShot).map((ws) => ws.sort((a, b) => a - b)[ws.length >> 1]));
+  res('L9', 'Organ eye 110-190 px, face above y 800', l9, {partial: anyShim, value: Math.round(heroMax), measured: all('eye').length > 0, minDur: 0.5}); // held, not a dive passing through
+
+  // L10 gaze: the listener looks at the speaker (pupils toward them), after the hook line
+  const l10 = [];
+  let gazeLines = 0;
+  const firstLine = log.lines[0]?.id;
+  for (const line of log.lines) {
+    if (line.id === firstLine) continue;
+    const ps = story.filter((p) => p.line === line.id && p.speaker === line.who);
+    if (!ps.length) continue;
+    const off = new Map(); const seen = new Map();
+    for (const p of ps) {
+      const sp = p.items.find((i) => i.kind === 'face' && i.who === line.who);
+      if (!sp) continue;
+      for (const f of p.items.filter((i) => i.kind === 'face' && i.who && i.who !== line.who && i.dir)) {
+        seen.set(f.who, (seen.get(f.who) ?? 0) + 1);
+        const to = [centre(sp.box)[0] - centre(f.box)[0], centre(sp.box)[1] - centre(f.box)[1]];
+        const mag = Math.hypot(f.dir[0], f.dir[1]);
+        const ang = mag < 0.15 ? 180 : Math.abs(((Math.atan2(f.dir[1], f.dir[0]) - Math.atan2(to[1], to[0])) * 180) / Math.PI);
+        const a = ang > 180 ? 360 - ang : ang;
+        if (a > L.gazeDeg) off.set(f.who, (off.get(f.who) ?? 0) + 1);
+      }
+    }
+    for (const [who, n] of seen) {
+      gazeLines++;
+      const k = (off.get(who) ?? 0) / n;
+      if (k > L.gazeShare) l10.push({t: ps[0].t, shot: ps[0].shot, what: `line ${line.id}: ${who} looks away from ${line.who} (${Math.round(k * 100)}% of the line${k === 1 ? ', at the lens' : ''})`});
+    }
+  }
+  res('L10', 'Listeners look at the speaker', l10, {partial: anyShim, measured: gazeLines > 0, value: l10.length, limit: 0, note: gazeLines ? `${gazeLines} listener-lines measured` : 'no line with two named faces yet'});
+
+  // L11 hands of different people closer than 30 px for more than 3 frames
+  const l11 = [];
+  let run = new Map();
+  for (const p of story) {
+    const hs = p.items.filter((i) => i.kind === 'hand' && i.who);
+    const now = new Set();
+    for (let a = 0; a < hs.length; a++) for (let b = a + 1; b < hs.length; b++) {
+      if (hs[a].who === hs[b].who) continue;
+      const gap = dist(centre(hs[a].box), centre(hs[b].box)) - radius(hs[a].box) - radius(hs[b].box);
+      if (gap < L.hands) { const k = [hs[a].who, hs[b].who].sort().join('+'); now.add(k); run.set(k, (run.get(k) ?? 0) + 1); if (run.get(k) === L.handFrames + 1) l11.push({t: p.t, shot: p.shot, what: `${k.replace('+', "'s and ")}'s hands touch`}); }
+    }
+    for (const k of [...run.keys()]) if (!now.has(k)) run.delete(k);
+  }
+  res('L11', "Hands never on another person's hands", l11, {partial: anyShim});
+
+  // L12 thought bubbles: a trail to their owner, never on a wall item
+  const l12 = [];
+  for (const p of story) for (const b of p.items.filter((i) => i.kind === 'bubble')) {
+    if (!b.tip) l12.push({t: p.t, shot: p.shot, what: 'a bubble without its trail'});
+    const wall = p.items.find((i) => i.kind === 'wallItem' && inter(i.box, b.box) > 0.1 * G.area(i.box));
+    if (wall) l12.push({t: p.t, shot: p.shot, what: 'a bubble on a wall item'});
+  }
+  res('L12', 'Bubbles keep their trail, off wall items', l12, {note: all('bubble').length ? undefined : 'no bubbles on screen'});
+  res('L13', 'The cover frame is clean', [], {measured: false, note: 'measured by toon-package when it picks the cover (phase 6)'});
+  res('L14', 'The symptom shows on the patient', [], {measured: false, note: 'needs the rig\'s `mark` (phase 2) and a `symptom` event'});
+  return {checks: R, ok: R.every((c) => c.status !== 'fail'), shimmed: anyShim};
+};

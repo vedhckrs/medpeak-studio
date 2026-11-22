@@ -6,6 +6,80 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-23 (33) - MacBook (local Claude Code, the integration agent) - branch `engine/v9` - engine v9 wired together: a format-6 video now plays with all of v9; the old videos are pixel-identical
+
+- **Player** (`src/toons/v8/video.tsx`), format 6 only: the whole picture inside `<V9>`; the camera div uses the kit's ink-zoom
+  (class `ink-zoom` + `--ink-k`, kit.tsx `INK_ZOOM_CSS`): agent C's unused `--ink-out/--ink-in` vars are gone, ONE mechanism;
+  `CtaCardV9` (5.5 s, hard cut, one pop, no whoosh, no chime) and `ctaSeconds` = max(5.5, the narrator); `WatermarkV9` (act 3
+  takes the first top spot clear of the shot's head boxes, `shotHeads`; ink-coloured on room shots or a shot with `light`);
+  `captionShows` (cleared in pauses over 0.4 s and on cuts) and the -2..+2 degree caption tilt (decision 27 = the recommendation);
+  `s.v9` makes `bodyFace` return a continuous blink `lid` (play.tsx `blinkLid`, the 0.2 s blink) and a flat angry mouth
+  (`FACE_OF9`). New exports: `frameState`, `cameraOf`, `captionAt`, `actsOf`, `shotHeads`, `PlayerScreen` (caption + watermark in
+  `<ScreenSpace>`).
+- **One TimeCard**: `hud.tsx` (agent C's look and `TIME_CARD` with `bg #0d0a09`, `most: 3`); `time-card.tsx` removed.
+- **play.tsx**: `ShotNow.pass/state/v9`, `LineNow.key`, `ShotDef.kind/stage/punch/faces/light` (`ShotNow9`/`ShotDef9` stay as aliases).
+- **Layout log**: every component of `07-layout-log-wiring.md` reports itself (kit Eyes/Mouth/TinyArm/Fig/BandLabel, `FaceOwned` for
+  the people rig, PersonAt/HeadAt with the real hand shapes, hud caption/watermark/tag/icon/StayLabel/TimeCard, act
+  Burst/FightCloud/Sweat/Marks/Stamp/SpeedLines, MiniWorker hands, Intruder, anatomy faces by name + neighbours + face rooms).
+  `toon-layout.mjs` lost its shims and its copies of the caption and watermark rules: it uses the player's own camera
+  (`frameState`) and renders `PlayerScreen`. `LAYOUT_VERSION` 3. The scoreboard row "Neighbours around the hero organ" is measured.
+- **08-c-to-a.md items**: music prompt from `MUSIC_TEMPLATE` (`toon-music.mjs --slug`, format 6), the music-family scan by ear
+  (`toon-music-scan.mjs`, A3; `--family <mp3>`), the format-6 mix and planned stops (`toon:sound`, A1/A2), role speeds from
+  `roleSpeed` (`toon-voice.mjs`, format 6 only), voices apart (`toon:listen --voices`, A4: pitch per line), the short card in
+  `toon-check`; the scoreboard reads the music family, voices apart and the format-6 gate (S1-S12).
+- **Motion test** redone on the chest stage with the full v9 look: `out/engine-v9-samples/motion-test-chest.mp4` and
+  `motion-test-chest-sheet.jpg` (not in git; `src/toons/v8/motion9.tsx`). Checked frame by frame: no one-frame pops, big changes only
+  in the dive and at the card's two cuts; fixed a NO SUGAR calendar in the kitchen and a raised arm that touched the frame edge.
+- **Identity**: stills of rabies, no-sleep, creatine, quit-sugar, fasting, snake-bite at 4, 20 and 35 s before and after: the same
+  bytes. `tsc` clean, `npm test` 80/80, `npm run toon:score -- fasting` runs (the old video fails v9 bands, as expected).
+- **Open**: no real format-6 video exists yet (the pilot); the symptom `mark` does not report yet (L14 n/m); music in the pauses needs
+  a voiced format-6 video; not pushed, not merged.
+
+## 2026-11-23 (32) - MacBook (local Claude Code, agent A of three) - branch `worktree-agent-a3d0ff26a526ea3d8` - engine v9 phases 0 and 1: the owner's 28 answers written into the rules; the checks now measure the PICTURE
+
+- The owner on the blueprint (`plans/engine-upgrade-2026-11-23/05-blueprint.md`): "All 28 recommend and start 2 to 3 agents to fix
+  and upgrade engine and everything i want proper as per report". Agents A (checks and rules), B (the look), C (motion, time, script,
+  sound) work in parallel worktrees, each on its own files (`06-owner-decisions.md`). New videos pause until he reviews the samples.
+- **Phase 0 (rules):** `CLAUDE.md` (engine v9 / format 6, inside the body = the region, the whole organ with 120-170 px eyes and one
+  warm family, caption kept and faces out of its band, watermark places, the short end card, time cards, music family and level,
+  the in-story hook and the 0.9 s dive, the locked camera and cut budget, impacts, gaze, the format 6 script, the look check on the
+  final render + the scoreboard, who builds the rebuild, the v8 map and the new commands). Skill: `SKILL.md` (rule 7, the Toons
+  workflow, the new `references/toons-target.md` = blueprint Part 1 with the check of every number), `toons-v8-style.md` (rules 2,
+  3, 6, scenes, rooms, end card, watermark, camera, time cards, dive, impacts, hook, approval steps, music), `toons-script.md` (new
+  top section "Format 6: one story"), `toons-look.md` (flow, the new look check), `toons-camera.md` (the v9 camera; the old text
+  under "Old engine only"), `toons-known-issues.md` (R2 "the checks read the old engine" as a numbered bug, the new checks in the
+  table, the 2026-11-22 checklist updated), `toons-blueprint.md` (stages, mini workers, intruders, every piece reports),
+  `toons-listening.md`, `medical-accuracy.md`, `retention-7.md` (Toons only), `toons-cast.json` (`roleSpeed`, the note).
+  Topic #7 is NOT marked taken yet (only when the pilot starts).
+- **Phase 1 (measure the picture):**
+  - The layout log API in `src/toons/v8/play.tsx` (`LayoutCtx`, `FrameCtx`, `useReport`, `FrameMove`, `ScreenSpace`); `Put`, `Label`,
+    `Tag`, `Bubble` report in `scene.tsx` (+ `captionBandOf`). Outside a probe nothing changes: a creatine still at 15.6 s rendered
+    before and after is pixel-identical (PSNR inf), and a test proves the markup is the same.
+  - `pipeline/lib/toon-layout.mjs`: probes a v8 video in Node (30 a second, about 6 s a video) into `renders/layout.json`. Until
+    agents B/C wire their components, probe-only SHIMS report for Eyes, Mouth, TinyArm, PersonAt, HeadAt, Burst, CharTag, IconBadge
+    and follow every svg/g/div transform (estimated boxes, marked). Who must call what: `plans/engine-upgrade-2026-11-23/07-layout-log-wiring.md`.
+  - `toon-staging` / `toon-motion` / `toon-camera`: for v8 videos they read the layout log (L1-L14, M1+M3-M5, V1-V3); the old engine's
+    videos keep the old checks.
+  - `pipeline/lib/toon_picture.py` (+ `toon-picture.mjs`): C1-C8 and M2 on the final MP4, caption band masked; `toon-look.mjs` runs it
+    (old whole-frame numbers printed for history). It matches agent 2's study (creatine 16 cuts, 19.6 a minute, hold 1.9 s).
+  - `pipeline/toon-score.mjs`: the scoreboard (every Part 1 number, ref / pass / ours, PASS/FAIL, a 16:9 sheet); the final render
+    (`toon-v8-render.mjs`) now runs it and prints "NOT FOR THE OWNER" on a failing row. `pipeline/tools/toon-layout-overlay.py`
+    draws the log's boxes on real frames.
+  - Tests: `layout.test.mjs` (a known box to 2 px; markup unchanged; each layout check fails its known-bad frame),
+    `picture.test.mjs` (shake, flash, one-frame pop, re-frame and back, short card made with ffmpeg; skipped without ffmpeg/numpy);
+    `views.test.mjs` OUT += fasting, snake-bite.
+- Run: `npx tsc --noEmit -p .` clean; `npm test` 69/69. The scoreboard on the 4 newest videos:
+  `plans/engine-upgrade-2026-11-23/phase1-scoreboard.jpg` (creatine 9 pass / 35 fail, quit-sugar 15 / 28, fasting 11 / 32, snake-bite
+  11 / 33; red where the owner saw it: cuts 16-24 a minute, faces covered 4-12 times, the caption on faces 1-7 times) and
+  `phase1-proof-caught.jpg` (the boxes on the real frames).
+- NOT done / open: `package.json` has no `toon:score` / `toon:layout` scripts yet (no agent owns it; add at the merge; the docs give the
+  `node --import tsx` form); script checks S1-S12 and sound A1-A5 are agent C's phase 5 (the scoreboard already measures the script
+  numbers from the timings); voice pitch apart, music BPM, music under the voice and stage neighbours are "not measured yet" on the
+  sheet; L13 (cover) and L14 (symptom mark) wait for phases 6 and 2. Not pushed, not merged (the main session merges).
+- Next: agents B and C wire `useReport` per `07-layout-log-wiring.md`; drop the matching shims; re-run the scoreboard.
+
+---
+
 ## 2026-11-22 (29) - MacBook (local Claude Code, headless) - branch `video/snake-bite` - snake-bite look drawn, sheets NOT rendered yet
 
 - New: `src/toons/v8/snake-cast.tsx` (the venom gang Numb / Bleed / Crush as venom drops with two small fangs, the

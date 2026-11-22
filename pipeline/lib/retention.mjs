@@ -32,8 +32,12 @@ export const panelsOf = (scene) => Math.max(1, (scene.visual?.panels || []).leng
 
 /**
  * Check one cut (the long video or a Short). Returns {ok, results:[{point, pass, detail}]}.
+ * `toons6` (a Toon script of format 6, decision 4 of the engine-v9 blueprint, the owner's yes of 2026-11-23): Retention 7 read
+ * for Toons: point 2 (the promise) is also met by the character's story question (`retention.question`) by 8 s; point 7 (the
+ * loop) is also met by ending on a question or mid-line (`retention.loop.kind`: 'question' or 'midline'). The long videos
+ * and the Toons already out are checked as before.
  */
-export const checkCut = ({scenes, retention, isShort, sources, timings, label}) => {
+export const checkCut = ({scenes, retention, isShort, sources, timings, label, toons6 = false}) => {
   const res = [];
   const add = (point, pass, detail) => res.push({point, pass, detail});
   const dur = durations(scenes, timings);
@@ -58,8 +62,11 @@ export const checkCut = ({scenes, retention, isShort, sources, timings, label}) 
   // 2 Promise
   const limit = isShort ? 8 : 15;
   const pi = idx(firstIds(retention.promise)[0]);
-  const pOk = pi >= 0 && starts[pi] <= limit && scenes[pi].text.toLowerCase().includes((retention.promise.line || '').toLowerCase().slice(0, 20));
-  add('2 Promise', pOk, pi < 0 ? 'promise scene not found' : `starts at ${starts[pi].toFixed(1)} s (limit ${limit} s)`);
+  const pOk = pi >= 0 && starts[pi] <= limit && scenes[pi].text.toLowerCase().includes((retention.promise?.line || '').toLowerCase().slice(0, 20));
+  const qi = toons6 ? idx(firstIds(retention.question)[0]) : -1;
+  const qOk = qi >= 0 && starts[qi] <= limit && scenes[qi].text.includes('?');
+  if (toons6 && !pOk && qOk) add('2 Promise', true, `met by the story question at ${starts[qi].toFixed(1)} s (limit ${limit} s): "${scenes[qi].text.slice(0, 60)}"`);
+  else add('2 Promise', pOk, pi < 0 ? (toons6 ? 'neither a promise line nor a story question (retention.question) by 8 s' : 'promise scene not found') : `starts at ${starts[pi].toFixed(1)} s (limit ${limit} s)`);
 
   // 3 Counting
   const all = scenes.map((s) => s.text.toLowerCase()).join(' \n ');
@@ -91,7 +98,9 @@ export const checkCut = ({scenes, retention, isShort, sources, timings, label}) 
   // 7 Loop: last line shares 3+ key words with the first line
   const lastText = scenes[scenes.length - 1]?.text || '';
   const shared = [...new Set(keyWords(lastText))].filter((w) => keyWords(scenes[0]?.text || '').includes(w));
-  add('7 Loop', shared.length >= 3, `last line shares ${shared.length} key word(s) with the first: ${shared.join(', ')}`);
+  const endKind = toons6 ? (retention.loop?.kind ?? (/\?\s*$/.test(lastText) ? 'question' : null)) : null;
+  if (toons6 && shared.length < 3 && ['question', 'midline'].includes(endKind)) add('7 Loop', true, `ends on ${endKind === 'question' ? 'a question' : 'a cut mid-line'} (Toons, format 6): the replay starts at once`);
+  else add('7 Loop', shared.length >= 3, `last line shares ${shared.length} key word(s) with the first: ${shared.join(', ')}`);
 
   // MedPeak: a source on every number, sources exist, no banned claims
   const srcIds = new Set((sources || []).map((s) => s.id));
