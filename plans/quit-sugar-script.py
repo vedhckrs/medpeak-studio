@@ -38,19 +38,20 @@ shots = [
   # off the calendar's page ("Watch me."), and the camera dives into his belly: the liver on Day 1, pale with fat patches
   # (the consequence on screen; the payoff comes on Day 10).
   {"id": "A", "set": "macro",
-   "cast": [{"who": "liver", "x": 540, "size": 1080, "stage": True, "emotion": "sleepy", "pose": "rest"},
-            {"who": "sweetie", "x": 640, "size": 620, "emotion": "happy", "pose": "rest"},
+   # Sweetie listed before the Liver: the layout checks turn Dad toward the first other character while he talks
+   "cast": [{"who": "sweetie", "x": 640, "size": 620, "emotion": "happy", "pose": "rest"},
+            {"who": "liver", "x": 540, "size": 1080, "stage": True, "emotion": "sleepy", "pose": "rest"},
             {"who": "dad", "x": 380, "size": 960, "emotion": "angry", "pose": "rest", "y": 979}],
    "state": {"view": 0, "fat": 1},
    "events": [
      E("start", act="sweetie: bursts out of the soda can at the lens", sfx="pop", fx="flash"),
      E("A1", word="back!", act="sweetie: points at Dad, grinning", sfx="boing"),
-     E("A2", act="dad: rips the calendar's page off and tosses the can in the bin", sfx="swish"),
+     E("A2", act="dad: turns on Sweetie and swipes the can into the bin", sfx="swish"),
      E("A2", word="me.", act="dad: the camera dives into his belly to the fatty liver", sfx="whoosh-fast", set={"fat": 1}, over=12),
    ],
    "lines": [
-     L("A1", "sweetie", "Quit sugar? You'll be back!", "happy", "back", chat=True, cam="ecu 50 push", tempo=1.1),
-     L("A2", "dad", "No sugar for a month? Watch me.", "angry", "watch", chat=True, beat=0.5),
+     L("A1", "sweetie", "Quit sugar? You'll be back!", "happy", "back", chat=True, cam="ecu 50 push", tempo=1.1, react={"dad": "angry"}),
+     L("A2", "dad", "No sugar for a month? Watch me.", "angry", "watch", chat=True, cam="mcu lock"),
    ], "props": []},
   # B: Day 3, the brain (the whole brain, its face on the front): Sweetie dangles a candy on a fishing hook in front of it
   # ("hooked"); the Brain, unimpressed, flicks the line away and Sweetie tumbles off.
@@ -84,8 +85,8 @@ shots = [
    ],
    "lines": [
      L("C1", "sweetie", "Relax. I'm juice now. Healthy!", "happy", "juice", chat=True, cam="ews whip"),
-     L("C2", "tooth", "Juice, honey, syrup: still sugar to me. Out!", "angry", "out", src=[WHO], cam="mcu push"),
-     L("C3", "tooth", "Under twelve teaspoons a day, and I get fewer holes.", "happy", "holes", src=[WHO, MO], cam="mcu lock"),
+     L("C2", "tooth", "Juice, honey, syrup: still sugar to me. Out!", "angry", "out", src=[WHO], cam="cu push"),
+     L("C3", "tooth", "Under twelve teaspoons a day, and I get fewer holes.", "happy", "holes", src=[WHO, MO], cam="ews"),
    ], "props": [tag("12 teaspoons", "C3", "twelve")]},
   # D: Day 10, the liver again (Day 1 was the hook): the fat patches shrink, one after another, to about half.
   {"id": "D", "set": "macro",
@@ -99,7 +100,7 @@ shots = [
    ],
    "lines": [
      L("D1", "liver", "In kids with obesity who swapped sugar for starch...", "neutral", "kids", src=[SC], cam="ews whip"),
-     L("D2", "liver", "...liver fat nearly halved in nine days! Same calories!", "happy", "halved", src=[SC], cam="mcu push"),
+     L("D2", "liver", "...liver fat nearly halved in nine days! Same calories!", "happy", "halved", src=[SC], cam="cu push"),
    ], "props": []},
   # E: Day 20, the kitchen (the twist): Sweetie on the counter in his ZERO can; Dad reaches for it; the Brain pops up in a
   # thought bubble over Dad's head and Dad stops.
@@ -150,7 +151,7 @@ shots = [
    ],
    "lines": [
      L("G1", "tongue", "And me? Sweet food tastes just the same.", "neutral", "same", src=[WI], cam="ews whip"),
-     L("G2", "tongue", "No sugar for a month? Not yet. Three months? Forty percent sweeter!", "happy", "sweeter", src=[WI], cam="mcu push"),
+     L("G2", "tongue", "No sugar for a month? Not yet. Three months? Forty percent sweeter!", "happy", "sweeter", src=[WI], cam="cu push"),
      L("G3", "sweetie", "You quit sugar? ...I'll be back.", "sad", "back", chat=True, cam="mcu lock"),
    ], "props": [tag("40% sweeter", "G2", "forty")]},
 ]

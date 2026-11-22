@@ -32,7 +32,7 @@ export const smooth = (pts: P[], k = 1): string => {
 };
 
 /** A closed outline made of outward bulges between the points (a lobed cloud). */
-const cloud = (pts: P[], bulge = 0.22): string => {
+export const cloud = (pts: P[], bulge = 0.22): string => {
   const n = pts.length;
   const cx = pts.reduce((s, p) => s + p[0], 0) / n;
   const cy = pts.reduce((s, p) => s + p[1], 0) / n;

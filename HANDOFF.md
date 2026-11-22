@@ -6,6 +6,27 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-22 (21) - MacBook (local Claude Code) - branch `video/quit-sugar` - quit-sugar SILENT PREVIEW sent, WAITING (nothing voiced)
+
+- The owner: "Yes, go ahead" (the polished organ frames).
+- Script: `plans/quit-sugar-script.py` -> `videos/quit-sugar/toon.json` (+ `SCRIPT.md`). 7 shots, 16 lines, about 47 s + Joey's card.
+  `toon:check` passes (also `--all`). Changes from the plan, all forced by the gate: hook A cut to "Quit sugar? You'll be back!"
+  (2 s rule; the owner's longer wording took 2.7 s); Dad "No sugar for a month? Watch me."; F1 "So... did I lose weight?";
+  G1 "And me? Sweet food tastes just the same."; G2 "No sugar for a month? Not yet. Three months? Forty percent sweeter!";
+  G3 "You quit sugar? ...I'll be back." (loop). The hook dives into Dad's belly: the Day 1 fatty liver (first frame = consequence).
+- New: `src/toons/v8/quit-sugar.tsx` (shots A-G, CTA card with estimated beats), `BrainFull` in `sugar-organs.tsx`, `lift` on
+  `LiverFull`; registered in `video.tsx`. Each body shot opens on a 0.62 s calendar rip (`RipInsert`). Macro dials `fat`, `pull`,
+  `buds` (director.ts). Layout-check stand-ins: `sweetie`, `tongue` blueprints (characters.tsx), `dad` in the old SPECS (humans.tsx).
+  Cast placeholders `sweetie`, `dad`, `tongue` in toons-cast.json (voice null: AUDITION before voicing).
+- Run: typecheck pass; `npm test` 50/50; toon:camera, motion, staging ALL PASS. Look on the story (0-47.3 s, measured with
+  `toon_look.py --to=47.3` because there is no cta-timings.json yet): still 47.5%, small motion 45%, edges 8.9%, dark 6.3%,
+  bright 146: all inside the limits. (`npm run toon:look` without --to includes the card and reads bright 135 until Joey is voiced.)
+- Silent preview: `renders/toon-v8-draft.mp4` (61.4 s with the card); storyboard `plans/review-quit-sugar/storyboard-silent.jpg`.
+- Next on the owner's OK of the motion: voice auditions (Sweetie, Dad, Tongue), cost and balance shown first; then voices, Joey's
+  card, music, full render, look check, package. Upload only on his word.
+
+---
+
 ## 2026-11-22 (20) - MacBook (local Claude Code) - branch `video/quit-sugar` - organ frames polished (owner: "need more polished visual and details"), WAITING
 
 - `sugar-organs.tsx` detail pass. Liver: diaphragm muscle bands + pale tendon, lobule speckle, pale ligament band, darker underside

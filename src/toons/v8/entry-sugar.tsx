@@ -3,6 +3,7 @@ import {registerRoot, Still} from 'remotion';
 import {Board} from './kit';
 import {Crop, Mini} from './sheets-v4';
 import {SugarCastBoard} from './sugar-cast';
+import {MomentBrainDay3} from './sugar-organs';
 import {MomentLiverDay1 as MomentLiverFull, MomentLiverDay10 as MomentLiverHalf, MomentTongueDarkFull as MomentTongueDark, MomentTongueLitFull as MomentTongueLit, MomentToothFull as MomentTooth} from './sugar-organs';
 import {MomentHook, MomentScaleDay30, MomentZero} from './sugar-kitchen';
 
@@ -30,7 +31,7 @@ const SugarPlaceBoard2: React.FC = () => (
     <Crop x={56} y={240} w={420} h={760} fx={180} fy={300} zoom={0.75} label="TOOTH AND THE SUGAR"><MomentTooth /></Crop>
     <Crop x={506} y={240} w={420} h={760} fx={300} fy={420} zoom={0.75} label="FAT PATCHES, DAY 1"><MomentLiverFull /></Crop>
     <Crop x={956} y={240} w={420} h={760} fx={300} fy={420} zoom={0.75} label="FAT PATCHES, DAY 10"><MomentLiverHalf /></Crop>
-    <Mini x={1420} y={240} k={K} label="G · DAY 30: NOT YET"><MomentTongueDark /></Mini>
+    <Mini x={1420} y={240} k={K} label="B · DAY 3: THE BRAIN"><MomentBrainDay3 /></Mini>
   </Board>
 );
 const SugarKitchenBoard: React.FC = () => (

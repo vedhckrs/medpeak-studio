@@ -137,18 +137,18 @@
    "set": "macro",
    "cast": [
     {
+     "who": "sweetie",
+     "x": 640,
+     "size": 620,
+     "emotion": "happy",
+     "pose": "rest"
+    },
+    {
      "who": "liver",
      "x": 540,
      "size": 1080,
      "stage": true,
      "emotion": "sleepy",
-     "pose": "rest"
-    },
-    {
-     "who": "sweetie",
-     "x": 640,
-     "size": 620,
-     "emotion": "happy",
      "pose": "rest"
     },
     {
@@ -179,7 +179,7 @@
     },
     {
      "at": "A2",
-     "act": "dad: rips the calendar's page off and tosses the can in the bin",
+     "act": "dad: turns on Sweetie and swipes the can into the bin",
      "sfx": "swish"
     },
     {
@@ -203,6 +203,9 @@
      "key": "back",
      "chat": true,
      "cam": "ecu 50 push",
+     "react": {
+      "dad": "angry"
+     },
      "tempo": 1.1
     },
     {
@@ -213,7 +216,7 @@
      "pose": "rest",
      "key": "watch",
      "chat": true,
-     "beat": 0.5
+     "cam": "mcu lock"
     }
    ],
    "props": []
@@ -386,7 +389,7 @@
      "src": [
       "who-diet"
      ],
-     "cam": "mcu push"
+     "cam": "cu push"
     },
     {
      "id": "C3",
@@ -399,7 +402,7 @@
       "who-diet",
       "moynihan-2014"
      ],
-     "cam": "mcu lock"
+     "cam": "ews"
     }
    ],
    "props": [
@@ -485,7 +488,7 @@
      "src": [
       "schwarz-2017"
      ],
-     "cam": "mcu push"
+     "cam": "cu push"
     }
    ],
    "props": []
@@ -740,7 +743,7 @@
      "src": [
       "wise-2016"
      ],
-     "cam": "mcu push"
+     "cam": "cu push"
     },
     {
      "id": "G3",

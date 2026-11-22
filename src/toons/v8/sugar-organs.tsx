@@ -29,7 +29,7 @@ import React from 'react';
 import {CLOTH, EDGE, EDGE_IN, Eyes, FLESH, INLINE, Mouth, Shape, shade, tint, TinyArm, type V8Props} from './kit';
 import {Put, Layer, Scene} from './scene';
 import {f, open, rnd, tube, type P} from './scenes-body';
-import {ORGAN_COL, smooth} from './organs-a';
+import {cloud, ORGAN_COL, smooth} from './organs-a';
 import {Sweetie} from './sugar-cast';
 
 const clamp01 = (v: number) => Math.max(0, Math.min(1, v));
@@ -68,7 +68,7 @@ const FAT: [number, number, number][] = [[28, -40, 11], [54, -28, 8], [8, -12, 1
 // a faint speckle of lobules over the surface
 const SPECK: P[] = Array.from({length: 70}, (_, i): P => [-80 + rnd(i, 71) * 168, -60 + rnd(i, 72) * 108]);
 
-export const LiverFull: React.FC<V8Props & {t: number; fat?: number}> = ({fat = 1, mood = 'sleepy', mouth = 'smile', look = [0, 0.2]}) => {
+export const LiverFull: React.FC<V8Props & {t: number; fat?: number; lift?: number}> = ({fat = 1, mood = 'sleepy', mouth = 'smile', look = [0, 0.2], lift = 0}) => {
   const k = clamp01(fat);
   const fatty = clamp01((k - 0.4) / 0.6); // how far the colour leans to the pale, fatty liver
   const body = mix(LIVER_FULL.healthy, LIVER_FULL.fatty, fatty);
@@ -127,7 +127,7 @@ export const LiverFull: React.FC<V8Props & {t: number; fat?: number}> = ({fat = 
 
       {/* the liver itself, its face on its wall */}
       <svg style={{position: 'absolute', left: 0, top: 0, overflow: 'visible'}} width={1080} height={1920} viewBox="0 0 1080 1920">
-        <g transform={`translate(540 960) scale(${S})`}>
+        <g transform={`translate(540 ${960 + lift}) scale(${S})`}>
           <TinyArm from={[-74, 32]} bend={[-90, 46]} to={[-78, 64]} fill={body} hand="mitten" />
           {/* the gallbladder, tucked under, with its own shine */}
           <Shape d={smooth([[-26, 36], [-10, 34], [-4, 50], [-12, 62], [-24, 58]])} fill={ORGAN_COL.gall} shadow={0.5}>
@@ -174,7 +174,7 @@ export const LiverFull: React.FC<V8Props & {t: number; fat?: number}> = ({fat = 
 
 // =================================================================== 2. the whole open mouth
 export const MOUTH_FULL = {
-  inside: '#5a1f2a', throat: '#2f1017', throat2: '#451721', cheek: '#c9606d', cheek2: '#b8525f',
+  inside: '#7d3340', throat: '#3a141d', throat2: '#5e2531', cheek: '#d06c78', cheek2: '#bd5c69',
   palate: '#e88f95', palate2: '#d97880', soft: '#e07d86', tonsil: '#e9969b', uvula: '#e07d86',
   gum: '#ec8b92', lip: '#d9737b', lip2: '#c55f69',
   tongue: FLESH.salmon, rim: tint(FLESH.salmon, 0.22), papilla: shade(FLESH.salmon, 0.09), bud: tint(FLESH.salmon, 0.14), lit: CLOTH.yellow,
@@ -330,6 +330,75 @@ export const MouthFull: React.FC<{t: number; view?: 'tooth' | 'tongue'; bits?: n
     </Scene>
   );
 };
+
+// =================================================================== 3. the whole brain (B: Day 3)
+export const BRAIN_FULL = {space: '#f3cdbf', space2: '#e9b4a5', bone: '#f6ead3', bone2: '#e8d6b4', marrow: '#e9c9a0', mening: '#e79aa4', brain: ORGAN_COL.brain, stem: ORGAN_COL.stem, vesselR: '#d6646a', vesselB: '#8a90c4'};
+// the cast Brain's outline (organs-a), so the big brain is the same character
+const CEREBRUM: P[] = [[-80, 12], [-85, -14], [-75, -38], [-58, -56], [-34, -69], [-8, -75], [18, -73], [44, -65], [66, -49], [80, -26], [84, 0], [76, 22], [56, 30], [32, 32], [10, 38], [-14, 42], [-36, 40], [-56, 32]];
+const CEREBELLUM: P[] = [[30, 22], [56, 18], [76, 26], [78, 42], [62, 55], [40, 53], [27, 40]];
+// the folds (gyri): short curving grooves, kept off the face (around -21, -20)
+const FOLDS: string[] = [
+  'M -56 28 Q -24 12 14 16 Q 30 16 44 8', 'M 14 -74 Q 4 -52 10 -38 Q 16 -24 6 -10', 'M -70 -26 q 10 -9 20 0', 'M -44 -58 q 6 10 18 4', 'M 40 -54 q 4 12 16 10',
+  'M 64 -22 q -10 6 -6 18', 'M -66 4 q 8 -8 18 -4', 'M 30 -22 q 10 -2 14 8', 'M 26 -60 q 8 8 2 18', 'M 52 -36 q 10 4 8 16', 'M 70 -6 q -8 8 0 16',
+  'M 36 0 q 8 6 18 2', 'M -12 -64 q -4 10 4 18', 'M -30 -66 q 2 8 -6 14', 'M -76 -8 q 8 4 6 14', 'M -6 28 q 8 -6 16 0', 'M -36 30 q 6 -6 14 -2',
+];
+export const BrainFull: React.FC<V8Props & {t: number}> = ({mood = 'bored', mouth = 'flat', look = [0.6, 0]}) => {
+  const S = 6.8;
+  return (
+    <Scene bg={BRAIN_FULL.space}>
+      <Layer>
+        {/* the skull round the top and sides: a thick band of bone with its spongy middle, the pink lining inside it */}
+        <path d="M -60 1500 L -60 300 Q -40 -60 540 -60 Q 1120 -60 1140 300 L 1140 1500 L 1050 1500 L 1050 320 Q 1030 40 540 40 Q 50 40 30 320 L 30 1500 Z" {...EDGE} fill={BRAIN_FULL.bone} />
+        <path d="M -10 1500 L -10 310 Q 10 0 540 -10 Q 1070 0 1090 310 L 1090 1500" fill="none" stroke={BRAIN_FULL.bone2} strokeWidth={26} />
+        {Array.from({length: 26}, (_, i) => { const a = Math.PI * (0.04 + i * 0.035); return <circle key={i} cx={f(540 - Math.cos(a) * 520)} cy={f(330 - Math.sin(a) * 330)} r={6 + (i % 3) * 2} fill={BRAIN_FULL.marrow} />; })}
+        <path d="M 30 1500 L 30 320 Q 50 40 540 40 Q 1030 40 1050 320 L 1050 1500" fill="none" stroke={BRAIN_FULL.mening} strokeWidth={22} />
+        <path d="M 52 1500 L 52 326 Q 72 62 540 62 Q 1008 62 1028 326 L 1028 1500" {...INLINE} />
+        <path d="M 0 1500 Q 540 1440 1080 1500 L 1080 1920 L 0 1920 Z" fill={BRAIN_FULL.space2} opacity={0.6} />
+      </Layer>
+      <svg style={{position: 'absolute', left: 0, top: 0, overflow: 'visible'}} width={1080} height={1920} viewBox="0 0 1080 1920">
+        <g transform={`translate(540 830) scale(${S})`}>
+          <TubeShape pts={[[12, 26], [12, 60], [10, 100], [8, 140]]} w={[22, 20, 18, 17]} fill={BRAIN_FULL.stem} shadow={0.6} seed={21} />
+          <Shape d={smooth(CEREBELLUM)} fill={BRAIN_FULL.brain}>
+            {[30, 36, 42, 48].map((y, i) => <path key={i} d={`M ${30 + i} ${y} Q 54 ${y - 4} ${76 - i * 2} ${y + 2}`} {...INLINE} />)}
+          </Shape>
+          <Shape d={cloud(CEREBRUM, 0.24)} fill={BRAIN_FULL.brain}>
+            {/* the folds, with a pale ridge beside each groove */}
+            {FOLDS.map((d, i) => <path key={'r' + i} d={d} stroke={tint(BRAIN_FULL.brain, 0.35)} strokeWidth={2.6} fill="none" transform="translate(-1.2 -1.2)" />)}
+            {FOLDS.map((d, i) => <path key={'g' + i} d={d} {...INLINE} />)}
+            {/* thin vessels on the surface */}
+            <path d="M -82 14 Q -72 20 -60 22 Q -50 24 -44 30" stroke={BRAIN_FULL.vesselR} strokeWidth={1.4} fill="none" />
+            <path d="M 60 -58 Q 54 -46 60 -36 Q 64 -28 58 -18" stroke={BRAIN_FULL.vesselB} strokeWidth={1.4} fill="none" />
+            <path d="M 20 24 Q 30 20 40 22" stroke={BRAIN_FULL.vesselR} strokeWidth={1.2} fill="none" />
+            {/* wet shine */}
+            <Shine d="M -64 -44 Q -44 -64 -14 -70" w={2.6} o={0.75} />
+            <Shine d="M 34 -66 Q 54 -60 66 -48" w={2} o={0.6} />
+            <Dot x={-4} y={-70} r={1.6} />
+          </Shape>
+          <TinyArm from={[-62, 26]} bend={[-84, 44]} to={[-72, 62]} fill={BRAIN_FULL.brain} hand="mitten" />
+          <TinyArm from={[-20, 38]} bend={[-14, 58]} to={[-28, 70]} fill={BRAIN_FULL.brain} hand="mitten" />
+          <Eyes x={-22} y={-32} r={14} mood={mood} look={look} brows />
+          <Mouth x={-20} y={-6} w={14} kind={mouth} />
+        </g>
+        {/* the spine: the cord runs down through each vertebra (a wing of bone either side of it) */}
+        {[1560, 1700, 1840].map((y, i) => (
+          <g key={i}>
+            {[-1, 1].map((sd) => (
+              <Shape key={sd} d={`M ${618 + sd * 0 - (sd < 0 ? 78 : 0)} ${y} ${sd < 0 ? `Q 470 ${y - 24} 400 ${y + 6} L 396 ${y + 96} Q 470 ${y + 120} 540 ${y + 104} Z` : `L 618 ${y} Q 690 ${y - 24} 760 ${y + 6} L 764 ${y + 96} Q 690 ${y + 120} 618 ${y + 104} Z`}`} fill={BRAIN_FULL.bone} shadow={3}>
+                <Shine d={`M ${sd < 0 ? 420 : 640} ${y + 22} q 40 -12 80 -6`} w={8} o={0.6} />
+              </Shape>
+            ))}
+          </g>
+        ))}
+      </svg>
+    </Scene>
+  );
+};
+export const MomentBrainDay3: React.FC = () => (
+  <>
+    <BrainFull t={1} mood="bored" mouth="flat" look={[0.7, 0.2]} />
+    <Put x={900} y={420} size={300} rot={-8}><Sweetie mood="wink" mouth="big" arms="point" look={[-0.6, 0.3]} /></Put>
+  </>
+);
 
 // ------------------------------------------------------------------ the moments for the sheet
 /** C, Day 7: the front tooth throws juice-Sweetie out; sugar crystals at the gum line. */

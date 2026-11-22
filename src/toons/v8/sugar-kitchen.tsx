@@ -17,7 +17,7 @@ import {BurstCan, Sweetie} from './sugar-cast';
 const rr = (x: number, y: number, w: number, h: number, r: number) => `M ${x + r} ${y} H ${x + w - r} Q ${x + w} ${y} ${x + w} ${y + r} V ${y + h - r} Q ${x + w} ${y + h} ${x + w - r} ${y + h} H ${x + r} Q ${x} ${y + h} ${x} ${y + h - r} V ${y + r} Q ${x} ${y} ${x + r} ${y} Z`;
 
 export const NIGHT = {
-  wall: '#2f5260', wall2: '#2a4957', floor: '#3b3a4a', floor2: '#34333f', sky: '#1d2a4a',
+  wall: '#4a7886', wall2: '#426d7a', floor: '#5f5d71', floor2: '#545266', sky: '#24335a',
   fridge: '#e9eef2', fridge2: '#cfd8df', inside: '#fff3cf', light: '#57707a', lightFloor: '#5a5f6a',
   unit: '#3e6b73', top: tint(CLOTH.grey, 0.2),
 };
