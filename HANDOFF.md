@@ -6,6 +6,18 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-22 (19) - MacBook (local Claude Code) - branch `video/quit-sugar` - full-organ frames (owner's note), sheets re-sent, WAITING
+
+- The owner on sheet 2: "when big organ frame come i want full view of organs like ref video". Now a standing rule in `CLAUDE.md`.
+- `sugar-places.tsx` (micro mouth and liver) removed; new `sugar-organs.tsx`: `LiverFull` (the cast Liver's outline x6.2 under the
+  diaphragm, gut below, stomach at right; `fat` shrinks the yellow patches and turns the colour from pale to healthy) and `MouthFull`
+  (lips, palate, soft palate + uvula, upper/lower teeth, the tongue; `view` tooth = closer, the face on the left front tooth;
+  `view` tongue = the face on the tongue; `bits`, `buds`). `organs-a.tsx` now exports `smooth` and `ORGAN_COL` (no drawing change).
+- typecheck pass. Sheets re-rendered into `plans/review-quit-sugar/`. Nothing voiced or spent.
+- Next on the owner's OK: script into `videos/quit-sugar/toon.json`, `toon:check`, the silent video.
+
+---
+
 ## 2026-11-22 (18) - MacBook (local Claude Code) - branch `video/quit-sugar` - quit-sugar: four look sheets sent, WAITING
 
 - The owner: "Yes, hook A, Dad" (recorded in `plans/quit-sugar-2026-11-22.md`, Decided).

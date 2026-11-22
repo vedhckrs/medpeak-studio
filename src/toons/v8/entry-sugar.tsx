@@ -3,18 +3,18 @@ import {registerRoot, Still} from 'remotion';
 import {Board} from './kit';
 import {Crop, Mini} from './sheets-v4';
 import {SugarCastBoard} from './sugar-cast';
-import {MomentLiverFull, MomentLiverHalf, MomentTongueDark, MomentTongueLit, MomentTooth} from './sugar-places';
+import {MomentLiverDay1 as MomentLiverFull, MomentLiverDay10 as MomentLiverHalf, MomentTongueDarkFull as MomentTongueDark, MomentTongueLitFull as MomentTongueLit, MomentToothFull as MomentTooth} from './sugar-organs';
 import {MomentHook, MomentScaleDay30, MomentZero} from './sugar-kitchen';
 
 const K = 0.4; // 1080 x 1920 -> 432 x 768
 const SugarPlaceBoard: React.FC = () => (
   <Board
     kicker="Quit sugar · new places · sheet 2"
-    title="Inside the mouth, and inside the liver"
-    note="Microscopic, in depth planes. The mouth: the tooth's enamel wall over the gum, sugar crystals stuck at the gum line, and the tongue's surface with its taste buds (the mushroom-shaped bumps; they light up yellow when sweet tastes stronger). The liver: a honeycomb of liver cells, each with round yellow fat drops; on Day 10 the drops are about half the size."
+    title="The whole mouth, and the whole liver"
+    note="Like the reference videos: the organ is the stage. The whole organ fills the frame and its face is on its own wall. The mouth: lips round the edges, the palate and uvula, the teeth on the gum, the tongue in front; on Day 7 one big front tooth has the face, sugar crystals stuck at the gum line. The liver: the whole organ under the diaphragm, the gut below; Day 1 it is pale with yellow fat patches, Day 10 the patches are about half the size and its colour comes back."
     page="quit sugar · places"
   >
-    <Mini x={56} y={240} k={K} label="C · DAY 7: TOOTH, BOUNCER"><MomentTooth /></Mini>
+    <Mini x={56} y={240} k={K} label="C · DAY 7: THE FRONT TOOTH"><MomentTooth /></Mini>
     <Mini x={56 + 452} y={240} k={K} label="D · DAY 1: LIVER FAT"><MomentLiverFull /></Mini>
     <Mini x={56 + 904} y={240} k={K} label="D · DAY 10: NEARLY HALVED"><MomentLiverHalf /></Mini>
     <Mini x={56 + 1356} y={240} k={K} label="G · MONTH 3: SWEETER"><MomentTongueLit /></Mini>
@@ -23,13 +23,13 @@ const SugarPlaceBoard: React.FC = () => (
 const SugarPlaceBoard2: React.FC = () => (
   <Board
     kicker="Quit sugar · new places · sheet 2b"
-    title="Closer: the gum line, the fat drops, the taste buds"
+    title="Closer: the tooth, the fat patches, the tongue"
     note="Crops at video size. Day 30 the taste buds are still dark ('not yet'); in month three they light up ('forty percent sweeter')."
     page="quit sugar · places, close"
   >
-    <Crop x={56} y={240} w={420} h={760} fx={200} fy={900} zoom={0.75} label="SUGAR AT THE GUM LINE"><MomentTooth /></Crop>
-    <Crop x={506} y={240} w={420} h={760} fx={300} fy={60} zoom={0.75} label="FAT DROPS, DAY 1"><MomentLiverFull /></Crop>
-    <Crop x={956} y={240} w={420} h={760} fx={300} fy={60} zoom={0.75} label="FAT DROPS, DAY 10"><MomentLiverHalf /></Crop>
+    <Crop x={56} y={240} w={420} h={760} fx={180} fy={300} zoom={0.75} label="TOOTH AND THE SUGAR"><MomentTooth /></Crop>
+    <Crop x={506} y={240} w={420} h={760} fx={300} fy={420} zoom={0.75} label="FAT PATCHES, DAY 1"><MomentLiverFull /></Crop>
+    <Crop x={956} y={240} w={420} h={760} fx={300} fy={420} zoom={0.75} label="FAT PATCHES, DAY 10"><MomentLiverHalf /></Crop>
     <Mini x={1420} y={240} k={K} label="G · DAY 30: NOT YET"><MomentTongueDark /></Mini>
   </Board>
 );
@@ -55,10 +55,10 @@ const SugarCheck: React.FC = () => (
     <Crop x={510} y={200} w={440} h={420} fx={100} fy={380} zoom={1} label="DAD HOOK"><MomentHook /></Crop>
     <Crop x={980} y={200} w={440} h={420} fx={100} fy={380} zoom={1} label="DAD DAY 20"><MomentZero /></Crop>
     <Crop x={1450} y={200} w={430} h={420} fx={640} fy={760} zoom={1} label="ZERO"><MomentZero /></Crop>
-    <Crop x={40} y={660} w={440} h={400} fx={540} fy={480} zoom={1} label="TOOTH"><MomentTooth /></Crop>
-    <Crop x={510} y={660} w={440} h={400} fx={60} fy={900} zoom={1} label="JUICE"><MomentTooth /></Crop>
-    <Crop x={980} y={660} w={440} h={400} fx={320} fy={880} zoom={1} label="LIVER"><MomentLiverHalf /></Crop>
-    <Crop x={1450} y={660} w={430} h={400} fx={320} fy={560} zoom={1} label="TONGUE"><MomentTongueLit /></Crop>
+    <Crop x={40} y={660} w={440} h={400} fx={110} fy={530} zoom={1} label="TOOTH"><MomentTooth /></Crop>
+    <Crop x={510} y={660} w={440} h={400} fx={600} fy={1220} zoom={1} label="JUICE"><MomentTooth /></Crop>
+    <Crop x={980} y={660} w={440} h={400} fx={100} fy={590} zoom={1} label="LIVER"><MomentLiverHalf /></Crop>
+    <Crop x={1450} y={660} w={430} h={400} fx={320} fy={1130} zoom={1} label="TONGUE"><MomentTongueLit /></Crop>
   </Board>
 );
 
