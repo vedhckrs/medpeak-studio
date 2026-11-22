@@ -168,7 +168,6 @@ const ScreenA: React.FC<{s: ShotNow}> = ({s}) => {
   const k = timesA(s);
   return (
     <>
-      <TagA s={s} label="SWEETIE (SUGAR)" x={620} y={1180} r={330} t={s.t - 0.45} dur={1.3} />
       <TagA s={s} label="LIVER" x={317} y={786} r={120} t={s.t - k.me - 0.6} dur={1.4} />
     </>
   );
@@ -219,7 +218,13 @@ const ShotB: React.FC<{s: ShotNow}> = ({s}) => {
 };
 const viewB = byLine({B2: {x: 470, y: 700, z: 1.3}}, WIDE);
 const TagB = tagVia(viewB);
-const ScreenB: React.FC<{s: ShotNow}> = ({s}) => <TagB s={s} label="BRAIN" x={390} y={612} r={150} t={s.t - RIP - 0.2} />;
+// Sweetie's name tag the first time he is seen after the hook (the house rule: no tag during the hook line), then the Brain's
+const ScreenB: React.FC<{s: ShotNow}> = ({s}) => (
+  <>
+    <TagB s={s} label="SWEETIE (SUGAR)" x={SW_B[0]} y={SW_B[1]} r={120} t={s.t - RIP - 0.15} />
+    <TagB s={s} label="BRAIN" x={390} y={612} r={150} t={s.t - timesB(s).b2 + 0.1} />
+  </>
+);
 
 // =================================================================== C: Day 7, the mouth (close on the front teeth)
 //   0.00-0.62  the calendar: DAY 6 rips off, DAY 7
@@ -344,7 +349,7 @@ const timesE = (s: ShotNow) => {
 };
 const ShotE: React.FC<{s: ShotNow}> = ({s}) => {
   const t = s.t, k = timesE(s);
-  const up = pop(t, k.zero - 0.12, 0.35);
+  const up = pop(t, at(s, 'E1', undefined, 0.3) - 0.15, 0.35); // up as his line starts (he spoke unseen for 2 s)
   const skid = clamp01((t - k.sweet) / 0.6);
   const pose = poseAt(t, [[-9, 'rest'], [k.sugar - 0.1, 'offer', 0.3], [k.sweet, 'rest', 0.2]]);
   const o = {...dadE, pose};
@@ -400,7 +405,7 @@ const ShotF: React.FC<{s: ShotNow}> = ({s}) => {
   const on = hop(t, 0.3, 60, 0.3);
   const wob = t > k.did && t < k.did + 0.9 ? Math.sin((t - k.did) * 16) * 7 * (1 - (t - k.did) / 0.9) : 0;
   const pose = poseAt(t, [[-9, 'rest'], [k.did - 0.05, 'shrugR', 0.15], [k.did + 0.9, 'worried', 0.3]]);
-  const peek = keyed(t, 0, [[k.trials - 0.1, 1, 0.3, 'back']]);
+  const peek = keyed(t, 0, [[k.f2 - 0.25, 1, 0.3, 'back']]); // up before he speaks
   const slump = keyed(t, 0, [[k.less, 1, 0.3]]);
   const sf = openFace(s, 'sweetie', 1, 'sad');
   return (
@@ -425,24 +430,26 @@ const viewF = byLine({F2: {x: 600, y: 1000, z: 1.05}}, {x: 470, y: 900, z: 1.18}
 //   G3   (close on the lower lip) a tiny Sweetie trudges in from the right, slumped: "You quit sugar? ...I'll be back."
 const timesG = (s: ShotNow) => {
   const g2 = at(s, 'G2', undefined, 2.9), g3 = at(s, 'G3', undefined, 7.1);
-  return {g2, three: at(s, 'G2', 'three', g2 + 1.9), sweeter: at(s, 'G2', 'sweeter', g2 + 3.4), g3};
+  return {g2, three: at(s, 'G2', 'three', g2 + 1.9), sweeter: at(s, 'G2', 'sweeter', g2 + 3.4), g3, ill: at(s, 'G3', "i'll", g3 + 1.2), back: at(s, 'G3', 'back', g3 + 1.8)};
 };
 const ShotG: React.FC<{s: ShotNow}> = ({s}) => {
   const t = s.t, k = timesG(s);
   const tf = openFace(s, 'tongue', 6, 'neutral');
   const buds = keyed(t, 0, [[k.three, 1, 1.4]]);
-  const walk = clamp01((t - k.g3 + 0.3) / 2.2);
-  const step = Math.abs(Math.sin(walk * Math.PI * 7)) * 10;
+  // he trudges in across the tongue, STOPS on "I'll" and turns to the lens, then hops and points on "back."
+  const walk = clamp01((t - k.g3 + 0.3) / Math.max(0.5, k.ill - k.g3 + 0.3));
+  const step = walk < 1 ? Math.abs(Math.sin(walk * Math.PI * 5)) * 10 : 0;
+  const hp = hop(t, k.back, 60, 0.3);
   const sf = openFace(s, 'sweetie', 1, 'sad');
   return (
     <>
       <MouthFull t={t} view="tongue" buds={buds} tongue={{mood: t > k.sweeter ? 'happy' : tf.mood, mouth: t > k.sweeter && active(s, 'tongue') < 0.3 ? 'big' : tf.mouth, look: [0, -0.3]}} />
       {[[300, 1130, 0], [780, 1130, 0.15], [540, 1660, 0.3], [250, 1330, 0.45]].map(([x, y, d], i) => <Burst key={i} t={t} t0={k.sweeter + d} x={x} y={y} r={70} col={CLOTH.yellow} />)}
-      {t > k.g3 - 0.3 && <Put x={lerp(1040, 720, walk)} y={1770 - step} size={290} rot={-4}><Sweetie mood={sf.mood} mouth={sf.mouth} arms="droop" look={[-0.6, 0.4]} /></Put>}
+      {t > k.g3 - 0.3 && <Put x={lerp(1010, 720, walk)} y={1430 - step + hp.dy} size={300} rot={walk < 1 ? -4 : 0} sq={hp.sq}><Sweetie mood={t > k.back ? 'angry' : sf.mood} mouth={sf.mouth} arms={t > k.back ? 'point' : 'droop'} look={walk < 1 ? [-0.6, 0.4] : [0, 0.2]} /></Put>}
     </>
   );
 };
-const viewG = byLine({G2: {x: 540, y: 1180, z: 1.12}, G3: {x: 800, y: 1560, z: 1.45}}, WIDE);
+const viewG = byLine({G2: {x: 540, y: 1180, z: 1.12}, G3: {x: 800, y: 1258, z: 1.45}}, WIDE);
 const TagG = tagVia(viewG);
 const ScreenG: React.FC<{s: ShotNow}> = ({s}) => {
   const k = timesG(s);

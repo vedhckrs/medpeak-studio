@@ -71,7 +71,8 @@ export const needApproval = (what) => {
 
 const empty = new Set();
 let order = null;
-const isQuota = (status, text) => status === 401 && /quota|credits|exceed/i.test(text) || status === 402 || (status === 429 && /quota/i.test(text));
+// a key whose subscription payment failed answers 401 payment_required (2026-11-22, key 2): it cannot spend, so it counts as empty
+const isQuota = (status, text) => status === 401 && /quota|credits|exceed|payment/i.test(text) || status === 402 || (status === 429 && /quota/i.test(text));
 const isMissingVoice = (status, text) => (status === 404 || status === 400) && /voice_not_found|voice.*not.*found|does not exist/i.test(text);
 
 /** Add a shared library voice to the account behind `k` (free). */

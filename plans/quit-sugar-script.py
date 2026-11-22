@@ -147,7 +147,9 @@ shots = [
      E("G1", word="same.", act="tongue: shrugs; the taste buds stay dark"),
      E("G2", word="Three", act="tongue: its taste buds light up one after another", set={"buds": 1}, over=40, sfx="sparkle"),
      E("G2", word="sweeter!", act="tongue: throws its arms up", sfx="tada"),
-     E("G3", act="sweetie: tiny, trudges out past the lip, grumbling", sfx="footsteps-tiny"),
+     E("G3", act="sweetie: tiny, trudges in across the tongue, grumbling", sfx="footsteps-tiny"),
+     E("G3", word="I'll", act="sweetie: stops and turns to the lens", fx="flash"),
+     E("G3", word="back.", act="sweetie: hops and points at the viewer"),
    ],
    "lines": [
      L("G1", "tongue", "And me? Sweet food tastes just the same.", "neutral", "same", src=[WI], cam="ews whip"),
@@ -176,7 +178,7 @@ toon = {
     "tags": ["what happens if you quit sugar for 30 days", "quit sugar", "no sugar for 30 days", "sugar detox", "sugar cravings",
              "is fruit juice healthy", "sugar and fatty liver", "artificial sweeteners", "how much sugar per day", "health cartoon"],
     "hashtags": "#nosugar #health #shorts",
-    "cover": {"at": 1.2, "text": "Quit sugar?", "accent": "sugar"},
+    "cover": {"at": 2.4, "text": "Quit sugar?", "accent": "sugar"},
   },
   "retention": {
     "noIntro": {"scene": "A1", "line": "Quit sugar? You'll be back!"},

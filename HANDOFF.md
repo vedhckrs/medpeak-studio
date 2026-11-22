@@ -6,6 +6,29 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-22 (23) - MacBook (local Claude Code) - branch `video/quit-sugar` - quit-sugar FINISHED, waiting for the owner to watch (NOT uploaded)
+
+- The owner: "Yes, spend it" (up to about 1,400 credits). Spent by the receipts: lines 282, Joey's card 176, music 732 = **1,190**.
+  Balance 47,302 before, 46,344 read after (the counter lags; receipts are the truth). The music tool's `--max-credits 600` did not
+  stop a single bed that cost 732 (it only stops a SET that projects over the cap): within the approved total, but note it.
+- Key 2's subscription payment failed (401 payment_required): `eleven.mjs` now treats that like an empty key and moves on
+  (it stopped the run before). The owner may want to fix key 2's billing in ElevenLabs.
+- Music: the new bed had three 0.3-0.4 s dips inside its loop; one fell in a breath between two words (earshot: a 0.3 s drop at
+  41.05 s). Fixed for every video: `director.ts` BED.gap 0.2 (placement) apart from BED.hole 0.5 (is a track steady), placement on
+  exact word times (the padding hid the breath). And the dips were filled in the track itself (free): each dip replaced by the same
+  spot one bar earlier at 104 BPM, 40 ms crossfades (`assets/toons-music/quit-sugar.mp3`; re-scanned: no rest inside the loop).
+- Frame-by-frame against the real voices, fixed: Sweetie's name tag moved out of the hook line (house rule) to the brain shot;
+  Sweetie on screen as his lines start on Day 20 and Day 30 (he spoke unseen); tiny Sweetie walks across the tongue in G3 (the
+  camera could not go low enough for the lip), stops and turns on "I'll", hops and points on "back." (the never-still check).
+  Cover moved to 2.4 s (Dad's angry close-up; at 1.2 s the cover text sat on Sweetie's mouth).
+- Final: `videos/quit-sugar/renders/toon-v8.mp4` 65.2 s (story 51.0 s), 1080x1920 60 fps, -14.1 LUFS, true peak -0.8 dBTP, no
+  holes, 8 of 10 planned sounds heard (pop at 23.4 s and bubble-pop at 31.5 s sit under the voice). toon:check, camera, motion,
+  staging, sound ALL PASS; look ALL PASS (still 49%, small motion 44%, edges 9.2%, outlines 6.4%, bright 147); npm test 50/50.
+  Package READY (`videos/quit-sugar/package/`), cover `renders/toon-cover.jpg`.
+- Next: the owner watches with sound; upload private only on his word; then merge `video/quit-sugar` (and mark topic bank #4).
+
+---
+
 ## 2026-11-22 (22) - MacBook (local Claude Code) - branch `video/quit-sugar` - frame-by-frame fixes, voices picked, WAITING on the cost OK
 
 - The owner: "Need to check every frame timing and voice and fix and give me final render".

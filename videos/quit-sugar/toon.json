@@ -54,7 +54,7 @@
   ],
   "hashtags": "#nosugar #health #shorts",
   "cover": {
-   "at": 1.2,
+   "at": 2.4,
    "text": "Quit sugar?",
    "accent": "sugar"
   }
@@ -719,8 +719,19 @@
     },
     {
      "at": "G3",
-     "act": "sweetie: tiny, trudges out past the lip, grumbling",
+     "act": "sweetie: tiny, trudges in across the tongue, grumbling",
      "sfx": "footsteps-tiny"
+    },
+    {
+     "at": "G3",
+     "act": "sweetie: stops and turns to the lens",
+     "word": "I'll",
+     "fx": "flash"
+    },
+    {
+     "at": "G3",
+     "act": "sweetie: hops and points at the viewer",
+     "word": "back."
     }
    ],
    "lines": [

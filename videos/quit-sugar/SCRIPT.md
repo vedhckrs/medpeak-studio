@@ -1,6 +1,6 @@
 # What Happens If You Quit Sugar for 30 Days
 
-Toon script `quit-sugar` · about 49 seconds · 16 pictures
+Toon script `quit-sugar` · about 51 seconds · 16 pictures
 
 ## The hook: choices for the first line
 
@@ -29,19 +29,19 @@ Toon script `quit-sugar` · about 49 seconds · 16 pictures
 | PASS | Script is valid | 7 scenes, 16 lines, 6 voices |
 | PASS | 1 No intro | hook: "Quit sugar? You'll be back!" |
 | PASS | 2 Promise | starts at 0.0 s (limit 8 s) |
-| PASS | 4 3-sec change | something new HAPPENS 28 times in 49 s (a place, a cut, a thing arriving, a change of the stage; text stickers do not count); the longest wait is 2.9 s (from 39.6 s) |
-| PASS | 5 Twist | twist starts at 61% |
-| PASS | 6 Best last | best point starts at 86% |
+| PASS | 4 3-sec change | something new HAPPENS 29 times in 51 s (a place, a cut, a thing arriving, a change of the stage; text stickers do not count); the longest wait is 2.9 s (from 40.5 s) |
+| PASS | 5 Twist | twist starts at 60% |
+| PASS | 6 Best last | best point starts at 85% |
 | PASS | 7 Loop | last line shares 3 key word(s) with the first: quit, sugar, back |
 | PASS | Sources on numbers | every number has a source |
 | PASS | Source ids exist | all source ids known |
 | PASS | No banned claims | no cure/miracle/detox claims |
-| PASS | 1 Hook: short, to the viewer, about the title | "Quit sugar? You'll be back!" (5 words, 1.7 s, says "you", says the title's words) |
+| PASS | 1 Hook: short, to the viewer, about the title | "Quit sugar? You'll be back!" (5 words, 1.8 s, says "you", says the title's words) |
 | PASS | 1 Hook: the first frame shows the consequence | the video opens on the macro with fat already there |
 | PASS | 1 Hook: three choices for the owner | 3 choices, each short, to the viewer and about the title |
-| PASS | 3 Open question | asked at 1.8 s ("No sugar for a month? Watch me."), answered at 86% ("No sugar for a month? Not yet. Three months? Forty percent sweeter!"; shared words: sugar, month) |
+| PASS | 3 Open question | asked at 1.9 s ("No sugar for a month? Watch me."), answered at 85% ("No sugar for a month? Not yet. Three months? Forty percent sweeter!"; shared words: sugar, month) |
 | PASS | 3 No counting | the story is told as one chain of cause and effect, not as a numbered list |
-| PASS | Length | story 49.1 s (under 60 s; aim for 40-58) |
+| PASS | Length | story 51.0 s (under 60 s; aim for 40-58); with the end card 65.5 s |
 | PASS | Places | 2 set(s): macro, home (at least a body scene and the doctor's office) |
 | PASS | Own rooms | home: kitchen|forest|stripes|wood|tall@left|night|stove-left|-|night |
 | PASS | Rooms are unique | no other video has this clinic or this home (compared with 11 other video(s)) |
@@ -54,13 +54,13 @@ Toon script `quit-sugar` · about 49 seconds · 16 pictures
 | PASS | Macro hook | the video opens on a macro |
 | PASS | Macros spread | macros at: start, end (one at the start, then the middle and/or the end) |
 | PASS | Macro views differ | 4 different close-up(s) over 2 macro(s) (each macro shows a new close-up) |
-| PASS | View changes | 16 pictures in 49 s: a new view every 3.1 s on average (6 or less), the longest held 4.2 s (7.5 or less) |
+| PASS | View changes | 16 pictures in 51 s: a new view every 3.2 s on average (6 or less), the longest held 4.7 s (7.5 or less) |
 | PASS | Text says what is spoken | every text on the picture uses words of its line, appears on its first spoken word, leaves with the line and sits straight |
 | PASS | Own music | its own track "quit-sugar" (made from "musicPrompt" with: node pipeline/toon-music.mjs --slug quit-sugar) |
-| PASS | 1 Hook: said in 2 s | "Quit sugar? You'll be back!" takes 1.7 s (at most 2) |
+| PASS | 1 Hook: said in 2 s | "Quit sugar? You'll be back!" takes 1.8 s (at most 2) |
 | PASS | 1 Hook: something big moves at once | the first movement starts at 0.00 s (within 0.5 s) |
-| PASS | 1 Hook: no still opening | in the first 3 s the longest still is 0.6 s (at most 1), from 2.4 s |
-| PASS | Never still | the longest stretch with no movement, cut, camera move or new thing is 1.8 s (at most 2), from 47.3 s |
+| PASS | 1 Hook: no still opening | in the first 3 s the longest still is 0.5 s (at most 1), from 2.5 s |
+| PASS | Never still | the longest stretch with no movement, cut, camera move or new thing is 1.5 s (at most 2), from 41.1 s |
 | PASS | Body scene | body characters speak for 93% of the video (30% or more: they are the show) |
 | PASS | Short lines | the longest line is 12 words |
 | PASS | Banter | at most 2 lines in a row by one speaker (3 or fewer) |
@@ -77,7 +77,7 @@ Characters: sweetie, liver, dad
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
 | 0.0 s | A1 | sweetie | happy | Quit sugar? You'll be back! | ecu 50 push |  |
-| 1.8 s | A2 | dad | angry | No sugar for a month? Watch me. | mcu 50 lock |  |
+| 1.9 s | A2 | dad | angry | No sugar for a month? Watch me. | mcu 50 lock |  |
 
 What happens in the picture:
 
@@ -93,7 +93,7 @@ Characters: brain, sweetie
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
 | 5.2 s | B1 | sweetie | happy | You're hooked on me! Here come the cravings! | whip to ews 18 lock |  |
-| 8.1 s | B2 | brain | smug | Hooked? Studies find little proof sugar is addictive in people. | mcu 50 push | westwater-2016 |
+| 8.2 s | B2 | brain | smug | Hooked? Studies find little proof sugar is addictive in people. | mcu 50 push | westwater-2016 |
 
 What happens in the picture:
 
@@ -109,9 +109,9 @@ Characters: tooth, sweetie · props: tag
 
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
-| 12.5 s | C1 | sweetie | happy | Relax. I'm juice now. Healthy! | whip to ews 18 lock |  |
-| 14.3 s | C2 | tooth | angry | Juice, honey, syrup: still sugar to me. Out! | cu 85 push | who-diet |
-| 17.2 s | C3 | tooth | happy | Under twelve teaspoons a day, and I get fewer holes. | ews 18 lock | who-diet, moynihan-2014 |
+| 12.9 s | C1 | sweetie | happy | Relax. I'm juice now. Healthy! | whip to ews 18 lock |  |
+| 15.0 s | C2 | tooth | angry | Juice, honey, syrup: still sugar to me. Out! | cu 85 push | who-diet |
+| 18.0 s | C3 | tooth | happy | Under twelve teaspoons a day, and I get fewer holes. | ews 18 lock | who-diet, moynihan-2014 |
 
 What happens in the picture:
 
@@ -128,8 +128,8 @@ Characters: liver
 
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
-| 21.6 s | D1 | liver | neutral | In kids with obesity who swapped sugar for starch... | whip to ews 18 lock | schwarz-2017 |
-| 24.8 s | D2 | liver | happy | ...liver fat nearly halved in nine days! Same calories! | cu 85 push | schwarz-2017 |
+| 22.1 s | D1 | liver | neutral | In kids with obesity who swapped sugar for starch... | whip to ews 18 lock | schwarz-2017 |
+| 25.2 s | D2 | liver | happy | ...liver fat nearly halved in nine days! Same calories! | cu 85 push | schwarz-2017 |
 
 What happens in the picture:
 
@@ -144,8 +144,8 @@ Characters: dad, sweetie, brain
 
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
-| 28.3 s | E1 | sweetie | smug | Fine. Have my sweet cousin. Zero sugar! | ms 35 lock |  |
-| 30.8 s | E2 | brain | neutral | The WHO says: don't swap sugar for sweeteners. | mcu 50 lock | who-diet |
+| 28.7 s | E1 | sweetie | smug | Fine. Have my sweet cousin. Zero sugar! | ms 35 lock |  |
+| 31.5 s | E2 | brain | neutral | The WHO says: don't swap sugar for sweeteners. | mcu 50 lock | who-diet |
 
 What happens in the picture:
 
@@ -162,8 +162,8 @@ Characters: dad, sweetie
 
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
-| 33.9 s | F1 | dad | neutral | So... did I lose weight? | ms 35 lock |  |
-| 35.8 s | F2 | sweetie | sad | In trials, about one kilo... only because you ate less. | mcu 50 lock | temorenga-2013 |
+| 34.6 s | F1 | dad | neutral | So... did I lose weight? | ms 35 lock |  |
+| 36.4 s | F2 | sweetie | sad | In trials, about one kilo... only because you ate less. | mcu 50 lock | temorenga-2013 |
 
 What happens in the picture:
 
@@ -180,9 +180,9 @@ Characters: tongue, sweetie · props: tag
 
 | Time | Line | Who | Feeling | Words | Camera | Source |
 |---|---|---|---|---|---|---|
-| 39.6 s | G1 | tongue | neutral | And me? Sweet food tastes just the same. | whip to ews 18 lock | wise-2016 |
-| 42.4 s | G2 | tongue | happy | No sugar for a month? Not yet. Three months? Forty percent sweeter! | cu 85 push | wise-2016 |
-| 46.7 s | G3 | sweetie | sad | You quit sugar? ...I'll be back. | mcu 50 lock |  |
+| 40.5 s | G1 | tongue | neutral | And me? Sweet food tastes just the same. | whip to ews 18 lock | wise-2016 |
+| 43.4 s | G2 | tongue | happy | No sugar for a month? Not yet. Three months? Forty percent sweeter! | cu 85 push | wise-2016 |
+| 48.1 s | G3 | sweetie | sad | You quit sugar? ...I'll be back. | mcu 50 lock |  |
 
 What happens in the picture:
 
@@ -191,6 +191,8 @@ What happens in the picture:
 - at G2 ("Three"): buds to 1 [sparkle]
 - at G2 ("sweeter!"): sound [tada]
 - at G3: sound [footsteps-tiny]
+- at G3 ("I'll"): flash
+- at G3 ("back."): sound
 - at G2 ("forty"): tag "40% sweeter"
 
 ## Sources
