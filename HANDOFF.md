@@ -6,6 +6,22 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-23 (36) - MacBook (local Claude Code) - branch `video/quit-smoking` - quit-smoking SCHEDULED Tue 24 Nov 12:30 IST
+
+- Owner's notes on the final: Mira's eyes (fixed: both look at the other's measured eye centres) and "last line cta i want to
+  speak by narrator" (Joey reads the whole card again: `"cta": {"read": "card"}`, CLAUDE.md and the checks updated). The first
+  long read was 17.1 s (221 credits, unused); the owner chose the short one (142 credits, 10 s, an 11.6 s card).
+- Found and fixed: the layout log reported a left-facing person's gaze mirrored (L10 read Mira backwards); the v9 cover still
+  had the watermark (decision 26: none on the cover).
+- Final: scoreboard 47/47 PASS, every check PASS. Uploaded private, scheduled Tue 24 Nov 12:30 IST (read back),
+  https://youtu.be/QNqXRvpwVu4. The AI-use label: the API answered True but YouTube does not show it on read-back: check it in
+  Studio (Details, Altered content).
+- Credits: ElevenLabs key 4 dropped more than the tool counted (21,596 -> 20,340 while the tool logged 221): check the key's
+  usage page; total now 32,106 (the account updates late).
+- Next free MedPeak Short slots: Tue 24 Nov 21:30, Wed 25 Nov 12:30 IST.
+
+---
+
 ## 2026-11-23 (35) - MacBook (local Claude Code) - branch `video/quit-smoking` - quit-smoking FINAL rendered, scoreboard ALL PASS
 
 - Voiced (owner's yes): 328 + 56 (end card) + 1033 (music) = 1,417 credits; the balance read 34,717 before, 33,583 after (one

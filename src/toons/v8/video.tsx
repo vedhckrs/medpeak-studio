@@ -292,9 +292,10 @@ export const PlayerScreen: React.FC<{L: Layout; toon: Toon; st: ReturnType<typeo
   return (
     <ScreenSpace>
       {cap && <WordCaption key={cap.id} word={cap.word} t={cap.t} isKey={cap.isKey} y={cap.y} scale={cap.scale} tilt={cap.tilt} />}
-      {/* no watermark on the end card (the owner, 2026-11-21): the last act's mark fades out as the card comes in */}
+      {/* no watermark on the end card (the owner, 2026-11-21): the last act's mark fades out as the card comes in; v9: none on the
+          cover still either (decision 26: `bare` is the cover) */}
       {st.v9
-        ? <WatermarkV9 act={act} t={sec - acts[act]} out={inCta ? sec - ends : undefined} heads={act === 2 ? heads : undefined} light={!inCta && !st.isCard && light} />
+        ? <WatermarkV9 act={act} t={sec - acts[act]} out={inCta ? sec - ends : undefined} heads={act === 2 ? heads : undefined} light={!inCta && !st.isCard && light} cover={bare} />
         : <Watermark act={act} t={sec - acts[act]} out={inCta ? sec - ends : undefined} />}
     </ScreenSpace>
   );
