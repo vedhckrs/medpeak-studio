@@ -96,7 +96,11 @@ shots = [
 # the pace per line is set on the real voices (free remix) once they exist
 toon = {
   "slug": "bee-sting", "title": "What Happens When a Bee Stings You", "format": 6, "shape": "visit",
-  "music": "bee-sting", "camera": "steady", "episode": 16, "caption": 2,
+  "music": "bee-sting",
+  # check A4 (voices 3+ semitones apart in a scene), read on the cast's clips: Stinger ~169 Hz, Mom ~212 -> +3 (~252), Kid ~284 -> +2
+  # (~319), Guard ~385, Dr. Mira ~208: every pair of a scene now 3+ semitones apart (free: a per-video pitch)
+  "pitch": {"mom": 3, "kid": 6},
+  "camera": "steady", "episode": 16, "caption": 2,
   "intruder": "stinger", "term": "bee sting",
   "musicPrompt": "Playful funk instrumental, slap bass, tight light percussion, bright clavinet stabs, 152 BPM, no lead melody in the voice range, short rests between phrases; a buzzing kazoo and plucky pizzicato strings for the sneaky stinger; from 34 seconds a brighter, confident second half for the doctor's answer; no vocals, ends on a clean button.",
   "hooks": [

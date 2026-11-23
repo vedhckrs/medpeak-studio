@@ -4,6 +4,10 @@
  "format": 6,
  "shape": "visit",
  "music": "bee-sting",
+ "pitch": {
+  "mom": 3,
+  "kid": 6
+ },
  "camera": "steady",
  "episode": 16,
  "caption": 2,
