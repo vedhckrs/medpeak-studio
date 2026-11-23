@@ -229,7 +229,8 @@ const ShotC: React.FC<{s: ShotNow}> = ({s}) => {
 const timesE = (s: ShotNow) => ({doc: at(s, 'E1', 'doc', 0.3), good: at(s, 'E3', 'good', 4.0), support: at(s, 'E5', 'support', 12.0), crew: at(s, 'E7', 'crew', 22.0), e7: at(s, 'E7', undefined, 21.5)});
 const DAD_AT = {view: 'three-quarter' as const, facing: 'right' as const, x: 280, y: FEET_Y_TWO, scale: PEOPLE_SCALE_TWO};
 const MIRA_AT = {view: 'three-quarter' as const, facing: 'left' as const, x: 820, y: FEET_Y_TWO, scale: PEOPLE_SCALE_TWO};
-const DAD_HEAD: [number, number] = [300, 640], MIRA_HEAD: [number, number] = [790, 650];
+// the centres of their EYES (measured from the layout log): each looks into the other's eyes
+const DAD_HEAD: [number, number] = [341, 706], MIRA_HEAD: [number, number] = [754, 830];
 
 const ShotE: React.FC<{s: ShotNow}> = ({s}) => {
   const t = s.t, k = timesE(s);
@@ -247,7 +248,7 @@ const ShotE: React.FC<{s: ShotNow}> = ({s}) => {
       <PersonAt spec={DAD} {...DAD_AT} pose={dadPose} expr={t > k.e7 ? 'happy' : 'worried'} lookAt={MIRA_HEAD} talk={talkSmooth(s, 'dad')} blink={blink(t, 2)} />
       </div>
       <div style={{position: 'absolute', inset: 0, transformOrigin: `${MIRA_AT.x}px 1900px`, transform: `rotate(${lean.toFixed(2)}deg)`}}>
-      <PersonAt spec={MIRA} {...MIRA_AT} pose={miraPose} expr={t > k.good - 0.2 && t < k.good + 1.4 ? 'happy' : 'neutral'} look={[-0.85, 0.05 + nod]} talk={talkSmooth(s, 'doctor')} blink={blink(t, 4)} />
+      <PersonAt spec={MIRA} {...MIRA_AT} pose={miraPose} expr={t > k.good - 0.2 && t < k.good + 1.4 ? 'happy' : 'neutral'} lookAt={[DAD_HEAD[0], DAD_HEAD[1] + nod * 120]} talk={talkSmooth(s, 'doctor')} blink={blink(t, 4)} />
       </div>
     </Scene>
   );

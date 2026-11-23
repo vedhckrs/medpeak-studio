@@ -151,7 +151,10 @@ Do these once on a new machine. None of it needs the old machine except step 6.
   is ONE line** (the headline and each point's bold text; 2026-11-21): `CtaCardV4` sizes the three points together to fit.
   **From format 6 the card is short** (2026-11-23, decision 25, option A): 5-6 s, a hard cut in (no slide-up), the headline and
   the three points come up together, Joey says only the follow line; the story ends on the answer or a loop line. Read the
-  retention after two weeks against the older long cards.
+  retention after two weeks against the older long cards. **Changed by the owner the same day** (on the quit-smoking final:
+  "last line cta i want to speak by narrator"): Joey reads the WHOLE card again (headline, the three points, the follow line),
+  each point landing on its word; toon.json `"cta": {"read": "card", "text": ...}`; the card runs his clip (S9: 15 s, 22% at
+  most). Still a hard cut in.
 - **No jiggle** (2026-11-21): a talking character does not squash on every syllable; mouths are smoothed (`talkSmooth`);
   the room camera's smoothing samples a fixed time grid (a moving one stepped 5 times a second).
 - **No transitions: every scene change is a hard cut** (2026-11-21: "it looks fake"). **Music 10% lower** (`MUSIC_LEVEL`

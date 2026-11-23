@@ -352,7 +352,9 @@ export const ToonV8: React.FC<V8VideoProps> = ({toon, timings, sfx, music, bare 
   const inCta = !!cta && sec >= ends;
   // the card's beats, in seconds from the card's start (the narrator begins at CTA_LEAD); v9: the short card's own beats
   // (headline and points together, CTA9_AT), Joey says only the follow line
-  const ctaAt: CtaAt | undefined = v9 ? CTA9_AT : cta?.at && {head: CTA_LEAD + cta.at.head, points: cta.at.points.map((p) => CTA_LEAD + p) as [number, number, number], follow: CTA_LEAD + cta.at.follow};
+  // the owner (2026-11-23): "cta": {"read": "card"}: Joey reads the whole card, each point lands on his word (still a hard cut in)
+  const readCard = v9 && (toon as Toon & {cta?: {read?: string}}).cta?.read === 'card';
+  const ctaAt: CtaAt | undefined = v9 && !readCard ? CTA9_AT : cta?.at && {head: CTA_LEAD + cta.at.head, points: cta.at.points.map((p) => CTA_LEAD + p) as [number, number, number], follow: CTA_LEAD + cta.at.follow};
 
   const has = (n: string | undefined): n is string => !!n && sfx.includes(n);
   const events = soundPlan(L);
@@ -416,8 +418,8 @@ export const ToonV8: React.FC<V8VideoProps> = ({toon, timings, sfx, music, bare 
       {/* the caption word and the watermark, laid on the screen after the camera (one word at a time, no box: 2026-11-20) */}
       <PlayerScreen L={L} toon={toon} st={st} sec={sec} bare={bare} heads={heads} />
       {/* v9: the points come up together, so one pop; no whoosh (a hard cut) */}
-      {cta && v9 && <Sequence from={Math.round((ends + CTA9_AT.points[0]) * V8_FPS)} durationInFrames={60 * K}><Audio src={staticFile('toons/sfx/pop.mp3')} volume={0.35} /></Sequence>}
-      {cta && !v9 && [0, 1, 2].map((i) => <Sequence key={'cta' + i} from={Math.round((ends + (ctaAt ? ctaAt.points[i] : 0.45 + i * 0.55)) * V8_FPS)} durationInFrames={60 * K}><Audio src={staticFile('toons/sfx/pop.mp3')} volume={0.35} /></Sequence>)}
+      {cta && v9 && !readCard && <Sequence from={Math.round((ends + CTA9_AT.points[0]) * V8_FPS)} durationInFrames={60 * K}><Audio src={staticFile('toons/sfx/pop.mp3')} volume={0.35} /></Sequence>}
+      {cta && (!v9 || readCard) && [0, 1, 2].map((i) => <Sequence key={'cta' + i} from={Math.round((ends + (ctaAt ? ctaAt.points[i] : 0.45 + i * 0.55)) * V8_FPS)} durationInFrames={60 * K}><Audio src={staticFile('toons/sfx/pop.mp3')} volume={0.35} /></Sequence>)}
       {cta && !v9 && <Sequence from={Math.round((ends + (ctaAt ? ctaAt.follow : 2.3)) * V8_FPS)} durationInFrames={90 * K}><Audio src={staticFile('toons/sfx/success-chime.mp3')} volume={0.3} /></Sequence>}
       {cta?.voice && <Sequence from={Math.round((ends + CTA_LEAD) * V8_FPS)} durationInFrames={Math.round(((cta.seconds ?? 4) + CTA_TAIL) * V8_FPS)}><Audio src={staticFile(cta.voice)} /></Sequence>}
       {cta && !v9 && <Sequence from={Math.round(ends * V8_FPS)} durationInFrames={40 * K}><Audio src={staticFile('toons/sfx/whoosh-air.mp3')} volume={0.4} /></Sequence>}

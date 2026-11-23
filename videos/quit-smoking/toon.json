@@ -584,9 +584,12 @@
   }
  ],
  "cta": {
-  "text": "Follow MedPeak Health for more health tips that keep you safe.",
+  "read": "card",
+  "text": "Quit smoking? Know this. Coughing is clearing: a good sign at first. Get support to quit, it really helps. A long cough? See a doctor if it lasts over three weeks, or brings up blood. Follow MedPeak Health for more health tips that keep you safe.",
   "src": [
-   "nhs-quit-timeline"
+   "nhs-quit-timeline",
+   "nhs-quit-benefits",
+   "nhs-cough"
   ]
  }
 }

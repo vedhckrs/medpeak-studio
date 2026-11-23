@@ -592,7 +592,11 @@ export const checkFormat6 = (toon, L, {voiced, known, add}) => {
   // ---- S9 the end card (decision 25, option A)
   if (known.ctaSeconds) {
     const share9 = known.ctaSeconds / (T + known.ctaSeconds);
-    add('format', 'S9 End card', known.ctaSeconds <= F6.endCard + 1e-6 && share9 <= F6.endShare + 1e-6, `the end card runs ${known.ctaSeconds.toFixed(1)} s, ${Math.round(share9 * 100)}% of the video (${F6.endCard} s and ${F6.endShare * 100}% at most: Joey says only the follow line)`);
+    // the owner (2026-11-23, on the quit-smoking final): "last line cta i want to speak by narrator": with "cta": {"read": "card"}
+    // Joey reads the headline, the three points and the follow line, and the card runs his clip (15 s, 22% at most)
+    const read = toon.cta?.read === 'card';
+    const max9 = read ? 15 : F6.endCard, share9max = read ? 0.22 : F6.endShare;
+    add('format', 'S9 End card', known.ctaSeconds <= max9 + 1e-6 && share9 <= share9max + 1e-6, `the end card runs ${known.ctaSeconds.toFixed(1)} s, ${Math.round(share9 * 100)}% of the video (${max9} s and ${Math.round(share9max * 100)}% at most: ${read ? 'Joey reads the whole card' : 'Joey says only the follow line'})`);
   } else add('format', 'S9 End card', true, `measured once the narrator's clip exists (${F6.endCard} s and ${F6.endShare * 100}% of the video at most)`, true);
 
   // ---- S10 one real intruder

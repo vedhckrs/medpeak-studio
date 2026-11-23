@@ -156,7 +156,9 @@ toon = {
      "note": "See a GP if: 'you've had a cough for more than 3 weeks (persistent cough)'. Ask for an urgent GP appointment or get help from NHS 111 if: 'you're coughing up blood'. Read on 2026-11-23."},
   ],
   "shots": shots,
-  "cta": {"text": "Follow MedPeak Health for more health tips that keep you safe.", "src": [QUIT]},
+  # the owner (2026-11-23): "last line cta i want to speak by narrator": Joey reads the whole card (the headline, the three points
+  # as written on it, the follow line); each point lands on its first word
+  "cta": {"read": "card", "text": "Quit smoking? Know this. Coughing is clearing: a good sign at first. Get support to quit, it really helps. A long cough? See a doctor if it lasts over three weeks, or brings up blood. Follow MedPeak Health for more health tips that keep you safe.", "src": [QUIT, BEN, COUGH]},
 }
 
 # Pace on the real voices (format 6, S6; free: `toon-voice --remix`): the body cast and Dad a touch faster, Dr. Mira slower and
