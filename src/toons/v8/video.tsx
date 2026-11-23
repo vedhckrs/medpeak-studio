@@ -356,6 +356,9 @@ export const ToonV8: React.FC<V8VideoProps> = ({toon, timings, sfx, music, bare 
 
   const has = (n: string | undefined): n is string => !!n && sfx.includes(n);
   const events = soundPlan(L);
+  // format 6: the answer block (calmer: SOUND6.calm)
+  const ans = L.lines.filter((l) => l.line.answer);
+  const calm = (L.sound as {calm?: number}).calm ?? 1;
   // extra story sounds of the player: a heartbeat under the serious beat
   const extra = L.lines.filter((l) => (l.line as {serious?: boolean}).serious).map((l) => ({at: l.from, name: 'heartbeat', vol: 0.5}));
 
@@ -418,14 +421,21 @@ export const ToonV8: React.FC<V8VideoProps> = ({toon, timings, sfx, music, bare 
       {cta && !v9 && <Sequence from={Math.round((ends + (ctaAt ? ctaAt.follow : 2.3)) * V8_FPS)} durationInFrames={90 * K}><Audio src={staticFile('toons/sfx/success-chime.mp3')} volume={0.3} /></Sequence>}
       {cta?.voice && <Sequence from={Math.round((ends + CTA_LEAD) * V8_FPS)} durationInFrames={Math.round(((cta.seconds ?? 4) + CTA_TAIL) * V8_FPS)}><Audio src={staticFile(cta.voice)} /></Sequence>}
       {cta && !v9 && <Sequence from={Math.round(ends * V8_FPS)} durationInFrames={40 * K}><Audio src={staticFile('toons/sfx/whoosh-air.mp3')} volume={0.4} /></Sequence>}
-      {L.lines.map((l) => l.file && <Sequence key={l.line.id} from={Math.round(l.from * K)} durationInFrames={Math.round((l.frames + 12) * K)}><Audio src={staticFile(l.file)} /></Sequence>)}
+      {L.lines.map((l) => l.file && <Sequence key={l.line.id} from={Math.round(l.from * K)} durationInFrames={Math.round((l.frames + 12) * K)}><Audio src={staticFile(l.file)} volume={v9 && l.line.answer ? calm : 1} /></Sequence>)}
       {events.filter((e) => has(e.name)).map((e, i) => <Sequence key={i} from={Math.round(e.at * K)} durationInFrames={90 * K}><Audio src={staticFile(`toons/sfx/${e.name}.mp3`)} volume={e.vol} /></Sequence>)}
       {extra.filter((e) => has(e.name)).map((e, i) => <Sequence key={'x' + i} from={Math.round(e.at * K)} durationInFrames={240 * K}><Audio src={staticFile(`toons/sfx/${e.name}.mp3`)} volume={e.vol} /></Sequence>)}
       {music && <Audio src={staticFile(`toons/music/${music}.mp3`)} loop volume={(fr) => {
+        // format 6: the bed eases down to the answer's calm level over 0.4 s and back up after it (no step, no click)
+        const answerK = (t: number) => {
+          if (!v9 || !ans.length) return 1;
+          const a0 = ans[0].from, a1 = ans[ans.length - 1].from + ans[ans.length - 1].frames, r = 0.4 * TOON_FPS;
+          const k = Math.min(clamp01((t - a0 + r) / r), clamp01((a1 + r - t) / r));
+          return 1 - (1 - calm) * k * k * (3 - 2 * k);
+        };
         // v4: the bed stays low under the narrator on the end card, then fades out with it
         const t = fr / K;
         // the master level: MUSIC_LEVEL for the videos already out, the format's own (director.ts SOUND6.music) for format 6
-        const lvl = v9 ? L.sound.music : MUSIC_LEVEL;
+        const lvl = (v9 ? L.sound.music : MUSIC_LEVEL) * answerK(t);
         if (!cta || t < L.total - 24) return lvl * bedAt(L, t);
         const end = L.total + ctaSeconds(cta, v9) * TOON_FPS;
         return lvl * Math.max(Math.min(bedAt(L, L.total - 24), L.sound.bedUnderVoice * 1.2), 0) * clamp01((end - t) / 40);

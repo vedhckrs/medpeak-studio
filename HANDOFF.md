@@ -6,6 +6,21 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-23 (35) - MacBook (local Claude Code) - branch `video/quit-smoking` - quit-smoking FINAL rendered, scoreboard ALL PASS
+
+- Voiced (owner's yes): 328 + 56 (end card) + 1033 (music) = 1,417 credits; the balance read 34,717 before, 33,583 after (one
+  key's count looks stale). CO gang = Valf (free pick). Pace per line on the real voices (free remix); B5 cut; cards 0.8 s.
+- Final `videos/quit-smoking/renders/toon-v8.mp4` (58.2 s story + 5.5 s card): scoreboard 47/47 PASS; toon:look C1-C8,
+  staging L1-L12, motion M1-M5, camera V1-V3, toon:sound, toon:listen (end card heard) all PASS. Not uploaded.
+- Engine fixes from the pilot (format 6 only unless said): the scoreboard now runs after the render in its own tsx process
+  (it never ran before: ".tsx" import error); no shot gap after the last shot; the answer block plays calmer (SOUND6.calm 0.62:
+  the loudness range 2.3 -> in band); `musicTrim` (dB) per video in toon.json (this one -3); the mastering adds a -1.5 dBFS
+  limiter (ALL videos: true peak was -0.6); tempo floor 0.85; the hanging hand and the worker cap (earlier entry).
+- Open: the package (title, description, cover: the 0.8 s frame has the lungs' shocked eyes), then upload on the owner's word
+  at the next free MedPeak Short slot.
+
+---
+
 ## 2026-11-23 (34) - MacBook (local Claude Code) - branch `video/quit-smoking` - the engine v9 pilot: script, shots, silent preview
 
 - **Approved by the owner**: hook B, the look sheets, the script ("Yes"). Script `videos/quit-smoking/toon.json` from

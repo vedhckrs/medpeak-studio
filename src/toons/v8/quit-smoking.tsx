@@ -41,7 +41,12 @@ const poseAt = (t: number, steps: Step[]): PoseIn => {
   return k >= 1 ? b : {a: steps[i - 1][1], b, k};
 };
 /** One cough: a squeeze up and back over `d` seconds from t0 (the chest stage's `cough` dial). */
-const coughAt = (t: number, t0: number, amp = 1, d = 0.7) => { const u = (t - t0) / d; return u < 0 || u > 1 ? 0 : amp * Math.sin(Math.PI * u) ** 2; };
+const coughAt = (t: number, t0: number, amp = 1, d = 0.7) => {
+  // a sharp squeeze in the first quarter, then a slower release: no held peak, so it reads (and measures) as ONE action
+  const u = (t - t0) / d;
+  if (u < 0 || u > 1) return 0;
+  return amp * (u < 0.25 ? Math.sin((u / 0.25) * Math.PI / 2) : 1 - ((u - 0.25) / 0.75) ** 0.9);
+};
 /** One sweeping stroke: 0 -> 1 -> 0 over `d` seconds from t0 (then the crew holds still). */
 const stroke = (t: number, t0: number, d = 1.5) => { const u = (t - t0) / d; return u <= 0 || u >= 1 ? 0 : Math.sin(Math.PI * u) ** 0.5; };
 const Svg: React.FC<{children: React.ReactNode}> = ({children}) => (
@@ -196,8 +201,8 @@ const ShotC: React.FC<{s: ShotNow}> = ({s}) => {
   const seated = SEATS.map((p, i) => ({p, i})).filter(({i}) => !second || i % 2 === 1);
   return (
     <Scene bg="#000">
-      {/* the flow keeps its phase across the time card (the same framing on both sides, check C8) */}
-      <Vessel t={second ? t + 5.9 : t} state={{flow: 0.3, co: 0, pink}}
+      {/* the flow keeps its phase across the time card (the same framing on both sides, check C8): 7.07 s is the first pass of C on the voiced timings */}
+      <Vessel t={second ? t + 7.07 : t} state={{flow: 0.08, co: 0, pink}}
         layer={<>
           {SEATS.map(([x, y], i) => <RedDisc key={'d' + i} x={x} y={y + 70} w={230} c={second && i % 2 === 0 ? '#d8453f' : '#b8504a'} rot={(i % 3 - 1) * 8} />)}
           {seated.map(({p: [x, y], i}) => {

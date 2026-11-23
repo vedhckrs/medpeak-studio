@@ -54,7 +54,7 @@ shots = [
   # C: inside a blood vessel, one framing held: the CO gang lounges on the red cells like seats.
   {"id": "C", "set": "blood", "kind": "body",
    "cast": [{"who": "co", "x": 540, "size": 300}, {"who": "redcell", "x": 540, "size": 230}],
-   "state": {"flow": 0.3, "co": 1, "pink": 0},
+   "state": {"flow": 0.08, "co": 1, "pink": 0},
    "events": [
      E("start", "co: the gang leans back on the red cells, hands behind their heads", sfx="whoosh-soft"),
      E("C2", "co: one of them flicks ash off his band, smug", word="again", sfx="pop"),
@@ -68,7 +68,7 @@ shots = [
   # carries the source, the line is the gang's reaction: the story keeps 3 sourced facts, all in the answer).
   {"id": "C", "set": "blood", "kind": "body",
    "cast": [{"who": "co", "x": 540, "size": 300}, {"who": "redcell", "x": 540, "size": 230}],
-   "state": {"flow": 0.3, "co": 0.5, "pink": 0.5},
+   "state": {"flow": 0.08, "co": 0.5, "pink": 0.5},
    "events": [
      E("start", "co: the empty red cells glow redder; the gang left behind looks round, shocked", sfx="ding"),
      E("C3", "co: one more is shoved off his seat and tumbles out of frame", word="kicked", sfx="boing"),
@@ -115,7 +115,7 @@ shots = [
 
 toon = {
   "slug": "quit-smoking", "title": "What Happens When You Quit Smoking", "format": 6, "shape": "visit",
-  "music": "quit-smoking", "camera": "steady", "episode": 15, "caption": 2,
+  "music": "quit-smoking", "musicTrim": -3, "camera": "steady", "episode": 15, "caption": 2,
   "intruder": "cigarette", "term": "smoking",
   "musicPrompt": "Playful funk instrumental, slap bass, tight light percussion, bright clavinet stabs, 148 BPM, no lead melody in the voice range, short rests between phrases; a wheezy harmonica that turns bright and breezy as the lungs heal; from 33 seconds a brighter, confident second half for the doctor's answer; no vocals, ends on a clean button.",
   "hooks": [

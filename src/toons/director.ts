@@ -258,7 +258,7 @@ export type ToonSource = {id: string; label: string; url: string; note: string};
  * asks for one (the style of the reference Shorts); 'cinematic' (default) = the director cuts.
  */
 /** `episode`: the video's number in the series (rooms are compared with the six episodes either side). `rooms`: the recipes for this video's own clinic and home. */
-export type Toon = {slug: string; title: string; test?: boolean; /** the script format: 6 = engine v9 (one story, pauses, the answer block, time cards) */ format?: number; /** 2: the caption line of 2026-11-22 on (5% higher, 40% smaller); left out: the first one (videos already out keep it) */ caption?: 2; music?: string; camera?: 'steady' | 'cinematic'; episode?: number; rooms?: Partial<Record<RoomRole, RoomLook>>; retention?: ToonRetention; shots: ToonShot[]; sources?: ToonSource[]};
+export type Toon = {slug: string; title: string; test?: boolean; /** the script format: 6 = engine v9 (one story, pauses, the answer block, time cards) */ format?: number; /** 2: the caption line of 2026-11-22 on (5% higher, 40% smaller); left out: the first one (videos already out keep it) */ caption?: 2; music?: string; /** format 6: a per-video music trim in dB (soundOf) */ musicTrim?: number; camera?: 'steady' | 'cinematic'; episode?: number; rooms?: Partial<Record<RoomRole, RoomLook>>; retention?: ToonRetention; shots: ToonShot[]; sources?: ToonSource[]};
 export type ToonTimings = {lines: Record<string, {file: string; duration: number; words: SpokenWord[]}>};
 
 /** How far a graphic reaches from its centre, in prop units (200 units = its `size`): [left, up, right, down]. A bubble's tail is not counted. */
@@ -362,7 +362,9 @@ export const layoutToon = (toon: Toon, timings: ToonTimings | null) => {
       at += frames;
       prev = line;
     });
-    at += shot.card ? Math.round((shot.seconds ?? (v9 ? FORMAT6.card : 1.4)) * TOON_FPS) : Math.round(shotGap * TOON_FPS);
+    // format 6: no shot gap after the LAST shot: the end card follows the last word at once (the scoreboard: 6 s or less after it)
+    const last = si === toon.shots.length - 1;
+    at += shot.card ? Math.round((shot.seconds ?? (v9 ? FORMAT6.card : 1.4)) * TOON_FPS) : v9 && last ? 0 : Math.round(shotGap * TOON_FPS);
     shots.push({shot, from, frames: at - from});
   });
   const steady = toon.camera === 'steady';
@@ -579,9 +581,13 @@ export const SOUND = {
  * under words, the dip spread over 0.25 s (`dip`: seconds each side). `music` is the player's master level (MUSIC_LEVEL).
  * The effect budget rises to 14 a minute (only in the pauses; minGap stays).
  */
-export const SOUND6 = {...SOUND, bed: 1.0, bedUnderVoice: 0.71, perMinute: 14, dip: 0.125, music: 0.9};
+/** `calm`: the doctor's answer block (voice and bed) plays at this level, about 4 dB down: a calmer, slower answer that also
+ * gives the mix its loudness range (the references 5.9 LU; an even mix measured 2.3 LU, 0.7 gave 3.4; scoreboard 4-8). */
+export const SOUND6 = {...SOUND, bed: 1.0, bedUnderVoice: 0.71, perMinute: 14, dip: 0.125, music: 0.9, calm: 0.62};
 /** The mix levels of a script: SOUND for the videos already out (dip 0.5 s, music 0.9), SOUND6 for format 6. */
-export const soundOf = (toon: {format?: number}) => (isV9(toon) ? SOUND6 : {...SOUND, dip: 0.5, music: 0.9});
+/** `musicTrim` (toon.json, dB, format 6): a per-video trim of the music for a track that came out loud or soft (the sound check
+ * "Music in the pauses" wants the bed 4-8 dB under the voice). */
+export const soundOf = (toon: {format?: number; musicTrim?: number}) => (isV9(toon) ? {...SOUND6, music: SOUND6.music * 10 ** (Math.max(-9, Math.min(6, toon.musicTrim ?? 0)) / 20)} : {...SOUND, dip: 0.5, music: 0.9});
 /** A planned music stop (format 6 `stop` event): its length, its fades, and how many a video may have. */
 export const STOP = {seconds: 0.6, min: 0.4, max: 0.8, fade: 0.04, most: 2};
 export type SoundEvent = {at: number; name: string; vol: number; why: string; rank: number};
