@@ -778,6 +778,9 @@ const layoutOf = (spec: PersonSpec, view: View, pose: PoseIn, mir: boolean, bob?
     let m = 1;
     const thumb = g.ap.thumb ? g.toBody(g.ap.thumb) : null;
     const lp = perp(fdir);
+    // a hand hanging relaxed at the side (the forearm points down): the thumb is ALWAYS on the inner side, toward the body
+    // (the owner, 2026-11-23: "patient hand is opposite side": facing right, the forward thumb landed on the outer side)
+    if (g.ap.hand === 'relaxed' && fdir[1] > 0.8) return Math.sign((-g.w[0]) * lp[0] + 0.0001) || 1;
     if (thumb) {
       const tp = sub(proj(cam, v3add(g.w3, thumb)), g.w);
       const dd = tp[0] * lp[0] + tp[1] * lp[1];
