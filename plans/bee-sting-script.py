@@ -99,7 +99,7 @@ toon = {
   "music": "bee-sting",
   # check A4 (voices 3+ semitones apart in a scene), read on the cast's clips: Stinger ~169 Hz, Mom ~212 -> +3 (~252), Kid ~284 -> +2
   # (~319), Guard ~385, Dr. Mira ~208: every pair of a scene now 3+ semitones apart (free: a per-video pitch)
-  "pitch": {"mom": 3, "kid": 6},
+  "pitch": {"mom": 3, "kid": 6, "guard": 5},
   "camera": "steady", "episode": 16, "caption": 2,
   "intruder": "stinger", "term": "bee sting",
   "musicPrompt": "Playful funk instrumental, slap bass, tight light percussion, bright clavinet stabs, 152 BPM, no lead melody in the voice range, short rests between phrases; a buzzing kazoo and plucky pizzicato strings for the sneaky stinger; from 34 seconds a brighter, confident second half for the doctor's answer; no vocals, ends on a clean button.",
@@ -141,6 +141,15 @@ toon = {
   "shots": shots,
   "cta": {"read": "card", "text": "Bee sting? Know this. Scrape it out sideways. Never use tweezers. Swollen lips or hard breathing? Get help now. Follow MedPeak Health for more health tips that keep you safe.", "src": [STING, ANA]},
 }
+
+# Pace on the real voices (free remix; format 6, S6): the body cast faster (the Stinger's voice is slow), people near their
+# own pace (the quick ones slower), Dr. Mira calmer. Voiced 2026-11-23: the story ran 64.8 s.
+PACE = {"D1": 0.95, "D2": 0.95, "A2": 1.05, "B1": 1.08, "B6": 1.05, "D6": 1.12, "B4": 1.15}
+for sh in shots:
+    for l in sh["lines"]:
+        if l["who"] == "doctor": l["tempo"] = 0.92
+        elif l["who"] in ("stinger", "guard"): l["tempo"] = 1.15
+        else: l["tempo"] = PACE.get(l["id"], 1.0)
 
 out = os.path.join(ROOT, "videos", "bee-sting")
 os.makedirs(out, exist_ok=True)

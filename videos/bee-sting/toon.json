@@ -6,7 +6,8 @@
  "music": "bee-sting",
  "pitch": {
   "mom": 3,
-  "kid": 6
+  "kid": 6,
+  "guard": 5
  },
  "camera": "steady",
  "episode": 16,
@@ -196,7 +197,8 @@
      "emotion": "happy",
      "pose": "rest",
      "key": "bullseye",
-     "chat": true
+     "chat": true,
+     "tempo": 1.15
     },
     {
      "id": "A2",
@@ -205,7 +207,8 @@
      "emotion": "scared",
      "pose": "rest",
      "key": "sting",
-     "chat": true
+     "chat": true,
+     "tempo": 1.05
     },
     {
      "id": "A3",
@@ -214,7 +217,8 @@
      "emotion": "angry",
      "pose": "rest",
      "key": "swell",
-     "chat": true
+     "chat": true,
+     "tempo": 1.15
     },
     {
      "id": "B1",
@@ -223,7 +227,8 @@
      "emotion": "neutral",
      "pose": "rest",
      "key": "tweezers",
-     "chat": true
+     "chat": true,
+     "tempo": 1.08
     },
     {
      "id": "B2",
@@ -232,7 +237,8 @@
      "emotion": "happy",
      "pose": "rest",
      "key": "squeeze",
-     "chat": true
+     "chat": true,
+     "tempo": 1.15
     },
     {
      "id": "B3",
@@ -241,7 +247,8 @@
      "emotion": "scared",
      "pose": "rest",
      "key": "no",
-     "chat": true
+     "chat": true,
+     "tempo": 1.15
     },
     {
      "id": "B4",
@@ -250,7 +257,8 @@
      "emotion": "neutral",
      "pose": "rest",
      "key": "card",
-     "chat": true
+     "chat": true,
+     "tempo": 1.15
     },
     {
      "id": "B5",
@@ -259,7 +267,8 @@
      "emotion": "shocked",
      "pose": "rest",
      "key": "sideways",
-     "chat": true
+     "chat": true,
+     "tempo": 1.15
     },
     {
      "id": "B6",
@@ -268,7 +277,8 @@
      "emotion": "happy",
      "pose": "rest",
      "key": "card",
-     "chat": true
+     "chat": true,
+     "tempo": 1.05
     }
    ]
   },
@@ -309,7 +319,8 @@
      "pose": "rest",
      "key": "rest",
      "chat": true,
-     "beat": 0.8
+     "beat": 0.8,
+     "tempo": 1.15
     }
    ]
   },
@@ -355,7 +366,8 @@
      "emotion": "neutral",
      "pose": "rest",
      "key": "doctor",
-     "chat": true
+     "chat": true,
+     "tempo": 1.15
     }
    ]
   },
@@ -400,7 +412,8 @@
      "emotion": "scared",
      "pose": "rest",
      "key": "lump",
-     "chat": true
+     "chat": true,
+     "tempo": 0.95
     },
     {
      "id": "D2",
@@ -409,7 +422,8 @@
      "emotion": "neutral",
      "pose": "rest",
      "key": "card",
-     "chat": true
+     "chat": true,
+     "tempo": 0.95
     },
     {
      "id": "D3",
@@ -421,7 +435,8 @@
      "src": [
       "nhs-insect-stings"
      ],
-     "answer": true
+     "answer": true,
+     "tempo": 0.92
     },
     {
      "id": "D4",
@@ -433,7 +448,8 @@
      "src": [
       "nhs-insect-stings"
      ],
-     "answer": true
+     "answer": true,
+     "tempo": 0.92
     },
     {
      "id": "D5",
@@ -447,7 +463,8 @@
       "nhs-anaphylaxis"
      ],
      "answer": true,
-     "care": true
+     "care": true,
+     "tempo": 0.92
     },
     {
      "id": "D6",
@@ -456,7 +473,8 @@
      "emotion": "happy",
      "pose": "rest",
      "key": "card",
-     "chat": true
+     "chat": true,
+     "tempo": 1.12
     }
    ]
   }
