@@ -139,7 +139,8 @@ export const checkToon = (toon, timings, known) => {
       if ((p.kind === 'tag' || p.kind === 'chip') && !p.text) bad.push(`shot ${s.id}: a ${p.kind} needs "text"`);
     }
     for (const l of s.lines) {
-      const here = (s.cast ?? []).map((a) => a.who);
+      // `voices` (format 6): people heard from OUTSIDE the frame in this shot (Mom and Kid above the skin in bee-sting)
+      const here = [...(s.cast ?? []).map((a) => a.who), ...(s.voices ?? [])];
       if (ids.has(l.id)) bad.push(`line id ${l.id} is used twice`);
       ids.add(l.id);
       if (!here.includes(l.who)) bad.push(`${l.id}: ${l.who} is not in the shot`);

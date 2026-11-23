@@ -1,0 +1,468 @@
+{
+ "slug": "bee-sting",
+ "title": "What Happens When a Bee Stings You",
+ "format": 6,
+ "shape": "visit",
+ "music": "bee-sting",
+ "camera": "steady",
+ "episode": 16,
+ "caption": 2,
+ "intruder": "stinger",
+ "term": "bee sting",
+ "musicPrompt": "Playful funk instrumental, slap bass, tight light percussion, bright clavinet stabs, 152 BPM, no lead melody in the voice range, short rests between phrases; a buzzing kazoo and plucky pizzicato strings for the sneaky stinger; from 34 seconds a brighter, confident second half for the doctor's answer; no vocals, ends on a clean button.",
+ "hooks": [
+  {
+   "line": "Bee sting! Bullseye! I'm staying right here.",
+   "why": "the owner's pick A (2026-11-23): inside the skin, the Stinger spears down and grins at the lens"
+  },
+  {
+   "line": "Ow! A bee stung me!",
+   "why": "B: the park, Kid swats a bee, then the dive into his hand"
+  },
+  {
+   "line": "A bee sting and tweezers? Yes, squeeze me!",
+   "why": "C: inside, giant tweezers descend at the lens, the Stinger rubbing his hands"
+  }
+ ],
+ "rooms": {
+  "clinic": {
+   "palette": "sage",
+   "wall": "paint",
+   "floor": "carpet",
+   "window": {
+    "style": "round",
+    "side": "right",
+    "view": "city"
+   },
+   "layout": "desk",
+   "chart": "body",
+   "time": "day"
+  }
+ },
+ "package": {
+  "title": "What Happens When a Bee Stings You",
+  "phrase": "what happens when a bee stings you",
+  "opener": "What happens when a bee stings you? The sting usually leaves a small mark, and sometimes the stinger stays stuck in the skin (NHS). Brush or scrape it out sideways with a fingernail or the edge of a bank card; do not use tweezers, as you could squeeze poison out of it (NHS, CDC). Wash the area with soap and water, hold an ice pack wrapped in a cloth on it for up to 20 minutes, and keep it raised if you can (NHS). A small swollen lump is normal and should get better in a few days (NHS). Call your emergency number (999 in the UK, 911 in the US, 112 in the EU) at once if the lips, mouth, throat or tongue suddenly swell, or someone is struggling to swallow or breathe: these can be signs of a serious allergic reaction (NHS).",
+  "question": "Did you know you should never use tweezers on a bee sting?",
+  "tags": [
+   "what happens when a bee stings you",
+   "bee sting",
+   "bee stings",
+   "how to remove a bee sting",
+   "bee sting tweezers",
+   "bee sting swelling",
+   "bee sting allergy",
+   "stinger",
+   "insect sting",
+   "health cartoon"
+  ],
+  "hashtags": "#beesting #health #shorts",
+  "cover": {
+   "at": 0.8,
+   "text": "A bee stings you",
+   "accent": "bee"
+  }
+ },
+ "retention": {
+  "noIntro": {
+   "scene": "A1",
+   "line": "Bee sting! Bullseye! I'm staying right here."
+  },
+  "promise": {
+   "scene": "A1",
+   "line": "Bee sting! Bullseye! I'm staying right here."
+  },
+  "question": {
+   "scene": "A2",
+   "line": "Ow! A bee sting? What do I do?"
+  },
+  "answer": {
+   "scene": "D3",
+   "line": "Scraping the bee sting out sideways was right. Tweezers can squeeze out more poison."
+  },
+  "change3s": {
+   "scene": "all",
+   "line": "one action, then a hold"
+  },
+  "twist": {
+   "scene": "D3",
+   "line": "Scraping the bee sting out sideways was right. Tweezers can squeeze out more poison."
+  },
+  "bestLast": {
+   "scene": "D5",
+   "line": "But if the lips or tongue swell, or breathing gets hard, get emergency help right away."
+  },
+  "loop": {
+   "scene": "D6",
+   "line": "So next bee sting, card, right?",
+   "kind": "question"
+  }
+ },
+ "sources": [
+  {
+   "id": "nhs-insect-stings",
+   "label": "NHS. Insect bites and stings",
+   "url": "https://www.nhs.uk/conditions/insect-bites-and-stings/",
+   "note": "'Brush or scrape the stinger sideways with your fingernail or the edge of a bank card.' 'Do not use tweezers to pull out a stinger as you could squeeze poison out of it.' 'a small, swollen lump on the skin' 'The bite or sting should get better in a few days.' Call 999 if: 'suddenly has swollen lips, mouth, throat or tongue'; 'struggling to swallow'; 'breathing very fast or struggling to breathe'. Read on 2026-11-23."
+  },
+  {
+   "id": "nhs-anaphylaxis",
+   "label": "NHS. Anaphylaxis",
+   "url": "https://www.nhs.uk/conditions/anaphylaxis/",
+   "note": "'Anaphylaxis is a life-threatening allergic reaction that happens very quickly.' Causes: 'insect stings, such as wasp and bee stings'. Read on 2026-11-23."
+  }
+ ],
+ "shots": [
+  {
+   "id": "A",
+   "set": "skin",
+   "kind": "body",
+   "cast": [
+    {
+     "who": "stinger",
+     "x": 540,
+     "size": 500
+    },
+    {
+     "who": "guard",
+     "x": 820,
+     "size": 250
+    }
+   ],
+   "voices": [
+    "kid",
+    "mom"
+   ],
+   "state": {
+    "wound": 0.5,
+    "swelling": 0.1
+   },
+   "events": [
+    {
+     "at": "start",
+     "act": "stinger: spears down through the surface with a thunk, wobbles, then throws both arms up and winks",
+     "over": 60,
+     "sfx": "thud-soft"
+    },
+    {
+     "at": "A2",
+     "act": "guard: the crew jumps at the shout from above",
+     "word": "Ow"
+    },
+    {
+     "at": "A3",
+     "act": "guard: raises his STOP sign; the lump rises under the Stinger",
+     "word": "swell",
+     "set": {
+      "swelling": 0.9
+     },
+     "over": 40,
+     "sfx": "squish"
+    },
+    {
+     "at": "B1",
+     "act": "mom: giant tweezers come down from the air, prongs open",
+     "word": "tweezers",
+     "sfx": "whoosh-soft"
+    },
+    {
+     "at": "B3",
+     "act": "guard: the crew jumps, arms out: no!",
+     "word": "No"
+    },
+    {
+     "at": "B4",
+     "act": "kid: the tweezers pull back up out of frame",
+     "word": "card",
+     "delay": 0.4,
+     "sfx": "swish"
+    },
+    {
+     "at": "B5",
+     "act": "stinger: a bank card's edge sweeps in sideways along the skin and flicks him out of frame",
+     "word": "sideways",
+     "sfx": "boing"
+    }
+   ],
+   "lines": [
+    {
+     "id": "A1",
+     "who": "stinger",
+     "text": "Bee sting! Bullseye! I'm staying right here.",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "bullseye",
+     "chat": true
+    },
+    {
+     "id": "A2",
+     "who": "kid",
+     "text": "Ow! A bee sting? What do I do?",
+     "emotion": "scared",
+     "pose": "rest",
+     "key": "sting",
+     "chat": true
+    },
+    {
+     "id": "A3",
+     "who": "guard",
+     "text": "Intruder in the skin! Crew, swell it up!",
+     "emotion": "angry",
+     "pose": "rest",
+     "key": "swell",
+     "chat": true
+    },
+    {
+     "id": "B1",
+     "who": "mom",
+     "text": "Hold still, honey. I'll pull it out with tweezers.",
+     "emotion": "neutral",
+     "pose": "rest",
+     "key": "tweezers",
+     "chat": true
+    },
+    {
+     "id": "B2",
+     "who": "stinger",
+     "text": "Ooh, tweezers! Yes, squeeze me! Squeeze me hard!",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "squeeze",
+     "chat": true
+    },
+    {
+     "id": "B3",
+     "who": "guard",
+     "text": "No! Not the tweezers! Not the sac!",
+     "emotion": "scared",
+     "pose": "rest",
+     "key": "no",
+     "chat": true
+    },
+    {
+     "id": "B4",
+     "who": "kid",
+     "text": "Wait, Mom! Use a card instead. Scrape it sideways.",
+     "emotion": "neutral",
+     "pose": "rest",
+     "key": "card",
+     "chat": true
+    },
+    {
+     "id": "B5",
+     "who": "stinger",
+     "text": "Hey! Not sideways! Nooo!",
+     "emotion": "shocked",
+     "pose": "rest",
+     "key": "sideways",
+     "chat": true
+    },
+    {
+     "id": "B6",
+     "who": "mom",
+     "text": "Got it out! Card it is.",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "card",
+     "chat": true
+    }
+   ]
+  },
+  {
+   "id": "C",
+   "set": "tissue",
+   "kind": "body",
+   "cast": [
+    {
+     "who": "guard",
+     "x": 540,
+     "size": 340
+    }
+   ],
+   "state": {
+    "damage": 0,
+    "swelling": 1
+   },
+   "events": [
+    {
+     "at": "start",
+     "act": "guard: the crew sits down under the red glow, wiping their brows",
+     "sfx": "whoosh-soft"
+    },
+    {
+     "at": "C1",
+     "act": "guard: the leader lies back on the floor, hands behind his head",
+     "word": "rest",
+     "delay": 0.6
+    }
+   ],
+   "lines": [
+    {
+     "id": "C1",
+     "who": "guard",
+     "text": "Stinger's gone, crew. Now this lump can rest.",
+     "emotion": "neutral",
+     "pose": "rest",
+     "key": "rest",
+     "chat": true,
+     "beat": 0.8
+    }
+   ]
+  },
+  {
+   "id": "K1",
+   "set": "tissue",
+   "card": "2 DAYS LATER",
+   "seconds": 0.8,
+   "same": "C",
+   "src": [
+    "nhs-insect-stings"
+   ],
+   "cast": [],
+   "lines": []
+  },
+  {
+   "id": "C",
+   "set": "tissue",
+   "kind": "body",
+   "cast": [
+    {
+     "who": "guard",
+     "x": 540,
+     "size": 340
+    }
+   ],
+   "state": {
+    "damage": 0,
+    "swelling": 0.35
+   },
+   "events": [
+    {
+     "at": "start",
+     "act": "guard: the crew stands and stretches; the redness is smaller",
+     "sfx": "ding"
+    }
+   ],
+   "lines": [
+    {
+     "id": "C2",
+     "who": "guard",
+     "text": "Hmm. Smaller, but still here. Ask the doctor.",
+     "emotion": "neutral",
+     "pose": "rest",
+     "key": "doctor",
+     "chat": true
+    }
+   ]
+  },
+  {
+   "id": "D",
+   "set": "clinic",
+   "kind": "room",
+   "cast": [
+    {
+     "who": "mom",
+     "x": 210,
+     "size": 900
+    },
+    {
+     "who": "kid",
+     "x": 470,
+     "size": 700
+    },
+    {
+     "who": "doctor",
+     "x": 850,
+     "size": 900
+    }
+   ],
+   "events": [
+    {
+     "at": "D1",
+     "act": "kid: holds up his hand: a small red lump",
+     "word": "lump"
+    },
+    {
+     "at": "D3",
+     "act": "doctor: smiles and nods at Kid",
+     "word": "right"
+    }
+   ],
+   "lines": [
+    {
+     "id": "D1",
+     "who": "kid",
+     "text": "Doc, it still has a lump. Is that bad?",
+     "emotion": "scared",
+     "pose": "rest",
+     "key": "lump",
+     "chat": true
+    },
+    {
+     "id": "D2",
+     "who": "mom",
+     "text": "And was the card the right way?",
+     "emotion": "neutral",
+     "pose": "rest",
+     "key": "card",
+     "chat": true
+    },
+    {
+     "id": "D3",
+     "who": "doctor",
+     "text": "Scraping the bee sting out sideways was right. Tweezers can squeeze out more poison.",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "right",
+     "src": [
+      "nhs-insect-stings"
+     ],
+     "answer": true
+    },
+    {
+     "id": "D4",
+     "who": "doctor",
+     "text": "A small swollen lump is normal. It should get better in a few days.",
+     "emotion": "neutral",
+     "pose": "rest",
+     "key": "normal",
+     "src": [
+      "nhs-insect-stings"
+     ],
+     "answer": true
+    },
+    {
+     "id": "D5",
+     "who": "doctor",
+     "text": "But if the lips or tongue swell, or breathing gets hard, get emergency help right away.",
+     "emotion": "neutral",
+     "pose": "rest",
+     "key": "emergency",
+     "src": [
+      "nhs-insect-stings",
+      "nhs-anaphylaxis"
+     ],
+     "answer": true,
+     "care": true
+    },
+    {
+     "id": "D6",
+     "who": "kid",
+     "text": "So next bee sting, card, right?",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "card",
+     "chat": true
+    }
+   ]
+  }
+ ],
+ "cta": {
+  "read": "card",
+  "text": "Bee sting? Know this. Scrape it out sideways. Never use tweezers. Swollen lips or hard breathing? Get help now. Follow MedPeak Health for more health tips that keep you safe.",
+  "src": [
+   "nhs-insect-stings",
+   "nhs-anaphylaxis"
+  ]
+ }
+}
