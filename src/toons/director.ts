@@ -332,6 +332,14 @@ export const lineSeconds = (line: ToonLine, timings: ToonTimings | null, wps = W
   timings?.lines[line.id]?.duration ?? Math.max(0.9, line.text.split(/\s+/).filter(Boolean).length / wps);
 /** Format 6 talks faster (decision 5: body voices 1.12-1.2, the reference 3.2 words/s inside a sentence): the estimate before voicing. */
 export const WPS6 = 3.3;
+/**
+ * Format 6, measured on the first voiced v9 script (quit-smoking, 2026-11-23, raw clips before `tempo`): body characters 2.97
+ * words/s, people 3.2, the doctor 3.4. The estimate at 3.3 for all made the script 59 s and the voices 63 s. Now each speaker's
+ * own pace, and a line's `tempo` (the free remix) is counted, so the length the script gate shows is the length you get.
+ */
+export const WPS6_BY = {body: 2.95, person: 3.2, doctor: 3.4} as const;
+const PEOPLE6 = ['patient', 'mom', 'kid', 'grandpa', 'baby', 'dad'];
+export const wps6Of = (who: string) => (who === 'doctor' ? WPS6_BY.doctor : PEOPLE6.includes(who) ? WPS6_BY.person : WPS6_BY.body);
 
 /** Lay a script out in time and let the director choose every picture. */
 export const layoutToon = (toon: Toon, timings: ToonTimings | null) => {
@@ -356,7 +364,7 @@ export const layoutToon = (toon: Toon, timings: ToonTimings | null) => {
         at += Math.round((line.pause !== undefined ? clamp3(line.pause) : auto) * TOON_FPS);
       }
       const tm = timings?.lines[line.id];
-      const sec = lineSeconds(line, timings, v9 ? WPS6 : WPS);
+      const sec = v9 && !timings?.lines[line.id] ? lineSeconds(line, null, wps6Of(line.who)) / Math.max(0.85, Math.min(1.15, line.tempo ?? 1)) : lineSeconds(line, timings, v9 ? WPS6 : WPS);
       const frames = Math.round((sec + gap + clamp3(line.beat)) * TOON_FPS); // `beat`: a silent moment after the line, so a gag can play
       lines.push({line, si, li, from: at, frames, words: tm?.words ?? guessWords(line.text, sec), file: tm?.file});
       at += frames;

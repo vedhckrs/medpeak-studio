@@ -691,7 +691,23 @@ const inflate = (secs: Sec[], t: number, td = t): Sec[] => secs.map((s) => ({...
 export type PoseBlend = {a: PoseName; b: PoseName; k: number};
 export type PoseIn = PoseName | PoseBlend;
 export type Facing = 'right' | 'left';
-const nlerp3 = (a: V3, b: V3, k: number): V3 => { const p = v3norm(a), q = v3norm(b); return v3norm([lerp(p[0], q[0], k), lerp(p[1], q[1], k), lerp(p[2], q[2], k)]); };
+/**
+ * Blend two limb directions at an EVEN turning speed (spherical): the straight mix passed close to zero when an arm swung from
+ * down to up (worried -> thumbsUp), so the forearm whipped round in a few frames at k = 0.5 (check M3: a hand jumping 130-280 px
+ * in one frame). Nearly opposite directions turn through the side facing the camera (+z).
+ */
+const nlerp3 = (a: V3, b: V3, k: number): V3 => {
+  const p = v3norm(a), q = v3norm(b);
+  const dot = Math.max(-1, Math.min(1, p[0] * q[0] + p[1] * q[1] + p[2] * q[2]));
+  if (dot > 0.9995) return v3norm([lerp(p[0], q[0], k), lerp(p[1], q[1], k), lerp(p[2], q[2], k)]);
+  if (dot < -0.98) { // nearly opposite: go through the front
+    const mid = v3norm([p[0] + q[0], p[1] + q[1], 1]);
+    return k < 0.5 ? nlerp3(p, mid, k * 2) : nlerp3(mid, q, (k - 0.5) * 2);
+  }
+  const om = Math.acos(dot), so = Math.sin(om);
+  const wa = Math.sin((1 - k) * om) / so, wb = Math.sin(k * om) / so;
+  return v3norm([p[0] * wa + q[0] * wb, p[1] * wa + q[1] * wb, p[2] * wa + q[2] * wb]);
+};
 const lerpAng = (a: number, b: number, k: number) => a + (((((b - a + 540) % 360) + 360) % 360) - 180) * k;
 const swapPose = (p: Pose): Pose => ({...p, R: p.L, L: p.R, legR: p.legL, legL: p.legR});
 const blendArm = (a: ArmPose, b: ArmPose, k: number): ArmPose => {
