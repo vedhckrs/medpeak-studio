@@ -157,8 +157,9 @@ toon = {
   ],
   "shots": shots,
   # the owner (2026-11-23): "last line cta i want to speak by narrator": Joey reads the whole card (the headline, the three points
-  # as written on it, the follow line); each point lands on its first word
-  "cta": {"read": "card", "text": "Quit smoking? Know this. Coughing is clearing: a good sign at first. Get support to quit, it really helps. A long cough? See a doctor if it lasts over three weeks, or brings up blood. Follow MedPeak Health for more health tips that keep you safe.", "src": [QUIT, BEN, COUGH]},
+  # as written on it, the follow line); each point lands on its first word. The first, wordier read ran 17.1 s (an 18.8 s card):
+  # the owner chose this shorter one
+  "cta": {"read": "card", "text": "Quit smoking? Know this. Coughing is clearing. Get support to quit. A long cough? See a doctor. Follow MedPeak Health for more health tips that keep you safe.", "src": [QUIT, BEN, COUGH]},
 }
 
 # Pace on the real voices (format 6, S6; free: `toon-voice --remix`): the body cast and Dad a touch faster, Dr. Mira slower and

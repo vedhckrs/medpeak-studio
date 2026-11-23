@@ -1814,7 +1814,11 @@ const usePersonReport = (spec: PersonSpec, o: PlaceOpts, look: [number, number] 
   const report = useReport();
   const h = headAt(spec, o);
   report({kind: 'head', box: circleBox(h.x, h.y, h.r)});
-  report({kind: 'face', box: {x0: h.x - 0.55 * h.r, y0: h.y - 0.45 * h.r, x1: h.x + 0.55 * h.r, y1: h.y + 0.6 * h.r}, dir: look ?? [0, 0.05], id: look ? 'look' : 'default-look'});
+  // `look` is in the person's own frame (mirrored when a turned person faces left): the log wants the SCREEN direction
+  // (2026-11-23: Mira, facing left, looked at Dad on screen while the log said she looked away, and the other way round)
+  const mir = (o.facing ?? 'right') === 'left' && (o.view ?? 'front') !== 'front';
+  const dir: [number, number] | undefined = look && (mir ? [-look[0], look[1]] : look);
+  report({kind: 'face', box: {x0: h.x - 0.55 * h.r, y0: h.y - 0.45 * h.r, x1: h.x + 0.55 * h.r, y1: h.y + 0.6 * h.r}, dir: dir ?? [0, 0.05], id: look ? 'look' : 'default-look'});
   const hands = handAt(spec, o);
   const hr = 0.32 * spec.build.R * o.scale;
   for (const id of ['R', 'L'] as const) report({kind: 'hand', id, box: circleBox(hands[id].palm[0], hands[id].palm[1], hr), open: hands[id].hand === 'open'});
@@ -1848,7 +1852,7 @@ export const HeadAt: React.FC<{spec: PersonSpec; x: number; y: number; px: numbe
   const k = px / spec.build.R;
   const Ht = spec.build.heads * 2.15 * spec.build.R;
   return (
-    <FrameMove m={IDENTITY} who={spec.id} body><HeadReport x={x} y={y} px={px} look={look} /><FaceOwned>
+    <FrameMove m={IDENTITY} who={spec.id} body><HeadReport x={x} y={y} px={px} look={look && facing === 'left' && view !== 'front' ? [-look[0], look[1]] : look} /><FaceOwned>
     <svg style={{position: 'absolute', left: x, top: y, overflow: 'visible'}} width={1} height={1}>
       <defs><clipPath id={`hc-${spec.id}-${expr}-${view}`}><rect x={-3 * px} y={-3 * px} width={6 * px} height={3 * px + 1.72 * px} rx={0} /></clipPath></defs>
       <g clipPath={`url(#hc-${spec.id}-${expr}-${view})`}>
