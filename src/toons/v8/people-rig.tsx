@@ -1784,7 +1784,9 @@ const CapHat: React.FC<{v: VK; col: string}> = ({v, col}) => {
 const Clipboard: React.FC<{at: P; R: number; ang: number}> = ({at, R, ang}) => {
   const w = 0.95 * R, h = 1.3 * R;
   return (
-    <g transform={`translate(${f1(at[0] + 0.28 * R)} ${f1(at[1] - 0.25 * R)}) rotate(${ang})`}>
+    // the hand GRIPS the board's edge (2026-11-23, the owner on a fist sitting on the middle of the paper): the board's near
+    // edge sits under the hand, the board reaches out from the fingers
+    <g transform={`translate(${f1(at[0] + 0.6 * R)} ${f1(at[1] - 0.1 * R)}) rotate(${ang})`}>
       <Union d={[poly([[-w / 2, -h / 2], [w / 2, -h / 2], [w / 2, h / 2], [-w / 2, h / 2]])]} fill={CLOTH.brown} shadow={0.6} />
       <path d={poly([[-w / 2 + 0.08 * R, -h / 2 + 0.16 * R], [w / 2 - 0.08 * R, -h / 2 + 0.16 * R], [w / 2 - 0.08 * R, h / 2 - 0.08 * R], [-w / 2 + 0.08 * R, h / 2 - 0.08 * R]])} fill="#ffffff" {...EDGE_IN} />
       {[0.32, 0.5, 0.68, 0.86].map((t, i) => <path key={i} d={`M ${-w / 2 + 0.2 * R} ${-h / 2 + t * h} L ${w / 2 - (i === 3 ? 0.4 : 0.2) * R} ${-h / 2 + t * h}`} {...INLINE} />)}
