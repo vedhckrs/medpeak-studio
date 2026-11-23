@@ -7,42 +7,42 @@
       "pitch": 0,
       "tempo": 1.15,
       "file": "toons/bee-sting/voice/A1.mp3",
-      "duration": 3.008,
+      "duration": 3.366,
       "words": [
         {
           "w": "Bee",
           "start": 0,
-          "end": 0.192
+          "end": 0.243
         },
         {
           "w": "sting!",
-          "start": 0.283,
-          "end": 0.657
+          "start": 0.333,
+          "end": 0.697
         },
         {
           "w": "Bullseye!",
-          "start": 0.717,
-          "end": 1.231
+          "start": 0.727,
+          "end": 1.514
         },
         {
           "w": "I'm",
-          "start": 1.262,
-          "end": 1.383
+          "start": 1.585,
+          "end": 1.807
         },
         {
           "w": "staying",
-          "start": 1.443,
-          "end": 1.787
+          "start": 1.877,
+          "end": 2.241
         },
         {
           "w": "right",
-          "start": 1.857,
-          "end": 2.161
+          "start": 2.312,
+          "end": 2.615
         },
         {
           "w": "here.",
-          "start": 2.251,
-          "end": 2.948
+          "start": 2.685,
+          "end": 3.311
         }
       ]
     },
@@ -211,47 +211,47 @@
       "pitch": 0,
       "tempo": 1.15,
       "file": "toons/bee-sting/voice/B2.mp3",
-      "duration": 5.236,
+      "duration": 3.94,
       "words": [
         {
           "w": "Ooh,",
           "start": 0,
-          "end": 0.353
+          "end": 0.323
         },
         {
           "w": "tweezers!",
-          "start": 0.383,
-          "end": 1.161
+          "start": 0.353,
+          "end": 0.939
         },
         {
           "w": "Yes,",
-          "start": 1.504,
-          "end": 1.958
+          "start": 0.99,
+          "end": 1.403
         },
         {
           "w": "squeeze",
-          "start": 1.979,
-          "end": 2.584
+          "start": 1.423,
+          "end": 1.958
         },
         {
           "w": "me!",
-          "start": 2.685,
-          "end": 3.099
+          "start": 2.05,
+          "end": 2.363
         },
         {
           "w": "Squeeze",
-          "start": 3.493,
-          "end": 4.028
+          "start": 2.443,
+          "end": 2.908
         },
         {
           "w": "me",
-          "start": 4.089,
-          "end": 4.27
+          "start": 2.938,
+          "end": 3.069
         },
         {
           "w": "hard!",
-          "start": 4.331,
-          "end": 5.169
+          "start": 3.13,
+          "end": 3.877
         }
       ]
     },

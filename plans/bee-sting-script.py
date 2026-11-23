@@ -7,7 +7,7 @@ answer here; the story SHOWS the tweezers and the card (actions and wishes, no c
 import json, os
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-def L(id, who, text, emo, key, src=None, chat=False, answer=False, care=False, beat=None, pause=None):
+def L(id, who, text, emo, key, src=None, chat=False, answer=False, care=False, beat=None, pause=None, speed=None):
     l = {"id": id, "who": who, "text": text, "emotion": emo, "pose": "rest", "key": key}
     if src: l["src"] = src
     if chat: l["chat"] = True
@@ -15,6 +15,7 @@ def L(id, who, text, emo, key, src=None, chat=False, answer=False, care=False, b
     if care: l["care"] = True
     if beat: l["beat"] = beat
     if pause is not None: l["pause"] = pause
+    if speed: l["speed"] = speed  # a new take at this speaking speed (paid; toon-voice --only)
     return l
 
 def E(at, act, word=None, set=None, over=None, sfx=None, delay=None):
@@ -45,11 +46,11 @@ shots = [
      E("B5", "stinger: a bank card's edge sweeps in sideways along the skin and flicks him out of frame", word="sideways", sfx="boing"),
    ],
    "lines": [
-     L("A1", "stinger", "Bee sting! Bullseye! I'm staying right here.", "happy", "bullseye", chat=True),
+     L("A1", "stinger", "Bee sting! Bullseye! I'm staying right here.", "happy", "bullseye", chat=True, speed=1.15),
      L("A2", "kid", "Ow! A bee sting? What do I do?", "scared", "sting", chat=True),
      L("A3", "guard", "Intruder in the skin! Crew, swell it up!", "angry", "swell", chat=True),
      L("B1", "mom", "Hold still, honey. I'll pull it out with tweezers.", "neutral", "tweezers", chat=True),
-     L("B2", "stinger", "Ooh, tweezers! Yes, squeeze me! Squeeze me hard!", "happy", "squeeze", chat=True),
+     L("B2", "stinger", "Ooh, tweezers! Yes, squeeze me! Squeeze me hard!", "happy", "squeeze", chat=True, speed=1.2),
      L("B3", "guard", "No! Not the tweezers! Not the sac!", "scared", "no", chat=True),
      L("B4", "kid", "Wait, Mom! Use a card instead. Scrape it sideways.", "neutral", "card", chat=True),
      L("B5", "stinger", "Hey! Not sideways! Nooo!", "shocked", "sideways", chat=True),

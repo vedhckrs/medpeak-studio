@@ -198,6 +198,7 @@
      "pose": "rest",
      "key": "bullseye",
      "chat": true,
+     "speed": 1.15,
      "tempo": 1.15
     },
     {
@@ -238,6 +239,7 @@
      "pose": "rest",
      "key": "squeeze",
      "chat": true,
+     "speed": 1.2,
      "tempo": 1.15
     },
     {
