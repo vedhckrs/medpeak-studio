@@ -23,7 +23,7 @@ const CREW: [number, number, number][] = [[250, 1560, 300], [540, 1600, 340], [8
 export const SweepCrew: React.FC<{awake: number; sweeping?: boolean}> = ({awake, sweeping}) => (
   <>
     {CREW.map(([x, y, s], i) => (
-      <Put key={i} x={x} y={y + (1 - awake) * 40} size={s} rot={awake < 0.5 ? (i - 1) * 70 : 0}>
+      <Put key={i} x={x + (1 - awake) * (i - 1) * 40} y={y + (1 - awake) * (i === 1 ? 170 : 0)} size={s} rot={awake < 0.5 ? [-70, 88, 70][i] : 0}>
         <MiniWorker job="cleaner" band={i === 1 ? 'CILIA' : undefined} pose={awake < 0.5 ? 'rest' : sweeping ? 'sweep' : i === 1 ? 'up' : 'hold'}
           mood={awake < 0.5 ? 'closed' : 'open'} mouth={awake < 0.5 ? 'flat' : 'big'} look={[0, -0.3]} />
       </Put>
