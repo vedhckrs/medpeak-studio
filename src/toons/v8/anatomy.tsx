@@ -292,7 +292,8 @@ export const TissueStage: React.FC<StageProps> = ({t, state, layer, children}) =
       {/* the folded curtain wall */}
       <Shape d="M -40 230 Q 540 300 1120 230 L 1120 1260 L -40 1260 Z" fill={wall} shadow={0} line="none">
         {Array.from({length: 9}, (_, i) => <path key={i} d={`M ${60 + i * 120} 260 C ${30 + i * 120} 560 ${110 + i * 120} 860 ${70 + i * 120} 1240`} stroke={shade(wall, 0.1)} strokeWidth={22} fill="none" />)}
-        {Array.from({length: 9}, (_, i) => <path key={'l' + i} d={`M ${60 + i * 120} 260 C ${30 + i * 120} 560 ${110 + i * 120} 860 ${70 + i * 120} 1240`} {...INLINE} />)}
+        {/* the 9 long fold lines are the shot's main lines: a mid weight, so the picture reads 4 px+ (check C6; at IN it read 3 px) */}
+        {Array.from({length: 9}, (_, i) => <path key={'l' + i} d={`M ${60 + i * 120} 260 C ${30 + i * 120} 560 ${110 + i * 120} 860 ${70 + i * 120} 1240`} {...INLINE} strokeWidth={4.4} />)}
         {Array.from({length: 4}, (_, i) => <Patch key={'d' + i} x={180 + i * 240} y={560 + (i % 2) * 260} r={70} seed={80 + i} k={damage} color="#6e3a3c" />)}
       </Shape>
       {/* the ceiling band with a scalloped lower edge */}
@@ -302,7 +303,13 @@ export const TissueStage: React.FC<StageProps> = ({t, state, layer, children}) =
       {/* the floor, its lighter top edge */}
       <Shape d={`M -40 ${T_FLOOR} Q 540 ${T_FLOOR - 50} 1120 ${T_FLOOR} L 1120 1960 L -40 1960 Z`} fill={F.gut} shadow={0}>
         <path d={`M -40 ${T_FLOOR + 14} Q 540 ${T_FLOOR - 36} 1120 ${T_FLOOR + 14}`} stroke={tint(F.gut, 0.4)} strokeWidth={22} fill="none" />
-        <Folds box={{x0: 0, y0: T_FLOOR + 120, x1: 1080, y1: 1900}} seed={13} density={0.4} color={shade(F.gut, 0.35)} len={[120, 220]} angle={-3} />
+        {/* tissue mottling, as on the vessel floor (bee-sting, 2026-11-23: the plain floor was one 25% flat field, check C7) */}
+        {Array.from({length: 16}, (_, i) => {
+          const r = seeded(131 + i);
+          const x = 40 + ((i * 173) % 1000), y = T_FLOOR + 90 + ((i * 97) % 620), rx = 130 + r() * 110, ry = 50 + r() * 40;
+          return <ellipse key={'m' + i} cx={x} cy={y} rx={rx} ry={ry} fill={i % 2 ? shade(F.gut, 0.07) : tint(F.gut, 0.08)} transform={`rotate(${(r() - 0.5) * 12} ${x} ${y})`} />;
+        })}
+        <Folds box={{x0: 0, y0: T_FLOOR + 120, x1: 1080, y1: 1900}} seed={13} density={0.7} color={shade(F.gut, 0.35)} len={[120, 220]} angle={-3} />
         {damage > 0.05 && [[220, 1500], [760, 1620]].map(([x, y], i) => <Sore key={i} x={x} y={y} r={26 + 20 * damage} />)}
       </Shape>
       {swelling > 0.01 && <Swelling x={540} y={900} r={460} k={swelling} />}

@@ -1,0 +1,201 @@
+/**
+ * "What Happens When a Bee Stings You" (`bee-sting`), engine v9 (format 6): its shots by id (videos/bee-sting/toon.json) and its
+ * end card (Joey reads it all). The owner approved hook A, the look sheets and the script on 2026-11-23.
+ *
+ *   A   inside the skin (the stage lowered under a band of air, bee-sting-art SkinFrame), ONE framing held: the Stinger spears
+ *       in and winks; Kid's "Ow!" from above, the guards jump; "swell it up": the lump rises; Mom's giant tweezers come down,
+ *       the Stinger cheers, the guards shout no; Kid: "use a card": the tweezers go; the card's edge sweeps in sideways and
+ *       flicks the Stinger out of the frame.
+ *   C   the lump close up (STAGES.tissue), the guard crew under the red glow; after "2 DAYS LATER" the redness is smaller.
+ *   D   Dr. Mira's pale clinic: Mom, Kid (the small red lump on his hand), Mira; everyone looks at whoever speaks.
+ *
+ * Rules held (the pilot's lessons): a locked camera, one action then a hold, faces out of the caption band (1324-1434), the
+ * listener looks at the speaker (measured eye points), hands hang naturally, no flash, no shake.
+ */
+import React from 'react';
+import {Put, Scene} from './scene';
+import {type CtaPoint} from './hud';
+import {easeOut} from './act';
+import {STAGES} from './anatomy';
+import {MiniWorker} from './cells';
+import {castById, PersonAt, type PoseIn, type PoseName} from './people-rig';
+import {PaleClinicRoom} from './scenes-rooms';
+import {CLOTH, EDGE, EDGE_IN, INK, OUTLINE, Shape, shade, tint, V9} from './kit';
+import {active, blink, bodyFace, clamp01, go, lerp, since, speaking, talkSmooth, type Focus, type ShotDef, type ShotNow} from './play';
+import {BankCard, GiantTweezers, Lump, SkinFrame, SKIN_Y, SKY, STING_AT, StingerAt, Svg} from './bee-sting-art';
+
+const Tissue = STAGES.tissue.Stage;
+const MOM = castById('mom'), KID = castById('kid'), MIRA = castById('doctor');
+
+// ------------------------------------------------------------------ helpers
+const at = (s: ShotNow, id: string, word: string | undefined, dflt: number) => { const u = since(s, id, word); return u <= -900 ? dflt : s.t - u; };
+type Step = [number, PoseName, number?];
+const poseAt = (t: number, steps: Step[]): PoseIn => {
+  let i = -1;
+  for (let j = 0; j < steps.length; j++) if (t >= steps[j][0]) i = j;
+  if (i <= 0) return steps[0][1];
+  const [t0, b, d = 0.3] = steps[i];
+  const k = go(t, t0, d);
+  return k >= 1 ? b : {a: steps[i - 1][1], b, k};
+};
+const face = (x: number, y: number, r: number): Focus => ({x, y, r});
+/** The Stinger's face in FRAME pixels (the stage is lowered by SKY; the face sits 176 above the entry point). */
+const STINGER_FACE: [number, number] = [STING_AT[0], STING_AT[1] + SKY - 176];
+
+// =================================================================== A: inside the skin
+/** The guards in STAGE pixels for the closer framing (view z 1.4: frame x 154-926 is on screen): all three whole, either side of the lance. */
+const GUARDS_A: [number, number, number][] = [[285, 600, 220], [735, 600, 240], [860, 590, 200]];
+const timesA = (s: ShotNow) => ({
+  ow: at(s, 'A2', 'ow', 2.6), swell: at(s, 'A3', 'swell', 5.5), tw: at(s, 'B1', 'tweezers', 9.0), no: at(s, 'B3', 'no', 14.0),
+  card: at(s, 'B4', 'card', 16.5), side: at(s, 'B5', 'sideways', 19.5), out: at(s, 'B6', undefined, 21.5),
+});
+const ShotA: React.FC<{s: ShotNow}> = ({s}) => {
+  const t = s.t, k = timesA(s), st = s.state ?? {};
+  const swell = st.swelling ?? 0.1;
+  // the Stinger: drops in from above the frame and spears in (0-0.45 s), a wobble, then rides up on the lump
+  const drop = easeOut(clamp01(t / 0.45));
+  const wob = t > 0.45 && t < 1.6 ? Math.sin((t - 0.45) * 14) * 7 * (1 - (t - 0.45) / 1.15) : 0;
+  const rideUp = -74 * clamp01((swell - 0.1) / 0.8);
+  // the tweezers come down on "tweezers", hang open over the sac, go back up after Kid's "card"
+  const twIn = easeOut(clamp01((t - k.tw) / 0.6)) * (1 - easeOut(clamp01((t - k.card - 0.4) / 0.5)));
+  // the card sweeps in from the left on "sideways" and the Stinger flies out up and to the right
+  const sweep = easeOut(clamp01((t - k.side) / 0.45));
+  const fly = clamp01((t - k.side - 0.15) / 0.7);
+  const cardOut = 0; // the card stays where it stopped (its exit was a second action 1 s after the flick: M2)
+  const sf0 = bodyFace(s, 'stinger', 7, 'happy');
+  const sf = sf0.mood === 'happy' ? {...sf0, mood: 'open' as const} : sf0; // eyes open while he talks
+  const stingerTalks = active(s, 'stinger') > 0.2;
+  const outside = speaking(s, 'kid') || speaking(s, 'mom');
+  // the Stinger looks: at the lens in the hook, up at the voices from outside, at the guard leader when he talks, up at the tweezers
+  const sLook: [number, number] = s.cur?.id === 'A1' || !s.cur ? [0, 0.35] : outside || twIn > 0.5 ? [0, -0.8] : speaking(s, 'guard') ? [0.75, 0.55] : [0.4, 0.4];
+  const arms = fly > 0 ? 'flail' : t > 1.2 && (s.cur?.id === 'A1' || s.cur?.id === 'B2') ? 'cheer' : twIn > 0.5 ? 'rub' : 'rest';
+  const mood = fly > 0 ? 'shock' : stingerTalks ? sf.mood : s.cur?.id === 'B3' ? 'wink' : 'open';
+  // the guards: jump on Kid's "Ow!", alarm through the tweezers, relief after the card
+  const alarm = Math.max(go(t, k.ow, 0.25) * (1 - go(t, k.swell + 1.2, 0.4)), go(t, k.no - 0.1, 0.25) * (1 - go(t, k.side + 0.6, 0.4)));
+  const gf0 = bodyFace(s, 'guard', 3, fly >= 1 ? 'happy' : 'neutral');
+  const gf = gf0.mood === 'happy' ? {...gf0, mood: 'open' as const} : gf0;
+  const guardTalks = active(s, 'guard') > 0.2;
+  const leadLook: [number, number] = outside ? [0, -0.9] : [-0.6, -0.5];
+  return (
+    <Scene bg="#000"><V9>
+      <SkinFrame t={t} state={{wound: 0.5, swelling: swell}} layer={<Lump k={clamp01((swell - 0.12) / 0.78)} />}
+        inside={<>
+          {GUARDS_A.map(([x, y, sz], i) => (
+            <Put key={i} x={x} y={y - alarm * 16} size={sz}>
+              <MiniWorker job="guard" band={i === 1 ? 'GUARD' : undefined} pose={i === 1 ? 'hold' : 'rest'}
+                mood={i === 1 && guardTalks ? gf.mood : alarm > 0.5 ? 'shock' : 'open'} mouth={i === 1 && guardTalks ? gf.mouth : alarm > 0.5 ? 'o' : 'smile'}
+                lid={i === 1 ? gf.lid : undefined} look={i === 1 ? leadLook : i === 0 ? [0.6, -0.4] : [-0.6, -0.4]} />
+            </Put>
+          ))}
+        </>}
+        over={<>
+          {fly < 1 && <StingerAt x={STING_AT[0] + fly * 520} y={lerp(-260, STING_AT[1], drop) + rideUp - Math.sin(Math.PI * Math.min(1, fly * 1.3)) * 260 - fly * 200}
+            rot={wob + fly * 70} scale={1} mood={mood} mouth={stingerTalks ? sf.mouth : fly > 0 ? 'o' : 'smile'} lid={stingerTalks ? sf.lid : undefined} look={sLook} arms={arms}
+            squeeze={twIn > 0.5 && s.cur?.id === 'B2' ? 0.25 : 0} />}
+          {twIn > 0.01 && <Svg><g transform={`translate(${STING_AT[0]} ${lerp(-900, STING_AT[1] + rideUp - 134, twIn)})`}><GiantTweezers open={0.85} /></g></Svg>}
+          {sweep > 0.01 && cardOut < 1 && <Svg><g transform={`translate(${lerp(-260, 420, sweep) + cardOut * 900} ${SKIN_Y - 150}) rotate(-6)`}><BankCard /></g></Svg>}
+        </>} />
+    </V9></Scene>
+  );
+};
+
+// =================================================================== C: the lump close up
+const CREW_C: [number, number, number][] = [[330, 1180, 300], [540, 1215, 330], [750, 1180, 300]]; // the shot is framed closer (view z 1.3): 4 px lines, bands above the caption
+const ShotC: React.FC<{s: ShotNow}> = ({s}) => {
+  const t = s.t, st = s.state ?? {};
+  const second = (s.pass ?? 1) > 1;
+  const rest = second ? 0 : go(t, 0.4, 0.6); // the leader sits down as the shot opens (one action), then holds
+  const stand = second ? go(t, 0.1, 0.6) : 0; // two days later: the crew stands and stretches
+  const yawn = second ? 0 : (() => { const y0 = at(s, 'C1', 'rest', 2.5) + 0.4; return t > y0 && t < y0 + 1.1 ? 1 : 0; })(); // the two others yawn after "rest"
+  const gf0 = bodyFace(s, 'guard', 4, second ? 'neutral' : 'happy');
+  const gf = gf0.mood === 'happy' ? {...gf0, mood: 'open' as const} : gf0;
+  const talks = active(s, 'guard') > 0.2;
+  return (
+    <Scene bg="#000"><V9>
+      <Tissue t={t} state={{damage: 0, swelling: st.swelling ?? (second ? 0.35 : 1)}}>
+        {CREW_C.map(([x, y, sz], i) => {
+          const lead = i === 1;
+          const sit = lead ? rest : 0; // the leader sits down and leans back (a rest, not a faint)
+          return (
+            <Put key={i} x={x} y={y + sit * 50 - stand * 10} size={sz} rot={-sit * 12}>
+              <MiniWorker job="guard" prop="none" band={lead ? 'GUARD' : undefined} pose="rest"
+                mood={lead && talks ? gf.mood : second ? 'open' : 'closed'} mouth={lead && talks ? gf.mouth : !lead && yawn ? 'o' : second ? 'smile' : 'flat'} lid={lead ? gf.lid : undefined}
+                look={lead ? [0, -0.3] : [i === 0 ? 0.6 : -0.6, -0.2]} />
+            </Put>
+          );
+        })}
+      </Tissue>
+    </V9></Scene>
+  );
+};
+
+// =================================================================== D: Dr. Mira's clinic
+// eye points (frame pixels, from the layout log): where each looks when another speaks
+const EYES = {mom: [230, 970] as [number, number], kid: [434, 1080] as [number, number], doctor: [818, 920] as [number, number]};
+const MOM_AT = {view: 'three-quarter' as const, facing: 'right' as const, x: 170, y: 2050, scale: 3.4};
+const KID_AT = {view: 'three-quarter' as const, facing: 'right' as const, x: 450, y: 1760, scale: 3.15}; // his face clear of the caption band (1324-1434), a child's height
+const MIRA_AT = {view: 'three-quarter' as const, facing: 'left' as const, x: 930, y: 2050, scale: 3.4};
+const KID_HAND: [number, number] = [560, 1000];
+const ShotD: React.FC<{s: ShotNow}> = ({s}) => {
+  const t = s.t;
+  const lump = at(s, 'D1', 'lump', 0.8), right = at(s, 'D3', 'right', 6), d6 = at(s, 'D6', undefined, 22);
+  const who = s.cur?.who ?? 'kid';
+  const target = (me: 'mom' | 'kid' | 'doctor'): [number, number] => (who === me ? (me === 'doctor' ? EYES.kid : EYES.doctor) : who === 'kid' && t > lump && t < lump + 4 && me !== 'kid' ? KID_HAND : EYES[who as keyof typeof EYES] ?? EYES.doctor);
+  // he shows the lump on "lump" and lowers his hand again (an open hand held long reads as a stuck gesture: M5)
+  const kidPose = poseAt(t, [[-9, 'rest'], [lump - 0.2, 'showArmUp', 0.5], [lump + 1.3, 'rest', 0.5]]);
+  const lean = go(t, right - 0.2, 0.5) * (1 - go(t, right + 2.6, 0.5)) * -3;
+  return (
+    <Scene bg="#f1ede4"><V9>
+      <PaleClinicRoom wall="mint" items={['door', 'chart']} />
+      <PersonAt spec={MOM} {...MOM_AT} pose="worried" expr={t > d6 ? 'happy' : 'worried'} lookAt={target('mom')} talk={talkSmooth(s, 'mom')} blink={blink(t, 1)} />
+      <div style={{position: 'absolute', inset: 0, transformOrigin: `${MIRA_AT.x}px 1900px`, transform: `rotate(${lean.toFixed(2)}deg)`}}>
+        <PersonAt spec={MIRA} {...MIRA_AT} pose="clipboard" expr={t > right - 0.2 && t < right + 1.6 ? 'happy' : 'neutral'} lookAt={target('doctor')} talk={talkSmooth(s, 'doctor')} blink={blink(t, 4)} />
+      </div>
+      <PersonAt spec={KID} {...KID_AT} pose={kidPose} expr={t > d6 ? 'happy' : 'worried'} lookAt={target('kid')} talk={talkSmooth(s, 'kid')} blink={blink(t, 2)}
+        mark={[{kind: 'sore', at: 'handL'}]} />
+    </V9></Scene>
+  );
+};
+
+// ------------------------------------------------------------------ the shots
+export const BEE_STING_SHOTS: Record<string, ShotDef> = {
+  // one framing for the whole shot, closer (the fat layer below is not the story): the Stinger and the guards fill the picture
+  A: {Scene: ShotA, view: () => ({x: 540, y: 700, z: 1.4}), focus: (who) => (who === 'guard' ? face(GUARDS_A[1][0], GUARDS_A[1][1] + SKY - 150, 40) : face(STINGER_FACE[0], STINGER_FACE[1], 40)), kind: 'body', stage: 'skinSection'},
+  C: {Scene: ShotC, view: () => ({x: 540, y: 1080, z: 1.3}), focus: () => face(540, 1110, 40), kind: 'body', stage: 'tissue'},
+  D: {Scene: ShotD, focus: (who) => face(...(EYES[who as keyof typeof EYES] ?? EYES.doctor), 110), kind: 'room', light: true},
+};
+
+// ------------------------------------------------------------------ the end card's icons
+const Badge: React.FC<{bg: string; children: React.ReactNode; id: string}> = ({bg, children, id}) => (
+  <g>
+    <circle cx={0} cy={0} r={92} {...EDGE} fill={bg} />
+    <clipPath id={id}><circle cx={0} cy={0} r={90} /></clipPath>
+    <g clipPath={`url(#${id})`}><circle cx={0} cy={110} r={120} fill={shade(bg, 0.12)} />{children}</g>
+    <circle cx={0} cy={0} r={92} {...OUTLINE} />
+  </g>
+);
+const CardBadge: React.FC = () => <Badge bg="#ffffff" id="bs-card"><g transform="rotate(-14) scale(0.42)"><BankCard /></g></Badge>;
+const NoTweezersBadge: React.FC = () => (
+  <Badge bg="#ffffff" id="bs-tw">
+    <g transform="translate(0 70) scale(0.2)"><GiantTweezers open={0.6} /></g>
+    <path d="M -62 -62 L 62 62" stroke={INK} strokeWidth={20} strokeLinecap="round" />
+    <path d="M -62 -62 L 62 62" stroke={CLOTH.red} strokeWidth={12} strokeLinecap="round" />
+  </Badge>
+);
+const HelpBadge: React.FC = () => (
+  <Badge bg={tint(CLOTH.red, 0.75)} id="bs-help">
+    <Shape d="M -18 -60 H 18 V -18 H 60 V 18 H 18 V 60 H -18 V 18 H -60 V -18 H -18 Z" fill={CLOTH.red} shadow={0.3} />
+    <circle cx={0} cy={0} r={4} fill="none" {...EDGE_IN} />
+  </Badge>
+);
+export const BEE_STING_CTA: {title: string; points: CtaPoint[]; voice?: string; seconds: number; at: {head: number; points: [number, number, number]; follow: number}} = {
+  title: 'BEE STING: KNOW THIS',
+  // Joey reads the whole card ("cta": {"read": "card"}); his clip's real beats come in from videos/bee-sting/cta-timings.json
+  seconds: 10,
+  at: {head: 0, points: [1.6, 3.4, 5.2], follow: 7.6},
+  points: [
+    {icon: <CardBadge />, big: 'SCRAPE IT OUT SIDEWAYS', small: 'with a card or a nail'},
+    {icon: <NoTweezersBadge />, big: 'NEVER USE TWEEZERS', small: 'they squeeze poison out'},
+    {icon: <HelpBadge />, big: 'SWOLLEN LIPS? GET HELP', small: 'or hard breathing: call now'},
+  ],
+};

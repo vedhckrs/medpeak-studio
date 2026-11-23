@@ -60,8 +60,8 @@ shots = [
    "cast": [{"who": "guard", "x": 540, "size": 340}],
    "state": {"damage": 0, "swelling": 1},
    "events": [
-     E("start", "guard: the crew sits down under the red glow, wiping their brows", sfx="whoosh-soft"),
-     E("C1", "guard: the leader lies back on the floor, hands behind his head", word="rest", delay=0.6),
+     E("start", "guard: the crew sits down under the red glow; the leader leans back", sfx="whoosh-soft"),
+     E("C1", "guard: the two others yawn a big yawn", word="rest", delay=0.4),
    ],
    "lines": [
      L("C1", "guard", "Stinger's gone, crew. Now this lump can rest.", "neutral", "rest", chat=True, beat=0.8),

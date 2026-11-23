@@ -19,7 +19,7 @@ import {PaleClinicRoom} from './scenes-rooms';
 import {FrameMove, matTranslate, useReport} from './play';
 
 const Skin = STAGES.skinSection.Stage, Tissue = STAGES.tissue.Stage;
-const SKIN_Y = 250;
+export const SKIN_Y = 250;
 /** Where the stinger went in (STAGE pixels: on the stage's own wound mark) and the skin colour of the stage. */
 export const STING_AT: [number, number] = [540, 236];
 /**
@@ -28,11 +28,17 @@ export const STING_AT: [number, number] = [540, 236];
  * Stinger's face at about y 450, the guards' faces above the caption band.
  */
 export const SKY = 380;
-const AIR = '#f1ebe0';
+const AIR = '#f4dcc8'; // a warm peach air (the cream one read as a flat, cool field: check C7)
 /** The skin stage lowered by SKY, the air above it, and anything placed in STAGE pixels inside (the log knows the move). */
 export const SkinFrame: React.FC<{t: number; state: Record<string, number>; layer?: React.ReactNode; inside?: React.ReactNode; over?: React.ReactNode}> = ({t, state, layer, inside, over}) => (
   <>
     <div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: SKY + 40, background: AIR}} />
+    {/* the far outside, out of focus (decision 8 c: one far soft layer): a few soft warm shapes, no outlines */}
+    <svg style={{position: 'absolute', left: 0, top: 0}} width={1080} height={SKY + 300} viewBox={`0 0 1080 ${SKY + 300}`}>
+      {[[120, 120, 150, '#f0c9ae'], [420, 60, 110, '#f7e6d6'], [760, 150, 170, '#efc4a6'], [980, 40, 120, '#f6e0cc'], [300, 330, 140, '#f2d2bb'], [900, 360, 130, '#f0ccb3']].map(([x, y, r, c], i) => (
+        <circle key={i} cx={x as number} cy={y as number} r={r as number} fill={c as string} opacity={0.85} />
+      ))}
+    </svg>
     <div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, transform: `translateY(${SKY}px)`}}>
       <FrameMove m={matTranslate(0, SKY)}>
         <Skin t={t} state={state} layer={layer}>{inside}</Skin>
@@ -85,7 +91,7 @@ export const Stinger: React.FC<{mood?: Mood; mouth?: MouthKind; look?: [number, 
         <path d="M -60 -150 Q 0 -168 60 -150" {...INLINE} />
         <Highlight x={-54} y={-196} w={34} rot={-40} />
       </Shape>
-      <Eyes x={0} y={-176} r={30} gap={6} mood={mood} look={look} lid={lid} />
+      <Eyes x={0} y={-176} r={26} gap={6} mood={mood} look={look} lid={lid} />
       <Mouth x={2} y={-122} w={34} kind={mouth} />
       <StingerReport look={look} />
     </g>
@@ -94,8 +100,8 @@ export const Stinger: React.FC<{mood?: Mood; mouth?: MouthKind; look?: [number, 
 /** The Stinger's face and eyes for the layout log (in its own units; the enclosing FrameMove places them). */
 const StingerReport: React.FC<{look: [number, number]}> = ({look}) => {
   const report = useReport();
-  report({kind: 'face', who: 'stinger', box: {x0: -100, y0: -236, x1: 100, y1: -96}, dir: look});
-  report({kind: 'eye', who: 'stinger', box: {x0: -70, y0: -206, x1: 70, y1: -146}});
+  // the kit's Eyes report the eyes (attributed to the Stinger by its FrameMove); this adds the face itself, once
+  report({kind: 'face', who: 'stinger', box: {x0: -100, y0: -236, x1: 100, y1: -96}, dir: look, id: 'stinger-face'});
   return null;
 };
 
@@ -139,7 +145,7 @@ void Tweezers;
 
 // ------------------------------------------------------------------ the guard crew
 /** The skin's guards, standing in the dermis either side of the lance (clear of the Stinger's face and the caption band). */
-const GUARDS: [number, number, number][] = [[190, 600, 230], [820, 600, 250], [990, 590, 210]]; // STAGE pixels: in the dermis above the vessel
+export const GUARDS: [number, number, number][] = [[190, 600, 230], [820, 600, 250], [990, 590, 210]]; // STAGE pixels: in the dermis above the vessel
 export const GuardCrew: React.FC<{lead?: {mood?: Mood; mouth?: MouthKind}; alarm?: number; look?: [number, number]}> = ({lead, alarm = 0, look = [-0.4, -0.3]}) => (
   <>
     {GUARDS.map(([x, y, s], i) => (
@@ -152,11 +158,11 @@ export const GuardCrew: React.FC<{lead?: {mood?: Mood; mouth?: MouthKind}; alarm
 );
 
 // ------------------------------------------------------------------ the moments (look sheets)
-const Svg: React.FC<{children: React.ReactNode}> = ({children}) => (
+export const Svg: React.FC<{children: React.ReactNode}> = ({children}) => (
   <svg style={{position: 'absolute', left: 0, top: 0, overflow: 'visible'}} width={1080} height={1920} viewBox="0 0 1080 1920">{children}</svg>
 );
-const StingerAt: React.FC<React.ComponentProps<typeof Stinger> & {x?: number; y?: number; rot?: number; scale?: number}> = ({x = STING_AT[0], y = STING_AT[1], rot = 0, scale = 1, ...p}) => (
-  <FrameMove m={[1, 0, 0, 1, 0, 0]}><Svg><g transform={`translate(${x} ${y}) rotate(${rot}) scale(${scale})`}><Stinger {...p} /></g></Svg></FrameMove>
+export const StingerAt: React.FC<React.ComponentProps<typeof Stinger> & {x?: number; y?: number; rot?: number; scale?: number}> = ({x = STING_AT[0], y = STING_AT[1], rot = 0, scale = 1, ...p}) => (
+  <FrameMove m={[1, 0, 0, 1, 0, 0]} who="stinger"><Svg><g transform={`translate(${x} ${y}) rotate(${rot}) scale(${scale})`}><Stinger {...p} /></g></Svg></FrameMove>
 );
 
 /** A1: the hook: the Stinger has just speared in and grins at the lens; the guards jump. */

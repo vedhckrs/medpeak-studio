@@ -2,7 +2,7 @@
 quit-smoking pilot were all in faces and hands: a hand pointing the wrong way, the thumb on the wrong side, the doctor looking
 away; every check had passed them). Free, local: numpy + ffmpeg.
 
-  python3 pipeline/tools/toon-closeups.py <slug>        -> videos/<slug>/renders/closeups.jpg
+  python3 pipeline/tools/toon-closeups.py <slug> [video.mp4]   -> videos/<slug>/renders/closeups.jpg (a draft is half size)
 
 Reads videos/<slug>/renders/layout.json (the layout log: `npm run toon:layout` or the scoreboard writes it) and the render
 (toon-v8.mp4, else toon.mp4). For each line, the probe nearest the middle of the line; every `face` box (padded) and every
@@ -45,7 +45,7 @@ def main():
     slug = sys.argv[1]
     vdir = os.path.join(ROOT, 'videos', slug)
     layout = json.load(open(os.path.join(vdir, 'renders', 'layout.json')))
-    video = next((p for p in (os.path.join(vdir, 'renders', f) for f in ('toon-v8.mp4', 'toon.mp4')) if os.path.exists(p)), None)
+    video = sys.argv[2] if len(sys.argv) > 2 else next((p for p in (os.path.join(vdir, 'renders', f) for f in ('toon-v8.mp4', 'toon.mp4')) if os.path.exists(p)), None)
     if not video:
         sys.exit('no render')
     rows = []

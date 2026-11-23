@@ -6,6 +6,17 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-23 (39) - MacBook (local Claude Code) - branch `video/bee-sting` - bee-sting: script approved, shots built, silent preview
+
+- Owner: hook A, looks ("Start"), script ("Approved"). Shots `src/toons/v8/bee-sting.tsx` (A skin under an air band, framed
+  z 1.4; C tissue z 1.3 with a 2 DAYS LATER card; D clinic with Mom, Kid, Mira), end card `BEE_STING_CTA` (Joey reads it all).
+- Engine/check changes: sets `skin` and `tissue`; a shot's `voices` (off-screen speakers); the tissue floor mottled and its 9
+  fold lines mid weight (4.4); the close-up tool takes a draft file. Tests: format 6 skips two old-engine scans.
+- Silent draft scoreboard: 41/45 PASS; the 4 left are voice/sound rows (they wait for voicing). Close-ups checked.
+- Next: owner's OK on the preview -> pick the Stinger and Guard voices free -> quote voice + music + card -> voice -> final.
+
+---
+
 ## 2026-11-23 (38) - MacBook (local Claude Code) - branch `video/quit-smoking-replace` - quit-smoking REPLACED on YouTube
 
 - The owner: "Replace". The old scheduled upload QNqXRvpwVu4 was checked (private, the quit-smoking title, publishAt Tue 24 Nov
