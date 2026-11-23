@@ -196,11 +196,11 @@ const ShotC: React.FC<{s: ShotNow}> = ({s}) => {
 
 // =================================================================== D: Dr. Mira's clinic
 // eye points (frame pixels, from the layout log): where each looks when another speaks
-const EYES = {mom: [215, 970] as [number, number], kid: [454, 1080] as [number, number], doctor: [873, 920] as [number, number]};
-const MOM_AT = {view: 'three-quarter' as const, facing: 'right' as const, x: 155, y: 2050, scale: 3.4};
-const KID_AT = {view: 'three-quarter' as const, facing: 'right' as const, x: 470, y: 1760, scale: 3.15}; // his face clear of the caption band (1324-1434), a child's height
-const MIRA_AT = {view: 'three-quarter' as const, facing: 'left' as const, x: 985, y: 2050, scale: 3.4};
-const KID_HAND: [number, number] = [560, 1000];
+const EYES = {mom: [295, 970] as [number, number], kid: [284, 1080] as [number, number], doctor: [723, 920] as [number, number]};
+const MOM_AT = {view: 'three-quarter' as const, facing: 'right' as const, x: 235, y: 2050, scale: 3.4};
+const KID_AT = {view: 'three-quarter' as const, facing: 'right' as const, x: 300, y: 1760, scale: 3.15}; // his face clear of the caption band (1324-1434), a child's height
+const MIRA_AT = {view: 'three-quarter' as const, facing: 'left' as const, x: 835, y: 2050, scale: 3.4};
+const KID_HAND: [number, number] = [390, 1000];
 const ShotD: React.FC<{s: ShotNow}> = ({s}) => {
   const t = s.t;
   const lump = at(s, 'D1', 'lump', 0.8), right = at(s, 'D3', 'right', 6), d6 = at(s, 'D6', undefined, 22);
@@ -212,7 +212,6 @@ const ShotD: React.FC<{s: ShotNow}> = ({s}) => {
   return (
     <Scene bg="#f1ede4"><V9>
       <PaleClinicRoom wall="mint" items={['door', 'chart']} />
-      <PersonAt spec={MOM} {...MOM_AT} pose="rest" expr={t > d6 ? 'happy' : 'worried'} lookAt={target('mom')} talk={talkSmooth(s, 'mom')} blink={blink(t, 1)} />
       <div style={{position: 'absolute', inset: 0, transformOrigin: `${MIRA_AT.x}px 1900px`, transform: `rotate(${lean.toFixed(2)}deg)`}}>
         <PersonAt spec={MIRA} {...MIRA_AT} pose="clipboard" expr={t > right - 0.2 && t < right + 1.6 ? 'happy' : 'neutral'} lookAt={target('doctor')} talk={talkSmooth(s, 'doctor')} blink={blink(t, 4)} />
       </div>
@@ -227,7 +226,8 @@ export const BEE_STING_SHOTS: Record<string, ShotDef> = {
   // one framing for the whole shot, closer (the fat layer below is not the story): the Stinger and the guards fill the picture
   A: {Scene: ShotA, view: () => ({x: 540, y: 700, z: 1.4}), focus: (who) => (who === 'guard' ? face(GUARDS_A[1][0], GUARDS_A[1][1] + SKY - 150, 40) : face(STINGER_FACE[0], STINGER_FACE[1], 40)), kind: 'body', stage: 'skinSection'},
   C: {Scene: ShotC, view: () => ({x: 540, y: 1080, z: 1.3}), focus: () => face(540, 1110, 40), kind: 'body', stage: 'tissue'},
-  D: {Scene: ShotD, focus: (who) => face(...(EYES[who as keyof typeof EYES] ?? EYES.doctor), 110), kind: 'room', light: true},
+  // the clinic framed closer (the owner: "top area taking so much space"): the empty wall cropped, the three people fill the picture
+  D: {Scene: ShotD, view: () => ({x: 545, y: 1180, z: 1.35}), focus: (who) => face(...(EYES[who as keyof typeof EYES] ?? EYES.doctor), 110), kind: 'room', light: true},
 };
 
 // ------------------------------------------------------------------ the end card's icons

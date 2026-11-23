@@ -80,7 +80,7 @@ shots = [
    ]},
   # D: Dr. Mira's pale clinic: Mom, Kid showing the small red lump on his hand, Mira's answer (slower), Kid's loop line.
   {"id": "D", "set": "clinic", "kind": "room",
-   "cast": [{"who": "mom", "x": 210, "size": 900}, {"who": "kid", "x": 470, "size": 700}, {"who": "doctor", "x": 850, "size": 900}],
+   "cast": [{"who": "kid", "x": 300, "size": 700}, {"who": "doctor", "x": 835, "size": 900}],  # Mom speaks in the skin scene; the clinic is a two-person shot
    "events": [
      E("D1", "kid: holds up his hand: a small red lump", word="lump"),
      E("D3", "doctor: smiles and nods at Kid", word="right"),
