@@ -101,7 +101,9 @@ Do these once on a new machine. None of it needs the old machine except step 6.
   keeps pockets, pens and partings on the character's own side).
 - **People need a real nose in every view; hands are one piece with the forearm; a hand lying on the body
   has its fingers together; hands never overlap hands.** He called the old versions "not proper" and "like
-  a patch".
+  a patch". **A hanging hand hangs along the forearm** with only a slight curl and the thumb close to it (2026-11-23: a 26-degree
+  curl read as a claw reaching forward, "hand wrong direction"), and **a hat faces the same way as the face** (the worker cap's
+  sideways peak on a front face was "not looks good"): check both at full size in every new pose or character.
 - **Engine v9 and script format 6** (2026-11-23): the owner approved every recommendation of the engine study
   (`plans/engine-upgrade-2026-11-23/05-blueprint.md`, Part 3, decisions 1-28) in his words: "All 28 recommend and start 2 to 3
   agents to fix and upgrade engine and everything i want proper as per report" (`06-owner-decisions.md`). The numbers every

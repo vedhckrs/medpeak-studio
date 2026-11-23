@@ -214,10 +214,12 @@ const handGeom = (kind0: HandKind, free = true, v9 = false) => {
   // and the knee hand wraps its fingers round a knee. In the old look `knee` is the flat `rest` hand.
   const kind: HandKind = kind0 === 'knee' && !v9 ? 'rest' : kind0;
   if (v9 && (kind === 'relaxed' || kind === 'knee')) {
-    const deg = kind === 'relaxed' ? 26 : 62;
+    // the relaxed hand HANGS along the forearm with only a slight curl (the owner, 2026-11-23: at 26 degrees a hanging hand read
+    // as a claw reaching forward, "wrong direction"); the knee hand still wraps round the knee
+    const deg = kind === 'relaxed' ? 8 : 62;
     const pv: P = [15, 6];
     const outline: P[] = [[-3, -4.2], [3, -5.8], [9, -6.8], [15, -6.9], [21, -6.6], [26, -5.2], [28.6, -2.4], [28.6, 1.2], [26.4, 3.8], [20, 5.4], [13, 5.8], [7, 5.6], [3, 5.2], [-3, 4.2]];
-    parts = [closedSmooth(curl(outline, 13, pv, deg)), capsule([5, 4.4], 2.7, kind === 'relaxed' ? [12.8, 8.8] : [11.4, 9.8], 2.2)];
+    parts = [closedSmooth(curl(outline, 13, pv, deg)), capsule([5, 4.4], 2.7, kind === 'relaxed' ? [13.6, 7.0] : [11.4, 9.8], 2.2)];
     lines.push(curlLine([27.6, -3.0], [20.2, -3.3], 13, pv, deg), curlLine([28.4, -0.2], [20.6, -0.2], 13, pv, deg), curlLine([27, 2.6], [20.4, 2.6], 13, pv, deg));
     return {parts, lines, over, holes};
   }
