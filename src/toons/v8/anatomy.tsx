@@ -485,8 +485,8 @@ export const SkinStage: React.FC<StageProps> = ({t, state, layer, children}) => 
   void t;
   const skin = '#e9b48f';
   return (
-    <Canvas bg="#f1ebe0" layer={layer} kids={children}>
-      {/* outside: a thin band of air above the skin (under 12% of the frame), a few hairs */}
+    <Canvas bg="#f4dcc8" layer={layer} kids={children}>
+      {/* outside (a warm peach air, 2026-11-23: one air colour with the band above it in bee-sting): a thin band of air above the skin (under 12% of the frame), a few hairs */}
       {[130, 340, 700, 930].map((x, i) => <path key={i} d={`M ${x} ${SKIN_Y + 10} Q ${x + 30} ${SKIN_Y - 90} ${x + 8} ${SKIN_Y - 170 + i * 8}`} stroke={INK} strokeWidth={6} fill="none" strokeLinecap="round" />)}
       {/* the layers: muscle at the bottom, fat lobules, the dermis with folds, the surface */}
       <Shape d="M -40 1430 L 1120 1430 L 1120 1960 L -40 1960 Z" fill={F.organRed} shadow={0}>

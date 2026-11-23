@@ -16,7 +16,7 @@ import {MiniWorker} from './cells';
 import {Tweezers} from './props';
 import {castById, PersonAt} from './people-rig';
 import {PaleClinicRoom} from './scenes-rooms';
-import {FrameMove, matTranslate, useReport} from './play';
+import {FrameMove, matMul, matRotate, matScale, matTranslate} from './play';
 
 const Skin = STAGES.skinSection.Stage, Tissue = STAGES.tissue.Stage;
 export const SKIN_Y = 250;
@@ -93,17 +93,10 @@ export const Stinger: React.FC<{mood?: Mood; mouth?: MouthKind; look?: [number, 
       </Shape>
       <Eyes x={0} y={-176} r={26} gap={6} mood={mood} look={look} lid={lid} />
       <Mouth x={2} y={-122} w={34} kind={mouth} />
-      <StingerReport look={look} />
     </g>
   );
 };
-/** The Stinger's face and eyes for the layout log (in its own units; the enclosing FrameMove places them). */
-const StingerReport: React.FC<{look: [number, number]}> = ({look}) => {
-  const report = useReport();
-  // the kit's Eyes report the eyes (attributed to the Stinger by its FrameMove); this adds the face itself, once
-  report({kind: 'face', who: 'stinger', box: {x0: -100, y0: -236, x1: 100, y1: -96}, dir: look, id: 'stinger-face'});
-  return null;
-};
+// the Stinger's face and eyes reach the layout log through the kit's Eyes and Mouth (its StingerAt FrameMove names it)
 
 // ------------------------------------------------------------------ the lump, the card, the tweezers
 /** The swollen lump: the surface bulges up around the sting. k 0..1. */
@@ -162,7 +155,8 @@ export const Svg: React.FC<{children: React.ReactNode}> = ({children}) => (
   <svg style={{position: 'absolute', left: 0, top: 0, overflow: 'visible'}} width={1080} height={1920} viewBox="0 0 1080 1920">{children}</svg>
 );
 export const StingerAt: React.FC<React.ComponentProps<typeof Stinger> & {x?: number; y?: number; rot?: number; scale?: number}> = ({x = STING_AT[0], y = STING_AT[1], rot = 0, scale = 1, ...p}) => (
-  <FrameMove m={[1, 0, 0, 1, 0, 0]} who="stinger"><Svg><g transform={`translate(${x} ${y}) rotate(${rot}) scale(${scale})`}><Stinger {...p} /></g></Svg></FrameMove>
+  // the log gets the same move as the drawing (the face and eyes then sit where they are drawn)
+  <FrameMove m={matMul(matMul(matTranslate(x, y), matRotate(rot)), matScale(scale))} who="stinger"><Svg><g transform={`translate(${x} ${y}) rotate(${rot}) scale(${scale})`}><Stinger {...p} /></g></Svg></FrameMove>
 );
 
 /** A1: the hook: the Stinger has just speared in and grins at the lens; the guards jump. */

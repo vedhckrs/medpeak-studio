@@ -15,7 +15,7 @@
 import React from 'react';
 import {Put, Scene} from './scene';
 import {type CtaPoint} from './hud';
-import {easeOut} from './act';
+import {Burst, easeOut, hop, Marks, shake} from './act';
 import {STAGES} from './anatomy';
 import {MiniWorker} from './cells';
 import {castById, PersonAt, type PoseIn, type PoseName} from './people-rig';
@@ -49,19 +49,59 @@ const timesA = (s: ShotNow) => ({
   ow: at(s, 'A2', 'ow', 2.6), swell: at(s, 'A3', 'swell', 5.5), tw: at(s, 'B1', 'tweezers', 9.0), no: at(s, 'B3', 'no', 14.0),
   card: at(s, 'B4', 'card', 16.5), side: at(s, 'B5', 'sideways', 19.5), out: at(s, 'B6', undefined, 21.5),
 });
+/** Pain rings: red ripples spreading out from the sting through the skin (on the hit, Kid's "Ow!", the swell). STAGE pixels. */
+const PainRings: React.FC<{t: number; at: number[]}> = ({t, at: starts}) => (
+  <g>
+    {starts.flatMap((t0, j) => [0].map((lag, m) => {
+      const u = (t - t0 - lag) / 0.9;
+      if (u < 0 || u > 1) return null;
+      const r = 50 + 210 * easeOut(u);
+      return <ellipse key={j + '-' + m} cx={STING_AT[0]} cy={STING_AT[1] + 40} rx={r} ry={r * 0.55} fill="none" stroke="#e0404f" strokeWidth={14 * (1 - u)} opacity={(1 - u) * 0.75} />;
+    }))}
+  </g>
+);
+/** The damage the sting does, drawn ON the skin (decision 9): a torn, jagged wound at the surface and the poison seeping out
+ * from the lance into the flesh as a yellow stain with drops. `tear` 0..1, `poison` 0..1. STAGE pixels. */
+const StingDamage: React.FC<{tear: number; poison: number; t: number}> = ({tear, poison, t}) => {
+  const [x, y] = STING_AT;
+  const w = 70 * tear;
+  const jag = Array.from({length: 9}, (_, i) => `${(x - w + (i * 2 * w) / 8).toFixed(1)} ${(y + 18 + (i % 2 ? 26 : 6) * tear).toFixed(1)}`).join(' L ');
+  return (
+    <g>
+      {poison > 0.01 && <>
+        <ellipse cx={x} cy={y + 230} rx={40 + 170 * poison} ry={30 + 230 * poison} fill="#d9a43a" opacity={0.32} />
+        <ellipse cx={x} cy={y + 230} rx={20 + 90 * poison} ry={18 + 140 * poison} fill="#c98a24" opacity={0.3} />
+        {[[-60, 120], [55, 210], [-40, 320], [70, 380], [-75, 260]].map(([dx, dy], i) => {
+          const k = clamp01(poison * 1.6 - i * 0.15);
+          return k > 0 ? <circle key={i} cx={x + dx * k} cy={y + dy + Math.sin(t * 2 + i) * 4} r={9 + 5 * k} fill="#e0b24a" {...EDGE_IN} /> : null;
+        })}
+      </>}
+      {tear > 0.01 && <path d={`M ${jag} L ${x + w} ${y + 4} L ${x - w} ${y + 4} Z`} fill="#8e2a35" {...EDGE_IN} />}
+    </g>
+  );
+};
 const ShotA: React.FC<{s: ShotNow}> = ({s}) => {
   const t = s.t, k = timesA(s), st = s.state ?? {};
-  const swell = st.swelling ?? 0.1;
+  const swell0 = st.swelling ?? 0.1;
   // the Stinger: drops in from above the frame and spears in (0-0.45 s), a wobble, then rides up on the lump
-  const drop = easeOut(clamp01(t / 0.45));
-  const wob = t > 0.45 && t < 1.6 ? Math.sin((t - 0.45) * 14) * 7 * (1 - (t - 0.45) / 1.15) : 0;
-  const rideUp = -74 * clamp01((swell - 0.1) / 0.8);
+  const HIT = 0.45;
+  const drop = clamp01(t / HIT) ** 2; // a spear speeds up INTO the hit (no slow landing: the drop and the impact are one action)
+  const wob = t > HIT && t < 1.6 ? Math.sin((t - HIT) * 14) * 7 * (1 - (t - HIT) / 1.15) : 0;
+  // the damage: the skin tears at the hit, the poison seeps out until the swell, pain rings on the hit, "Ow!" and "swell"
+  const tear = easeOut(clamp01((t - HIT) / 0.3));
+  const poison = clamp01((t - HIT) / Math.max(1, k.swell - HIT));
+  // the card: in from the left on "sideways", SLAMS into the lump (the one shake of the video), the lump squashes, the barbs
+  // rip out (the wound opens wide) and the Stinger spins away; the guards jump and cheer
+  const sweep = easeOut(clamp01((t - k.side) / 0.38));
+  const hitAt = k.side + 0.38;
+  const squash = t > hitAt && t < hitAt + 0.5 ? Math.sin(((t - hitAt) / 0.5) * Math.PI) : 0;
+  const fly = clamp01((t - hitAt + 0.05) / 0.75);
+  const [sx, sy] = shake(t, hitAt, 12, 0.25, true);
+  const rip = easeOut(clamp01((t - hitAt) / 0.25));
+  const swell = swell0 * (1 - 0.3 * squash);
+  const rideUp = -74 * clamp01((swell0 - 0.1) / 0.8);
   // the tweezers come down on "tweezers", hang open over the sac, go back up after Kid's "card"
   const twIn = easeOut(clamp01((t - k.tw) / 0.6)) * (1 - easeOut(clamp01((t - k.card - 0.4) / 0.5)));
-  // the card sweeps in from the left on "sideways" and the Stinger flies out up and to the right
-  const sweep = easeOut(clamp01((t - k.side) / 0.45));
-  const fly = clamp01((t - k.side - 0.15) / 0.7);
-  const cardOut = 0; // the card stays where it stopped (its exit was a second action 1 s after the flick: M2)
   const sf0 = bodyFace(s, 'stinger', 7, 'happy');
   const sf = sf0.mood === 'happy' ? {...sf0, mood: 'open' as const} : sf0; // eyes open while he talks
   const stingerTalks = active(s, 'stinger') > 0.2;
@@ -70,31 +110,56 @@ const ShotA: React.FC<{s: ShotNow}> = ({s}) => {
   const sLook: [number, number] = s.cur?.id === 'A1' || !s.cur ? [0, 0.35] : outside || twIn > 0.5 ? [0, -0.8] : speaking(s, 'guard') ? [0.75, 0.55] : [0.4, 0.4];
   const arms = fly > 0 ? 'flail' : t > 1.2 && (s.cur?.id === 'A1' || s.cur?.id === 'B2') ? 'cheer' : twIn > 0.5 ? 'rub' : 'rest';
   const mood = fly > 0 ? 'shock' : stingerTalks ? sf.mood : s.cur?.id === 'B3' ? 'wink' : 'open';
-  // the guards: jump on Kid's "Ow!", alarm through the tweezers, relief after the card
-  const alarm = Math.max(go(t, k.ow, 0.25) * (1 - go(t, k.swell + 1.2, 0.4)), go(t, k.no - 0.1, 0.25) * (1 - go(t, k.side + 0.6, 0.4)));
-  const gf0 = bodyFace(s, 'guard', 3, fly >= 1 ? 'happy' : 'neutral');
+  // the guards: knocked off balance by the hit, jump on Kid's "Ow!", alarm through the tweezers, a cheering hop after the card
+  const alarm = Math.max(go(t, k.ow, 0.25) * (1 - go(t, k.swell + 1.2, 0.4)), go(t, k.no - 0.1, 0.25) * (1 - go(t, hitAt + 0.2, 0.4)));
+  const knock = t > HIT && t < HIT + 0.9 ? Math.sin(((t - HIT) / 0.9) * Math.PI * 3) * (1 - (t - HIT) / 0.9) : 0;
+  const cheer = hop(t, hitAt + 0.15, 60, 0.3);
+  const cheering = t > hitAt + 0.1;
+  const gf0 = bodyFace(s, 'guard', 3, cheering ? 'happy' : 'neutral');
   const gf = gf0.mood === 'happy' ? {...gf0, mood: 'open' as const} : gf0;
   const guardTalks = active(s, 'guard') > 0.2;
   const leadLook: [number, number] = outside ? [0, -0.9] : [-0.6, -0.5];
+  const cardX = lerp(-300, 420, sweep);
   return (
     <Scene bg="#000"><V9>
-      <SkinFrame t={t} state={{wound: 0.5, swelling: swell}} layer={<Lump k={clamp01((swell - 0.12) / 0.78)} />}
-        inside={<>
-          {GUARDS_A.map(([x, y, sz], i) => (
-            <Put key={i} x={x} y={y - alarm * 16} size={sz}>
-              <MiniWorker job="guard" band={i === 1 ? 'GUARD' : undefined} pose={i === 1 ? 'hold' : 'rest'}
-                mood={i === 1 && guardTalks ? gf.mood : alarm > 0.5 ? 'shock' : 'open'} mouth={i === 1 && guardTalks ? gf.mouth : alarm > 0.5 ? 'o' : 'smile'}
-                lid={i === 1 ? gf.lid : undefined} look={i === 1 ? leadLook : i === 0 ? [0.6, -0.4] : [-0.6, -0.4]} />
-            </Put>
-          ))}
-        </>}
-        over={<>
-          {fly < 1 && <StingerAt x={STING_AT[0] + fly * 520} y={lerp(-260, STING_AT[1], drop) + rideUp - Math.sin(Math.PI * Math.min(1, fly * 1.3)) * 260 - fly * 200}
-            rot={wob + fly * 70} scale={1} mood={mood} mouth={stingerTalks ? sf.mouth : fly > 0 ? 'o' : 'smile'} lid={stingerTalks ? sf.lid : undefined} look={sLook} arms={arms}
-            squeeze={twIn > 0.5 && s.cur?.id === 'B2' ? 0.25 : 0} />}
-          {twIn > 0.01 && <Svg><g transform={`translate(${STING_AT[0]} ${lerp(-900, STING_AT[1] + rideUp - 134, twIn)})`}><GiantTweezers open={0.85} /></g></Svg>}
-          {sweep > 0.01 && cardOut < 1 && <Svg><g transform={`translate(${lerp(-260, 420, sweep) + cardOut * 900} ${SKIN_Y - 150}) rotate(-6)`}><BankCard /></g></Svg>}
-        </>} />
+      <div style={{position: 'absolute', inset: 0, transform: `translate(${sx.toFixed(1)}px, ${sy.toFixed(1)}px)`}}>
+        <SkinFrame t={t} state={{wound: lerp(0.5, 1, Math.max(tear * 0.5, rip)), swelling: Math.max(swell, 0.25 * tear, 0.6 * go(t, k.ow, 0.3))}}
+          layer={<>
+            <StingDamage tear={Math.max(tear, rip)} poison={poison} t={t} />
+            <PainRings t={t} at={[HIT - 0.08, k.ow, k.swell, hitAt]} />
+            <Lump k={clamp01((swell - 0.12) / 0.78)} />
+          </>}
+          inside={<>
+            {GUARDS_A.map(([x, y, sz], i) => (
+              <Put key={i} x={x} y={y - alarm * 16 + cheer.dy} size={sz} rot={knock * (i === 0 ? -10 : 10)}>
+                <MiniWorker job="guard" band={i === 1 ? 'GUARD' : undefined} pose={i === 1 ? 'hold' : 'rest'}
+                  mood={i === 1 && guardTalks ? gf.mood : alarm > 0.5 || knock !== 0 ? 'shock' : 'open'} mouth={i === 1 && guardTalks ? gf.mouth : cheering ? 'big' : alarm > 0.5 ? 'o' : 'smile'}
+                  lid={i === 1 ? gf.lid : undefined} look={i === 1 ? leadLook : i === 0 ? [0.6, -0.4] : [-0.6, -0.4]} />
+              </Put>
+            ))}
+          </>}
+          over={<>
+            {fly < 1 && <StingerAt x={STING_AT[0] + fly * 560} y={lerp(-260, STING_AT[1], drop) + rideUp - Math.sin(Math.PI * Math.min(1, fly * 1.3)) * 280 - fly * 220}
+              rot={wob + fly * 540} scale={1 - 0.25 * fly} mood={mood} mouth={stingerTalks ? sf.mouth : fly > 0 ? 'o' : 'smile'} lid={stingerTalks ? sf.lid : undefined} look={sLook} arms={arms}
+              squeeze={twIn > 0.5 && s.cur?.id === 'B2' ? 0.25 : 0} />}
+            {twIn > 0.01 && <Svg><g transform={`translate(${STING_AT[0]} ${lerp(-900, STING_AT[1] + rideUp - 134, twIn)})`}><GiantTweezers open={0.85} /></g></Svg>}
+            {sweep > 0.01 && <Svg><g transform={`translate(${cardX} ${SKIN_Y - 150 + squash * 30}) rotate(${-6 + squash * 6})`}>
+              {/* motion trails behind the card while it streaks in (part of the card's drawing) */}
+              {sweep < 0.99 && [-50, 0, 50].map((dy, i) => <path key={i} d={`M ${-190 - i * 30} ${dy} L ${-190 - 220 * (1 - sweep) - i * 30} ${dy}`} stroke={INK} strokeWidth={8} strokeLinecap="round" opacity={0.6 * (1 - sweep)} />)}
+              <BankCard />
+            </g></Svg>}
+          </>} />
+        {/* pain lines flash either side of the wound on the hit and on Kid's "Ow!" (frame pixels) */}
+        {[HIT, k.ow].map((t0, j) => t > t0 && t < t0 + 1.2 ? (
+          <React.Fragment key={j}>
+            <Marks kind="lines" x={STING_AT[0] - 150} y={STING_AT[1] + SKY + 70} size={110} rot={-30} col="#e0404f" />
+            <Marks kind="lines" x={STING_AT[0] + 150} y={STING_AT[1] + SKY + 70} size={110} rot={30} col="#e0404f" />
+          </React.Fragment>
+        ) : null)}
+        {/* the card's slam: one burst where its edge hits the lump (below the Stinger's face) */}
+        <Burst t={t} t0={hitAt} x={STING_AT[0] - 60} y={SKIN_Y + SKY + 70} r={90} col="#fff4e0" keep />
+        {/* speed lines behind the card while it streaks in (frame pixels: the stage is lowered by SKY) */}
+      </div>
     </V9></Scene>
   );
 };
@@ -131,10 +196,10 @@ const ShotC: React.FC<{s: ShotNow}> = ({s}) => {
 
 // =================================================================== D: Dr. Mira's clinic
 // eye points (frame pixels, from the layout log): where each looks when another speaks
-const EYES = {mom: [230, 970] as [number, number], kid: [434, 1080] as [number, number], doctor: [818, 920] as [number, number]};
-const MOM_AT = {view: 'three-quarter' as const, facing: 'right' as const, x: 170, y: 2050, scale: 3.4};
-const KID_AT = {view: 'three-quarter' as const, facing: 'right' as const, x: 450, y: 1760, scale: 3.15}; // his face clear of the caption band (1324-1434), a child's height
-const MIRA_AT = {view: 'three-quarter' as const, facing: 'left' as const, x: 930, y: 2050, scale: 3.4};
+const EYES = {mom: [215, 970] as [number, number], kid: [424, 1080] as [number, number], doctor: [838, 920] as [number, number]};
+const MOM_AT = {view: 'three-quarter' as const, facing: 'right' as const, x: 155, y: 2050, scale: 3.4};
+const KID_AT = {view: 'three-quarter' as const, facing: 'right' as const, x: 440, y: 1760, scale: 3.15}; // his face clear of the caption band (1324-1434), a child's height
+const MIRA_AT = {view: 'three-quarter' as const, facing: 'left' as const, x: 950, y: 2050, scale: 3.4};
 const KID_HAND: [number, number] = [560, 1000];
 const ShotD: React.FC<{s: ShotNow}> = ({s}) => {
   const t = s.t;
@@ -147,7 +212,7 @@ const ShotD: React.FC<{s: ShotNow}> = ({s}) => {
   return (
     <Scene bg="#f1ede4"><V9>
       <PaleClinicRoom wall="mint" items={['door', 'chart']} />
-      <PersonAt spec={MOM} {...MOM_AT} pose="worried" expr={t > d6 ? 'happy' : 'worried'} lookAt={target('mom')} talk={talkSmooth(s, 'mom')} blink={blink(t, 1)} />
+      <PersonAt spec={MOM} {...MOM_AT} pose="rest" expr={t > d6 ? 'happy' : 'worried'} lookAt={target('mom')} talk={talkSmooth(s, 'mom')} blink={blink(t, 1)} />
       <div style={{position: 'absolute', inset: 0, transformOrigin: `${MIRA_AT.x}px 1900px`, transform: `rotate(${lean.toFixed(2)}deg)`}}>
         <PersonAt spec={MIRA} {...MIRA_AT} pose="clipboard" expr={t > right - 0.2 && t < right + 1.6 ? 'happy' : 'neutral'} lookAt={target('doctor')} talk={talkSmooth(s, 'doctor')} blink={blink(t, 4)} />
       </div>
