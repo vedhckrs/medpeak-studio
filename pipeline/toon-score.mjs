@@ -22,6 +22,7 @@ import {scanLayout} from './lib/toon-staging.mjs';
 import {scanLayoutMotion} from './lib/toon-motion.mjs';
 import {scanLayoutCamera} from './lib/toon-camera.mjs';
 import {checkToon} from './lib/toon-rules.mjs';
+import {checkSound} from './lib/toon-sound.mjs';
 import {musicFamily} from './toon-music-scan.mjs';
 import {CTA_PAD, CTA9_SECONDS, known} from './toon-check.mjs';
 
@@ -158,7 +159,9 @@ export const scoreRows = ({log, pic, staging, motion, camera, script: S, media, 
   add('Sound', 'Music style / tempo', 'funk 154', 'funk 130-165', '150', music ? (music.ok === null ? 'not measured' : `${music.hints?.[0] ?? '?'} ${music.bpm}`) : 'not measured', music ? music.ok : null, {note: music?.ok === null ? music.why : music ? undefined : 'no track'});
   // the format-6 script gate (toon-rules.mjs: S1-S12, impacts, music stops, one action then a hold, the music family)
   if (gate) add('Script', 'Format 6 script gate (S1-S12)', '-', 'all pass', 'all', `${gate.pass} / ${gate.n} pass`, gate.n ? gate.pass === gate.n : null, gate.fails.length ? {note: gate.fails.slice(0, 3).join('; ')} : {});
-  add('Sound', 'Music in pauses, under the voice', '2.7 dB', '4-8 dB', '6 dB', voice?.voice_over_gap ? `${r1(voice.voice_over_gap)} dB` : 'not measured', voice?.voice_over_gap ? voice.voice_over_gap >= 4 && voice.voice_over_gap <= 8 : null, {note: 'needs real pauses; the mix check (phase 5)'});
+  // the bed at its pause level against the voice: toon:sound measures it from the clips (format 6); the old study measure otherwise
+  const gapDb = Number.isFinite(toon?.__pauseUnder) ? toon.__pauseUnder : voice?.voice_over_gap;
+  add('Sound', 'Music in pauses, under the voice', '2.7 dB', '4-8 dB', '6 dB', gapDb ? `${r1(gapDb)} dB` : 'not measured', gapDb ? gapDb >= 4 && gapDb <= 8 : null, {note: Number.isFinite(toon?.__pauseUnder) ? 'toon:sound' : 'needs real pauses; the mix check (phase 5)'});
   add('Sound', 'Loudness / true peak', '-9.4', '-14±1 / -1', 'beat: -14, 0 clips', sound.lufs === null ? '-' : `${r1(sound.lufs)}/${r1(sound.tp)}`, sound.lufs === null ? null : Math.abs(sound.lufs + 14) <= 1 && sound.tp <= -0.9);
   add('Sound', 'Loudness range', '5.9 LU', '4-8 LU', '6', sound.lra === null ? '-' : `${r1(sound.lra)} LU`, sound.lra === null ? null : sound.lra >= 4 && sound.lra <= 8);
   // Finish
@@ -221,7 +224,9 @@ export const scoreVideo = async (slug, opts = {}) => {
   const listened = readJson(path.join(dir, 'listen', 'voices.json'), null)?.voicesApart;
   const music = musicOf(toon, dir);
   const gate = (toon.format ?? 0) >= 6 ? gateOf(toon, slug) : null;
-  const rows = scoreRows({log, pic, staging, motion, camera, script, media, sound, voice: listened ? {...(voice ?? {}), apart: listened} : voice, toon, music, gate});
+  let pauseUnder = null;
+  try { pauseUnder = checkSound(toon, readJson(path.join(videoDir(slug), 'toon-timings.json'), null)).pauseUnder; } catch { /* no clips on this machine */ }
+  const rows = scoreRows({log, pic, staging, motion, camera, script, media, sound, voice: listened ? {...(voice ?? {}), apart: listened} : voice, toon: {...toon, __pauseUnder: pauseUnder}, music, gate});
   const out = {slug, title: toon.title, file: path.relative(ROOT, file), at: new Date().toISOString(), rows,
     checks: {picture: pictureChecks(pic), staging: staging.checks, motion: motion.checks, camera: camera.checks}};
   writeJson(path.join(dir, 'score.json'), out);

@@ -6,6 +6,23 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-23 (37) - MacBook (local Claude Code) - branch `engine/v9-pilot-fixes` - the pilot's lessons fixed in the engine
+
+- The script's length estimate uses each speaker's measured pace (body 2.95, people 3.2, doctor 3.4 words/s) and the line's
+  tempo: quit-smoking estimates 57.8 s against 58.2 s voiced (it was 4 s short).
+- People: limbs blend at an even turning speed (slerp); the forearm no longer whips round mid-gesture (M3 pops on
+  clipboard->thumbsUp, worried->thumbsUp gone).
+- The v9 end card fills the safe area (180-1560) with bigger point text (about 48 px, was 35), still one line each.
+- Pitch: `pipeline/lib/toon_pitch.py` reads each clip's median f0; toon:listen --voices feeds check A4; toon.json "pitch"
+  per character per video (free remix). quit-smoking: lungs -2, crew 1 (Lungs and Sweep were 1.9 semitones apart).
+  toon:listen finds toon-v8.mp4 by itself. The scoreboard reads toon:sound's music-in-the-pauses level: 49/49 measured, PASS.
+- `pipeline/tools/toon-closeups.py <slug>`: every face and hand of every line at full size (renders/closeups.jpg); the final
+  render runs it after the scoreboard.
+- The new quit-smoking render (pitches, card) is NOT the one on YouTube (QNqXRvpwVu4, Tue 24 Nov 12:30): replacing it needs
+  the owner's word.
+
+---
+
 ## 2026-11-23 (36) - MacBook (local Claude Code) - branch `video/quit-smoking` - quit-smoking SCHEDULED Tue 24 Nov 12:30 IST
 
 - Owner's notes on the final: Mira's eyes (fixed: both look at the other's measured eye centres) and "last line cta i want to

@@ -12,7 +12,7 @@ import {LIBRARY} from '../toon-sfx.mjs';
 import {BEDS} from '../toon-music.mjs';
 import {checkToon, F6, MUSIC_TEMPLATE, musicPrompt6} from '../lib/toon-rules.mjs';
 import {checkCut} from '../lib/retention.mjs';
-import {bedAt, FORMAT6, GAP, layoutToon, SHOT_GAP, SOUND, SOUND6, stopsOf, TOON_FPS, WPS6} from '../../src/toons/director.ts';
+import {bedAt, FORMAT6, GAP, layoutToon, SHOT_GAP, SOUND, SOUND6, stopsOf, TOON_FPS, WPS6, wps6Of} from '../../src/toons/director.ts';
 import {along, DIVE_MAX_STEP, diveDur, diveZoom, easeOutSoft, enter, fill, latched, leave, reveal} from '../../src/toons/v8/act.tsx';
 import {poundingV9, POUND_MAX} from '../../src/toons/v8/organ-act.tsx';
 
@@ -71,7 +71,8 @@ test('format 6 timing: 0.22 s between lines, 0.5 s after a scene, the automatic 
   });
   assert.equal(L5.shots[3].frames, Math.round(1.0 * TOON_FPS), 'the card keeps its own seconds');
   // format 6
-  L6.lines.forEach((l) => assert.equal(l.frames, Math.round((sec(l, WPS6) + FORMAT6.gap + (l.line.beat ?? 0)) * TOON_FPS)));
+  // the estimate before voicing: each speaker's measured pace (WPS6_BY: body, person, doctor) and the line's own tempo
+  L6.lines.forEach((l) => assert.equal(l.frames, Math.round((sec(l, wps6Of(l.line.who)) / Math.max(0.85, Math.min(1.15, l.line.tempo ?? 1)) + FORMAT6.gap + (l.line.beat ?? 0)) * TOON_FPS)));
   const at = (id) => L6.lines.find((l) => l.line.id === id);
   const prevEnd = (id) => { const i = L6.lines.indexOf(at(id)); return L6.lines[i - 1].from + L6.lines[i - 1].frames; };
   assert.equal(at('D2').from - prevEnd('D2'), Math.round(FORMAT6.pause.answer * TOON_FPS), 'a pause before the answer block');
