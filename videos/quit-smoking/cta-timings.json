@@ -1,63 +1,238 @@
 {
   "voice": "Joey - Upbeat Popular News Host",
   "voiceId": "mUfWEBhcigm8YlCDbmGP",
-  "text": "Follow MedPeak Health for more health tips that keep you safe.",
-  "seconds": 3.67,
+  "text": "Quit smoking? Know this. Coughing is clearing: a good sign at first. Get support to quit, it really helps. A long cough? See a doctor if it lasts over three weeks, or brings up blood. Follow MedPeak Health for more health tips that keep you safe.",
+  "seconds": 17.14,
   "words": [
     {
-      "w": "Follow",
+      "w": "Quit",
       "start": 0,
-      "end": 0.337
+      "end": 0.325
+    },
+    {
+      "w": "smoking?",
+      "start": 0.372,
+      "end": 0.964
+    },
+    {
+      "w": "Know",
+      "start": 1.138,
+      "end": 1.358
+    },
+    {
+      "w": "this.",
+      "start": 1.428,
+      "end": 1.95
+    },
+    {
+      "w": "Coughing",
+      "start": 2.229,
+      "end": 2.659
+    },
+    {
+      "w": "is",
+      "start": 2.717,
+      "end": 2.798
+    },
+    {
+      "w": "clearing:",
+      "start": 2.868,
+      "end": 3.448
+    },
+    {
+      "w": "a",
+      "start": 3.657,
+      "end": 3.727
+    },
+    {
+      "w": "good",
+      "start": 3.843,
+      "end": 4.052
+    },
+    {
+      "w": "sign",
+      "start": 4.122,
+      "end": 4.4
+    },
+    {
+      "w": "at",
+      "start": 4.435,
+      "end": 4.505
+    },
+    {
+      "w": "first.",
+      "start": 4.574,
+      "end": 5.12
+    },
+    {
+      "w": "Get",
+      "start": 5.503,
+      "end": 5.7
+    },
+    {
+      "w": "support",
+      "start": 5.747,
+      "end": 6.13
+    },
+    {
+      "w": "to",
+      "start": 6.165,
+      "end": 6.235
+    },
+    {
+      "w": "quit,",
+      "start": 6.327,
+      "end": 6.78
+    },
+    {
+      "w": "it",
+      "start": 6.954,
+      "end": 7.082
+    },
+    {
+      "w": "really",
+      "start": 7.152,
+      "end": 7.407
+    },
+    {
+      "w": "helps.",
+      "start": 7.477,
+      "end": 8.011
+    },
+    {
+      "w": "A",
+      "start": 8.22,
+      "end": 8.301
+    },
+    {
+      "w": "long",
+      "start": 8.417,
+      "end": 8.661
+    },
+    {
+      "w": "cough?",
+      "start": 8.731,
+      "end": 9.276
+    },
+    {
+      "w": "See",
+      "start": 9.718,
+      "end": 9.927
+    },
+    {
+      "w": "a",
+      "start": 9.961,
+      "end": 9.985
+    },
+    {
+      "w": "doctor",
+      "start": 10.054,
+      "end": 10.403
+    },
+    {
+      "w": "if",
+      "start": 10.449,
+      "end": 10.519
+    },
+    {
+      "w": "it",
+      "start": 10.577,
+      "end": 10.646
+    },
+    {
+      "w": "lasts",
+      "start": 10.693,
+      "end": 10.983
+    },
+    {
+      "w": "over",
+      "start": 11.029,
+      "end": 11.192
+    },
+    {
+      "w": "three",
+      "start": 11.262,
+      "end": 11.482
+    },
+    {
+      "w": "weeks,",
+      "start": 11.529,
+      "end": 11.97
+    },
+    {
+      "w": "or",
+      "start": 12.086,
+      "end": 12.249
+    },
+    {
+      "w": "brings",
+      "start": 12.318,
+      "end": 12.585
+    },
+    {
+      "w": "up",
+      "start": 12.62,
+      "end": 12.713
+    },
+    {
+      "w": "blood.",
+      "start": 12.759,
+      "end": 13.224
+    },
+    {
+      "w": "Follow",
+      "start": 13.665,
+      "end": 14.013
     },
     {
       "w": "MedPeak",
-      "start": 0.395,
-      "end": 0.778
+      "start": 14.083,
+      "end": 14.501
     },
     {
       "w": "Health",
-      "start": 0.848,
-      "end": 1.103
+      "start": 14.571,
+      "end": 14.826
     },
     {
       "w": "for",
-      "start": 1.219,
-      "end": 1.382
+      "start": 14.896,
+      "end": 15.023
     },
     {
       "w": "more",
-      "start": 1.44,
-      "end": 1.625
+      "start": 15.093,
+      "end": 15.29
     },
     {
       "w": "health",
-      "start": 1.683,
-      "end": 1.892
+      "start": 15.348,
+      "end": 15.557
     },
     {
       "w": "tips",
-      "start": 1.95,
-      "end": 2.287
+      "start": 15.615,
+      "end": 15.882
     },
     {
       "w": "that",
-      "start": 2.357,
-      "end": 2.531
+      "start": 15.929,
+      "end": 16.057
     },
     {
       "w": "keep",
-      "start": 2.577,
-      "end": 2.763
+      "start": 16.103,
+      "end": 16.277
     },
     {
       "w": "you",
-      "start": 2.81,
-      "end": 2.891
+      "start": 16.324,
+      "end": 16.405
     },
     {
       "w": "safe.",
-      "start": 2.961,
-      "end": 3.669
+      "start": 16.475,
+      "end": 17.136
     }
   ]
 }
