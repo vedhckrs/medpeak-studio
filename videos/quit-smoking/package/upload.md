@@ -51,7 +51,7 @@ Did you know coughing more after you quit can be a good sign?
 
 - [x] voices made and unchanged since
 - [x] final render exists
-- [x] under 60 seconds (58.2 s)
+- [x] under 60 seconds (58.3 s)
 - [x] title follows the channel rules
 - [x] 3 source(s) listed
 - [ ] owner has watched the final video with sound
