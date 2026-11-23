@@ -59,6 +59,9 @@ export const SHEETS = [
   ['entry-snake.tsx', 'SnakeCast', 'snake-cast'],
   ['entry-snake.tsx', 'SnakePlace', 'snake-place'],
   ['entry-snake.tsx', 'SnakeCheck', 'snake-check'],
+  // quit-smoking, the engine v9 pilot (2026-11-23)
+  ['entry-quit-smoking.tsx', 'SmokePlaces1', 'smoke-place-1'],
+  ['entry-quit-smoking.tsx', 'SmokePlaces2', 'smoke-place-2'],
   // fasting (2026-11-22)
   ['entry-fast.tsx', 'FastCast', 'fast-cast'],
   ['entry-fast.tsx', 'FastPlace', 'fast-place'],

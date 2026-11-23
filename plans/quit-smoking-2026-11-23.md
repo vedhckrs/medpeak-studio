@@ -96,3 +96,9 @@ nhs.uk/better-health/quit-smoking/why-quit-smoking/benefits-of-quitting-smoking/
 2. Dad's stubble: A (none) or B (soft band) from the stubble sheet (my pick B).
 3. The music mix from the A/B: B (new) or C (new, a little softer). My pick C: the mix check measures it and keeps the music
    4-8 dB under the voice either way.
+
+## Decided (2026-11-23)
+
+- Hook **B** (the owner: "B"): open INSIDE: the grey, tarry lungs coughing, the cilia crew asleep under the tar; the Lungs:
+  "He quit smoking? Crew, wake up!". Dad's balcony scene is dropped (the story is the chest, the vessel, then the clinic).
+- Stubble B and music mix C: my picks, used unless the owner says otherwise.
