@@ -47,10 +47,9 @@ shots = [
    ],
    "lines": [
      L("B1", "lungs", "He quit smoking? Crew, wake up!", "shocked", "quit", chat=True),
-     L("B2", "crew", "Ugh. We've been asleep under this tar for years.", "sleepy", "tar", chat=True, pause=0.3),
+     L("B2", "crew", "Ugh. We've been asleep under this tar for years.", "sleepy", "tar", chat=True, pause=0.2),
      L("B3", "lungs", "No more naps, crew. Get up and get sweeping!", "angry", "sweeping", chat=True),
      L("B4", "crew", "Brooms up, team! Let's clean this place!", "happy", "brooms", chat=True),
-     L("B5", "lungs", "Ha, look at them go! Tar, you're finished now!", "happy", "finished", chat=True),
    ]},
   # C: inside a blood vessel, one framing held: the CO gang lounges on the red cells like seats.
   {"id": "C", "set": "blood", "kind": "body",
@@ -64,7 +63,7 @@ shots = [
      L("C1", "co", "Relax, oxygen, these red seats are all ours.", "smug", "seats", chat=True),
      L("C2", "co", "He'll light up again. They always do.", "smug", "again", chat=True),
    ]},
-  {"id": "K1", "set": "blood", "card": "8 HOURS LATER", "seconds": 1.0, "same": "C", "src": [QUIT], "cast": [], "lines": []},
+  {"id": "K1", "set": "blood", "card": "8 HOURS LATER", "seconds": 0.8, "same": "C", "src": [QUIT], "cast": [], "lines": []},
   # C again: the same framing, 8 hours later: half the gang gone, the free cells redder (NHS: carbon monoxide halved; the card
   # carries the source, the line is the gang's reaction: the story keeps 3 sourced facts, all in the answer).
   {"id": "C", "set": "blood", "kind": "body",
@@ -77,9 +76,9 @@ shots = [
    ],
    "lines": [
      L("C3", "co", "Hey! A bunch of us just got kicked out!", "shocked", "kicked", chat=True),
-     L("C4", "co", "Ugh. And fresh oxygen is grabbing our seats!", "angry", "oxygen", chat=True, pause=0.4),
+     L("C4", "co", "Ugh. And fresh oxygen is grabbing our seats!", "angry", "oxygen", chat=True, pause=0.25),
    ]},
-  {"id": "K2", "set": "lungs", "card": "3 DAYS LATER", "seconds": 1.0, "same": "B", "src": [QUIT], "cast": [], "lines": []},
+  {"id": "K2", "set": "lungs", "card": "3 DAYS LATER", "seconds": 0.8, "same": "B", "src": [QUIT], "cast": [], "lines": []},
   # B again: the same chest framing, 3 days later: pinker, less tar, the airways open, the crew sweeping the mucus up and out.
   {"id": "B", "set": "lungs", "kind": "body",
    "cast": [{"who": "lungs", "x": 540, "size": 900}, {"who": "crew", "x": 540, "size": 340}],
@@ -107,7 +106,7 @@ shots = [
    "lines": [
      L("E1", "dad", "Doc, I quit smoking.", "neutral", "quit", chat=True),
      L("E2", "dad", "Why am I coughing more?", "scared", "coughing", chat=True),
-     L("E3", "doctor", "That cough is a good sign after you quit smoking. Your lungs are clearing out mucus and toxins.", "happy", "clearing", src=[QUIT], answer=True),
+     L("E3", "doctor", "That cough is a good sign after you quit smoking. Your lungs are clearing out mucus and toxins.", "happy", "clearing", src=[QUIT], answer=True, pause=0.45),
      L("E5", "doctor", "Get support to quit. It really helps you quit for good.", "neutral", "support", src=[BEN], answer=True),
      L("E6", "doctor", "See a doctor if a cough lasts over three weeks, or brings up blood.", "neutral", "doctor", src=[COUGH], answer=True, care=True),
      L("E7", "dad", "Hear that, crew? I quit smoking for good!", "happy", "good", chat=True),
@@ -159,6 +158,15 @@ toon = {
   "shots": shots,
   "cta": {"text": "Follow MedPeak Health for more health tips that keep you safe.", "src": [QUIT]},
 }
+
+# Pace on the real voices (format 6, S6; free: `toon-voice --remix`): the body cast and Dad a touch faster, Dr. Mira slower and
+# calmer (she came out 3.3 words/s, faster than the cast); D3 is already quick. Voiced 2026-11-23: the story ran 63.4 s.
+# lines that came out quick already keep (nearly) their own pace (S6: every line 2.4-4 words a second)
+PACE = {"B3": 1.0, "D2": 1.0, "E7": 1.0, "B2": 1.05, "D3": 0.95}
+for sh in shots:
+    for l in sh["lines"]:
+        if l["who"] == "doctor": l["tempo"] = 0.88
+        else: l["tempo"] = PACE.get(l["id"], 1.15 if l["who"] == "dad" else 1.1)
 
 out = os.path.join(ROOT, "videos", "quit-smoking")
 os.makedirs(out, exist_ok=True)

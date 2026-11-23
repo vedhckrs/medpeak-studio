@@ -192,7 +192,8 @@
      "emotion": "shocked",
      "pose": "rest",
      "key": "quit",
-     "chat": true
+     "chat": true,
+     "tempo": 1.1
     },
     {
      "id": "B2",
@@ -202,7 +203,8 @@
      "pose": "rest",
      "key": "tar",
      "chat": true,
-     "pause": 0.3
+     "pause": 0.2,
+     "tempo": 1.05
     },
     {
      "id": "B3",
@@ -211,7 +213,8 @@
      "emotion": "angry",
      "pose": "rest",
      "key": "sweeping",
-     "chat": true
+     "chat": true,
+     "tempo": 1.0
     },
     {
      "id": "B4",
@@ -220,16 +223,8 @@
      "emotion": "happy",
      "pose": "rest",
      "key": "brooms",
-     "chat": true
-    },
-    {
-     "id": "B5",
-     "who": "lungs",
-     "text": "Ha, look at them go! Tar, you're finished now!",
-     "emotion": "happy",
-     "pose": "rest",
-     "key": "finished",
-     "chat": true
+     "chat": true,
+     "tempo": 1.1
     }
    ]
   },
@@ -275,7 +270,8 @@
      "emotion": "smug",
      "pose": "rest",
      "key": "seats",
-     "chat": true
+     "chat": true,
+     "tempo": 1.1
     },
     {
      "id": "C2",
@@ -284,7 +280,8 @@
      "emotion": "smug",
      "pose": "rest",
      "key": "again",
-     "chat": true
+     "chat": true,
+     "tempo": 1.1
     }
    ]
   },
@@ -292,7 +289,7 @@
    "id": "K1",
    "set": "blood",
    "card": "8 HOURS LATER",
-   "seconds": 1.0,
+   "seconds": 0.8,
    "same": "C",
    "src": [
     "nhs-quit-timeline"
@@ -348,7 +345,8 @@
      "emotion": "shocked",
      "pose": "rest",
      "key": "kicked",
-     "chat": true
+     "chat": true,
+     "tempo": 1.1
     },
     {
      "id": "C4",
@@ -358,7 +356,8 @@
      "pose": "rest",
      "key": "oxygen",
      "chat": true,
-     "pause": 0.4
+     "pause": 0.25,
+     "tempo": 1.1
     }
    ]
   },
@@ -366,7 +365,7 @@
    "id": "K2",
    "set": "lungs",
    "card": "3 DAYS LATER",
-   "seconds": 1.0,
+   "seconds": 0.8,
    "same": "B",
    "src": [
     "nhs-quit-timeline"
@@ -434,7 +433,8 @@
      "emotion": "happy",
      "pose": "rest",
      "key": "easier",
-     "chat": true
+     "chat": true,
+     "tempo": 1.1
     },
     {
      "id": "D2",
@@ -443,7 +443,8 @@
      "emotion": "happy",
      "pose": "rest",
      "key": "sweep",
-     "chat": true
+     "chat": true,
+     "tempo": 1.0
     },
     {
      "id": "D4",
@@ -452,7 +453,8 @@
      "emotion": "happy",
      "pose": "rest",
      "key": "tickles",
-     "chat": true
+     "chat": true,
+     "tempo": 1.1
     },
     {
      "id": "D3",
@@ -461,7 +463,8 @@
      "emotion": "shocked",
      "pose": "rest",
      "key": "coughing",
-     "chat": true
+     "chat": true,
+     "tempo": 0.95
     }
    ]
   },
@@ -512,7 +515,8 @@
      "emotion": "neutral",
      "pose": "rest",
      "key": "quit",
-     "chat": true
+     "chat": true,
+     "tempo": 1.15
     },
     {
      "id": "E2",
@@ -521,7 +525,8 @@
      "emotion": "scared",
      "pose": "rest",
      "key": "coughing",
-     "chat": true
+     "chat": true,
+     "tempo": 1.15
     },
     {
      "id": "E3",
@@ -533,7 +538,9 @@
      "src": [
       "nhs-quit-timeline"
      ],
-     "answer": true
+     "answer": true,
+     "pause": 0.45,
+     "tempo": 0.88
     },
     {
      "id": "E5",
@@ -545,7 +552,8 @@
      "src": [
       "nhs-quit-benefits"
      ],
-     "answer": true
+     "answer": true,
+     "tempo": 0.88
     },
     {
      "id": "E6",
@@ -558,7 +566,8 @@
       "nhs-cough"
      ],
      "answer": true,
-     "care": true
+     "care": true,
+     "tempo": 0.88
     },
     {
      "id": "E7",
@@ -567,7 +576,8 @@
      "emotion": "happy",
      "pose": "rest",
      "key": "good",
-     "chat": true
+     "chat": true,
+     "tempo": 1.0
     }
    ]
   }

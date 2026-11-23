@@ -80,8 +80,8 @@ export const voiceFx = (input, output, semitones = 0, tempo = 1, cut = null) => 
   const lufs = loudness(input, pitch);
   const gain = lufs === null ? -2 - peakOf(input, pitch) : VOICE_LUFS - lufs;
   fs.mkdirSync(path.dirname(output), {recursive: true});
-  // `tempo` (0.9 to 1.15): a line said a touch faster or slower without changing its pitch (a hook that must land inside 2.5 s)
-  const pace = tempo && tempo !== 1 ? `,atempo=${Math.max(0.9, Math.min(1.15, tempo)).toFixed(4)}` : '';
+  // `tempo` (0.85 to 1.15; 0.85-0.9 for the doctor's calmer answer, format 6): a line said a touch faster or slower without changing its pitch (a hook that must land inside 2.5 s)
+  const pace = tempo && tempo !== 1 ? `,atempo=${Math.max(0.85, Math.min(1.15, tempo)).toFixed(4)}` : '';
   // `cut` (seconds of the finished clip to keep): a stray sound after the last word is trimmed off with a short fade
   const end = cut ? `,atrim=0:${Number(cut).toFixed(3)},afade=t=out:st=${Math.max(0, cut - 0.05).toFixed(3)}:d=0.05` : '';
   run(input, `${pitch}${pace}${end},volume=${gain.toFixed(2)}dB,alimiter=limit=0.84:level=0`, output);
