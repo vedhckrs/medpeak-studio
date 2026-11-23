@@ -62,6 +62,8 @@ export const SHEETS = [
   // quit-smoking, the engine v9 pilot (2026-11-23)
   ['entry-quit-smoking.tsx', 'SmokePlaces1', 'smoke-place-1'],
   ['entry-quit-smoking.tsx', 'SmokePlaces2', 'smoke-place-2'],
+  ['entry-bee-sting.tsx', 'BeePlaces1', 'bee-place-1'],
+  ['entry-bee-sting.tsx', 'BeePlaces2', 'bee-place-2'],
   // fasting (2026-11-22)
   ['entry-fast.tsx', 'FastCast', 'fast-cast'],
   ['entry-fast.tsx', 'FastPlace', 'fast-place'],
