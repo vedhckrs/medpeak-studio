@@ -344,13 +344,11 @@
     {
      "id": "C3",
      "who": "co",
-     "text": "Hey! Half of us just got kicked out!",
+     "text": "Hey! A bunch of us just got kicked out!",
      "emotion": "shocked",
      "pose": "rest",
-     "key": "half",
-     "src": [
-      "nhs-quit-timeline"
-     ]
+     "key": "kicked",
+     "chat": true
     },
     {
      "id": "C4",
@@ -436,9 +434,7 @@
      "emotion": "happy",
      "pose": "rest",
      "key": "easier",
-     "src": [
-      "nhs-quit-timeline"
-     ]
+     "chat": true
     },
     {
      "id": "D2",
@@ -488,23 +484,23 @@
    "events": [
     {
      "at": "E1",
-     "act": "dad: coughs into his fist, a hand on his chest",
+     "act": "dad: a small cough, a hand on his chest",
      "word": "Doc",
      "sfx": "cough"
     },
     {
      "at": "E3",
-     "act": "doctor: smiles and taps the lungs chart on the wall",
+     "act": "doctor: smiles at Dad",
      "word": "good"
     },
     {
      "at": "E5",
-     "act": "doctor: hands Dad a leaflet",
+     "act": "doctor: a firm nod",
      "word": "support"
     },
     {
      "at": "E7",
-     "act": "dad: pats his chest, grinning",
+     "act": "dad: grins, a hand on his chest",
      "word": "crew"
     }
    ],

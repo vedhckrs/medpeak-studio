@@ -65,7 +65,8 @@ shots = [
      L("C2", "co", "He'll light up again. They always do.", "smug", "again", chat=True),
    ]},
   {"id": "K1", "set": "blood", "card": "8 HOURS LATER", "seconds": 1.0, "same": "C", "src": [QUIT], "cast": [], "lines": []},
-  # C again: the same framing, 8 hours later: half the gang gone, the free cells redder (NHS: carbon monoxide halved).
+  # C again: the same framing, 8 hours later: half the gang gone, the free cells redder (NHS: carbon monoxide halved; the card
+  # carries the source, the line is the gang's reaction: the story keeps 3 sourced facts, all in the answer).
   {"id": "C", "set": "blood", "kind": "body",
    "cast": [{"who": "co", "x": 540, "size": 300}, {"who": "redcell", "x": 540, "size": 230}],
    "state": {"flow": 0.3, "co": 0.5, "pink": 0.5},
@@ -75,7 +76,7 @@ shots = [
      E("C4", "co: a bright oxygen bubble drops onto a free seat; the gang glares", word="oxygen", sfx="pop"),
    ],
    "lines": [
-     L("C3", "co", "Hey! Half of us just got kicked out!", "shocked", "half", src=[QUIT]),
+     L("C3", "co", "Hey! A bunch of us just got kicked out!", "shocked", "kicked", chat=True),
      L("C4", "co", "Ugh. And fresh oxygen is grabbing our seats!", "angry", "oxygen", chat=True, pause=0.4),
    ]},
   {"id": "K2", "set": "lungs", "card": "3 DAYS LATER", "seconds": 1.0, "same": "B", "src": [QUIT], "cast": [], "lines": []},
@@ -89,7 +90,7 @@ shots = [
      E("D3", "lungs: a HUGE cough; the mucus ball flies up and out of the top of the frame", word="coughing", set={"cough": 1}, over=12, sfx="cough"),
    ],
    "lines": [
-     L("D1", "lungs", "Whoa. Breathing feels easier!", "happy", "easier", src=[QUIT]),
+     L("D1", "lungs", "Whoa. Breathing feels easier!", "happy", "easier", chat=True),
      L("D2", "crew", "Airways are open! Sweep it all up and out!", "happy", "sweep", chat=True),
      L("D4", "lungs", "Hey, careful down there, that really tickles!", "happy", "tickles", chat=True),
      L("D3", "lungs", "Then why am I coughing more?", "shocked", "coughing", chat=True),
@@ -98,10 +99,10 @@ shots = [
   {"id": "E", "set": "clinic", "kind": "room",
    "cast": [{"who": "dad", "x": 280, "size": 960}, {"who": "doctor", "x": 820, "size": 960}],
    "events": [
-     E("E1", "dad: coughs into his fist, a hand on his chest", word="Doc", sfx="cough"),
-     E("E3", "doctor: smiles and taps the lungs chart on the wall", word="good"),
-     E("E5", "doctor: hands Dad a leaflet", word="support"),
-     E("E7", "dad: pats his chest, grinning", word="crew"),
+     E("E1", "dad: a small cough, a hand on his chest", word="Doc", sfx="cough"),
+     E("E3", "doctor: smiles at Dad", word="good"),
+     E("E5", "doctor: a firm nod", word="support"),
+     E("E7", "dad: grins, a hand on his chest", word="crew"),
    ],
    "lines": [
      L("E1", "dad", "Doc, I quit smoking.", "neutral", "quit", chat=True),

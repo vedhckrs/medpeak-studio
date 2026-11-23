@@ -6,6 +6,27 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-23 (34) - MacBook (local Claude Code) - branch `video/quit-smoking` - the engine v9 pilot: script, shots, silent preview
+
+- **Approved by the owner**: hook B, the look sheets, the script ("Yes"). Script `videos/quit-smoking/toon.json` from
+  `plans/quit-smoking-script.py`: `toon-check` ALL PASS (59.0 s estimated, 3 sourced facts all in the answer, 2 time cards).
+- **Shots**: `src/toons/v8/quit-smoking.tsx` (B chest, C vessel, E pale clinic; end card `QUIT_SMOKING_CTA`), registered in
+  `video.tsx`. The CO gang is a new cast entry `co` with NO voice yet (pick it free with earshot before voicing).
+- **Engine/check fixes found by the pilot (format 6 only; old videos unchanged, 80/80 tests)**: director knows the chest/vessel
+  dials (`lungs`, `blood`); the act-2 watermark at y 1180 (1200 was 107 px from the caption band, L5 wants 120); the chest's
+  cilia beat in 0.9 s waves every 6 s (were never still); the vessel floor and ceiling mottled (one flat field was 25%);
+  `toon_picture.py`: a hard cut to a brighter place is not a flash, a place split by a time card is one hold, a card's framing is
+  compared with the shot it returns to (S12's rule). Five repo tests follow the format-6 rules.
+- **Silent draft** `renders/toon-v8-draft.mp4` scoreboard: 37 pass, 8 fail. Voice/sound rows wait for voicing (talk speed,
+  talk share, doctor slower, loudness, seconds after the last word). Still open on the picture: longest fully still stretch
+  3.3 s (4 s+) and one M2 at 37.4 s (the D3 cough); re-measure on the voiced final.
+- **Known**: the rig's pose blends switch hand shape at k 0.5 (a gesture from the clipboard pops, M3); the clinic uses a lean.
+  The v9 end card still leaves blue space at the bottom (the owner noted it earlier).
+- **Next**: owner's OK on the silent preview -> pick the CO and Sweep voices free -> voice + music quote (balance first) ->
+  voice, music -> final render, checklist, scoreboard PASS -> owner. Upload only on his word.
+
+---
+
 ## 2026-11-23 (33) - MacBook (local Claude Code, the integration agent) - branch `engine/v9` - engine v9 wired together: a format-6 video now plays with all of v9; the old videos are pixel-identical
 
 - **Player** (`src/toons/v8/video.tsx`), format 6 only: the whole picture inside `<V9>`; the camera div uses the kit's ink-zoom

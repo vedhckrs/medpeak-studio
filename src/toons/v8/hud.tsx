@@ -503,8 +503,9 @@ export const StayLabel: React.FC<{text: string; x: number; y: number; rot?: numb
 };
 
 // ------------------------------------------------------------------ the v9 watermark place (decision 26)
-/** Act 1 top right; act 2 bottom left at y 1200 (120 px clear of the caption); act 3 the first free top spot. */
-export const WM_AT_V9 = {act1: {x: 960, y: 178, align: 'right' as const}, act2: {x: 96, y: 1200, align: 'left' as const}, act3: [
+/** Act 1 top right; act 2 bottom left at y 1180 (its box ends at 1197: 127 px clear of the caption band at 1324, check L5
+ * wants 120+; at 1200 it was 107); act 3 the first free top spot. */
+export const WM_AT_V9 = {act1: {x: 960, y: 178, align: 'right' as const}, act2: {x: 96, y: 1180, align: 'left' as const}, act3: [
   {x: 96, y: 178, align: 'left' as const}, {x: 540, y: 178, align: 'center' as const}, {x: 984, y: 178, align: 'right' as const},
 ]};
 const WM_W = 214, WM_H = 34;
