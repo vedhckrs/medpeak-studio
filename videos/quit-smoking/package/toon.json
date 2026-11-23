@@ -30,14 +30,14 @@
   },
   "relatedVideo": null,
   "issues": [],
-  "coverSet": true,
-  "uploaded": "QNqXRvpwVu4",
   "stored": {
     "privacyStatus": "private",
-    "madeForKids": null,
+    "madeForKids": false,
     "containsSyntheticMedia": null,
     "publishAt": "2026-11-24T07:00:00Z"
   },
+  "coverSet": true,
   "labelSet": true,
+  "uploaded": "shNqT8P1ez0",
   "labelConfirmed": false
 }

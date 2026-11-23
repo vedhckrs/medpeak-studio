@@ -6,6 +6,16 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-23 (38) - MacBook (local Claude Code) - branch `video/quit-smoking-replace` - quit-smoking REPLACED on YouTube
+
+- The owner: "Replace". The old scheduled upload QNqXRvpwVu4 was checked (private, the quit-smoking title, publishAt Tue 24 Nov
+  07:00 UTC) and deleted; the re-render with the engine fixes (Lungs/Sweep pitch apart, the fuller end card; 49/49 PASS) is
+  uploaded private into the same slot: https://youtu.be/shNqT8P1ez0, Tue 24 Nov 12:30 IST (read back; one entry on the
+  schedule). The AI-use label: the API answered True, not visible on read-back: check in Studio.
+- `publish/` has no delete script: the delete was a one-off with the same login (videos.list check, then videos.delete).
+
+---
+
 ## 2026-11-23 (37) - MacBook (local Claude Code) - branch `engine/v9-pilot-fixes` - the pilot's lessons fixed in the engine
 
 - The script's length estimate uses each speaker's measured pace (body 2.95, people 3.2, doctor 3.4 words/s) and the line's
