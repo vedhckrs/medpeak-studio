@@ -198,8 +198,7 @@
      "pose": "rest",
      "key": "bullseye",
      "chat": true,
-     "speed": 1.15,
-     "tempo": 1.15
+     "tempo": 1.05
     },
     {
      "id": "A2",
@@ -219,7 +218,7 @@
      "pose": "rest",
      "key": "swell",
      "chat": true,
-     "tempo": 1.15
+     "tempo": 1.05
     },
     {
      "id": "B1",
@@ -239,8 +238,7 @@
      "pose": "rest",
      "key": "squeeze",
      "chat": true,
-     "speed": 1.2,
-     "tempo": 1.15
+     "tempo": 1.05
     },
     {
      "id": "B3",
@@ -250,7 +248,7 @@
      "pose": "rest",
      "key": "no",
      "chat": true,
-     "tempo": 1.15
+     "tempo": 1.05
     },
     {
      "id": "B4",
@@ -270,7 +268,7 @@
      "pose": "rest",
      "key": "sideways",
      "chat": true,
-     "tempo": 1.15
+     "tempo": 1.05
     },
     {
      "id": "B6",
@@ -322,7 +320,7 @@
      "key": "rest",
      "chat": true,
      "beat": 0.8,
-     "tempo": 1.15
+     "tempo": 1.05
     }
    ]
   },
@@ -369,7 +367,7 @@
      "pose": "rest",
      "key": "doctor",
      "chat": true,
-     "tempo": 1.15
+     "tempo": 1.05
     }
    ]
   },
@@ -415,7 +413,7 @@
      "pose": "rest",
      "key": "lump",
      "chat": true,
-     "tempo": 0.95
+     "tempo": 0.9
     },
     {
      "id": "D2",
@@ -425,7 +423,7 @@
      "pose": "rest",
      "key": "card",
      "chat": true,
-     "tempo": 0.95
+     "tempo": 0.92
     },
     {
      "id": "D3",
@@ -438,6 +436,7 @@
       "nhs-insect-stings"
      ],
      "answer": true,
+     "pause": 0.35,
      "tempo": 0.92
     },
     {

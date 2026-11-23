@@ -46,11 +46,11 @@ shots = [
      E("B5", "stinger: a bank card's edge sweeps in sideways along the skin and flicks him out of frame", word="sideways", sfx="boing"),
    ],
    "lines": [
-     L("A1", "stinger", "Bee sting! Bullseye! I'm staying right here.", "happy", "bullseye", chat=True, speed=1.15),
+     L("A1", "stinger", "Bee sting! Bullseye! I'm staying right here.", "happy", "bullseye", chat=True ),
      L("A2", "kid", "Ow! A bee sting? What do I do?", "scared", "sting", chat=True),
      L("A3", "guard", "Intruder in the skin! Crew, swell it up!", "angry", "swell", chat=True),
      L("B1", "mom", "Hold still, honey. I'll pull it out with tweezers.", "neutral", "tweezers", chat=True),
-     L("B2", "stinger", "Ooh, tweezers! Yes, squeeze me! Squeeze me hard!", "happy", "squeeze", chat=True, speed=1.2),
+     L("B2", "stinger", "Ooh, tweezers! Yes, squeeze me! Squeeze me hard!", "happy", "squeeze", chat=True ),
      L("B3", "guard", "No! Not the tweezers! Not the sac!", "scared", "no", chat=True),
      L("B4", "kid", "Wait, Mom! Use a card instead. Scrape it sideways.", "neutral", "card", chat=True),
      L("B5", "stinger", "Hey! Not sideways! Nooo!", "shocked", "sideways", chat=True),
@@ -87,7 +87,7 @@ shots = [
    "lines": [
      L("D1", "kid", "Doc, it still has a lump. Is that bad?", "scared", "lump", chat=True),
      L("D2", "mom", "And was the card the right way?", "neutral", "card", chat=True),
-     L("D3", "doctor", "Scraping the bee sting out sideways was right. Tweezers can squeeze out more poison.", "happy", "right", src=[STING], answer=True),
+     L("D3", "doctor", "Scraping the bee sting out sideways was right. Tweezers can squeeze out more poison.", "happy", "right", src=[STING], answer=True, pause=0.35),
      L("D4", "doctor", "A small swollen lump is normal. It should get better in a few days.", "neutral", "normal", src=[STING], answer=True),
      L("D5", "doctor", "But if the lips or tongue swell, or breathing gets hard, get emergency help right away.", "neutral", "emergency", src=[STING, ANA], answer=True, care=True),
      L("D6", "kid", "So next bee sting, card, right?", "happy", "card", chat=True),
@@ -145,11 +145,12 @@ toon = {
 
 # Pace on the real voices (free remix; format 6, S6): the body cast faster (the Stinger's voice is slow), people near their
 # own pace (the quick ones slower), Dr. Mira calmer. Voiced 2026-11-23: the story ran 64.8 s.
-PACE = {"D1": 0.95, "D2": 0.95, "A2": 1.05, "B1": 1.08, "B6": 1.05, "D6": 1.12, "B4": 1.15}
+# Chuck (the Stinger since the re-cast) is quick: the body cast at its own pace; the clinic tighter so the body keeps 60%+
+PACE = {"D1": 0.9, "D2": 0.92, "A2": 1.05, "B1": 1.08, "B6": 1.05, "D6": 1.12, "B4": 1.15}
 for sh in shots:
     for l in sh["lines"]:
         if l["who"] == "doctor": l["tempo"] = 0.92
-        elif l["who"] in ("stinger", "guard"): l["tempo"] = 1.15
+        elif l["who"] in ("stinger", "guard"): l["tempo"] = 1.05
         else: l["tempo"] = PACE.get(l["id"], 1.0)
 
 out = os.path.join(ROOT, "videos", "bee-sting")
