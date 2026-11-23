@@ -113,13 +113,11 @@ const main = async () => {
   console.log(`MILESTONE toon v8 done: ${path.relative(ROOT, final)}${voiced ? '' : ' (silent preview: no voice yet)'}`);
   // engine v9 (2026-11-23, owner decision 17): every check runs on the FINAL render; a failing scoreboard is not for the owner
   if (!slice && !a.draft && !a['no-score']) {
+    // the scoreboard imports the .tsx kit (the layout log), which plain node cannot load: run it in its own process with tsx
     try {
-      const {scoreVideo, drawSheet} = await import('./toon-score.mjs');
-      const s = await scoreVideo(slug, {file: final, fresh: true});
-      const fails = s.rows.filter((r) => r.status === 'fail');
-      drawSheet([s], path.join(outDir, 'scoreboard.jpg'), `Scoreboard: ${s.title}`);
-      console.log(fails.length ? `\x1b[31mSCORE: ${fails.length} rows FAIL (${fails.map((r) => r.measure).join('; ')}): NOT FOR THE OWNER yet. See renders/scoreboard.jpg\x1b[0m` : 'SCORE: ALL PASS (renders/scoreboard.jpg)');
-    } catch (e) { console.log(`score not run: ${e.message} (npm run toon:score -- ${slug})`); }
+      execFileSync(process.execPath, ['--import', 'tsx', path.join(ROOT, 'pipeline', 'toon-score.mjs'), slug, '--file', final], {stdio: 'inherit', cwd: ROOT});
+      console.log('SCORE: ALL PASS (renders/scoreboard.jpg)');
+    } catch (e) { console.log(e.status ? '\x1b[31mSCORE: rows FAIL (above): NOT FOR THE OWNER yet. See renders/scoreboard.jpg\x1b[0m' : `score not run: ${e.message} (node --import tsx pipeline/toon-score.mjs ${slug})`); }
   }
 };
 

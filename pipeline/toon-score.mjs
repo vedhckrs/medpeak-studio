@@ -163,7 +163,9 @@ export const scoreRows = ({log, pic, staging, motion, camera, script: S, media, 
   add('Sound', 'Loudness range', '5.9 LU', '4-8 LU', '6', sound.lra === null ? '-' : `${r1(sound.lra)} LU`, sound.lra === null ? null : sound.lra >= 4 && sound.lra <= 8);
   // Finish
   const tail = media.duration - (S.lastWord ?? log.story);
-  add('Finish', 'Seconds after the last story word', '0-2 s', '6 s or less', '5 s', `${r1(tail)} s`, tail <= 6);
+  // the owner (2026-11-23): Joey reads the whole card again ("cta": {"read": "card"}): the card runs his clip (16 s at most)
+  const readCard = toon?.cta?.read === 'card';
+  add('Finish', 'Seconds after the last story word', '0-2 s', readCard ? '16 s or less (Joey reads the card)' : '6 s or less', '5 s', `${r1(tail)} s`, tail <= (readCard ? 16 : 6));
   add('Finish', 'Faces covered (bursts and others)', '-', '0', 'beat: 0', String(L('L1').episodes), L('L1').status === 'n/m' ? null : L('L1').status === 'pass', {owner: 'bursts on faces', note: 'estimated boxes until the kit reports'});
   add('Finish', 'Caption on a face or eyes', '-', '0', 'beat: 0', String(L('L3').episodes), L('L3').status === 'n/m' ? null : L('L3').status === 'pass', {owner: 'caption on eyes'});
   add('Finish', 'Text on text', '-', '0', 'beat: 0', String(L('L2').episodes), L('L2').status === 'pass');

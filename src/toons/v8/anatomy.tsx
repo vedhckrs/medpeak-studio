@@ -129,7 +129,9 @@ export const ChestStage: React.FC<StageProps> = ({t, state, faces, layer, childr
       const u = 0.15 + (0.75 * i) / n, p = qPt(a, c, b, u), q = qPt(a, c, b, u + 0.02);
       const tx = q[0] - p[0], ty = q[1] - p[1], l = Math.hypot(tx, ty) || 1, nx = -ty / l, ny = tx / l;
       const up = i < awake;
-      const sway = up ? Math.sin(t * 7 + i * 0.9 + seed) * 4 : 0;
+      // the cilia beat in waves: a 0.9 s wave every 6 s, then they hold (one action, then a hold; the picture can rest)
+      const wave = Math.sin(Math.PI * Math.min(1, ((t + seed * 0.3) % 6) / 0.9)) ** 2;
+      const sway = up ? Math.sin(t * 7 + i * 0.9 + seed) * 4 * wave : 0;
       const base: P = [p[0] + nx * (w / 2 - 4), p[1] + ny * (w / 2 - 4)];
       const tip: P = up ? [base[0] - nx * 18 + (tx / l) * sway, base[1] - ny * 18 + (ty / l) * sway] : [base[0] + (tx / l) * 14 - nx * 4, base[1] + (ty / l) * 14 - ny * 4];
       return <path key={seed + '-' + i} d={`M ${r2(base[0])} ${r2(base[1])} L ${r2(tip[0])} ${r2(tip[1])}`} stroke={INK} strokeWidth={3.2} strokeLinecap="round" vectorEffect="non-scaling-stroke" />;
@@ -246,13 +248,24 @@ export const VesselStage: React.FC<StageProps> = ({t, state, faces, layer, child
       <Folds box={{x0: 40, y0: 420, x1: 1040, y1: 1160}} seed={17} density={0.18} color={shade(plasma, 0.16)} len={[120, 220]} angle={0} />
       {/* the ceiling: the vessel wall from inside, rim band and folds */}
       <Wall d="M -40 -40 L 1120 -40 L 1120 300 Q 820 380 540 350 Q 260 330 -40 390 Z" fill={wall} rim={22}>
+        {Array.from({length: 7}, (_, i) => {
+          const r = seeded(71 + i);
+          const x = 60 + ((i * 163) % 980), y = 70 + ((i * 89) % 200), rx = 110 + r() * 90, ry = 34 + r() * 26;
+          return <ellipse key={'m' + i} cx={x} cy={y} rx={rx} ry={ry} fill={i % 2 ? shade(wall, 0.07) : tint(wall, 0.08)} transform={`rotate(${(r() - 0.5) * 12} ${x} ${y})`} />;
+        })}
         <Folds box={{x0: 0, y0: 40, x1: 1080, y1: 290}} seed={21} density={0.55} color={shade(wall, 0.35)} len={[110, 200]} angle={6} />
       </Wall>
       {/* the flow: a few cells in one band */}
       {cells.map((c) => <g key={c.i}><RedDisc x={c.x} y={c.y} w={92} c={cell} rot={(c.i * 23) % 40 - 20} />{co > 0.02 && c.i % 2 === 0 && <CoEgg x={c.x + 4} y={c.y - 46} s={0.62 * clamp01(co * 1.4)} />}</g>)}
       {/* the floor the characters stand on, a lighter top edge */}
       <Wall d={`M -40 ${FLOOR_Y + 20} Q 300 ${FLOOR_Y - 30} 600 ${FLOOR_Y} Q 860 ${FLOOR_Y + 24} 1120 ${FLOOR_Y - 10} L 1120 1960 L -40 1960 Z`} fill={wall} rim={18}>
-        <Folds box={{x0: 0, y0: FLOOR_Y + 140, x1: 1080, y1: 1900}} seed={23} density={0.4} color={shade(wall, 0.35)} len={[120, 220]} angle={-4} />
+        {/* tissue mottling: soft tonal patches in the wall's own family, so the floor is tissue, not one flat field (check C7) */}
+        {Array.from({length: 11}, (_, i) => {
+          const r = seeded(91 + i);
+          const x = 40 + ((i * 197) % 1000), y = FLOOR_Y + 170 + ((i * 131) % 560), rx = 120 + r() * 110, ry = 50 + r() * 40;
+          return <ellipse key={'m' + i} cx={x} cy={y} rx={rx} ry={ry} fill={i % 2 ? shade(wall, 0.07) : tint(wall, 0.08)} transform={`rotate(${(r() - 0.5) * 14} ${x} ${y})`} />;
+        })}
+        <Folds box={{x0: 0, y0: FLOOR_Y + 140, x1: 1080, y1: 1900}} seed={23} density={0.7} color={shade(wall, 0.35)} len={[120, 220]} angle={-4} />
       </Wall>
       <path d={`M -40 ${FLOOR_Y + 44} Q 300 ${FLOOR_Y - 6} 600 ${FLOOR_Y + 24} Q 860 ${FLOOR_Y + 48} 1120 ${FLOOR_Y + 14}`} stroke={tint(wall, 0.45)} strokeWidth={10} fill="none" />
       {/* a branch opening in the far wall (the slot the intruder comes through) */}

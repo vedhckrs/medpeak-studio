@@ -214,10 +214,12 @@ const handGeom = (kind0: HandKind, free = true, v9 = false) => {
   // and the knee hand wraps its fingers round a knee. In the old look `knee` is the flat `rest` hand.
   const kind: HandKind = kind0 === 'knee' && !v9 ? 'rest' : kind0;
   if (v9 && (kind === 'relaxed' || kind === 'knee')) {
-    const deg = kind === 'relaxed' ? 26 : 62;
+    // the relaxed hand HANGS along the forearm with only a slight curl (the owner, 2026-11-23: at 26 degrees a hanging hand read
+    // as a claw reaching forward, "wrong direction"); the knee hand still wraps round the knee
+    const deg = kind === 'relaxed' ? 8 : 62;
     const pv: P = [15, 6];
     const outline: P[] = [[-3, -4.2], [3, -5.8], [9, -6.8], [15, -6.9], [21, -6.6], [26, -5.2], [28.6, -2.4], [28.6, 1.2], [26.4, 3.8], [20, 5.4], [13, 5.8], [7, 5.6], [3, 5.2], [-3, 4.2]];
-    parts = [closedSmooth(curl(outline, 13, pv, deg)), capsule([5, 4.4], 2.7, kind === 'relaxed' ? [12.8, 8.8] : [11.4, 9.8], 2.2)];
+    parts = [closedSmooth(curl(outline, 13, pv, deg)), capsule([5, 4.4], 2.7, kind === 'relaxed' ? [13.6, 7.0] : [11.4, 9.8], 2.2)];
     lines.push(curlLine([27.6, -3.0], [20.2, -3.3], 13, pv, deg), curlLine([28.4, -0.2], [20.6, -0.2], 13, pv, deg), curlLine([27, 2.6], [20.4, 2.6], 13, pv, deg));
     return {parts, lines, over, holes};
   }
@@ -776,6 +778,9 @@ const layoutOf = (spec: PersonSpec, view: View, pose: PoseIn, mir: boolean, bob?
     let m = 1;
     const thumb = g.ap.thumb ? g.toBody(g.ap.thumb) : null;
     const lp = perp(fdir);
+    // a hand hanging relaxed at the side (the forearm points down): the thumb is ALWAYS on the inner side, toward the body
+    // (the owner, 2026-11-23: "patient hand is opposite side": facing right, the forward thumb landed on the outer side)
+    if (g.ap.hand === 'relaxed' && fdir[1] > 0.8) return Math.sign((-g.w[0]) * lp[0] + 0.0001) || 1;
     if (thumb) {
       const tp = sub(proj(cam, v3add(g.w3, thumb)), g.w);
       const dd = tp[0] * lp[0] + tp[1] * lp[1];
@@ -1809,7 +1814,11 @@ const usePersonReport = (spec: PersonSpec, o: PlaceOpts, look: [number, number] 
   const report = useReport();
   const h = headAt(spec, o);
   report({kind: 'head', box: circleBox(h.x, h.y, h.r)});
-  report({kind: 'face', box: {x0: h.x - 0.55 * h.r, y0: h.y - 0.45 * h.r, x1: h.x + 0.55 * h.r, y1: h.y + 0.6 * h.r}, dir: look ?? [0, 0.05], id: look ? 'look' : 'default-look'});
+  // `look` is in the person's own frame (mirrored when a turned person faces left): the log wants the SCREEN direction
+  // (2026-11-23: Mira, facing left, looked at Dad on screen while the log said she looked away, and the other way round)
+  const mir = (o.facing ?? 'right') === 'left' && (o.view ?? 'front') !== 'front';
+  const dir: [number, number] | undefined = look && (mir ? [-look[0], look[1]] : look);
+  report({kind: 'face', box: {x0: h.x - 0.55 * h.r, y0: h.y - 0.45 * h.r, x1: h.x + 0.55 * h.r, y1: h.y + 0.6 * h.r}, dir: dir ?? [0, 0.05], id: look ? 'look' : 'default-look'});
   const hands = handAt(spec, o);
   const hr = 0.32 * spec.build.R * o.scale;
   for (const id of ['R', 'L'] as const) report({kind: 'hand', id, box: circleBox(hands[id].palm[0], hands[id].palm[1], hr), open: hands[id].hand === 'open'});
@@ -1843,7 +1852,7 @@ export const HeadAt: React.FC<{spec: PersonSpec; x: number; y: number; px: numbe
   const k = px / spec.build.R;
   const Ht = spec.build.heads * 2.15 * spec.build.R;
   return (
-    <FrameMove m={IDENTITY} who={spec.id} body><HeadReport x={x} y={y} px={px} look={look} /><FaceOwned>
+    <FrameMove m={IDENTITY} who={spec.id} body><HeadReport x={x} y={y} px={px} look={look && facing === 'left' && view !== 'front' ? [-look[0], look[1]] : look} /><FaceOwned>
     <svg style={{position: 'absolute', left: x, top: y, overflow: 'visible'}} width={1} height={1}>
       <defs><clipPath id={`hc-${spec.id}-${expr}-${view}`}><rect x={-3 * px} y={-3 * px} width={6 * px} height={3 * px + 1.72 * px} rx={0} /></clipPath></defs>
       <g clipPath={`url(#hc-${spec.id}-${expr}-${view})`}>

@@ -16,6 +16,7 @@ test('every video with a paid end-card clip plays its narrator, with beats in or
     const toon = {...JSON.parse(fs.readFileSync(path.join(ROOT, 'videos', slug, 'toon.json'), 'utf8')), ctaClip: {voice: `toons/${slug}/voice/cta.mp3`, seconds, words: t.words ?? []}};
     const c = ctaOf(toon);
     assert.ok(c?.voice, `${slug}: the end card has no narrator`);
+    if (toon.format >= 6) continue; // format 6 (decision 25, option A): the short card shows its points together and Joey says only the follow line
     const [a, b, d] = c.at.points;
     assert.ok(a < b && b < d && d < c.at.follow && c.at.follow < seconds, `${slug}: the card's beats are out of order: ${[a, b, d, c.at.follow]}`);
     assert.ok(fs.existsSync(path.join(ROOT, 'assets', 'toons-voice', slug, 'cta.mp3')), `${slug}: the clip is not kept in assets/`);

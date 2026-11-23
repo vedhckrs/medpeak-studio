@@ -598,8 +598,19 @@ const JOB: Record<Job, {uniform: string; hat: string; trim: string; prop: Worker
 const WorkerHat: React.FC<{job: Job; c: string}> = ({job, c}) => {
   if (job === 'firefighter') return <g><path d="M -40 -60 Q -36 -96 0 -98 Q 36 -96 40 -60 Z" fill={c} {...EDGE} /><path d="M -52 -58 L 52 -58 Q 54 -50 46 -48 L -46 -48 Q -54 -50 -52 -58 Z" fill={shade(c, 0.1)} {...EDGE} /><path d="M 0 -96 V -62" {...INLINE} /></g>;
   if (job === 'builder') return <g><path d="M -38 -62 Q -36 -98 0 -100 Q 36 -98 38 -62 Z" fill={c} {...EDGE} /><path d="M -46 -62 L 46 -62 L 44 -54 L -44 -54 Z" fill={c} {...EDGE} /><path d="M -10 -98 L -8 -64 M 10 -98 L 8 -64" {...INLINE} /></g>;
-  // a soft cap with a visor (guard, cleaner, courier)
-  return <g><path d="M -36 -60 Q -34 -94 0 -94 Q 34 -94 36 -60 Z" fill={c} {...EDGE} /><path d="M 6 -62 Q 40 -66 54 -56 Q 40 -50 6 -54 Z" fill={shade(c, 0.12)} {...EDGE} />{job === 'guard' && <circle cx={0} cy={-80} r={6} fill="#f2d07a" {...EDGE_IN} />}</g>;
+  // a soft peaked cap seen from the FRONT, like the face (guard, cleaner, courier): a round crown with a centre seam and a top
+  // button, a band, and the peak as a curved crescent across the forehead, just above the eyes (the owner, 2026-11-23: the old
+  // peak stuck out sideways like a fin on a face that looks at us)
+  return (
+    <g>
+      <path d="M -38 -66 Q -38 -104 0 -104 Q 38 -104 38 -66 Z" fill={c} {...EDGE} />
+      <path d="M 0 -102 L 0 -72" {...INLINE} />
+      <path d="M -38 -72 L 38 -72 L 38 -64 L -38 -64 Z" fill={shade(c, 0.18)} {...EDGE_IN} />
+      <path d="M -40 -66 Q 2 -74 44 -66 Q 48 -62 42 -59 Q 2 -64 -38 -59 Q -44 -62 -40 -66 Z" fill={shade(c, 0.28)} {...EDGE} />
+      <circle cx={0} cy={-104} r={5} fill={shade(c, 0.18)} {...EDGE_IN} />
+      {job === 'guard' && <circle cx={0} cy={-86} r={6} fill="#f2d07a" {...EDGE_IN} />}
+    </g>
+  );
 };
 const WorkerProp_: React.FC<{prop: WorkerProp; at: P; rot: number}> = ({prop, at, rot}) => {
   const g = (n: React.ReactNode) => <g transform={`translate(${at[0]} ${at[1]}) rotate(${rot})`}>{n}</g>;

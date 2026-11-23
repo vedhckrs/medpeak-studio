@@ -17,6 +17,7 @@ import {CREATINE_CTA, CREATINE_SHOTS} from './creatine';
 import {QUIT_SUGAR_CTA, QUIT_SUGAR_SHOTS} from './quit-sugar';
 import {FASTING_CTA, FASTING_SHOTS} from './fasting';
 import {SNAKE_BITE_CTA, SNAKE_BITE_SHOTS} from './snake-bite';
+import {QUIT_SMOKING_CTA, QUIT_SMOKING_SHOTS} from './quit-smoking';
 
 export type V8VideoProps = {toon: Toon; timings: ToonTimings | null; sfx: string[]; music: string | null; bare?: boolean; /** a still (the cover): draw this frame, whatever frame is being rendered */ frameAt?: number;
   /** the impact policy (act.tsx): 'v9' for format 6; a video already out may be drawn with 'v9' for a before/after sample */ impacts?: ImpactMode};
@@ -29,12 +30,12 @@ export type ShotNow9 = ShotNow & {pass: number; state: Record<string, number>};
 export type ShotDef9 = ShotDef;
 
 /** The shots of each video, by the video's slug and the shot's id. */
-export const V8_VIDEOS: Record<string, Record<string, ShotDef>> = {rabies: RABIES_SHOTS, 'no-sleep': NO_SLEEP_SHOTS, creatine: CREATINE_SHOTS, 'quit-sugar': QUIT_SUGAR_SHOTS, fasting: FASTING_SHOTS, 'snake-bite': SNAKE_BITE_SHOTS};
+export const V8_VIDEOS: Record<string, Record<string, ShotDef>> = {rabies: RABIES_SHOTS, 'no-sleep': NO_SLEEP_SHOTS, creatine: CREATINE_SHOTS, 'quit-sugar': QUIT_SUGAR_SHOTS, fasting: FASTING_SHOTS, 'snake-bite': SNAKE_BITE_SHOTS, 'quit-smoking': QUIT_SMOKING_SHOTS};
 /** The CTA end card of each video (three strong points). */
 /** v4 (2026-11-20): the narrator (Joey, the same voice in every video) reads the card; `at` holds the second
  * of each beat in his clip (headline, the three points, the follow line), `voice` the clip, `seconds` its length. */
 export type V8Cta = {title: string; points: CtaPoint[]; voice?: string; seconds?: number; at?: CtaAt};
-export const V8_CTA: Record<string, V8Cta> = {rabies: RABIES_CTA, 'no-sleep': NO_SLEEP_CTA, creatine: CREATINE_CTA, 'quit-sugar': QUIT_SUGAR_CTA, fasting: FASTING_CTA, 'snake-bite': SNAKE_BITE_CTA};
+export const V8_CTA: Record<string, V8Cta> = {rabies: RABIES_CTA, 'no-sleep': NO_SLEEP_CTA, creatine: CREATINE_CTA, 'quit-sugar': QUIT_SUGAR_CTA, fasting: FASTING_CTA, 'snake-bite': SNAKE_BITE_CTA, 'quit-smoking': QUIT_SMOKING_CTA};
 /** The narrator starts after the card has slid in; the card holds a moment after his last word. */
 /** The music bed 10% lower than the director's levels (the owner, 2026-11-21: "background music 10% decrease"). */
 export const MUSIC_LEVEL = 0.9;
@@ -291,9 +292,10 @@ export const PlayerScreen: React.FC<{L: Layout; toon: Toon; st: ReturnType<typeo
   return (
     <ScreenSpace>
       {cap && <WordCaption key={cap.id} word={cap.word} t={cap.t} isKey={cap.isKey} y={cap.y} scale={cap.scale} tilt={cap.tilt} />}
-      {/* no watermark on the end card (the owner, 2026-11-21): the last act's mark fades out as the card comes in */}
+      {/* no watermark on the end card (the owner, 2026-11-21): the last act's mark fades out as the card comes in; v9: none on the
+          cover still either (decision 26: `bare` is the cover) */}
       {st.v9
-        ? <WatermarkV9 act={act} t={sec - acts[act]} out={inCta ? sec - ends : undefined} heads={act === 2 ? heads : undefined} light={!inCta && !st.isCard && light} />
+        ? <WatermarkV9 act={act} t={sec - acts[act]} out={inCta ? sec - ends : undefined} heads={act === 2 ? heads : undefined} light={!inCta && !st.isCard && light} cover={bare} />
         : <Watermark act={act} t={sec - acts[act]} out={inCta ? sec - ends : undefined} />}
     </ScreenSpace>
   );
@@ -351,10 +353,15 @@ export const ToonV8: React.FC<V8VideoProps> = ({toon, timings, sfx, music, bare 
   const inCta = !!cta && sec >= ends;
   // the card's beats, in seconds from the card's start (the narrator begins at CTA_LEAD); v9: the short card's own beats
   // (headline and points together, CTA9_AT), Joey says only the follow line
-  const ctaAt: CtaAt | undefined = v9 ? CTA9_AT : cta?.at && {head: CTA_LEAD + cta.at.head, points: cta.at.points.map((p) => CTA_LEAD + p) as [number, number, number], follow: CTA_LEAD + cta.at.follow};
+  // the owner (2026-11-23): "cta": {"read": "card"}: Joey reads the whole card, each point lands on his word (still a hard cut in)
+  const readCard = v9 && (toon as Toon & {cta?: {read?: string}}).cta?.read === 'card';
+  const ctaAt: CtaAt | undefined = v9 && !readCard ? CTA9_AT : cta?.at && {head: CTA_LEAD + cta.at.head, points: cta.at.points.map((p) => CTA_LEAD + p) as [number, number, number], follow: CTA_LEAD + cta.at.follow};
 
   const has = (n: string | undefined): n is string => !!n && sfx.includes(n);
   const events = soundPlan(L);
+  // format 6: the answer block (calmer: SOUND6.calm)
+  const ans = L.lines.filter((l) => l.line.answer);
+  const calm = (L.sound as {calm?: number}).calm ?? 1;
   // extra story sounds of the player: a heartbeat under the serious beat
   const extra = L.lines.filter((l) => (l.line as {serious?: boolean}).serious).map((l) => ({at: l.from, name: 'heartbeat', vol: 0.5}));
 
@@ -412,19 +419,26 @@ export const ToonV8: React.FC<V8VideoProps> = ({toon, timings, sfx, music, bare 
       {/* the caption word and the watermark, laid on the screen after the camera (one word at a time, no box: 2026-11-20) */}
       <PlayerScreen L={L} toon={toon} st={st} sec={sec} bare={bare} heads={heads} />
       {/* v9: the points come up together, so one pop; no whoosh (a hard cut) */}
-      {cta && v9 && <Sequence from={Math.round((ends + CTA9_AT.points[0]) * V8_FPS)} durationInFrames={60 * K}><Audio src={staticFile('toons/sfx/pop.mp3')} volume={0.35} /></Sequence>}
-      {cta && !v9 && [0, 1, 2].map((i) => <Sequence key={'cta' + i} from={Math.round((ends + (ctaAt ? ctaAt.points[i] : 0.45 + i * 0.55)) * V8_FPS)} durationInFrames={60 * K}><Audio src={staticFile('toons/sfx/pop.mp3')} volume={0.35} /></Sequence>)}
+      {cta && v9 && !readCard && <Sequence from={Math.round((ends + CTA9_AT.points[0]) * V8_FPS)} durationInFrames={60 * K}><Audio src={staticFile('toons/sfx/pop.mp3')} volume={0.35} /></Sequence>}
+      {cta && (!v9 || readCard) && [0, 1, 2].map((i) => <Sequence key={'cta' + i} from={Math.round((ends + (ctaAt ? ctaAt.points[i] : 0.45 + i * 0.55)) * V8_FPS)} durationInFrames={60 * K}><Audio src={staticFile('toons/sfx/pop.mp3')} volume={0.35} /></Sequence>)}
       {cta && !v9 && <Sequence from={Math.round((ends + (ctaAt ? ctaAt.follow : 2.3)) * V8_FPS)} durationInFrames={90 * K}><Audio src={staticFile('toons/sfx/success-chime.mp3')} volume={0.3} /></Sequence>}
       {cta?.voice && <Sequence from={Math.round((ends + CTA_LEAD) * V8_FPS)} durationInFrames={Math.round(((cta.seconds ?? 4) + CTA_TAIL) * V8_FPS)}><Audio src={staticFile(cta.voice)} /></Sequence>}
       {cta && !v9 && <Sequence from={Math.round(ends * V8_FPS)} durationInFrames={40 * K}><Audio src={staticFile('toons/sfx/whoosh-air.mp3')} volume={0.4} /></Sequence>}
-      {L.lines.map((l) => l.file && <Sequence key={l.line.id} from={Math.round(l.from * K)} durationInFrames={Math.round((l.frames + 12) * K)}><Audio src={staticFile(l.file)} /></Sequence>)}
+      {L.lines.map((l) => l.file && <Sequence key={l.line.id} from={Math.round(l.from * K)} durationInFrames={Math.round((l.frames + 12) * K)}><Audio src={staticFile(l.file)} volume={v9 && l.line.answer ? calm : 1} /></Sequence>)}
       {events.filter((e) => has(e.name)).map((e, i) => <Sequence key={i} from={Math.round(e.at * K)} durationInFrames={90 * K}><Audio src={staticFile(`toons/sfx/${e.name}.mp3`)} volume={e.vol} /></Sequence>)}
       {extra.filter((e) => has(e.name)).map((e, i) => <Sequence key={'x' + i} from={Math.round(e.at * K)} durationInFrames={240 * K}><Audio src={staticFile(`toons/sfx/${e.name}.mp3`)} volume={e.vol} /></Sequence>)}
       {music && <Audio src={staticFile(`toons/music/${music}.mp3`)} loop volume={(fr) => {
+        // format 6: the bed eases down to the answer's calm level over 0.4 s and back up after it (no step, no click)
+        const answerK = (t: number) => {
+          if (!v9 || !ans.length) return 1;
+          const a0 = ans[0].from, a1 = ans[ans.length - 1].from + ans[ans.length - 1].frames, r = 0.4 * TOON_FPS;
+          const k = Math.min(clamp01((t - a0 + r) / r), clamp01((a1 + r - t) / r));
+          return 1 - (1 - calm) * k * k * (3 - 2 * k);
+        };
         // v4: the bed stays low under the narrator on the end card, then fades out with it
         const t = fr / K;
         // the master level: MUSIC_LEVEL for the videos already out, the format's own (director.ts SOUND6.music) for format 6
-        const lvl = v9 ? L.sound.music : MUSIC_LEVEL;
+        const lvl = (v9 ? L.sound.music : MUSIC_LEVEL) * answerK(t);
         if (!cta || t < L.total - 24) return lvl * bedAt(L, t);
         const end = L.total + ctaSeconds(cta, v9) * TOON_FPS;
         return lvl * Math.max(Math.min(bedAt(L, L.total - 24), L.sound.bedUnderVoice * 1.2), 0) * clamp01((end - t) / 40);

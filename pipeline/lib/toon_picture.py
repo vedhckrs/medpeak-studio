@@ -199,6 +199,15 @@ def main():
                 return s['kind']
         return layout['shots'][-1]['kind'] if layout['shots'] else None
 
+    def id_at(t):
+        # the script's shot id at t: a place that comes back after a time card keeps its id (format 6, decision 20)
+        if not layout:
+            return None
+        for s in layout['shots']:
+            if s['from'] <= t < s['to']:
+                return s.get('id')
+        return layout['shots'][-1].get('id') if layout['shots'] else None
+
     # ------------------------------------------------ the 30 fps pass
     pic = np.ones((H, W), bool); pic[:3] = pic[-3:] = False; pic[:, :3] = pic[:, -3:] = False
     if band:
@@ -247,12 +256,19 @@ def main():
         if b_ - a_ < 1:
             continue
         mid = (a_ + b_) / 2 / 30
-        segs.append({'from': round(a_ / 30, 2), 'to': round(b_ / 30, 2), 'len': round((b_ - a_) / 30, 2), 'card': bool(dark[a_:b_].mean() > 0.8), 'kind': kind_at(mid)})
+        segs.append({'from': round(a_ / 30, 2), 'to': round(b_ / 30, 2), 'len': round((b_ - a_) / 30, 2), 'card': bool(dark[a_:b_].mean() > 0.8), 'kind': kind_at(mid), 'id': id_at(mid)})
     real = [k for k in kinds if k != 'card']
     holds = [s['len'] for s in segs if not s['card']]
     reframes = [(round(cutf[j] / 30, 2), k) for j, k in enumerate(kinds) if k.startswith('reframe')]
     reversed_ = [r for j, r in enumerate(reframes) if j and r[0] - reframes[j - 1][0] < 4 and r[1] != reframes[j - 1][1]]
-    body_short = [s for s in segs if s['kind'] == 'body' and not s['card'] and s['len'] < 8]
+    # a body place is held 8 s+ (decision 16); a time card does not change the place (decision 20): the runs of one shot id
+    # on either side of a card count together (the script gate S8 counts the same way). Without a layout: each run alone.
+    held = {}
+    for s_ in segs:
+        if s_['kind'] == 'body' and not s_['card']:
+            k_ = s_['id'] if s_['id'] is not None else ('run', s_['from'])
+            held[k_] = held.get(k_, 0) + s_['len']
+    body_short = [k_ for k_, v in held.items() if v < 8]
     C1 = {'cuts': len(real), 'cuts_per_min': round(len(real) / secs * 60, 2), 'hold_median': round(float(np.median(holds)), 2) if holds else None,
           'hold_max': round(float(max(holds)), 2) if holds else None, 'reframes': len(reframes), 'reframes_reversed': len(reversed_),
           'body_holds_under_8s': len(body_short), 'cut_times': [round(c / 30, 2) for c in cutf], 'cut_kinds': kinds, 'segments': segs}
@@ -302,7 +318,10 @@ def main():
     # C3 flash and shake
     flashes = []
     for i in range(3, n):
-        if bright[i] - bright[i - 3] >= 8 and float(((G[i].astype(np.float32) - G[i - 3].astype(np.float32)) > 8)[pic].mean()) > 0.6 and not dark[i - 3]:
+        # a flash brightens the frame and comes back down within 0.4 s; a hard cut to a brighter place stays bright (not a flash)
+        rise = bright[i] - bright[i - 3]
+        back = rise >= 8 and float(bright[i + 1:min(n, i + 13)].min(initial=bright[i])) <= bright[i] - 0.5 * rise
+        if rise >= 8 and back and float(((G[i].astype(np.float32) - G[i - 3].astype(np.float32)) > 8)[pic].mean()) > 0.6 and not dark[i - 3]:
             on_cut = bool(cut[max(0, i - 3):i + 1].any())
             if not flashes or i / 30 - flashes[-1]['t'] > 0.5:
                 flashes.append({'t': round(i / 30, 2), 'on_cut': on_cut})
@@ -353,6 +372,13 @@ def main():
     same = []
     for s in cards:
         a_, b_ = int(round(s['from'] * 30)) - 1, int(round(s['to'] * 30))
+        # the framing that comes back is the card's `same` shot: the shot after the card carries its id; compare with the last
+        # frame of that shot's earlier run (it need not be the shot right before the card: script gate S12)
+        if layout and b_ < n:
+            back_id = id_at(b_ / 30 + 0.05)
+            earlier = [x for x in segs if not x['card'] and x['id'] == back_id and x['to'] <= s['from'] + 0.01]
+            if earlier:
+                a_ = int(round(earlier[-1]['to'] * 30)) - 1
         if a_ < 0 or b_ >= n:
             same.append(None); continue
         ea = ndimage.sobel(G[a_].astype(np.float32)); eb = ndimage.sobel(G[b_].astype(np.float32))

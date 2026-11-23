@@ -1,0 +1,947 @@
+{
+  "lines": {
+    "B1": {
+      "who": "lungs",
+      "text": "He quit smoking? Crew, wake up!",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "pitch": 1,
+      "tempo": 1.1,
+      "file": "toons/quit-smoking/voice/B1.mp3",
+      "duration": 2.458,
+      "words": [
+        {
+          "w": "He",
+          "start": 0,
+          "end": 0.126
+        },
+        {
+          "w": "quit",
+          "start": 0.169,
+          "end": 0.317
+        },
+        {
+          "w": "smoking?",
+          "start": 0.348,
+          "end": 0.824
+        },
+        {
+          "w": "Crew,",
+          "start": 1.731,
+          "end": 1.995
+        },
+        {
+          "w": "wake",
+          "start": 2.017,
+          "end": 2.164
+        },
+        {
+          "w": "up!",
+          "start": 2.195,
+          "end": 2.407
+        }
+      ]
+    },
+    "B2": {
+      "who": "crew",
+      "text": "Ugh. We've been asleep under this tar for years.",
+      "voiceId": "SOYHLrjzK2X1ezoPC6cr",
+      "pitch": 2,
+      "tempo": 1.05,
+      "file": "toons/quit-smoking/voice/B2.mp3",
+      "duration": 2.614,
+      "words": [
+        {
+          "w": "Ugh.",
+          "start": 0,
+          "end": 0.365
+        },
+        {
+          "w": "We've",
+          "start": 0.508,
+          "end": 0.686
+        },
+        {
+          "w": "been",
+          "start": 0.708,
+          "end": 0.829
+        },
+        {
+          "w": "asleep",
+          "start": 0.851,
+          "end": 1.128
+        },
+        {
+          "w": "under",
+          "start": 1.172,
+          "end": 1.326
+        },
+        {
+          "w": "this",
+          "start": 1.371,
+          "end": 1.493
+        },
+        {
+          "w": "tar",
+          "start": 1.537,
+          "end": 1.736
+        },
+        {
+          "w": "for",
+          "start": 1.792,
+          "end": 1.89
+        },
+        {
+          "w": "years.",
+          "start": 1.946,
+          "end": 2.566
+        }
+      ]
+    },
+    "B3": {
+      "who": "lungs",
+      "text": "No more naps, crew. Get up and get sweeping!",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "pitch": 1,
+      "tempo": 1,
+      "file": "toons/quit-smoking/voice/B3.mp3",
+      "duration": 2.362,
+      "words": [
+        {
+          "w": "No",
+          "start": 0,
+          "end": 0.128
+        },
+        {
+          "w": "more",
+          "start": 0.186,
+          "end": 0.325
+        },
+        {
+          "w": "naps,",
+          "start": 0.36,
+          "end": 0.604
+        },
+        {
+          "w": "crew.",
+          "start": 0.627,
+          "end": 0.906
+        },
+        {
+          "w": "Get",
+          "start": 1.091,
+          "end": 1.219
+        },
+        {
+          "w": "up",
+          "start": 1.265,
+          "end": 1.358
+        },
+        {
+          "w": "and",
+          "start": 1.393,
+          "end": 1.463
+        },
+        {
+          "w": "get",
+          "start": 1.498,
+          "end": 1.613
+        },
+        {
+          "w": "sweeping!",
+          "start": 1.649,
+          "end": 2.322
+        }
+      ]
+    },
+    "B4": {
+      "who": "crew",
+      "text": "Brooms up, team! Let's clean this place!",
+      "voiceId": "SOYHLrjzK2X1ezoPC6cr",
+      "pitch": 2,
+      "tempo": 1.1,
+      "file": "toons/quit-smoking/voice/B4.mp3",
+      "duration": 2.164,
+      "words": [
+        {
+          "w": "Brooms",
+          "start": 0,
+          "end": 0.296
+        },
+        {
+          "w": "up,",
+          "start": 0.338,
+          "end": 0.464
+        },
+        {
+          "w": "team!",
+          "start": 0.485,
+          "end": 0.802
+        },
+        {
+          "w": "Let's",
+          "start": 0.929,
+          "end": 1.108
+        },
+        {
+          "w": "clean",
+          "start": 1.15,
+          "end": 1.34
+        },
+        {
+          "w": "this",
+          "start": 1.372,
+          "end": 1.488
+        },
+        {
+          "w": "place!",
+          "start": 1.541,
+          "end": 2.111
+        }
+      ]
+    },
+    "C1": {
+      "who": "co",
+      "text": "Relax, oxygen, these red seats are all ours.",
+      "voiceId": "zauh4pbY6h1ZRErsRiAJ",
+      "pitch": 0,
+      "tempo": 1.1,
+      "file": "toons/quit-smoking/voice/C1.mp3",
+      "duration": 3.144,
+      "words": [
+        {
+          "w": "Relax,",
+          "start": 0,
+          "end": 0.654
+        },
+        {
+          "w": "oxygen,",
+          "start": 0.696,
+          "end": 1.235
+        },
+        {
+          "w": "these",
+          "start": 1.266,
+          "end": 1.477
+        },
+        {
+          "w": "red",
+          "start": 1.529,
+          "end": 1.689
+        },
+        {
+          "w": "seats",
+          "start": 1.731,
+          "end": 1.953
+        },
+        {
+          "w": "are",
+          "start": 1.984,
+          "end": 2.1
+        },
+        {
+          "w": "all",
+          "start": 2.143,
+          "end": 2.322
+        },
+        {
+          "w": "ours.",
+          "start": 2.386,
+          "end": 3.082
+        }
+      ]
+    },
+    "C2": {
+      "who": "co",
+      "text": "He'll light up again. They always do.",
+      "voiceId": "zauh4pbY6h1ZRErsRiAJ",
+      "pitch": 0,
+      "tempo": 1.1,
+      "file": "toons/quit-smoking/voice/C2.mp3",
+      "duration": 2.585,
+      "words": [
+        {
+          "w": "He'll",
+          "start": 0,
+          "end": 0.243
+        },
+        {
+          "w": "light",
+          "start": 0.296,
+          "end": 0.506
+        },
+        {
+          "w": "up",
+          "start": 0.549,
+          "end": 0.644
+        },
+        {
+          "w": "again.",
+          "start": 0.708,
+          "end": 1.245
+        },
+        {
+          "w": "They",
+          "start": 1.383,
+          "end": 1.562
+        },
+        {
+          "w": "always",
+          "start": 1.605,
+          "end": 1.92
+        },
+        {
+          "w": "do.",
+          "start": 1.995,
+          "end": 2.533
+        }
+      ]
+    },
+    "C3": {
+      "who": "co",
+      "text": "Hey! A bunch of us just got kicked out!",
+      "voiceId": "zauh4pbY6h1ZRErsRiAJ",
+      "pitch": 0,
+      "tempo": 1.1,
+      "file": "toons/quit-smoking/voice/C3.mp3",
+      "duration": 2.671,
+      "words": [
+        {
+          "w": "Hey!",
+          "start": 0,
+          "end": 0.497
+        },
+        {
+          "w": "A",
+          "start": 0.549,
+          "end": 0.612
+        },
+        {
+          "w": "bunch",
+          "start": 0.675,
+          "end": 0.929
+        },
+        {
+          "w": "of",
+          "start": 0.971,
+          "end": 1.023
+        },
+        {
+          "w": "us",
+          "start": 1.087,
+          "end": 1.16
+        },
+        {
+          "w": "just",
+          "start": 1.214,
+          "end": 1.372
+        },
+        {
+          "w": "got",
+          "start": 1.414,
+          "end": 1.593
+        },
+        {
+          "w": "kicked",
+          "start": 1.636,
+          "end": 1.9
+        },
+        {
+          "w": "out!",
+          "start": 1.995,
+          "end": 2.617
+        }
+      ]
+    },
+    "C4": {
+      "who": "co",
+      "text": "Ugh. And fresh oxygen is grabbing our seats!",
+      "voiceId": "zauh4pbY6h1ZRErsRiAJ",
+      "pitch": 0,
+      "tempo": 1.1,
+      "file": "toons/quit-smoking/voice/C4.mp3",
+      "duration": 2.883,
+      "words": [
+        {
+          "w": "Ugh.",
+          "start": 0,
+          "end": 0.275
+        },
+        {
+          "w": "And",
+          "start": 0.379,
+          "end": 0.517
+        },
+        {
+          "w": "fresh",
+          "start": 0.581,
+          "end": 0.802
+        },
+        {
+          "w": "oxygen",
+          "start": 0.897,
+          "end": 1.414
+        },
+        {
+          "w": "is",
+          "start": 1.467,
+          "end": 1.541
+        },
+        {
+          "w": "grabbing",
+          "start": 1.593,
+          "end": 1.962
+        },
+        {
+          "w": "our",
+          "start": 2.017,
+          "end": 2.122
+        },
+        {
+          "w": "seats!",
+          "start": 2.216,
+          "end": 2.828
+        }
+      ]
+    },
+    "D1": {
+      "who": "lungs",
+      "text": "Whoa. Breathing feels easier!",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "pitch": 1,
+      "tempo": 1.1,
+      "file": "toons/quit-smoking/voice/D1.mp3",
+      "duration": 1.566,
+      "words": [
+        {
+          "w": "Whoa.",
+          "start": 0,
+          "end": 0.284
+        },
+        {
+          "w": "Breathing",
+          "start": 0.379,
+          "end": 0.665
+        },
+        {
+          "w": "feels",
+          "start": 0.708,
+          "end": 0.876
+        },
+        {
+          "w": "easier!",
+          "start": 0.918,
+          "end": 1.52
+        }
+      ]
+    },
+    "D2": {
+      "who": "crew",
+      "text": "Airways are open! Sweep it all up and out!",
+      "voiceId": "SOYHLrjzK2X1ezoPC6cr",
+      "pitch": 2,
+      "tempo": 1,
+      "file": "toons/quit-smoking/voice/D2.mp3",
+      "duration": 2.407,
+      "words": [
+        {
+          "w": "Airways",
+          "start": 0,
+          "end": 0.383
+        },
+        {
+          "w": "are",
+          "start": 0.417,
+          "end": 0.534
+        },
+        {
+          "w": "open!",
+          "start": 0.569,
+          "end": 0.917
+        },
+        {
+          "w": "Sweep",
+          "start": 1.057,
+          "end": 1.312
+        },
+        {
+          "w": "it",
+          "start": 1.358,
+          "end": 1.416
+        },
+        {
+          "w": "all",
+          "start": 1.463,
+          "end": 1.59
+        },
+        {
+          "w": "up",
+          "start": 1.649,
+          "end": 1.741
+        },
+        {
+          "w": "and",
+          "start": 1.788,
+          "end": 1.858
+        },
+        {
+          "w": "out!",
+          "start": 1.904,
+          "end": 2.368
+        }
+      ]
+    },
+    "D4": {
+      "who": "lungs",
+      "text": "Hey, careful down there, that really tickles!",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "pitch": 1,
+      "tempo": 1.1,
+      "file": "toons/quit-smoking/voice/D4.mp3",
+      "duration": 2.161,
+      "words": [
+        {
+          "w": "Hey,",
+          "start": 0,
+          "end": 0.306
+        },
+        {
+          "w": "careful",
+          "start": 0.359,
+          "end": 0.623
+        },
+        {
+          "w": "down",
+          "start": 0.654,
+          "end": 0.77
+        },
+        {
+          "w": "there,",
+          "start": 0.791,
+          "end": 1.023
+        },
+        {
+          "w": "that",
+          "start": 1.066,
+          "end": 1.193
+        },
+        {
+          "w": "really",
+          "start": 1.224,
+          "end": 1.404
+        },
+        {
+          "w": "tickles!",
+          "start": 1.446,
+          "end": 2.111
+        }
+      ]
+    },
+    "D3": {
+      "who": "lungs",
+      "text": "Then why am I coughing more?",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "pitch": 1,
+      "tempo": 0.95,
+      "file": "toons/quit-smoking/voice/D3.mp3",
+      "duration": 1.542,
+      "words": [
+        {
+          "w": "Then",
+          "start": 0,
+          "end": 0.196
+        },
+        {
+          "w": "why",
+          "start": 0.233,
+          "end": 0.355
+        },
+        {
+          "w": "am",
+          "start": 0.392,
+          "end": 0.477
+        },
+        {
+          "w": "I",
+          "start": 0.525,
+          "end": 0.549
+        },
+        {
+          "w": "coughing",
+          "start": 0.599,
+          "end": 0.904
+        },
+        {
+          "w": "more?",
+          "start": 0.954,
+          "end": 1.516
+        }
+      ]
+    },
+    "E1": {
+      "who": "dad",
+      "text": "Doc, I quit smoking.",
+      "voiceId": "nPczCjzI2devNBz1zQrb",
+      "pitch": 0,
+      "tempo": 1.15,
+      "file": "toons/quit-smoking/voice/E1.mp3",
+      "duration": 1.353,
+      "words": [
+        {
+          "w": "Doc,",
+          "start": 0,
+          "end": 0.313
+        },
+        {
+          "w": "I",
+          "start": 0.343,
+          "end": 0.374
+        },
+        {
+          "w": "quit",
+          "start": 0.475,
+          "end": 0.626
+        },
+        {
+          "w": "smoking.",
+          "start": 0.666,
+          "end": 1.292
+        }
+      ]
+    },
+    "E2": {
+      "who": "dad",
+      "text": "Why am I coughing more?",
+      "voiceId": "nPczCjzI2devNBz1zQrb",
+      "pitch": 0,
+      "tempo": 1.15,
+      "file": "toons/quit-smoking/voice/E2.mp3",
+      "duration": 1.39,
+      "words": [
+        {
+          "w": "Why",
+          "start": 0,
+          "end": 0.192
+        },
+        {
+          "w": "am",
+          "start": 0.232,
+          "end": 0.313
+        },
+        {
+          "w": "I",
+          "start": 0.363,
+          "end": 0.383
+        },
+        {
+          "w": "coughing",
+          "start": 0.464,
+          "end": 0.828
+        },
+        {
+          "w": "more?",
+          "start": 0.878,
+          "end": 1.333
+        }
+      ]
+    },
+    "E3": {
+      "who": "doctor",
+      "text": "That cough is a good sign after you quit smoking. Your lungs are clearing out mucus and toxins.",
+      "voiceId": "XrExE9yKIg1WjnnlVkGX",
+      "pitch": 0,
+      "tempo": 0.88,
+      "file": "toons/quit-smoking/voice/E3.mp3",
+      "duration": 6.154,
+      "words": [
+        {
+          "w": "That",
+          "start": 0,
+          "end": 0.264
+        },
+        {
+          "w": "cough",
+          "start": 0.344,
+          "end": 0.646
+        },
+        {
+          "w": "is",
+          "start": 0.699,
+          "end": 0.778
+        },
+        {
+          "w": "a",
+          "start": 0.83,
+          "end": 0.858
+        },
+        {
+          "w": "good",
+          "start": 0.924,
+          "end": 1.108
+        },
+        {
+          "w": "sign",
+          "start": 1.174,
+          "end": 1.504
+        },
+        {
+          "w": "after",
+          "start": 1.543,
+          "end": 1.768
+        },
+        {
+          "w": "you",
+          "start": 1.82,
+          "end": 1.9
+        },
+        {
+          "w": "quit",
+          "start": 1.966,
+          "end": 2.177
+        },
+        {
+          "w": "smoking.",
+          "start": 2.243,
+          "end": 2.968
+        },
+        {
+          "w": "Your",
+          "start": 3.497,
+          "end": 3.681
+        },
+        {
+          "w": "lungs",
+          "start": 3.734,
+          "end": 4.01
+        },
+        {
+          "w": "are",
+          "start": 4.038,
+          "end": 4.17
+        },
+        {
+          "w": "clearing",
+          "start": 4.21,
+          "end": 4.551
+        },
+        {
+          "w": "out",
+          "start": 4.591,
+          "end": 4.711
+        },
+        {
+          "w": "mucus",
+          "start": 4.763,
+          "end": 5.132
+        },
+        {
+          "w": "and",
+          "start": 5.172,
+          "end": 5.251
+        },
+        {
+          "w": "toxins.",
+          "start": 5.304,
+          "end": 6.122
+        }
+      ]
+    },
+    "E5": {
+      "who": "doctor",
+      "text": "Get support to quit. It really helps you quit for good.",
+      "voiceId": "XrExE9yKIg1WjnnlVkGX",
+      "pitch": 0,
+      "tempo": 0.88,
+      "file": "toons/quit-smoking/voice/E5.mp3",
+      "duration": 3.471,
+      "words": [
+        {
+          "w": "Get",
+          "start": 0,
+          "end": 0.252
+        },
+        {
+          "w": "support",
+          "start": 0.304,
+          "end": 0.699
+        },
+        {
+          "w": "to",
+          "start": 0.726,
+          "end": 0.792
+        },
+        {
+          "w": "quit.",
+          "start": 0.87,
+          "end": 1.306
+        },
+        {
+          "w": "It",
+          "start": 1.451,
+          "end": 1.583
+        },
+        {
+          "w": "really",
+          "start": 1.636,
+          "end": 1.9
+        },
+        {
+          "w": "helps",
+          "start": 1.952,
+          "end": 2.19
+        },
+        {
+          "w": "you",
+          "start": 2.216,
+          "end": 2.295
+        },
+        {
+          "w": "quit",
+          "start": 2.361,
+          "end": 2.559
+        },
+        {
+          "w": "for",
+          "start": 2.612,
+          "end": 2.718
+        },
+        {
+          "w": "good.",
+          "start": 2.771,
+          "end": 3.43
+        }
+      ]
+    },
+    "E6": {
+      "who": "doctor",
+      "text": "See a doctor if a cough lasts over three weeks, or brings up blood.",
+      "voiceId": "XrExE9yKIg1WjnnlVkGX",
+      "pitch": 0,
+      "tempo": 0.88,
+      "file": "toons/quit-smoking/voice/E6.mp3",
+      "duration": 4.893,
+      "words": [
+        {
+          "w": "See",
+          "start": 0,
+          "end": 0.252
+        },
+        {
+          "w": "a",
+          "start": 0.289,
+          "end": 0.317
+        },
+        {
+          "w": "doctor",
+          "start": 0.383,
+          "end": 0.83
+        },
+        {
+          "w": "if",
+          "start": 1.016,
+          "end": 1.162
+        },
+        {
+          "w": "a",
+          "start": 1.227,
+          "end": 1.254
+        },
+        {
+          "w": "cough",
+          "start": 1.319,
+          "end": 1.623
+        },
+        {
+          "w": "lasts",
+          "start": 1.689,
+          "end": 1.992
+        },
+        {
+          "w": "over",
+          "start": 2.045,
+          "end": 2.23
+        },
+        {
+          "w": "three",
+          "start": 2.295,
+          "end": 2.533
+        },
+        {
+          "w": "weeks,",
+          "start": 2.573,
+          "end": 3.088
+        },
+        {
+          "w": "or",
+          "start": 3.377,
+          "end": 3.509
+        },
+        {
+          "w": "brings",
+          "start": 3.562,
+          "end": 3.826
+        },
+        {
+          "w": "up",
+          "start": 3.878,
+          "end": 3.985
+        },
+        {
+          "w": "blood.",
+          "start": 4.05,
+          "end": 4.855
+        }
+      ]
+    },
+    "E7": {
+      "who": "dad",
+      "text": "Hear that, crew? I quit smoking for good!",
+      "voiceId": "nPczCjzI2devNBz1zQrb",
+      "pitch": 0,
+      "tempo": 1,
+      "file": "toons/quit-smoking/voice/E7.mp3",
+      "duration": 2.326,
+      "words": [
+        {
+          "w": "Hear",
+          "start": 0,
+          "end": 0.221
+        },
+        {
+          "w": "that,",
+          "start": 0.279,
+          "end": 0.43
+        },
+        {
+          "w": "crew?",
+          "start": 0.463,
+          "end": 0.731
+        },
+        {
+          "w": "I",
+          "start": 0.779,
+          "end": 0.825
+        },
+        {
+          "w": "quit",
+          "start": 0.94,
+          "end": 1.115
+        },
+        {
+          "w": "smoking",
+          "start": 1.173,
+          "end": 1.521
+        },
+        {
+          "w": "for",
+          "start": 1.567,
+          "end": 1.672
+        },
+        {
+          "w": "good!",
+          "start": 1.707,
+          "end": 2.276
+        }
+      ]
+    }
+  }
+}
