@@ -98,11 +98,14 @@ const main = async () => {
   const only = a.only ? new Set(String(a.only).split(',')) : null;
   const lines = toon.shots.flatMap((s) => s.lines);
   for (const l of lines) if (!cast.cast[l.who]) throw new Error(`Line ${l.id}: no voice cast for "${l.who}" in toons-cast.json`);
+  // a video's own pitch for a character (toon.json "pitch": {"lungs": -2}, semitones; free in --remix): keeps two voices of one
+  // scene 3+ semitones apart (check A4) without changing the character in other videos
+  const pitchOf = (who) => toon.pitch?.[who] ?? cast.cast[who].pitch;
   const todo = lines.filter((l) => {
     if (only) return only.has(l.id);
     const t = timings.lines[l.id];
     const c = cast.cast[l.who];
-    return !(t && t.text === l.text && t.voiceId === c.voiceId && t.pitch === c.pitch && fs.existsSync(path.join(outDir, `${l.id}.mp3`)));
+    return !(t && t.text === l.text && t.voiceId === c.voiceId && t.pitch === pitchOf(l.who) && fs.existsSync(path.join(outDir, `${l.id}.mp3`)));
   });
   if (a.remix) { // free: pitch and level every line again from the raw downloads
     for (const l of lines) {
@@ -111,8 +114,8 @@ const main = async () => {
       const file = path.join(outDir, `${l.id}.mp3`);
       const was = timings.lines[l.id].tempo ?? 1;
       const now = Math.max(0.85, Math.min(1.15, l.tempo ?? 1)); // a line's own pace (toon.json: "tempo"), free to change
-      voiceFx(raw, file, cast.cast[l.who].pitch, now, l.cut ?? null); // "cut": keep only this many seconds (a stray sound after the last word)
-      Object.assign(timings.lines[l.id], {pitch: cast.cast[l.who].pitch, tempo: now, duration: +(seconds(file) + 0.05).toFixed(3), words: timings.lines[l.id].words.map((w) => ({...w, start: +((w.start * was) / now).toFixed(3), end: +((w.end * was) / now).toFixed(3)}))});
+      voiceFx(raw, file, pitchOf(l.who), now, l.cut ?? null); // "cut": keep only this many seconds (a stray sound after the last word)
+      Object.assign(timings.lines[l.id], {pitch: pitchOf(l.who), tempo: now, duration: +(seconds(file) + 0.05).toFixed(3), words: timings.lines[l.id].words.map((w) => ({...w, start: +((w.start * was) / now).toFixed(3), end: +((w.end * was) / now).toFixed(3)}))});
     }
     writeJson(tPath, timings);
     console.log('Lines mixed again (free).');
@@ -123,7 +126,7 @@ const main = async () => {
   console.log(`Lines to voice: ${todo.length} of ${lines.length}`);
   const by = {};
   for (const l of todo) by[l.who] = (by[l.who] ?? 0) + l.text.length;
-  for (const [who, n] of Object.entries(by)) console.log(`  ${who.padEnd(10)} ${cast.cast[who].voice.padEnd(8)} pitch ${String(cast.cast[who].pitch).padStart(2)}  ${n} characters`);
+  for (const [who, n] of Object.entries(by)) console.log(`  ${who.padEnd(10)} ${cast.cast[who].voice.padEnd(8)} pitch ${String(pitchOf(who)).padStart(2)}  ${n} characters`);
   console.log(`Characters: ${chars}  ->  about ${chars} credits on ${cast.model}`);
   printPool(bal);
   if (a['dry-run'] || !todo.length) return;
@@ -137,8 +140,8 @@ const main = async () => {
     const words = await speakLine(cast, l.who, l.text, l.emotion, raw, speedOf(cast, l.who, {format: toon.format ?? 0, line: l.speed}));
     const file = path.join(outDir, `${l.id}.mp3`);
     const tempo = Math.max(0.85, Math.min(1.15, l.tempo ?? 1));
-    voiceFx(raw, file, c.pitch, tempo, l.cut ?? null);
-    timings.lines[l.id] = {who: l.who, text: l.text, voiceId: c.voiceId, pitch: c.pitch, tempo, file: `toons/${slug}/voice/${l.id}.mp3`, duration: +(seconds(file) + 0.05).toFixed(3), words: words.map((w) => ({...w, start: +(w.start / tempo).toFixed(3), end: +(w.end / tempo).toFixed(3)}))};
+    voiceFx(raw, file, pitchOf(l.who), tempo, l.cut ?? null);
+    timings.lines[l.id] = {who: l.who, text: l.text, voiceId: c.voiceId, pitch: pitchOf(l.who), tempo, file: `toons/${slug}/voice/${l.id}.mp3`, duration: +(seconds(file) + 0.05).toFixed(3), words: words.map((w) => ({...w, start: +(w.start / tempo).toFixed(3), end: +(w.end / tempo).toFixed(3)}))};
     writeJson(tPath, timings);
     console.log(`voiced ${l.id}  ${l.who}  ${timings.lines[l.id].duration}s`);
   }

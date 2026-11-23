@@ -115,7 +115,9 @@ shots = [
 
 toon = {
   "slug": "quit-smoking", "title": "What Happens When You Quit Smoking", "format": 6, "shape": "visit",
-  "music": "quit-smoking", "musicTrim": -3, "camera": "steady", "episode": 15, "caption": 2,
+  "music": "quit-smoking", "musicTrim": -3,
+  # check A4 (the pitch reader, 2026-11-23): Lungs 227 Hz and Sweep 253 Hz were 1.9 semitones apart in the chest: Lungs lower
+  "pitch": {"lungs": -2, "crew": 1}, "camera": "steady", "episode": 15, "caption": 2,
   "intruder": "cigarette", "term": "smoking",
   "musicPrompt": "Playful funk instrumental, slap bass, tight light percussion, bright clavinet stabs, 148 BPM, no lead melody in the voice range, short rests between phrases; a wheezy harmonica that turns bright and breezy as the lungs heal; from 33 seconds a brighter, confident second half for the doctor's answer; no vocals, ends on a clean button.",
   "hooks": [

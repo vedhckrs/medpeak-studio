@@ -117,6 +117,8 @@ const main = async () => {
     try {
       execFileSync(process.execPath, ['--import', 'tsx', path.join(ROOT, 'pipeline', 'toon-score.mjs'), slug, '--file', final], {stdio: 'inherit', cwd: ROOT});
       console.log('SCORE: ALL PASS (renders/scoreboard.jpg)');
+      // the owner's catches were in faces and hands: every face and hand of every line at full size, for the look before he sees it
+      try { execFileSync(process.platform === 'win32' ? 'python' : 'python3', [path.join(ROOT, 'pipeline', 'tools', 'toon-closeups.py'), slug], {stdio: 'inherit'}); } catch { console.log('close-ups not made (python3 pipeline/tools/toon-closeups.py ' + slug + ')'); }
     } catch (e) { console.log(e.status ? '\x1b[31mSCORE: rows FAIL (above): NOT FOR THE OWNER yet. See renders/scoreboard.jpg\x1b[0m' : `score not run: ${e.message} (node --import tsx pipeline/toon-score.mjs ${slug})`); }
   }
 };

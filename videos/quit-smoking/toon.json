@@ -5,6 +5,10 @@
  "shape": "visit",
  "music": "quit-smoking",
  "musicTrim": -3,
+ "pitch": {
+  "lungs": -2,
+  "crew": 1
+ },
  "camera": "steady",
  "episode": 15,
  "caption": 2,

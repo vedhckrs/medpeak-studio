@@ -77,6 +77,7 @@ export const checkSound = (toon, timings, {sfxDir = path.join(ROOT, 'assets', 't
   if (bed) add('No hole in a pause', !bed.holes.length, bed.holes.length ? `the music rests with no voice over it at ${bed.holes.map(([a, b]) => `${a.toFixed(1)}-${b.toFixed(1)} s`).join(', ')} (${BED.gap} s or more is heard as the sound cutting out): use another bed` : `the bed starts ${bed.start.toFixed(2)} s into its track: every rest falls under a voice`);
 
   // ---- measured layers (only when the voices are on this machine)
+  let pauseUnder = null; // format 6: the bed at its pause level, dB under the voice (the scoreboard reads it)
   const voices = L.lines.filter((l) => l.file && fs.existsSync(path.join(publicDir, l.file))).map((l) => ({file: path.join(publicDir, l.file), at: l.from / TOON_FPS, vol: 1}));
   const measured = voices.length === L.lines.length && !missing.length;
   let levels = null;
@@ -101,9 +102,10 @@ export const checkSound = (toon, timings, {sfxDir = path.join(ROOT, 'assets', 't
       const p = lufs(['-stream_loop', '-1', '-t', seconds.toFixed(2), '-i', bedFile, '-af', `volume=${(L.sound.bed * L.sound.music).toFixed(3)},ebur128=peak=true`]);
       if (p.I !== null) {
         const under = v.I - p.I;
+        pauseUnder = under;
         add('Music in the pauses', under >= RULES6.pauseUnderVoice[0] && under <= RULES6.pauseUnderVoice[1], `music in the pauses ${p.I.toFixed(1)} LUFS: ${under.toFixed(1)} dB under the voice (${RULES6.pauseUnderVoice.join('-')}; a loud track needs a per-video trim)`);
       }
     }
   }
-  return {ok: res.every((r) => r.pass), seconds, plan, results: res, measured, levels, bedStart: bed?.start ?? 0};
+  return {ok: res.every((r) => r.pass), seconds, plan, results: res, measured, levels, bedStart: bed?.start ?? 0, pauseUnder};
 };

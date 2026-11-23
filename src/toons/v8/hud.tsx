@@ -574,10 +574,14 @@ export const CTA9_AT: CtaAt = {head: 0, points: [0.15, 0.3, 0.45], follow: 0.6};
 export const CtaCardV9: React.FC<{t: number; title: string; points: CtaPoint[]; at?: CtaAt; follow?: string}> = ({t, title, points, at = CTA9_AT, follow = FOLLOW_LINE}) => {
   const ap = (t0: number) => settleIn(t - t0, 0.2);
   const headFs = Math.min(84, Math.floor(960 / (title.length * 0.64)));
-  const bigFs = Math.min(62, Math.floor(600 / (Math.max(...points.map((p) => p.big.length)) * 0.7)));
-  // the stack: logo 220 + name 60 + headline 100 + 3 cards (220 + 24) + follow 110 = 1222 tall, centred in 200..1500
-  const top = 200 + (1300 - 1222) / 2;
-  const yLogo = top, yName = top + 232, yHead = top + 304, yCards = top + 418, yFollow = yCards + 3 * 244 + 6;
+  // the text area of a card (1080 - 2 x 40 margin - 30 + 20 padding - 150 icon - 28 gap) and Poppins Black caps at about
+  // 0.66 em a letter: each point's bold line stays ONE line (2026-11-21) at the largest size that fits (it was 35 px)
+  const bigFs = Math.min(64, Math.floor(770 / (Math.max(...points.map((p) => p.big.length)) * 0.66)));
+  // the stack fills the safe area (the owner: "the end card looks empty at the bottom"): logo 220 + name 60 + headline 100
+  // + 3 cards (250 + 26) + follow 110 = 1318 tall, centred in 180..1560 (the Shorts title band starts below it)
+  const CARD = 250, STEP = 276;
+  const top = 180 + (1380 - 1318) / 2;
+  const yLogo = top, yName = top + 232, yHead = top + 304, yCards = top + 418, yFollow = yCards + 3 * STEP + 6;
   return (
     <div style={{position: 'absolute', inset: 0, background: BRAND_BLUE, overflow: 'hidden', fontFamily: FONT}}>
       <svg style={{position: 'absolute', left: 0, top: 0}} width={1080} height={1920} viewBox="0 0 1080 1920">
@@ -594,21 +598,21 @@ export const CtaCardV9: React.FC<{t: number; title: string; points: CtaPoint[]; 
       {points.map((p, i) => {
         const k = ap(at.points[i]);
         return (
-          <div key={i} style={{position: 'absolute', left: 70, right: 70, top: yCards + i * 244, height: 220, boxSizing: 'border-box', opacity: clamp01(k * 2.5), transform: `scale(${(0.94 + 0.06 * k).toFixed(4)})`,
+          <div key={i} style={{position: 'absolute', left: 40, right: 40, top: yCards + i * STEP, height: CARD, boxSizing: 'border-box', opacity: clamp01(k * 2.5), transform: `scale(${(0.94 + 0.06 * k).toFixed(4)})`,
             display: 'flex', alignItems: 'center', gap: 28, background: '#ffffff', border: `5px solid ${INK}`, borderRadius: 34, padding: '0 30px 0 20px', boxShadow: `0 10px 0 ${shade(BRAND_BLUE, 0.35)}`}}>
-            <div style={{width: 170, height: 170, flex: 'none', borderRadius: '50%', background: tint(BRAND_BLUE, 0.88), border: `4px solid ${INK}`, boxSizing: 'border-box', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-              <svg width={162} height={162} viewBox="-100 -100 200 200" style={{overflow: 'hidden'}}><g transform="scale(0.86)">{p.icon}</g></svg>
+            <div style={{width: 150, height: 150, flex: 'none', borderRadius: '50%', background: tint(BRAND_BLUE, 0.88), border: `4px solid ${INK}`, boxSizing: 'border-box', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+              <svg width={142} height={142} viewBox="-100 -100 200 200" style={{overflow: 'hidden'}}><g transform="scale(0.86)">{p.icon}</g></svg>
             </div>
             <div style={{display: 'flex', flexDirection: 'column'}}>
               <div style={{fontWeight: 900, fontSize: bigFs, color: INK, lineHeight: 1.0, whiteSpace: 'nowrap'}}>{p.big}</div>
-              <div style={{fontWeight: 700, fontSize: 34, color: '#5f6676', marginTop: 10, whiteSpace: 'nowrap'}}>{p.small}</div>
+              <div style={{fontWeight: 700, fontSize: 40, color: '#5f6676', marginTop: 12, whiteSpace: 'nowrap'}}>{p.small}</div>
             </div>
           </div>
         );
       })}
       <div style={{position: 'absolute', left: 60, right: 60, top: yFollow, display: 'flex', justifyContent: 'center', opacity: clamp01(ap(at.follow) * 2.5)}}>
         <div style={{transform: `scale(${(0.85 + 0.15 * ap(at.follow)).toFixed(4)})`, background: CAPTION_KEY, border: `5px solid ${INK}`, borderRadius: 40, padding: '18px 34px', boxShadow: `0 10px 0 ${INK}`,
-          color: INK, fontWeight: 900, fontSize: 38, lineHeight: 1.15, textAlign: 'center'}}>{follow}</div>
+          color: INK, fontWeight: 900, fontSize: 42, lineHeight: 1.15, textAlign: 'center'}}>{follow}</div>
       </div>
     </div>
   );

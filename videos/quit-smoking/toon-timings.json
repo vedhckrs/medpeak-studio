@@ -4,10 +4,10 @@
       "who": "lungs",
       "text": "He quit smoking? Crew, wake up!",
       "voiceId": "cgSgspJ2msm6clMCkdW9",
-      "pitch": 1,
+      "pitch": -2,
       "tempo": 1.1,
       "file": "toons/quit-smoking/voice/B1.mp3",
-      "duration": 2.458,
+      "duration": 2.476,
       "words": [
         {
           "w": "He",
@@ -45,10 +45,10 @@
       "who": "crew",
       "text": "Ugh. We've been asleep under this tar for years.",
       "voiceId": "SOYHLrjzK2X1ezoPC6cr",
-      "pitch": 2,
+      "pitch": 1,
       "tempo": 1.05,
       "file": "toons/quit-smoking/voice/B2.mp3",
-      "duration": 2.614,
+      "duration": 2.615,
       "words": [
         {
           "w": "Ugh.",
@@ -101,10 +101,10 @@
       "who": "lungs",
       "text": "No more naps, crew. Get up and get sweeping!",
       "voiceId": "cgSgspJ2msm6clMCkdW9",
-      "pitch": 1,
+      "pitch": -2,
       "tempo": 1,
       "file": "toons/quit-smoking/voice/B3.mp3",
-      "duration": 2.362,
+      "duration": 2.377,
       "words": [
         {
           "w": "No",
@@ -157,10 +157,10 @@
       "who": "crew",
       "text": "Brooms up, team! Let's clean this place!",
       "voiceId": "SOYHLrjzK2X1ezoPC6cr",
-      "pitch": 2,
+      "pitch": 1,
       "tempo": 1.1,
       "file": "toons/quit-smoking/voice/B4.mp3",
-      "duration": 2.164,
+      "duration": 2.152,
       "words": [
         {
           "w": "Brooms",
@@ -407,10 +407,10 @@
       "who": "lungs",
       "text": "Whoa. Breathing feels easier!",
       "voiceId": "cgSgspJ2msm6clMCkdW9",
-      "pitch": 1,
+      "pitch": -2,
       "tempo": 1.1,
       "file": "toons/quit-smoking/voice/D1.mp3",
-      "duration": 1.566,
+      "duration": 1.58,
       "words": [
         {
           "w": "Whoa.",
@@ -438,10 +438,10 @@
       "who": "crew",
       "text": "Airways are open! Sweep it all up and out!",
       "voiceId": "SOYHLrjzK2X1ezoPC6cr",
-      "pitch": 2,
+      "pitch": 1,
       "tempo": 1,
       "file": "toons/quit-smoking/voice/D2.mp3",
-      "duration": 2.407,
+      "duration": 2.409,
       "words": [
         {
           "w": "Airways",
@@ -494,10 +494,10 @@
       "who": "lungs",
       "text": "Hey, careful down there, that really tickles!",
       "voiceId": "cgSgspJ2msm6clMCkdW9",
-      "pitch": 1,
+      "pitch": -2,
       "tempo": 1.1,
       "file": "toons/quit-smoking/voice/D4.mp3",
-      "duration": 2.161,
+      "duration": 2.183,
       "words": [
         {
           "w": "Hey,",
@@ -540,10 +540,10 @@
       "who": "lungs",
       "text": "Then why am I coughing more?",
       "voiceId": "cgSgspJ2msm6clMCkdW9",
-      "pitch": 1,
+      "pitch": -2,
       "tempo": 0.95,
       "file": "toons/quit-smoking/voice/D3.mp3",
-      "duration": 1.542,
+      "duration": 1.559,
       "words": [
         {
           "w": "Then",

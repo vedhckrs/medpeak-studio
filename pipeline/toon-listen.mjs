@@ -31,6 +31,9 @@ import {args, PUBLIC, readJson, ROOT, videoDir, writeJson} from './lib/util.mjs'
 import {roleOf, SFX_DIR} from './lib/toon-audio.mjs';
 import {layoutToon, soundPlan, TOON_FPS} from '../src/toons/director.ts';
 
+/** The video's final render: the look-v8 player's (toon-v8.mp4) when it exists, else the old engine's (toon.mp4). */
+const renderOf = (slug) => ['toon-v8.mp4', 'toon.mp4'].map((f) => path.join(videoDir(slug), 'renders', f)).find((f) => fs.existsSync(f)) ?? path.join(videoDir(slug), 'renders', 'toon.mp4');
+
 /** earshot's own Python (uv keeps each tool in its own environment). */
 const PY = [process.env.EARSHOT_PYTHON, path.join(os.homedir(), '.local', 'share', 'uv', 'tools', 'earshot', 'bin', 'python')].filter(Boolean).find((p) => fs.existsSync(p));
 /** A rough reading of how far a sound stands out over what is already sounding (dB). Ours, not earshot's: a guide for where to look. */
@@ -169,10 +172,18 @@ if (a.voices) {
   const tim = readJson(path.join(videoDir(slug), 'toon-timings.json'), null);
   if (!tim) { console.error('No voices yet for this script (toon-timings.json is missing).'); process.exit(2); }
   const items = Object.entries(tim.lines).map(([id, t]) => ({id, who: t.who, text: t.text, file: path.join(dir, `${id}.mp3`), words: t.words, duration: t.duration})).filter((x) => fs.existsSync(x.file));
-  const mine = path.join(videoDir(slug), 'renders', 'toon.mp4');
+  const mine = renderOf(slug);
   const against = a.against ? path.join(videoDir(String(a.against)), 'renders', 'toon.mp4') : null;
   console.log(`Listening to ${items.length} voiced lines of "${slug}"${against ? ` and comparing the mix with "${a.against}"` : ''} (the models take about half a minute to load)...`);
   const r = run({mode: 'voices', items: items.map(({id, who, file}) => ({id, who, file})), file: fs.existsSync(mine) ? mine : null, against: against && fs.existsSync(against) ? against : null});
+  // each clip's median pitch (earshot reports none): pipeline/lib/toon_pitch.py, free and local; check A4 reads it
+  try {
+    const pf = path.join(os.tmpdir(), `toon-pitch-${slug}-${process.pid}.json`);
+    execFileSync(process.platform === 'win32' ? 'python' : 'python3', [path.join(ROOT, 'pipeline', 'lib', 'toon_pitch.py'), pf, ...items.map((x) => x.file)], {stdio: 'ignore'});
+    const f0 = readJson(pf, {});
+    fs.rmSync(pf, {force: true});
+    for (const it of r.items) { const src = items.find((x) => x.id === it.id); if (src && Number.isFinite(f0[src.file])) it.measure = {...(it.measure ?? {}), f0_hz: f0[src.file]}; }
+  } catch (e) { console.log(`  (pitch not read: ${e.message})`); }
   const med = (xs) => { const s = xs.filter((x) => Number.isFinite(x)).sort((p, q) => p - q); return s.length ? s[Math.floor(s.length / 2)] : null; };
   const level = med(r.items.map((it) => it.measure?.lufs));
   const brightOf = {};
@@ -221,7 +232,7 @@ if (a.voices) {
     const high = body.length ? body.filter((it) => it.measure.f0_hz > VOICE6.high).length / body.length : null;
     const highOk = high === null || (high >= VOICE6.highShare[0] && high <= VOICE6.highShare[1]);
     console.log(`\n  A4 voices apart: ${Object.entries(pitch).map(([w, p]) => `${w} ${Math.round(p)} Hz`).join(', ') || 'no pitch read'}`);
-    console.log(`     ${close.length ? `${close.length} pair(s) under ${VOICE6.apart} semitones: ${close.join('; ')}` : `every pair in a scene ${VOICE6.apart}+ semitones apart`}; body lines above ${VOICE6.high} Hz: ${high === null ? '-' : `${Math.round(high * 100)}%`} (${VOICE6.highShare.map((x) => x * 100).join('-')}%)`);
+    console.log(`     ${close.length ? `${close.length} pair(s) under ${VOICE6.apart} semitones: ${close.join('; ')}` : `every pair in a scene ${VOICE6.apart}+ semitones apart`}; body lines above ${VOICE6.high} Hz: ${high === null ? '-' : `${Math.round(high * 100)}%`} (${VOICE6.highShare.map((x) => Math.round(x * 100)).join("-")}%)`);
     if (six && (close.length || !highOk)) faults.push(`A4 voices apart: ${[...close, ...(highOk ? [] : [`${Math.round(high * 100)}% of body lines above ${VOICE6.high} Hz`])].join('; ')}`);
     r.voicesApart = {pitch, close, high};
   }
@@ -231,7 +242,7 @@ if (a.voices) {
   console.log(faults.length ? `\n${faults.length} line(s) to look at:\n  ${faults.join('\n  ')}` : '\nEvery line is heard as speech, at one level, with no clipping and no late start.');
   process.exit(faults.length ? 1 : 0);
 }
-const file = a.file ? path.resolve(a.file) : path.join(videoDir(slug), 'renders', 'toon.mp4');
+const file = a.file ? path.resolve(a.file) : renderOf(slug);
 if (!fs.existsSync(file)) { console.error(`No video at ${file}. Render it first (node pipeline/toon-render.mjs ${slug}).`); process.exit(2); }
 const toon = readJson(path.join(videoDir(slug), 'toon.json'));
 const stored = readJson(path.join(videoDir(slug), 'toon-timings.json'), null);
