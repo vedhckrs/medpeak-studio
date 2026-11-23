@@ -4,45 +4,45 @@
       "who": "stinger",
       "text": "Bee sting! Bullseye! I'm staying right here.",
       "voiceId": "mgZYFBDKPJGhiZEAcf4X",
-      "pitch": 0,
-      "tempo": 1.05,
+      "pitch": 5,
+      "tempo": 1.1,
       "file": "toons/bee-sting/voice/A1.mp3",
-      "duration": 2.397,
+      "duration": 2.287,
       "words": [
         {
           "w": "Bee",
           "start": 0,
-          "end": 0.188
+          "end": 0.179
         },
         {
           "w": "sting!",
-          "start": 0.221,
-          "end": 0.519
+          "start": 0.211,
+          "end": 0.495
         },
         {
           "w": "Bullseye!",
-          "start": 0.564,
-          "end": 1.062
+          "start": 0.538,
+          "end": 1.014
         },
         {
           "w": "I'm",
-          "start": 1.161,
-          "end": 1.283
+          "start": 1.108,
+          "end": 1.225
         },
         {
           "w": "staying",
-          "start": 1.338,
-          "end": 1.602
+          "start": 1.277,
+          "end": 1.529
         },
         {
           "w": "right",
-          "start": 1.648,
-          "end": 1.836
+          "start": 1.573,
+          "end": 1.753
         },
         {
           "w": "here.",
-          "start": 1.881,
-          "end": 2.343
+          "start": 1.796,
+          "end": 2.236
         }
       ]
     },
@@ -101,50 +101,50 @@
       "who": "guard",
       "text": "Intruder in the skin! Crew, swell it up!",
       "voiceId": "o7bn7T3k6h58H9hn9j3y",
-      "pitch": 5,
-      "tempo": 1.05,
+      "pitch": -5,
+      "tempo": 1.1,
       "file": "toons/bee-sting/voice/A3.mp3",
-      "duration": 2.724,
+      "duration": 2.645,
       "words": [
         {
           "w": "Intruder",
           "start": 0,
-          "end": 0.475
+          "end": 0.453
         },
         {
           "w": "in",
-          "start": 0.519,
-          "end": 0.597
+          "start": 0.495,
+          "end": 0.57
         },
         {
           "w": "the",
-          "start": 0.653,
-          "end": 0.741
+          "start": 0.623,
+          "end": 0.707
         },
         {
           "w": "skin!",
-          "start": 0.785,
-          "end": 1.183
+          "start": 0.749,
+          "end": 1.129
         },
         {
           "w": "Crew,",
-          "start": 1.36,
-          "end": 1.703
+          "start": 1.298,
+          "end": 1.626
         },
         {
           "w": "swell",
-          "start": 1.881,
-          "end": 2.178
+          "start": 1.796,
+          "end": 2.079
         },
         {
           "w": "it",
-          "start": 2.223,
-          "end": 2.289
+          "start": 2.122,
+          "end": 2.185
         },
         {
           "w": "up!",
-          "start": 2.333,
-          "end": 2.698
+          "start": 2.227,
+          "end": 2.575
         }
       ]
     },
@@ -152,10 +152,10 @@
       "who": "mom",
       "text": "Hold still, honey. I'll pull it out with tweezers.",
       "voiceId": "EXAVITQu4vr4xnSDxMaL",
-      "pitch": 3,
+      "pitch": -4,
       "tempo": 1.08,
       "file": "toons/bee-sting/voice/B1.mp3",
-      "duration": 2.759,
+      "duration": 2.787,
       "words": [
         {
           "w": "Hold",
@@ -208,50 +208,50 @@
       "who": "stinger",
       "text": "Ooh, tweezers! Yes, squeeze me! Squeeze me hard!",
       "voiceId": "mgZYFBDKPJGhiZEAcf4X",
-      "pitch": 0,
-      "tempo": 1.05,
+      "pitch": 5,
+      "tempo": 1.1,
       "file": "toons/bee-sting/voice/B2.mp3",
-      "duration": 3.229,
+      "duration": 3.069,
       "words": [
         {
           "w": "Ooh,",
           "start": 0,
-          "end": 0.288
+          "end": 0.275
         },
         {
           "w": "tweezers!",
-          "start": 0.309,
-          "end": 0.907
+          "start": 0.295,
+          "end": 0.866
         },
         {
           "w": "Yes,",
-          "start": 1.051,
-          "end": 1.271
+          "start": 1.003,
+          "end": 1.213
         },
         {
           "w": "squeeze",
-          "start": 1.293,
-          "end": 1.614
+          "start": 1.234,
+          "end": 1.541
         },
         {
           "w": "me!",
-          "start": 1.658,
-          "end": 1.881
+          "start": 1.583,
+          "end": 1.796
         },
         {
           "w": "Squeeze",
-          "start": 2.09,
-          "end": 2.411
+          "start": 1.995,
+          "end": 2.301
         },
         {
           "w": "me",
-          "start": 2.454,
-          "end": 2.532
+          "start": 2.342,
+          "end": 2.417
         },
         {
           "w": "hard!",
-          "start": 2.576,
-          "end": 3.185
+          "start": 2.459,
+          "end": 3.04
         }
       ]
     },
@@ -259,45 +259,45 @@
       "who": "guard",
       "text": "No! Not the tweezers! Not the sac!",
       "voiceId": "o7bn7T3k6h58H9hn9j3y",
-      "pitch": 5,
-      "tempo": 1.05,
+      "pitch": -5,
+      "tempo": 1.1,
       "file": "toons/bee-sting/voice/B3.mp3",
-      "duration": 2.343,
+      "duration": 2.258,
       "words": [
         {
           "w": "No!",
           "start": 0,
-          "end": 0.365
+          "end": 0.348
         },
         {
           "w": "Not",
-          "start": 0.508,
-          "end": 0.708
+          "start": 0.485,
+          "end": 0.676
         },
         {
           "w": "the",
-          "start": 0.751,
-          "end": 0.829
+          "start": 0.717,
+          "end": 0.791
         },
         {
           "w": "tweezers!",
-          "start": 0.873,
-          "end": 1.293
+          "start": 0.833,
+          "end": 1.234
         },
         {
           "w": "Not",
-          "start": 1.326,
-          "end": 1.46
+          "start": 1.266,
+          "end": 1.394
         },
         {
           "w": "the",
-          "start": 1.493,
-          "end": 1.571
+          "start": 1.425,
+          "end": 1.5
         },
         {
           "w": "sac!",
-          "start": 1.636,
-          "end": 2.3
+          "start": 1.562,
+          "end": 2.195
         }
       ]
     },
@@ -361,30 +361,30 @@
       "who": "stinger",
       "text": "Hey! Not sideways! Nooo!",
       "voiceId": "mgZYFBDKPJGhiZEAcf4X",
-      "pitch": 0,
-      "tempo": 1.05,
+      "pitch": 5,
+      "tempo": 1.1,
       "file": "toons/bee-sting/voice/B5.mp3",
-      "duration": 1.558,
+      "duration": 1.477,
       "words": [
         {
           "w": "Hey!",
           "start": 0,
-          "end": 0.266
+          "end": 0.254
         },
         {
           "w": "Not",
-          "start": 0.309,
-          "end": 0.441
+          "start": 0.295,
+          "end": 0.421
         },
         {
           "w": "sideways!",
-          "start": 0.476,
-          "end": 0.863
+          "start": 0.454,
+          "end": 0.824
         },
         {
           "w": "Nooo!",
-          "start": 0.895,
-          "end": 1.504
+          "start": 0.854,
+          "end": 1.436
         }
       ]
     },
@@ -392,10 +392,10 @@
       "who": "mom",
       "text": "Got it out! Card it is.",
       "voiceId": "EXAVITQu4vr4xnSDxMaL",
-      "pitch": 3,
+      "pitch": -4,
       "tempo": 1.05,
       "file": "toons/bee-sting/voice/B6.mp3",
-      "duration": 1.721,
+      "duration": 1.756,
       "words": [
         {
           "w": "Got",
@@ -433,50 +433,50 @@
       "who": "guard",
       "text": "Stinger's gone, crew. Now this lump can rest.",
       "voiceId": "o7bn7T3k6h58H9hn9j3y",
-      "pitch": 5,
-      "tempo": 1.05,
+      "pitch": -5,
+      "tempo": 1.1,
       "file": "toons/bee-sting/voice/C1.mp3",
-      "duration": 2.373,
+      "duration": 2.315,
       "words": [
         {
           "w": "Stinger's",
           "start": 0,
-          "end": 0.419
+          "end": 0.4
         },
         {
           "w": "gone,",
-          "start": 0.464,
-          "end": 0.708
+          "start": 0.443,
+          "end": 0.676
         },
         {
           "w": "crew.",
-          "start": 0.741,
-          "end": 1.017
+          "start": 0.707,
+          "end": 0.971
         },
         {
           "w": "Now",
-          "start": 1.117,
-          "end": 1.238
+          "start": 1.066,
+          "end": 1.182
         },
         {
           "w": "this",
-          "start": 1.283,
-          "end": 1.415
+          "start": 1.225,
+          "end": 1.351
         },
         {
           "w": "lump",
-          "start": 1.482,
-          "end": 1.636
+          "start": 1.415,
+          "end": 1.562
         },
         {
           "w": "can",
-          "start": 1.681,
-          "end": 1.792
+          "start": 1.605,
+          "end": 1.711
         },
         {
           "w": "rest.",
-          "start": 1.847,
-          "end": 2.343
+          "start": 1.763,
+          "end": 2.236
         }
       ]
     },
@@ -484,50 +484,50 @@
       "who": "guard",
       "text": "Hmm. Smaller, but still here. Ask the doctor.",
       "voiceId": "o7bn7T3k6h58H9hn9j3y",
-      "pitch": 5,
-      "tempo": 1.05,
+      "pitch": -5,
+      "tempo": 1.1,
       "file": "toons/bee-sting/voice/C2.mp3",
-      "duration": 2.915,
+      "duration": 2.8,
       "words": [
         {
           "w": "Hmm.",
           "start": 0,
-          "end": 0.254
+          "end": 0.242
         },
         {
           "w": "Smaller,",
-          "start": 0.486,
-          "end": 0.895
+          "start": 0.464,
+          "end": 0.854
         },
         {
           "w": "but",
-          "start": 0.918,
-          "end": 1.028
+          "start": 0.876,
+          "end": 0.981
         },
         {
           "w": "still",
-          "start": 1.072,
-          "end": 1.293
+          "start": 1.023,
+          "end": 1.234
         },
         {
           "w": "here.",
-          "start": 1.36,
-          "end": 1.647
+          "start": 1.298,
+          "end": 1.572
         },
         {
           "w": "Ask",
-          "start": 1.825,
-          "end": 2.113
+          "start": 1.742,
+          "end": 2.017
         },
         {
           "w": "the",
-          "start": 2.178,
-          "end": 2.255
+          "start": 2.079,
+          "end": 2.152
         },
         {
           "w": "doctor.",
-          "start": 2.3,
-          "end": 2.875
+          "start": 2.195,
+          "end": 2.744
         }
       ]
     },
@@ -587,130 +587,79 @@
         }
       ]
     },
-    "D2": {
-      "who": "mom",
-      "text": "And was the card the right way?",
-      "voiceId": "EXAVITQu4vr4xnSDxMaL",
-      "pitch": 3,
-      "tempo": 0.92,
-      "file": "toons/bee-sting/voice/D2.mp3",
-      "duration": 1.828,
-      "words": [
-        {
-          "w": "And",
-          "start": 0,
-          "end": 0.151
-        },
-        {
-          "w": "was",
-          "start": 0.227,
-          "end": 0.354
-        },
-        {
-          "w": "the",
-          "start": 0.417,
-          "end": 0.492
-        },
-        {
-          "w": "card",
-          "start": 0.531,
-          "end": 0.808
-        },
-        {
-          "w": "the",
-          "start": 0.846,
-          "end": 0.922
-        },
-        {
-          "w": "right",
-          "start": 0.971,
-          "end": 1.161
-        },
-        {
-          "w": "way?",
-          "start": 1.198,
-          "end": 1.817
-        }
-      ]
-    },
     "D3": {
       "who": "doctor",
-      "text": "Scraping the bee sting out sideways was right. Tweezers can squeeze out more poison.",
+      "text": "Scraping the bee sting out sideways was right. Tweezers squeeze out more poison.",
       "voiceId": "XrExE9yKIg1WjnnlVkGX",
       "pitch": 0,
-      "tempo": 0.92,
+      "tempo": 0.86,
       "file": "toons/bee-sting/voice/D3.mp3",
-      "duration": 5.441,
+      "duration": 5.326,
       "words": [
         {
           "w": "Scraping",
           "start": 0,
-          "end": 0.542
+          "end": 0.527
         },
         {
           "w": "the",
-          "start": 0.593,
-          "end": 0.668
+          "start": 0.568,
+          "end": 0.648
         },
         {
           "w": "bee",
-          "start": 0.72,
-          "end": 0.884
+          "start": 0.689,
+          "end": 0.85
         },
         {
           "w": "sting",
-          "start": 0.909,
-          "end": 1.136
+          "start": 0.878,
+          "end": 1.107
         },
         {
           "w": "out",
-          "start": 1.199,
-          "end": 1.338
+          "start": 1.16,
+          "end": 1.31
         },
         {
           "w": "sideways",
-          "start": 1.388,
-          "end": 1.88
+          "start": 1.364,
+          "end": 1.836
         },
         {
           "w": "was",
-          "start": 1.93,
-          "end": 2.045
+          "start": 1.877,
+          "end": 1.985
         },
         {
           "w": "right.",
-          "start": 2.12,
-          "end": 2.537
+          "start": 2.065,
+          "end": 2.606
         },
         {
           "w": "Tweezers",
-          "start": 2.978,
-          "end": 3.509
-        },
-        {
-          "w": "can",
-          "start": 3.559,
-          "end": 3.685
+          "start": 2.996,
+          "end": 3.511
         },
         {
           "w": "squeeze",
-          "start": 3.736,
-          "end": 4.051
+          "start": 3.55,
+          "end": 3.874
         },
         {
           "w": "out",
-          "start": 4.089,
-          "end": 4.215
+          "start": 3.902,
+          "end": 4.036
         },
         {
           "w": "more",
-          "start": 4.265,
-          "end": 4.454
+          "start": 4.091,
+          "end": 4.279
         },
         {
           "w": "poison.",
-          "start": 4.505,
-          "end": 5.401
+          "start": 4.347,
+          "end": 5.292
         }
       ]
     },
@@ -719,170 +668,160 @@
       "text": "A small swollen lump is normal. It should get better in a few days.",
       "voiceId": "XrExE9yKIg1WjnnlVkGX",
       "pitch": 0,
-      "tempo": 0.92,
+      "tempo": 0.86,
       "file": "toons/bee-sting/voice/D4.mp3",
-      "duration": 4.678,
+      "duration": 5.003,
       "words": [
         {
           "w": "A",
           "start": 0,
-          "end": 0.088
+          "end": 0.094
         },
         {
           "w": "small",
-          "start": 0.189,
-          "end": 0.542
+          "start": 0.203,
+          "end": 0.58
         },
         {
           "w": "swollen",
-          "start": 0.617,
-          "end": 1.01
+          "start": 0.66,
+          "end": 1.081
         },
         {
           "w": "lump",
-          "start": 1.073,
-          "end": 1.287
+          "start": 1.148,
+          "end": 1.376
         },
         {
           "w": "is",
-          "start": 1.338,
-          "end": 1.426
+          "start": 1.432,
+          "end": 1.526
         },
         {
           "w": "normal.",
-          "start": 1.502,
-          "end": 2.07
+          "start": 1.607,
+          "end": 2.214
         },
         {
           "w": "It",
-          "start": 2.511,
-          "end": 2.65
+          "start": 2.686,
+          "end": 2.834
         },
         {
           "w": "should",
-          "start": 2.688,
-          "end": 2.864
+          "start": 2.875,
+          "end": 3.064
         },
         {
           "w": "get",
-          "start": 2.902,
-          "end": 3.016
+          "start": 3.105,
+          "end": 3.226
         },
         {
           "w": "better",
-          "start": 3.066,
-          "end": 3.332
+          "start": 3.28,
+          "end": 3.564
         },
         {
           "w": "in",
-          "start": 3.382,
-          "end": 3.446
+          "start": 3.618,
+          "end": 3.687
         },
         {
           "w": "a",
-          "start": 3.483,
-          "end": 3.509
+          "start": 3.726,
+          "end": 3.754
         },
         {
           "w": "few",
-          "start": 3.559,
-          "end": 3.723
+          "start": 3.808,
+          "end": 3.983
         },
         {
           "w": "days.",
-          "start": 3.786,
-          "end": 4.643
+          "start": 4.05,
+          "end": 4.967
         }
       ]
     },
     "D5": {
       "who": "doctor",
-      "text": "But if the lips or tongue swell, or breathing gets hard, get emergency help right away.",
+      "text": "But if lips or tongue swell, or breathing gets hard, get help right away.",
       "voiceId": "XrExE9yKIg1WjnnlVkGX",
       "pitch": 0,
-      "tempo": 0.92,
+      "tempo": 0.86,
       "file": "toons/bee-sting/voice/D5.mp3",
-      "duration": 5.842,
+      "duration": 5.117,
       "words": [
         {
           "w": "But",
           "start": 0,
-          "end": 0.189
+          "end": 0.216
         },
         {
           "w": "if",
-          "start": 0.227,
-          "end": 0.303
-        },
-        {
-          "w": "the",
-          "start": 0.353,
-          "end": 0.429
+          "start": 0.257,
+          "end": 0.337
         },
         {
           "w": "lips",
-          "start": 0.492,
-          "end": 0.758
+          "start": 0.432,
+          "end": 0.688
         },
         {
           "w": "or",
-          "start": 0.807,
-          "end": 0.909
+          "start": 0.73,
+          "end": 0.824
         },
         {
           "w": "tongue",
-          "start": 0.985,
-          "end": 1.287
+          "start": 0.905,
+          "end": 1.229
         },
         {
           "w": "swell,",
-          "start": 1.312,
-          "end": 1.817
+          "start": 1.256,
+          "end": 1.768
         },
         {
           "w": "or",
-          "start": 1.993,
-          "end": 2.12
+          "start": 1.917,
+          "end": 2.065
         },
         {
           "w": "breathing",
-          "start": 2.184,
-          "end": 2.537
+          "start": 2.132,
+          "end": 2.539
         },
         {
           "w": "gets",
-          "start": 2.574,
-          "end": 2.751
+          "start": 2.58,
+          "end": 2.754
         },
         {
           "w": "hard,",
-          "start": 2.801,
-          "end": 3.293
+          "start": 2.821,
+          "end": 3.307
         },
         {
           "w": "get",
-          "start": 3.66,
-          "end": 3.849
-        },
-        {
-          "w": "emergency",
-          "start": 3.899,
-          "end": 4.416
+          "start": 3.469,
+          "end": 3.658
         },
         {
           "w": "help",
-          "start": 4.48,
-          "end": 4.695
+          "start": 3.713,
+          "end": 3.915
         },
         {
           "w": "right",
-          "start": 4.771,
-          "end": 4.972
+          "start": 3.997,
+          "end": 4.198
         },
         {
           "w": "away.",
-          "start": 4.998,
-          "end": 5.805
+          "start": 4.226,
+          "end": 5.076
         }
       ]
     },
@@ -924,6 +863,47 @@
           "w": "right?",
           "start": 1.545,
           "end": 2.032
+        }
+      ]
+    },
+    "A4": {
+      "who": "mom",
+      "text": "Oh no, honey, it's swelling up!",
+      "voiceId": "EXAVITQu4vr4xnSDxMaL",
+      "pitch": -4,
+      "tempo": 1,
+      "file": "toons/bee-sting/voice/A4.mp3",
+      "duration": 1.876,
+      "words": [
+        {
+          "w": "Oh",
+          "start": 0,
+          "end": 0.186
+        },
+        {
+          "w": "no,",
+          "start": 0.232,
+          "end": 0.43
+        },
+        {
+          "w": "honey,",
+          "start": 0.453,
+          "end": 0.72
+        },
+        {
+          "w": "it's",
+          "start": 0.743,
+          "end": 0.894
+        },
+        {
+          "w": "swelling",
+          "start": 0.929,
+          "end": 1.312
+        },
+        {
+          "w": "up!",
+          "start": 1.393,
+          "end": 1.811
         }
       ]
     }

@@ -5,10 +5,12 @@
  "shape": "visit",
  "music": "bee-sting",
  "pitch": {
-  "mom": 3,
+  "mom": -4,
   "kid": 6,
-  "guard": 5
+  "guard": -5,
+  "stinger": 5
  },
+ "musicTrim": -2,
  "camera": "steady",
  "episode": 16,
  "caption": 2,
@@ -83,7 +85,7 @@
   },
   "answer": {
    "scene": "D3",
-   "line": "Scraping the bee sting out sideways was right. Tweezers can squeeze out more poison."
+   "line": "Scraping the bee sting out sideways was right. Tweezers squeeze out more poison."
   },
   "change3s": {
    "scene": "all",
@@ -91,11 +93,11 @@
   },
   "twist": {
    "scene": "D3",
-   "line": "Scraping the bee sting out sideways was right. Tweezers can squeeze out more poison."
+   "line": "Scraping the bee sting out sideways was right. Tweezers squeeze out more poison."
   },
   "bestLast": {
    "scene": "D5",
-   "line": "But if the lips or tongue swell, or breathing gets hard, get emergency help right away."
+   "line": "But if lips or tongue swell, or breathing gets hard, get help right away."
   },
   "loop": {
    "scene": "D6",
@@ -198,7 +200,7 @@
      "pose": "rest",
      "key": "bullseye",
      "chat": true,
-     "tempo": 1.05
+     "tempo": 1.1
     },
     {
      "id": "A2",
@@ -218,7 +220,17 @@
      "pose": "rest",
      "key": "swell",
      "chat": true,
-     "tempo": 1.05
+     "tempo": 1.1
+    },
+    {
+     "id": "A4",
+     "who": "mom",
+     "text": "Oh no, honey, it's swelling up!",
+     "emotion": "scared",
+     "pose": "rest",
+     "key": "swelling",
+     "chat": true,
+     "tempo": 1.0
     },
     {
      "id": "B1",
@@ -238,7 +250,7 @@
      "pose": "rest",
      "key": "squeeze",
      "chat": true,
-     "tempo": 1.05
+     "tempo": 1.1
     },
     {
      "id": "B3",
@@ -248,7 +260,7 @@
      "pose": "rest",
      "key": "no",
      "chat": true,
-     "tempo": 1.05
+     "tempo": 1.1
     },
     {
      "id": "B4",
@@ -268,7 +280,7 @@
      "pose": "rest",
      "key": "sideways",
      "chat": true,
-     "tempo": 1.05
+     "tempo": 1.1
     },
     {
      "id": "B6",
@@ -320,7 +332,7 @@
      "key": "rest",
      "chat": true,
      "beat": 0.8,
-     "tempo": 1.05
+     "tempo": 1.1
     }
    ]
   },
@@ -367,7 +379,7 @@
      "pose": "rest",
      "key": "doctor",
      "chat": true,
-     "tempo": 1.05
+     "tempo": 1.1
     }
    ]
   },
@@ -416,19 +428,9 @@
      "tempo": 0.9
     },
     {
-     "id": "D2",
-     "who": "mom",
-     "text": "And was the card the right way?",
-     "emotion": "neutral",
-     "pose": "rest",
-     "key": "card",
-     "chat": true,
-     "tempo": 0.92
-    },
-    {
      "id": "D3",
      "who": "doctor",
-     "text": "Scraping the bee sting out sideways was right. Tweezers can squeeze out more poison.",
+     "text": "Scraping the bee sting out sideways was right. Tweezers squeeze out more poison.",
      "emotion": "happy",
      "pose": "rest",
      "key": "right",
@@ -437,7 +439,7 @@
      ],
      "answer": true,
      "pause": 0.35,
-     "tempo": 0.92
+     "tempo": 0.86
     },
     {
      "id": "D4",
@@ -450,22 +452,22 @@
       "nhs-insect-stings"
      ],
      "answer": true,
-     "tempo": 0.92
+     "tempo": 0.86
     },
     {
      "id": "D5",
      "who": "doctor",
-     "text": "But if the lips or tongue swell, or breathing gets hard, get emergency help right away.",
+     "text": "But if lips or tongue swell, or breathing gets hard, get help right away.",
      "emotion": "neutral",
      "pose": "rest",
-     "key": "emergency",
+     "key": "help",
      "src": [
       "nhs-insect-stings",
       "nhs-anaphylaxis"
      ],
      "answer": true,
      "care": true,
-     "tempo": 0.92
+     "tempo": 0.86
     },
     {
      "id": "D6",

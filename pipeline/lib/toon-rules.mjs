@@ -468,7 +468,8 @@ export const checkFormat6 = (toon, L, {voiced, known, add}) => {
   const answer = all.filter((p) => p.line.answer);
   const answerAt = answer.length ? answer[0].from / L.total : null;
   const title = keysOf(toon.title);
-  const term = [toon.term, toon.topic].flat().filter(Boolean).map((x) => bareW(String(x)));
+  // a term of several words ("bee sting") counts word by word (it was read as one word, "beesting")
+  const term = [toon.term, toon.topic].flat().filter(Boolean).flatMap((x) => String(x).split(/\s+/)).map((x) => bareW(x)).filter(Boolean);
   const topicWords = new Set([...title, ...term]);
   const saysTopic = (w) => { const b = bareW(w); return topicWords.has(b) || topicWords.has(b.replace(/s$/, '')) || [...topicWords].some((t) => t.length > 4 && b.startsWith(t)); };
 
