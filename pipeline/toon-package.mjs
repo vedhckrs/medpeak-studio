@@ -135,7 +135,7 @@ const one = (slug, a) => {
   if (!a['no-cover'] && pkg.cover?.text && v8) {
     // the cover from the v8 video itself: its frame at `cover.at`, the cover text in the caption style
     const props = path.join(ROOT, 'out', `toon-v8-cover-${slug}.json`);
-    writeJson(props, {...v8Props(slug), at: pkg.cover.at ?? 1, text: pkg.cover.text, accent: pkg.cover.accent});
+    writeJson(props, {...v8Props(slug), at: pkg.cover.at ?? 1, text: pkg.cover.text, accent: pkg.cover.accent, ...(pkg.cover.y !== undefined ? {y: pkg.cover.y} : {})});
     remotion(['still', path.join('src', 'toons', 'v8', 'entry-video.tsx'), 'ToonV8Cover', cover, `--props=${props}`, '--log=error', '--timeout=120000', '--jpeg-quality=92']);
   } else if (!a['no-cover'] && pkg.cover?.text) {
     const props = path.join(ROOT, 'out', `toon-cover-${slug}.json`);

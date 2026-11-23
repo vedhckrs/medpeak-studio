@@ -6,6 +6,19 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-23 (40) - MacBook (local Claude Code) - branch `video/bee-sting` - bee-sting FINAL: scoreboard 49/49 PASS
+
+- Owner notes on the preview: a painful, damaging sting and a dramatic card hit (done); cute guards (MiniWorker redesigned:
+  every worker). Voices: Chuck (Stinger, re-cast from Toby who spoke too slowly), Alfwyn (Guard); per-video pitch from the
+  REAL clips (mom -4, guard -5, kid +6, stinger +5). Shorter answer lines; Mom's line moved into the skin scene.
+- Credits this video: 390 + 157 + 750 + 37 + 47 + 69 + 32 = 1,482; balance 28,779 (key 4 also dropped by itself: check it).
+- Music: the bed's quiet middle cut out and its breaks filled with a soft echo of itself (free); musicTrim -2.
+- Final `videos/bee-sting/renders/toon-v8.mp4` (59.5 s story + Joey's 13 s card): scoreboard 49/49; look C1-C8, staging
+  L1-L12, motion, camera, sound, listen (card heard) all PASS; close-ups checked; cover title placed off faces (cover `y`).
+- Not uploaded. Next free Short slot: Tue 24 Nov 21:30 IST.
+
+---
+
 ## 2026-11-23 (39) - MacBook (local Claude Code) - branch `video/bee-sting` - bee-sting: script approved, shots built, silent preview
 
 - Owner: hook A, looks ("Start"), script ("Approved"). Shots `src/toons/v8/bee-sting.tsx` (A skin under an air band, framed

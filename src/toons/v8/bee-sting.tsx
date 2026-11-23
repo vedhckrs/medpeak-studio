@@ -196,10 +196,10 @@ const ShotC: React.FC<{s: ShotNow}> = ({s}) => {
 
 // =================================================================== D: Dr. Mira's clinic
 // eye points (frame pixels, from the layout log): where each looks when another speaks
-const EYES = {mom: [215, 970] as [number, number], kid: [424, 1080] as [number, number], doctor: [838, 920] as [number, number]};
+const EYES = {mom: [215, 970] as [number, number], kid: [454, 1080] as [number, number], doctor: [873, 920] as [number, number]};
 const MOM_AT = {view: 'three-quarter' as const, facing: 'right' as const, x: 155, y: 2050, scale: 3.4};
-const KID_AT = {view: 'three-quarter' as const, facing: 'right' as const, x: 440, y: 1760, scale: 3.15}; // his face clear of the caption band (1324-1434), a child's height
-const MIRA_AT = {view: 'three-quarter' as const, facing: 'left' as const, x: 950, y: 2050, scale: 3.4};
+const KID_AT = {view: 'three-quarter' as const, facing: 'right' as const, x: 470, y: 1760, scale: 3.15}; // his face clear of the caption band (1324-1434), a child's height
+const MIRA_AT = {view: 'three-quarter' as const, facing: 'left' as const, x: 985, y: 2050, scale: 3.4};
 const KID_HAND: [number, number] = [560, 1000];
 const ShotD: React.FC<{s: ShotNow}> = ({s}) => {
   const t = s.t;

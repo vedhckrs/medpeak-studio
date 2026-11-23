@@ -67,7 +67,8 @@
   "cover": {
    "at": 0.8,
    "text": "A bee stings you",
-   "accent": "bee"
+   "accent": "bee",
+   "y": 220
   }
  },
  "retention": {
@@ -340,7 +341,7 @@
    "id": "K1",
    "set": "tissue",
    "card": "2 DAYS LATER",
-   "seconds": 0.8,
+   "seconds": 0.85,
    "same": "C",
    "src": [
     "nhs-insect-stings"

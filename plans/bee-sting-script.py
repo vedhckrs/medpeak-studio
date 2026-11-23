@@ -68,7 +68,7 @@ shots = [
    "lines": [
      L("C1", "guard", "Stinger's gone, crew. Now this lump can rest.", "neutral", "rest", chat=True, beat=0.8),
    ]},
-  {"id": "K1", "set": "tissue", "card": "2 DAYS LATER", "seconds": 0.8, "same": "C", "src": [STING], "cast": [], "lines": []},
+  {"id": "K1", "set": "tissue", "card": "2 DAYS LATER", "seconds": 0.85, "same": "C", "src": [STING], "cast": [], "lines": []},
   {"id": "C", "set": "tissue", "kind": "body",
    "cast": [{"who": "guard", "x": 540, "size": 340}],
    "state": {"damage": 0, "swelling": 0.35},
@@ -124,7 +124,7 @@ toon = {
     "tags": ["what happens when a bee stings you", "bee sting", "bee stings", "how to remove a bee sting", "bee sting tweezers",
              "bee sting swelling", "bee sting allergy", "stinger", "insect sting", "health cartoon"],
     "hashtags": "#beesting #health #shorts",
-    "cover": {"at": 0.8, "text": "A bee stings you", "accent": "bee"},
+    "cover": {"at": 0.8, "text": "A bee stings you", "accent": "bee", "y": 220},  # the title in the air above the Stinger, off the guards' faces
   },
   "retention": {
     "noIntro": {"scene": "A1", "line": "Bee sting! Bullseye! I'm staying right here."},
