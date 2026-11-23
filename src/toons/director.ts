@@ -39,6 +39,11 @@ export const ENTRANCES = ['walk', 'drop', 'pop'] as const;
  * A stage has a STATE that the script changes as the story goes; these are the dials of each stage.
  */
 export const STAGE_KEYS: Partial<Record<SetName, string[]>> = {
+  // Engine v9 (format 6): the anatomy stages of src/toons/v8/anatomy.tsx. `lungs` is STAGES.chest (the lungs in the chest:
+  // tar, mucus, airway width, one cough, pink colour back, cilia standing and sweeping); `blood` is STAGES.vesselInside (flow,
+  // the carbon-monoxide riders, bright red cells). Keep these lists the same as those stages' `dials`.
+  lungs: ['tar', 'mucus', 'airway', 'cough', 'pink', 'cilia'],
+  blood: ['flow', 'co', 'pink'],
   // drop: the pill falls in (0 = above the frame, 1 = lodged). stick: it presses into the wall.
   // melt: 0 = whole, 1 = dissolved. sore: 0 = healthy wall, 1 = an open sore. pain: a throb of redness.
   // water: a wave of water comes down (0.25 = it reaches the pill, 1 = it has passed). slide: the pill rides it down and out.

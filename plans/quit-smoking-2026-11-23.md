@@ -102,3 +102,11 @@ nhs.uk/better-health/quit-smoking/why-quit-smoking/benefits-of-quitting-smoking/
 - Hook **B** (the owner: "B"): open INSIDE: the grey, tarry lungs coughing, the cilia crew asleep under the tar; the Lungs:
   "He quit smoking? Crew, wake up!". Dad's balcony scene is dropped (the story is the chest, the vessel, then the clinic).
 - Stubble B and music mix C: my picks, used unless the owner says otherwise.
+- Look sheets approved (the owner: "Yes, write script"). The script is in `videos/quit-smoking/toon.json`, written by
+  `plans/quit-smoking-script.py`; `toon-check` says ALL PASS (estimated 59.0 s of story, the answer from 71%, inside the body
+  62%, talking 80%). The balcony lines A1 are gone (hook B); Sweep speaks as `crew`, the CO gang as `co` (its voice is picked
+  free before voicing). The care line follows the NHS cough page: see a GP for a cough over 3 weeks; coughing up blood is
+  urgent (said in the video as "see a doctor if a cough lasts over three weeks, or brings up blood"; the description says
+  "get urgent help" for blood).
+- To watch after voicing: S5 talking share (80%, the floor) and the 60 s ceiling (59.0 s estimated): the real, faster voices
+  shorten the talk; trim a pause or add a word then.

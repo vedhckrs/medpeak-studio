@@ -11,7 +11,7 @@ import {scanCamera} from '../lib/toon-camera.mjs';
 import {LIMITS, scanMotion} from '../lib/toon-motion.mjs';
 import {blendPose, POSES} from '../../src/toons/poses.ts';
 import {checkRoom, roomsClash, roomSignature} from '../../src/toons/director.ts';
-import {AUTO_SFX, changesOf, frameOf, layoutToon, longestStill, parseCam, SOUND, soundPlan, stateAt, TOON_FPS} from '../../src/toons/director.ts';
+import {AUTO_SFX, changesOf, frameOf, layoutToon, longestStill, parseCam, SOUND, soundOf, soundPlan, stateAt, TOON_FPS} from '../../src/toons/director.ts';
 import {scanStaging} from '../lib/toon-staging.mjs';
 import {checkSound} from '../lib/toon-sound.mjs';
 
@@ -97,6 +97,7 @@ test('every real toon script passes the gate', () => {
 
 test('the director never holds a picture over 3 seconds and never repeats a size on one speaker', () => {
   for (const t of real) {
+    if (t.format >= 6) continue; // format 6 (engine v9) holds a framing for 8 s+ on purpose; the render's picture checks (C1-C8) judge "not dead"
     const L = layoutToon(t, null);
     if (L.steady) { // a steady script holds its pictures; what changes is what happens in them
       assert.ok(longestStill(L).seconds <= 3, `${t.slug}: ${longestStill(L).seconds.toFixed(1)} s with nothing new in the picture`);
@@ -143,6 +144,7 @@ test('camera words are read in any order', () => {
 // ---------------------------------------------------------------- the camera never jumps
 test('the camera has no jolts, jump cuts or wrong pictures on any real script', async () => {
   for (const t of real) {
+    if (t.format >= 6) continue; // format 6 draws its body places on the anatomy stages; its camera is checked on the render (toon-camera V1-V3)
     const r = await scanCamera(t, null);
     assert.deepEqual(r.wrong, [], `${t.slug}: wrong picture`);
     assert.deepEqual(r.jumpCuts, [], `${t.slug}: jump cut`);
@@ -245,6 +247,7 @@ test('every pose gives a person a shoulder and an elbow angle, and poses blend j
 test('every stage a script uses has its dials, and every steady script is a shown story', () => {
   for (const t of real) {
     assert.equal(t.camera, 'steady', `${t.slug} uses the steady camera`);
+    if (t.format >= 6) continue; // format 6: one story ending in the doctor's room (shape visit), time cards allowed; checked by S8 and S12
     const stages = t.shots.filter((s) => (s.cast ?? []).some((a) => a.stage));
     assert.ok(stages.length >= 2, `${t.slug}: the body stage opens and closes the story`);
     // format 5 ("engage") has no time card: a second of dark screen right after the hook loses the viewer (owner, 2026-11-18)
@@ -358,7 +361,7 @@ test('every real script carries an upload package that follows the channel rules
 test('no bubble, tag or object covers a head, leaves the picture or sits on another, on any real script', async () => {
   for (const t of real) {
     const r = await scanStaging(t, null);
-    assert.ok(r.graphics >= (t.format >= 3 ? 1 : 10), `${t.slug}: graphics were measured`); // a format-3 story has few graphics on purpose
+    assert.ok(r.graphics >= (t.format >= 6 ? 0 : t.format >= 3 ? 1 : 10), `${t.slug}: graphics were measured`); // a format-3 story has few graphics on purpose; format 6 may have none (decision 9)
     assert.deepEqual(r.onHeads, [], `${t.slug}: a graphic on a head`);
     assert.deepEqual(r.outside, [], `${t.slug}: a graphic out of the picture`);
     assert.deepEqual(r.stacked, [], `${t.slug}: graphics on each other`);
@@ -570,7 +573,7 @@ test('a Toon has few sound effects, kept apart, and no automatic sound on moods,
     const story = t.shots.flatMap((s) => (s.events ?? []).filter((e) => e.sfx)).length + t.shots.flatMap((s) => s.lines ?? []).filter((l) => l.sfx).length;
     const places = t.shots.length - 1;
     assert.ok(plan.length <= story + places, `${t.slug}: ${plan.length} sounds, only the script's ${story} story sounds and the changes of place`);
-    assert.ok((plan.length / (L.total / TOON_FPS)) * 60 <= SOUND.perMinute, `${t.slug}: ${plan.length} sounds`);
+    assert.ok((plan.length / (L.total / TOON_FPS)) * 60 <= soundOf(t).perMinute, `${t.slug}: ${plan.length} sounds`); // format 6: 14 a minute, in the pauses (decision 24)
     plan.slice(1).forEach((e, i) => assert.ok((e.at - plan[i].at) / TOON_FPS >= SOUND.minGap - 0.01, `${t.slug}: two sounds too close at ${(e.at / TOON_FPS).toFixed(1)} s`));
     assert.ok(plan.every((e) => e.vol <= 0.25), `${t.slug}: every effect well under the voice`);
     const r = checkSound(t, null);
