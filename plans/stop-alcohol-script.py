@@ -120,6 +120,9 @@ shots = [
 toon = {
   "slug": "stop-alcohol", "title": "What Happens When You Stop Drinking Alcohol", "format": 6, "shape": "visit",
   "music": "stop-alcohol",
+  # check A4 (3+ semitones apart in a scene), measured on earlier clips: Dad ~124 Hz, Grandpa ~162, the Liver ~172 at his -1, Booze ~265:
+  # the Liver and Grandpa share the twist, so the Liver goes up 3 (+2 here, ~204 Hz)
+  "pitch": {"liver": 2},
   "camera": "steady", "episode": 17, "caption": 2,
   "intruder": "booze", "term": "drink",
   # a new topic track (memory: new music every video): late-night lounge turning into a sunny morning
