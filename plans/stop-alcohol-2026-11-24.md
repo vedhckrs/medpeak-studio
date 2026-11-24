@@ -96,3 +96,11 @@ detox claims, how much is "safe". The time card says only "THE NEXT MORNING", wh
 ## For you to decide
 
 1. The hook: A, B or C (my pick A).
+
+## Decided (2026-11-24)
+
+- Hook **A** (the owner: "Hook A"): the whole Liver fills the frame, mop in hand; Booze splashes down and grins at the lens:
+  "Drink number four! Scrub faster, Liver!"
+- Look sheets made (`node pipeline/toon-v8-sheets.mjs alcohol` -> `out/toons/sheets-v8/alcohol-place-1.jpg`, `-2.jpg`):
+  the whole Liver (`LiverFull`, now with a `held` slot so a prop sits behind his hand) on a NIGHT indigo, then a MORNING
+  sunrise place; Booze (new, `stop-alcohol-art.tsx`); the mop; the clinic on a cream wall with Grandpa, Dad and `DoctorAt`.
