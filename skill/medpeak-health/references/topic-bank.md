@@ -39,7 +39,7 @@ start with the first 15.
 | 6 | What Happens When a Snake Bites You | 13 | 34M | care: first aid word for word from WHO; no folk remedies | snake-bite (scheduled 2026-11-23 21:30 IST) |
 | 7 | What Happens When You Quit Smoking | 11 | 24M | timeline figures need a source each | quit-smoking (scheduled 2026-11-24 12:30 IST) |
 | 8 | What Happens When a Bee Stings You | 10 | 115M | care: allergy warning signs from NHS or CDC | bee-sting (scheduled 2026-11-24 21:30 IST) |
-| 9 | What Happens When You Stop Drinking Alcohol | 10 | 9M | care: stopping suddenly can be dangerous for heavy drinkers; say so | open |
+| 9 | What Happens When You Stop Drinking Alcohol | 10 | 9M | care: stopping suddenly can be dangerous for heavy drinkers; say so | taken (Mac, 2026-11-24) |
 | 10 | What Happens When You Rub Your Eyes | 7 | 25M | needs an eye scene | open |
 | 11 | What Happens If You Bite Your Nails | 6 | 12M | | open |
 | 12 | What Happens If You Breathe Through Your Mouth | 5 | 13M | care: the "changes your face" claim is weak; say only what sources say | open |
