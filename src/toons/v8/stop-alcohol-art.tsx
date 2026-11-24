@@ -30,7 +30,7 @@ export const Svg: React.FC<{children: React.ReactNode}> = ({children}) => (
 
 // ------------------------------------------------------------------ Booze
 const AMBER = '#e9a43a', AMBER_DEEP = '#c47a1f', FOAM = '#fbf6ea';
-export type BoozeArms = 'rest' | 'cheer' | 'point' | 'shrink';
+export type BoozeArms = 'rest' | 'cheer' | 'point' | 'shrink' | 'rub';
 /** Drawn with its origin at the bottom of the drop (it stands on that point); about 220 units tall. */
 export const Booze: React.FC<{mood?: Mood; mouth?: MouthKind; look?: [number, number]; arms?: BoozeArms; squash?: number}> = ({
   mood = 'wink', mouth = 'smile', look = [0, 0.2], arms = 'rest', squash = 0,
@@ -42,6 +42,7 @@ export const Booze: React.FC<{mood?: Mood; mouth?: MouthKind; look?: [number, nu
     if (arms === 'cheer') return {to: [side * 150, -210], bend: [side * 136, -140]};
     if (arms === 'point') return side > 0 ? {to: [170, -150], bend: [128, -112]} : {to: [-120, -40], bend: [-118, -82]};
     if (arms === 'shrink') return {to: [side * 34, -70], bend: [side * 108, -64]};
+    if (arms === 'rub') return {to: [side * 16, -52], bend: [side * 110, -70]};
     return {to: [side * 128, -40], bend: [side * 118, -86]};
   };
   return (
@@ -69,7 +70,7 @@ export const BoozeAt: React.FC<React.ComponentProps<typeof Booze> & {x: number; 
   </FrameMove>
 );
 /** A plain falling drop (no face): the stream that keeps arriving. */
-const Drop: React.FC<{x: number; y: number; s?: number}> = ({x, y, s = 1}) => (
+export const Drop: React.FC<{x: number; y: number; s?: number}> = ({x, y, s = 1}) => (
   <g transform={`translate(${x} ${y}) scale(${s})`}>
     <Shape d={smoothD([[0, -40], [16, -10], [22, 10], [12, 28], [0, 32], [-12, 28], [-22, 10], [-16, -10]])} fill={AMBER} shadow={0.6}>
       <Highlight x={-8} y={4} w={10} rot={-60} />
@@ -77,7 +78,7 @@ const Drop: React.FC<{x: number; y: number; s?: number}> = ({x, y, s = 1}) => (
   </g>
 );
 /** The splash ring where Booze lands. */
-const Splash: React.FC<{x: number; y: number}> = ({x, y}) => (
+export const Splash: React.FC<{x: number; y: number}> = ({x, y}) => (
   <g>
     {[[-120, -50, -40], [-70, -96, -20], [70, -100, 20], [124, -56, 40]].map(([dx, dy, r], i) => (
       <g key={i} transform={`translate(${x + dx} ${y + dy}) rotate(${r})`}>
@@ -90,9 +91,9 @@ const Splash: React.FC<{x: number; y: number}> = ({x, y}) => (
 // ------------------------------------------------------------------ the spill and the mop
 /** Amber puddles on the liver (frame pixels), all clear of the face box around (317, 786). k 0..1 = how much mess. */
 const PUDDLES: [number, number, number][] = [[640, 690, 70], [860, 770, 56], [590, 960, 64], [900, 920, 48], [470, 1080, 46], [1000, 840, 34]];
-export const Spill: React.FC<{k: number}> = ({k}) => (
+export const Spill: React.FC<{k: number; n?: number}> = ({k, n}) => (
   <Svg>
-    {PUDDLES.slice(0, Math.round(PUDDLES.length * k)).map(([x, y, r], i) => {
+    {PUDDLES.slice(0, n ?? Math.round(PUDDLES.length * k)).map(([x, y, r], i) => {
       const pts = Array.from({length: 8}, (_, j): [number, number] => {
         const a = (j / 8) * Math.PI * 2, q = 1 + ((j * 37 + i * 11) % 7 - 3) * 0.06;
         return [x + Math.cos(a) * r * q, y + Math.sin(a) * r * 0.62 * q];
@@ -108,8 +109,8 @@ export const Spill: React.FC<{k: number}> = ({k}) => (
 );
 const WOOD = '#c99a62', STRING = '#f1e7cf';
 /** The mop in pixels around the gripping hand (0, 0): handle up and down from the hand, the string head at the bottom. `fall` 0..1 tips it over. */
-export const MopBody: React.FC<{fall?: number}> = ({fall = 0}) => {
-  const ang = 18 + 70 * fall; // degrees from vertical
+export const MopBody: React.FC<{fall?: number; swing?: number}> = ({fall = 0, swing = 0}) => {
+  const ang = 18 + 70 * fall + swing; // degrees from vertical (swing: a mop stroke, + to the right)
   const len = 520, r = (ang * Math.PI) / 180;
   const foot: [number, number] = [Math.sin(r) * len * 0.75, Math.cos(r) * len * 0.75];
   const top: [number, number] = [-Math.sin(r) * len * 0.25, -Math.cos(r) * len * 0.25];
@@ -126,7 +127,7 @@ export const MopBody: React.FC<{fall?: number}> = ({fall = 0}) => {
   );
 };
 /** The mop held in the Liver's right hand ('rest' arm: the hand at liver units (26, 58)), for LiverFull's `held` slot. */
-export const HeldMop: React.FC = () => <g transform={`translate(26 58) scale(${1 / LIVER_S})`}><MopBody /></g>;
+export const HeldMop: React.FC<{swing?: number; fall?: number}> = ({swing = 0, fall = 0}) => <g transform={`translate(26 58) scale(${1 / LIVER_S})`}><MopBody swing={swing} fall={fall} /></g>;
 /** The dropped mop, on its own in frame pixels. */
 export const DroppedMop: React.FC<{x: number; y: number}> = ({x, y}) => <Svg><g transform={`translate(${x} ${y})`}><MopBody fall={0.85} /></g></Svg>;
 
