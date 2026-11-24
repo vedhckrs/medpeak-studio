@@ -165,15 +165,17 @@ toon = {
      "note": "'If you stop drinking, your liver can often recover.' 'If you regularly drink too much alcohol it can be very dangerous to stop drinking suddenly.' 'Get medical help before you try to stop drinking.' Read on 2026-11-24."},
   ],
   "shots": shots,
-  "cta": {"read": "card", "text": "Stopping alcohol? Know this. Your liver can often recover. Drink every day? Don't stop suddenly. Get medical help first. Shaking or confusion? Get emergency help. Follow MedPeak Health for more health tips that keep you safe.", "src": [ARLD, AUD]},
+  "cta": {"read": "card", "text": "Stopping alcohol? Know this. Your liver can often recover. Drink daily? Don't stop suddenly, see a doctor first. Shaking or confusion? Get help now. Follow MedPeak Health for more health tips.", "src": [ARLD, AUD]},
 }
 
 # the pace per line is set on the real voices (free remix) once they exist; a first guess by role
+# set on the real voices (2026-11-24, free remix): the body cast measured 3.84 w/s (3.0-3.6), the doctor 2.34 (2.6-3.0);
+# Booze's hook and "another round" slow (2.0, 2.4 w/s), the Liver's A2/A2b/B2 quick (4.3-4.5)
+PACE = {"A1": 1.15, "A2c": 1.1, "A2": 0.9, "A2b": 0.9, "B2": 0.9}
 for sh in shots:
     for l in sh["lines"]:
-        if l["who"] == "doctor": l["tempo"] = 0.88
-        elif l["who"] in ("booze", "liver"): l["tempo"] = 1.1
-        else: l["tempo"] = 1.0
+        if l["who"] == "doctor": l["tempo"] = 1.06 if l["id"] != "D5" else 1.12
+        else: l["tempo"] = PACE.get(l["id"], 1.0)
 
 out = os.path.join(ROOT, "videos", "stop-alcohol")
 os.makedirs(out, exist_ok=True)

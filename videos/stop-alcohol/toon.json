@@ -198,7 +198,7 @@
      "pose": "rest",
      "key": "drink",
      "chat": true,
-     "tempo": 1.1
+     "tempo": 1.15
     },
     {
      "id": "A2",
@@ -208,7 +208,7 @@
      "pose": "rest",
      "key": "mess",
      "chat": true,
-     "tempo": 1.1
+     "tempo": 0.9
     },
     {
      "id": "A2b",
@@ -218,7 +218,7 @@
      "pose": "rest",
      "key": "recover",
      "chat": true,
-     "tempo": 1.1
+     "tempo": 0.9
     },
     {
      "id": "A2c",
@@ -249,7 +249,7 @@
      "pose": "rest",
      "key": "Friday",
      "chat": true,
-     "tempo": 1.1
+     "tempo": 1.0
     }
    ]
   },
@@ -331,7 +331,7 @@
      "pose": "rest",
      "key": "catching",
      "chat": true,
-     "tempo": 1.1
+     "tempo": 0.9
     }
    ]
   },
@@ -390,7 +390,7 @@
      "pose": "rest",
      "key": "friend",
      "chat": true,
-     "tempo": 1.1
+     "tempo": 1.0
     },
     {
      "id": "C1",
@@ -411,7 +411,7 @@
      "pose": "rest",
      "key": "Wait",
      "chat": true,
-     "tempo": 1.1
+     "tempo": 1.0
     },
     {
      "id": "C3",
@@ -421,7 +421,7 @@
      "pose": "rest",
      "key": "bumpy",
      "chat": true,
-     "tempo": 1.1
+     "tempo": 1.0
     }
    ]
   },
@@ -508,7 +508,7 @@
      ],
      "answer": true,
      "pause": 0.35,
-     "tempo": 0.88
+     "tempo": 1.06
     },
     {
      "id": "D4",
@@ -522,7 +522,7 @@
      ],
      "answer": true,
      "care": true,
-     "tempo": 0.88
+     "tempo": 1.06
     },
     {
      "id": "D5",
@@ -536,7 +536,7 @@
      ],
      "answer": true,
      "care": true,
-     "tempo": 0.88
+     "tempo": 1.12
     },
     {
      "id": "D6",
@@ -592,7 +592,7 @@
      "pose": "rest",
      "key": "doctor",
      "chat": true,
-     "tempo": 1.1
+     "tempo": 1.0
     },
     {
      "id": "E2",
@@ -602,14 +602,14 @@
      "pose": "rest",
      "key": "Bye",
      "chat": true,
-     "tempo": 1.1
+     "tempo": 1.0
     }
    ]
   }
  ],
  "cta": {
   "read": "card",
-  "text": "Stopping alcohol? Know this. Your liver can often recover. Drink every day? Don't stop suddenly. Get medical help first. Shaking or confusion? Get emergency help. Follow MedPeak Health for more health tips that keep you safe.",
+  "text": "Stopping alcohol? Know this. Your liver can often recover. Drink daily? Don't stop suddenly, see a doctor first. Shaking or confusion? Get help now. Follow MedPeak Health for more health tips.",
   "src": [
    "nhs-arld",
    "nhs-alcohol-use-disorder"
