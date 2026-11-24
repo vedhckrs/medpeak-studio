@@ -25,6 +25,10 @@ export const SHEETS = [
   ['entry-people.tsx', 'V8PersonGrandma', 'person-grandma'],
   ['entry-people.tsx', 'V8PersonBaby', 'person-baby'],
   ['entry-people.tsx', 'V8PeopleHands', 'people-hands'],
+  // the new doctor (2026-11-24, a proposal for the owner): `node pipeline/toon-v8-sheets.mjs doctor-new`
+  ['entry-doctor-new.tsx', 'DoctorNew1', 'doctor-new-1'],
+  ['entry-doctor-new.tsx', 'DoctorNew2', 'doctor-new-2'],
+  ['entry-doctor-new.tsx', 'DoctorNew3', 'doctor-new-3'],
   ['entry-organs-a.tsx', 'V8OrgansA', 'organs-a'],
   ['entry-organs-b.tsx', 'V8OrgansB', 'organs-b'],
   ['entry-cells.tsx', 'V8Cells', 'cells'],
@@ -62,6 +66,8 @@ export const SHEETS = [
   // quit-smoking, the engine v9 pilot (2026-11-23)
   ['entry-quit-smoking.tsx', 'SmokePlaces1', 'smoke-place-1'],
   ['entry-quit-smoking.tsx', 'SmokePlaces2', 'smoke-place-2'],
+  ['entry-bee-sting.tsx', 'BeePlaces1', 'bee-place-1'],
+  ['entry-bee-sting.tsx', 'BeePlaces2', 'bee-place-2'],
   // fasting (2026-11-22)
   ['entry-fast.tsx', 'FastCast', 'fast-cast'],
   ['entry-fast.tsx', 'FastPlace', 'fast-place'],

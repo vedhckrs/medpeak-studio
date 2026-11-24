@@ -139,7 +139,8 @@ export const checkToon = (toon, timings, known) => {
       if ((p.kind === 'tag' || p.kind === 'chip') && !p.text) bad.push(`shot ${s.id}: a ${p.kind} needs "text"`);
     }
     for (const l of s.lines) {
-      const here = (s.cast ?? []).map((a) => a.who);
+      // `voices` (format 6): people heard from OUTSIDE the frame in this shot (Mom and Kid above the skin in bee-sting)
+      const here = [...(s.cast ?? []).map((a) => a.who), ...(s.voices ?? [])];
       if (ids.has(l.id)) bad.push(`line id ${l.id} is used twice`);
       ids.add(l.id);
       if (!here.includes(l.who)) bad.push(`${l.id}: ${l.who} is not in the shot`);
@@ -467,7 +468,8 @@ export const checkFormat6 = (toon, L, {voiced, known, add}) => {
   const answer = all.filter((p) => p.line.answer);
   const answerAt = answer.length ? answer[0].from / L.total : null;
   const title = keysOf(toon.title);
-  const term = [toon.term, toon.topic].flat().filter(Boolean).map((x) => bareW(String(x)));
+  // a term of several words ("bee sting") counts word by word (it was read as one word, "beesting")
+  const term = [toon.term, toon.topic].flat().filter(Boolean).flatMap((x) => String(x).split(/\s+/)).map((x) => bareW(x)).filter(Boolean);
   const topicWords = new Set([...title, ...term]);
   const saysTopic = (w) => { const b = bareW(w); return topicWords.has(b) || topicWords.has(b.replace(/s$/, '')) || [...topicWords].some((t) => t.length > 4 && b.startsWith(t)); };
 

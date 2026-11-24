@@ -6,6 +6,46 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-24 (41) - MacBook (local Claude Code) - branch `video/bee-sting` - a NEW doctor replaces Dr. Mira
+
+- The owner rejected the old Dr. Mira again (the clipboard three ways, then the chest "cluttered"), then: "create completely
+  new". Built by a Fable 5.2 agent in this session: `src/toons/v8/doctor-new.tsx` (`DoctorAt`, `doctorHeadAt`, `doctorHandAt`;
+  views front/three-quarter both ways; poses rest/explain/point and blends; neutral/happy/concerned; talk, blink, lookAt;
+  layout-log reports as `who: 'doctor'`), sheets `entry-doctor-new.tsx` -> `out/toons/doctor-new/`.
+- Version 1 was rejected ("looks child not doctor", arm lines mixing with the coat); version 2 approved ("Yes looks good"):
+  adult proportions, a tailored coat, coat and sleeves one outline, plain chest, empty hands, brown skin.
+- bee-sting clinic (ShotD) now uses her (x 815), with short open-hand gestures on "A small swollen lump" and "get help".
+- A stock-doctor experiment (Magnific vector, animated) was made and scrapped on the owner's word; its files are deleted.
+- Weak spots the agent listed: the spread-finger open hand is busy small; her near arm is cut by the right frame edge in the
+  clinic; the coat has no shade tone; the shoulder curve has a slight kink in the front close-up.
+- Next: the bee-sting final re-render with her, every check, then upload only on the owner's word.
+
+---
+
+## 2026-11-23 (40) - MacBook (local Claude Code) - branch `video/bee-sting` - bee-sting FINAL: scoreboard 49/49 PASS
+
+- Owner notes on the preview: a painful, damaging sting and a dramatic card hit (done); cute guards (MiniWorker redesigned:
+  every worker). Voices: Chuck (Stinger, re-cast from Toby who spoke too slowly), Alfwyn (Guard); per-video pitch from the
+  REAL clips (mom -4, guard -5, kid +6, stinger +5). Shorter answer lines; Mom's line moved into the skin scene.
+- Credits this video: 390 + 157 + 750 + 37 + 47 + 69 + 32 = 1,482; balance 28,779 (key 4 also dropped by itself: check it).
+- Music: the bed's quiet middle cut out and its breaks filled with a soft echo of itself (free); musicTrim -2.
+- Final `videos/bee-sting/renders/toon-v8.mp4` (59.5 s story + Joey's 13 s card): scoreboard 49/49; look C1-C8, staging
+  L1-L12, motion, camera, sound, listen (card heard) all PASS; close-ups checked; cover title placed off faces (cover `y`).
+- Not uploaded. Next free Short slot: Tue 24 Nov 21:30 IST.
+
+---
+
+## 2026-11-23 (39) - MacBook (local Claude Code) - branch `video/bee-sting` - bee-sting: script approved, shots built, silent preview
+
+- Owner: hook A, looks ("Start"), script ("Approved"). Shots `src/toons/v8/bee-sting.tsx` (A skin under an air band, framed
+  z 1.4; C tissue z 1.3 with a 2 DAYS LATER card; D clinic with Mom, Kid, Mira), end card `BEE_STING_CTA` (Joey reads it all).
+- Engine/check changes: sets `skin` and `tissue`; a shot's `voices` (off-screen speakers); the tissue floor mottled and its 9
+  fold lines mid weight (4.4); the close-up tool takes a draft file. Tests: format 6 skips two old-engine scans.
+- Silent draft scoreboard: 41/45 PASS; the 4 left are voice/sound rows (they wait for voicing). Close-ups checked.
+- Next: owner's OK on the preview -> pick the Stinger and Guard voices free -> quote voice + music + card -> voice -> final.
+
+---
+
 ## 2026-11-23 (38) - MacBook (local Claude Code) - branch `video/quit-smoking-replace` - quit-smoking REPLACED on YouTube
 
 - The owner: "Replace". The old scheduled upload QNqXRvpwVu4 was checked (private, the quit-smoking title, publishAt Tue 24 Nov

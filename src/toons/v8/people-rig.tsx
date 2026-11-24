@@ -868,7 +868,7 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
     const ht = `translate(${f1(w[0])} ${f1(w[1])}) rotate(${f1(ang + bend)}) scale(${f1(handK)} ${f1(handK * m)})`;
     const hg = handGeom(ap.hand, false, v9);
     // the prop held in this hand sits behind the arm and the hand
-    if (ap.prop === 'clipboard') parts.push(<Clipboard key="prop" at={w} R={R} ang={view === 'front' ? -8 : -14} />);
+    // the clipboard is drawn OVER the hand (below): the fingers hold it from behind, only the thumb shows on its front
     // bare skin: upper arm, forearm and hand are ONE outlined form (no ring at the wrist)
     const skinD: UPart[] = [capsule(s, armR0, e, armR1), capsule(e, armR1, w, armR2), ...hg.parts.map((d) => ({d, t: ht}))];
     parts.push(
@@ -949,6 +949,15 @@ export const Person: React.FC<PersonProps> = ({spec, view = 'front', pose = 'res
     }
     // a thumb lying over the fingers is drawn last, on its own thin outline
     if (hg.over.length) parts.push(<g key="thumb" transform={ht}><Union d={hg.over} fill={skin} shadow={0} line="in" /></g>);
+    // a clipboard is held the way a hand really holds one (the owner, 2026-11-23, twice: a fist sitting on the paper): the
+    // board covers the fingers (they are behind it), the thumb lies over its front near the edge, the wrist and palm show
+    if (ap.prop === 'clipboard') {
+      const ca = (view === 'front' ? -8 : -14);
+      parts.push(<Clipboard key="prop" at={w} R={R} ang={ca} />);
+      const t0: P = [w[0] + 0.06 * R, w[1] - 0.05 * R], t1: P = [w[0] + 0.3 * R, w[1] - 0.16 * R];
+      parts.push(<path key="prop-thumb" d={capsule(t0, 0.075 * R, t1, 0.065 * R)} fill={skin} {...EDGE} />);
+      parts.push(<path key="prop-nail" d={`M ${f1(t1[0] - 0.07 * R)} ${f1(t1[1] - 0.01 * R)} Q ${f1(t1[0] - 0.02 * R)} ${f1(t1[1] - 0.06 * R)} ${f1(t1[0] + 0.03 * R)} ${f1(t1[1] - 0.04 * R)}`} {...INLINE} />);
+    }
     // v9 symptom marks on this arm (the person's own side: side -1 is the own right arm, or the left when mirrored)
     const own = (side === -1) !== mir ? 'R' : 'L';
     for (const mk of mark) {
@@ -1784,7 +1793,9 @@ const CapHat: React.FC<{v: VK; col: string}> = ({v, col}) => {
 const Clipboard: React.FC<{at: P; R: number; ang: number}> = ({at, R, ang}) => {
   const w = 0.95 * R, h = 1.3 * R;
   return (
-    <g transform={`translate(${f1(at[0] + 0.28 * R)} ${f1(at[1] - 0.25 * R)}) rotate(${ang})`}>
+    // the hand GRIPS the board's edge (2026-11-23, the owner on a fist sitting on the middle of the paper): the board's near
+    // edge sits under the hand, the board reaches out from the fingers
+    <g transform={`translate(${f1(at[0] + 0.62 * R)} ${f1(at[1] - 0.14 * R)}) rotate(${ang})`}>
       <Union d={[poly([[-w / 2, -h / 2], [w / 2, -h / 2], [w / 2, h / 2], [-w / 2, h / 2]])]} fill={CLOTH.brown} shadow={0.6} />
       <path d={poly([[-w / 2 + 0.08 * R, -h / 2 + 0.16 * R], [w / 2 - 0.08 * R, -h / 2 + 0.16 * R], [w / 2 - 0.08 * R, h / 2 - 0.08 * R], [-w / 2 + 0.08 * R, h / 2 - 0.08 * R]])} fill="#ffffff" {...EDGE_IN} />
       {[0.32, 0.5, 0.68, 0.86].map((t, i) => <path key={i} d={`M ${-w / 2 + 0.2 * R} ${-h / 2 + t * h} L ${w / 2 - (i === 3 ? 0.4 : 0.2) * R} ${-h / 2 + t * h}`} {...INLINE} />)}

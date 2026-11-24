@@ -15,15 +15,16 @@ const length: CalculateMetadataFunction<V8VideoProps> = ({props}) => ({durationI
  * text in the caption style: white capitals, the kit's dark outline, the `accent` word yellow. Drawn by
  * pipeline/toon-package.mjs when the v8 render exists.
  */
-type CoverProps = V8VideoProps & {at: number; text: string; accent?: string};
-const CoverV8: React.FC<CoverProps> = ({at, text, accent, ...video}) => {
+/** `y`: the title's top (package.cover.y); left out, 1180. Set it when faces sit there (bee-sting: the guards; the title goes in the air). */
+type CoverProps = V8VideoProps & {at: number; text: string; accent?: string; y?: number};
+const CoverV8: React.FC<CoverProps> = ({at, text, accent, y = 1180, ...video}) => {
   const words = text.split(/\s+/);
   const clean = (w: string) => w.toLowerCase().replace(/[^a-z0-9']/g, '');
   return (
     <div style={{position: 'absolute', inset: 0}}>
       {/* frameAt, not <Freeze>: the cover of 2026-11-21 (no-sleep) came out as frame 0 under Freeze */}
       <ToonV8 {...video} bare frameAt={Math.round(at * V8_FPS)} />
-      <div style={{position: 'absolute', left: 60, right: 60, top: 1180, display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '0 26px',
+      <div style={{position: 'absolute', left: 60, right: 60, top: y, display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '0 26px',
         fontFamily: FONT, fontWeight: 900, fontSize: 128, lineHeight: 1.05, letterSpacing: 1, textAlign: 'center'}}>
         {words.map((w, i) => (
           <span key={i} style={{color: accent && clean(w) === clean(accent) ? CAPTION_KEY : '#ffffff', WebkitTextStroke: `16px ${INK}`, paintOrder: 'stroke fill', textShadow: `0 12px 0 ${INK}`}}>{w.toUpperCase()}</span>

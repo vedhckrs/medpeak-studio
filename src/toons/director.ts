@@ -23,7 +23,7 @@ export const FORMAT6 = {gap: 0.22, shotGap: 0.5, pause: {shock: 0.6, answer: 0.6
 /** Is this script format 6 or newer (engine v9)? */
 export const isV9 = (toon: {format?: number}) => (toon.format ?? 0) >= 6;
 
-export const SET_NAMES = ['throat', 'gut', 'stomach', 'mouth', 'blood', 'lungs', 'office', 'bathroom', 'bedroom', 'foodpipe', 'tooth', 'tummy', 'molar', 'arm', 'macro', 'clinic', 'home'] as const;
+export const SET_NAMES = ['throat', 'gut', 'stomach', 'mouth', 'blood', 'lungs', 'office', 'bathroom', 'bedroom', 'foodpipe', 'tooth', 'tummy', 'molar', 'arm', 'macro', 'clinic', 'home', 'skin', 'tissue'] as const;
 export type SetName = (typeof SET_NAMES)[number];
 export const SHOT_NAMES = ['ews', 'wide', 'full', 'two', 'ms', 'mcu', 'cu', 'ecu', 'ots', 'low'] as const;
 export type ShotName = (typeof SHOT_NAMES)[number];
@@ -44,6 +44,9 @@ export const STAGE_KEYS: Partial<Record<SetName, string[]>> = {
   // the carbon-monoxide riders, bright red cells). Keep these lists the same as those stages' `dials`.
   lungs: ['tar', 'mucus', 'airway', 'cough', 'pink', 'cilia'],
   blood: ['flow', 'co', 'pink'],
+  // STAGES.skinSection (the skin in section: a bite or sting wound, the swelling) and STAGES.tissue (a floor for cells and crews)
+  skin: ['wound', 'swelling'],
+  tissue: ['damage', 'swelling'],
   // drop: the pill falls in (0 = above the frame, 1 = lodged). stick: it presses into the wall.
   // melt: 0 = whole, 1 = dissolved. sore: 0 = healthy wall, 1 = an open sore. pain: a throb of redness.
   // water: a wave of water comes down (0.25 = it reaches the pill, 1 = it has passed). slide: the pill rides it down and out.
@@ -249,7 +252,7 @@ export type ToonEvent = {at: string; word?: string; delay?: number; set?: Record
  * played a second time with its new state), `src` the source of what changed across the card.
  */
 export type ShotKind = 'body' | 'micro' | 'room' | 'card';
-export type ToonShot = {id: string; set: SetName; cast: ToonActor[]; lines: ToonLine[]; lead?: number; desk?: boolean; props?: ToonProp[]; card?: string; seconds?: number; label?: string; state?: Record<string, number>; events?: ToonEvent[]; kind?: ShotKind; same?: string; src?: string[]};
+export type ToonShot = {id: string; set: SetName; cast: ToonActor[]; /** format 6: people heard from outside the frame (they speak, they are not drawn) */ voices?: string[]; lines: ToonLine[]; lead?: number; desk?: boolean; props?: ToonProp[]; card?: string; seconds?: number; label?: string; state?: Record<string, number>; events?: ToonEvent[]; kind?: ShotKind; same?: string; src?: string[]};
 /** The owner's Retention 7 plan: which line carries each point (see retention-7.md). */
 export type ToonRetention = Record<'noIntro' | 'promise' | 'counting' | 'change3s' | 'twist' | 'bestLast' | 'loop', {scene: string; line: string}>;
 export type ToonSource = {id: string; label: string; url: string; note: string};

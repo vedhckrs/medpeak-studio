@@ -589,7 +589,7 @@ export type Job = 'guard' | 'cleaner' | 'firefighter' | 'courier' | 'builder';
 export type WorkerProp = 'broom' | 'sign' | 'phone' | 'hose' | 'box' | 'none';
 export type WorkerPose = 'rest' | 'hold' | 'up' | 'sweep';
 const JOB: Record<Job, {uniform: string; hat: string; trim: string; prop: WorkerProp}> = {
-  guard: {uniform: '#5d6f8c', hat: '#46556e', trim: '#f2d07a', prop: 'sign'},
+  guard: {uniform: '#4f7cc4', hat: '#3d63a6', trim: '#f2d07a', prop: 'sign'}, // a friendlier blue (was a dull slate)
   cleaner: {uniform: '#4fa89a', hat: '#3f8c80', trim: '#f4ead2', prop: 'broom'},
   firefighter: {uniform: '#c9574e', hat: '#d9534f', trim: '#f2d07a', prop: 'hose'},
   courier: {uniform: '#b27a4b', hat: '#f6c85f', trim: '#f4ead2', prop: 'box'},
@@ -654,27 +654,31 @@ export const MiniWorker: React.FC<V8Props & FaceExtras & {job: Job; uniform?: st
     <Acting lid={lid} turn={turn}>
       <g>
         {shadow && <ContactShadow x={0} y={89} w={110} />}
+        {/* CUTE proportions (the owner, 2026-11-23: "why guard not looks cute"): a big round head, a small round body,
+            short stubby legs with round shoes, big eyes, rosy cheeks (a chibi worker, one family with the kit face) */}
         {/* legs and shoes */}
-        <path d={capsule([-16, 46], 12, [-18, 80], 11)} fill={shade(U, 0.18)} {...EDGE} />
-        <path d={capsule([16, 46], 12, [18, 80], 11)} fill={shade(U, 0.18)} {...EDGE} />
-        <path d="M -34 90 Q -34 76 -18 76 L -8 76 Q -4 90 -8 90 Z" fill="#3a3f4b" {...EDGE_IN} />
-        <path d="M 34 90 Q 34 76 18 76 L 8 76 Q 4 90 8 90 Z" fill="#3a3f4b" {...EDGE_IN} />
+        <path d={capsule([-14, 48], 12, [-15, 72], 11)} fill={shade(U, 0.2)} {...EDGE} />
+        <path d={capsule([14, 48], 12, [15, 72], 11)} fill={shade(U, 0.2)} {...EDGE} />
+        <ellipse cx={-17} cy={82} rx={18} ry={11} fill="#3a3f4b" {...EDGE_IN} />
+        <ellipse cx={17} cy={82} rx={18} ry={11} fill="#3a3f4b" {...EDGE_IN} />
         {P_ !== 'none' && pose === 'sweep' && <WorkerProp_ prop={P_} at={propAt} rot={propRot} />}
-        {/* the uniform: a rounded body, a belt, a trim */}
-        <Shape d="M -36 -2 Q -40 -14 -20 -16 L 20 -16 Q 40 -14 36 -2 L 38 52 Q 0 60 -38 52 Z" fill={U}>
-          <path d="M -38 36 Q 0 44 38 36 L 38 46 Q 0 54 -38 46 Z" fill={shade(U, 0.22)} />
-          <path d="M 0 -14 V 34" {...INLINE} />
-          {job === 'firefighter' && <path d="M -38 18 Q 0 26 38 18" stroke={J.trim} strokeWidth={7} fill="none" />}
-          {job === 'builder' && <path d="M -22 -14 L -22 36 M 22 -14 L 22 36" stroke={J.trim} strokeWidth={6} />}
-          {job === 'guard' && <rect x={12} y={-4} width={14} height={10} rx={2} fill={J.trim} {...EDGE_IN} />}
+        {/* the uniform: a soft round bean, a belt, a trim */}
+        <Shape d="M -30 -10 Q -24 -18 -12 -18 L 12 -18 Q 24 -18 30 -10 Q 44 18 36 44 Q 22 58 0 58 Q -22 58 -36 44 Q -44 18 -30 -10 Z" fill={U}>
+          <path d="M -40 32 Q 0 42 40 32 L 39 42 Q 0 52 -39 42 Z" fill={shade(U, 0.22)} />
+          <path d="M 0 -16 V 30" {...INLINE} />
+          {[-6, 8, 22].map((y) => <circle key={y} cx={8} cy={y} r={2.6} fill={J.trim} />)}
+          {job === 'firefighter' && <path d="M -40 14 Q 0 22 40 14" stroke={J.trim} strokeWidth={7} fill="none" />}
+          {job === 'builder' && <path d="M -20 -16 L -20 32 M 20 -16 L 20 32" stroke={J.trim} strokeWidth={6} />}
+          {job === 'guard' && <path d="M -20 -6 L -17 0 L -10 0 L -15.5 4 L -13.5 11 L -20 7 L -26.5 11 L -24.5 4 L -30 0 L -23 0 Z" fill={J.trim} {...EDGE_IN} />}
         </Shape>
-        {band && <BandLabel x={0} y={14} w={80} text={band} curve={0.12} />}
-        {/* the head (round, the kit face), then the hat */}
-        <path d="M -12 -22 L 12 -22 L 10 -12 L -10 -12 Z" fill={skin} {...EDGE_IN} />
-        <Shape d="M 0 -96 C 26 -96 38 -78 38 -54 C 38 -32 22 -18 0 -18 C -22 -18 -38 -32 -38 -54 C -38 -78 -26 -96 0 -96 Z" fill={skin} shadow={0.6} />
-        {hat && <WorkerHat job={job} c={J.hat} />}
-        <Eyes x={2} y={-50} r={11} mood={mood} look={look} />
-        <Mouth x={4} y={-30} w={12} kind={mouth} />
+        {band && <BandLabel x={0} y={12} w={84} text={band} curve={0.12} />}
+        {/* the head: big and round (radius 46), the kit face, rosy cheeks, then the hat sized to it */}
+        <Shape d="M 0 -106 C 30 -106 46 -86 46 -60 C 46 -33 27 -14 0 -14 C -27 -14 -46 -33 -46 -60 C -46 -86 -30 -106 0 -106 Z" fill={skin} shadow={0.6} />
+        <ellipse cx={-26} cy={-38} rx={9} ry={6} fill="#f2a29d" opacity={0.75} />
+        <ellipse cx={30} cy={-38} rx={9} ry={6} fill="#f2a29d" opacity={0.75} />
+        {hat && <g transform="translate(0 -70) scale(1.15) translate(0 57)"><WorkerHat job={job} c={J.hat} /></g>}
+        <Eyes x={2} y={-56} r={15} mood={mood} look={look} />
+        <Mouth x={3} y={-31} w={15} kind={mouth} />
         {arm(sh, wl, -1, 'L')}
         {arm(sh2, wr, 1, 'R')}
         {P_ !== 'none' && pose !== 'sweep' && pose !== 'rest' && <WorkerProp_ prop={P_} at={propAt} rot={propRot} />}

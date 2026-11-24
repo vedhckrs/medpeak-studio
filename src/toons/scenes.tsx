@@ -915,14 +915,16 @@ const HomeSet: React.FC<SetProps> = ({t, look, people}) => <Room look={look ?? D
 const ClinicFore: React.FC<{t: number; look?: RoomLook}> = ({t, look}) => <RoomFore look={look ?? DEFAULT_ROOMS.clinic} role="clinic" t={t} />;
 const HomeFore: React.FC<{t: number; look?: RoomLook}> = ({t, look}) => <RoomFore look={look ?? DEFAULT_ROOMS.home} role="home" t={t} />;
 
-export const SETS: Record<SetName, React.FC<SetProps>> = {clinic: ClinicSet, home: HomeSet, throat: ThroatSet, gut: GutSet, stomach: StomachSet, mouth: MouthSet, blood: BloodSet, lungs: LungsSet, office: OfficeSet, bathroom: BathroomSet, bedroom: BedroomSet, foodpipe: FoodPipeStage, tooth: ToothStage, tummy: TummyStage, molar: ToothArenaStage, arm: ArmStage, macro: MacroStage};
+export const SETS: Record<SetName, React.FC<SetProps>> = {clinic: ClinicSet, home: HomeSet, throat: ThroatSet, gut: GutSet, stomach: StomachSet, mouth: MouthSet, blood: BloodSet, lungs: LungsSet, office: OfficeSet, bathroom: BathroomSet, bedroom: BedroomSet, foodpipe: FoodPipeStage, tooth: ToothStage, tummy: TummyStage, molar: ToothArenaStage, arm: ArmStage, macro: MacroStage, skin: ArmStage, tissue: BloodSet};
 export type {SetName};
 /** The blurred foreground of each set: drawn OVER the characters, it moves faster than they do. */
 export const FORES: Partial<Record<SetName, React.FC<{t: number; look?: RoomLook}>>> = {clinic: ClinicFore, home: HomeFore, throat: ThroatFore, gut: GutFore, stomach: StomachFore, blood: BloodFore, office: OfficeFore, bathroom: BathroomFore};
 /** Where characters stand in each set (screen y of the floor). null = no floor: characters float. */
-export const FLOORS: Record<SetName, number | null> = {throat: null, gut: 1330, stomach: 1440, mouth: 1300, blood: 1350, lungs: null, office: 1500, bathroom: 1580, bedroom: 1580, foodpipe: null, tooth: null, tummy: null, molar: null, arm: null, macro: null, clinic: ROOM_FLOOR, home: ROOM_FLOOR};
+export const FLOORS: Record<SetName, number | null> = {throat: null, gut: 1330, stomach: 1440, mouth: 1300, blood: 1350, lungs: null, office: 1500, bathroom: 1580, bedroom: 1580, foodpipe: null, tooth: null, tummy: null, molar: null, arm: null, macro: null, clinic: ROOM_FLOOR, home: ROOM_FLOOR, skin: null, tissue: 1350};
 /** What moves behind the characters in each set (for the skill and the script writer). */
 export const SET_LIFE: Record<SetName, string> = {
+  skin: 'engine v9 only (STAGES.skinSection): the skin in section, a sting or bite wound, the swelling',
+  tissue: 'engine v9 only (STAGES.tissue): a floor for cells and crews, the swelling',
   throat: 'walls squeeze downward, bubbles rise, wet glints slide down, light breathes from above',
   gut: 'two rows of villi sway, food bits and bubbles drift past, a sheen runs along the floor',
   stomach: 'acid rolls in two layers, bubbles rise and pop, the folds drip, vapour rises',
