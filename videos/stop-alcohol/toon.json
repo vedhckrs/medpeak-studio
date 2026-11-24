@@ -1,0 +1,619 @@
+{
+ "slug": "stop-alcohol",
+ "title": "What Happens When You Stop Drinking Alcohol",
+ "format": 6,
+ "shape": "visit",
+ "music": "stop-alcohol",
+ "pitch": {
+  "liver": 2,
+  "booze": 2
+ },
+ "musicTrim": -2,
+ "camera": "steady",
+ "episode": 17,
+ "caption": 2,
+ "intruder": "booze",
+ "term": "drink",
+ "musicPrompt": "Playful jazzy funk instrumental, walking upright bass, brushed drums, muted trumpet stabs and a tipsy honky-tonk piano for the sneaky Booze, 138 BPM, no lead melody in the voice range, short rests between phrases; from 20 seconds a bright sunrise lift with glockenspiel and clean guitar; from 34 seconds calm and warm for the doctor's answer; no vocals, ends on a clean button.",
+ "hooks": [
+  {
+   "line": "Drink number four, never stop drinking. Scrub, Liver!",
+   "why": "the owner's pick A (2026-11-24): the whole Liver fills the frame, Booze splashes down and grins at the lens"
+  },
+  {
+   "line": "Please... I need one night off.",
+   "why": "B: the exhausted Liver holds up a CLOSED sign, drops keep splashing past it"
+  },
+  {
+   "line": "Stop drinking? Ha! Watch the liver beg.",
+   "why": "C: Booze surfs down a waterfall of drinks into the liver"
+  }
+ ],
+ "rooms": {
+  "clinic": {
+   "palette": "cream",
+   "wall": "paint",
+   "floor": "checker",
+   "window": {
+    "style": "arch",
+    "side": "left",
+    "view": "hills"
+   },
+   "layout": "desk",
+   "chart": "body",
+   "time": "day"
+  }
+ },
+ "package": {
+  "title": "What Happens When You Stop Drinking Alcohol",
+  "phrase": "what happens when you stop drinking alcohol",
+  "opener": "What happens when you stop drinking alcohol? Drinking can disrupt your sleep and stop you sleeping deeply, so cutting down should help you feel more rested when you wake up (NHS). The NHS lists other quick changes: feeling better in the mornings, being less tired during the day, better-looking skin, feeling more energetic and better weight management. If you stop drinking, your liver can often recover (NHS). But if your body is dependent on alcohol, it can be very dangerous to stop suddenly: get medical help before you stop or cut down (NHS). Withdrawal symptoms usually begin within 6 to 12 hours of the last drink (NHS). Call your emergency number (999 in the UK, 911 in the US, 112 in the EU) if someone has severe withdrawal symptoms after stopping, such as visible shaking, confusion, seeing or hearing things that are not there, or a seizure (NHS). If you are worried about your drinking, talk to a doctor or a local alcohol support service.",
+  "question": "Did you know stopping alcohol all at once can be dangerous for some people?",
+  "tags": [
+   "what happens when you stop drinking alcohol",
+   "stop drinking alcohol",
+   "quit drinking",
+   "alcohol and liver",
+   "liver recovery",
+   "alcohol withdrawal",
+   "sleep after quitting alcohol",
+   "sober",
+   "liver",
+   "health cartoon"
+  ],
+  "hashtags": "#quitdrinking #health #shorts",
+  "cover": {
+   "at": 0.8,
+   "text": "You stop drinking",
+   "accent": "stop",
+   "y": 1500
+  }
+ },
+ "retention": {
+  "noIntro": {
+   "scene": "A1",
+   "line": "Drink number four, never stop drinking. Scrub, Liver!"
+  },
+  "promise": {
+   "scene": "A1",
+   "line": "Drink number four, never stop drinking. Scrub, Liver!"
+  },
+  "question": {
+   "scene": "A2b",
+   "line": "If he'd just stop drinking, could I recover?"
+  },
+  "answer": {
+   "scene": "D3",
+   "line": "If you stop drinking, your liver can often recover."
+  },
+  "change3s": {
+   "scene": "all",
+   "line": "one action, then a hold"
+  },
+  "twist": {
+   "scene": "D4",
+   "line": "But if your body depends on alcohol, stopping suddenly can be very dangerous. Get medical help before you stop."
+  },
+  "bestLast": {
+   "scene": "D5",
+   "line": "Shaking or confusion? Get emergency help right away."
+  },
+  "loop": {
+   "scene": "E2",
+   "line": "Fine! No drink, no scrub. Bye, Liver!",
+   "kind": "callback"
+  }
+ },
+ "sources": [
+  {
+   "id": "nhs-cutting-down",
+   "label": "NHS. Tips on cutting down alcohol",
+   "url": "https://www.nhs.uk/live-well/alcohol-advice/tips-on-cutting-down-alcohol/",
+   "note": "'Although it can help some people fall asleep quickly, it can disrupt your sleep patterns and stop you sleeping deeply.' 'So cutting down on alcohol should help you feel more rested when you wake up.' The immediate effects of cutting down include: 'feeling better in the mornings', 'being less tired during the day', 'better-looking skin', 'feeling more energetic', 'better weight management'. Read on 2026-11-24."
+  },
+  {
+   "id": "nhs-alcohol-use-disorder",
+   "label": "NHS. Alcohol-use disorder: treatment",
+   "url": "https://www.nhs.uk/conditions/alcohol-misuse/treatment/",
+   "note": "'It can be very dangerous to stop drinking suddenly if you're dependent on alcohol.' 'If you get withdrawal symptoms, get medical help before you try to stop drinking.' 'Withdrawal symptoms begin within 6 to 12 hours of your last drink, and usually last from 3 to 7 days.' Call 999 or go to A&E if someone has severe withdrawal symptoms after stopping drinking alcohol, such as: 'shaking visibly', 'confusion (for example, not knowing what day it is)', 'seeing, hearing, or feeling things that are not there', 'having a seizure'. Read on 2026-11-24."
+  },
+  {
+   "id": "nhs-arld",
+   "label": "NHS. Alcohol-related liver disease",
+   "url": "https://www.nhs.uk/conditions/alcohol-related-liver-disease-arld/",
+   "note": "'If you stop drinking, your liver can often recover.' 'If you regularly drink too much alcohol it can be very dangerous to stop drinking suddenly.' 'Get medical help before you try to stop drinking.' Read on 2026-11-24."
+  }
+ ],
+ "shots": [
+  {
+   "id": "A",
+   "set": "macro",
+   "kind": "body",
+   "cast": [
+    {
+     "who": "liver",
+     "x": 540,
+     "size": 1080,
+     "stage": true,
+     "emotion": "sleepy",
+     "pose": "rest"
+    },
+    {
+     "who": "booze",
+     "x": 790,
+     "size": 300,
+     "emotion": "happy",
+     "pose": "rest"
+    }
+   ],
+   "voices": [
+    "dad"
+   ],
+   "state": {
+    "mess": 1,
+    "rain": 1
+   },
+   "events": [
+    {
+     "at": "start",
+     "act": "booze: drops in from the top of the frame, SPLASHES onto the liver's edge (splash drops fly), squashes, throws both arms up and winks",
+     "over": 80,
+     "sfx": "splash-small"
+    },
+    {
+     "at": "A1",
+     "act": "liver: jolts as the splash lands, the mop wobbles",
+     "word": "drinking"
+    },
+    {
+     "at": "A2",
+     "act": "liver: one slow, heavy mop stroke, then his eyes droop",
+     "word": "mess"
+    },
+    {
+     "at": "A2c",
+     "act": "booze: a fresh drop splats down beside him",
+     "word": "round",
+     "sfx": "drip"
+    },
+    {
+     "at": "A3",
+     "act": "liver: looks up at the voice; the falling drops stop",
+     "word": "drinks",
+     "delay": 0.8,
+     "set": {
+      "rain": 0
+     }
+    },
+    {
+     "at": "A4",
+     "act": "booze: points up, laughing",
+     "word": "Friday"
+    }
+   ],
+   "lines": [
+    {
+     "id": "A1",
+     "who": "booze",
+     "text": "Drink number four, never stop drinking. Scrub, Liver!",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "drink",
+     "chat": true,
+     "speed": 1.2,
+     "tempo": 1.15
+    },
+    {
+     "id": "A2",
+     "who": "liver",
+     "text": "More mess! I never catch up.",
+     "emotion": "sad",
+     "pose": "rest",
+     "key": "mess",
+     "chat": true,
+     "tempo": 0.9
+    },
+    {
+     "id": "A2b",
+     "who": "liver",
+     "text": "If he'd just stop drinking, could I recover?",
+     "emotion": "sad",
+     "pose": "rest",
+     "key": "recover",
+     "chat": true,
+     "tempo": 0.9
+    },
+    {
+     "id": "A2c",
+     "who": "booze",
+     "text": "Never! Here comes another round!",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "round",
+     "chat": true,
+     "speed": 1.2,
+     "tempo": 1.1
+    },
+    {
+     "id": "A3",
+     "who": "dad",
+     "text": "That's it. I'm done with drinks.",
+     "emotion": "neutral",
+     "pose": "rest",
+     "key": "done",
+     "chat": true,
+     "beat": 1.0,
+     "tempo": 1.0
+    },
+    {
+     "id": "A4",
+     "who": "booze",
+     "text": "Ha! He'll be back by Friday.",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "Friday",
+     "chat": true,
+     "tempo": 1.0
+    }
+   ]
+  },
+  {
+   "id": "K1",
+   "set": "macro",
+   "card": "THE NEXT MORNING",
+   "seconds": 0.85,
+   "same": "A",
+   "src": [
+    "nhs-cutting-down"
+   ],
+   "cast": [],
+   "lines": []
+  },
+  {
+   "id": "A",
+   "set": "macro",
+   "kind": "body",
+   "cast": [
+    {
+     "who": "liver",
+     "x": 540,
+     "size": 1080,
+     "stage": true,
+     "emotion": "happy",
+     "pose": "rest"
+    },
+    {
+     "who": "booze",
+     "x": 940,
+     "size": 160,
+     "emotion": "sad",
+     "pose": "rest"
+    }
+   ],
+   "voices": [
+    "dad",
+    "grandpa"
+   ],
+   "state": {
+    "mess": 0.15,
+    "rain": 0
+   },
+   "events": [
+    {
+     "at": "start",
+     "act": "liver: stretches both arms up, wide awake; last night's puddles still there",
+     "sfx": "ding"
+    },
+    {
+     "at": "B2",
+     "act": "liver: one big mop swipe, every puddle gone",
+     "word": "catching",
+     "set": {
+      "mess": 0
+     }
+    }
+   ],
+   "lines": [
+    {
+     "id": "B1",
+     "who": "dad",
+     "text": "Whoa. I slept so deep. I feel good!",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "slept",
+     "src": [
+      "nhs-cutting-down"
+     ],
+     "chat": true,
+     "tempo": 1.0
+    },
+    {
+     "id": "B2",
+     "who": "liver",
+     "text": "No new mess! I'm finally catching up.",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "catching",
+     "chat": true,
+     "tempo": 0.9
+    }
+   ]
+  },
+  {
+   "id": "B",
+   "set": "macro",
+   "kind": "body",
+   "cast": [
+    {
+     "who": "liver",
+     "x": 540,
+     "size": 1080,
+     "stage": true,
+     "emotion": "happy",
+     "pose": "rest"
+    },
+    {
+     "who": "booze",
+     "x": 940,
+     "size": 160,
+     "emotion": "sad",
+     "pose": "rest"
+    }
+   ],
+   "voices": [
+    "grandpa"
+   ],
+   "state": {
+    "mess": 0,
+    "rain": 0
+   },
+   "events": [
+    {
+     "at": "B3",
+     "act": "booze: shrinks smaller in the corner, waving for help",
+     "word": "friend"
+    },
+    {
+     "at": "C1",
+     "act": "liver: DROPS his mop (it clatters down), both hands up",
+     "word": "once",
+     "sfx": "bonk"
+    },
+    {
+     "at": "C3",
+     "act": "booze: rubs his hands, a sly grin",
+     "word": "bumpy"
+    }
+   ],
+   "lines": [
+    {
+     "id": "B3",
+     "who": "booze",
+     "text": "Hey! Somebody pour me a friend!",
+     "emotion": "sad",
+     "pose": "rest",
+     "key": "friend",
+     "chat": true,
+     "tempo": 1.0
+    },
+    {
+     "id": "C1",
+     "who": "grandpa",
+     "text": "I drink every day. I'll quit too, all at once!",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "once",
+     "chat": true,
+     "tempo": 1.0
+    },
+    {
+     "id": "C2",
+     "who": "liver",
+     "text": "Wait! Not like that!",
+     "emotion": "scared",
+     "pose": "rest",
+     "key": "Wait",
+     "chat": true,
+     "tempo": 1.0
+    },
+    {
+     "id": "C3",
+     "who": "booze",
+     "text": "Ooh. This could get bumpy.",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "bumpy",
+     "chat": true,
+     "tempo": 1.0
+    }
+   ]
+  },
+  {
+   "id": "D",
+   "set": "clinic",
+   "kind": "room",
+   "cast": [
+    {
+     "who": "grandpa",
+     "x": 200,
+     "size": 900
+    },
+    {
+     "who": "dad",
+     "x": 470,
+     "size": 900
+    },
+    {
+     "who": "doctor",
+     "x": 880,
+     "size": 900
+    }
+   ],
+   "events": [
+    {
+     "at": "D1",
+     "act": "dad: a hand on his side, over his liver",
+     "word": "stopped"
+    },
+    {
+     "at": "D2",
+     "act": "grandpa: a hand on his chest, worried",
+     "word": "once",
+     "delay": 0.3
+    },
+    {
+     "at": "D3",
+     "act": "doctor: nods at Dad",
+     "word": "recover"
+    },
+    {
+     "at": "D4",
+     "act": "doctor: turns to Grandpa, one open-hand gesture",
+     "word": "depends"
+    },
+    {
+     "at": "D6",
+     "act": "grandpa: nods, a hand on his chest",
+     "word": "help"
+    }
+   ],
+   "lines": [
+    {
+     "id": "D1",
+     "who": "dad",
+     "text": "Doc, I stopped. Can my liver heal?",
+     "emotion": "neutral",
+     "pose": "rest",
+     "key": "liver",
+     "chat": true,
+     "tempo": 1.0
+    },
+    {
+     "id": "D2",
+     "who": "grandpa",
+     "text": "Can I stop all at once?",
+     "emotion": "neutral",
+     "pose": "rest",
+     "key": "once",
+     "chat": true,
+     "tempo": 1.0
+    },
+    {
+     "id": "D3",
+     "who": "doctor",
+     "text": "If you stop drinking, your liver can often recover.",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "recover",
+     "src": [
+      "nhs-arld"
+     ],
+     "answer": true,
+     "tempo": 1.06
+    },
+    {
+     "id": "D4",
+     "who": "doctor",
+     "text": "But if your body depends on alcohol, stopping suddenly can be very dangerous. Get medical help before you stop.",
+     "emotion": "neutral",
+     "pose": "rest",
+     "key": "depends",
+     "src": [
+      "nhs-alcohol-use-disorder"
+     ],
+     "answer": true,
+     "care": true,
+     "tempo": 1.06
+    },
+    {
+     "id": "D5",
+     "who": "doctor",
+     "text": "Shaking or confusion? Get emergency help right away.",
+     "emotion": "neutral",
+     "pose": "rest",
+     "key": "emergency",
+     "src": [
+      "nhs-alcohol-use-disorder"
+     ],
+     "answer": true,
+     "care": true,
+     "tempo": 1.12
+    },
+    {
+     "id": "D6",
+     "who": "grandpa",
+     "text": "Then I'll stop with my doctor's help.",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "doctor",
+     "chat": true,
+     "tempo": 1.0
+    }
+   ]
+  },
+  {
+   "id": "A",
+   "set": "macro",
+   "kind": "body",
+   "cast": [
+    {
+     "who": "liver",
+     "x": 540,
+     "size": 1080,
+     "stage": true,
+     "emotion": "happy",
+     "pose": "rest"
+    },
+    {
+     "who": "booze",
+     "x": 940,
+     "size": 160,
+     "emotion": "sad",
+     "pose": "rest"
+    }
+   ],
+   "state": {
+    "mess": 0,
+    "rain": 0
+   },
+   "events": [
+    {
+     "at": "E2",
+     "act": "booze: hops down and rolls away out of the frame; the Liver waves the mop",
+     "word": "Fine",
+     "sfx": "slide-whistle-down"
+    }
+   ],
+   "lines": [
+    {
+     "id": "E1",
+     "who": "liver",
+     "text": "Hear that, Booze? With a doctor!",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "doctor",
+     "chat": true,
+     "tempo": 1.0
+    },
+    {
+     "id": "E2",
+     "who": "booze",
+     "text": "Fine! No drink, no scrub. Bye, Liver!",
+     "emotion": "sad",
+     "pose": "rest",
+     "key": "Bye",
+     "chat": true,
+     "tempo": 1.0
+    }
+   ]
+  }
+ ],
+ "cta": {
+  "read": "card",
+  "text": "Stopping alcohol? Know this. Your liver can often recover. Drink daily? Don't stop suddenly, see a doctor. Shaking or confusion? Get help now. Follow MedPeak Health for more.",
+  "src": [
+   "nhs-arld",
+   "nhs-alcohol-use-disorder"
+  ]
+ }
+}

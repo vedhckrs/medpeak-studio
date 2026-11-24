@@ -19,6 +19,7 @@ import {FASTING_CTA, FASTING_SHOTS} from './fasting';
 import {SNAKE_BITE_CTA, SNAKE_BITE_SHOTS} from './snake-bite';
 import {QUIT_SMOKING_CTA, QUIT_SMOKING_SHOTS} from './quit-smoking';
 import {BEE_STING_CTA, BEE_STING_SHOTS} from './bee-sting';
+import {STOP_ALCOHOL_CTA, STOP_ALCOHOL_SHOTS} from './stop-alcohol';
 
 export type V8VideoProps = {toon: Toon; timings: ToonTimings | null; sfx: string[]; music: string | null; bare?: boolean; /** a still (the cover): draw this frame, whatever frame is being rendered */ frameAt?: number;
   /** the impact policy (act.tsx): 'v9' for format 6; a video already out may be drawn with 'v9' for a before/after sample */ impacts?: ImpactMode};
@@ -31,12 +32,12 @@ export type ShotNow9 = ShotNow & {pass: number; state: Record<string, number>};
 export type ShotDef9 = ShotDef;
 
 /** The shots of each video, by the video's slug and the shot's id. */
-export const V8_VIDEOS: Record<string, Record<string, ShotDef>> = {rabies: RABIES_SHOTS, 'no-sleep': NO_SLEEP_SHOTS, creatine: CREATINE_SHOTS, 'quit-sugar': QUIT_SUGAR_SHOTS, fasting: FASTING_SHOTS, 'snake-bite': SNAKE_BITE_SHOTS, 'quit-smoking': QUIT_SMOKING_SHOTS, 'bee-sting': BEE_STING_SHOTS};
+export const V8_VIDEOS: Record<string, Record<string, ShotDef>> = {rabies: RABIES_SHOTS, 'no-sleep': NO_SLEEP_SHOTS, creatine: CREATINE_SHOTS, 'quit-sugar': QUIT_SUGAR_SHOTS, fasting: FASTING_SHOTS, 'snake-bite': SNAKE_BITE_SHOTS, 'quit-smoking': QUIT_SMOKING_SHOTS, 'bee-sting': BEE_STING_SHOTS, 'stop-alcohol': STOP_ALCOHOL_SHOTS};
 /** The CTA end card of each video (three strong points). */
 /** v4 (2026-11-20): the narrator (Joey, the same voice in every video) reads the card; `at` holds the second
  * of each beat in his clip (headline, the three points, the follow line), `voice` the clip, `seconds` its length. */
 export type V8Cta = {title: string; points: CtaPoint[]; voice?: string; seconds?: number; at?: CtaAt};
-export const V8_CTA: Record<string, V8Cta> = {rabies: RABIES_CTA, 'no-sleep': NO_SLEEP_CTA, creatine: CREATINE_CTA, 'quit-sugar': QUIT_SUGAR_CTA, fasting: FASTING_CTA, 'snake-bite': SNAKE_BITE_CTA, 'quit-smoking': QUIT_SMOKING_CTA, 'bee-sting': BEE_STING_CTA};
+export const V8_CTA: Record<string, V8Cta> = {rabies: RABIES_CTA, 'no-sleep': NO_SLEEP_CTA, creatine: CREATINE_CTA, 'quit-sugar': QUIT_SUGAR_CTA, fasting: FASTING_CTA, 'snake-bite': SNAKE_BITE_CTA, 'quit-smoking': QUIT_SMOKING_CTA, 'bee-sting': BEE_STING_CTA, 'stop-alcohol': STOP_ALCOHOL_CTA};
 /** The narrator starts after the card has slid in; the card holds a moment after his last word. */
 /** The music bed 10% lower than the director's levels (the owner, 2026-11-21: "background music 10% decrease"). */
 export const MUSIC_LEVEL = 0.9;

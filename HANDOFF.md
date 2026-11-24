@@ -6,6 +6,28 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-24 (42) - MacBook (local Claude Code) - branch `video/stop-alcohol` - topic 9 FINAL: scoreboard 48/48 PASS
+
+- UPLOADED private on the owner's "Yes, upload 12:30": https://youtu.be/moVAnxFAvR4, live Wed 25 Nov 12:30 IST (read back).
+  AI-use label sent, not visible on read-back: check in Studio. Topic bank #9 marked.
+- bee-sting uploaded private, live Tue 24 Nov 21:30 IST (https://youtu.be/m3gGXjGEZ5g); PR 26 merged. AI-use label sent, not
+  visible on read-back: check in Studio.
+- Topic 9 "What Happens When You Stop Drinking Alcohol" (`stop-alcohol`, NHS sources only): hook A, looks, preview approved.
+  The whole Liver (LiverFull, new `held` and `back` slots) on a NIGHT dusk rose then a MORNING sunrise place, Booze (new,
+  `stop-alcohol-art.tsx`), the mop, the clinic with Grandpa, Dad and DoctorAt. Booze's voice: Tibble Tink (picked free with
+  earshot); per-video pitch liver +2, booze +2; musicTrim -2.
+- Credits: 315 lines + 203 card + 953 music + 34 + 21 (Booze re-takes) + 173 + 157 (two shorter cards) = 1,856.
+  The hook line became "Drink number four, never stop drinking. Scrub, Liver!" (a title word by 3 s; Tibble Tink paused on "!").
+- Final `videos/stop-alcohol/renders/toon-v8.mp4` (59.5 s story + 13 s card): scoreboard 48/48, look, staging, motion, camera,
+  sound ALL PASS, listen ok (3 of 148 words heard differently, accent only), package READY. Not uploaded.
+- Owner's screenshot: "THE NEXT MORNING" ran off both edges of the time card. Fixed in the ONE card (`hud.tsx` TimeCard):
+  the size now uses the font's real width (0.82 em a capital with the spacing, it guessed 0.7), a line over 14 letters splits
+  at the middle space into two lines, and the layout log gets the true box. Every card of every future video fits.
+- The track had a 0.5 s rest inside its loop (10.8 s) that the sound check only sees after `npm run toon:music:scan`: filled
+  with a soft copy of the half second before it (-6 dB, free), rescanned; tests 80/80. Re-rendered: every check ALL PASS.
+
+---
+
 ## 2026-11-24 (41) - MacBook (local Claude Code) - branch `video/bee-sting` - a NEW doctor replaces Dr. Mira
 
 - The owner rejected the old Dr. Mira again (the clipboard three ways, then the chest "cluttered"), then: "create completely
