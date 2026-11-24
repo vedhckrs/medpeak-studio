@@ -7,7 +7,7 @@ in the story (NHS), the liver and the care point in the doctor's answer (NHS).
 import json, os
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-def L(id, who, text, emo, key, src=None, chat=False, answer=False, care=False, beat=None, pause=None):
+def L(id, who, text, emo, key, src=None, chat=False, answer=False, care=False, beat=None, pause=None, speed=None):
     l = {"id": id, "who": who, "text": text, "emotion": emo, "pose": "rest", "key": key}
     if src: l["src"] = src
     if chat: l["chat"] = True
@@ -15,6 +15,7 @@ def L(id, who, text, emo, key, src=None, chat=False, answer=False, care=False, b
     if care: l["care"] = True
     if beat: l["beat"] = beat
     if pause is not None: l["pause"] = pause
+    if speed: l["speed"] = speed  # a new take at this speaking speed (paid; toon-voice --only)
     return l
 
 def E(at, act, word=None, set=None, over=None, sfx=None, delay=None):
@@ -45,10 +46,10 @@ shots = [
      E("A4", "booze: points up, laughing", word="Friday"),
    ],
    "lines": [
-     L("A1", "booze", "Drink number four! Never stop drinking! Scrub, Liver!", "happy", "drink", chat=True),
+     L("A1", "booze", "Drink number four, never stop drinking. Scrub, Liver!", "happy", "drink", chat=True, speed=1.2),
      L("A2", "liver", "More mess! I never catch up.", "sad", "mess", chat=True),
      L("A2b", "liver", "If he'd just stop drinking, could I recover?", "sad", "recover", chat=True),
-     L("A2c", "booze", "Never! Here comes another round!", "happy", "round", chat=True),
+     L("A2c", "booze", "Never! Here comes another round!", "happy", "round", chat=True, speed=1.2),
      L("A3", "dad", "That's it. I'm done with drinks.", "neutral", "done", chat=True, beat=1.0),
      L("A4", "booze", "Ha! He'll be back by Friday.", "happy", "Friday", chat=True),
    ]},
@@ -81,7 +82,7 @@ shots = [
    ],
    "lines": [
      L("B3", "booze", "Hey! Somebody pour me a friend!", "sad", "friend", chat=True),
-     L("C1", "grandpa", "I drink every day. I'll quit too, all at once!", "happy", "once", chat=True, pause=0.4),
+     L("C1", "grandpa", "I drink every day. I'll quit too, all at once!", "happy", "once", chat=True),
      L("C2", "liver", "Wait! Not like that!", "scared", "Wait", chat=True),
      L("C3", "booze", "Ooh. This could get bumpy.", "happy", "bumpy", chat=True),
    ]},
@@ -89,16 +90,16 @@ shots = [
   {"id": "D", "set": "clinic", "kind": "room",
    "cast": [{"who": "grandpa", "x": 200, "size": 900}, {"who": "dad", "x": 470, "size": 900}, {"who": "doctor", "x": 880, "size": 900}],
    "events": [
-     E("D1", "dad: a hand on his side, over his liver", word="liver"),
-     E("D2", "grandpa: a hand on his chest, worried", word="once", delay=0.8),
+     E("D1", "dad: a hand on his side, over his liver", word="stopped"),
+     E("D2", "grandpa: a hand on his chest, worried", word="once", delay=0.3),
      E("D3", "doctor: nods at Dad", word="recover"),
      E("D4", "doctor: turns to Grandpa, one open-hand gesture", word="depends"),
      E("D6", "grandpa: nods, a hand on his chest", word="help"),
    ],
    "lines": [
      L("D1", "dad", "Doc, I stopped. Can my liver heal?", "neutral", "liver", chat=True),
-     L("D2", "grandpa", "Can I stop all at once?", "neutral", "once", chat=True, beat=1.0),
-     L("D3", "doctor", "If you stop drinking, your liver can often recover.", "happy", "recover", src=[ARLD], answer=True, pause=0.35),
+     L("D2", "grandpa", "Can I stop all at once?", "neutral", "once", chat=True),
+     L("D3", "doctor", "If you stop drinking, your liver can often recover.", "happy", "recover", src=[ARLD], answer=True),
      L("D4", "doctor", "But if your body depends on alcohol, stopping suddenly can be very dangerous. Get medical help before you stop.", "neutral", "depends", src=[AUD], answer=True, care=True),
      L("D5", "doctor", "Shaking or confusion? Get emergency help right away.", "neutral", "emergency", src=[AUD], answer=True, care=True),
      L("D6", "grandpa", "Then I'll stop with my doctor's help.", "happy", "doctor", chat=True),
@@ -122,13 +123,15 @@ toon = {
   "music": "stop-alcohol",
   # check A4 (3+ semitones apart in a scene), measured on earlier clips: Dad ~124 Hz, Grandpa ~162, the Liver ~172 at his -1, Booze ~265:
   # the Liver and Grandpa share the twist, so the Liver goes up 3 (+2 here, ~204 Hz)
-  "pitch": {"liver": 2},
+  "pitch": {"liver": 2, "booze": 2},  # booze +2: every Booze line above 250 Hz (body lines above 250 Hz were 27%, 30-55%)
+  # the track sat only 3.1 dB under the voice in the pauses (4-8): a per-video trim, as bee-sting
+  "musicTrim": -2,
   "camera": "steady", "episode": 17, "caption": 2,
   "intruder": "booze", "term": "drink",
   # a new topic track (memory: new music every video): late-night lounge turning into a sunny morning
   "musicPrompt": "Playful jazzy funk instrumental, walking upright bass, brushed drums, muted trumpet stabs and a tipsy honky-tonk piano for the sneaky Booze, 138 BPM, no lead melody in the voice range, short rests between phrases; from 20 seconds a bright sunrise lift with glockenspiel and clean guitar; from 34 seconds calm and warm for the doctor's answer; no vocals, ends on a clean button.",
   "hooks": [
-    {"line": "Drink number four! Never stop drinking! Scrub, Liver!", "why": "the owner's pick A (2026-11-24): the whole Liver fills the frame, Booze splashes down and grins at the lens"},
+    {"line": "Drink number four, never stop drinking. Scrub, Liver!", "why": "the owner's pick A (2026-11-24): the whole Liver fills the frame, Booze splashes down and grins at the lens"},
     {"line": "Please... I need one night off.", "why": "B: the exhausted Liver holds up a CLOSED sign, drops keep splashing past it"},
     {"line": "Stop drinking? Ha! Watch the liver beg.", "why": "C: Booze surfs down a waterfall of drinks into the liver"},
   ],
@@ -147,8 +150,8 @@ toon = {
     "cover": {"at": 0.8, "text": "You stop drinking", "accent": "stop", "y": 1500},  # the title low, under the Liver's face
   },
   "retention": {
-    "noIntro": {"scene": "A1", "line": "Drink number four! Never stop drinking! Scrub, Liver!"},
-    "promise": {"scene": "A1", "line": "Drink number four! Never stop drinking! Scrub, Liver!"},
+    "noIntro": {"scene": "A1", "line": "Drink number four, never stop drinking. Scrub, Liver!"},
+    "promise": {"scene": "A1", "line": "Drink number four, never stop drinking. Scrub, Liver!"},
     "question": {"scene": "A2b", "line": "If he'd just stop drinking, could I recover?"},
     "answer": {"scene": "D3", "line": "If you stop drinking, your liver can often recover."},
     "change3s": {"scene": "all", "line": "one action, then a hold"},
@@ -165,7 +168,7 @@ toon = {
      "note": "'If you stop drinking, your liver can often recover.' 'If you regularly drink too much alcohol it can be very dangerous to stop drinking suddenly.' 'Get medical help before you try to stop drinking.' Read on 2026-11-24."},
   ],
   "shots": shots,
-  "cta": {"read": "card", "text": "Stopping alcohol? Know this. Your liver can often recover. Drink daily? Don't stop suddenly, see a doctor first. Shaking or confusion? Get help now. Follow MedPeak Health for more health tips.", "src": [ARLD, AUD]},
+  "cta": {"read": "card", "text": "Stopping alcohol? Know this. Your liver can often recover. Drink daily? Don't stop suddenly, see a doctor. Shaking or confusion? Get help now. Follow MedPeak Health for more.", "src": [ARLD, AUD]},
 }
 
 # the pace per line is set on the real voices (free remix) once they exist; a first guess by role

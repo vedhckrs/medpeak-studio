@@ -186,13 +186,13 @@ const poseAt = (t: number, steps: Step[]): PoseIn => {
 };
 const ShotD: React.FC<{s: ShotNow}> = ({s}) => {
   const t = s.t;
-  const liver = at(s, 'D1', 'liver', 1.0), once = at(s, 'D2', 'once', 3.5) + 0.8, recover = at(s, 'D3', 'recover', 6.5);
+  const liver = at(s, 'D1', 'stopped', 0.8), once = at(s, 'D2', 'once', 3.5) + 0.3, recover = at(s, 'D3', 'recover', 6.5);
   const depends = at(s, 'D4', 'depends', 9), d5 = at(s, 'D5', undefined, 15), help = at(s, 'D6', 'help', 21);
   const who = s.cur?.who ?? 'dad';
   // the doctor answers Dad first (D3), then turns to Grandpa (D4-D5)
   const docTarget: [number, number] = who === 'doctor' ? (t < depends - 0.2 ? EYES.dad : EYES.grandpa) : EYES[who as keyof typeof EYES] ?? EYES.dad;
   const target = (me: 'grandpa' | 'dad'): [number, number] => (who === me ? EYES.doctor : who === 'doctor' ? EYES.doctor : EYES[who as keyof typeof EYES] ?? EYES.doctor);
-  const dadPose = poseAt(t, [[-9, 'rest'], [liver - 0.2, 'worried', 0.4], [liver + 1.6, 'rest', 0.4]]);
+  const dadPose = poseAt(t, [[-9, 'rest'], [liver - 0.1, 'worried', 0.35], [liver + 0.9, 'rest', 0.35]]);
   const gpPose = poseAt(t, [[-9, 'rest'], [once - 0.5, 'worried', 0.3], [once + 0.3, 'rest', 0.3], [help - 0.2, 'worried', 0.4], [help + 1.6, 'rest', 0.4]]);
   // the doctor: a small lean in after Grandpa's question, then ONE open-hand gesture on each later answer line, up and down in 1.5 s
   const lean = 0;

@@ -5,8 +5,10 @@
  "shape": "visit",
  "music": "stop-alcohol",
  "pitch": {
-  "liver": 2
+  "liver": 2,
+  "booze": 2
  },
+ "musicTrim": -2,
  "camera": "steady",
  "episode": 17,
  "caption": 2,
@@ -15,7 +17,7 @@
  "musicPrompt": "Playful jazzy funk instrumental, walking upright bass, brushed drums, muted trumpet stabs and a tipsy honky-tonk piano for the sneaky Booze, 138 BPM, no lead melody in the voice range, short rests between phrases; from 20 seconds a bright sunrise lift with glockenspiel and clean guitar; from 34 seconds calm and warm for the doctor's answer; no vocals, ends on a clean button.",
  "hooks": [
   {
-   "line": "Drink number four! Never stop drinking! Scrub, Liver!",
+   "line": "Drink number four, never stop drinking. Scrub, Liver!",
    "why": "the owner's pick A (2026-11-24): the whole Liver fills the frame, Booze splashes down and grins at the lens"
   },
   {
@@ -70,11 +72,11 @@
  "retention": {
   "noIntro": {
    "scene": "A1",
-   "line": "Drink number four! Never stop drinking! Scrub, Liver!"
+   "line": "Drink number four, never stop drinking. Scrub, Liver!"
   },
   "promise": {
    "scene": "A1",
-   "line": "Drink number four! Never stop drinking! Scrub, Liver!"
+   "line": "Drink number four, never stop drinking. Scrub, Liver!"
   },
   "question": {
    "scene": "A2b",
@@ -193,11 +195,12 @@
     {
      "id": "A1",
      "who": "booze",
-     "text": "Drink number four! Never stop drinking! Scrub, Liver!",
+     "text": "Drink number four, never stop drinking. Scrub, Liver!",
      "emotion": "happy",
      "pose": "rest",
      "key": "drink",
      "chat": true,
+     "speed": 1.2,
      "tempo": 1.15
     },
     {
@@ -228,6 +231,7 @@
      "pose": "rest",
      "key": "round",
      "chat": true,
+     "speed": 1.2,
      "tempo": 1.1
     },
     {
@@ -400,7 +404,6 @@
      "pose": "rest",
      "key": "once",
      "chat": true,
-     "pause": 0.4,
      "tempo": 1.0
     },
     {
@@ -450,13 +453,13 @@
     {
      "at": "D1",
      "act": "dad: a hand on his side, over his liver",
-     "word": "liver"
+     "word": "stopped"
     },
     {
      "at": "D2",
      "act": "grandpa: a hand on his chest, worried",
      "word": "once",
-     "delay": 0.8
+     "delay": 0.3
     },
     {
      "at": "D3",
@@ -493,7 +496,6 @@
      "pose": "rest",
      "key": "once",
      "chat": true,
-     "beat": 1.0,
      "tempo": 1.0
     },
     {
@@ -507,7 +509,6 @@
       "nhs-arld"
      ],
      "answer": true,
-     "pause": 0.35,
      "tempo": 1.06
     },
     {
@@ -609,7 +610,7 @@
  ],
  "cta": {
   "read": "card",
-  "text": "Stopping alcohol? Know this. Your liver can often recover. Drink daily? Don't stop suddenly, see a doctor first. Shaking or confusion? Get help now. Follow MedPeak Health for more health tips.",
+  "text": "Stopping alcohol? Know this. Your liver can often recover. Drink daily? Don't stop suddenly, see a doctor. Shaking or confusion? Get help now. Follow MedPeak Health for more.",
   "src": [
    "nhs-arld",
    "nhs-alcohol-use-disorder"
