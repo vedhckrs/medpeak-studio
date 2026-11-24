@@ -6,6 +6,22 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-24 (41) - MacBook (local Claude Code) - branch `video/bee-sting` - a NEW doctor replaces Dr. Mira
+
+- The owner rejected the old Dr. Mira again (the clipboard three ways, then the chest "cluttered"), then: "create completely
+  new". Built by a Fable 5.2 agent in this session: `src/toons/v8/doctor-new.tsx` (`DoctorAt`, `doctorHeadAt`, `doctorHandAt`;
+  views front/three-quarter both ways; poses rest/explain/point and blends; neutral/happy/concerned; talk, blink, lookAt;
+  layout-log reports as `who: 'doctor'`), sheets `entry-doctor-new.tsx` -> `out/toons/doctor-new/`.
+- Version 1 was rejected ("looks child not doctor", arm lines mixing with the coat); version 2 approved ("Yes looks good"):
+  adult proportions, a tailored coat, coat and sleeves one outline, plain chest, empty hands, brown skin.
+- bee-sting clinic (ShotD) now uses her (x 815), with short open-hand gestures on "A small swollen lump" and "get help".
+- A stock-doctor experiment (Magnific vector, animated) was made and scrapped on the owner's word; its files are deleted.
+- Weak spots the agent listed: the spread-finger open hand is busy small; her near arm is cut by the right frame edge in the
+  clinic; the coat has no shade tone; the shoulder curve has a slight kink in the front close-up.
+- Next: the bee-sting final re-render with her, every check, then upload only on the owner's word.
+
+---
+
 ## 2026-11-23 (40) - MacBook (local Claude Code) - branch `video/bee-sting` - bee-sting FINAL: scoreboard 49/49 PASS
 
 - Owner notes on the preview: a painful, damaging sting and a dramatic card hit (done); cute guards (MiniWorker redesigned:

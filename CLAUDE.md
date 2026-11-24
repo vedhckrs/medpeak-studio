@@ -105,6 +105,13 @@ Do these once on a new machine. None of it needs the old machine except step 6.
   curl read as a claw reaching forward, "hand wrong direction"), and **a hat faces the same way as the face** (the worker cap's
   sideways peak on a front face was "not looks good"), and **a held thing is held by its edge or handle** (2026-11-23: a fist
   sitting on the middle of the clipboard read as clutter): check all three at full size in every new pose or character.
+- **The doctor is the NEW doctor** (2026-11-24, the owner: "Yes looks good" on version 2): `DoctorAt` in
+  `src/toons/v8/doctor-new.tsx` (sheets: `node pipeline/toon-v8-sheets.mjs doctor-new`), an adult woman (about 5 heads tall,
+  a longer face with a jaw, collar-length hair), a plain tailored white coat drawn with its sleeves as ONE outline (no line
+  across the shoulder, an arm on the coat shows only its own outline), NOTHING on the chest and NO held prop (the owner rejected
+  every clipboard and the cluttered stethoscope, pens and grey lapels of the old Dr. Mira). Use her for the doctor in every new
+  video; the old `doctor` spec in `people-rig.tsx` stays only for videos already out. Chest extras (`extra`) and lighter skin
+  tones exist as options but were not chosen.
 - **Engine v9 and script format 6** (2026-11-23): the owner approved every recommendation of the engine study
   (`plans/engine-upgrade-2026-11-23/05-blueprint.md`, Part 3, decisions 1-28) in his words: "All 28 recommend and start 2 to 3
   agents to fix and upgrade engine and everything i want proper as per report" (`06-owner-decisions.md`). The numbers every

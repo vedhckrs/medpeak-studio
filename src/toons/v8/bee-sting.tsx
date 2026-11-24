@@ -7,7 +7,8 @@
  *       the Stinger cheers, the guards shout no; Kid: "use a card": the tweezers go; the card's edge sweeps in sideways and
  *       flicks the Stinger out of the frame.
  *   C   the lump close up (STAGES.tissue), the guard crew under the red glow; after "2 DAYS LATER" the redness is smaller.
- *   D   Dr. Mira's pale clinic: Mom, Kid (the small red lump on his hand), Mira; everyone looks at whoever speaks.
+ *   D   the doctor's pale clinic: Kid (the small red lump on his hand) and the NEW doctor (doctor-new.tsx, 2026-11-24: a plain
+ *       white coat, empty hands; one open-hand gesture on each answer line, then down); each looks at whoever speaks.
  *
  * Rules held (the pilot's lessons): a locked camera, one action then a hold, faces out of the caption band (1324-1434), the
  * listener looks at the speaker (measured eye points), hands hang naturally, no flash, no shake.
@@ -19,13 +20,14 @@ import {Burst, easeOut, hop, Marks, shake} from './act';
 import {STAGES} from './anatomy';
 import {MiniWorker} from './cells';
 import {castById, PersonAt, type PoseIn, type PoseName} from './people-rig';
+import {DoctorAt, doctorHeadAt, type DrPoseIn} from './doctor-new';
 import {PaleClinicRoom} from './scenes-rooms';
 import {CLOTH, EDGE, EDGE_IN, INK, OUTLINE, Shape, shade, tint, V9} from './kit';
 import {active, blink, bodyFace, clamp01, go, lerp, since, speaking, talkSmooth, type Focus, type ShotDef, type ShotNow} from './play';
 import {BankCard, GiantTweezers, Lump, SkinFrame, SKIN_Y, SKY, STING_AT, StingerAt, Svg} from './bee-sting-art';
 
 const Tissue = STAGES.tissue.Stage;
-const MOM = castById('mom'), KID = castById('kid'), MIRA = castById('doctor');
+const MOM = castById('mom'), KID = castById('kid');
 
 // ------------------------------------------------------------------ helpers
 const at = (s: ShotNow, id: string, word: string | undefined, dflt: number) => { const u = since(s, id, word); return u <= -900 ? dflt : s.t - u; };
@@ -194,12 +196,13 @@ const ShotC: React.FC<{s: ShotNow}> = ({s}) => {
   );
 };
 
-// =================================================================== D: Dr. Mira's clinic
-// eye points (frame pixels, from the layout log): where each looks when another speaks
-const EYES = {mom: [295, 970] as [number, number], kid: [284, 1080] as [number, number], doctor: [723, 920] as [number, number]};
+// =================================================================== D: the doctor's clinic
+const MIRA_AT = {view: 'three-quarter' as const, facing: 'left' as const, x: 815, y: 2050, scale: 3.4}; // her whole head and bun inside the frame
+// eye points (frame pixels, from the layout log; the doctor's from her own rig): where each looks when another speaks
+const DOC_FACE = doctorHeadAt(MIRA_AT);
+const EYES = {mom: [295, 970] as [number, number], kid: [284, 1080] as [number, number], doctor: [Math.round(DOC_FACE.x), Math.round(DOC_FACE.y)] as [number, number]};
 const MOM_AT = {view: 'three-quarter' as const, facing: 'right' as const, x: 235, y: 2050, scale: 3.4};
 const KID_AT = {view: 'three-quarter' as const, facing: 'right' as const, x: 300, y: 1760, scale: 3.15}; // his face clear of the caption band (1324-1434), a child's height
-const MIRA_AT = {view: 'three-quarter' as const, facing: 'left' as const, x: 835, y: 2050, scale: 3.4};
 const KID_HAND: [number, number] = [390, 1000];
 const ShotD: React.FC<{s: ShotNow}> = ({s}) => {
   const t = s.t;
@@ -209,11 +212,16 @@ const ShotD: React.FC<{s: ShotNow}> = ({s}) => {
   // he shows the lump on "lump" and lowers his hand again (an open hand held long reads as a stuck gesture: M5)
   const kidPose = poseAt(t, [[-9, 'rest'], [lump - 0.2, 'showArmUp', 0.5], [lump + 1.3, 'rest', 0.5]]);
   const lean = go(t, right - 0.2, 0.5) * (1 - go(t, right + 2.6, 0.5)) * -3;
+  // the doctor's hands hang empty; ONE open-hand gesture toward Kid on each answer line ("a small swollen lump", "get help"),
+  // up and down inside 1.5 s (an open hand held longer reads as a stuck gesture: M5), then the hold
+  const d4 = at(s, 'D4', undefined, 12), help = at(s, 'D5', 'get', 20);
+  const up = Math.max(go(t, d4 + 0.05, 0.45) * (1 - go(t, d4 + 1.15, 0.45)), go(t, help - 0.1, 0.45) * (1 - go(t, help + 1.0, 0.45)));
+  const docPose: DrPoseIn = up <= 0 ? 'rest' : {a: 'rest', b: 'explain', k: up};
   return (
     <Scene bg="#f1ede4"><V9>
       <PaleClinicRoom wall="mint" items={['door', 'chart']} />
       <div style={{position: 'absolute', inset: 0, transformOrigin: `${MIRA_AT.x}px 1900px`, transform: `rotate(${lean.toFixed(2)}deg)`}}>
-        <PersonAt spec={MIRA} {...MIRA_AT} pose="clipboard" expr={t > right - 0.2 && t < right + 1.6 ? 'happy' : 'neutral'} lookAt={target('doctor')} talk={talkSmooth(s, 'doctor')} blink={blink(t, 4)} />
+        <DoctorAt {...MIRA_AT} pose={docPose} expr={t > right - 0.2 && t < right + 1.6 ? 'happy' : 'neutral'} lookAt={target('doctor')} talk={talkSmooth(s, 'doctor')} blink={blink(t, 4)} />
       </div>
       <PersonAt spec={KID} {...KID_AT} pose={kidPose} expr={t > d6 ? 'happy' : 'worried'} lookAt={target('kid')} talk={talkSmooth(s, 'kid')} blink={blink(t, 2)}
         mark={[{kind: 'sore', at: 'handL'}]} />

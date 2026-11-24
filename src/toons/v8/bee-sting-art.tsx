@@ -15,6 +15,7 @@ import {STAGES} from './anatomy';
 import {MiniWorker} from './cells';
 import {Tweezers} from './props';
 import {castById, PersonAt} from './people-rig';
+import {DoctorAt} from './doctor-new';
 import {PaleClinicRoom} from './scenes-rooms';
 import {FrameMove, matMul, matRotate, matScale, matTranslate} from './play';
 
@@ -208,12 +209,12 @@ export const MomentLump: React.FC<{later?: boolean}> = ({later}) => (
 export const MomentLumpLater: React.FC = () => <MomentLump later />;
 /** D: the clinic: Mom, Kid showing the small red lump on his hand, Dr. Mira. */
 export const MomentClinic: React.FC = () => {
-  const mira = castById('doctor'), mom = castById('mom'), kid = castById('kid');
+  const mom = castById('mom'), kid = castById('kid');
   return (
     <Scene bg="#f1ede4"><V9>
       <PaleClinicRoom wall="mint" items={['door', 'chart']} />
       <PersonAt spec={mom} pose="worried" view="three-quarter" facing="right" expr="worried" lookAt={[520, 1040]} x={210} y={2050} scale={3.4} />
-      <PersonAt spec={mira} pose="clipboard" view="three-quarter" facing="left" expr="neutral" lookAt={[480, 1020]} x={850} y={2050} scale={3.4} />
+      <DoctorAt view="three-quarter" facing="left" expr="neutral" lookAt={[480, 1020]} x={850} y={2050} scale={3.4} />
       <PersonAt spec={kid} pose="showArm" view="three-quarter" facing="right" expr="worried" lookAt={[800, 720]} x={470} y={2050} scale={3.4}
         mark={[{kind: 'sore', at: 'handL'}]} />
     </V9></Scene>
