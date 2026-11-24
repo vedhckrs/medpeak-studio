@@ -104,3 +104,8 @@ detox claims, how much is "safe". The time card says only "THE NEXT MORNING", wh
 - Look sheets made (`node pipeline/toon-v8-sheets.mjs alcohol` -> `out/toons/sheets-v8/alcohol-place-1.jpg`, `-2.jpg`):
   the whole Liver (`LiverFull`, now with a `held` slot so a prop sits behind his hand) on a NIGHT indigo, then a MORNING
   sunrise place; Booze (new, `stop-alcohol-art.tsx`); the mop; the clinic on a cream wall with Grandpa, Dad and `DoctorAt`.
+- Look sheets approved (the owner: "Looks good, build"). Script `videos/stop-alcohol/toon.json` from
+  `plans/stop-alcohol-script.py`: gate ALL PASS (58.2 s est., inside the body 62%, answer 36 words at 66%). The hook line
+  became "Drink number four! Never stop drinking! Scrub, Liver!" (the scoreboard needs a title word, "drinking", by 3 s).
+- Shots `src/toons/v8/stop-alcohol.tsx`. Silent preview: staging, motion, camera, look ALL PASS; scoreboard 40/44 (the 4 left
+  are voice/sound rows); close-ups checked (96).

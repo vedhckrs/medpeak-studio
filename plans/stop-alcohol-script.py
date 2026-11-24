@@ -38,17 +38,17 @@ shots = [
    "state": {"mess": 1, "rain": 1},
    "events": [
      E("start", "booze: drops in from the top of the frame, SPLASHES onto the liver's edge (splash drops fly), squashes, throws both arms up and winks", over=80, sfx="splash-small"),
-     E("A1", "liver: jolts as the splash lands, the mop wobbles", word="Liver"),
+     E("A1", "liver: jolts as the splash lands, the mop wobbles", word="drinking"),
      E("A2", "liver: one slow, heavy mop stroke, then his eyes droop", word="mess"),
      E("A2c", "booze: a fresh drop splats down beside him", word="round", sfx="drip"),
      E("A3", "liver: looks up at the voice; the falling drops stop", word="drinks", delay=0.8, set={"rain": 0}),
      E("A4", "booze: points up, laughing", word="Friday"),
    ],
    "lines": [
-     L("A1", "booze", "Drink number four! Scrub faster, Liver!", "happy", "drink", chat=True),
-     L("A2", "liver", "Every night, more mess. I never catch up.", "sad", "mess", chat=True),
+     L("A1", "booze", "Drink number four! Never stop drinking! Scrub, Liver!", "happy", "drink", chat=True),
+     L("A2", "liver", "More mess! I never catch up.", "sad", "mess", chat=True),
      L("A2b", "liver", "If he'd just stop drinking, could I recover?", "sad", "recover", chat=True),
-     L("A2c", "booze", "Stop? Never! Here comes another round!", "happy", "round", chat=True),
+     L("A2c", "booze", "Never! Here comes another round!", "happy", "round", chat=True),
      L("A3", "dad", "That's it. I'm done with drinks.", "neutral", "done", chat=True, beat=1.0),
      L("A4", "booze", "Ha! He'll be back by Friday.", "happy", "Friday", chat=True),
    ]},
@@ -61,8 +61,8 @@ shots = [
    "voices": ["dad", "grandpa"],
    "state": {"mess": 0.15, "rain": 0},
    "events": [
-     E("start", "liver: stretches both arms up, wide awake; the last puddles wiped away", sfx="ding"),
-     E("B2", "liver: one big mop swipe, the last puddle gone", word="catching", set={"mess": 0}),
+     E("start", "liver: stretches both arms up, wide awake; last night's puddles still there", sfx="ding"),
+     E("B2", "liver: one big mop swipe, every puddle gone", word="catching", set={"mess": 0}),
    ],
    "lines": [
      L("B1", "dad", "Whoa. I slept so deep. I feel good!", "happy", "slept", src=[CUT], chat=True),
@@ -90,10 +90,10 @@ shots = [
    "cast": [{"who": "grandpa", "x": 200, "size": 900}, {"who": "dad", "x": 470, "size": 900}, {"who": "doctor", "x": 880, "size": 900}],
    "events": [
      E("D1", "dad: a hand on his side, over his liver", word="liver"),
-     E("D2", "doctor: smiles, steps closer to them", word="once", delay=0.8),
+     E("D2", "grandpa: a hand on his chest, worried", word="once", delay=0.8),
      E("D3", "doctor: nods at Dad", word="recover"),
      E("D4", "doctor: turns to Grandpa, one open-hand gesture", word="depends"),
-     E("D6", "grandpa: nods, a hand on his heart", word="help"),
+     E("D6", "grandpa: nods, a hand on his chest", word="help"),
    ],
    "lines": [
      L("D1", "dad", "Doc, I stopped. Can my liver heal?", "neutral", "liver", chat=True),
@@ -125,7 +125,7 @@ toon = {
   # a new topic track (memory: new music every video): late-night lounge turning into a sunny morning
   "musicPrompt": "Playful jazzy funk instrumental, walking upright bass, brushed drums, muted trumpet stabs and a tipsy honky-tonk piano for the sneaky Booze, 138 BPM, no lead melody in the voice range, short rests between phrases; from 20 seconds a bright sunrise lift with glockenspiel and clean guitar; from 34 seconds calm and warm for the doctor's answer; no vocals, ends on a clean button.",
   "hooks": [
-    {"line": "Drink number four! Scrub faster, Liver!", "why": "the owner's pick A (2026-11-24): the whole Liver fills the frame, Booze splashes down and grins at the lens"},
+    {"line": "Drink number four! Never stop drinking! Scrub, Liver!", "why": "the owner's pick A (2026-11-24): the whole Liver fills the frame, Booze splashes down and grins at the lens"},
     {"line": "Please... I need one night off.", "why": "B: the exhausted Liver holds up a CLOSED sign, drops keep splashing past it"},
     {"line": "Stop drinking? Ha! Watch the liver beg.", "why": "C: Booze surfs down a waterfall of drinks into the liver"},
   ],
@@ -144,8 +144,8 @@ toon = {
     "cover": {"at": 0.8, "text": "You stop drinking", "accent": "stop", "y": 1500},  # the title low, under the Liver's face
   },
   "retention": {
-    "noIntro": {"scene": "A1", "line": "Drink number four! Scrub faster, Liver!"},
-    "promise": {"scene": "A1", "line": "Drink number four! Scrub faster, Liver!"},
+    "noIntro": {"scene": "A1", "line": "Drink number four! Never stop drinking! Scrub, Liver!"},
+    "promise": {"scene": "A1", "line": "Drink number four! Never stop drinking! Scrub, Liver!"},
     "question": {"scene": "A2b", "line": "If he'd just stop drinking, could I recover?"},
     "answer": {"scene": "D3", "line": "If you stop drinking, your liver can often recover."},
     "change3s": {"scene": "all", "line": "one action, then a hold"},

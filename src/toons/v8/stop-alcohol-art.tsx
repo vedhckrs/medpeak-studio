@@ -19,7 +19,16 @@ import {PaleClinicRoom} from './scenes-rooms';
 import {FrameMove, matMul, matScale, matTranslate, matRotate} from './play';
 import {type ArmPose, type Gesture} from './organ-act';
 
-export const PLACE_NIGHT = '#7b7db6', PLACE_MORNING = '#f3c58c';
+export const PLACE_NIGHT = '#b8707c', PLACE_MORNING = '#f3c58c';
+/** Soft tone-on-tone shapes over the place (no outline, no shine), so no flat field is large: the body's soft wall. */
+const SOFT: [number, number, number, number, number][] = [[120, 560, 150, 95, 0], [980, 470, 130, 85, 1], [70, 1180, 120, 160, 1], [1020, 1160, 140, 120, 0], [300, 1420, 170, 90, 1],
+  [760, 1440, 190, 95, 0], [520, 1640, 200, 80, 1], [150, 1700, 140, 70, 0], [930, 1700, 150, 75, 1], [560, 470, 120, 60, 0], [880, 1000, 110, 150, 1], [230, 860, 90, 140, 0],
+  // the top band (the place's darker upper wall) broken up too
+  [170, 140, 170, 90, 1], [540, 90, 200, 80, 1], [910, 170, 160, 95, 1], [350, 330, 150, 70, 0], [740, 320, 170, 75, 0], [560, 1280, 160, 70, 0], [90, 380, 80, 70, 0], [1000, 640, 70, 90, 0],
+  [380, 1260, 110, 60, 1], [960, 1330, 100, 70, 1], [60, 1460, 90, 80, 0], [700, 1250, 90, 50, 1], [330, 1560, 120, 60, 0], [760, 1580, 120, 55, 1]];
+export const SoftBack: React.FC<{c: string}> = ({c}) => (
+  <g>{SOFT.map(([x, y, rx, ry, k], i) => <ellipse key={i} cx={x} cy={y} rx={k ? rx * 0.85 : rx} ry={k ? ry * 0.85 : ry} fill={k ? tint(c, [0.06, 0.1, 0.14][i % 3]) : shade(c, [0.05, 0.08][i % 2])} />)}</g>
+);
 /** The liver's framing (LiverFull's own default: centre 540, 960, scale 6.2); its face sits at about (317, 786). */
 const LIVER_X = 540, LIVER_Y = 960, LIVER_S = 6.2;
 const atLiver = (u: number, v: number): [number, number] => [LIVER_X + u * LIVER_S, LIVER_Y + v * LIVER_S];
@@ -135,7 +144,7 @@ export const DroppedMop: React.FC<{x: number; y: number}> = ({x, y}) => <Svg><g 
 type LiverMoment = {held?: boolean; place: string; mood: Mood; mouth: MouthKind; look: [number, number]; armL?: ArmPose | Gesture; armR?: ArmPose | Gesture; sq?: number};
 const LiverHere: React.FC<LiverMoment & {t: number}> = ({t, ...m}) => (
   <div style={{position: 'absolute', inset: 0}}>
-    <LiverFull t={t} fat={0} place={m.place} mood={m.mood} mouth={m.mouth} look={m.look} armL={m.armL} armR={m.armR} sq={m.sq ?? 0} held={m.held ? <HeldMop /> : undefined} />
+    <LiverFull t={t} fat={0} place={m.place} back={<SoftBack c={m.place} />} mood={m.mood} mouth={m.mouth} look={m.look} armL={m.armL} armR={m.armR} sq={m.sq ?? 0} held={m.held ? <HeldMop /> : undefined} />
   </div>
 );
 /** Where the Liver's right hand is for the 'rest' and 'reach' arms (the mop goes behind it). */

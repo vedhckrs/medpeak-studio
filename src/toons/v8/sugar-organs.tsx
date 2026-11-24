@@ -88,7 +88,7 @@ const FAT: [number, number, number][] = [[28, -40, 11], [54, -28, 8], [8, -12, 1
 // a faint speckle of lobules over the surface
 const SPECK: P[] = Array.from({length: 70}, (_, i): P => [-80 + rnd(i, 71) * 168, -60 + rnd(i, 72) * 108]);
 
-export const LiverFull: React.FC<V8Props & OrganActing & {t: number; fat?: number; lift?: number; place?: string; at?: [number, number, number]; held?: React.ReactNode}> = ({held, fat = 1, mood = 'sleepy', mouth = 'smile', look = [0, 0.2], lift = 0, armL, armR, sq = 0, rot = 0, place, at}) => {
+export const LiverFull: React.FC<V8Props & OrganActing & {t: number; fat?: number; lift?: number; place?: string; at?: [number, number, number]; held?: React.ReactNode; back?: React.ReactNode}> = ({held, back, fat = 1, mood = 'sleepy', mouth = 'smile', look = [0, 0.2], lift = 0, armL, armR, sq = 0, rot = 0, place, at}) => {
   const k = clamp01(fat);
   const fatty = clamp01((k - 0.4) / 0.6); // how far the colour leans to the pale, fatty liver
   const body = mix(LIVER_FULL.healthy, LIVER_FULL.fatty, fatty);
@@ -97,7 +97,7 @@ export const LiverFull: React.FC<V8Props & OrganActing & {t: number; fat?: numbe
   return (
     <Scene bg={place ?? LIVER_FULL.cavity}>
       <Layer>
-        {place ? <PlainBack c={place} /> : (<>
+        {place ? <><PlainBack c={place} />{back}</> : (<>
         {/* the back wall: soft folds and thin vessels */}
         {[[180, 1260, 260, 110], [900, 1180, 220, 90], [560, 1500, 320, 90]].map(([x, y, rx, ry], i) => <ellipse key={i} cx={x} cy={y} rx={rx} ry={ry} fill={LIVER_FULL.cavity2} />)}
         {([[[40, 1100], [160, 1180], [230, 1320]], [[1060, 1000], [960, 1100], [930, 1250]], [[300, 1420], [420, 1480], [560, 1470]]] as P[][]).map((pts, i) => (
