@@ -8,6 +8,8 @@ you stop. The rules are in `CLAUDE.md`.
 
 ## 2026-11-24 (42) - MacBook (local Claude Code) - branch `video/stop-alcohol` - topic 9 FINAL: scoreboard 48/48 PASS
 
+- UPLOADED private on the owner's "Yes, upload 12:30": https://youtu.be/moVAnxFAvR4, live Wed 25 Nov 12:30 IST (read back).
+  AI-use label sent, not visible on read-back: check in Studio. Topic bank #9 marked.
 - bee-sting uploaded private, live Tue 24 Nov 21:30 IST (https://youtu.be/m3gGXjGEZ5g); PR 26 merged. AI-use label sent, not
   visible on read-back: check in Studio.
 - Topic 9 "What Happens When You Stop Drinking Alcohol" (`stop-alcohol`, NHS sources only): hook A, looks, preview approved.

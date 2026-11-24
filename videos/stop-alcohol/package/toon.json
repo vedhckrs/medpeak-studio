@@ -29,5 +29,15 @@
     "containsSyntheticMedia": true
   },
   "relatedVideo": null,
-  "issues": []
+  "issues": [],
+  "coverSet": true,
+  "uploaded": "moVAnxFAvR4",
+  "stored": {
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "containsSyntheticMedia": null,
+    "publishAt": "2026-11-25T07:00:00Z"
+  },
+  "labelSet": true,
+  "labelConfirmed": false
 }
