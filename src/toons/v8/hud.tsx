@@ -550,14 +550,28 @@ export const TIME_CARD = {min: 0.8, max: 1.2, most: 3, bg: '#0d0a09'};
 /** The card itself. `t` is seconds since the card began: the text is there from its first frame (no pop, no fade: a cut). */
 export const TimeCard: React.FC<{text: string; t?: number; bg?: string}> = ({text, bg = TIME_CARD.bg}) => {
   const words = text.trim().toUpperCase();
-  // one line: the size shrinks for a longer line so it never wraps (about 18 characters fit at 118 px)
-  const size = Math.min(118, Math.floor(1900 / Math.max(8, words.length)));
-  const w = words.length * size * 0.7, h = size * 1.2;
+  // fit the frame (2026-11-24, the owner's screenshot: "THE NEXT MORNING" ran off both edges): the old size guessed 0.7 em a
+  // capital, but the caption font's black caps with the letter spacing run about 0.82 em. A line longer than 14 letters is
+  // split at the space nearest its middle into two balanced lines; the size is the largest that keeps the longest line
+  // inside 940 px (70 px margins), and the layout log gets the same box, so the checks see what is drawn.
+  const lines = (() => {
+    if (words.length <= 14 || !words.includes(' ')) return [words];
+    const mid = words.length / 2;
+    let best = -1;
+    for (let i = 0; i < words.length; i++) if (words[i] === ' ' && (best < 0 || Math.abs(i - mid) < Math.abs(best - mid))) best = i;
+    return [words.slice(0, best), words.slice(best + 1)];
+  })();
+  const EM = 0.82, SPACING = 2, MAXW = 940;
+  const longest = Math.max(...lines.map((l) => l.length));
+  const size = Math.min(118, Math.floor(MAXW / (longest * (EM + SPACING / 100))));
+  const w = Math.min(MAXW, longest * (size * EM + SPACING)), h = size * 1.15 * lines.length;
   useReport()({kind: 'text', box: {x0: 540 - w / 2, y0: 960 - h / 2, x1: 540 + w / 2, y1: 960 + h / 2}, text: words, id: 'timecard'});
   return (
-    <div style={{position: 'absolute', inset: 0, background: bg, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none'}}>
-      <div style={{fontFamily: FONT, fontWeight: 900, fontSize: size, lineHeight: 1, letterSpacing: 2, color: '#ffffff', whiteSpace: 'nowrap',
-        WebkitTextStroke: `${Math.round(size * 0.1)}px ${INK}`, paintOrder: 'stroke fill'}}>{words}</div>
+    <div style={{position: 'absolute', inset: 0, background: bg, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none'}}>
+      {lines.map((l, i) => (
+        <div key={i} style={{fontFamily: FONT, fontWeight: 900, fontSize: size, lineHeight: 1.15, letterSpacing: SPACING, color: '#ffffff', whiteSpace: 'nowrap',
+          WebkitTextStroke: `${Math.round(size * 0.1)}px ${INK}`, paintOrder: 'stroke fill'}}>{l}</div>
+      ))}
     </div>
   );
 };

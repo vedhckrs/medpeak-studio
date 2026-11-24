@@ -18,6 +18,11 @@ you stop. The rules are in `CLAUDE.md`.
   The hook line became "Drink number four, never stop drinking. Scrub, Liver!" (a title word by 3 s; Tibble Tink paused on "!").
 - Final `videos/stop-alcohol/renders/toon-v8.mp4` (59.5 s story + 13 s card): scoreboard 48/48, look, staging, motion, camera,
   sound ALL PASS, listen ok (3 of 148 words heard differently, accent only), package READY. Not uploaded.
+- Owner's screenshot: "THE NEXT MORNING" ran off both edges of the time card. Fixed in the ONE card (`hud.tsx` TimeCard):
+  the size now uses the font's real width (0.82 em a capital with the spacing, it guessed 0.7), a line over 14 letters splits
+  at the middle space into two lines, and the layout log gets the true box. Every card of every future video fits.
+- The track had a 0.5 s rest inside its loop (10.8 s) that the sound check only sees after `npm run toon:music:scan`: filled
+  with a soft copy of the half second before it (-6 dB, free), rescanned; tests 80/80. Re-rendered: every check ALL PASS.
 
 ---
 
