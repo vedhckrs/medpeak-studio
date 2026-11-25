@@ -1,0 +1,531 @@
+{
+ "slug": "rub-eyes",
+ "title": "What Happens When You Rub Your Eyes",
+ "format": 6,
+ "shape": "visit",
+ "music": "rub-eyes",
+ "pitch": {
+  "kid": 6,
+  "eye": 4
+ },
+ "camera": "steady",
+ "episode": 18,
+ "caption": 2,
+ "intruder": "knuckles",
+ "term": "rub eyes",
+ "musicPrompt": "Playful funk instrumental, bouncy slap bass, crisp light drums, squeaky muted trumpet and rubbery synth wobbles for the cheeky knuckles, 144 BPM, no lead melody in the voice range, short rests between phrases; from 20 seconds a tense, slower stretch with low plucks; from 30 seconds warm and calm for the doctor's answer; no vocals, ends on a clean button.",
+ "hooks": [
+  {
+   "line": "Itchy eyes? Rub, rub, rub! Harder!",
+   "why": "the owner's pick A (2026-11-25): the whole red eye fills the frame, giant knuckles press down on the lid"
+  },
+  {
+   "line": "Please don't rub me. Please don't rub.",
+   "why": "B: the watering eye looks at us as a knuckle shadow grows"
+  },
+  {
+   "line": "Knuckles reporting for eye rubbing duty!",
+   "why": "C: the knuckles crack above the eye, grinning"
+  }
+ ],
+ "rooms": {
+  "clinic": {
+   "palette": "slate",
+   "wall": "paint",
+   "floor": "wood",
+   "window": {
+    "style": "round",
+    "side": "left",
+    "view": "city"
+   },
+   "layout": "exam-bed",
+   "chart": "body",
+   "time": "day"
+  }
+ },
+ "package": {
+  "title": "What Happens When You Rub Your Eyes",
+  "phrase": "what happens when you rub your eyes",
+  "opener": "What happens when you rub your eyes? Hands carry germs, so always wash your hands before touching your eyes (NEI). Rubbing hard and often is a known problem: reviews of the research say vigorous, prolonged rubbing may thin the clear front of the eye (the cornea) and lead to keratoconus, a change in its shape, and that the habit should be controlled, especially in children and people with eye allergies (PubMed reviews, 2009 and 2019). For itchy eyes, the NHS advises not rubbing them and holding a cold flannel on them for a few minutes to cool them down. Ask for an urgent appointment (NHS 111 in the UK) if you have eye pain, sensitivity to light, changes in your vision or very red eyes; for a chemical in the eye, a sharp object, a change in sight after an injury or severe pain, go to A&E or call your emergency number (999 in the UK, 911 in the US, 112 in the EU).",
+  "question": "Did you know rubbing your eyes hard and often can change their shape?",
+  "tags": [
+   "what happens when you rub your eyes",
+   "rubbing eyes",
+   "eye rubbing",
+   "keratoconus",
+   "itchy eyes",
+   "cornea",
+   "eye health",
+   "stop rubbing your eyes",
+   "eye allergy",
+   "health cartoon"
+  ],
+  "hashtags": "#eyes #health #shorts",
+  "cover": {
+   "at": 0.8,
+   "text": "You rub your eyes",
+   "accent": "rub",
+   "y": 1500
+  }
+ },
+ "retention": {
+  "noIntro": {
+   "scene": "A1",
+   "line": "Itchy eyes? Rub, rub, rub! Harder!"
+  },
+  "promise": {
+   "scene": "A1",
+   "line": "Itchy eyes? Rub, rub, rub! Harder!"
+  },
+  "question": {
+   "scene": "A3",
+   "line": "It itches so much. Is rubbing my eyes bad?"
+  },
+  "answer": {
+   "scene": "D2",
+   "line": "Rubbing your eyes hard and often can thin the clear front of the eye and change its shape."
+  },
+  "change3s": {
+   "scene": "all",
+   "line": "one action, then a hold"
+  },
+  "twist": {
+   "scene": "D2",
+   "line": "Rubbing your eyes hard and often can thin the clear front of the eye and change its shape."
+  },
+  "bestLast": {
+   "scene": "E0",
+   "line": "Ahh. A cold flannel. Clean hands. Bliss."
+  },
+  "loop": {
+   "scene": "E2",
+   "line": "Itchy eyes? No more rub, rub, rub.",
+   "kind": "callback"
+  }
+ },
+ "sources": [
+  {
+   "id": "nei-pink-eye",
+   "label": "National Eye Institute (NIH). Pink eye",
+   "url": "https://www.nei.nih.gov/learn-about-eye-health/eye-conditions-and-diseases/pink-eye",
+   "note": "'Always wash your hands before touching your eyes.' 'Viral and bacterial pink eye spread very easily from person to person' 'Avoid touching or rubbing your eyes.' Read on 2026-11-25."
+  },
+  {
+   "id": "pubmed-31343437",
+   "label": "Ben-Eli H, Erdinest N, Solomon A. Pathogenesis and complications of chronic eye rubbing in ocular allergy. Curr Opin Allergy Clin Immunol 2019 (review)",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/31343437/",
+   "note": "'Vigorous and prolonged rubbing may lead to establishment of corneal remodeling and ectatic disorders, such as keratoconus.' '...mechanical mechanisms of corneal thinning and its loss of rigidity...' 'Strategies eliminating eye rubbing and its consequences are vital, mainly among at-risk populations, such as young children and individuals with allergic ocular disorders...' Read on 2026-11-25 (PubMed abstract)."
+  },
+  {
+   "id": "pubmed-19512912",
+   "label": "McMonnies CW. Mechanisms of rubbing-related corneal trauma in keratoconus. Cornea 2009 (review)",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/19512912/",
+   "note": "'Responses to eye rubbing (and possible causal links) may include increased corneal temperature, epithelial thinning...' 'There appear to be indications for the control of chronic habits of abnormal rubbing.' Read on 2026-11-25 (PubMed abstract)."
+  },
+  {
+   "id": "nhs-conjunctivitis",
+   "label": "NHS. Conjunctivitis",
+   "url": "https://www.nhs.uk/conditions/conjunctivitis/",
+   "note": "'Hold a cold flannel on your eyes for a few minutes to cool them down.' 'do not rub your eyes' Urgent GP / NHS 111 if you have: 'pain in your eyes', 'sensitivity to light', 'changes in your vision, like wavy lines or flashing', 'very red eyes'. Read on 2026-11-25."
+  }
+ ],
+ "shots": [
+  {
+   "id": "A",
+   "set": "macro",
+   "kind": "body",
+   "cast": [
+    {
+     "who": "eye",
+     "x": 470,
+     "size": 1080,
+     "stage": true,
+     "emotion": "scared",
+     "pose": "rest"
+    },
+    {
+     "who": "knuckles",
+     "x": 700,
+     "size": 420,
+     "emotion": "happy",
+     "pose": "rest"
+    }
+   ],
+   "voices": [
+    "kid"
+   ],
+   "state": {
+    "red": 0.8,
+    "squash": 0.7
+   },
+   "events": [
+    {
+     "at": "start",
+     "act": "knuckles: already pressing on the upper lid, press in hard; the eye squashes and squints",
+     "over": 80,
+     "sfx": "squish"
+    },
+    {
+     "at": "A1",
+     "act": "knuckles: one more hard press, the eye wobbles",
+     "word": "Harder"
+    },
+    {
+     "at": "A2",
+     "act": "eye: pushes up against the knuckles, one eye shut",
+     "word": "dome"
+    },
+    {
+     "at": "A4",
+     "act": "knuckles: three small germs hop off onto the eye",
+     "word": "friends",
+     "sfx": "pop"
+    }
+   ],
+   "lines": [
+    {
+     "id": "A1",
+     "who": "knuckles",
+     "text": "Itchy eyes? Rub, rub, rub! Harder!",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "rub",
+     "chat": true,
+     "tempo": 1.0
+    },
+    {
+     "id": "A2",
+     "who": "eye",
+     "text": "Ow! You're squishing my dome!",
+     "emotion": "scared",
+     "pose": "rest",
+     "key": "dome",
+     "chat": true,
+     "tempo": 1.0
+    },
+    {
+     "id": "A3",
+     "who": "kid",
+     "text": "It itches so much. Is rubbing my eyes bad?",
+     "emotion": "sad",
+     "pose": "rest",
+     "key": "rubbing",
+     "chat": true,
+     "tempo": 1.0
+    },
+    {
+     "id": "A4",
+     "who": "knuckles",
+     "text": "Relax. I brought friends.",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "friends",
+     "chat": true,
+     "tempo": 1.0
+    },
+    {
+     "id": "A5",
+     "who": "eye",
+     "text": "Germs?! Kid, wash those hands before you touch me!",
+     "emotion": "angry",
+     "pose": "rest",
+     "key": "Germs",
+     "chat": true,
+     "beat": 0.6,
+     "tempo": 1.0
+    }
+   ]
+  },
+  {
+   "id": "K1",
+   "set": "macro",
+   "card": "MONTHS LATER",
+   "seconds": 0.85,
+   "same": "A",
+   "src": [
+    "pubmed-31343437"
+   ],
+   "cast": [],
+   "lines": []
+  },
+  {
+   "id": "A",
+   "set": "macro",
+   "kind": "body",
+   "cast": [
+    {
+     "who": "eye",
+     "x": 470,
+     "size": 1080,
+     "stage": true,
+     "emotion": "scared",
+     "pose": "rest"
+    },
+    {
+     "who": "knuckles",
+     "x": 740,
+     "size": 420,
+     "emotion": "happy",
+     "pose": "rest"
+    }
+   ],
+   "voices": [
+    "kid"
+   ],
+   "state": {
+    "red": 0.6,
+    "squash": 0.6,
+    "cone": 1
+   },
+   "events": [
+    {
+     "at": "start",
+     "act": "eye: looks down at his pointy dome, shocked"
+    },
+    {
+     "at": "B3",
+     "act": "knuckles: freeze mid-air, then lift away up",
+     "word": "doctor",
+     "delay": 0.8
+    }
+   ],
+   "lines": [
+    {
+     "id": "B1",
+     "who": "eye",
+     "text": "Hey! Why is my dome going thin and pointy?",
+     "emotion": "scared",
+     "pose": "rest",
+     "key": "pointy",
+     "chat": true,
+     "tempo": 1.0
+    },
+    {
+     "id": "B1b",
+     "who": "knuckles",
+     "text": "Ooh, pointy. Very stylish.",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "pointy",
+     "chat": true,
+     "tempo": 1.0
+    },
+    {
+     "id": "B2",
+     "who": "knuckles",
+     "text": "Don't look at me. Keep rubbing!",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "rubbing",
+     "chat": true,
+     "tempo": 0.88
+    },
+    {
+     "id": "B2b",
+     "who": "eye",
+     "text": "Kid! Every rub squashes me!",
+     "emotion": "angry",
+     "pose": "rest",
+     "key": "squashes",
+     "chat": true,
+     "tempo": 1.0
+    },
+    {
+     "id": "B2c",
+     "who": "knuckles",
+     "text": "Squash, schmash. One more rub!",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "Squash",
+     "chat": true,
+     "tempo": 1.0
+    },
+    {
+     "id": "B3",
+     "who": "kid",
+     "text": "Hands off! I'm asking the doctor.",
+     "emotion": "neutral",
+     "pose": "rest",
+     "key": "doctor",
+     "chat": true,
+     "beat": 0.6,
+     "tempo": 1.0
+    }
+   ]
+  },
+  {
+   "id": "D",
+   "set": "clinic",
+   "kind": "room",
+   "cast": [
+    {
+     "who": "kid",
+     "x": 300,
+     "size": 700
+    },
+    {
+     "who": "doctor",
+     "x": 815,
+     "size": 900
+    }
+   ],
+   "events": [
+    {
+     "at": "D1",
+     "act": "kid: rubs one eye with his fist, then stops himself",
+     "word": "rub"
+    },
+    {
+     "at": "D3",
+     "act": "doctor: one open-hand gesture toward Kid",
+     "word": "Instead"
+    }
+   ],
+   "lines": [
+    {
+     "id": "D1",
+     "who": "kid",
+     "text": "Doc, my eyes itch all day. Is it bad to rub?",
+     "emotion": "sad",
+     "pose": "rest",
+     "key": "rub",
+     "chat": true,
+     "tempo": 0.9
+    },
+    {
+     "id": "D2",
+     "who": "doctor",
+     "text": "Rubbing your eyes hard and often can thin the clear front of the eye and change its shape.",
+     "emotion": "neutral",
+     "pose": "rest",
+     "key": "thin",
+     "src": [
+      "pubmed-31343437",
+      "pubmed-19512912"
+     ],
+     "answer": true,
+     "pause": 0.8,
+     "tempo": 0.85
+    },
+    {
+     "id": "D3",
+     "who": "doctor",
+     "text": "Instead, hold a cold flannel on them, and wash your hands before you touch them.",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "flannel",
+     "src": [
+      "nhs-conjunctivitis",
+      "nei-pink-eye"
+     ],
+     "answer": true,
+     "tempo": 0.85
+    },
+    {
+     "id": "D4",
+     "who": "doctor",
+     "text": "Eye pain, very red eyes, or changes in your vision? Get help fast.",
+     "emotion": "neutral",
+     "pose": "rest",
+     "key": "help",
+     "src": [
+      "nhs-conjunctivitis"
+     ],
+     "answer": true,
+     "care": true,
+     "tempo": 0.95
+    }
+   ]
+  },
+  {
+   "id": "B",
+   "set": "macro",
+   "kind": "body",
+   "cast": [
+    {
+     "who": "eye",
+     "x": 470,
+     "size": 1080,
+     "stage": true,
+     "emotion": "happy",
+     "pose": "rest"
+    },
+    {
+     "who": "knuckles",
+     "x": 740,
+     "size": 420,
+     "emotion": "sad",
+     "pose": "rest"
+    }
+   ],
+   "state": {
+    "red": 0.15,
+    "squash": 0,
+    "cone": 0
+   },
+   "events": [
+    {
+     "at": "E0",
+     "act": "eye: a big relieved stretch of his lids",
+     "word": "flannel"
+    },
+    {
+     "at": "E1",
+     "act": "knuckles: lift up and away out of the frame",
+     "word": "out",
+     "sfx": "slide-whistle-up"
+    }
+   ],
+   "lines": [
+    {
+     "id": "E0",
+     "who": "eye",
+     "text": "Ahh. A cold flannel. Clean hands. Bliss.",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "flannel",
+     "chat": true,
+     "tempo": 1.12
+    },
+    {
+     "id": "E0b",
+     "who": "knuckles",
+     "text": "Hey! Nobody needs me anymore?",
+     "emotion": "sad",
+     "pose": "rest",
+     "key": "Nobody",
+     "chat": true,
+     "tempo": 1.0
+    },
+    {
+     "id": "E1",
+     "who": "knuckles",
+     "text": "A cold flannel? Fine. I'm out!",
+     "emotion": "sad",
+     "pose": "rest",
+     "key": "out",
+     "chat": true,
+     "tempo": 1.0
+    },
+    {
+     "id": "E2",
+     "who": "eye",
+     "text": "Itchy eyes? No more rub, rub, rub.",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "rub",
+     "chat": true,
+     "tempo": 1.0
+    }
+   ]
+  }
+ ],
+ "cta": {
+  "read": "card",
+  "text": "Itchy eyes? Know this. Don't rub them hard. Use a cold flannel. Eye pain or vision changes? Get help fast. Follow MedPeak Health for more.",
+  "src": [
+   "pubmed-31343437",
+   "nhs-conjunctivitis"
+  ]
+ }
+}

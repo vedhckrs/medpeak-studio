@@ -70,6 +70,8 @@ export const SHEETS = [
   ['entry-bee-sting.tsx', 'BeePlaces2', 'bee-place-2'],
   ['entry-stop-alcohol.tsx', 'AlcoholPlaces1', 'alcohol-place-1'],
   ['entry-stop-alcohol.tsx', 'AlcoholPlaces2', 'alcohol-place-2'],
+  ['entry-rub-eyes.tsx', 'EyePlaces1', 'eye-place-1'],
+  ['entry-rub-eyes.tsx', 'EyePlaces2', 'eye-place-2'],
   // fasting (2026-11-22)
   ['entry-fast.tsx', 'FastCast', 'fast-cast'],
   ['entry-fast.tsx', 'FastPlace', 'fast-place'],

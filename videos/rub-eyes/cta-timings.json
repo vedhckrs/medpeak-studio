@@ -1,0 +1,133 @@
+{
+  "voice": "Joey - Upbeat Popular News Host",
+  "voiceId": "mUfWEBhcigm8YlCDbmGP",
+  "text": "Itchy eyes? Know this. Don't rub them hard. Use a cold flannel. Eye pain or vision changes? Get help fast. Follow MedPeak Health for more.",
+  "seconds": 11.7,
+  "words": [
+    {
+      "w": "Itchy",
+      "start": 0,
+      "end": 0.418
+    },
+    {
+      "w": "eyes?",
+      "start": 0.534,
+      "end": 1.324
+    },
+    {
+      "w": "Know",
+      "start": 1.498,
+      "end": 1.811
+    },
+    {
+      "w": "this.",
+      "start": 1.892,
+      "end": 2.426
+    },
+    {
+      "w": "Don't",
+      "start": 2.577,
+      "end": 2.856
+    },
+    {
+      "w": "rub",
+      "start": 2.914,
+      "end": 3.077
+    },
+    {
+      "w": "them",
+      "start": 3.135,
+      "end": 3.274
+    },
+    {
+      "w": "hard.",
+      "start": 3.344,
+      "end": 3.808
+    },
+    {
+      "w": "Use",
+      "start": 3.982,
+      "end": 4.203
+    },
+    {
+      "w": "a",
+      "start": 4.226,
+      "end": 4.261
+    },
+    {
+      "w": "cold",
+      "start": 4.342,
+      "end": 4.667
+    },
+    {
+      "w": "flannel.",
+      "start": 4.748,
+      "end": 5.399
+    },
+    {
+      "w": "Eye",
+      "start": 5.573,
+      "end": 5.817
+    },
+    {
+      "w": "pain",
+      "start": 5.863,
+      "end": 6.165
+    },
+    {
+      "w": "or",
+      "start": 6.281,
+      "end": 6.444
+    },
+    {
+      "w": "vision",
+      "start": 6.536,
+      "end": 6.838
+    },
+    {
+      "w": "changes?",
+      "start": 6.896,
+      "end": 7.57
+    },
+    {
+      "w": "Get",
+      "start": 7.744,
+      "end": 8.022
+    },
+    {
+      "w": "help",
+      "start": 8.104,
+      "end": 8.394
+    },
+    {
+      "w": "fast.",
+      "start": 8.51,
+      "end": 9.23
+    },
+    {
+      "w": "Follow",
+      "start": 9.439,
+      "end": 9.787
+    },
+    {
+      "w": "MedPeak",
+      "start": 9.857,
+      "end": 10.263
+    },
+    {
+      "w": "Health",
+      "start": 10.333,
+      "end": 10.612
+    },
+    {
+      "w": "for",
+      "start": 10.762,
+      "end": 10.948
+    },
+    {
+      "w": "more.",
+      "start": 11.006,
+      "end": 11.703
+    }
+  ]
+}
