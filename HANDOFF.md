@@ -8,6 +8,8 @@ you stop. The rules are in `CLAUDE.md`.
 
 ## 2026-11-25 (44) - MacBook (local Claude Code) - branch `video/rub-eyes` - topic 10 FINAL: scoreboard 49/49 PASS
 
+- UPLOADED private on the owner's "Yes, upload": https://youtu.be/LiPtZsxag7k, live Wed 25 Nov 21:30 IST (read back).
+  AI-use label sent, not visible on read-back: check in Studio. Topic bank #10 marked.
 - "What Happens When You Rub Your Eyes" (`rub-eyes`): the first video under the opening rules O1-O5 (all pass, L15 pass).
   Sources: NEI pink eye, NHS conjunctivitis, PubMed reviews 31343437 and 19512912 (NHS/NEI keratoconus pages had moved).
 - Looks: the owner on the first sheets: "too much lines unnecessary, not going like ref video visual"; redrawn in the
