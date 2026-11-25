@@ -3,6 +3,7 @@
  "title": "What Happens When You Quit Smoking",
  "format": 6,
  "shape": "visit",
+ "opening": "legacy",
  "music": "quit-smoking",
  "musicTrim": -3,
  "pitch": {

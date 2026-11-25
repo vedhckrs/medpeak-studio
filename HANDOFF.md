@@ -6,6 +6,23 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-25 (43) - MacBook (local Claude Code) - branch `engine/opening-upgrade` - the opening rules (retention)
+
+- The owner on the channel numbers: "what is issue", then "upgrade my engine and skill as per issue, tell me plan first",
+  then "Start build". Plan: `plans/opening-upgrade-2026-11-25.md` (frame strips in `plans/opening-upgrade/`).
+- Found: every Short gets the same first Shorts push; the weak ones (creatine, don't sleep, rabies, fasting) kept ~0.50 of
+  viewers at 15 s, the strong ones (hold your pee, cotton buds from ~/Desktop/New, quit sugar) ~0.74-0.84.
+- Built: gate rules O1-O5 (format 6, `toon-rules.mjs`, F6.open*), staging L15 (frame 1 body face 150+ px, no cut before
+  12 s, no person, 2 big faces at most, no tag/chip), scoreboard row "Opening", tests (each rule fails its own bad change;
+  the good fixture now opens inside the lungs), `publish/retention.py` (table to `plans/data/retention-<date>.md`).
+  quit-smoking carries `"opening": "legacy"` (uploaded; cut at 11.6 s). bee-sting would fail L15 (4 faces: the guard crew).
+- Layout-log bug fixed: StingerAt and BoozeAt moved their faces twice in the log (FrameMove with the drawing's own matrix);
+  now a name-only frame. With true positions, stop-alcohol's Booze touches the watermark for an instant on his exit
+  (uploaded, left as is).
+- Next: Thu 27 Nov `publish/retention.py`: do bee sting / stop drinking (inside-body openings) hold 0.70+ at 15 s?
+
+---
+
 ## 2026-11-24 (42) - MacBook (local Claude Code) - branch `video/stop-alcohol` - topic 9 FINAL: scoreboard 48/48 PASS
 
 - UPLOADED private on the owner's "Yes, upload 12:30": https://youtu.be/moVAnxFAvR4, live Wed 25 Nov 12:30 IST (read back).

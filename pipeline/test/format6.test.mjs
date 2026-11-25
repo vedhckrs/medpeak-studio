@@ -42,22 +42,38 @@ test('format 6: each S-check fails its own known-bad change of the good script',
   const bad = (edit, point) => { const t = clone(); edit(t); assert.ok(failed(t).includes(point), `${point} should fail`); };
   bad((t) => { t.shots[0].events = []; }, 'S1 Hook in the story'); // the first word comes at 0 s: no picture first
   bad((t) => { for (const s of t.shots) for (const l of s.lines) if (!l.answer) { delete l.chat; l.src = ['fx-cilia']; } }, 'S2 One story');
-  bad((t) => { t.shots[2].lines[2].who = 'dad'; t.shots[2].cast.push({who: 'dad', x: 300, size: 500}); }, 'S3 Cast returns');
-  bad((t) => { for (const l of t.shots[5].lines) delete l.care; }, 'S4 Answer block');
-  bad((t) => { t.shots[5].lines[2].text = 'Tar.'; t.shots[5].lines[1].text = 'Hairs.'; }, 'S4 Answer block');
-  bad((t) => { t.shots[2].events[0].at = 'V3'; delete t.shots[2].events[0].word; delete t.shots[2].events[0].stop; }, 'S5 Breath'); // the beat has no picture event
-  bad((t) => { t.shots[1].lines[0].text = 'Huh? He quit... so why do I still cough?'; }, 'S6 No "..." inside a line');
-  bad((t) => { t.shots[1].lines[1].text = 'Twenty years, thirty cigarettes, forty coughs, boss.'; t.shots[1].lines[1].key = 'boss'; }, 'S7 Numbers said');
-  bad((t) => { t.shots.splice(3, 2); t.retention.twist = {scene: 'V3', line: t.shots[2].lines[2].text}; }, 'S8 Places'); // one body place left in the middle
+  bad((t) => { t.shots[1].lines[2].who = 'dad'; t.shots[1].cast.push({who: 'dad', x: 300, size: 500}); }, 'S3 Cast returns');
+  bad((t) => { for (const l of t.shots[4].lines) delete l.care; }, 'S4 Answer block');
+  bad((t) => { t.shots[4].lines[2].text = 'Tar.'; t.shots[4].lines[1].text = 'Hairs.'; }, 'S4 Answer block');
+  bad((t) => { t.shots[1].events[0].at = 'V3'; delete t.shots[1].events[0].word; delete t.shots[1].events[0].stop; }, 'S5 Breath'); // the beat has no picture event
+  bad((t) => { t.shots[0].lines[1].text = 'Huh? He quit... so why do I still cough?'; }, 'S6 No "..." inside a line');
+  bad((t) => { t.shots[0].lines[2].text = 'Twenty years, thirty cigarettes, forty coughs, boss.'; t.shots[0].lines[2].key = 'boss'; }, 'S7 Numbers said');
+  bad((t) => { t.shots.splice(1, 3); t.retention.twist = {scene: 'D2', line: t.shots[1].lines[1].text}; }, 'S8 Places'); // one body place left // one body place left in the middle
   bad((t) => { delete t.intruder; }, 'S10 One real intruder');
   bad((t) => { t.shots[1].props = [{kind: 'clock', x: 300, y: 300, size: 200}]; }, 'S11 No gauges inside the body');
-  bad((t) => { t.shots[3].same = 'B'; }, 'S12 Time cards'); // the shot after the card is not B
-  bad((t) => { t.shots[3].seconds = 2; }, 'S12 Time cards');
-  bad((t) => { t.shots[1].events[1].fx = 'flash'; t.shots[2].events[1].fx = 'flash'; }, 'Impacts: one flash at most');
-  bad((t) => { t.shots[2].events[0].delay = 0; }, 'Music stops'); // the stop lands on a word
-  bad((t) => { t.shots[1].events.push({at: 'B2', word: 'stuck', act: 'crew: a second action too soon'}); }, 'One action, then a hold');
+  bad((t) => { t.shots[2].same = 'B'; }, 'S12 Time cards'); // the shot after the card is not B
+  bad((t) => { t.shots[2].seconds = 2; }, 'S12 Time cards');
+  bad((t) => { t.shots[0].events[2].fx = 'flash'; t.shots[1].events[1].fx = 'flash'; }, 'Impacts: one flash at most');
+  bad((t) => { t.shots[1].events[0].delay = 0; }, 'Music stops'); // the stop lands on a word
+  bad((t) => { t.shots[0].events.push({at: 'B2', word: 'stuck', act: 'crew: a second action too soon'}); }, 'One action, then a hold');
   bad((t) => { t.musicPrompt = 'Gentle corporate piano at 96 BPM with soft pads and a calm mood for a health video.'; }, 'Music family');
   assert.ok(failed(good, {...known, ctaSeconds: 17.8}).includes('S9 End card'));
+});
+
+test('the opening (O1-O5, 2026-11-25): each rule fails its own known-bad change of the good script', () => {
+  const clone = () => JSON.parse(JSON.stringify(good));
+  const bad = (edit, point) => { const t = clone(); edit(t); assert.ok(failed(t).includes(point), `${point} should fail`); };
+  // O1 a room or a small body opening (the weak Shorts opened on a person in a room)
+  bad((t) => { t.shots.unshift({id: 'R', set: 'home', cast: [{who: 'dad', x: 540, size: 900}], lines: [], events: []}); }, 'O1 Open inside the body');
+  bad((t) => { for (const c of t.shots[0].cast) { delete c.stage; c.size = 200; } }, 'O1 Open inside the body');
+  // O2 a cut inside the first 12 s
+  bad((t) => { const b = t.shots[0]; const keep = b.lines.slice(0, 2), rest = b.lines.slice(2); t.shots.splice(1, 0, {...JSON.parse(JSON.stringify(b)), id: 'B2', lines: rest, events: b.events.filter((e) => rest.some((l) => l.id === e.at))}); b.lines = keep; b.events = b.events.filter((e) => e.at === 'start' || keep.some((l) => l.id === e.at)); }, 'O2 One place for the first 12 s');
+  // O3 nothing of the problem showing in frame 1
+  bad((t) => { t.shots[0].state = {}; }, 'O3 The problem is drawn in frame 1');
+  // O4 a crowd in the opening
+  bad((t) => { t.shots[0].cast.push({who: 'redcell', x: 800, size: 200}); }, 'O4 Two characters at most in the opening');
+  // O5 a number chip or a clock in the opening
+  bad((t) => { t.shots[0].props = [{kind: 'clock', x: 800, y: 300, size: 200}]; }, 'O5 No numbers, clocks or gauges in the opening');
 });
 
 test('format 6 timing: 0.22 s between lines, 0.5 s after a scene, the automatic pauses, a 1 s card; format 5 unchanged', () => {
@@ -69,7 +85,7 @@ test('format 6 timing: 0.22 s between lines, 0.5 s after a scene, the automatic 
     assert.equal(l.frames, Math.round((sec(l, 2.94) + GAP + (l.line.beat ?? 0)) * TOON_FPS));
     if (i && l.si === L5.lines[i - 1].si) assert.equal(l.from, L5.lines[i - 1].from + L5.lines[i - 1].frames);
   });
-  assert.equal(L5.shots[3].frames, Math.round(1.0 * TOON_FPS), 'the card keeps its own seconds');
+  assert.equal(L5.shots[2].frames, Math.round(1.0 * TOON_FPS), 'the card keeps its own seconds');
   // format 6
   // the estimate before voicing: each speaker's measured pace (WPS6_BY: body, person, doctor) and the line's own tempo
   L6.lines.forEach((l) => assert.equal(l.frames, Math.round((sec(l, wps6Of(l.line.who)) / Math.max(0.85, Math.min(1.15, l.line.tempo ?? 1)) + FORMAT6.gap + (l.line.beat ?? 0)) * TOON_FPS)));
@@ -78,11 +94,11 @@ test('format 6 timing: 0.22 s between lines, 0.5 s after a scene, the automatic 
   assert.equal(at('D2').from - prevEnd('D2'), Math.round(FORMAT6.pause.answer * TOON_FPS), 'a pause before the answer block');
   assert.equal(at('B2').from - prevEnd('B2'), Math.round(FORMAT6.pause.shock * TOON_FPS), 'a pause after a shocked line');
   assert.equal(at('A1').from, Math.round(FORMAT6.pause.firstEvent * TOON_FPS), 'the picture acts first');
-  const last = L6.lines.filter((l) => l.si === 1).pop();
-  assert.equal(L6.shots[1].from + L6.shots[1].frames - (last.from + last.frames), Math.round(FORMAT6.shotGap * TOON_FPS));
+  const last = L6.lines.filter((l) => l.si === 0).pop();
+  assert.equal(L6.shots[0].from + L6.shots[0].frames - (last.from + last.frames), Math.round(FORMAT6.shotGap * TOON_FPS));
   assert.equal(SHOT_GAP, 0.25);
   const card = {...good, shots: good.shots.map((s) => (s.card ? {...s, seconds: undefined} : s))};
-  assert.equal(layoutToon(card, null).shots[3].frames, Math.round(FORMAT6.card * TOON_FPS), 'a format-6 card lasts 1 s by default');
+  assert.equal(layoutToon(card, null).shots[2].frames, Math.round(FORMAT6.card * TOON_FPS), 'a format-6 card lasts 1 s by default');
 });
 
 test('format 6 sound: the bed about 5 dB up in the pauses, a 3 dB dip under words over 0.25 s, silent in a planned stop', () => {

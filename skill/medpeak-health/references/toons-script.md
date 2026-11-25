@@ -4,6 +4,29 @@ A Toon is one file, `videos/<slug>/toon.json`. Before a single credit is spent i
 `node pipeline/toon-check.mjs <slug>` (free, instant). The gate uses the same director as the
 player (`src/toons/director.ts`), so what it measures is what gets rendered.
 
+## The first 12 seconds (the owner, 2026-11-25: "upgrade my engine and skill as per issue")
+
+Why: YouTube's retention curves (`publish/retention.py`) showed every Short gets the same first push from the Shorts feed
+(about 1,200-1,600 views), and the weak ones lost half their viewers by 15 s while the strong ones kept about 0.75. The
+strong openings (hold your pee, cotton buds, quit sugar) open INSIDE the body on one big organ face with the problem already
+drawn and hold that one place; the weak ones (creatine, don't sleep, rabies, fasting) open on a person in a room, cut 4-5
+times and fill the frame with small characters and number chips. Frame strips: `plans/opening-upgrade/`. Plan:
+`plans/opening-upgrade-2026-11-25.md`.
+
+The rules, in the script gate (`toon-check`, format 6) and on the render (`toon-staging` L15, the scoreboard's "Opening"):
+- **O1 Open inside the body.** The first shot is a body place; the hero organ fills the frame (`"stage": true`, or 450+ px)
+  with its face toward the lens; on the render, frame 1 has a body face 150+ px wide. A person or a room never opens.
+- **O2 One place for the first 12 s.** No cut, no time card, the camera holds.
+- **O3 The problem is drawn in frame 1.** The first shot's `state` already shows it (a level, a swelling, a mess, tar).
+- **O4 Two characters at most** in the first 12 s (the organ and one intruder; crews and crowds later). On the render: two
+  faces 100+ px at most, and no person's face.
+- **O5 No numbers, clocks, gauges or chips** in the first 12 s; one place tag is fine.
+
+People scenes (the consequence at home, the clinic) come after the opening. Look sheets show the opening frame first.
+Videos uploaded before the rule carry `"opening": "legacy"` and are not checked (uploaded videos are never re-made).
+Every Tuesday: `~/.config/youtube-analytics/venv/bin/python publish/retention.py` -> `plans/data/retention-<date>.md`;
+the target is 0.70+ still watching at 15 s.
+
 ## Format 6: one story (`"format": 6`, engine v9, the owner, 2026-11-23)
 
 The owner approved every recommendation of `plans/engine-upgrade-2026-11-23/05-blueprint.md` ("All 28 recommend and start

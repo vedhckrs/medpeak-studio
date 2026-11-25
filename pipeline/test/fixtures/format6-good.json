@@ -105,42 +105,6 @@
  ],
  "shots": [
   {
-   "id": "A",
-   "set": "home",
-   "kind": "room",
-   "cast": [
-    {
-     "who": "dad",
-     "x": 540,
-     "size": 600
-    }
-   ],
-   "events": [
-    {
-     "at": "start",
-     "act": "dad: snaps the cigarette in half",
-     "over": 30,
-     "sfx": "pop"
-    },
-    {
-     "at": "A1",
-     "word": "Done!",
-     "act": "dad: the dive into his chest starts",
-     "over": 27
-    }
-   ],
-   "lines": [
-    {
-     "id": "A1",
-     "who": "dad",
-     "text": "Last one, I quit smoking! Done!",
-     "emotion": "angry",
-     "chat": true,
-     "key": "done"
-    }
-   ]
-  },
-  {
    "id": "B",
    "set": "lungs",
    "kind": "body",
@@ -159,8 +123,15 @@
    "events": [
     {
      "at": "start",
-     "act": "lungs: the dive lands, a dusty cough",
-     "over": 20
+     "act": "dad: snaps the cigarette in half",
+     "over": 30,
+     "sfx": "pop"
+    },
+    {
+     "at": "A1",
+     "word": "Done!",
+     "act": "dad: the dive into his chest starts",
+     "over": 27
     },
     {
      "at": "B2",
@@ -174,6 +145,14 @@
     }
    ],
    "lines": [
+    {
+     "id": "A1",
+     "who": "dad",
+     "text": "Last one, I quit smoking! Done!",
+     "emotion": "angry",
+     "chat": true,
+     "key": "done"
+    },
     {
      "id": "B1",
      "who": "lungs",
@@ -222,7 +201,13 @@
      "chat": true,
      "key": "brooms"
     }
-   ]
+   ],
+   "voices": [
+    "dad"
+   ],
+   "state": {
+    "tar": 0.9
+   }
   },
   {
    "id": "V",

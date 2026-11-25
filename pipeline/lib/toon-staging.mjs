@@ -327,6 +327,30 @@ export const scanLayout = (log) => {
     if (wall) l12.push({t: p.t, shot: p.shot, what: 'a bubble on a wall item'});
   }
   res('L12', 'Bubbles keep their trail, off wall items', l12, {note: all('bubble').length ? undefined : 'no bubbles on screen'});
+  // L15 the opening (2026-11-25, plans/opening-upgrade-2026-11-25.md): the weak Shorts lost half their viewers by 15 s; the
+  // strong ones opened on ONE big body face, held one place, with no people, chips or crowds. Format 6 only (older videos
+  // were made before the rule). Screen sizes: a box times the camera zoom.
+  if ((log.format ?? 0) >= 6 && story.length) {
+    const O = {hold: 12, hero: 150, big: 100, faces: 2};
+    const PEOPLE_IDS = new Set(['doctor', 'patient', 'mom', 'kid', 'grandpa', 'baby', 'dad']);
+    const open = story.filter((p) => p.t < O.hold);
+    const l15 = [];
+    const p0 = story[0];
+    const z0 = p0.cam?.z ?? 1;
+    const hero = p0.items.filter((i) => i.kind === 'face' && !PEOPLE_IDS.has(i.who)).map((i) => (i.box[2] - i.box[0]) * z0);
+    if (!hero.length || Math.max(...hero) < O.hero) l15.push({t: p0.t, shot: p0.shot, what: `frame 1 has no body face ${O.hero}+ px wide (largest ${hero.length ? Math.round(Math.max(...hero)) : 0} px)`});
+    const cut = (log.shots ?? []).find((sh, i) => i > 0 && sh.id !== log.shots[0].id);
+    if (cut && cut.from < O.hold) l15.push({t: cut.from, shot: cut.id, what: `the first cut at ${cut.from.toFixed(1)} s (${O.hold} s or later)`});
+    for (const p of open) {
+      const people = p.items.filter((i) => i.kind === 'face' && PEOPLE_IDS.has(i.who));
+      if (people.length) l15.push({t: p.t, shot: p.shot, what: `a person in the opening (${people.map((i) => i.who).join(', ')})`});
+      const big = new Set(p.items.filter((i) => i.kind === 'face' && (i.box[2] - i.box[0]) * (p.cam?.z ?? 1) >= O.big).map((i) => i.who ?? i.body ?? i.chain?.join('/')));
+      if (big.size > O.faces) l15.push({t: p.t, shot: p.shot, what: `${big.size} faces on screen (${O.faces} at most in the opening)`});
+      const chips = p.items.filter((i) => ['tag', 'chip', 'gauge'].includes(i.kind));
+      if (chips.length) l15.push({t: p.t, shot: p.shot, what: `${chips.map((i) => i.kind).join(', ')} in the opening`});
+    }
+    res('L15', 'The opening: one body face, one place, 12 s', l15, {note: `the first ${O.hold} s: a body face ${O.hero}+ px in frame 1, no cut, no person, ${O.faces} big faces at most, no tag or chip`});
+  } else res('L15', 'The opening: one body face, one place, 12 s', [], {measured: false, note: 'format 6 videos only'});
   res('L13', 'The cover frame is clean', [], {measured: false, note: 'measured by toon-package when it picks the cover (phase 6)'});
   res('L14', 'The symptom shows on the patient', [], {measured: false, note: 'needs the rig\'s `mark` (phase 2) and a `symptom` event'});
   return {checks: R, ok: R.every((c) => c.status !== 'fail'), shimmed: anyShim};

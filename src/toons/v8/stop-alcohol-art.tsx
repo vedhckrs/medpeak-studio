@@ -16,7 +16,7 @@ import {LiverFull} from './sugar-organs';
 import {castById, PersonAt} from './people-rig';
 import {DoctorAt} from './doctor-new';
 import {PaleClinicRoom} from './scenes-rooms';
-import {FrameMove, matMul, matScale, matTranslate, matRotate} from './play';
+import {FrameMove, IDENTITY} from './play';
 import {type ArmPose, type Gesture} from './organ-act';
 
 export const PLACE_NIGHT = '#b8707c', PLACE_MORNING = '#f3c58c';
@@ -74,7 +74,7 @@ export const Booze: React.FC<{mood?: Mood; mouth?: MouthKind; look?: [number, nu
   );
 };
 export const BoozeAt: React.FC<React.ComponentProps<typeof Booze> & {x: number; y: number; scale?: number; rot?: number}> = ({x, y, scale = 1, rot = 0, ...p}) => (
-  <FrameMove m={matMul(matMul(matTranslate(x, y), matRotate(rot)), matScale(scale))} who="booze">
+  <FrameMove m={IDENTITY} who="booze">
     <Svg><g transform={`translate(${x} ${y}) rotate(${rot}) scale(${scale})`}><Booze {...p} /></g></Svg>
   </FrameMove>
 );

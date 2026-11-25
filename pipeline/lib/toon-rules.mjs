@@ -428,6 +428,9 @@ export const F6 = {
   bodyPlaces: [2, 4], rooms: 2, inside: 0.6, switches: 3, placeSeconds: 8,
   endCard: 6, endShare: 0.12, cards: 3, cardSeconds: [0.8, 1.2], flashes: 1, stops: 2, hold: 1.5,
   bpm: [130, 165],
+  // the opening (2026-11-25, plans/opening-upgrade-2026-11-25.md): the weak Shorts lost half their viewers by 15 s, the strong
+  // ones opened inside the body on one big organ face and held one place; O1-O5 below
+  openHold: 12, openCast: 2, openHeroSize: 450,
 };
 /** The verbs (or "that's why") the answer block must use to give ONE thing to do. */
 export const ACTION_WORDS = ['take', 'drink', 'cut', 'keep', 'ask', 'wait', 'see', 'stop', 'call', 'quit', 'wash', 'eat', 'sleep', 'walk', 'get', 'try', 'use', 'check'];
@@ -625,6 +628,30 @@ export const checkFormat6 = (toon, L, {voiced, known, add}) => {
     else for (const id of s.src) if (!srcIds.has(id)) s12.push(`${s.id}: unknown source "${id}"`);
   }
   add('format', 'S12 Time cards', !s12.length, s12.length ? s12.join('; ') : `${cards.length} card(s): ${cards.map(({s}) => `"${s.card}" back to ${s.same}`).join(', ') || 'none'}`);
+
+  // ---- O1-O5 the opening (2026-11-25): the first 12 s decide whether the Shorts feed keeps showing a video
+  // a video made and uploaded before the rule carries "opening": "legacy" (uploaded videos are not re-made: the owner's rule)
+  if (toon.opening === 'legacy') for (const p of ['O1 Open inside the body', 'O2 One place for the first 12 s', 'O3 The problem is drawn in frame 1', 'O4 Two characters at most in the opening', 'O5 No numbers, clocks or gauges in the opening']) add('format', p, true, 'made before the opening rules (2026-11-25): not checked', true);
+  else {
+  const open0 = L.shots.find((sh) => kindOf(sh.shot) !== 'card') ?? L.shots[0];
+  const s0 = open0?.shot ?? {};
+  const k0 = kindOf(s0);
+  const BODYLESS = new Set([...PEOPLE, 'dad', 'narrator']);
+  const hero = (s0.cast ?? []).filter((c) => !BODYLESS.has(c.who) && (c.stage || (c.size ?? 0) >= F6.openHeroSize));
+  add('format', 'O1 Open inside the body', k0 !== 'room' && hero.length > 0,
+    k0 === 'room' ? `the video opens in a room (shot ${s0.id}): open inside the body on the hero organ, people come later`
+      : hero.length ? `opens in ${s0.id} on ${hero.map((c) => c.who).join(', ')} (a whole-organ stage or ${F6.openHeroSize}+ px)` : `shot ${s0.id} has no big body character: the hero organ fills the frame ("stage": true) or is ${F6.openHeroSize}+ px`);
+  // the first cut: the end of the first place (a time card is a cut too)
+  const firstCut = (L.shots.find((sh) => sh.from > open0.from && sh.shot.id !== s0.id)?.from ?? L.total) / TOON_FPS;
+  add('format', 'O2 One place for the first 12 s', firstCut >= F6.openHold - 1e-6, `the first cut comes at ${firstCut.toFixed(1)} s (${F6.openHold} s or later: hold one place)`);
+  const st0 = Object.entries(s0.state ?? {}).filter(([, v]) => Number(v) > 0);
+  add('format', 'O3 The problem is drawn in frame 1', st0.length > 0, st0.length ? `${s0.id} opens with ${st0.map(([k, v]) => `${k} ${v}`).join(', ')}` : `shot ${s0.id} starts with no state showing: set its "state" so the problem is on screen from frame 1 (a level, a swelling, a mess)`);
+  const cast0 = (s0.cast ?? []).length;
+  add('format', 'O4 Two characters at most in the opening', cast0 <= F6.openCast, `${cast0} character(s) on screen in ${s0.id} (${F6.openCast} at most; crowds come later)`);
+  const chips0 = (s0.props ?? []).filter((p) => [...GAUGE_PROPS, 'chip'].includes(p.kind));
+  const tags0 = (s0.props ?? []).filter((p) => p.kind === 'tag');
+  add('format', 'O5 No numbers, clocks or gauges in the opening', !chips0.length && tags0.length <= 1, chips0.length || tags0.length > 1 ? `${s0.id}: ${[...chips0, ...tags0.slice(1)].map((p) => p.kind).join(', ')} (one place tag at most)` : 'no chip, clock or gauge; one place tag at most');
+  }
 
   // ---- impacts, music stops, one action then a hold, the music family
   const flashes = shots.flatMap((s) => (s.events ?? []).filter((e) => e.fx).map((e) => ({s, e})));
