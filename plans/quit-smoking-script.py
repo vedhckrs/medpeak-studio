@@ -114,7 +114,7 @@ shots = [
 ]
 
 toon = {
-  "slug": "quit-smoking", "title": "What Happens When You Quit Smoking", "format": 6, "shape": "visit",
+  "slug": "quit-smoking", "title": "What Happens When You Quit Smoking", "format": 6, "shape": "visit", "opening": "legacy",  # uploaded before the opening rules (2026-11-25)
   "music": "quit-smoking", "musicTrim": -3,
   # check A4 (the pitch reader, 2026-11-23): Lungs 227 Hz and Sweep 253 Hz were 1.9 semitones apart in the chest: Lungs lower
   "pitch": {"lungs": -2, "crew": 1}, "camera": "steady", "episode": 15, "caption": 2,

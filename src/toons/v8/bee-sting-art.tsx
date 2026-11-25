@@ -17,7 +17,7 @@ import {Tweezers} from './props';
 import {castById, PersonAt} from './people-rig';
 import {DoctorAt} from './doctor-new';
 import {PaleClinicRoom} from './scenes-rooms';
-import {FrameMove, matMul, matRotate, matScale, matTranslate} from './play';
+import {FrameMove, IDENTITY, matMul, matRotate, matScale, matTranslate} from './play';
 
 const Skin = STAGES.skinSection.Stage, Tissue = STAGES.tissue.Stage;
 export const SKIN_Y = 250;
@@ -157,7 +157,7 @@ export const Svg: React.FC<{children: React.ReactNode}> = ({children}) => (
 );
 export const StingerAt: React.FC<React.ComponentProps<typeof Stinger> & {x?: number; y?: number; rot?: number; scale?: number}> = ({x = STING_AT[0], y = STING_AT[1], rot = 0, scale = 1, ...p}) => (
   // the log gets the same move as the drawing (the face and eyes then sit where they are drawn)
-  <FrameMove m={matMul(matMul(matTranslate(x, y), matRotate(rot)), matScale(scale))} who="stinger"><Svg><g transform={`translate(${x} ${y}) rotate(${rot}) scale(${scale})`}><Stinger {...p} /></g></Svg></FrameMove>
+  <FrameMove m={IDENTITY} who="stinger"><Svg><g transform={`translate(${x} ${y}) rotate(${rot}) scale(${scale})`}><Stinger {...p} /></g></Svg></FrameMove>
 );
 
 /** A1: the hook: the Stinger has just speared in and grins at the lens; the guards jump. */

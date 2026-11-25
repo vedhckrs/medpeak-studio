@@ -164,6 +164,9 @@ export const scoreRows = ({log, pic, staging, motion, camera, script: S, media, 
   add('Sound', 'Music in pauses, under the voice', '2.7 dB', '4-8 dB', '6 dB', gapDb ? `${r1(gapDb)} dB` : 'not measured', gapDb ? gapDb >= 4 && gapDb <= 8 : null, {note: Number.isFinite(toon?.__pauseUnder) ? 'toon:sound' : 'needs real pauses; the mix check (phase 5)'});
   add('Sound', 'Loudness / true peak', '-9.4', '-14±1 / -1', 'beat: -14, 0 clips', sound.lufs === null ? '-' : `${r1(sound.lufs)}/${r1(sound.tp)}`, sound.lufs === null ? null : Math.abs(sound.lufs + 14) <= 1 && sound.tp <= -0.9);
   add('Sound', 'Loudness range', '5.9 LU', '4-8 LU', '6', sound.lra === null ? '-' : `${r1(sound.lra)} LU`, sound.lra === null ? null : sound.lra >= 4 && sound.lra <= 8);
+  // Opening (2026-11-25): the weak Shorts lost half their viewers by 15 s; the staging scan's L15 measures the first 12 s
+  add('Opening', 'One body face, one place, first 12 s (L15)', 'strong: 0.74 still watching at 15 s', '0 problems', '0', L('L15').status === 'n/m' ? 'not measured' : String(L('L15').episodes), L('L15').status === 'n/m' ? null : L('L15').status === 'pass',
+    {note: 'a body face 150+ px in frame 1, no cut before 12 s, no person, 2 big faces at most, no tag or chip'});
   // Finish
   const tail = media.duration - (S.lastWord ?? log.story);
   // the owner (2026-11-23): Joey reads the whole card again ("cta": {"read": "card"}): the card runs his clip (16 s at most)

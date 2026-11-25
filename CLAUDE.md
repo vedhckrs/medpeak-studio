@@ -205,6 +205,12 @@ Do these once on a new machine. None of it needs the old machine except step 6.
   scenes (no transitions). No flicker: nothing appears or vanishes in one frame. The story stays under 60 s (format 6: 50-60 s);
   the narrator is never cut or sped up. Clothes changes must read at phone size. All the version 4 rules, with the code:
   `skill/medpeak-health/references/toons-v8-style.md`. (2026-11-20, 2026-11-23)
+- **The first 12 seconds** (2026-11-25, the owner: "upgrade my engine and skill as per issue"): the weak Shorts lost half
+  their viewers by 15 s (YouTube retention), the strong ones opened inside the body on one big organ face and held one
+  place. Every new video opens inside the body with the hero organ filling the frame, the problem drawn from frame 1, one
+  place and two characters at most for 12 s, no person, chip, clock or gauge (gate O1-O5, staging L15, scoreboard
+  "Opening"). Retention table every Tuesday: `publish/retention.py`. `skill/medpeak-health/references/toons-script.md`,
+  "The first 12 seconds".
 - **The script, format 6** (2026-11-23, decisions 1-5): one story with one question and one answer, at most 3 sourced facts
   in the whole story (at least 2 in the answer; the rest go to the description), at most 4 speaking characters plus the doctor,
   each with 3 lines or more; Dr. Mira in most videos (shape `visit`, about 7 in 10) with one calm, slower answer block of
