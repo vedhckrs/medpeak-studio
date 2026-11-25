@@ -4,6 +4,10 @@
  "format": 6,
  "shape": "visit",
  "music": "rub-eyes",
+ "pitch": {
+  "kid": 6,
+  "eye": 2
+ },
  "camera": "steady",
  "episode": 18,
  "caption": 2,
@@ -157,13 +161,13 @@
    "events": [
     {
      "at": "start",
-     "act": "knuckles: come down hard on the upper lid and grind in a circle; the eye squashes and squints",
+     "act": "knuckles: already pressing on the upper lid, press in hard; the eye squashes and squints",
      "over": 80,
      "sfx": "squish"
     },
     {
      "at": "A1",
-     "act": "knuckles: one more big circle, the eye wobbles",
+     "act": "knuckles: one more hard press, the eye wobbles",
      "word": "Harder"
     },
     {
@@ -226,9 +230,7 @@
      "emotion": "angry",
      "pose": "rest",
      "key": "Germs",
-     "src": [
-      "nei-pink-eye"
-     ],
+     "chat": true,
      "beat": 0.6,
      "tempo": 1.05
     }
@@ -272,7 +274,7 @@
    ],
    "state": {
     "red": 0.6,
-    "squash": 0,
+    "squash": 0.6,
     "cone": 1
    },
    "events": [
@@ -392,8 +394,8 @@
       "pubmed-19512912"
      ],
      "answer": true,
-     "pause": 0.8,
-     "tempo": 1.0
+     "pause": 1.2,
+     "tempo": 0.92
     },
     {
      "id": "D3",
@@ -407,7 +409,7 @@
       "nei-pink-eye"
      ],
      "answer": true,
-     "tempo": 1.0
+     "tempo": 0.92
     },
     {
      "id": "D4",
@@ -421,7 +423,7 @@
      ],
      "answer": true,
      "care": true,
-     "tempo": 1.0
+     "tempo": 0.92
     },
     {
      "id": "D5",

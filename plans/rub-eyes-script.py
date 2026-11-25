@@ -39,8 +39,8 @@ shots = [
    "voices": ["kid"],  # heard from outside
    "state": {"red": 0.8, "squash": 0.7},
    "events": [
-     E("start", "knuckles: come down hard on the upper lid and grind in a circle; the eye squashes and squints", over=80, sfx="squish"),
-     E("A1", "knuckles: one more big circle, the eye wobbles", word="Harder"),
+     E("start", "knuckles: already pressing on the upper lid, press in hard; the eye squashes and squints", over=80, sfx="squish"),
+     E("A1", "knuckles: one more hard press, the eye wobbles", word="Harder"),
      E("A2", "eye: pushes up against the knuckles, one eye shut", word="dome"),
      E("A4", "knuckles: three small germs hop off onto the eye", word="friends", sfx="pop"),
    ],
@@ -49,7 +49,7 @@ shots = [
      L("A2", "eye", "Ow! You're squishing my dome!", "scared", "dome", chat=True),
      L("A3", "kid", "It itches so much. Is rubbing my eyes bad?", "sad", "rubbing", chat=True),
      L("A4", "knuckles", "Relax. I brought friends.", "happy", "friends", chat=True),
-     L("A5", "eye", "Germs?! Kid, wash those hands before you touch me!", "angry", "Germs", src=[NEI], beat=0.6),
+     L("A5", "eye", "Germs?! Kid, wash those hands before you touch me!", "angry", "Germs", chat=True, beat=0.6),
    ]},
   {"id": "K1", "set": "macro", "card": "MONTHS LATER", "seconds": 0.85, "same": "A", "src": [RUB1], "cast": [], "lines": []},
   # A again: the same framing, months of hard rubbing later: the dome thinner and pointed (the knuckles hovering above).
@@ -57,7 +57,7 @@ shots = [
    "cast": [{"who": "eye", "x": 470, "size": 1080, "stage": True, "emotion": "scared", "pose": "rest"},
             {"who": "knuckles", "x": 740, "size": 420, "emotion": "happy", "pose": "rest"}],
    "voices": ["kid"],
-   "state": {"red": 0.6, "squash": 0, "cone": 1},
+   "state": {"red": 0.6, "squash": 0.6, "cone": 1},
    "events": [
      E("start", "eye: looks down at his pointy dome, shocked"),
      E("B3", "knuckles: freeze mid-air, then lift away up", word="doctor", delay=0.8),
@@ -78,7 +78,7 @@ shots = [
    ],
    "lines": [
      L("D1", "kid", "Doc, my eyes itch all day. Is it bad to rub?", "sad", "rub", chat=True),
-     L("D2", "doctor", "Rubbing your eyes hard and often can thin the clear front of the eye and change its shape.", "neutral", "thin", src=[RUB1, RUB2], answer=True, pause=0.8),
+     L("D2", "doctor", "Rubbing your eyes hard and often can thin the clear front of the eye and change its shape.", "neutral", "thin", src=[RUB1, RUB2], answer=True, pause=1.2),
      L("D3", "doctor", "Instead, hold a cold flannel on them, and wash your hands before you touch them.", "happy", "flannel", src=[CONJ, NEI], answer=True),
      L("D4", "doctor", "Eye pain, very red eyes, or changes in your vision? Get help fast.", "neutral", "help", src=[CONJ], answer=True, care=True),
      L("D5", "kid", "So: cold flannel, not knuckles!", "happy", "flannel", chat=True),
@@ -103,6 +103,9 @@ shots = [
 toon = {
   "slug": "rub-eyes", "title": "What Happens When You Rub Your Eyes", "format": 6, "shape": "visit",
   "music": "rub-eyes",
+  # A4: Kid ~210 Hz at 0 (Jessica), the doctor ~213: Kid +6 (~296, as in bee-sting); the Eye (Mark ~349) +2 (~392), 4.9 st over Kid;
+  # the Knuckles (Jerry B. ~166) 10+ st under the Eye, 9 under Kid
+  "pitch": {"kid": 6, "eye": 2},
   "camera": "steady", "episode": 18, "caption": 2,
   "intruder": "knuckles", "term": "rub eyes",
   "musicPrompt": "Playful funk instrumental, bouncy slap bass, crisp light drums, squeaky muted trumpet and rubbery synth wobbles for the cheeky knuckles, 144 BPM, no lead melody in the voice range, short rests between phrases; from 20 seconds a tense, slower stretch with low plucks; from 30 seconds warm and calm for the doctor's answer; no vocals, ends on a clean button.",
@@ -151,7 +154,7 @@ toon = {
 
 for sh in shots:
     for l in sh["lines"]:
-        if l["who"] == "doctor": l["tempo"] = 1.0
+        if l["who"] == "doctor": l["tempo"] = 0.92
         elif l["who"] in ("eye", "knuckles"): l["tempo"] = 1.05
         else: l["tempo"] = 1.0
 

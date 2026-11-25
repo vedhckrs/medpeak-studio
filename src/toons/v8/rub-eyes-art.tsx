@@ -18,7 +18,7 @@ import {Bacteria} from './germs';
 import {castById, PersonAt} from './people-rig';
 import {DoctorAt} from './doctor-new';
 import {PaleClinicRoom} from './scenes-rooms';
-import {FrameMove, IDENTITY} from './play';
+import {FrameMove, IDENTITY, matMul, matScale, matTranslate} from './play';
 
 export const Svg: React.FC<{children: React.ReactNode}> = ({children}) => (
   <svg style={{position: 'absolute', left: 0, top: 0, overflow: 'visible'}} width={1080} height={1920} viewBox="0 0 1080 1920">{children}</svg>
@@ -39,7 +39,7 @@ export const EYE_COL = {
 };
 /** The eyeball: centre and radius in frame pixels (the face on the white, clear of the caption band). */
 export const BALL = {x: 470, y: 960, r: 440};
-export const EYE_FACE: [number, number] = [360, 860];
+export const EYE_FACE: [number, number] = [360, 770];
 
 /** The eye socket as flowing rings of flesh round the ball (the reference look): tone steps of one hue, a cream band,
  * a soft dark line on some edges, no outline anywhere else, no blobs. */
@@ -53,8 +53,9 @@ const FleshRings: React.FC<{cx: number; cy: number}> = ({cx, cy}) => {
     return smoothD(pts);
   };
   // many thin bands, deep rose-brown, one thin cream band (the reference look); a fine dark line on most band edges
-  const rings = Array.from({length: 17}, (_, n) => 1750 - n * 72);
-  const pal = ['#8e4644', '#9c4f4c', '#a85754', '#9c4f4c', '#b4615b', '#a85754', '#c06e65', '#b4615b', '#eac3a6', '#c06e65', '#b4615b', '#c97a6e', '#bd6e66', '#d08778', '#c97a6e', '#d6927f', '#cc8273'];
+  // spacing narrows toward the eye, so no band near the ball is one big flat field (look C7: 12% at most)
+  const rings = [...Array.from({length: 16}, (_, n) => 1750 - n * 72), 610, 575, 545, 518, 494];
+  const pal = ['#8e4644', '#9c4f4c', '#a85754', '#9c4f4c', '#b4615b', '#a85754', '#c06e65', '#b4615b', '#eac3a6', '#c06e65', '#b4615b', '#c97a6e', '#bd6e66', '#d08778', '#c97a6e', '#b96c62', '#d6927f', '#c47466', '#dba08d', '#c97a6e', '#e2ad99'];
   return (
     <g>
       <rect x={-40} y={-40} width={1160} height={2000} fill={pal[0]} />
@@ -81,9 +82,13 @@ const Grain: React.FC = () => (
 );
 
 export type EyeState = {red?: number; squash?: number; cone?: number};
-export const EyeFull: React.FC<EyeState & {mood?: Mood; mouth?: MouthKind; look?: [number, number]; lid?: number; children?: React.ReactNode}> = ({
-  red = 0, squash = 0, cone = 0, mood = 'open', mouth = 'smile', look = [0.4, 0], lid, children,
+/** `zoom`: the eye (not the socket) drawn smaller about a point, for a wider framing of the same place: {k: 0.72, at: [540, 260]}. */
+export type EyeZoom = {k: number; at: [number, number]};
+export const EyeFull: React.FC<EyeState & {mood?: Mood; mouth?: MouthKind; look?: [number, number]; lid?: number; zoom?: EyeZoom; children?: React.ReactNode}> = ({
+  red = 0, squash = 0, cone = 0, mood = 'open', mouth = 'smile', look = [0.4, 0], lid, zoom, children,
 }) => {
+  const zk = zoom?.k ?? 1, za = zoom?.at ?? [0, 0];
+  const zm = matMul(matTranslate(za[0] * (1 - zk), za[1] * (1 - zk)), matScale(zk));
   const r = clamp01(red), q = clamp01(squash), k = clamp01(cone);
   const {x, y} = BALL;
   const rx = BALL.r * (1 + 0.06 * q), ry = BALL.r * (1 - 0.1 * q);
@@ -105,6 +110,7 @@ export const EyeFull: React.FC<EyeState & {mood?: Mood; mouth?: MouthKind; look?
       <Svg>
         <FleshRings cx={x + 40} cy={cy} />
         <Grain />
+        <FrameMove m={zm}><g transform={`translate(${za[0] * (1 - zk)} ${za[1] * (1 - zk)}) scale(${zk})`}>
         {/* the optic nerve leaving the back: one soft cord, no inner line */}
         <path d={`M ${x - rx + 40} ${cy - 46} C ${x - rx - 120} ${cy - 50} ${-20} ${cy - 90} ${-60} ${cy - 70} L ${-60} ${cy + 80} C ${-20} ${cy + 96} ${x - rx - 120} ${cy + 50} ${x - rx + 40} ${cy + 46} Z`} fill={EYE_COL.nerve} {...EDGE} />
         {/* the iris: one blue band behind the dome */}
@@ -129,8 +135,9 @@ export const EyeFull: React.FC<EyeState & {mood?: Mood; mouth?: MouthKind; look?
           );
         })}
         {/* the face: big eyes (the reference size) */}
-        <Eyes x={EYE_FACE[0]} y={EYE_FACE[1]} r={100} mood={mood} look={look} lid={lid} brows />
+        <Eyes x={EYE_FACE[0]} y={EYE_FACE[1]} r={90} mood={mood} look={look} lid={lid} brows />  {/* 180 px: the organ-eye band (110-190) */}
         <Mouth x={EYE_FACE[0]} y={EYE_FACE[1] + 170} w={100} kind={mouth} />
+        </g></FrameMove>
       </Svg>
       {children}
     </V9></Scene>
@@ -161,8 +168,8 @@ export const KnucklesAt: React.FC<React.ComponentProps<typeof Knuckles> & {x: nu
   <FrameMove m={IDENTITY} who="knuckles"><Svg><g transform={`translate(${x} ${y}) rotate(${rot}) scale(${scale})`}><Knuckles {...p} /></g></Svg></FrameMove>
 );
 /** A small germ (the kit's Bacteria) at frame pixels. */
-export const GermAt: React.FC<{x: number; y: number; s?: number; rot?: number; mood?: Mood}> = ({x, y, s = 0.5, rot = 0, mood = 'wink'}) => (
-  <FrameMove m={IDENTITY} who="germ"><Svg><g transform={`translate(${x} ${y}) rotate(${rot}) scale(${s})`}><Bacteria mood={mood} look={[-0.4, 0.3]} /></g></Svg></FrameMove>
+export const GermAt: React.FC<{x: number; y: number; s?: number; rot?: number; mood?: Mood; look?: [number, number]}> = ({x, y, s = 0.5, rot = 0, mood = 'wink', look = [-0.4, 0.3]}) => (
+  <FrameMove m={IDENTITY} who="germ"><Svg><g transform={`translate(${x} ${y}) rotate(${rot}) scale(${s})`}><Bacteria mood={mood} look={look} /></g></Svg></FrameMove>
 );
 
 // ------------------------------------------------------------------ the moments (look sheets)
