@@ -71,7 +71,9 @@ test('toon scripts only use the cast, the library and the music beds', () => {
 const known = {cast: Object.keys(cast.cast), sfx: LIBRARY.map(([n]) => n), beds: BEDS.map(([n]) => n), others: toons.map((t) => ({slug: t.slug, episode: t.episode, rooms: t.rooms}))};
 const real = toons.filter((t) => !t.test);
 const clone = (t) => JSON.parse(JSON.stringify(t));
-const failed = (t) => checkToon(t, null, known).results.filter((r) => !r.pass).map((r) => r.point);
+// a voiced script is judged on its real word times, as toon-check does (the estimate before voicing can run a little long)
+const timingsOf = (t) => { const f = path.join(ROOT, 'videos', t.slug ?? '', 'toon-timings.json'); return t.slug && fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, 'utf8')) : null; };
+const failed = (t) => checkToon(t, timingsOf(t), known).results.filter((r) => !r.pass).map((r) => r.point);
 
 test('the narrator end card never fails the length rule (the owner: never cut the narrator)', () => {
   const t = real[0];
@@ -505,7 +507,7 @@ test('a format-2 script opens on the consequence with a short hook to the viewer
   const v2 = real.filter((x) => x.format === 2);
   assert.ok(v2.length >= 1, 'there is a script in the second format');
   const known = (t) => ({cast: Object.keys(cast.cast), sfx: LIBRARY.map(([n]) => n), beds: ['bouncy', 'sneaky', 'panic', 'doctor'], others: real.filter((o) => o !== t).map((o) => ({slug: o.slug, episode: o.episode, rooms: o.rooms}))});
-  const failed = (t) => checkToon(t, null, known(t)).results.filter((r) => !r.pass).map((r) => r.point);
+  const failed = (t) => checkToon(t, timingsOf(t), known(t)).results.filter((r) => !r.pass).map((r) => r.point);
   for (const t of v2) {
     assert.deepEqual(failed(t), [], `${t.slug} passes`);
     assert.ok(t.hooks.length >= 3, `${t.slug}: three hook choices`);

@@ -1,0 +1,963 @@
+{
+  "lines": {
+    "A1": {
+      "who": "knuckles",
+      "text": "Itchy eyes? Rub, rub, rub! Harder!",
+      "voiceId": "QzTKubutNn9TjrB7Xb2Q",
+      "pitch": 0,
+      "tempo": 1,
+      "file": "toons/rub-eyes/voice/A1.mp3",
+      "duration": 1.954,
+      "words": [
+        {
+          "w": "Itchy",
+          "start": 0,
+          "end": 0.29
+        },
+        {
+          "w": "eyes?",
+          "start": 0.337,
+          "end": 0.697
+        },
+        {
+          "w": "Rub,",
+          "start": 0.813,
+          "end": 0.987
+        },
+        {
+          "w": "rub,",
+          "start": 1.01,
+          "end": 1.173
+        },
+        {
+          "w": "rub!",
+          "start": 1.196,
+          "end": 1.371
+        },
+        {
+          "w": "Harder!",
+          "start": 1.393,
+          "end": 1.904
+        }
+      ]
+    },
+    "A2": {
+      "who": "eye",
+      "text": "Ow! You're squishing my dome!",
+      "voiceId": "DUnzBkwtjRWXPr6wRbmL",
+      "pitch": 4,
+      "tempo": 1,
+      "file": "toons/rub-eyes/voice/A2.mp3",
+      "duration": 1.664,
+      "words": [
+        {
+          "w": "Ow!",
+          "start": 0,
+          "end": 0.232
+        },
+        {
+          "w": "You're",
+          "start": 0.267,
+          "end": 0.453
+        },
+        {
+          "w": "squishing",
+          "start": 0.488,
+          "end": 0.849
+        },
+        {
+          "w": "my",
+          "start": 0.893,
+          "end": 0.987
+        },
+        {
+          "w": "dome!",
+          "start": 1.045,
+          "end": 1.626
+        }
+      ]
+    },
+    "A3": {
+      "who": "kid",
+      "text": "It itches so much. Is rubbing my eyes bad?",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "pitch": 6,
+      "tempo": 1,
+      "file": "toons/rub-eyes/voice/A3.mp3",
+      "duration": 2.688,
+      "words": [
+        {
+          "w": "It",
+          "start": 0,
+          "end": 0.151
+        },
+        {
+          "w": "itches",
+          "start": 0.197,
+          "end": 0.464
+        },
+        {
+          "w": "so",
+          "start": 0.511,
+          "end": 0.639
+        },
+        {
+          "w": "much.",
+          "start": 0.708,
+          "end": 1.103
+        },
+        {
+          "w": "Is",
+          "start": 1.3,
+          "end": 1.451
+        },
+        {
+          "w": "rubbing",
+          "start": 1.509,
+          "end": 1.73
+        },
+        {
+          "w": "my",
+          "start": 1.776,
+          "end": 1.846
+        },
+        {
+          "w": "eyes",
+          "start": 1.904,
+          "end": 2.043
+        },
+        {
+          "w": "bad?",
+          "start": 2.101,
+          "end": 2.647
+        }
+      ]
+    },
+    "A4": {
+      "who": "knuckles",
+      "text": "Relax. I brought friends.",
+      "voiceId": "QzTKubutNn9TjrB7Xb2Q",
+      "pitch": 0,
+      "tempo": 1,
+      "file": "toons/rub-eyes/voice/A4.mp3",
+      "duration": 1.304,
+      "words": [
+        {
+          "w": "Relax.",
+          "start": 0,
+          "end": 0.406
+        },
+        {
+          "w": "I",
+          "start": 0.431,
+          "end": 0.464
+        },
+        {
+          "w": "brought",
+          "start": 0.511,
+          "end": 0.721
+        },
+        {
+          "w": "friends.",
+          "start": 0.766,
+          "end": 1.253
+        }
+      ]
+    },
+    "A5": {
+      "who": "eye",
+      "text": "Germs?! Kid, wash those hands before you touch me!",
+      "voiceId": "DUnzBkwtjRWXPr6wRbmL",
+      "pitch": 4,
+      "tempo": 1,
+      "file": "toons/rub-eyes/voice/A5.mp3",
+      "duration": 3.375,
+      "words": [
+        {
+          "w": "Germs?!",
+          "start": 0,
+          "end": 0.708
+        },
+        {
+          "w": "Kid,",
+          "start": 1.161,
+          "end": 1.499
+        },
+        {
+          "w": "wash",
+          "start": 1.522,
+          "end": 1.741
+        },
+        {
+          "w": "those",
+          "start": 1.788,
+          "end": 1.974
+        },
+        {
+          "w": "hands",
+          "start": 2.021,
+          "end": 2.229
+        },
+        {
+          "w": "before",
+          "start": 2.264,
+          "end": 2.473
+        },
+        {
+          "w": "you",
+          "start": 2.508,
+          "end": 2.589
+        },
+        {
+          "w": "touch",
+          "start": 2.635,
+          "end": 2.844
+        },
+        {
+          "w": "me!",
+          "start": 2.902,
+          "end": 3.345
+        }
+      ]
+    },
+    "B1": {
+      "who": "eye",
+      "text": "Hey! Why is my dome going thin and pointy?",
+      "voiceId": "DUnzBkwtjRWXPr6wRbmL",
+      "pitch": 4,
+      "tempo": 1,
+      "file": "toons/rub-eyes/voice/B1.mp3",
+      "duration": 2.407,
+      "words": [
+        {
+          "w": "Hey!",
+          "start": 0,
+          "end": 0.243
+        },
+        {
+          "w": "Why",
+          "start": 0.313,
+          "end": 0.475
+        },
+        {
+          "w": "is",
+          "start": 0.522,
+          "end": 0.593
+        },
+        {
+          "w": "my",
+          "start": 0.639,
+          "end": 0.73
+        },
+        {
+          "w": "dome",
+          "start": 0.789,
+          "end": 1.021
+        },
+        {
+          "w": "going",
+          "start": 1.057,
+          "end": 1.243
+        },
+        {
+          "w": "thin",
+          "start": 1.289,
+          "end": 1.451
+        },
+        {
+          "w": "and",
+          "start": 1.499,
+          "end": 1.579
+        },
+        {
+          "w": "pointy?",
+          "start": 1.626,
+          "end": 2.368
+        }
+      ]
+    },
+    "B2": {
+      "who": "knuckles",
+      "text": "Don't look at me. Keep rubbing!",
+      "voiceId": "QzTKubutNn9TjrB7Xb2Q",
+      "pitch": 0,
+      "tempo": 0.88,
+      "file": "toons/rub-eyes/voice/B2.mp3",
+      "duration": 1.625,
+      "words": [
+        {
+          "w": "Don't",
+          "start": 0,
+          "end": 0.251
+        },
+        {
+          "w": "look",
+          "start": 0.277,
+          "end": 0.422
+        },
+        {
+          "w": "at",
+          "start": 0.462,
+          "end": 0.514
+        },
+        {
+          "w": "me.",
+          "start": 0.555,
+          "end": 0.659
+        },
+        {
+          "w": "Keep",
+          "start": 0.686,
+          "end": 0.858
+        },
+        {
+          "w": "rubbing!",
+          "start": 0.924,
+          "end": 1.583
+        }
+      ]
+    },
+    "B2b": {
+      "who": "eye",
+      "text": "Kid! Every rub squashes me!",
+      "voiceId": "DUnzBkwtjRWXPr6wRbmL",
+      "pitch": 4,
+      "tempo": 1,
+      "file": "toons/rub-eyes/voice/B2b.mp3",
+      "duration": 1.714,
+      "words": [
+        {
+          "w": "Kid!",
+          "start": 0,
+          "end": 0.347
+        },
+        {
+          "w": "Every",
+          "start": 0.383,
+          "end": 0.639
+        },
+        {
+          "w": "rub",
+          "start": 0.673,
+          "end": 0.825
+        },
+        {
+          "w": "squashes",
+          "start": 0.871,
+          "end": 1.231
+        },
+        {
+          "w": "me!",
+          "start": 1.277,
+          "end": 1.671
+        }
+      ]
+    },
+    "B2c": {
+      "who": "knuckles",
+      "text": "Squash, schmash. One more rub!",
+      "voiceId": "QzTKubutNn9TjrB7Xb2Q",
+      "pitch": 0,
+      "tempo": 1,
+      "file": "toons/rub-eyes/voice/B2c.mp3",
+      "duration": 1.583,
+      "words": [
+        {
+          "w": "Squash,",
+          "start": 0,
+          "end": 0.372
+        },
+        {
+          "w": "schmash.",
+          "start": 0.395,
+          "end": 0.766
+        },
+        {
+          "w": "One",
+          "start": 0.813,
+          "end": 0.917
+        },
+        {
+          "w": "more",
+          "start": 0.94,
+          "end": 1.081
+        },
+        {
+          "w": "rub!",
+          "start": 1.115,
+          "end": 1.533
+        }
+      ]
+    },
+    "B3": {
+      "who": "kid",
+      "text": "Hands off! I'm asking the doctor.",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "pitch": 6,
+      "tempo": 1,
+      "file": "toons/rub-eyes/voice/B3.mp3",
+      "duration": 1.985,
+      "words": [
+        {
+          "w": "Hands",
+          "start": 0,
+          "end": 0.302
+        },
+        {
+          "w": "off!",
+          "start": 0.36,
+          "end": 0.639
+        },
+        {
+          "w": "I'm",
+          "start": 0.697,
+          "end": 0.836
+        },
+        {
+          "w": "asking",
+          "start": 0.882,
+          "end": 1.115
+        },
+        {
+          "w": "the",
+          "start": 1.161,
+          "end": 1.231
+        },
+        {
+          "w": "doctor.",
+          "start": 1.254,
+          "end": 1.95
+        }
+      ]
+    },
+    "D1": {
+      "who": "kid",
+      "text": "Doc, my eyes itch all day. Is it bad to rub?",
+      "voiceId": "cgSgspJ2msm6clMCkdW9",
+      "pitch": 6,
+      "tempo": 0.9,
+      "file": "toons/rub-eyes/voice/D1.mp3",
+      "duration": 3.077,
+      "words": [
+        {
+          "w": "Doc,",
+          "start": 0,
+          "end": 0.348
+        },
+        {
+          "w": "my",
+          "start": 0.4,
+          "end": 0.516
+        },
+        {
+          "w": "eyes",
+          "start": 0.593,
+          "end": 0.787
+        },
+        {
+          "w": "itch",
+          "start": 0.839,
+          "end": 1.007
+        },
+        {
+          "w": "all",
+          "start": 1.044,
+          "end": 1.161
+        },
+        {
+          "w": "day.",
+          "start": 1.226,
+          "end": 1.587
+        },
+        {
+          "w": "Is",
+          "start": 1.806,
+          "end": 1.934
+        },
+        {
+          "w": "it",
+          "start": 2,
+          "end": 2.051
+        },
+        {
+          "w": "bad",
+          "start": 2.09,
+          "end": 2.258
+        },
+        {
+          "w": "to",
+          "start": 2.297,
+          "end": 2.361
+        },
+        {
+          "w": "rub?",
+          "start": 2.438,
+          "end": 3.044
+        }
+      ]
+    },
+    "D2": {
+      "who": "doctor",
+      "text": "Rubbing your eyes hard and often can thin the clear front of the eye and change its shape.",
+      "voiceId": "XrExE9yKIg1WjnnlVkGX",
+      "pitch": 0,
+      "tempo": 0.85,
+      "file": "toons/rub-eyes/voice/D2.mp3",
+      "duration": 5.604,
+      "words": [
+        {
+          "w": "Rubbing",
+          "start": 0,
+          "end": 0.423
+        },
+        {
+          "w": "your",
+          "start": 0.464,
+          "end": 0.614
+        },
+        {
+          "w": "eyes",
+          "start": 0.682,
+          "end": 0.957
+        },
+        {
+          "w": "hard",
+          "start": 1.025,
+          "end": 1.475
+        },
+        {
+          "w": "and",
+          "start": 1.557,
+          "end": 1.748
+        },
+        {
+          "w": "often",
+          "start": 1.83,
+          "end": 2.13
+        },
+        {
+          "w": "can",
+          "start": 2.186,
+          "end": 2.336
+        },
+        {
+          "w": "thin",
+          "start": 2.404,
+          "end": 2.637
+        },
+        {
+          "w": "the",
+          "start": 2.704,
+          "end": 2.786
+        },
+        {
+          "w": "clear",
+          "start": 2.841,
+          "end": 3.087
+        },
+        {
+          "w": "front",
+          "start": 3.169,
+          "end": 3.373
+        },
+        {
+          "w": "of",
+          "start": 3.401,
+          "end": 3.469
+        },
+        {
+          "w": "the",
+          "start": 3.523,
+          "end": 3.606
+        },
+        {
+          "w": "eye",
+          "start": 3.702,
+          "end": 4.003
+        },
+        {
+          "w": "and",
+          "start": 4.07,
+          "end": 4.234
+        },
+        {
+          "w": "change",
+          "start": 4.302,
+          "end": 4.617
+        },
+        {
+          "w": "its",
+          "start": 4.657,
+          "end": 4.794
+        },
+        {
+          "w": "shape.",
+          "start": 4.835,
+          "end": 5.573
+        }
+      ]
+    },
+    "D3": {
+      "who": "doctor",
+      "text": "Instead, hold a cold flannel on them, and wash your hands before you touch them.",
+      "voiceId": "XrExE9yKIg1WjnnlVkGX",
+      "pitch": 0,
+      "tempo": 0.85,
+      "file": "toons/rub-eyes/voice/D3.mp3",
+      "duration": 5.271,
+      "words": [
+        {
+          "w": "Instead,",
+          "start": 0,
+          "end": 0.696
+        },
+        {
+          "w": "hold",
+          "start": 0.916,
+          "end": 1.162
+        },
+        {
+          "w": "a",
+          "start": 1.215,
+          "end": 1.243
+        },
+        {
+          "w": "cold",
+          "start": 1.312,
+          "end": 1.57
+        },
+        {
+          "w": "flannel",
+          "start": 1.639,
+          "end": 1.994
+        },
+        {
+          "w": "on",
+          "start": 2.062,
+          "end": 2.157
+        },
+        {
+          "w": "them,",
+          "start": 2.2,
+          "end": 2.486
+        },
+        {
+          "w": "and",
+          "start": 2.65,
+          "end": 2.8
+        },
+        {
+          "w": "wash",
+          "start": 2.868,
+          "end": 3.141
+        },
+        {
+          "w": "your",
+          "start": 3.182,
+          "end": 3.305
+        },
+        {
+          "w": "hands",
+          "start": 3.346,
+          "end": 3.647
+        },
+        {
+          "w": "before",
+          "start": 3.716,
+          "end": 4.03
+        },
+        {
+          "w": "you",
+          "start": 4.07,
+          "end": 4.166
+        },
+        {
+          "w": "touch",
+          "start": 4.234,
+          "end": 4.494
+        },
+        {
+          "w": "them.",
+          "start": 4.589,
+          "end": 5.245
+        }
+      ]
+    },
+    "D4": {
+      "who": "doctor",
+      "text": "Eye pain, very red eyes, or changes in your vision? Get help fast.",
+      "voiceId": "XrExE9yKIg1WjnnlVkGX",
+      "pitch": 0,
+      "tempo": 0.95,
+      "file": "toons/rub-eyes/voice/D4.mp3",
+      "duration": 5.272,
+      "words": [
+        {
+          "w": "Eye",
+          "start": 0,
+          "end": 0.196
+        },
+        {
+          "w": "pain,",
+          "start": 0.233,
+          "end": 0.684
+        },
+        {
+          "w": "very",
+          "start": 0.831,
+          "end": 1.1
+        },
+        {
+          "w": "red",
+          "start": 1.174,
+          "end": 1.344
+        },
+        {
+          "w": "eyes,",
+          "start": 1.405,
+          "end": 1.896
+        },
+        {
+          "w": "or",
+          "start": 2.066,
+          "end": 2.201
+        },
+        {
+          "w": "changes",
+          "start": 2.261,
+          "end": 2.615
+        },
+        {
+          "w": "in",
+          "start": 2.652,
+          "end": 2.712
+        },
+        {
+          "w": "your",
+          "start": 2.749,
+          "end": 2.86
+        },
+        {
+          "w": "vision?",
+          "start": 2.884,
+          "end": 3.361
+        },
+        {
+          "w": "Get",
+          "start": 3.923,
+          "end": 4.094
+        },
+        {
+          "w": "help",
+          "start": 4.142,
+          "end": 4.326
+        },
+        {
+          "w": "fast.",
+          "start": 4.4,
+          "end": 5.231
+        }
+      ]
+    },
+    "E0": {
+      "who": "eye",
+      "text": "Ahh. A cold flannel. Clean hands. Bliss.",
+      "voiceId": "DUnzBkwtjRWXPr6wRbmL",
+      "pitch": 4,
+      "tempo": 1.12,
+      "file": "toons/rub-eyes/voice/E0.mp3",
+      "duration": 2.768,
+      "words": [
+        {
+          "w": "Ahh.",
+          "start": 0,
+          "end": 0.249
+        },
+        {
+          "w": "A",
+          "start": 0.384,
+          "end": 0.436
+        },
+        {
+          "w": "cold",
+          "start": 0.477,
+          "end": 0.664
+        },
+        {
+          "w": "flannel.",
+          "start": 0.704,
+          "end": 1.057
+        },
+        {
+          "w": "Clean",
+          "start": 1.254,
+          "end": 1.482
+        },
+        {
+          "w": "hands.",
+          "start": 1.524,
+          "end": 1.866
+        },
+        {
+          "w": "Bliss.",
+          "start": 2.125,
+          "end": 2.737
+        }
+      ]
+    },
+    "E0b": {
+      "who": "knuckles",
+      "text": "Hey! Nobody needs me anymore?",
+      "voiceId": "QzTKubutNn9TjrB7Xb2Q",
+      "pitch": 0,
+      "tempo": 1,
+      "file": "toons/rub-eyes/voice/E0b.mp3",
+      "duration": 1.49,
+      "words": [
+        {
+          "w": "Hey!",
+          "start": 0,
+          "end": 0.243
+        },
+        {
+          "w": "Nobody",
+          "start": 0.279,
+          "end": 0.522
+        },
+        {
+          "w": "needs",
+          "start": 0.557,
+          "end": 0.721
+        },
+        {
+          "w": "me",
+          "start": 0.755,
+          "end": 0.825
+        },
+        {
+          "w": "anymore?",
+          "start": 0.871,
+          "end": 1.439
+        }
+      ]
+    },
+    "E1": {
+      "who": "knuckles",
+      "text": "A cold flannel? Fine. I'm out!",
+      "voiceId": "QzTKubutNn9TjrB7Xb2Q",
+      "pitch": 0,
+      "tempo": 1,
+      "file": "toons/rub-eyes/voice/E1.mp3",
+      "duration": 1.722,
+      "words": [
+        {
+          "w": "A",
+          "start": 0,
+          "end": 0.093
+        },
+        {
+          "w": "cold",
+          "start": 0.163,
+          "end": 0.326
+        },
+        {
+          "w": "flannel?",
+          "start": 0.36,
+          "end": 0.73
+        },
+        {
+          "w": "Fine.",
+          "start": 0.917,
+          "end": 1.253
+        },
+        {
+          "w": "I'm",
+          "start": 1.3,
+          "end": 1.428
+        },
+        {
+          "w": "out!",
+          "start": 1.474,
+          "end": 1.671
+        }
+      ]
+    },
+    "E2": {
+      "who": "eye",
+      "text": "Itchy eyes? No more rub, rub, rub.",
+      "voiceId": "DUnzBkwtjRWXPr6wRbmL",
+      "pitch": 4,
+      "tempo": 1,
+      "file": "toons/rub-eyes/voice/E2.mp3",
+      "duration": 2.165,
+      "words": [
+        {
+          "w": "Itchy",
+          "start": 0,
+          "end": 0.313
+        },
+        {
+          "w": "eyes?",
+          "start": 0.36,
+          "end": 0.639
+        },
+        {
+          "w": "No",
+          "start": 0.825,
+          "end": 0.964
+        },
+        {
+          "w": "more",
+          "start": 1.01,
+          "end": 1.219
+        },
+        {
+          "w": "rub,",
+          "start": 1.253,
+          "end": 1.428
+        },
+        {
+          "w": "rub,",
+          "start": 1.451,
+          "end": 1.648
+        },
+        {
+          "w": "rub.",
+          "start": 1.683,
+          "end": 2.136
+        }
+      ]
+    },
+    "B1b": {
+      "who": "knuckles",
+      "text": "Ooh, pointy. Very stylish.",
+      "voiceId": "QzTKubutNn9TjrB7Xb2Q",
+      "pitch": 0,
+      "tempo": 1,
+      "file": "toons/rub-eyes/voice/B1b.mp3",
+      "duration": 1.49,
+      "words": [
+        {
+          "w": "Ooh,",
+          "start": 0,
+          "end": 0.313
+        },
+        {
+          "w": "pointy.",
+          "start": 0.337,
+          "end": 0.65
+        },
+        {
+          "w": "Very",
+          "start": 0.673,
+          "end": 0.848
+        },
+        {
+          "w": "stylish.",
+          "start": 0.894,
+          "end": 1.44
+        }
+      ]
+    }
+  }
+}

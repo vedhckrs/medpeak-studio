@@ -122,12 +122,15 @@ const ShotD: React.FC<{s: ShotNow}> = ({s}) => {
   const who = s.cur?.who ?? 'kid';
   const kidPose = poseAt(t, [[-9, 'rest'], [rub - 0.3, 'think', 0.35], [rub + 1.9, 'rest', 0.35]]);
   const up = go(t, instead - 0.1, 0.45) * (1 - go(t, instead + 1.0, 0.45));
+  // both hold their gaze through the doctor's key line (D2): no blink between Kid's gesture and "Instead", so the clinic holds
+  // fully still for 4 s+ (look C2: a Short needs one long still hold)
+  const gaze = t > rub + 2.4 && t < instead - 0.2;
   const docPose: DrPoseIn = up <= 0 ? 'rest' : {a: 'rest', b: 'explain', k: up};
   return (
     <Scene bg="#f1ede4"><V9>
       <PaleClinicRoom wall="grey" items={['door', 'frame']} />
-      <DoctorAt {...DOC_AT} pose={docPose} expr={t > instead - 0.2 && t < instead + 1.6 ? 'happy' : 'neutral'} lookAt={EYES.kid} talk={talkSmooth(s, 'doctor')} blink={blink(t, 4)} />
-      <PersonAt spec={KID} {...KID_AT} pose={kidPose} expr={t > d5 ? 'happy' : 'worried'} lookAt={EYES.doctor} talk={talkSmooth(s, 'kid')} blink={blink(t, 2)} />
+      <DoctorAt {...DOC_AT} pose={docPose} expr={t > instead - 0.2 && t < instead + 1.6 ? 'happy' : 'neutral'} lookAt={EYES.kid} talk={talkSmooth(s, 'doctor')} blink={gaze ? 0 : blink(t, 4)} />
+      <PersonAt spec={KID} {...KID_AT} pose={kidPose} expr={t > d5 ? 'happy' : 'worried'} lookAt={EYES.doctor} talk={talkSmooth(s, 'kid')} blink={gaze ? 0 : blink(t, 4)} />  {/* blinks with the doctor: the clinic holds fully still between them */}
     </V9></Scene>
   );
   void who;

@@ -64,6 +64,7 @@ shots = [
    ],
    "lines": [
      L("B1", "eye", "Hey! Why is my dome going thin and pointy?", "scared", "pointy", chat=True),
+     L("B1b", "knuckles", "Ooh, pointy. Very stylish.", "happy", "pointy", chat=True),
      L("B2", "knuckles", "Don't look at me. Keep rubbing!", "happy", "rubbing", chat=True),
      L("B2b", "eye", "Kid! Every rub squashes me!", "angry", "squashes", chat=True),
      L("B2c", "knuckles", "Squash, schmash. One more rub!", "happy", "Squash", chat=True),
@@ -78,10 +79,9 @@ shots = [
    ],
    "lines": [
      L("D1", "kid", "Doc, my eyes itch all day. Is it bad to rub?", "sad", "rub", chat=True),
-     L("D2", "doctor", "Rubbing your eyes hard and often can thin the clear front of the eye and change its shape.", "neutral", "thin", src=[RUB1, RUB2], answer=True, pause=1.2),
+     L("D2", "doctor", "Rubbing your eyes hard and often can thin the clear front of the eye and change its shape.", "neutral", "thin", src=[RUB1, RUB2], answer=True, pause=0.8),
      L("D3", "doctor", "Instead, hold a cold flannel on them, and wash your hands before you touch them.", "happy", "flannel", src=[CONJ, NEI], answer=True),
      L("D4", "doctor", "Eye pain, very red eyes, or changes in your vision? Get help fast.", "neutral", "help", src=[CONJ], answer=True, care=True),
-     L("D5", "kid", "So: cold flannel, not knuckles!", "happy", "flannel", chat=True),
    ]},
   # B: the end, CLOSER on the calm eye's face (a second body framing, about 1.5x): the Knuckles give up and lift away.
   {"id": "B", "set": "macro", "kind": "body",
@@ -105,7 +105,7 @@ toon = {
   "music": "rub-eyes",
   # A4: Kid ~210 Hz at 0 (Jessica), the doctor ~213: Kid +6 (~296, as in bee-sting); the Eye (Mark ~349) +2 (~392), 4.9 st over Kid;
   # the Knuckles (Jerry B. ~166) 10+ st under the Eye, 9 under Kid
-  "pitch": {"kid": 6, "eye": 2},
+  "pitch": {"kid": 6, "eye": 4},  # eye +4: the real clips read eye 309 Hz vs kid 277 at +2 (1.9 st)
   "camera": "steady", "episode": 18, "caption": 2,
   "intruder": "knuckles", "term": "rub eyes",
   "musicPrompt": "Playful funk instrumental, bouncy slap bass, crisp light drums, squeaky muted trumpet and rubbery synth wobbles for the cheeky knuckles, 144 BPM, no lead melody in the voice range, short rests between phrases; from 20 seconds a tense, slower stretch with low plucks; from 30 seconds warm and calm for the doctor's answer; no vocals, ends on a clean button.",
@@ -135,7 +135,7 @@ toon = {
     "answer": {"scene": "D2", "line": "Rubbing your eyes hard and often can thin the clear front of the eye and change its shape."},
     "change3s": {"scene": "all", "line": "one action, then a hold"},
     "twist": {"scene": "D2", "line": "Rubbing your eyes hard and often can thin the clear front of the eye and change its shape."},
-    "bestLast": {"scene": "D5", "line": "So: cold flannel, not knuckles!"},
+    "bestLast": {"scene": "E0", "line": "Ahh. A cold flannel. Clean hands. Bliss."},
     "loop": {"scene": "E2", "line": "Itchy eyes? No more rub, rub, rub.", "kind": "callback"},
   },
   "sources": [
@@ -152,11 +152,14 @@ toon = {
   "cta": {"read": "card", "text": "Itchy eyes? Know this. Don't rub them hard. Use a cold flannel. Eye pain or vision changes? Get help fast. Follow MedPeak Health for more.", "src": [RUB1, CONJ]},
 }
 
+# set on the real voices (2026-11-25, free remix): the doctor measured 3.10 w/s (2.6-3.0) and must be 0.3 slower than the body
+# cast; B2 4.5 and D1 4.0 too quick, D5 2.0 and E0 2.4 too slow; the answer block started at 52% (55%+)
+PACE = {"B2": 0.88, "D1": 0.9, "E0": 1.12, "D4": 0.95}
 for sh in shots:
     for l in sh["lines"]:
-        if l["who"] == "doctor": l["tempo"] = 0.92
-        elif l["who"] in ("eye", "knuckles"): l["tempo"] = 1.05
-        else: l["tempo"] = 1.0
+        if l["who"] == "doctor": l["tempo"] = PACE.get(l["id"], 0.85)
+        elif l["who"] in ("eye", "knuckles"): l["tempo"] = PACE.get(l["id"], 1.0)
+        else: l["tempo"] = PACE.get(l["id"], 1.0)
 
 out = os.path.join(ROOT, "videos", "rub-eyes")
 os.makedirs(out, exist_ok=True)

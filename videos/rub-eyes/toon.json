@@ -6,7 +6,7 @@
  "music": "rub-eyes",
  "pitch": {
   "kid": 6,
-  "eye": 2
+  "eye": 4
  },
  "camera": "steady",
  "episode": 18,
@@ -94,8 +94,8 @@
    "line": "Rubbing your eyes hard and often can thin the clear front of the eye and change its shape."
   },
   "bestLast": {
-   "scene": "D5",
-   "line": "So: cold flannel, not knuckles!"
+   "scene": "E0",
+   "line": "Ahh. A cold flannel. Clean hands. Bliss."
   },
   "loop": {
    "scene": "E2",
@@ -191,7 +191,7 @@
      "pose": "rest",
      "key": "rub",
      "chat": true,
-     "tempo": 1.05
+     "tempo": 1.0
     },
     {
      "id": "A2",
@@ -201,7 +201,7 @@
      "pose": "rest",
      "key": "dome",
      "chat": true,
-     "tempo": 1.05
+     "tempo": 1.0
     },
     {
      "id": "A3",
@@ -221,7 +221,7 @@
      "pose": "rest",
      "key": "friends",
      "chat": true,
-     "tempo": 1.05
+     "tempo": 1.0
     },
     {
      "id": "A5",
@@ -232,7 +232,7 @@
      "key": "Germs",
      "chat": true,
      "beat": 0.6,
-     "tempo": 1.05
+     "tempo": 1.0
     }
    ]
   },
@@ -298,7 +298,17 @@
      "pose": "rest",
      "key": "pointy",
      "chat": true,
-     "tempo": 1.05
+     "tempo": 1.0
+    },
+    {
+     "id": "B1b",
+     "who": "knuckles",
+     "text": "Ooh, pointy. Very stylish.",
+     "emotion": "happy",
+     "pose": "rest",
+     "key": "pointy",
+     "chat": true,
+     "tempo": 1.0
     },
     {
      "id": "B2",
@@ -308,7 +318,7 @@
      "pose": "rest",
      "key": "rubbing",
      "chat": true,
-     "tempo": 1.05
+     "tempo": 0.88
     },
     {
      "id": "B2b",
@@ -318,7 +328,7 @@
      "pose": "rest",
      "key": "squashes",
      "chat": true,
-     "tempo": 1.05
+     "tempo": 1.0
     },
     {
      "id": "B2c",
@@ -328,7 +338,7 @@
      "pose": "rest",
      "key": "Squash",
      "chat": true,
-     "tempo": 1.05
+     "tempo": 1.0
     },
     {
      "id": "B3",
@@ -380,7 +390,7 @@
      "pose": "rest",
      "key": "rub",
      "chat": true,
-     "tempo": 1.0
+     "tempo": 0.9
     },
     {
      "id": "D2",
@@ -394,8 +404,8 @@
       "pubmed-19512912"
      ],
      "answer": true,
-     "pause": 1.2,
-     "tempo": 0.92
+     "pause": 0.8,
+     "tempo": 0.85
     },
     {
      "id": "D3",
@@ -409,7 +419,7 @@
       "nei-pink-eye"
      ],
      "answer": true,
-     "tempo": 0.92
+     "tempo": 0.85
     },
     {
      "id": "D4",
@@ -423,17 +433,7 @@
      ],
      "answer": true,
      "care": true,
-     "tempo": 0.92
-    },
-    {
-     "id": "D5",
-     "who": "kid",
-     "text": "So: cold flannel, not knuckles!",
-     "emotion": "happy",
-     "pose": "rest",
-     "key": "flannel",
-     "chat": true,
-     "tempo": 1.0
+     "tempo": 0.95
     }
    ]
   },
@@ -485,7 +485,7 @@
      "pose": "rest",
      "key": "flannel",
      "chat": true,
-     "tempo": 1.05
+     "tempo": 1.12
     },
     {
      "id": "E0b",
@@ -495,7 +495,7 @@
      "pose": "rest",
      "key": "Nobody",
      "chat": true,
-     "tempo": 1.05
+     "tempo": 1.0
     },
     {
      "id": "E1",
@@ -505,7 +505,7 @@
      "pose": "rest",
      "key": "out",
      "chat": true,
-     "tempo": 1.05
+     "tempo": 1.0
     },
     {
      "id": "E2",
@@ -515,7 +515,7 @@
      "pose": "rest",
      "key": "rub",
      "chat": true,
-     "tempo": 1.05
+     "tempo": 1.0
     }
    ]
   }

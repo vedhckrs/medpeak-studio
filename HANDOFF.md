@@ -6,6 +6,22 @@ you stop. The rules are in `CLAUDE.md`.
 
 ---
 
+## 2026-11-25 (44) - MacBook (local Claude Code) - branch `video/rub-eyes` - topic 10 FINAL: scoreboard 49/49 PASS
+
+- "What Happens When You Rub Your Eyes" (`rub-eyes`): the first video under the opening rules O1-O5 (all pass, L15 pass).
+  Sources: NEI pink eye, NHS conjunctivitis, PubMed reviews 31343437 and 19512912 (NHS/NEI keratoconus pages had moved).
+- Looks: the owner on the first sheets: "too much lines unnecessary, not going like ref video visual"; redrawn in the
+  reference style (`rub-eyes-art.tsx`: flowing flesh rings, a still grain, the ball one flat inside, big face, the fist one
+  silhouette); approved. EyeFull has dials red/squash/cone and a `zoom` (the end shot B is the same place, wider).
+- Voices (picked free with earshot): Knuckles = Jerry B., Eye = Mark; pitch kid +6, eye +4 (measured on the real clips).
+- Credits: 428 lines + 124 card + 1,289 music + 10 (B1b) = 1,851 (cap 1,900). The music bed's dips filled with soft copies.
+- Tests now judge a voiced script on its real word times (as toon-check does); 81/81.
+- Final `videos/rub-eyes/renders/toon-v8.mp4`: scoreboard 49/49, every check ALL PASS, listen ok (1 word: "schmash"
+  heard as "smash"), package READY. Not uploaded.
+- Voice credits fell ~3,700 between videos with no spend here (key 4 and the payg key): ask the owner what else uses them.
+
+---
+
 ## 2026-11-25 (43) - MacBook (local Claude Code) - branch `engine/opening-upgrade` - the opening rules (retention)
 
 - The owner on the channel numbers: "what is issue", then "upgrade my engine and skill as per issue, tell me plan first",
