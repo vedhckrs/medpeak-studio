@@ -30,89 +30,107 @@ const mix = (a: string, b: string, k: number) => {
 };
 
 export const EYE_COL = {
-  place: '#f2b9a0', socket: '#e79f88', bone: '#f3dcc0', fat: '#f6d58e', muscle: '#d9737a',
-  white: '#fbf3ee', whiteRed: '#f6c9c4', vessel: '#d8484f', iris: '#4f8fc7', irisDeep: '#2f5f95', pupil: '#2b1a17',
-  lens: '#f3e7c8', cornea: '#d8f0fb', nerve: '#f2d06f', lid: '#e3a27f', lash: '#3a2722',
+  // the reference look (2026-11-25, the owner: "too much lines unnecessary, not going like ref video visual"): muted rose
+  // flesh in tone steps, a cream fat band, few lines
+  flesh: ['#9c4f4c', '#ad5d58', '#bd6e66', '#c97f74', '#d69283', '#e2a796', '#ecc0ac', '#f3d6c2'],
+  edge: '#5a2a28',
+  white: '#f1d9cd', whiteRed: '#eab3a7', rim: '#d99b8a', iris: '#5d93c4', pupil: '#2b1a17', cornea: '#dff1f8',
+  nerve: '#e9c27c', lid: '#c4766b', lash: '#3a2722',
 };
-/** The eyeball: centre and radius in frame pixels (the face sits on the white, left of centre, clear of the caption band). */
-export const BALL = {x: 460, y: 980, r: 450};
-export const EYE_FACE: [number, number] = [340, 900];
+/** The eyeball: centre and radius in frame pixels (the face on the white, clear of the caption band). */
+export const BALL = {x: 470, y: 960, r: 440};
+export const EYE_FACE: [number, number] = [360, 860];
 
-/** The bony socket and the soft tissue round the eye: big tone-on-tone shapes, no outline (a quiet place). */
-const SocketBack: React.FC<{c: string}> = ({c}) => (
+/** The eye socket as flowing rings of flesh round the ball (the reference look): tone steps of one hue, a cream band,
+ * a soft dark line on some edges, no outline anywhere else, no blobs. */
+const FleshRings: React.FC<{cx: number; cy: number}> = ({cx, cy}) => {
+  const ring = (R: number, ph: number) => {
+    const pts = Array.from({length: 56}, (_, n): [number, number] => {
+      const a = (n / 56) * Math.PI * 2;
+      const w = 1 + 0.07 * Math.sin(3 * a + ph) + 0.04 * Math.sin(5 * a + 2 * ph) + 0.02 * Math.sin(9 * a + ph);
+      return [cx + Math.cos(a) * R * w, cy + Math.sin(a) * R * 1.32 * w];
+    });
+    return smoothD(pts);
+  };
+  // many thin bands, deep rose-brown, one thin cream band (the reference look); a fine dark line on most band edges
+  const rings = Array.from({length: 17}, (_, n) => 1750 - n * 72);
+  const pal = ['#8e4644', '#9c4f4c', '#a85754', '#9c4f4c', '#b4615b', '#a85754', '#c06e65', '#b4615b', '#eac3a6', '#c06e65', '#b4615b', '#c97a6e', '#bd6e66', '#d08778', '#c97a6e', '#d6927f', '#cc8273'];
+  return (
+    <g>
+      <rect x={-40} y={-40} width={1160} height={2000} fill={pal[0]} />
+      {rings.map((R, n) => (
+        <g key={n}>
+          <path d={ring(R, n * 1.3)} fill={pal[n % pal.length]} />
+          {n % 3 !== 2 && <path d={ring(R, n * 1.3)} fill="none" stroke={EYE_COL.edge} strokeWidth={3.5} opacity={0.55} />}
+        </g>
+      ))}
+    </g>
+  );
+};
+/** A still paper grain over the place (fixed seed: the same every frame, never a shimmer). */
+const Grain: React.FC = () => (
   <g>
-    <path d="M -40 -40 L 1120 -40 L 1120 380 Q 600 300 -40 420 Z" fill={tint(EYE_COL.bone, 0.1)} />
-    <path d="M -40 1500 Q 560 1400 1120 1480 L 1120 1960 L -40 1960 Z" fill={tint(EYE_COL.bone, 0.05)} />
-    {[[140, 520, 120, 70], [930, 560, 110, 80], [120, 1300, 130, 90], [600, 1440, 150, 60], [960, 1350, 100, 70], [330, 1620, 140, 60], [800, 1680, 150, 60]].map(([x, y, rx, ry], i) => (
-      <ellipse key={i} cx={x} cy={y} rx={rx} ry={ry} fill={i % 2 ? shade(c, 0.06) : tint(c, 0.1)} />
-    ))}
-    {/* the fat cushion behind the ball and the muscle bands holding it */}
-    <ellipse cx={170} cy={900} rx={190} ry={300} fill={tint(EYE_COL.fat, 0.2)} />
-    <path d="M 120 620 Q 300 600 420 560" stroke={tint(EYE_COL.muscle, 0.25)} strokeWidth={46} strokeLinecap="round" fill="none" />
-    <path d="M 120 1180 Q 300 1200 420 1240" stroke={tint(EYE_COL.muscle, 0.25)} strokeWidth={46} strokeLinecap="round" fill="none" />
+    <defs>
+      <filter id="re-grain" x="0" y="0" width="100%" height="100%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves={2} seed={7} stitchTiles="stitch" />
+        <feColorMatrix type="matrix" values="0 0 0 0 0.2  0 0 0 0 0.08  0 0 0 0 0.07  0 0 0 0.55 0" />
+      </filter>
+    </defs>
+    <rect x={0} y={0} width={1080} height={1920} filter="url(#re-grain)" opacity={0.35} />
   </g>
 );
 
-export type EyeState = {red?: number; squash?: number; cone?: number; wet?: number};
-export const EyeFull: React.FC<EyeState & {mood?: Mood; mouth?: MouthKind; look?: [number, number]; lid?: number; place?: string; children?: React.ReactNode}> = ({
-  red = 0, squash = 0, cone = 0, mood = 'open', mouth = 'smile', look = [0.4, 0], lid, place = EYE_COL.place, children,
+export type EyeState = {red?: number; squash?: number; cone?: number};
+export const EyeFull: React.FC<EyeState & {mood?: Mood; mouth?: MouthKind; look?: [number, number]; lid?: number; children?: React.ReactNode}> = ({
+  red = 0, squash = 0, cone = 0, mood = 'open', mouth = 'smile', look = [0.4, 0], lid, children,
 }) => {
   const r = clamp01(red), q = clamp01(squash), k = clamp01(cone);
   const {x, y} = BALL;
-  const rx = BALL.r * (1 + 0.07 * q), ry = BALL.r * (1 - 0.12 * q);
-  const cy = y + 0.12 * q * BALL.r; // pressed down from above
-  const white = mix(EYE_COL.white, EYE_COL.whiteRed, r * 0.7);
-  // the front (right) of the ball: the dome bulges out past the white; with `cone` it thins and comes to a point
-  const fx = x + rx - 30;
-  const domeOut = 120 + 80 * k, domeH = 250 - 60 * k;
-  const dome = smoothD([[fx, cy - domeH], [fx + domeOut * 0.55, cy - domeH * 0.75], [fx + domeOut * (0.9 + 0.1 * k), cy - domeH * (0.3 - 0.25 * k)], [fx + domeOut, cy], [fx + domeOut * (0.9 + 0.1 * k), cy + domeH * (0.3 - 0.25 * k)], [fx + domeOut * 0.55, cy + domeH * 0.75], [fx, cy + domeH]]);
-  const thick = 26 - 18 * k; // the dome's wall thins
-  const vessels: [number, number][][] = [[[x - 300, cy - 120], [x - 200, cy - 70], [x - 120, cy - 110], [x - 40, cy - 60]], [[x - 280, cy + 160], [x - 170, cy + 120], [x - 90, cy + 170]], [[x + 40, cy - 260], [x + 120, cy - 200], [x + 200, cy - 230]], [[x + 60, cy + 250], [x + 150, cy + 200], [x + 230, cy + 240]], [[x - 120, cy - 290], [x - 40, cy - 240]]];
+  const rx = BALL.r * (1 + 0.06 * q), ry = BALL.r * (1 - 0.1 * q);
+  const cy = y + 0.1 * q * BALL.r;
+  const ell = (ax: number, ay: number) => `M ${x - ax} ${cy} A ${ax} ${ay} 0 1 1 ${x + ax} ${cy} A ${ax} ${ay} 0 1 1 ${x - ax} ${cy} Z`;
+  // the clear dome at the front: one glassy shape, thinner and pointed with `cone`
+  const fx = x + rx - 40, out = 110 + 90 * k, h = 260 - 70 * k;
+  const dome = smoothD([[fx, cy - h], [fx + out * 0.62, cy - h * 0.72], [fx + out * (0.93 + 0.07 * k), cy - h * (0.3 - 0.27 * k)], [fx + out, cy], [fx + out * (0.93 + 0.07 * k), cy + h * (0.3 - 0.27 * k)], [fx + out * 0.62, cy + h * 0.72], [fx, cy + h]]);
+  const lidFill = mix(EYE_COL.lid, '#d9706a', r * 0.6);
+  const lidD = (sgn: -1 | 1) => {
+    const P = (deg: number, grow: number): [number, number] => [x + Math.cos((deg * Math.PI) / 180) * (rx + grow), cy + sgn * Math.sin((Math.abs(deg) * Math.PI) / 180) * (ry + grow)];
+    const dent = sgn < 0 ? 60 * q : 0;
+    const a = P(-80, -2), o = P(-40, 200 - dent), inn = P(-36, -6);
+    const tip: [number, number] = [fx + out * 0.45, cy + sgn * (h + 10)];
+    return {d: `M ${a[0]} ${a[1]} Q ${o[0]} ${o[1]} ${tip[0] + 26} ${tip[1] + sgn * 24} Q ${tip[0] + 8} ${tip[1] - sgn * 8} ${tip[0] - 16} ${tip[1] - sgn * 4} Q ${inn[0]} ${inn[1]} ${a[0]} ${a[1]} Z`, tip};
+  };
   return (
-    <Scene bg={place}><V9>
+    <Scene bg={EYE_COL.flesh[0]}><V9>
       <Svg>
-        <SocketBack c={place} />
-        {/* the optic nerve leaving the back of the ball */}
-        <Shape d={smoothD([[x - rx + 30, cy - 50], [x - rx - 140, cy - 60], [-60, cy - 80], [-60, cy + 70], [x - rx - 140, cy + 60], [x - rx + 30, cy + 50]])} fill={EYE_COL.nerve} shadow={1.5}>
-          <path d={`M ${x - rx - 120} ${cy} L -40 ${cy - 6}`} {...INLINE} />
-        </Shape>
-        {/* the eyeball */}
-        <Shape d={`M ${x - rx} ${cy} A ${rx} ${ry} 0 1 1 ${x + rx} ${cy} A ${rx} ${ry} 0 1 1 ${x - rx} ${cy} Z`} fill={white} shadow={3}>
-          {/* the pink flush of itchy redness and its vessels, clear of the face */}
-          {r > 0.01 && <ellipse cx={x + 60} cy={cy} rx={rx * 0.85} ry={ry * 0.8} fill="#f08a8a" opacity={0.18 * r} />}
-          {r > 0.01 && vessels.map((pts, i) => <path key={i} d={`M ${pts.map((p) => p.join(' ')).join(' L ')}`} stroke={EYE_COL.vessel} strokeWidth={6} strokeLinecap="round" strokeLinejoin="round" fill="none" opacity={Math.min(1, r * 1.3)} />)}
-          <Highlight x={x - 160} y={cy - ry * 0.72} w={120} rot={-24} />
-        </Shape>
-        {/* the iris and the lens behind the dome, at the front */}
-        <Shape d={`M ${fx - 40} ${cy - 210} Q ${fx + 10} ${cy} ${fx - 40} ${cy + 210} L ${fx - 70} ${cy + 200} Q ${fx - 30} ${cy} ${fx - 70} ${cy - 200} Z`} fill={EYE_COL.iris} shadow={0.8} line="in">
-          <path d={`M ${fx - 44} ${cy - 60} Q ${fx - 34} ${cy} ${fx - 44} ${cy + 60}`} stroke={EYE_COL.pupil} strokeWidth={22} strokeLinecap="round" fill="none" />
-        </Shape>
-        <Shape d={`M ${fx - 140} ${cy} C ${fx - 140} ${cy - 120} ${fx - 70} ${cy - 150} ${fx - 60} ${cy} C ${fx - 70} ${cy + 150} ${fx - 140} ${cy + 120} ${fx - 140} ${cy} Z`} fill={EYE_COL.lens} shadow={0.6} line="in" />
-        {/* the clear dome (cornea): a pale glassy wall over a clear space; thinner and pointed with `cone` */}
-        <path d={dome} fill={tint(EYE_COL.cornea, 0.5)} opacity={0.75} />
-        <path d={dome} fill="none" stroke={shade(EYE_COL.cornea, 0.22)} strokeWidth={thick} strokeLinejoin="round" opacity={0.8} />
-        <path d={dome} {...EDGE} fill="none" />
-        <path d={`M ${fx + domeOut * 0.4} ${cy - domeH * 0.62} Q ${fx + domeOut * 0.75} ${cy - domeH * 0.4} ${fx + domeOut * 0.85} ${cy - domeH * 0.12}`} stroke="#ffffff" strokeWidth={10} strokeLinecap="round" fill="none" opacity={0.9} />
-        {/* the eyelids: a cap above and a cap below the dome, each from the ball's front quarter out to a rounded tip at the
-            dome's edge (never across it), lashes at the tip; the upper cap dented when the knuckles press */}
+        <FleshRings cx={x + 40} cy={cy} />
+        <Grain />
+        {/* the optic nerve leaving the back: one soft cord, no inner line */}
+        <path d={`M ${x - rx + 40} ${cy - 46} C ${x - rx - 120} ${cy - 50} ${-20} ${cy - 90} ${-60} ${cy - 70} L ${-60} ${cy + 80} C ${-20} ${cy + 96} ${x - rx - 120} ${cy + 50} ${x - rx + 40} ${cy + 46} Z`} fill={EYE_COL.nerve} {...EDGE} />
+        {/* the iris: one blue band behind the dome */}
+        <path d={`M ${fx - 34} ${cy - 220} Q ${fx + 16} ${cy} ${fx - 34} ${cy + 220} L ${fx - 74} ${cy + 206} Q ${fx - 28} ${cy} ${fx - 74} ${cy - 206} Z`} fill={EYE_COL.iris} />
+        {/* the ball: a lighter rim (its wall) round one flat inside, the outline only on the outside */}
+        <path d={ell(rx, ry)} fill={EYE_COL.rim} {...EDGE} />
+        <path d={ell(rx - 30, ry - 30)} fill={mix(EYE_COL.white, EYE_COL.whiteRed, r)} />
+        {/* itchy redness: a soft pink flush, no vein lines */}
+        {r > 0.01 && <ellipse cx={x + 120} cy={cy + 40} rx={rx * 0.6} ry={ry * 0.55} fill="#ec8f8a" opacity={0.22 * r} />}
+        <path d={`M ${x - rx * 0.62} ${cy - ry * 0.55} Q ${x - rx * 0.35} ${cy - ry * 0.8} ${x - rx * 0.05} ${cy - ry * 0.84}`} stroke="#ffffff" strokeWidth={16} strokeLinecap="round" fill="none" opacity={0.55} />
+        {/* the clear dome */}
+        <path d={dome} fill={EYE_COL.cornea} opacity={0.85} {...EDGE} />
+        <path d={`M ${fx + out * 0.42} ${cy - h * 0.6} Q ${fx + out * 0.74} ${cy - h * 0.38} ${fx + out * 0.82} ${cy - h * 0.1}`} stroke="#ffffff" strokeWidth={12} strokeLinecap="round" fill="none" />
+        {/* the lids: flesh caps above and below the dome, three lashes each */}
         {([-1, 1] as const).map((sgn) => {
-          const P = (deg: number, grow: number): [number, number] => [x + Math.cos((deg * Math.PI) / 180) * (rx + grow), cy + sgn * Math.sin((Math.abs(deg) * Math.PI) / 180) * (ry + grow)];
-          const dent = sgn < 0 ? 50 * q : 0;
-          const a: [number, number] = P(-78, 0);
-          const tip: [number, number] = [fx + domeOut * 0.42, cy + sgn * (domeH + 6)];
-          const out: [number, number] = P(-40, 190 - dent);
-          const inn: [number, number] = P(-36, -4);
-          const d = `M ${a[0]} ${a[1]} Q ${out[0]} ${out[1]} ${tip[0] + 22} ${tip[1] + sgn * 26} Q ${tip[0] + 10} ${tip[1] - sgn * 6} ${tip[0] - 14} ${tip[1] - sgn * 4} Q ${inn[0]} ${inn[1]} ${a[0]} ${a[1]} Z`;
+          const L = lidD(sgn);
           return (
             <g key={sgn}>
-              <Shape d={d} fill={mix(EYE_COL.lid, '#e88b80', r * 0.5)} shadow={1.1} />
-              {[0, 1, 2, 3].map((n) => <path key={n} d={`M ${tip[0] + 4 + n * 9} ${tip[1] + sgn * 4} q ${26 + n * 4} ${sgn * (14 + n * 5)} ${44 + n * 2} ${sgn * (34 + n * 6)}`} stroke={EYE_COL.lash} strokeWidth={7} strokeLinecap="round" fill="none" />)}
+              <path d={L.d} fill={lidFill} {...EDGE} />
+              {[0, 1, 2].map((n) => <path key={n} d={`M ${L.tip[0] + 6 + n * 12} ${L.tip[1] + sgn * 4} q ${26} ${sgn * (18 + n * 6)} ${46} ${sgn * (38 + n * 8)}`} stroke={EYE_COL.lash} strokeWidth={9} strokeLinecap="round" fill="none" />)}
             </g>
           );
         })}
-        {/* the face on the white of the eye */}
-        <Eyes x={EYE_FACE[0]} y={EYE_FACE[1]} r={84} mood={mood} look={look} lid={lid} brows />
-        <Mouth x={EYE_FACE[0]} y={EYE_FACE[1] + 150} w={90} kind={mouth} />
+        {/* the face: big eyes (the reference size) */}
+        <Eyes x={EYE_FACE[0]} y={EYE_FACE[1]} r={100} mood={mood} look={look} lid={lid} brows />
+        <Mouth x={EYE_FACE[0]} y={EYE_FACE[1] + 170} w={100} kind={mouth} />
       </Svg>
       {children}
     </V9></Scene>
@@ -123,25 +141,18 @@ export const EyeFull: React.FC<EyeState & {mood?: Mood; mouth?: MouthKind; look?
 export type KnuckleArms = 'press' | 'wave' | 'rub';
 /** A fist seen knuckles-first, ONE face across the back of the hand; origin at the middle of the knuckle row; about 420 wide. */
 export const Knuckles: React.FC<{mood?: Mood; mouth?: MouthKind; look?: [number, number]; lid?: number; skin?: string}> = ({mood = 'wink', mouth = 'big', look = [0, 0.3], lid, skin = '#d6a07a'}) => {
-  const back = smoothD([[-210, -10], [-220, -160], [-170, -300], [-40, -340], [110, -330], [210, -260], [230, -120], [220, -10]]);
+  // a fist seen from the front (the reference look: one silhouette, only the three short finger gaps that make it a fist):
+  // the wrist going up out of frame, the broad back of the hand, four big round knuckles along the bottom, the thumb at the side
+  const bumps = [-165, -55, 55, 165];
+  const edge = bumps.flatMap((bx, n): [number, number][] => [[bx - 56, 10], [bx - 40, 54], [bx, 70], [bx + 40, 54], ...(n < 3 ? [[bx + 56, 14] as [number, number]] : [])]);
+  const fist = smoothD([[-120, -760], [-140, -400], [-230, -300], [-236, -120], [-226, 0], ...edge, [232, 0], [280, -40], [300, -150], [262, -250], [214, -290], [140, -400], [120, -760]]);
   return (
     <g>
-      {/* the wrist going up and out of frame */}
-      <Shape d="M -150 -300 L -170 -700 L 150 -700 L 170 -300 Z" fill={shade(skin, 0.04)} shadow={1} />
-      {/* the back of the hand with the face */}
-      <Shape d={back} fill={skin} shadow={1.4}>
-        <Highlight x={-120} y={-270} w={70} rot={-14} />
-      </Shape>
-      {/* the four knuckle bumps along the bottom, each a finger bent under */}
-      {[-165, -55, 55, 165].map((kx, i) => (
-        <Shape key={i} d={smoothD([[kx - 58, -40], [kx - 50, 30], [kx, 62], [kx + 50, 30], [kx + 58, -40], [kx, -60]])} fill={tint(skin, 0.06)} shadow={0.8}>
-          <path d={`M ${kx - 24} 18 Q ${kx} 30 ${kx + 24} 18`} {...INLINE} />
-        </Shape>
-      ))}
-      {/* the thumb along the side */}
-      <Shape d={smoothD([[200, -220], [270, -170], [290, -60], [250, 0], [210, -40], [214, -150]])} fill={skin} shadow={0.8} />
-      <Eyes x={0} y={-200} r={46} mood={mood} look={look} lid={lid} brows />
-      <Mouth x={0} y={-104} w={62} kind={mouth} />
+      <path d={fist} fill={skin} {...EDGE} />
+      {bumps.slice(0, 3).map((bx, n) => <path key={n} d={`M ${bx + 55} 14 L ${bx + 55} -34`} stroke={shade(skin, 0.35)} strokeWidth={6} strokeLinecap="round" />)}
+      <path d="M -196 -150 Q -180 -240 -110 -268" stroke="#ffffff" strokeWidth={12} strokeLinecap="round" fill="none" opacity={0.5} />
+      <Eyes x={0} y={-176} r={56} mood={mood} look={look} lid={lid} brows />
+      <Mouth x={0} y={-66} w={70} kind={mouth} />
     </g>
   );
 };
